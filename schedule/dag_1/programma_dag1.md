@@ -1,24 +1,39 @@
 # Data Scopes
-- coherente methoden voor onderzoek met heterogene digitale bronnen
 
---
+Coherente methoden voor onderzoek met heterogene digitale bronnen
 
-# Doel workshop
+## Doel workshop
 
-# Opzet workshop
+Het doel is onderzoekers zich bewust te laten worden van de verschillende aspecten van de omgang met grootschalige data. Met data scopes willen we het volgende bereiken:
 
-# Programma
+- Inzicht in data verwerkingsproces: data verwerking is een essentieel en onlosmakelijk onderdeel van het onderzoek, en niet een noodzakelijk technisch proces waarna het echte onderzoek kan beginnen,
+- Transparantie van onderzoek: zorgen voor meer transparantie bij de totstandkoming van onderzoek dat gebaseerd is op de verwerking en analyse van grote en complexe hoeveelheden data
+- Methodologische discussie: consolideren van digitale methoden om te komen tot coherente en breed gedragen onderzoeksmethodologieën
 
---
+## Opzet workshop
 
-# Voorstelrondje
++ Tutorial: uitleg Data scopes concepten
++ Hands-on sessies: werken in kleine groepen aan opdrachten rondom Data scopes concepten
++ Discussie: vergelijken van groepsopdrachten, reflectie op Data scopes als handvat voor onderzoeksproces
+
+## Programma
+
++ 11:00-11:30 Workshop introductie
++ 11:30-12:00 Data Scopes achtergrond
++ 12:00-13:00 Hands-on sessie 1: greppen in TvG data
++ 13:00-13:30 Lunch
++ 13:30-15:30 Hands-on sessie 2: Data normaliseren met Open Refine
++ 15:30-16:30 Bespreken van bevindingen, reflectie op Data Scopes
+
+## Deelnemers
+
 - Wat is je achtergrond? Wat is je ervaring met digitale methoden in onderzoek?
 - Waarom doe je mee? Wat zijn je verwachtingen?
 
 
 --
 
-# Deel 1
+## Deel 1
 - vaardigheden:
     - grip krijgen op grote tekstbestanden met grotendeels onbekende inhoud en grote variatie
     - mogelijkheden om patronen te ontdekken
@@ -28,7 +43,7 @@
 
 --
 
-# Tijdschrift voor Geschiedenis (TvG)
+## Tijdschrift voor Geschiedenis (TvG)
 
 - edities: 121 (1886-2008)
     - pagina's: 60,751
@@ -39,7 +54,7 @@
 
 --
 
-# UNIX Command Line
+## UNIX Command Line
 
 - Exotische commando's en syntax:
     - grep, awk, sed, cat, tr, sort, uniq, paste
@@ -52,7 +67,7 @@
 
 --
 
-# Hoe hou ik bij wat ik gedaan heb?
+## Hoe hou ik bij wat ik gedaan heb?
 
 - gebruik `history` commando
 - kopieer commando's naar een bestand
@@ -60,5 +75,6 @@
 
 - We claimen niet dat alle onderzoek voortaan via de command line moet!
     - maar het illustreert goed waar data scopes over gaat: transparent maken van het process
+
 
 
