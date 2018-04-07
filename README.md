@@ -63,7 +63,7 @@ De workshop bestaat iedere dag uit een inleiding en twee praktische sessies waar
     + Gebruik van bestaande indices voor ontsluiten van serie tekstuele bronnen
     + Disambigueren van geografische en persoonsnamen
     + Linken van data uit verschillende bronnen
-3.     Serieel gebruik van samengestelde kwalitatieve bronnen voor structurele vragen. Dag 4/5
+3. Serieel gebruik van samengestelde kwalitatieve bronnen voor structurele vragen. Dag 4/5
 + Corpus Biografisch portaal
 + Vaardigheden:
     + Data selectie
