@@ -58,10 +58,14 @@ Het doel is onderzoekers zich bewust te laten worden van de verschillende aspect
 
 - Exotische commando's en syntax:
     - grep, awk, sed, cat, tr, sort, uniq, paste
-- Waarom? Omdat je gelukkig van wordt!
+- Waarom?
+    - laat goed zien waar moeilijkheden met data interactie zitten
+    - biedt natuurlijke methode voor transparant onderzoek
     - generieke toolset voor data exploratie en extractie
     - pipelines voor ketens van stappen
-- reguliere expressies 
+
+
+## Reguliere expressies 
     - CTRL-F on steroids
     - voor patronen herkennen en transformeren
 
@@ -75,6 +79,12 @@ Het doel is onderzoekers zich bewust te laten worden van de verschillende aspect
 
 - We claimen niet dat alle onderzoek voortaan via de command line moet!
     - maar het illustreert goed waar data scopes over gaat: transparent maken van het process
+
+--
+
+## Transparantie
+
+Op welk detail niveau moet het process vastgelegd zijn voor transparantie?
 
 
 
