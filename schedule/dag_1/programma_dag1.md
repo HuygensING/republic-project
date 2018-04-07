@@ -1,7 +1,3 @@
-
-
---
-
 # Data Scopes
 - coherente methoden voor onderzoek met heterogene digitale bronnen
 
