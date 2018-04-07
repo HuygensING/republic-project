@@ -51,33 +51,33 @@ Het programma is niet opgehangen aan tools, al gebruiken we die natuurlijk wel. 
 
 De workshop bestaat iedere dag uit een inleiding en twee praktische sessies waarin de deelnemers zelf aan het werk gaan. We eindigen steeds met een discussie over hoe deze handelingen in de onderzoekspraktijk passen en interpretatie beïnvloeden. Hieronder een korte opsomming per dag en wat je er leert. 
 
-1.     Trends uit een groot tekstcorpus. Dag 1 en 2
-    + Corpus Tijdschrift voor Geschiedenis
-    + Vaardigheden:
+1. Trends uit een groot tekstcorpus. Dag 1 en 2
++ Corpus Tijdschrift voor Geschiedenis
++ Vaardigheden:
     + grip krijgen op grote tekstbestanden met grotendeels onbekende inhoud en grote variatie
     + mogelijkheden om patronen te ontdekken
     + gestructureerd omgaan met ongestructureerde data
-2.     ‘Metadata’ en toegang tot een grootschalige tekstuele bron dag 2/3
-    + Corpus Generale Missiven VOC
-    + Vaardigheden:
+2. 'Metadata' en toegang tot een grootschalige tekstuele bron dag 2/3
++ Corpus Generale Missiven VOC
++ Vaardigheden:
     + Gebruik van bestaande indices voor ontsluiten van serie tekstuele bronnen
     + Disambigueren van geografische en persoonsnamen
     + Linken van data uit verschillende bronnen
 3.     Serieel gebruik van samengestelde kwalitatieve bronnen voor structurele vragen. Dag 4/5
-    + Corpus Biografisch portaal
-    + Vaardigheden:
++ Corpus Biografisch portaal
++ Vaardigheden:
     + Data selectie
     + Data structurering
     + Segmentatie en stapsgewijze aanpak
 
- Op dag 5 is er gelegenheid voor uitloop of om terug te komen op eerdere onderwerpen. 
+Op dag 5 is er gelegenheid voor uitloop of om terug te komen op eerdere onderwerpen. 
 
 
 
 ## Instructors
 
 <ul>
-    <li><a href="https://www.researchgate.net/profile/Rik_Hoekstra">Rik Hoekstra</a> - KNAW Humanities Cluster - Research and Development</li>
-    <li><a href="http://marijnkoolen.com">Marijn Koolen</a> - KNAW Humanities Cluster - Research and Development</li>
+    <li><a href="https://www.researchgate.net/profile/Rik_Hoekstra">Rik Hoekstra</a> - <a href="https://huc.knaw.nl/">KNAW Humanities Cluster</a> - Research and Development</li>
+    <li><a href="http://marijnkoolen.com">Marijn Koolen</a> - <a href="https://huc.knaw.nl/">KNAW Humanities Cluster</a> - Research and Development</li>
 </ul>
 
