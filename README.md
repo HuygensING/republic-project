@@ -2,50 +2,82 @@
 permalink: /
 ---
 
-# Make _your_ edition: models and methods for digital textual scholarship
+# Workshop Data Scopes: Methoden voor omgang met digitale data in humanities onderzoekspraktijk:
 
-## Rationale
+Data Scopes zijn een concept voor de omgang met samengestelde data in een humanities context. Met data scopes willen we bijdragen aan methodologische reflectie op en consolidatie van de verzameling methoden die door velen in de menswetenschappen (vaak in de vorm van tools) al worden gebruikt in aanvulling op de bestaande methoden. De workshop wordt georganiseerd door het KNAW Humanities Cluster.
 
-Digital humanists already have access to workshops and tutorials to help them learn to transcribe, edit, and tag a text in preparation for publishing a digital edition. These training resources play a vital role in empowering editors to formalize and instantiate their interpretations as markup, so as to make them available for subsequent analysis. Nonetheless, sophisticated markup expertise alone is not enough to make an edition, and learning nothing more than tagging may leave scholars staring at their angle brackets and wondering what to do next. For some a solution like TEI Tapas provides an adequate next step, but for those who wish to ask new types of questions of their documents, and to produce new types of editions that enable new types of research, an understanding of how to turn a set of tagged texts into a customized edition that meets individualized research goals is crucial. Digital humanists cannot build editions that break new methodological ground solely on the basis of solutions prepared largely by others, and the focus of this Institute is on the creation of digital editions motivated by project-specific research questions and implemented from a perspective driven first by theory of edition, second by editorial methodology, and necessarily but less importantly by specific toolkits. In this respect we foreground not learning a particular programming language or technology or framework, but learning to think and act digitally about the process of creating a digital edition. Because tools and technologies come and go, the Institute emphasizes learning to translate original digital thinking about editions into implementations of those editions, rather than on “tooling up” in the context of currently popular frameworks. In this respect, the Institute recognizes thinking digitally in ways driven by project-specific research goals as the most important feature of _sustainable Digital Humanities training and education._
+In de workshop besteden we aandacht aan de verschillende vormen van bewerking van geesteswetenschappelijk materiaal, en hoe deze zowel kennis en interpretatie van het materiaal vereisen als invloed hebben op de analyse en interpretatie verderop in het onderzoeksproces.
+
+De workshop duurt 5 dagen van 11:00 tot 16:30 uur en bestaat uit hands-on sessies waarin deelnemers in kleine groepen samenwerken aan het bewerken van kleine data sets. De volgende onderwerpen komen aan bod:
+
++ Van bron naar data - omzetten van verschillende soorten bronnen naar computer bewerkbare gegevens.
++ Modelleren - vormgeving van gegevens om antwoord te geven op onderzoeksvragen.
++ Exploreren van data voor onderzoek - methoden van close reading, distant reading, analyse.
++ Reduceren van complexiteit - gebruik van methoden en tools om overzicht en inzicht te krijgen in data.
+
+We onderscheiden vijf verschillende activiteiten in het onderzoek met data scopes: modelleren, selecteren, normaliseren, linken en categoriseren van data. Elke dag richten we ons op één of twee van deze thema’s, maar alle activiteiten komen dagelijks terug in het werken met de verschillende data sets.
+
+## Doelstelling
+
+Met data scopes willen we het volgende bereiken:
+
+- Inzicht in data verwerkingsproces: data verwerking is een essentieel en onlosmakelijk onderdeel van het onderzoek, en niet een noodzakelijk technisch proces waarna het echte onderzoek kan beginnen,
+- Transparantie van onderzoek: zorgen voor meer transparantie bij de totstandkoming van onderzoek dat gebaseerd is op de verwerking en analyse van grote en complexe hoeveelheden data
+- Methodologische discussie: consolideren van digitale methoden om te komen tot coherente en breed gedragen onderzoeksmethodologieën
+
+## Programma
+
+Datum: 16-20 april (11:00-16:30)
+Locatie: OIH A0.03
+
+
+Het doel is onderzoekers zich bewust te laten worden van de verschillende aspecten van de omgang met grootschalige data. In de dagelijkse onderzoekspraktijk:
+
+- moeten onderzoekers toevlucht nemen tot handwerk waar geautomatiseerde methoden ze veel werk uit handen zouden kunnen nemen
+
+- hebben ze wel data verzameld, maar kunnen die niet zo vormgeven dat hun onderzoek ermee wordt bediend
+
+- kunnen ze de data in hun database niet goed (genoeg) bevragen
+
+- is het moeilijk de output van geavanceerde tools kritisch te beoordelen
+
+ In de workshop besteden we aandacht aan een systematische benadering van de omgang met data. We hanteren daarvoor het concept data scopes, dat is gericht op het proces van interactie tussen onderzoeker en data. We gebruiken datasets van het Huygens ING en vragen uit de onderzoekspraktijk.
+
+Het programma is niet opgehangen aan tools, al gebruiken we die natuurlijk wel. We besteden wel aandacht aan een aantal basis computervaardigheden zoal:
+
+- omgaan met de command line
+- dataformaten en de omgang daarmee
+- een begrip van clients en servers
+
+De workshop bestaat iedere dag uit een inleiding en twee praktische sessies waarin de deelnemers zelf aan het werk gaan. We eindigen steeds met een discussie over hoe deze handelingen in de onderzoekspraktijk passen en interpretatie beïnvloeden. Hieronder een korte opsomming per dag en wat je er leert. 
+
+1.     Trends uit een groot tekstcorpus. Dag 1 en 2
+    + Corpus Tijdschrift voor Geschiedenis
+    + Vaardigheden:
+    + grip krijgen op grote tekstbestanden met grotendeels onbekende inhoud en grote variatie
+    + mogelijkheden om patronen te ontdekken
+    + gestructureerd omgaan met ongestructureerde data
+2.     ‘Metadata’ en toegang tot een grootschalige tekstuele bron dag 2/3
+    + Corpus Generale Missiven VOC
+    + Vaardigheden:
+    + Gebruik van bestaande indices voor ontsluiten van serie tekstuele bronnen
+    + Disambigueren van geografische en persoonsnamen
+    + Linken van data uit verschillende bronnen
+3.     Serieel gebruik van samengestelde kwalitatieve bronnen voor structurele vragen. Dag 4/5
+    + Corpus Biografisch portaal
+    + Vaardigheden:
+    + Data selectie
+    + Data structurering
+    + Segmentatie en stapsgewijze aanpak
+
+ Op dag 5 is er gelegenheid voor uitloop of om terug te komen op eerdere onderwerpen. 
+
+
 
 ## Instructors
 
-<table>
-<tr><td><img src="images/tla.jpg" width="200px" alt="[Andrews picture]"/></td><td style="vertical-align: middle">Tara Andrews<br/>Institute of History<br/>University of Vienna</td></tr>
-<tr><td><img src="images/djb.jpg" width="200px" alt="[Birnbaum picture]"/></td><td style="vertical-align: middle">David J. Birnbaum<br/>Department of Slavic Languages and Literatures<br/>University of Pittsburgh</td></tr>
-<tr><td><img src="images/hc.png" width="200px" alt="[Cayless picture]"/></td><td style="vertical-align: middle">Hugh Cayless<br/>Duke Collaboratory for Classics Computing (DC3)<br/>Duke University</td></tr>
-<tr><td>&#xa0;</td><td style="vertical-align: middle">Ronald Haentjens Dekker<br/>Huygens Institute<br/>Royal Netherlands Academy of Arts and Sciences</td></tr>
-<tr><td><img src="images/nrh.jpeg" alt="[Han picture]" width="200px"/></td><td style="vertical-align: middle">Na-Rae Han<br/>Department of Linguistics<br/>University of Pittsburgh</td></tr>
-<tr><td><img src="images/mk.jpg" width="200px" alt="[Kestemont picture]"></td><td style="vertical-align: middle">Mike Kestemont<br/>Department of Literature<br/>University of Antwerp</td></tr>
-<tr><td><img src="images/ljo.jpg" width="200px" alt="[Olsson picture]"/></td><td style="vertical-align: middle">Leif-Jöran Olsson<br/>Department of Swedish Language<br/>University of Gothenburg</td></tr>
-</table>
+<ul>
+    <li><a href="https://www.researchgate.net/profile/Rik_Hoekstra">Rik Hoekstra</a> - KNAW Humanities Cluster - Research and Development</li>
+    <li><a href="http://marijnkoolen.com">Marijn Koolen</a> - KNAW Humanities Cluster - Research and Development</li>
+</ul>
 
-The instructors will be assisted by:
-
-<table>
-<tr><td><img src="images/gak.jpeg" width="200px" alt="[Keane picture]"/></td><td style="vertical-align: middle">Gabrielle (Gabi) Keane<br/>Senior Institute Assistant<br/>University of Pittsburgh</td></tr>
-<tr><td><img src="images/ekb.jpg" width="200px" alt="[Bennett picture]"/></td><td style="vertical-align: middle">Eleanor (Kyri) Bennett<br/>Institute Assistant<br/>University of Pittsburgh</td></tr>
-<tr><td><img src="images/ks_cropped.png" width="200px" alt="[Sanders image]"/></td><td style="vertical-align: middle">Kaylen Sanders<br/>Institute Assistant<br/>University of Pittsburgh</td></tr>
-</table>
-
-## Participants
-
-<img src="images/nehgroup.jpg" alt="Group photo"/>
-
-Thank you to all of our participants for a brilliant Institute!
- 
-## Additional information
-
-* [Call](admin/call.md) for applications
-* [Lightning talk](admin/lightning.md) from the NEH Office of Digital Humanities Project Directors Meeting, 2016-09-16
-* Follow us on Twitter: [@makeyouredition](https://twitter.com/makeyouredition), [#MakeYourEdition2017](https://twitter.com/hashtag/MakeYourEdition2017).
-* [Digital editions created by Institute participants](general/participant-editions.md)
-
-____
-<a href="https://www.neh.gov/" title="National Endowment for the Humanities"><img align="left" src="images/neh_logo_horizontal_rgb.png" alt="NEH" class="rpad"></a>_Make_ your _edition: models and methods for digital textual scholarship_ has been made possible in part by a major grant from the National Endowment for the Humanities: Exploring the human endeavor. Any views, findings, conclusions, or recommendations expressed in materials developed for this project do not necessarily represent those of the National Endowment for the Humanities.
-
-<a href="http://www.as.pitt.edu" title="Dietrich School of Arts and Sciences"><img align="left" src="images/aslogobsm.png" alt="Dietrich School of Arts and Sciences" class="rpad"></a>Additional support and assistance has been provided by the University of Pittsburgh Kenneth P. Dietrich School of Arts and Sciences, Computing Services and Systems Development (CSSD), the Faculty Research and Scholarship Program (FRSP), and the Joseph M. Katz School of Business EMBA Program. 
-
-<a href="http://www.oxygenxml.com" title="Oxygen XML Editor"><img align="left" src="images/oxygen190x62.png" alt="Oxygen XML Editor" class="rpad"/></a>We are grateful to [SyncroSoft](http://www.sync.ro/) for generously contributing complimentary extended trial licenses for their [\<oXygen/\> XML editor](https://www.oxygenxml.com/) for the use of Institute participants.
-
-<a href="http://www.exist-db.org"><img align="left" src="images/existdb.gif" alt="eXist-db" class="rpad" width="156px"/></a> eXist-db is an open source native XML database and application platform. <a href="http://teipublisher.com/">TEI Publisher</a> is an open source product of <a href="http://www.existsolutions.com/">eXist Solutions</a>.
