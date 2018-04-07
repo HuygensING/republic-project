@@ -1,13 +1,11 @@
 # Materialen voor dag 1
 
 * [Programma overzicht](programma_dag1.md)
-* Daily schedules
-	* [Monday](week_1_day_1_plan.md)
-	* [Tuesday](week_1_day_2_plan.md)
-	* [Wednesday](week_1_day_3_plan.md)
-	* [Thursday](week_1_day_4_plan.md)
-	* [Friday](week_1_day_5_plan.md)
-* Miscellaneous
-	* [Command line resources](command-line_resources.md) 
-	* [Git resources](git_resources.md)
-	* [Regex resources](regex_resources.md)
+* Onderdelen
+	* [Data Scopes Introductie](data_scopes_intro.md)
+    * [Opdrachten](opdrachten.md)
+* Extra (uit [NEH-Institute Make your edition](https://pittsburgh-neh-institute.github.io/Institute-Materials-2017/))
+	* [Command line resources](https://pittsburgh-neh-institute.github.io/Institute-Materials-2017/schedule/week_1/command-line_resources.html) 
+	* [Git resources](https://pittsburgh-neh-institute.github.io/Institute-Materials-2017/schedule/week_1/git_resources.html)
+	* [Regex resources](https://pittsburgh-neh-institute.github.io/Institute-Materials-2017/schedule/week_1/regex_resources.html)
+
