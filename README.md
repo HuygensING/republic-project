@@ -2,7 +2,7 @@
 permalink: /
 ---
 
-# Workshop Data Scopes: Methoden voor omgang met digitale data in humanities onderzoekspraktijk:
+# Workshop Data Scopes - Methoden voor omgang met digitale data in humanities onderzoekspraktijk
 
 Data Scopes zijn een concept voor de omgang met samengestelde data in een humanities context. Met data scopes willen we bijdragen aan methodologische reflectie op en consolidatie van de verzameling methoden die door velen in de menswetenschappen (vaak in de vorm van tools) al worden gebruikt in aanvulling op de bestaande methoden. De workshop wordt georganiseerd door het KNAW Humanities Cluster.
 
@@ -48,7 +48,7 @@ Het programma is niet opgehangen aan tools, al gebruiken we die natuurlijk wel. 
 Datum: 16-20 april (11:00-16:30)
 Locatie: OIH A0.03
 
-De workshop bestaat iedere dag uit een inleiding en twee praktische sessies waarin de deelnemers zelf aan het werk gaan. We eindigen steeds met een discussie over hoe deze handelingen in de onderzoekspraktijk passen en interpretatie beïnvloeden. Hieronder een korte opsomming per dag en wat je er leert. 
+De workshop bestaat iedere dag uit een inleiding en twee praktische sessies waarin de deelnemers zelf aan het werk gaan. We eindigen steeds met een discussie over hoe deze handelingen in de onderzoekspraktijk passen en interpretatie beïnvloeden. Hieronder een korte opsomming per dag en wat je er leert.
 
 1. Trends uit een groot tekstcorpus. Dag 1 en 2
 + Corpus Tijdschrift voor Geschiedenis
@@ -69,7 +69,7 @@ De workshop bestaat iedere dag uit een inleiding en twee praktische sessies waar
     + Data structurering
     + Segmentatie en stapsgewijze aanpak
 
-Op dag 5 is er gelegenheid voor uitloop of om terug te komen op eerdere onderwerpen. 
+Op dag 5 is er gelegenheid voor uitloop of om terug te komen op eerdere onderwerpen.
 
 
 ## Instructors
@@ -78,4 +78,3 @@ Op dag 5 is er gelegenheid voor uitloop of om terug te komen op eerdere onderwer
     <li><a href="https://www.researchgate.net/profile/Rik_Hoekstra">Rik Hoekstra</a> - <a href="https://huc.knaw.nl/">KNAW Humanities Cluster</a> - Research and Development</li>
     <li><a href="http://marijnkoolen.com">Marijn Koolen</a> - <a href="https://huc.knaw.nl/">KNAW Humanities Cluster</a> - Research and Development</li>
 </ul>
-
