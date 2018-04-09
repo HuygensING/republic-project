@@ -83,11 +83,11 @@ Open een nieuwe tab in je browser en ga naar [https://regex101.com/](https://reg
 <a name="grep"></a>
 ## Grep: zoeken in data met behulp van reguliere expressies
 
-`grep` is een UNIX command line tool waarmee je kunt zoeken in data-bestanden naar regels die *matchen* met een reguliere expressie (_G_lobally search a _r_egular _e_xpression and _p_rint).
+`grep` is een UNIX command line tool waarmee je kunt zoeken in data-bestanden naar regels die *matchen* met een reguliere expressie (**G**lobally search a **r**egular **e**xpression and **p**rint).
 
 Eerst wat uitleg over de *command line* en hoe je navigeert naar verschillende mappen of directories op je harde schijf en andere aangesloten opslagmedia.
 
-*Let op: de oefeningen worden al heel snel heel complex. Dit is puur om te laten zien wat mogelijk is, en waarom dit nuttig kan zijn. De syntax is cryptisch en exotisch en vergt veel oefening om het eigen te maken. Als je het nuttig vindt kun je er dus meer tijd in steken en wordt de systematiek al snel duidelijk. Als je hier niet zelf mee aan de slag wil, is het in ieder geval nuttig om te zien hoe het werkt, wat er mogelijk is, en waar potentiele problemen in de data een rol spelen.*
+**Let op: de oefeningen worden al heel snel heel complex. Dit is puur om te laten zien wat mogelijk is, en waarom dit nuttig kan zijn. De syntax is cryptisch en exotisch en vergt veel oefening om het eigen te maken. Als je het nuttig vindt kun je er dus meer tijd in steken en wordt de systematiek al snel duidelijk. Als je hier niet zelf mee aan de slag wil, is het in ieder geval nuttig om te zien hoe het werkt, wat er mogelijk is, en waar potentiele problemen in de data een rol spelen.**
 
 <a name="grep-command-line"></a>
 ### Command line: interactie via commando's
@@ -100,7 +100,7 @@ De command line is een alternatieve manier om te interacteren met de computer. I
 
 Voor transparant werken met data is het belangrijk en waardevol om uitgevoerde opdrachten bij te houden en te kunnen delen (ook met jezelf op een later tijdstip).
 
-Om onderstaande oefeningen te doen is het handig te navigeren naar de directory waar je de TvG data hebt opgeslagen. _De directory-structuur is een zogenaamde boom structuur, met een enkele stam (root) en een of meer vertakingen. In UNIX omgevingen is `/` het symbool voor de *root* directory, `/home` is de *home* directory binnen de *root* directory. Directories binnen andere directories (sub-directories) zijn vertakingen binnen vertakingen. Zo is je persoonlijke directory die overkomt met je gebruikersnaam een subdirectory van `/home`. Je kunt o.a. navigeren tussen directories via de vertakingen._
+Om onderstaande oefeningen te doen is het handig te navigeren naar de directory waar je de TvG data hebt opgeslagen. **De directory-structuur is een zogenaamde boom structuur, met een enkele stam (root) en een of meer vertakingen. In UNIX omgevingen is `/` het symbool voor de *root* directory, `/home` is de *home* directory binnen de *root* directory. Directories binnen andere directories (sub-directories) zijn vertakingen binnen vertakingen. Zo is je persoonlijke directory die overkomt met je gebruikersnaam een subdirectory van `/home`. Je kunt o.a. navigeren tussen directories via de vertakingen.**
 
 + navigeren tussen directories:
     + `pwd` (print working directory): waar ben ik? Het `pwd` commando laat zien in welke directory je de commando's uitvoert. 
@@ -348,13 +348,17 @@ grep -E -h --color -w "[A-Z]\w+" tvg_111/*.txt
 
 Het resultaat levert allerlei namen op, maar ook de eerste woorden van zinnen, die immers ook met een hoofdletter beginnen.
 
-Zoeken naar woorden die beginnen met een hoofdletter en een verbindingsteken mogen bevatten:
+Er zijn ook dubbele namen met bijvoorbeeld een verbindingsteken. Je kunt dit ook opnemen in de reguliere expressie en zoeken naar woorden die beginnen met een hoofdletter en een combinatie van letters en verbindingstekens mogen bevatten:
 
 ```bash
 grep -E -h --color -w "[A-Z](\w|-)+" tvg_111/*.txt
 ```
 
-Dit levert ook samengestelde namen op, zoals Noord-Nederland. 
+Dit levert ook samengestelde namen op, zoals Noord-Nederland. Je kunt `--color` vervangen door `-o` om alleen de matchende delen te tonen, zodat je een wat overzichtelijkere lijst krijgt:
+
+```bash
+grep -E -h -o -w "[A-Z](\w|-)+" tvg_111/*.txt
+```
 
 Zoeken naar een hoofdletter gevolgd door een punt, een spatie en dan een woord beginnend met een hoofdletter:
 
