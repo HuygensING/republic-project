@@ -1,6 +1,6 @@
 ## Opdracht voor ontdubbelen (disambiguatie) van namen
 
-### Dataset: Geselecteerde delen Generale missiven. Zieo ook de <a href="toelichting_gm.md">toelichting</a>
+### Dataset: Geselecteerde delen Generale missiven. Zie ook de <a href="toelichting_gm.md">toelichting</a>
 
 ****Vraag:**** _Op welke manier kunnen de Generale Missiven van de VOC inhoudelijk toegankelijk gemaakt worden._
 
@@ -17,13 +17,15 @@ _Bepaal aan de hand van de beschikbare registers of een samenhangende toegang to
 
 + Hoe kun je termen disambiguëren?
 
++ Verzin manieren om verschillende soorten termen te groepen/classificeren
+
 
 
 ## Uitwerking
 **Stappen:**
 + Waar te beginnen. De registers van deel 13 komen uit een database, die van de andere delen zijn automatisch gegenereerd uit de ocr, met alle mogelijke fouten vandien. Het is het slimst deel 13 als uitgangspunt te nemen.
-+ Bepalen van overlap. Er zijn verschillende typen registers. Welke zijn het meest veelbelovend? Wat kun je eigenlijk verwachten van een toegang. De distributie van de termen volgt de Zipf verdeling (notebook?).
 
++ Bepalen van overlap. Er zijn verschillende typen registers. Welke zijn het meest veelbelovend? Wat kun je eigenlijk verwachten van een toegang. De distributie van de termen volgt de Zipf verdeling (notebook?).
 
 + Vergelijk indices met Open Refine. Intern zijn registers al grotendeels ontdubbeld; overweeg termen met subitems samen te voegen. Onderling zijn de termen niet ontdubbeld.
 
