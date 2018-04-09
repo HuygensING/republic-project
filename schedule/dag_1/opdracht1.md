@@ -1,14 +1,18 @@
 # Opdracht 1: Greppen in TvG Data
 
-[Introduction](#intro)
-[Data downloaden](#data)
-[Research focus](#focus)
-[Reguliere expressies](#regex)
++ [Introduction](#intro)
++ [Data downloaden](#data)
++ [Research focus](#focus)
++ [Reguliere expressies](#regex)
     + [Oefenen met reguliere expressies](#regex-train)
-[Grep: zoeken in data met behulp van reguliere expressies](#grep)
-    + [Command Line: ](#command-line)
++ [Grep: zoeken in data met behulp van reguliere expressies](#grep)
+    + [Command Line: interactie via commando's](#grep-command-line)
+    + [Zoeken naar specifieke woorden](#grep-words)
+    + [Ketens van commando's: pipelines, sorteren en tellen](#grep-pipelines)
+    + [Transliteratie: eenvoudige datatransformaties voor normalisatie](#grep-tr)
 
-## Introductie <a name="intro"></a>
+<a name="intro"></a>
+## Introductie
 
 Met deze opdracht ontwikkel je de volgende vaardigheden:
 
@@ -24,7 +28,8 @@ TO DO
 + definieren data assen
 + bijhouden van data interacties om tot data scope te komen
 
-## Data downloaden <a name="data"></a>
+<a name="data"></a>
+## Data downloaden
 
 + Waar staat mijn data?
 + Hoe kan ik met command line tools bij mijn data?
@@ -34,7 +39,8 @@ TO DO
 
 Download de [TvG dataset]. *Voor Windows gebruikers die Git Bash hebben geinstalleerd, sla de dataset op in eennieuwe directory in de directory waar Git Bash is geinstalleerd. Anders kun je vanuit de command line niet bij de data.*
 
-## Research focus <a name="focus">
+<a name="focus"></a>
+## Research focus
 
 - wat is mijn onderzoeksvraag of thema?
 
@@ -46,20 +52,23 @@ Modelleren:
 - hoe representeer ik relevante informatie in mijn brondata? 
 - Wat mis ik mogelijk? Waar legt mijn keuze de focus op en wat verdwijnt mogelijk naar de achtergrond?
 
-## Reguliere expressies <a name="regex">
+<a name="regex"></a>
+## Reguliere expressies
 
-### Oefenen met reguliere expressies <a name="regex-train">
+<a name="regex-train"></a>
+### Oefenen met reguliere expressies
 
 Open een nieuwe tab in je browser en ga naar [https://regex101.com/](https://regex101.com/).
 
+<a name="grep"></a>
+## Grep: zoeken in data met behulp van reguliere expressies
 
-## Grep: zoeken in data met behulp van reguliere expressies <a name="grep">
-
-`grep`` is een UNIX command line tool waarmee je kunt zoeken in data-bestanden naar regels die *matchen* met een reguliere expressie (_G_lobally search a _r_egular _e_xpression and _p_rint).
+`grep` is een UNIX command line tool waarmee je kunt zoeken in data-bestanden naar regels die *matchen* met een reguliere expressie (_G_lobally search a _r_egular _e_xpression and _p_rint).
 
 Eerst wat uitleg over de *command line* en hoe je navigeert naar verschillende mappen of directories op je harde schijf en andere aangesloten opslagmedia.
 
-### Command line <a name="command-line">
+<a name="grep-command-line"></a>
+### Command line: interactie via commando's
 
 De command line is een alternatieve manier om te interacteren met de computer. I.p.v. opdrachten geven met de muis, geef je via de command line opdrachten d.m.v. commando's. Alhoewel dit voor veel mensen wennen is aan ongebruikelijke notatie en de onverbiddelijke precisie die vereist is, heeft het ook een aantal voordelen:
 
@@ -77,6 +86,8 @@ Voor transparant werken met data is het belangrijk en waardevol om uitgevoerde o
     + `ls ../`: 
 
 
+<a name="grep-words"></a>
+### Zoeken naar specifieke woorden
 
 ```bash
 egrep "politiek" tvg_111/*.txt
@@ -106,6 +117,9 @@ egrep --color -o -w "\w+politiek" tvg_111/*.txt
 egrep -h -o -w "\w+politiek" tvg_111/*.txt
 ```
 
+<a name="grep-pipelines"></a>
+### Ketens van commando's: pipelines, sorteren en tellen
+
 ```bash
 egrep -h -o -w "\w+politiek" tvg_111/*.txt | sort
 ```
@@ -121,6 +135,9 @@ egrep -h -o -w "\w+politiek" tvg_111/*.txt | sort | uniq -c
 ```bash
 egrep -h -o -w "\w+politiek" tvg_111/*.txt | sort | uniq -c | sort
 ```
+
+<a name="grep-tr"></a>
+### Transliteratie: eenvoudige datatransformaties voor normalisatie
 
 ```bash
 egrep -h -o -w "\w+politiek" tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
