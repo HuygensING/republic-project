@@ -1,4 +1,3 @@
-
 # Data Scopes workshop - opdrachten Generale Missiven
 
 ## Beschrijving van de bestanden voor de Generale Missiven opdracht
@@ -22,7 +21,7 @@ Ook hier is deel 13 een uitzondering, aangezien hier een MSAccess database besch
 
 Er zijn twee directory's.
 
-_Originele bestanden_:
+**Originele bestanden**:
 
 De directory originele_bestanden bevat de textfiles van de indices die zijn gegenereerd uit de gedownloade pagina's van de online publicatie. Deze bestanden zijn origineel in de zin dat ze de ruwe tekst bevatten. Het nummer verwijst naar hun RGP deelnummer (zie boven). Ze zijn ingedeeld naar het soort trefwoorden per deel:
 - geog is geografische trefwoorden
@@ -30,7 +29,7 @@ De directory originele_bestanden bevat de textfiles van de indices die zijn gege
 - schepen is scheepstrefwoorden
 - alleen nummer is overige, meest zakentrefwoorden
 
-_Bestanden_
+**Bestanden**
 
 - 193_geog.txt
 - 193_pers.txt
@@ -45,9 +44,9 @@ _Bestanden_
 - 257_schepen.txt
 - 257.txt
 
-_Bewerkte bestanden_:
+**Bewerkte bestanden**:
 
-De directory bewerkte bestanden bevat 'csv'-versies die zijn gegenereerd uit de ruwe bestanden in de originele_bestanden directory. Ze zijn met automatische middelen opgeschoond en gestructureerd. Dat betekent dat er hier en daar ook fouten in zijn geslopen. Er is geen poging gedaan die met de hand te verbeteren.
+De directory bewerkte bestanden bevat 'csv'-versies die zijn gegenereerd uit de ruwe bestanden in de `originele_bestanden` directory. Ze zijn met automatische middelen opgeschoond en gestructureerd. Dat betekent dat er hier en daar ook fouten in zijn geslopen. Er is geen poging gedaan die met de hand te verbeteren.
 
 De indeling is gelijk aan die van de originele bestanden.
 De persoonsnamen zijn automatisch gescoord op de taal van de namen; automatisch toegekende taal en score zijn als aparte kolommen (lang en score) toegevoegd. Daar zitten ook fouten in.
