@@ -1,4 +1,4 @@
-# Programma
+# Programma dag 1
 
 + 11:00-11:30 [Workshop introductie](programma_dag1.md)
 + 11:30-12:00 [Data Scopes achtergrond](data_scopes_intro.md)

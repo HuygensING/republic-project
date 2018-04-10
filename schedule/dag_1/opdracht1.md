@@ -7,8 +7,9 @@
     + [Oefenen met reguliere expressies](#regex-train)
 + [Grep: zoeken in data met behulp van reguliere expressies](#grep)
     + [Command Line: interactie via commando's](#grep-command-line)
-    + [Zoeken naar specifieke woorden](#grep-words)
+    + [Zoeken naar specifieke woorden en varianten](#grep-words)
     + [Ketens van commando's: pipelines, sorteren en tellen](#grep-pipelines)
+    + [Distributies en dispersie van specifieke woorden](#grep-words-distributions)
     + [Transliteratie: eenvoudige datatransformaties voor normalisatie](#grep-tr)
     + [Zoeken met woordensets](#grep-word-sets)
     + [Zoeken met karaktersets](#grep-character-sets)
@@ -112,7 +113,7 @@ Om onderstaande oefeningen te doen is het handig te navigeren naar de directory 
 
 
 <a name="grep-words"></a>
-### Zoeken naar specifieke woorden
+### Zoeken naar specifieke woorden en varianten
 
 Navigeer naar de directory waar je de TvG data hebt opgeslagen. Controleer dat je op de juiste plek bent door `ls` te typen. Als je de directories `tvg_1` etc. ziet staan ben je in de juiste directory. Zo niet, type dan `pwd` en vergelijk je huidige *working directory* met waar de data staat. 
 
@@ -240,6 +241,19 @@ Deze lijst kun je ook weer sorteren:
 ```bash
 grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt | sort | uniq -c | sort
 ```
+
+<a name="grep-words-distributions"></a>
+### Distributies en dispersie van specifieke woorden
+
+
+TO DO:
+
++ uitzoomen naar hele TvG dataset: grep -r ./
++ de context van termen in TvG:
+    + breng contexttermen in kaart per editie, vergelijk over edities
+    + breng contexttermen in kaart per decennium, vergelijk over decennia
++ verspreiding van termen binnen een editie
++ verspreiding van termen over edities
 
 <a name="grep-tr"></a>
 ### Transliteratie: eenvoudige datatransformaties voor normalisatie
