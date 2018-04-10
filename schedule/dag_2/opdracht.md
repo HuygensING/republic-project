@@ -1,10 +1,10 @@
 ## Opdracht voor ontdubbelen (disambiguatie) van namen
 
-### Dataset: Geselecteerde delen Generale missiven. Zie ook de <a href="toelichting_gm.md">toelichting</a>
+### Dataset: Geselecteerde delen Generale missiven. Zie ook de [toelichting](toelichting_gm.md)
 
 ****Vraag:**** _Op welke manier kunnen de Generale Missiven van de VOC inhoudelijk toegankelijk gemaakt worden._
 
-We hebben de beschikking over de registers van de gedrukte delen missiven. Voor de opdracht hebben we er een paar geselecteerd. Zie <a href="toelichting">de toelichting bij de data</a>.
+We hebben de beschikking over de registers van de gedrukte delen missiven. Voor de opdracht hebben we er een paar geselecteerd. Zie de [toelichting bij de data](toelichting_gm.md).
 
 ****Opdracht:****
 _Bepaal aan de hand van de beschikbare registers of een samenhangende toegang tot het corpus van generale missiven mogelijk is en hoe dit dan globaal geconstrueerd zou kunnen worden_
