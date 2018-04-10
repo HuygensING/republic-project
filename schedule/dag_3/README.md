@@ -1,13 +1,6 @@
-# Materialen voor dag 1
+## Programma dag 3
 
-* [Programma overzicht](programma_dag1.md)
-* Daily schedules
-	* [Monday](week_1_day_1_plan.md)
-	* [Tuesday](week_1_day_2_plan.md)
-	* [Wednesday](week_1_day_3_plan.md)
-	* [Thursday](week_1_day_4_plan.md)
-	* [Friday](week_1_day_5_plan.md)
-* Miscellaneous
-	* [Command line resources](command-line_resources.md) 
-	* [Git resources](git_resources.md)
-	* [Regex resources](regex_resources.md)
++ 11:00-13:00 Hands-On sessie - [opdracht Generale Missiven](../dag_2/opdracht.md)
++ 13:00-13:30 Lunch
++ 13:30-15:30 Hands-On sessie - [opdracht Generale Missiven](../dag_2/opdracht.md)
++ 15:30-16:30 Bespreken van bevindingen, reflectie op Data Scopes
