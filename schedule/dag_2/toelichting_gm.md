@@ -6,7 +6,7 @@ De opdracht werkt met geselecteerde delen uit de generale missiven. Het gaat om 
 
 Van alle gepubliceerde delen van de Generale Missiven zijn gedigitaliseerde versies beschikbaar, die ook online zijn te raadplegen. De tekst van de geselecteerde boeken is met optical character recognition (OCR) omgezet naar machine leesbare tekst. Voor dit onderzoek is gebruik gemaakt van deze ge-OCR-de tekst. De OCR-tekst is kwalitatief acceptabel, maar zoals alle automatisch omgezette tekst bevat ook deze onnauwkeurigheden als gevolg van verkeerd herkende letters (en woorden). De teksten bevatten bovendien andere artefacten zoals pagina headers en nummers en voetnoten.
 
-Waar het de vergelijking van de indices en de tekst betreft, is daarom gebruik gemaakt van deel 13. Dit is de enige uitzondering, aangezien daarvan de digitale tekst (in MSWord documenten) nog aanwezig was. Van deze Word documenten is een ‘platte tekst’ versie gemaakt, zonder Word specifieke opmaak, die verstorend kan werken in het proces. De versie van deel 13 is hierdoor kwalitatief beter dan die van de andere delen, want zowel OCR-fouten als de genoemde artefacten ontbreken.
+Waar het de vergelijking van de indices en de tekst betreft, is daarom gebruik gemaakt van deel 13. Dit is de enige uitzondering, aangezien daarvan de digitale tekst (in MSWord documenten) nog aanwezig was. Van deze Word documenten is een 'platte tekst' versie gemaakt, zonder Word specifieke opmaak, die verstorend kan werken in het proces. De versie van deel 13 is hierdoor kwalitatief beter dan die van de andere delen, want zowel OCR-fouten als de genoemde artefacten ontbreken.
 
 De Generale Missiven hebben alle dezelfde soorten indices:
 
@@ -16,7 +16,7 @@ De Generale Missiven hebben alle dezelfde soorten indices:
 - Zaken
 
 Voor de delen 8, 11 en 12 (en de voorgaande delen, die hier buiten beschouwing zijn gebleven) zijn er slechts de back of book indexen beschikbaar, ook in OCR versie
-Ook hier is deel 13 een uitzondering, aangezien hier een MSAccess database beschikbaar was met (per onderdeel) de termen en de verwijzingen naar pagina’s.
+Ook hier is deel 13 een uitzondering, aangezien hier een MSAccess database beschikbaar was met (per onderdeel) de termen en de verwijzingen naar pagina's.
 
 ### directories
 
