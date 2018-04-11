@@ -18,7 +18,7 @@
 
 ## Data Scope Schema
 
-<img src="/images/schema-data-scope.jpg"/>
+<img src="../../images/schema-data-scope.jpg"/>
 
 ## Modelling:
 
