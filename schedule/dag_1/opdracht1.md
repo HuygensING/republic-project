@@ -7,7 +7,7 @@
     + [Oefenen met reguliere expressies](#regex-train)
 + [Grep: zoeken in data met behulp van reguliere expressies](#grep)
     + [Command Line: interactie via commando's](#grep-command-line)
-    + [Zoeken naar specifieke woorden en varianten](#grep-words)
++ [Overzicht van varianten en contexten voor specifieke woorden en frases](#grep-words)
     + [Ketens van commando's: pipelines, sorteren en tellen](#grep-pipelines)
     + [Distributies en dispersie van specifieke woorden](#grep-words-distributions)
     + [Transliteratie: eenvoudige datatransformaties voor normalisatie](#grep-tr)
@@ -82,7 +82,7 @@ Bij het vertalen van je onderzoeksvraag naar data interacties om die vraag te ad
 Open een nieuwe tab in je browser en ga naar [https://regex101.com/](https://regex101.com/).
 
 <a name="grep"></a>
-## Grep: zoeken in data met behulp van reguliere expressies
+## Grip met grep: zoeken in data met behulp van reguliere expressies
 
 `grep` is een UNIX command line tool waarmee je kunt zoeken in data-bestanden naar regels die *matchen* met een reguliere expressie (**G**lobally search a **r**egular **e**xpression and **p**rint).
 
@@ -113,7 +113,7 @@ Om onderstaande oefeningen te doen is het handig te navigeren naar de directory 
 
 
 <a name="grep-words"></a>
-### Zoeken naar specifieke woorden en varianten
+## Overzicht van varianten en contexten voor specifieke woorden en frases
 
 Navigeer naar de directory waar je de TvG data hebt opgeslagen. Controleer dat je op de juiste plek bent door `ls` te typen. Als je de directories `tvg_1` etc. ziet staan ben je in de juiste directory. Zo niet, type dan `pwd` en vergelijk je huidige *working directory* met waar de data staat. 
 
@@ -193,6 +193,29 @@ Een generiekere manier is om meerdere herhalingen te definieren. Je kunt een sub
 grep -E --color -w -i "(\w+ ){,3}\w*politiek\w*" tvg_111/*.txt
 ```
 
+
+<a name="grep-word-sets"></a>
+### Zoeken naar woordensets
+
+Reguliere expressies bieden ook een mogelijkheid om meerdere opties van patronen te definieren, met parentheses en het keuze symbool `|`. Zo betekent `(januari|februari|maart)`: match met alle regels waarin het woord *januari* voorkomt, of het woord *februari* of *maart*. Zo kun je dus naar voorkomens van maanden zoeken, , of bijvoorbeeld sets van woorden die kwa onderwerp dicht bij elkaar liggen, zoals *overheid*, *regering* en *kabinet*:
+
+```bash
+grep -E -o -w -i "\w*(overheid|regering|kabinet)\w*" tvg_111/*.txt | sort | uniq -c
+```
+
+In oudere teksten kom je vaak dubbele klinkers tegen, zoals in *regeering*. Als je zoekt in TvG editie 49, kun je ook *regeering* toevoegen:
+
+```bash
+grep -E -o -w -i "\w*(overheid|regeering|regering|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
+```
+
+De alternatieven *regering* en *regeering* kun je ook korter noteren door de variatie *ee* en *e* aan te geven:
+
+```bash
+grep -E -o -w -i "\w*(overheid|reg(ee|e)ring|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
+```
+
+
 <a name="grep-pipelines"></a>
 ### Ketens van commando's: pipelines, sorteren en tellen
 
@@ -242,23 +265,60 @@ Deze lijst kun je ook weer sorteren:
 grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt | sort | uniq -c | sort
 ```
 
-<a name="grep-words-distributions"></a>
-### Distributies en dispersie van specifieke woorden
+TODO schrijven naar bestand
 
+<a name="grep-words-frequencies"></a>
+## Overzicht met woordfrequentielijsten
 
-TO DO:
-
-+ uitzoomen naar hele TvG dataset: grep -r ./
-+ de context van termen in TvG:
-    + breng contexttermen in kaart per editie, vergelijk over edities
-    + breng contexttermen in kaart per decennium, vergelijk over decennia
-+ verspreiding van termen binnen een editie
-+ verspreiding van termen over edities
+In deze opdracht leer je hoe je een woordenlijst met frequenties kan maken van tekstuele data, hoe je een stopwoordenlijst kunt maken en die kunt gebruiken om woordenlijsten te filteren. Daarnaast leer je ook om lijsten van bigrammen (woordparen) en trigrammen (sets van drie woorden) te maken.
 
 <a name="grep-tr"></a>
 ### Transliteratie: eenvoudige datatransformaties voor normalisatie
 
-Je ziet in de lijst matches dat sommige woorden zowel met als zonder hoofdletter voorkomen, zoals *verbroederingspolitiek* en *Verbroederingspolitiek*. Met het `tr` commando (voor *translate characters*) kun je algemene patronen definieren om individuele karakters te veranderen of verwijderen. Bijvoorbeeld, de hoofdletters vervangen door de corresponderende kleine letters. De set hoofdletters kun je aangeven met `[:upper:]`, de kleine met `[:lower:]`. Door dit `tr` commando uit te voeren alvorens het sorteren en tellen, worden variaties in hoofdlettergebruik samengevoegd tot een variant met uitsluitend kleine letters, zodat alle voorkomens van *verbroederingspolitiek* samen geteld worden:
+Het commando `cat` concateneert de inhoud van meerdere bestanden en toont ze op het scherm. Dit is handig om alle tekst van een editie achter elkaar te zien of door te sturen naar een volgend commando. Begin eerst met de inhoud van bijv. pagina's 125 van de 111de editie:
+
+```bash
+cat tvg_111/tvg_111_page_125.txt
+```
+
+De output kun je ook doorsturen naar het `tr` commando (voor *translate characters*) waarmee je algemene patronen kunt definieren om individuele karakters te veranderen of verwijderen. Bijvoorbeeld alle spaties vervangen door een *newline character* (`\n`) waardoor alle woorden op afzonderlijke regels komen:
+
+```bash
+cat tvg_111/tvg_111_page_125.txt | tr ' ' '\n'
+```
+
+Dit kun je sorteren en tellen:
+
+```bash
+cat tvg_111/tvg_111_page_125.txt | tr ' ' '\n' | sort | uniq -c
+```
+
+Je ziet dat er allerlei punctuatie aan woorden vastgeplakt zit. Die kun je met `tr` verwijderen. De set `[:punct:]` staat voor alle (?) punctuatiesymbolen. Met de parameter `-d` kun je aangeven dat die symbolen verwijderd moeten worden:
+
+```bash
+cat tvg_111/tvg_111_page_125.txt | tr -d '[:punct:]' | tr ' ' '\n' | sort | uniq -c
+```
+
+Als je door de lijst met woorden scrolt zie je dat woorden die beginnen met hoofdletters geplaatst worden voor de woorden die beginnen met kleine letters. Sommige van die woorden zijn namen, andere zijn de eerste woorden van zinnen. Om te zorgen dat bijv. 'de' en 'De' als hetzelfde woord worden gezien, kun je `tr` ook gebruiken om van alle hoofdletters kleine letters te maken.
+
+De set hoofdletters kun je aangeven met `[:upper:]`, de kleine met `[:lower:]`. Door dit `tr` commando uit te voeren alvorens het sorteren en tellen, worden variaties in hoofdlettergebruik samengevoegd tot een variant met uitsluitend kleine letters:
+
+```bash
+cat tvg_111/tvg_111_page_125.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
+```
+
+Vervolgens kun je uitzoomen naar de hele 111de editie, door `tvg_111_page_125.txt` te vervangen door `*.txt` (dit kan best even duren):
+
+```bash
+cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
+```
+
+Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ﬂ`. 
+
+```bash
+cat tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
+```
+
 
 ```bash
 grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
@@ -276,26 +336,31 @@ Om te kijken wat typische woorden zijn die voorafgaan aan *politiek* kun je met 
 grep -E -h -o -w -i "\w+ \w*politiek\w*" tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v "politiek" | sort | uniq -c | sort
 ```
 
-<a name="grep-word-sets"></a>
-### Zoeken naar woordensets
+### Een woordenlijst maken
 
-Je kunt ook patronen definieren voor bijvoorbeeld sets van woorden die kwa betekenis dicht bij elkaar liggen, zoals *overheid*, *regering* en *kabinet*:
 
-```bash
-grep -E -o -w -i "\w*(overheid|regering|kabinet)\w*" tvg_111/*.txt | sort | uniq -c
-```
 
-In oudere teksten kom je vaak dubbele klinkers tegen, zoals in *regeering*. Als je zoekt in TvG editie 49, kun je ook *regeering* toevoegen:
+- stopwoordenlijst maken
+- stopwoorden filteren
+- bigrammen en trigrammen
 
-```bash
-grep -E -o -w -i "\w*(overheid|regeering|regering|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
-```
 
-De alternatieven *regering* en *regeering* kun je ook korter noteren door de variatie *ee* en *e* aan te geven:
+<a name="grep-words-distributions"></a>
+### Distributies en dispersie van specifieke woorden
 
-```bash
-grep -E -o -w -i "\w*(overheid|reg(ee|e)ring|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
-```
+
+TO DO:
+
++ uitzoomen naar hele TvG dataset: grep -r ./
++ de context van termen in TvG:
+    + breng contexttermen in kaart per editie, vergelijk over edities
+    + breng contexttermen in kaart per decennium, vergelijk over decennia
++ verspreiding van termen binnen een editie
++ verspreiding van termen over edities
+
+
+<a name="grep-dates"></a>
+## Overzicht van datums en jaartallen
 
 <a name="grep-chararter-sets"></a>
 ### Zoeken met karaktersets
@@ -352,7 +417,8 @@ Zoeken naar combinatiesets van hoofdletters en getallen:
 grep -E -h --color -w "[A-G0-9]{3,}" tvg_111/*.txt
 ```
 
-### Zoeken naar namen
+<a name="grep-names"></a>
+### Overzicht van namen
 
 Zoeken naar woorden die beginnen met een hoofdletter:
 
