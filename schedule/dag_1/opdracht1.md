@@ -101,6 +101,8 @@ De command line is een alternatieve manier om te interacteren met de computer. I
 
 Voor transparant werken met data is het belangrijk en waardevol om uitgevoerde opdrachten bij te houden en te kunnen delen (ook met jezelf op een later tijdstip).
 
+*Belangrijke tip: met de &uparrow; en &downarrow; toetsen kun je eerder uitgevoerde commando's terughalen, zodat je makkelijk kunt herhalen en aanpassingen kunt doen.*
+
 Om onderstaande oefeningen te doen is het handig te navigeren naar de directory waar je de TvG data hebt opgeslagen. **De directory-structuur is een zogenaamde boom structuur, met een enkele stam (root) en een of meer vertakingen. In UNIX omgevingen is `/` het symbool voor de *root* directory, `/home` is de *home* directory binnen de *root* directory. Directories binnen andere directories (sub-directories) zijn vertakingen binnen vertakingen. Zo is je persoonlijke directory die overkomt met je gebruikersnaam een subdirectory van `/home`. Je kunt o.a. navigeren tussen directories via de vertakingen.**
 
 + navigeren tussen directories:
@@ -313,7 +315,13 @@ Vervolgens kun je uitzoomen naar de hele 111de editie, door `tvg_111_page_125.tx
 cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
 ```
 
-Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ﬂ`. 
+Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ĳ` en `ﬂ`. Dit is een eigenaardigheid van het OCR proces, waarbij *ij* soms als `ij` wordt herkend en soms als `ĳ`. Deze variaties zou je kunnen kunnen normaliseren door o.a. `ĳ` te vervangen door `ij` en `ﬂ` door `fl`. In deze opdracht wordt daar verder geen aandacht aan besteed, maar het is goed om dit in het achterhoofd te houden bij het interpreteren van verdere analyses.
+
+De volgende stap is het maken van een stopwoordenlijst. Sorteer eerst de lijst uit de vorige stap op frequentie:
+
+```bash
+cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g
+```
 
 ```bash
 cat tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
