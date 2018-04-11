@@ -315,42 +315,42 @@ Vervolgens kun je uitzoomen naar de hele 111de editie, door `tvg_111_page_125.tx
 cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
 ```
 
-Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ĳ` en `ﬂ`. Dit is een eigenaardigheid van het OCR proces, waarbij *ij* soms als `ij` wordt herkend en soms als `ĳ`. Deze variaties zou je kunnen kunnen normaliseren door o.a. `ĳ` te vervangen door `ij` en `ﬂ` door `fl`. In deze opdracht wordt daar verder geen aandacht aan besteed, maar het is goed om dit in het achterhoofd te houden bij het interpreteren van verdere analyses.
+**Datakritiek**: Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ĳ` en `ﬂ`. Dit is een eigenaardigheid van het OCR proces, waarbij *ij* soms als `ij` wordt herkend en soms als `ĳ`. Deze variaties zou je kunnen kunnen normaliseren door o.a. `ĳ` te vervangen door `ij` en `ﬂ` door `fl`. In deze opdracht wordt daar verder geen aandacht aan besteed, maar het is goed om dit in het achterhoofd te houden bij het interpreteren van verdere analyses.
 
-De volgende stap is het maken van een stopwoordenlijst. Sorteer eerst de lijst uit de vorige stap op frequentie:
+### Een stopwoordenlijst maken
+
+De volgende stap is het maken van een stopwoordenlijst. Er bestaan standaardlijsten (e.g. [snowball](http://snowball.tartarus.org/algorithms/dutch/stop.txt), [stopwords-iso](https://github.com/stopwords-iso/stopwords-nl)), maar stopwoorden zijn eigenlijk afhankelijk van de data (e.g. het domein) en de onderzoeksvraag. Je kunt je bijvoorbeeld afvragen of in het Tijdschrift voor Geschiedenis, het woord *geschiedenis* een stopwoord is of niet. Het is een van de meest frequente woorden, en helpt weinig bij het verkrijgen van een overzicht van de data, maar voor sommige vragen en zeker in de context van langere frases zal het een waardevol woord zijn. 
+
+Sorteer eerst de lijst uit de vorige stap op frequentie:
 
 ```bash
 cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g
 ```
 
-```bash
-cat tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
-```
-
+Vervolgens kun je met `awk` de tweede kolom (`$2`) tonen voor regels waar de waarde van de eerste kolom (`$1`) groter is dan bijv. 100 (`awk` is bijzonder krachting maar ook complex en vergt veel uitleg die hier over wordt geslagen. Voor veel meer info zie de [Grymoire Awk tutorial](http://www.grymoire.com/Unix/Awk.html)). De output van dit geheel kun je opslaan in een bestand `stopwoorden_tvg.txt` die je eventueel handigmatig kunt bijwerken:
 
 ```bash
-grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
+cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g | awk '{if ($1 > 100) print $2}' > stopwoorden_tvg.txt
 ```
 
-Je kunt de reguliere expressie verder uitbreiden om bijvoorbeeld het woord voorafgaand aan *politiek* te zien. Door `\w+ ` te plaatsen voor `politiek` zoek je naar het patroon *<woord> politiek*
+Deze lijst bevat nu woorden die je wellicht niet als stopwoorden wilt beschouwen, dus verwijder met een text editor de regels uit het bestand voor niet-stopwoorden. Uiteraard kun je ook woorden toevoegen. Zorg ervoor dat elk woord op een aparte regel staat, zonder spaties.
+
+### Een woordfrequentielijst maken
+
+Nu kun je de woordenlijst filteren op stopwoorden met `grep` en de parameters `-w` (match alleen hele woorden), `-f` (grep alle patronen uit een bestand, waarbij elke regel als een patroon wordt beschouwd) en `-v` (selecteer alleen regels als ze niet matchen):
 
 ```bash
-grep -E -h -o -w -i "\w+ \w*politiek\w*" tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort
+cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
 ```
 
-Om te kijken wat typische woorden zijn die voorafgaan aan *politiek* kun je met `tr` de spaties vervangen door een nieuwe regel, en vervolgens met `grep` de woorden die matchen met *politiek* wegfilteren. In dit geval roep je `grep` dus twee keer aan, eerst om voorkomens van *politiek* en voorafgaande woorden te matchen, en na wat normalisatie-stappen nogmaals om te concentreren op de voorafgaande woorden:
+### Bigrammen: combinaties van twee woorden
+
+Het commando `awk` kan gebruikt worden om voor een woordenlijst de vorige regel te combineren met de huidige regel van de output, waarmee je bigrammen kunt creeeren. Als je die stap doet voor het filteren van stopwoorden, krijg je bigrammen waarbij beide woorden geen stopwoorden zijn:
 
 ```bash
-grep -E -h -o -w -i "\w+ \w*politiek\w*" tvg_111/*.txt | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v "politiek" | sort | uniq -c | sort
+cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | awk 'prev!="" {print prev,$0} {prev=$0}' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
 ```
 
-### Een woordenlijst maken
-
-
-
-- stopwoordenlijst maken
-- stopwoorden filteren
-- bigrammen en trigrammen
 
 
 <a name="grep-words-distributions"></a>
