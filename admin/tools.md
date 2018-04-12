@@ -25,6 +25,6 @@
 - Topic modelling:
     - [Mallet](http://mallet.cs.umass.edu/) (command line) of [Topic-Modelling-Tool](https://github.com/senderle/topic-modeling-tool) (GUI)
 - Natural Language Processing:
-    - [NLTK](http://www.nltk.org/) [Pattern](https://www.clips.uantwerpen.be/pattern) Python modules for Part-Of-Speech tagging, Named Entity Recognition, Sentiment Analysis
+    - [NLTK](http://www.nltk.org/) or [Pattern](https://www.clips.uantwerpen.be/pattern) Python modules for Part-Of-Speech tagging, Named Entity Recognition, Sentiment Analysis
 
 
