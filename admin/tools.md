@@ -17,7 +17,9 @@
     - online text analysis tool, *note that this requires uploading your data to the web*
     - for user-friendly exploration of texts
 
-## Additional tools
+## Optional tools
+
+For those who want to work with more advanced tools:
 
 - [Anaconda](https://anaconda.org/) (Python distribution with many packages and easy installer)
     - for more complex filtering, linking, classifying
