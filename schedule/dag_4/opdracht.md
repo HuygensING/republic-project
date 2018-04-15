@@ -9,9 +9,9 @@ Originele aanleiding: In “Er was iets met die schilders in de Gouden Eeuw” (
 Hoe was het verloop van de levensduur in de loop der eeuwen?
 
 ## Data
-Input is een dataset van personen uit het Biografisch Portaal. DIe is niet helemaal up-to-date, maar dat is voor deze opdracht verder niet bezwaarlijk.
+Input is een dataset van personen uit het _Biografisch Portaal_. DIe is niet helemaal up-to-date, maar dat is voor deze opdracht verder niet bezwaarlijk.
 
-De data zijn <a href="## Opdracht: Bewerken van ruwe data tot een dataset">hier</a> toegankelijk.
+De data zijn <a href="https://surfdrive.surf.nl/files/index.php/s/5yIKGqnemljUQZL">hier</a> toegankelijk.
 
 _Wat moet je doen_
 - Opschonen en verwerken van tabellarische data tot overzicht
@@ -24,7 +24,7 @@ de data zijn in csv formaat, en niet helemaal in bruikbare vorm
 _Opschonen:_
 + omzetten numeriek getallen naar echter getallen;
 + datatimegetallen naar data;
-+ Verwijderen nulls (dat is optisch);
++ Verwijderen nulls (dat is optisch, maar al die Nullen storen);
 + controle op importfouten
 
 _Tools:_
