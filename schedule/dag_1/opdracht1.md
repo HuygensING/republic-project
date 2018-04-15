@@ -1,17 +1,21 @@
 # Opdracht 1: Greppen in TvG Data
 
 + [Introductie](#intro)
-+ [Data downloaden](#data)
-+ [Research focus: wat ga ik onderzoeken?](#focus)
-+ [Reguliere expressies](#regex)
-    + [Oefenen met reguliere expressies](#regex-train)
+    + [Data downloaden](#data)
+    + [Research focus: wat ga ik onderzoeken?](#focus)
 + [Grip met grep: zoeken in data met behulp van reguliere expressies](#grep)
     + [Command Line: interactie via commando's](#grep-command-line)
 + [Overzicht van varianten en contexten voor specifieke woorden en frases](#grep-words)
-    + [Transliteratie: eenvoudige datatransformaties voor normalisatie](#grep-tr)
     + [Zoeken met woordensets](#grep-word-sets)
++ [Overzicht met woordfrequentielijsten](#grep-words-frequencies)
+    + [Transliteratie: eenvoudige datatransformaties voor normalisatie](#grep-tr)
+    + [Een stopwoordenlijst maken](#grep-stopwords)
+    + [Een woordfrequentielijst maken](#grep-frequency-lists)
+    + [Bigrammen: combinaties van twee woorden](#grep-bigrams)
++ [Overicht van namen, datums en periodes](#grep-names-dates)
     + [Zoeken met karaktersets](#grep-character-sets)
-    + [Distributies en dispersie van specifieke woorden](#grep-words-distributions)
+    + [Overzicht van datums, jaartallen en periodes](#grep-dates)
+    + [Zoeken naar auteursnamen](#grep-author-names)
 
 <a name="intro"></a>
 ## Introductie
@@ -31,7 +35,7 @@ TO DO
 + bijhouden van data interacties om tot data scope te komen
 
 <a name="data"></a>
-## Data downloaden
+### Data downloaden
 
 + Je kunt het [hele TvG corpus als een zip bestand](https://surfdrive.surf.nl/files/index.php/s/MqRVCbAYpQBeEjO) downloaden.
 + Waar staat mijn data?
@@ -43,21 +47,21 @@ TO DO
 Download de [TvG dataset]. *Voor Windows gebruikers die Git Bash hebben geinstalleerd, sla de dataset op in eennieuwe directory in de directory waar Git Bash is geinstalleerd. Anders kun je vanuit de command line niet bij de data.*
 
 <a name="focus"></a>
-## Research focus: wat ga ik onderzoeken?
+### Research focus: wat ga ik onderzoeken?
 
 _Wat is mijn onderzoeksvraag of thema?_
 
 Je kunt van te voren vaststellen wat je wilt onderzoeken, maar de ervaring leert dat je dit tijdens het onderzoeksproces nog regelmatig zal herzien. Initiele aannames en verwachtingen blijken vaak niet goed genoeg op het bestaande materiaal aan te sluiten, waardoor je een onderzoeksvraag wilt aanpassen of over wilt stappen naar een compleet andere vraag. 
 
 <a name="focus-selection"></a>
-### Selectie
+#### Selectie
 
 _Welke informatie uit TvG is daarbij relevant?_
 
 _Welke jaargangen, pagina's zeggen iets over mijn onderzoeksvraag/thema?_
 
 <a name="focus-modelling"></a>
-### Modelleren
+#### Modelleren
 
 _Hoe vertaal ik onderzoeksvragen en methoden naar data interacties?_
 
@@ -70,16 +74,6 @@ Bij het vertalen van je onderzoeksvraag naar data interacties om die vraag te ad
 - Wat zijn de informatie-eenheden die je uit de data wilt halen?
 - Waar legt jouw keuze de focus op en wat verdwijnt daarbij mogelijk naar de achtergrond? Wat mis je mogelijk?
 - Welke alternatieve keuzes had je kunnen maken, en hoe zou dat tot andere focus en achtergrond leiden?
-
-<a name="regex"></a>
-## Reguliere expressies
-
-*Een* manier om informatie uit data te halen is het zoeken naar specifieke of generieke patronen d.m.v. *reguliere expressies*. 
-
-<a name="regex-train"></a>
-### Oefenen met reguliere expressies
-
-Open een nieuwe tab in je browser en ga naar [https://regex101.com/](https://regex101.com/).
 
 <a name="grep"></a>
 ## Grip met grep: zoeken in data met behulp van reguliere expressies
@@ -141,10 +135,17 @@ Je ziet nu dat `grep` ook regels vindt waarin *politiek* een onderdeel is van ee
 grep --color -w "politiek" tvg_111/*.txt
 ```
 
-Je vraagt je wellicht af hoe `grep` weet wat hele woorden zijn. Dat wordt duidelijk na een aantal opdrachten hier beneden. Standaard maakt `grep` een onderscheid tussen hoofdletters en kleine letters. Als je wilt zoeken zonder hoofdlettergevoeligheid, kun je de `-i` parameter gebruiken:
+Je vraagt je wellicht af hoe `grep` weet wat hele woorden zijn. Dat wordt duidelijk na een aantal opdrachten hier beneden.
+
+Standaard maakt `grep` een onderscheid tussen hoofdletters en kleine letters. Als je wilt zoeken zonder hoofdlettergevoeligheid, kun je de `-i` parameter gebruiken:
 
 ```bash
 grep --color -w -i "politiek" tvg_111/*.txt
+```
+
+Net als met `CTRL-F` kun je met `grep` ook naar frases van meerdere woorden zoeken:
+```bash
+grep --color -w -i "binnenlandse politiek" tvg_111/*.txt
 ```
 
 Om reguliere expressies te gebruiken kun je de parameter `-E` toevoegen (voor *extended regular expression*). Hiermee interpreteert `grep` het opgegeven patroon als een reguliere expressie i.p.v. een letterlijke string. Eerst wordt het zoekpatroon uitgebreid naar alle woorden die beginnen met *politiek*, eventueel gevolgd worden door 1 of meer letters (aangegeven met `\w*`.) De `\w` staat voor alles wat alfanumerisch is (letters en cijfers), de `*` staat voor nul, een of meer keren herhaald:
@@ -277,6 +278,8 @@ De alternatieven *regering* en *regeering* kun je ook korter noteren door de var
 grep -E -o -w -i "\w*(overheid|reg(ee|e)ring|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
 ```
 
+Afhankelijk van je onderzoeksfocus, kun je zelf woordenset en contexten definieren om het corpus te doorzoeken en analyseren. Hou bij welke woorden, sets en contexten je definieert, en sla eventuele resultatenlijsten op in aparte bestanden. Hou in een Google Document bij wat je bevindingen zijn, zodat we die in de discussie kunnen vergelijken.
+
 
 <a name="grep-words-frequencies"></a>
 ## Overzicht met woordfrequentielijsten
@@ -326,6 +329,7 @@ cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n
 
 **Datakritiek**: Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ĳ` en `ﬂ`. Dit is een eigenaardigheid van het OCR proces, waarbij *ij* soms als `ij` wordt herkend en soms als `ĳ`. Deze variaties zou je kunnen kunnen normaliseren door o.a. `ĳ` te vervangen door `ij` en `ﬂ` door `fl`. In deze opdracht wordt daar verder geen aandacht aan besteed, maar het is goed om dit in het achterhoofd te houden bij het interpreteren van verdere analyses.
 
+<a name="grep-stopwords"></a>
 ### Een stopwoordenlijst maken
 
 De volgende stap is het maken van een stopwoordenlijst. Er bestaan standaardlijsten (e.g. [snowball](http://snowball.tartarus.org/algorithms/dutch/stop.txt), [stopwords-iso](https://github.com/stopwords-iso/stopwords-nl)), maar stopwoorden zijn eigenlijk afhankelijk van de data (e.g. het domein) en de onderzoeksvraag. Je kunt je bijvoorbeeld afvragen of in het Tijdschrift voor Geschiedenis, het woord *geschiedenis* een stopwoord is of niet. Het is een van de meest frequente woorden, en helpt weinig bij het verkrijgen van een overzicht van de data, maar voor sommige vragen en zeker in de context van langere frases zal het een waardevol woord zijn. 
@@ -360,6 +364,7 @@ cat tvg_11/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n'
 Je ziet nu dat de meest frequente woorden ook weer veel stopwoorden bevatten, waaronder historische varianten van moderne stopwoorden. Een stopwoordenlijst voor modern Nederlands is dus maar beperkt effectief voor ouder materiaal. Uiteraard kun je je stopwoordenlijst uitbreiden met deze historische varianten en andere typische stopwoorden van het oudere materiaal om een algemene stopwoordenlijst voor het TvG corpus te maken (of een lijst die specifiek voor je onderzoeksfocus).
 
 
+<a name="grep-frequency-lists"></a>
 ### Een woordfrequentielijst maken
 
 Nu kun je de woordenlijst filteren op stopwoorden met `grep` en de parameters `-w` (match alleen hele woorden), `-f` (grep alle patronen uit een bestand, waarbij elke regel als een patroon wordt beschouwd) en `-v` (selecteer alleen regels als ze niet matchen):
@@ -368,6 +373,7 @@ Nu kun je de woordenlijst filteren op stopwoorden met `grep` en de parameters `-
 cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
 ```
 
+<a name="grep-bigrams"></a>
 ### Bigrammen: combinaties van twee woorden
 
 Het commando `awk` kan gebruikt worden om voor een woordenlijst de vorige regel te combineren met de huidige regel van de output, waarmee je bigrammen kunt creeeren. Als je die stap doet voor het filteren van stopwoorden, krijg je bigrammen waarbij beide woorden geen stopwoorden zijn:
@@ -378,22 +384,12 @@ cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n
 
 
 
-<a name="grep-words-distributions"></a>
-### Distributies en dispersie van specifieke woorden
-
-
-TO DO:
-
-+ uitzoomen naar hele TvG dataset: grep -r ./
-+ de context van termen in TvG:
-    + breng contexttermen in kaart per editie, vergelijk over edities
-    + breng contexttermen in kaart per decennium, vergelijk over decennia
-+ verspreiding van termen binnen een editie
-+ verspreiding van termen over edities
-
-
-<a name="grep-dates"></a>
-## Overzicht van datums en jaartallen
++ [Overzicht van datums, jaartallen, periodes en namen](#grep-names-dates)
+    + [Zoeken met karaktersets](#grep-character-sets)
+    + [Overzicht van datums, jaartallen en periodes](#grep-dates)
+    + [Overzicht van namen](#grep-names)
+<a name="grep-names-dates"></a>
+## Overzicht van datums, jaartallen, periodes en namen
 
 <a name="grep-chararter-sets"></a>
 ### Zoeken met karaktersets
@@ -432,6 +428,15 @@ grep -E -h --color -w "([A-Z]\.){2,3}" tvg_111/*.txt
 
 Dit zouden afkortingen kunnen zijn, maar lijken ook wel de voorletters van namen. Hier komen we zo op terug. Eerst nog wat andere voorbeelden van karaktersets proberen.
 
+Zoeken naar combinatiesets van hoofdletters en getallen:
+
+```bash
+grep -E -h --color -w "[A-Z0-9]{3,}" tvg_111/*.txt
+```
+
+<a name="grep-dates"></a>
+### Overzicht van datums, jaartallen en periodes
+
 Zoeken naar getallen met tenminste 3 cijfers:
 
 ```bash
@@ -444,11 +449,100 @@ Zoeken naar jaartallen:
 grep -E -h --color -w "1[0-9]{3}" tvg_111/*.txt
 ```
 
-Zoeken naar combinatiesets van hoofdletters en getallen:
+Er zitten ook OCR fouten in de data waardoor jaartallen soms beginnen met een `l` i.p.v. een `1`. Je kunt het patroon uitbreiden om ook die voorkomens te vinden:
 
 ```bash
-grep -E -h --color -w "[A-G0-9]{3,}" tvg_111/*.txt
+grep -E -h --color -w "[1l][0-9]{3}" tvg_111/*.txt
 ```
+
+Om te zien hoe vaak dit gebeurt (en of het dus de moeite waard is hier specifiek normalisaties en uitzondingerscategorieen voor te verzinnen), kun je heel makkelijk tellingen maken en vergelijken.
+
+Eerste tellen met zowel `1` als `l`:
+
+```bash
+grep -E -h --color -w "[1l][0-9]{3}" tvg_111/*.txt | wc -l
+```
+
+Daarna met alleen `1`:
+
+```bash
+grep -E -h --color -w "[1][0-9]{3}" tvg_111/*.txt | wc -l
+```
+
+Daarna voor controle met alleen `l`:
+
+```bash
+grep -E -h --color -w "[l][0-9]{3}" tvg_111/*.txt | wc -l
+```
+
+Om te controlleren dat de voorkomens `l[0-9]{3}` wel degelijk jaaraanduidingen zijn kun je `| wc -l` weglaten om de matches te zien in hun context:
+
+```bash
+grep -E -h --color -w "[l][0-9]{3}" tvg_111/*.txt
+```
+
+Het zijn dus wel degelijk voornamelijk jaaraanduidingen.
+
+Het patroon voor jaartallen kun je combineren met patronen voor maanden en dagen om naar voorkomens van specifieke datums te zoeken:
+
+```bash
+grep -E -h --color -w "(januari|februarui|maart|april|mei|juni|juli|augustus|september|oktober|november|december) [1l][0-9]{3}" tvg_111/*.txt
+```
+
+Je ziet dat een resultaten refereren naar een maand, maar sommige naar specifieke dag. Je kunt het patroon uitbreiden zodat die specifieke dagen matchen:
+
+```bash
+grep -E -h --color -w "[0-9]{1,2} (januari|februarui|maart|april|mei|juni|juli|augustus|september|oktober|november|december) [1l][0-9]{3}" tvg_111/*.txt
+```
+
+Als je dit herhaalt op een oudere editie merk je iets vreemds:
+
+```bash
+grep -E -h --color -w "[0-9]{1,2} (januari|februarui|maart|april|mei|juni|juli|augustus|september|oktober|november|december) [1l][0-9]{3}" tvg_04/*.txt
+```
+
+Er lijken nul resultaten te zijn. Worden er geen datums genoemd in oudere teksten of is er iets anders aan de hand? Als je *case-insensitive* zoekt wordt duidelijk waarom je in eerste instantie niets vond:
+
+```bash
+grep -E -i -h --color -w "[0-9]{1,2} (januari|februarui|maart|april|mei|juni|juli|augustus|september|oktober|november|december) [1l][0-9]{3}" tvg_04/*.txt
+```
+
+
+Bedenk patronen om te zoeken naar:
+
+- Andere datumaanduidingen
+- Eeuwen en decennia
+- Jaaraanduidingen in Romeinse cijfers
+- periodes (e.g. 1914-1918)
+
+### Jaartallen groeperen per decennium of eeuw
+
+Het kan ook handig zijn voor het structureren van temporele informatie om bijvoorbeeld jaartallen te groeperen per decennium of eeuw. Zo kun je makkelijk pagina's of edities vinden die over specifieke decennia of eeuwen spreken, of hoe een specifiek decennium of specifieke eeuw door de hele TvG genoemd wordt.
+
+Dit kun je doen doet het matchende patroon te *transformeren* m.b.v. bijvoorbeeld het commando `sed` (voor *stream editor*). Een standaard reguliere expressie is alleen voor het matchen en heeft in `sed` de voor `'m/patroon/gi'` waarbij de initiele `m` staat voor `match` en de parameters aan het eind gebruikt kunnen worden om aan te geven of het patroon *case-insensitive* (`i`) of *case-sensitive* (`I`) moet matchen (zonder `i` of `I` is de standaard matching *case-sensitive*), en of het alleen om de eerste in de regel gaat, of dat alle voorkomens in de regel gematched moeten worden (`g` voor *global*). 
+
+Een alternatief patroon is `'s/origineel-patroon/nieuw-patroon/'` waarbij de `s` staat voor *substitutie* en er voor zorgt dat het originele patroon wordt vervangen door het nieuw patroon. Zo kun je bijvoorbeeld jaartallen laten vervangen door een decennium door het laatste getal te vervangen door een nul. 
+Je kunt de eerste drie getallen in parentheses zetten om er naar terug te kunnen refereren in het vervangende patroon met `\1`:
+
+```bash
+grep -E --colour -o -w "[1l][0-9]{3}" tvg_04/*.txt | sed -E 's/([1l][0-9]{2})[0-9]/\10/g'
+```
+
+Als je meerdere groepen in parentheses definieert kun je er naar terugrefereren met oplopende getallen. E.g. de eerste groep met `\1`, de tweede met `\2` etc. Zo kun je zowel het originele jaar als het bijbehorende decennium laten tonen:
+
+```bash
+grep -E --colour -o -w "[1l][0-9]{3}" tvg_04/*.txt | sed -E 's/([1l][0-9]{2})([0-9])/\1\2 \10/g'
+```
+
+Ook de jaartallen met een `l` i.p.v. een `1` kun je transformeren:
+
+```bash
+grep -E --colour -o -w "[1l][0-9]{3}" tvg_04/*.txt | sed -E 's/([1l])([0-9]{2})([0-9])/\1\2\3 1\2\3 1\20/g'
+```
+
+Zo zie je de editie, het paginanummer, het jaargetal zoals het in de editie voorkomt, het opgeschoonde jaar (altijd met `1` i.p.v. met `l`) en het bijbehorende decennium. Met vergelijkbare stappen kun je nu ook de eeuw erbij plaatsen. Zo kun je dus ingangen creeeren via jaartallen, decennia en eeuwen om bijbehorende pagina's in edities te vinden, ook al bevatten die pagina's die aanduidingen niet letterlijk.
+
+Uiteraard kun je deze output weer naar een bestand schrijven voor latere analyse of om aan een database toe te voegen voor makkelijk bevragen van de data.
 
 <a name="grep-names"></a>
 ### Overzicht van namen
@@ -473,7 +567,36 @@ Dit levert ook samengestelde namen op, zoals Noord-Nederland. Je kunt `--color` 
 grep -E -h -o -w "[A-Z](\w|-)+" tvg_111/*.txt
 ```
 
-Zoeken naar een hoofdletter gevolgd door een punt, een spatie en dan een woord beginnend met een hoofdletter:
+Met sorteren en tellen krijg je beter zicht op de meest gevonden patronen:
+
+```bash
+grep -E -h --color -o -w "[A-Z](\w|-)+" tvg_111/*.txt | sort | uniq -c | sort -g
+```
+
+Er zitten allerlei namen bij, maar ook voor stopwoorden als eerste woord in de zin. Veel namen zijn het eerste woorden van een meerwoordsnaam. Breidt het patroon eerst uit om twee-woordsnamen te vinden:
+
+```bash
+grep -E -h --color -o -w "[A-Z](\w|-)+ [A-Z](\w|-)+" tvg_111/*.txt | sort | uniq -c | sort -g
+```
+
+Maar er zijn ook namen met meer dan twee woorden, dus het eerste deel kan zich herhalen (dit patroon als makkelijk verkeerd getypt. Let goed op hoe het verschilt van het bovenstaande: het groepeert een hoofdletterset `[A-Z]`, een sequentie van *letter* en *verbindingsteken* karakters `(\w|-)+`, een spatie, en geeft vervolgens aan dat die groep kan zich herhalen `([A-Z](\w|-)+ )+`):
+
+```bash
+grep -E -h --color -o -w "([A-Z](\w|-)+ )+[A-Z](\w|-)+" tvg_111/*.txt | sort | uniq -c | sort -g
+```
+
+Er worden sommige namen samengevoegd, zoals *Konstantinopel F. Van Tricht*. Een ander probleem is dat nu namen van een enkel woord nu niet gevonden worden. Dat laatste is makkelijk aan de te passen door het herhalingsteken `+` van de buitenste groepering te vervangen door `*`:
+
+```bash
+grep -E -h --color -o -w "([A-Z](\w|-)+ )*[A-Z](\w|-)+" tvg_111/*.txt | sort | uniq -c | sort -g
+```
+
+Dit levert veel stopwoorden op. Je kunt hier allerlei trucs op verzinnen. Direct filteren op stopwoorden heeft het nadelige effect dat ook namen als *De Ronde Tafel Conferentie* weggefilterd wordt. Hier is een ingewikkelder set stappen nodig, waarvoor het al snel makkelijker wordt om een andere toolset te gebruiken, e.g. Python en speciale modules voor tekst-analyse. Een veelgebruikte optie is een Named Entity Recognition tool te gebruiken, al zal die waarschijnlijk getraind moeten worden op deze specifieke dataset, vanwege alle eigenaardigheden ervan (grote periode met spellingsverschuivingen, OCR fouten, domeinspecifieke conventies, etc.). 
+
+<a name="grep-author-names"></a>
+### Zoeken naar auteursnamen
+
+Auteursnamen worden vrijwel uitsluitend uitgedrukt met een combinatie van voorletters en achternaam. Je kunt dus zoeken naar een hoofdletter gevolgd door een punt, een spatie en dan een woord beginnend met een hoofdletter:
 
 ```bash
 grep -E -h -o -w "[A-Z]\. [A-Z](\w|-)+" tvg_111/*.txt
@@ -525,26 +648,9 @@ Resultaten schrijven naar een bestand:
 grep -E -o -w "([A-Z][a-z]?\.)+( van| de| der| den)*( [A-Z](\w|-)+)+" tvg_111/*.txt > persoonsnamen-tvg_111.txt
 ```
 
+Je kunt met `sed` ook de bestandsnaam nog veranderen zodat je een makkelijker leesbaar *comma-separated-value* bestand krijgt dat je met Excel, Google Spreadsheet of Open Refine kunt openen:
+
 ```bash
 grep -E -o -w "([A-Z][a-z]?\.)+( van| de| der| den)*( [A-Z](\w|-)+)+" tvg_11[0-9]/*.txt | sed -E 's/.txt:/,/' | sed -E 's/tvg_[0-9]+\///' | sed -E 's/_page/,page/' > tvg_persoonsnamen.txt
 ```
-
-gebruik sed om patronen te transformeren (e.g. markeren a la XML):
-
-
-
-```bash
-grep -E --colour -w "([A-Z](\.|\w+))+( van| de| der| den)*( [A-Z](\w|-)+)+" tvg_111/*.txt
-```
-
-```bash
-grep -E -o -w "politiek\w+" tvg_111/*.txt
-```
-
-
-```bash
-grep -E -h --color -w "neutraliteitspolitiek" tvg_*/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort
-```
-
-
 
