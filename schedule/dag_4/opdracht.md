@@ -3,7 +3,7 @@
 ## Centrale vraag
 Originele aanleiding: In “Er was iets met die schilders in de Gouden Eeuw” (NRC, 24-11-2011, pp.14-15) werden demografen Frans van Poppel, Dirk van de Kaa en Govert Bijwaard die op basis van de database van het Rijksbureau voor Kunsthistorische Documentatie stelden dat in de zeventiende eeuw schilders langer leefden dan aristocraten. De vraag: is dat zo?
 
-<em>N.B. Het originele artikel staat voor de geïnteresseerden bij de data in de map _schildersGoudenEeuw_
+__N.B.__ Het originele artikel staat voor de geïnteresseerden bij de data in de map _schildersGoudenEeuw_
 
 **vraag**
 Hoe was het verloop van de levensduur in de loop der eeuwen?
