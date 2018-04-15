@@ -15,6 +15,7 @@
 + [Overicht van namen, datums en periodes](#grep-names-dates)
     + [Zoeken met karaktersets](#grep-character-sets)
     + [Overzicht van datums, jaartallen en periodes](#grep-dates)
+    + [Overzicht van namen](#grep-names)
     + [Zoeken naar auteursnamen](#grep-author-names)
 
 <a name="intro"></a>
