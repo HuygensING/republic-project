@@ -5,14 +5,13 @@
 + [Research focus: wat ga ik onderzoeken?](#focus)
 + [Reguliere expressies](#regex)
     + [Oefenen met reguliere expressies](#regex-train)
-+ [Grep: zoeken in data met behulp van reguliere expressies](#grep)
++ [Grip met grep: zoeken in data met behulp van reguliere expressies](#grep)
     + [Command Line: interactie via commando's](#grep-command-line)
 + [Overzicht van varianten en contexten voor specifieke woorden en frases](#grep-words)
-    + [Ketens van commando's: pipelines, sorteren en tellen](#grep-pipelines)
-    + [Distributies en dispersie van specifieke woorden](#grep-words-distributions)
     + [Transliteratie: eenvoudige datatransformaties voor normalisatie](#grep-tr)
     + [Zoeken met woordensets](#grep-word-sets)
     + [Zoeken met karaktersets](#grep-character-sets)
+    + [Distributies en dispersie van specifieke woorden](#grep-words-distributions)
 
 <a name="intro"></a>
 ## Introductie
@@ -34,6 +33,7 @@ TO DO
 <a name="data"></a>
 ## Data downloaden
 
++ Je kunt het [hele TvG corpus als een zip bestand](https://surfdrive.surf.nl/files/index.php/s/MqRVCbAYpQBeEjO) downloaden.
 + Waar staat mijn data?
 + Hoe kan ik met command line tools bij mijn data?
     + commando's worden uitgevoerd vanuit een working directory (folder)
@@ -88,6 +88,8 @@ Open een nieuwe tab in je browser en ga naar [https://regex101.com/](https://reg
 
 Eerst wat uitleg over de *command line* en hoe je navigeert naar verschillende mappen of directories op je harde schijf en andere aangesloten opslagmedia.
 
+Een handige [`grep` cheat sheet](http://www.ericagamet.com/wp-content/uploads/2016/04/Erica-Gamets-GREP-Cheat-Sheet.pdf).
+
 **Let op: de oefeningen worden al heel snel heel complex. Dit is puur om te laten zien wat mogelijk is, en waarom dit nuttig kan zijn. De syntax is cryptisch en exotisch en vergt veel oefening om het eigen te maken. Als je het nuttig vindt kun je er dus meer tijd in steken en wordt de systematiek al snel duidelijk. Als je hier niet zelf mee aan de slag wil, is het in ieder geval nuttig om te zien hoe het werkt, wat er mogelijk is, en waar potentiele problemen in de data een rol spelen.**
 
 <a name="grep-command-line"></a>
@@ -115,7 +117,7 @@ Om onderstaande oefeningen te doen is het handig te navigeren naar de directory 
 
 
 <a name="grep-words"></a>
-## Overzicht van varianten en contexten voor specifieke woorden en frases
+## Overzicht maken van varianten en contexten voor specifieke woorden en frases
 
 Navigeer naar de directory waar je de TvG data hebt opgeslagen. Controleer dat je op de juiste plek bent door `ls` te typen. Als je de directories `tvg_1` etc. ziet staan ben je in de juiste directory. Zo niet, type dan `pwd` en vergelijk je huidige *working directory* met waar de data staat. 
 
@@ -195,29 +197,6 @@ Een generiekere manier is om meerdere herhalingen te definieren. Je kunt een sub
 grep -E --color -w -i "(\w+ ){,3}\w*politiek\w*" tvg_111/*.txt
 ```
 
-
-<a name="grep-word-sets"></a>
-### Zoeken naar woordensets
-
-Reguliere expressies bieden ook een mogelijkheid om meerdere opties van patronen te definieren, met parentheses en het keuze symbool `|`. Zo betekent `(januari|februari|maart)`: match met alle regels waarin het woord *januari* voorkomt, of het woord *februari* of *maart*. Zo kun je dus naar voorkomens van maanden zoeken, , of bijvoorbeeld sets van woorden die kwa onderwerp dicht bij elkaar liggen, zoals *overheid*, *regering* en *kabinet*:
-
-```bash
-grep -E -o -w -i "\w*(overheid|regering|kabinet)\w*" tvg_111/*.txt | sort | uniq -c
-```
-
-In oudere teksten kom je vaak dubbele klinkers tegen, zoals in *regeering*. Als je zoekt in TvG editie 49, kun je ook *regeering* toevoegen:
-
-```bash
-grep -E -o -w -i "\w*(overheid|regeering|regering|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
-```
-
-De alternatieven *regering* en *regeering* kun je ook korter noteren door de variatie *ee* en *e* aan te geven:
-
-```bash
-grep -E -o -w -i "\w*(overheid|reg(ee|e)ring|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
-```
-
-
 <a name="grep-pipelines"></a>
 ### Ketens van commando's: pipelines, sorteren en tellen
 
@@ -233,7 +212,7 @@ Voor exploratie van een grote dataset kan het handig zijn om de gevonden patrone
 grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt
 ```
 
-UNIX biedt een eenvouig maar zeer krachtig mechanisme om de output van het ene commando direct door te sturen als input voor het volgende commando, d.m.v. zogenaamde *pipes*. Als je het `|` symbool plaatst aan het eind van het `grep` commando, wordt de output van `grep`, e.g. alle matchende patronen, doorgestuurd naar een volgend commando.
+UNIX biedt een eenvouig maar zeer krachtig mechanisme om de output van het ene commando direct door te sturen als input voor het volgende commando, d.m.v. zogenaamde *pipes*. Als je het `|` symbool plaatst aan het eind van het `grep` commando, wordt de output van `grep`, e.g. alle matchende patronen, doorgestuurd naar een volgend commando. Dit wordt ook wel *redirection* genoemd. 
 
 Je kunt bijvoorbeeld het `wc` (*word, line, character and bye count*) commando gebruiken om te tellen hoeveel matches er zijn:
 
@@ -267,7 +246,37 @@ Deze lijst kun je ook weer sorteren:
 grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt | sort | uniq -c | sort
 ```
 
+Nog een handige vorm van *redirection* is de output schrijven naar een bestand, zodat het niet slechts tijdelijk op je scherm getoond wordt, maar blijvend wordt opgeslagen. Zeker als er veel output gegenereerd wordt is een bestand handig. *Redirection* naar een bestand doe je a.d.h.v. het `>` symbool. Aan het eind van de keten van commando's kun je `> bestandsnaam` typen om het naar een bestand te schrijven:
+
+```bash
+grep -E -h -o -w -i "\w*politiek\w*" tvg_111/*.txt | sort | uniq -c | sort > tvg_111-matches-politiek.txt
+```
+
+Uiteraard kun je bestanden met opgeslagen resultaten weer verder bewerken en analyseren met `grep` en andere commando's, of in andere programma's.
 TODO schrijven naar bestand
+
+
+<a name="grep-word-sets"></a>
+### Zoeken naar woordensets
+
+Reguliere expressies bieden ook een mogelijkheid om meerdere opties van patronen te definieren, met parentheses en het keuze symbool `|`. Zo betekent `(januari|februari|maart)`: match met alle regels waarin het woord *januari* voorkomt, of het woord *februari* of *maart*. Zo kun je dus naar voorkomens van maanden zoeken, , of bijvoorbeeld sets van woorden die kwa onderwerp dicht bij elkaar liggen, zoals *overheid*, *regering* en *kabinet*:
+
+```bash
+grep -E -o -w -i "\w*(overheid|regering|kabinet)\w*" tvg_111/*.txt | sort | uniq -c
+```
+
+In oudere teksten kom je vaak dubbele klinkers tegen, zoals in *regeering*. Als je zoekt in TvG editie 49, kun je ook *regeering* toevoegen:
+
+```bash
+grep -E -o -w -i "\w*(overheid|regeering|regering|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
+```
+
+De alternatieven *regering* en *regeering* kun je ook korter noteren door de variatie *ee* en *e* aan te geven:
+
+```bash
+grep -E -o -w -i "\w*(overheid|reg(ee|e)ring|kabinet)\w*" tvg_49/*.txt | sort | uniq -c
+```
+
 
 <a name="grep-words-frequencies"></a>
 ## Overzicht met woordfrequentielijsten
@@ -298,7 +307,7 @@ cat tvg_111/tvg_111_page_125.txt | tr ' ' '\n' | sort | uniq -c
 Je ziet dat er allerlei punctuatie aan woorden vastgeplakt zit. Die kun je met `tr` verwijderen. De set `[:punct:]` staat voor alle (?) punctuatiesymbolen. Met de parameter `-d` kun je aangeven dat die symbolen verwijderd moeten worden:
 
 ```bash
-cat tvg_111/tvg_111_page_125.txt | tr -d '[:punct:]' | tr ' ' '\n' | sort | uniq -c
+cat tvg_111/tvg_111_page_125.txt | tr '[:punct:]' ' ' | tr ' ' '\n' | sort | uniq -c
 ```
 
 Als je door de lijst met woorden scrolt zie je dat woorden die beginnen met hoofdletters geplaatst worden voor de woorden die beginnen met kleine letters. Sommige van die woorden zijn namen, andere zijn de eerste woorden van zinnen. Om te zorgen dat bijv. 'de' en 'De' als hetzelfde woord worden gezien, kun je `tr` ook gebruiken om van alle hoofdletters kleine letters te maken.
@@ -306,13 +315,13 @@ Als je door de lijst met woorden scrolt zie je dat woorden die beginnen met hoof
 De set hoofdletters kun je aangeven met `[:upper:]`, de kleine met `[:lower:]`. Door dit `tr` commando uit te voeren alvorens het sorteren en tellen, worden variaties in hoofdlettergebruik samengevoegd tot een variant met uitsluitend kleine letters:
 
 ```bash
-cat tvg_111/tvg_111_page_125.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
+cat tvg_111/tvg_111_page_125.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
 ```
 
 Vervolgens kun je uitzoomen naar de hele 111de editie, door `tvg_111_page_125.txt` te vervangen door `*.txt` (dit kan best even duren):
 
 ```bash
-cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
+cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c
 ```
 
 **Datakritiek**: Je ziet nu duidelijk dat het TvG corpus bijzondere karakters bevat zoals `ĳ` en `ﬂ`. Dit is een eigenaardigheid van het OCR proces, waarbij *ij* soms als `ij` wordt herkend en soms als `ĳ`. Deze variaties zou je kunnen kunnen normaliseren door o.a. `ĳ` te vervangen door `ij` en `ﬂ` door `fl`. In deze opdracht wordt daar verder geen aandacht aan besteed, maar het is goed om dit in het achterhoofd te houden bij het interpreteren van verdere analyses.
@@ -324,23 +333,39 @@ De volgende stap is het maken van een stopwoordenlijst. Er bestaan standaardlijs
 Sorteer eerst de lijst uit de vorige stap op frequentie:
 
 ```bash
-cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g
+cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g
 ```
 
 Vervolgens kun je met `awk` de tweede kolom (`$2`) tonen voor regels waar de waarde van de eerste kolom (`$1`) groter is dan bijv. 100 (`awk` is bijzonder krachting maar ook complex en vergt veel uitleg die hier over wordt geslagen. Voor veel meer info zie de [Grymoire Awk tutorial](http://www.grymoire.com/Unix/Awk.html)). De output van dit geheel kun je opslaan in een bestand `stopwoorden_tvg.txt` die je eventueel handigmatig kunt bijwerken:
 
 ```bash
-cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g | awk '{if ($1 > 100) print $2}' > stopwoorden_tvg.txt
+cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g | awk '{if ($1 > 100) print $2}' > stopwoorden_tvg.txt
 ```
 
 Deze lijst bevat nu woorden die je wellicht niet als stopwoorden wilt beschouwen, dus verwijder met een text editor de regels uit het bestand voor niet-stopwoorden. Uiteraard kun je ook woorden toevoegen. Zorg ervoor dat elk woord op een aparte regel staat, zonder spaties.
+
+
+Je kunt ook makkelijk bijhouden welke termen je uit de stopwoordenlijst verwijderd hebt in de vorige stap, om expliciet te maken wat je niet als stopwoord beschouwd. Met de `grep` parameter `-v` geef je aan dat alleen regels wilt zien die **niet** matchen met een opgegeven patroon, en met `-f` kun je een bestandsnaam opgeven van patronen waar je mee wilt matchen. Zo kun je makkelijk alle stopwoorden verwijderen uit een lijst. Door opnieuw een lijst van meest frequente woorden te maken en daarna de stopwoorden te laten verwijderen, krijg je te zien welke woorden je uit de stopwoordenlijst verwijderd hebt. Dit kun je weer in een bestand opslaan voor later gebruik:
+
+```bash
+cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g | awk '{if ($1 > 100) print $2}' | grep -f -v -w stopwoorden_tvg.txt > tvg-frequente-niet-stopwoorden.txt
+```
+
+Om duidelijk te zien dat stopwoordenlijsten afhankelijk zijn van de eigenschappen van je bronmateriaal, kun je een frequentielijst maken van een veel oudere editie en die filteren met de zojuist gemaakte stopwoordenlijst:
+
+```bash
+cat tvg_11/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | sort | uniq -c | sort -g | awk '{if ($1 > 100) print $2}' | grep -f -v -w stopwoorden_tvg.txt
+```
+
+Je ziet nu dat de meest frequente woorden ook weer veel stopwoorden bevatten, waaronder historische varianten van moderne stopwoorden. Een stopwoordenlijst voor modern Nederlands is dus maar beperkt effectief voor ouder materiaal. Uiteraard kun je je stopwoordenlijst uitbreiden met deze historische varianten en andere typische stopwoorden van het oudere materiaal om een algemene stopwoordenlijst voor het TvG corpus te maken (of een lijst die specifiek voor je onderzoeksfocus).
+
 
 ### Een woordfrequentielijst maken
 
 Nu kun je de woordenlijst filteren op stopwoorden met `grep` en de parameters `-w` (match alleen hele woorden), `-f` (grep alle patronen uit een bestand, waarbij elke regel als een patroon wordt beschouwd) en `-v` (selecteer alleen regels als ze niet matchen):
 
 ```bash
-cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
+cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
 ```
 
 ### Bigrammen: combinaties van twee woorden
@@ -348,7 +373,7 @@ cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n'
 Het commando `awk` kan gebruikt worden om voor een woordenlijst de vorige regel te combineren met de huidige regel van de output, waarmee je bigrammen kunt creeeren. Als je die stap doet voor het filteren van stopwoorden, krijg je bigrammen waarbij beide woorden geen stopwoorden zijn:
 
 ```bash
-cat tvg_111/*.txt | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | awk 'prev!="" {print prev,$0} {prev=$0}' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
+cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | awk 'prev!="" {print prev,$0} {prev=$0}' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
 ```
 
 

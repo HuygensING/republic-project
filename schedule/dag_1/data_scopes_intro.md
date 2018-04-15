@@ -1,13 +1,20 @@
 # Data Scopes
 
-- coherent methods for using digital data in humanities research
+- Coherent methods for using digital data in humanities research
+- Data scope: you want to analyse a certain aspect of your materials,
+    - but the "raw" data is not suitable for direct analysis.
+- You have to do something with the data. Questions:
+    - What do I have to do to make data suitable?
+    - How do I do that?
+    - What should I document of this process to I can share it with others?
+    - Which parts of this process are specific to my analysis and which are generically applicable?
 
 ## Focus on data interactions:
-- it's not about the tools
-- many tutorials on the excellent [Programming Historian](https://programminghistorian.org)
-- it's about how and why
-- translating research questions, assumption and interpretations to data interactions
-- consequences of interactions for questions, assumptions and interpretations
+- It's not about specific tools
+    - Many tutorials online for that, e.g. the excellent [Programming Historian](https://programminghistorian.org)
+- It's about what you're doing, how and why
+- Translating research questions, assumption and interpretations to data interactions
+- Consequences of interactions for questions, assumptions and interpretations
 
 ## Frameworks:
 
@@ -64,6 +71,8 @@
 
 ## Classifying:
 
+- reducing complexity
+    - especially for low-frequency items
 
 
 
