@@ -1,4 +1,4 @@
-# Opdracht 2: Normaliseren met Open Refine
+# TvG Opdracht 2: Toegangen maken met Open Refine
 
 + [Introductie](#intro)
     + [Open Refine](#open-refine)
