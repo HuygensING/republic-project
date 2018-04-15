@@ -20,7 +20,7 @@ Ook hier is deel 13 een uitzondering, aangezien hier een MSAccess database besch
 
 ### directories
 
-Er zijn twee directory's.
+Er zijn drie directory's.
 
 **Originele bestanden**:
 
@@ -73,3 +73,7 @@ aangevuld met
 - 13\_geo.csv
 - 13\_schepen.csv
 - 13\_zaken.csv
+
+**Genormaliseerde bestanden**:
+
+De bestanden zijn dezelfde als in de **Bewerkte bestanden** directory, maar nu zijn de paginanummers opgeschoond (extra comma's en spaties zijn verwijderd, punten als scheidingstekens zijn vervangen door comma's) en reeksen zijn uitgeschreven (dus i.p.v. bijvoorbeeld *192-194* als reeks, zijn nu de drie paginanummers *192, 193, 194* volledig uitgeschreven).
