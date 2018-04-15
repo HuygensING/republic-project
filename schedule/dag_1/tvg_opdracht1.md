@@ -29,11 +29,7 @@ Met deze opdracht ontwikkel je de volgende vaardigheden:
 
 De TvG Dataset is groot en beperkt gestructureerd. Er liggen talloze inzichten verborgen in de 121 jaargangen, maar de bestaande structuur geeft weinig handvatten om die inzichten naar voren te halen. Hoe kun je van deze brondata een data scope creeeren die verschillende perspectieven op het TvG corpus biedt waarmee je op een transparante manier tot nieuwe inzichten komt?
 
-TO DO
-
-+ keuzes in modelleren
-+ definieren data assen
-+ bijhouden van data interacties om tot data scope te komen
+**Open een document voor het bijhouden van data interacties om tot data scope te komen en overwegingen daarbij.** Gebruik bij voorkeur een nieuw Google Doc in de [workshop drive folder](https://drive.google.com/drive/folders/1R8Rex2v0YwfWhW8omEp0esqBkdX_Ymhr) op Google Drive, zodat alle aantekeningen bij elkaar staan zodat we die aan het eind de dag makkelijk kunnen vergelijken. 
 
 <a name="data"></a>
 ### Data downloaden
@@ -45,21 +41,21 @@ TO DO
     + je kunt je working directory veranderen ('cd' for change directory)
     + je kunt  aangeven waar een command line tool de data kan vinden t.o.v. je working directory
 
-Download de [TvG dataset]. *Voor Windows gebruikers die Git Bash hebben geinstalleerd, sla de dataset op in eennieuwe directory in de directory waar Git Bash is geinstalleerd. Anders kun je vanuit de command line niet bij de data.*
-
 <a name="focus"></a>
 ### Research focus: wat ga ik onderzoeken?
 
 _Wat is mijn onderzoeksvraag of thema?_
 
-Je kunt van te voren vaststellen wat je wilt onderzoeken, maar de ervaring leert dat je dit tijdens het onderzoeksproces nog regelmatig zal herzien. Initiele aannames en verwachtingen blijken vaak niet goed genoeg op het bestaande materiaal aan te sluiten, waardoor je een onderzoeksvraag wilt aanpassen of over wilt stappen naar een compleet andere vraag. 
+Probeer eerst vast te stellen wat je wilt onderzoeken. Wat voor mogelijk e.g. historiografische inzichten verwacht je in het TvG corpus te kunnen vinden? De ervaring leert dat je dit tijdens het onderzoeksproces nog regelmatig zal herzien. Initiele aannames en verwachtingen blijken vaak niet goed genoeg op het bestaande materiaal aan te sluiten, waardoor je een onderzoeksvraag wilt aanpassen of over wilt stappen naar een compleet andere vraag. 
+
+Het is vaak inzichtelijk en leerzaam om die momenten van bijsturen en compleet van richting veranderen vast te leggen. Niet alleen hoe je van richting verandert, maar ook waar, wanneer en waarom. Welke stap in het proces en welk aspect van de data leiden tot zo'n verandering?
 
 <a name="focus-selection"></a>
 #### Selectie
 
-_Welke informatie uit TvG is daarbij relevant?_
+_Welke informatie uit TvG is daarbij relevant?_ Zijn alle jaargangen relevant (voor e.g. temporeel onderzoek), of slechts een subset. Of kun je dat van te voren nog niet vaststellen?
 
-_Welke jaargangen, pagina's zeggen iets over mijn onderzoeksvraag/thema?_
+_Welke jaargangen, pagina's zeggen iets over mijn onderzoeksvraag/thema?_ Tijdens het creeeren van een data scope wil je wellicht specifieke edities, individuele pagina's of pagina-reeksen selecteren om op in te zoomen. Houd bij welke selecties je maakt. 
 
 <a name="focus-modelling"></a>
 #### Modelleren
@@ -83,7 +79,7 @@ Bij het vertalen van je onderzoeksvraag naar data interacties om die vraag te ad
 
 Eerst wat uitleg over de *command line* en hoe je navigeert naar verschillende mappen of directories op je harde schijf en andere aangesloten opslagmedia.
 
-Een handige [`grep` cheat sheet](http://www.ericagamet.com/wp-content/uploads/2016/04/Erica-Gamets-GREP-Cheat-Sheet.pdf).
+De volgende handige [`grep` cheat sheet](http://www.ericagamet.com/wp-content/uploads/2016/04/Erica-Gamets-GREP-Cheat-Sheet.pdf) geeft een overzicht van alle opties, parameters en patronen je kunt gebruiken in `grep`. Dit is vooral handig als je eenmaal op weg met onderstaande oefeningen en verschillende opties en concepten hebt leren kennen.
 
 **Let op: de oefeningen worden al heel snel heel complex. Dit is puur om te laten zien wat mogelijk is, en waarom dit nuttig kan zijn. De syntax is cryptisch en exotisch en vergt veel oefening om het eigen te maken. Als je het nuttig vindt kun je er dus meer tijd in steken en wordt de systematiek al snel duidelijk. Als je hier niet zelf mee aan de slag wil, is het in ieder geval nuttig om te zien hoe het werkt, wat er mogelijk is, en waar potentiele problemen in de data een rol spelen.**
 
@@ -542,6 +538,8 @@ grep -E --colour -o -w "[1l][0-9]{3}" tvg_04/*.txt | sed -E 's/([1l])([0-9]{2})(
 ```
 
 Zo zie je de editie, het paginanummer, het jaargetal zoals het in de editie voorkomt, het opgeschoonde jaar (altijd met `1` i.p.v. met `l`) en het bijbehorende decennium. Met vergelijkbare stappen kun je nu ook de eeuw erbij plaatsen. Zo kun je dus ingangen creeeren via jaartallen, decennia en eeuwen om bijbehorende pagina's in edities te vinden, ook al bevatten die pagina's die aanduidingen niet letterlijk.
+
+**vraag**: met welke data scope activiteit zou je deze stap associeren?
 
 Uiteraard kun je deze output weer naar een bestand schrijven voor latere analyse of om aan een database toe te voegen voor makkelijk bevragen van de data.
 
