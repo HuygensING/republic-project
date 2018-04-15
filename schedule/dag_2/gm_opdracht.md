@@ -5,7 +5,6 @@
 + [Opdracht](#opdracht)
 + [Resultaten](#resultaten)
 
-
 <a name="intro"></a>
 ## Introductie
 
@@ -19,7 +18,7 @@ We hebben de beschikking over de registers van de gedrukte delen missiven. Voor 
 <a name="data"></a>
 ### Dataset: Geselecteerde delen Generale missiven. Zie ook de [toelichting](toelichting_gm.md)
 
-De data zijn op <a href="https://surfdrive.surf.nl/files/index.php/s/zW0xfFqpCe2ftkK</a> als gezipt bestand te downloaden.
+De [Generale Missiven data](https://surfdrive.surf.nl/files/index.php/s/bBvdclKgYqgsJsY) zijn als gezipt bestand te downloaden.
 
 
 <a href="opdracht"></a>
