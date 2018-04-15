@@ -16,6 +16,10 @@
 - [Voyant Tools](https://voyant-tools.org/) *no installation needed*
     - online text analysis tool, *note that this requires uploading your data to the web*
     - for user-friendly exploration of texts
+- [Palladio] (http://hdlab.stanford.edu/palladio-app/) *no installation needed*
+    - online (optionally) historical visualisation tool bij csv/json input
+    - for maps (you need to provide coordinates in csv)
+    - for networks and some other visualisations
 
 ## Optional tools
 
@@ -28,5 +32,6 @@ For those who want to work with more advanced tools:
     - [Mallet](http://mallet.cs.umass.edu/) (command line) of [Topic-Modelling-Tool](https://github.com/senderle/topic-modeling-tool) (GUI)
 - Natural Language Processing:
     - [NLTK](http://www.nltk.org/) or [Pattern](https://www.clips.uantwerpen.be/pattern) Python modules for Part-Of-Speech tagging, Named Entity Recognition, Sentiment Analysis
-
-
+- Structured data handling in Python
+    - [pandas] (https://pandas.pydata.org/) many advanced data handling options, with a somewhat quirky api
+    - [SciPy](https://www.scipy.org/) for even more advanced data handling and processing
