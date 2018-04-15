@@ -31,7 +31,7 @@ Vandaag:
 + 11:30-12:00 Data Scopes achtergrond
 + 12:00-13:00 Hands-on sessie 1: greppen in TvG data
 + 13:00-13:30 Lunch
-+ 13:30-15:30 Hands-on sessie 2: Data normaliseren met Open Refine
++ 13:30-15:30 Hands-on sessie 2: greppen in TvG data
 + 15:30-16:30 Bespreken van bevindingen, reflectie op Data Scopes
 
 Rest van de week:

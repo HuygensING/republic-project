@@ -2,9 +2,9 @@
 
 + 11:00-11:30 [Workshop introductie](programma_dag1.md)
 + 11:30-12:00 [Data Scopes achtergrond](data_scopes_intro.md)
-+ 12:00-13:00 [Hands-on sessie 1: greppen in TvG data](opdracht1.md)
++ 12:00-13:00 [Hands-on sessie 1: greppen in TvG data](tvg_opdracht1.md)
 + 13:00-14:00 Lunch
-+ 14:00-16:00 [Hands-on sessie 2: Data normaliseren met Open Refine](opdracht2.md)
++ 14:00-16:00 [Hands-on sessie 2: greppen in TvG data](tvg_opdracht1.md)
 + 16:00-16:30 Bespreken van bevindingen, reflectie op Data Scopes
 
 
