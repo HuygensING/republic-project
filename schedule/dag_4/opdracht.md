@@ -1,7 +1,10 @@
 # Data Scopes Deel 3: Biografisch Portaal
 
-In de map bioport_voorbeeld staan een ruwe selectie in csv formaat, de uiteindelijke spreadsheet die voor het artikel (L’espérance de vie des professions médicales aux Pays-Bas du xvie au xxe siècle, January 2016 Population (French Edition) 71(4):659; DOI10.3917/popu.1604.0659)
-is opgestuurd naar Van Poppel en de toelichting die ik daarbij schreef ter verantwoording.
+**data**:
+https://surfdrive.surf.nl/files/index.php/s/5yIKGqnemljUQZL
+
+In de map staat een ruwe selectie in csv formaat (_person+cat20120207.csv_), de uiteindelijke spreadsheet die voor het artikel _L’espérance de vie des professions médicales aux Pays-Bas du xvie au xxe siècle, January 2016 Population (French Edition) 71(4):659; DOI10.3917/popu.1604.0659_
+is opgestuurd naar Van Poppel. In de map _extra_ staat nog een toelichting  daarbij ter verantwoording (_extra/toelichting_vanPoppel.docx_ en daarbij ook het spreadsheet _persons_for_vanPoppel.xlsx_).
 
 ## Opdracht: Bewerken van ruwe data tot een dataset
 
@@ -43,5 +46,5 @@ Beginnen met de bioport interface zelf?
 
 Voorbeelden:
 - Van wie zijn de exacte geboorte/sterfdata bekend? Wat kun je met onbekende geboorte/sterfdata??
-- Vergelijk geboorte en sterfteplaatsen in de tijd en per groep. Laat ze op een kaart zien. Bijvoorbeeld met Palladio
-- Uitbreiden van de dataset met de dominees uit Mining Ministers (https://github.com/cltl/Mining-Ministers ). Dit is vooral nuttig er meer computationeel onderlegden tussen zitten, want die kunnen dan alles online ophalen, uitpakken spreadsheet maken en vergelijken. Nog een idee: in plaats van de Geonames lokaties de data van histopo gebruiken (http://api.histopo.nl/docs/for-api-users/search.html) (of van Huygens als die beschikbaar komen)
+- Vergelijk geboorte en sterfteplaatsen in de tijd en per groep. Laat ze op een kaart zien. Bijvoorbeeld met [Palladio] (http://hdlab.stanford.edu/palladio-app)
+- Uitbreiden van de dataset met de dominees uit [Mining Ministers] (https://github.com/cltl/Mining-Ministers ).
