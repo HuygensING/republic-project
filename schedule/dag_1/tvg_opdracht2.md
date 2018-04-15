@@ -121,10 +121,6 @@ cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n
 
 
 
-+ [Overzicht van datums, jaartallen, periodes en namen](#grep-names-dates)
-    + [Zoeken met karaktersets](#grep-character-sets)
-    + [Overzicht van datums, jaartallen en periodes](#grep-dates)
-    + [Overzicht van namen](#grep-names)
 <a name="grep-names-dates"></a>
 ## Overzicht van datums, jaartallen, periodes en namen
 
@@ -392,6 +388,10 @@ Je kunt met `sed` ook de bestandsnaam nog veranderen zodat je een makkelijker le
 ```bash
 grep -E -o -w "([A-Z][a-z]?\.)+( van| de| der| den)*( [A-Z](\w|-)+)+" tvg_11[0-9]/*.txt | sed -E 's/.txt:/,/' | sed -E 's/tvg_[0-9]+\///' | sed -E 's/_page/,page/' > tvg_persoonsnamen.txt
 ```
+
+### Topic modelling
+
+Een populaire optie is [probabilistic topic modelling](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4122269/) waarmee je algoritmisch coherente woordensets (topics) laat ontdekken in de data. Dit is vergelijkbaar met het handmatig modelleren van topics a.d.h.v. woordensets, alleen is dit vrijwel puur data-gedreven, dus je hebt weinig controle over het proces en de uitkomst (dit is in principe een positief aspect maar kan ook tot onbevredigende, oninterpreteerbare resultaten leiden). De [Topic Modelling Tool](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html) pagina geeft goede instructies die ook toepasbaar zijn op het TvG corpus. Dit is een vorm van *classificatie*, alhoewel de tool zelf onder de motorkap allerlei bewerkingen uitvoert die onder *selectie* en *normalisatie* vallen (en in zekere zin ook *linking*).
 
 + [Link naar deel 3 van de TvG opdracht](../dag_2/tvg_opdracht3.md) (dag 2)
 
