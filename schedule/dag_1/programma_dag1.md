@@ -41,7 +41,7 @@ Rest van de week:
 - 17-04:
     - ochtend: TvG, structureren ongestructureerde data
     - middag: Generale Missiven, vergelijken indices, linken en classificeren van trefwoorden
-    - avond: borrel (Brakke Grond) en diner (Mappa)
+    - avond: borrel en diner (op de Nes, e.g. Brakke Grond of Mappa)
 - 18-04:
     - ochtend: Generale Missiven, vergelijken indices, linken en classificeren van trefwoorden
     - middag: Generale Missiven, vergelijken indices, linken en classificeren van trefwoorden
