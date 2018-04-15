@@ -1,4 +1,4 @@
-# Voorbereiding
+## Voorbereiding
 
 Om te zorgen dat deelnemers tijdens de workshop hun tijd zo nuttig mogelijk besteden vragen we iedereen om een aantal zaken voor te bereiden.
 
