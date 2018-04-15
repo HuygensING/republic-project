@@ -20,6 +20,8 @@ Het doel is onderzoekers zich bewust te laten worden van de verschillende aspect
 
 + Tutorial: uitleg Data scopes concepten
 + Hands-on sessies: werken in kleine groepen aan opdrachten rondom Data scopes concepten
+    + wees creatief: opdrachten hebben geen "correcte" oplossing, wij hebben de goede antwoorden ook niet
+    + zen: het wordt een zootje, alles gaat mis, maar dat hoort erbij en alles komt ook weer goed
 + Discussie: vergelijken van groepsopdrachten, reflectie op Data scopes als handvat voor onderzoeksproces
 
 ## Programma
