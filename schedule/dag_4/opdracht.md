@@ -98,5 +98,5 @@ welke conclusies kunnen we trekken tav van de vraag?
 
 Voorbeelden:
 - Van wie zijn de exacte geboorte/sterfdata bekend? Wat kun je met onbekende geboorte/sterfdata??
-- Vergelijk geboorte en sterfteplaatsen in de tijd en per groep. Laat ze op een kaart zien. Bijvoorbeeld met [Palladio] (http://hdlab.stanford.edu/palladio-app)
-- Uitbreiden van de dataset met de dominees uit [Mining Ministers] (https://github.com/cltl/Mining-Ministers ).
+- Vergelijk geboorte en sterfteplaatsen in de tijd en per groep. Laat ze op een kaart zien. Bijvoorbeeld met [Palladio](http://hdlab.stanford.edu/palladio-app)
+- Uitbreiden van de dataset met de dominees uit [Mining Ministers](https://github.com/cltl/Mining-Ministers ).
