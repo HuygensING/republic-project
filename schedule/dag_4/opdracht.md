@@ -30,7 +30,7 @@ Hoe was het verloop van de levensduur in de loop der eeuwen?
 ## Data
 Input is een dataset van personen uit het _Biografisch Portaal_. DIe is niet helemaal up-to-date, maar dat is voor deze opdracht verder niet bezwaarlijk.
 
-De data zijn op <a href="https://surfdrive.surf.nl/files/index.php/s/f0Wf6KGFRooTauO">https://surfdrive.surf.nl/files/index.php/s/f0Wf6KGFRooTauO</a> toegankelijk, als gezipt bestand onder de naam *datasets_dag4*
+De data zijn op <a href="https://surfdrive.surf.nl/files/index.php/s/f0Wf6KGFRooTauO">https://surfdrive.surf.nl/files/index.php/s/f0Wf6KGFRooTauO</a> toegankelijk, als gezipt bestand onder de naam *datasets_dag4*.
 
 <a href="opdracht"></a>
 ## opdracht
