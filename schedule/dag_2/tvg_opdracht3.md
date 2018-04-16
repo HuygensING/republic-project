@@ -15,30 +15,8 @@ Eerdere delen TvG opdracht:
 <a name="open-refine"></a>
 ## Open Refine
 
-TO DO: intro Open Refine
-
-<a name="grep-indices"></a>
-## Indices maken
-
-TO DO
-
-<a name="grep-words-distributions"></a>
-### Distributies en dispersie van specifieke woorden
-
-
-TO DO:
-
-```bash
-grep -E --color -o -w "([A-Z](\w|-)+ )+[A-Z](\w|-)+" tvg_11*/*.txt | sed -E 's/ /_/g' | sed -E s'/\/tvg_[0-9]+_page_/ /' | sed -E 's/\.txt:/ /' > tvg_110-119-namen.csv
-```
-
-+ uitzoomen naar hele TvG dataset: grep -r ./
-+ de context van termen in TvG:
-    + breng contexttermen in kaart per editie, vergelijk over edities
-    + breng contexttermen in kaart per decennium, vergelijk over decennia
-+ verspreiding van termen binnen een editie
-+ verspreiding van termen over edities
-
-
-
++ stap 1: laad een van de bestanden in die je met `grep` hebt gemaakt.
++ stap 2: **indices maken**. Zet editie, paginanumer en matches in aparte kolommen. Behoud daarbij de originele kolommen, kopieer ze en pas de kopieen aan. Zo kun je altijd de originele data terugzien.
++ stap 3: **termen normaliseren**. Selecteer de kolom met treffers en sorteer ze met de facet selector. Normaliseer variaties in matches. Gebruik hiervoor het `facet filter`.
++ stap 4: **co-occurrence linken**. analyseer co-occurrence van bepaalde matches. Selecteer een trefwoord, datum of naam en gebruik het `facet filter` om alleen pagina's en edities met die term te zijn. Selecteer die edities of pagina's en verwijder het facet filter van het trefwoord om te zien welke andere trefwoorden samen voorkomen met die naam.
 
