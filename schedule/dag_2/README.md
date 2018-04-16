@@ -8,4 +8,4 @@
 
 Extra:
 
-+ [toelichting bij de Generale Missiven data](toelichting_gm.md)
++ [toelichting bij de Generale Missiven data](gm_toelichting.md)

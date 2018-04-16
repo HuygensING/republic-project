@@ -13,10 +13,10 @@ Daarvoor moet je data opschonen, ontdubbelen en verrijken.
 
 **Vraag:** _Op welke manier kunnen de Generale Missiven van de VOC inhoudelijk toegankelijk gemaakt worden._
 
-We hebben de beschikking over de registers van de gedrukte delen missiven. Voor de opdracht hebben we er een paar geselecteerd. Zie de [toelichting bij de data](toelichting_gm.md).
+We hebben de beschikking over de registers van de gedrukte delen missiven. Voor de opdracht hebben we er een paar geselecteerd. Zie de [toelichting bij de data](gm_toelichting.md).
 
 <a name="data"></a>
-### Dataset: Geselecteerde delen Generale missiven. Zie ook de [toelichting](toelichting_gm.md)
+### Dataset: Geselecteerde delen Generale missiven. Zie ook de [toelichting](gm_toelichting.md)
 
 De [Generale Missiven data](https://surfdrive.surf.nl/files/index.php/s/bBvdclKgYqgsJsY) zijn als gezipt bestand te downloaden.
 
