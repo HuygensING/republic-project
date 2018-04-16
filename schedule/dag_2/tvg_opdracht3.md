@@ -20,3 +20,16 @@ Eerdere delen TvG opdracht:
 + stap 3: **termen normaliseren**. Selecteer de kolom met treffers en sorteer ze met de facet selector. Normaliseer variaties in matches. Gebruik hiervoor het `facet filter`.
 + stap 4: **co-occurrence linken**. analyseer co-occurrence van bepaalde matches. Selecteer een trefwoord, datum of naam en gebruik het `facet filter` om alleen pagina's en edities met die term te zijn. Selecteer die edities of pagina's en verwijder het facet filter van het trefwoord om te zien welke andere trefwoorden samen voorkomen met die naam.
 
+
+### Voorbereide bestanden
+
+Hieronder zijn links naar een aantal bestanden met `grep` resultaten die je kunt gebruiken voor bovenstaande opdracht. Bij elk bestand staat de command line opdracht waarmee deze gegenereerd is zodat je het zelf na kunt gaan.
+
++ [Politiek](tvg_politiek.txt)
+
+```bash
+grep -r -E --color -o "(\w|-)*politiek(\w|-)*" tvg_*/ | grep -v -E "toc\.(csv|xml)" > ../tvg_politiek.txt
+```
+
+
+
