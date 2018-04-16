@@ -1,0 +1,1838 @@
+tvg_01/tvg_01_page_116.txt:den oorlog van Rusland tegen Turkĳe 
+tvg_01/tvg_01_page_12.txt:lien oorlog met Engeland 
+tvg_02/tvg_02_page_101.txt:laaghartigen oorlog tegen Maria 
+tvg_06/tvg_06_page_40.txt:den oorlog met Magnentius 
+tvg_104/tvg_104_page_432.txt:hernieuwde oorlog tegen de Turken 
+tvg_109/tvg_109_page_505.txt:de oorlog tussen Polen en Rusland 
+tvg_112/tvg_112_page_436.txt:de oorlog met Frankrijk 
+tvg_115/tvg_115_page_600.txt:Heilige Oorlog in Arturromans 
+tvg_116/tvg_116_page_133.txt:De oorlog met de Habsburgers 
+tvg_116/tvg_116_page_305.txt:de oorlog in Bosnië-Herzegovina 
+tvg_117/tvg_117_page_113.txt:de oorlog tegen het soennitische Irak 
+tvg_117/tvg_117_page_344.txt:de oorlog in Vietnam 
+tvg_117/tvg_117_page_356.txt:de oorlog in Vietnam 
+tvg_119/tvg_119_page_133.txt:De oorlog tegen Chili 
+tvg_12/tvg_12_page_61.txt:den oorlog met Rusland 
+tvg_121/tvg_121_page_291.txt:de oorlog in Vietnam 
+tvg_121/tvg_121_page_37.txt:Nederlandse oorlog in Oost- 
+tvg_121/tvg_121_page_69.txt:de oorlog in West- 
+tvg_27/tvg_27_page_372.txt:De oorlog met Spanje 
+tvg_31/tvg_31_page_298.txt:in oorlog met Oostenrijk 
+tvg_32/tvg_32_page_102.txt:den oorlog met Peru en Bolivia 
+tvg_39/tvg_39_page_136.txt:den oorlog met Engeland 
+tvg_44/tvg_44_page_329.txt:den oorlog tegen Napoleon 
+tvg_48/tvg_48_page_433.txt:een oorlog tegen Duitschland 
+tvg_49/tvg_49_page_249.txt:voorafgaanden oorlog tegen Antigonus 
+tvg_63/tvg_63_page_6.txt:de oorlog met Japan 
+tvg_64/tvg_64_page_408.txt:de oorlog met de Saksen 
+tvg_65/tvg_65_page_268.txt:een oorlog met de Entente 
+tvg_69/tvg_69_page_78.txt:van Oorlog van Rappard 
+tvg_72/tvg_72_page_301.txt:Oostenrijkse oorlog tegen Denemarken 
+tvg_85/tvg_85_page_49.txt:de oorlog in Algerije 
+tvg_93/tvg_93_page_155.txt:de oorlog in Vietnam 
+tvg_94/tvg_94_page_109.txt:door oorlog tegen de Turken 
+tvg_95/tvg_95_page_131.txt:De oorlog tussen Servië en Bulgarije 
+tvg_97/tvg_97_page_273.txt:de oorlog met de Republiek 
+tvg_98/tvg_98_page_434.txt:de oorlog van Cambrai 
+tvg_98/tvg_98_page_469.txt:de oorlog met Japan 
+tvg_01/tvg_01_page_157.txt:den Russisch-Turkschen oorlog
+tvg_01/tvg_01_page_24.txt:Den Qden Macedonischen oorlog
+tvg_01/tvg_01_page_25.txt:tweeden Macedonischen oorlog
+tvg_01/tvg_01_page_29.txt:tweeden Macedonischen oorlog
+tvg_01/tvg_01_page_337.txt:dezen Servisch-Bulgaarschen oorlog
+tvg_02/tvg_02_page_144.txt:den Atjeh-Oorlog
+tvg_02/tvg_02_page_147.txt:de Krim-oorlog
+tvg_02/tvg_02_page_28.txt:den Krim-oorlog
+tvg_02/tvg_02_page_301.txt:nieuwen Katier-oorlog
+tvg_02/tvg_02_page_316.txt:de Zoeloe-oorlog
+tvg_02/tvg_02_page_95.txt:den Servischen oorlog
+tvg_04/tvg_04_page_101.txt:de Lombardijsche oorlog
+tvg_04/tvg_04_page_104.txt:de Deensche oorlog
+tvg_04/tvg_04_page_104.txt:met Pruisen oorlog
+tvg_04/tvg_04_page_320.txt:den Japanschen oorlog
+tvg_04/tvg_04_page_320.txt:den Russisch-Turkschen oorlog
+tvg_05/tvg_05_page_288.txt:De Vlaamsche oorlog
+tvg_05/tvg_05_page_91.txt:len Amerikaanschen oorlog
+tvg_06/tvg_06_page_238.txt:vierden Engelschen oorlog
+tvg_06/tvg_06_page_380.txt:den Fransch-Dnitschen oorlog
+tvg_06/tvg_06_page_64.txt:den Atjeh-oorlog
+tvg_06/tvg_06_page_97.txt:de Fransch-Duitsche oorlog
+tvg_07/tvg_07_page_351.txt:eventueelen Europeeschen oorlog
+tvg_07/tvg_07_page_86.txt:den Turkschen oorlog
+tvg_07/tvg_07_page_94.txt:een Europeesche oorlog
+tvg_09/tvg_09_page_149.txt:aan Oostenrijk oorlog
+tvg_09/tvg_09_page_283.txt:een Europeeschen oorlog
+tvg_09/tvg_09_page_320.txt:den Amerikaanschen oorlog
+tvg_09/tvg_09_page_35.txt:over Atjeh-oorlog
+tvg_09/tvg_09_page_99.txt:vierden Engelsehen oorlog
+tvg_10/tvg_10_page_133.txt:den Lydisch-Medischen oorlog
+tvg_10/tvg_10_page_352.txt:De Tachtigjarige oorlog
+tvg_10/tvg_10_page_391.txt:den Spaanschen Successie-oorlog
+tvg_100/tvg_100_page_101.txt:de Honderdjarige Oorlog
+tvg_100/tvg_100_page_107.txt:de Dertigjarige Oorlog
+tvg_100/tvg_100_page_118.txt:de Java-oorlog
+tvg_100/tvg_100_page_120.txt:de Koude Oorlog
+tvg_100/tvg_100_page_141.txt:de Koude Oorlog
+tvg_100/tvg_100_page_141.txt:de Koude Oorlog
+tvg_100/tvg_100_page_142.txt:de Koude Oorlog
+tvg_100/tvg_100_page_173.txt:de Honderdjarige Oorlog
+tvg_100/tvg_100_page_279.txt:de Atjeh-oorlog
+tvg_100/tvg_100_page_287.txt:de Java-oorlog
+tvg_100/tvg_100_page_293.txt:grote Europese oorlog
+tvg_100/tvg_100_page_323.txt:de Tachtigjarige oorlog
+tvg_100/tvg_100_page_35.txt:de Paciﬁc-oorlog
+tvg_100/tvg_100_page_41.txt:de Aziatische oorlog
+tvg_100/tvg_100_page_540.txt:de Spaanse Successie Oorlog
+tvg_100/tvg_100_page_554.txt:de Spaanse Successie Oorlog
+tvg_100/tvg_100_page_56.txt:de Koude Oorlog
+tvg_100/tvg_100_page_56.txt:De Algerijnse oorlog
+tvg_100/tvg_100_page_612.txt:de Grote Noordse Oorlog
+tvg_100/tvg_100_page_612.txt:de Zevenjarige Oorlog
+tvg_100/tvg_100_page_615.txt:de Dertigjarige Oorlog
+tvg_100/tvg_100_page_62.txt:de Algerijnse oorlog
+tvg_100/tvg_100_page_63.txt:de Koude Oorlog
+tvg_101/tvg_101_page_131.txt:de Koude Oorlog
+tvg_101/tvg_101_page_241.txt:grote Perzische oorlog
+tvg_101/tvg_101_page_279.txt:de Zevenjarige Oorlog
+tvg_101/tvg_101_page_281.txt:de Beierse Successie-Oorlog
+tvg_101/tvg_101_page_313.txt:de Spaans-Amerikaanse oorlog
+tvg_101/tvg_101_page_313.txt:de Spaans-Amerikaanse oorlog
+tvg_101/tvg_101_page_456.txt:de Chinees-Japanse oorlog
+tvg_101/tvg_101_page_48.txt:de Russisch-Japanse oorlog
+tvg_101/tvg_101_page_69.txt:de Zevenjarige oorlog
+tvg_102/tvg_102_page_130.txt:de Dertigjarige Oorlog
+tvg_102/tvg_102_page_162.txt:de Koude Oorlog
+tvg_102/tvg_102_page_162.txt:de Koude Oorlog
+tvg_102/tvg_102_page_166.txt:de Java-oorlog
+tvg_102/tvg_102_page_289.txt:de Europese oorlog
+tvg_102/tvg_102_page_314.txt:onderhavige De oorlog
+tvg_102/tvg_102_page_341.txt:de Groote Oorlog
+tvg_102/tvg_102_page_350.txt:de Vendée-oorlog
+tvg_102/tvg_102_page_40.txt:De Hollandse Oorlog
+tvg_102/tvg_102_page_40.txt:de Negenjarige Oorlog
+tvg_102/tvg_102_page_46.txt:de Frans-Spaanse oorlog
+tvg_102/tvg_102_page_477.txt:de Vierde Engelse Oorlog
+tvg_102/tvg_102_page_504.txt:zogenaamde Socratische oorlog
+tvg_102/tvg_102_page_519.txt:de Vierde Engelse Oorlog
+tvg_102/tvg_102_page_589.txt:de Europese oorlog
+tvg_103/tvg_103_page_123.txt:de Zevenjarige Oorlog
+tvg_103/tvg_103_page_147.txt:de Vietnam-oorlog
+tvg_103/tvg_103_page_167.txt:de Koude Oorlog
+tvg_103/tvg_103_page_169.txt:de Koude Oorlog
+tvg_103/tvg_103_page_19.txt:de Frans-Habsburgse oorlog
+tvg_103/tvg_103_page_31.txt:de Beierse Successie-Oorlog
+tvg_103/tvg_103_page_330.txt:de Noordse Oorlog
+tvg_103/tvg_103_page_330.txt:de Vierde Engelse Oorlog
+tvg_103/tvg_103_page_487.txt:de Gothische Oorlog
+tvg_103/tvg_103_page_487.txt:tweede Gothische oorlog
+tvg_103/tvg_103_page_492.txt:de Byzantijnse oorlog
+tvg_103/tvg_103_page_544.txt:De Arkelse oorlog
+tvg_103/tvg_103_page_569.txt:de Koude Oorlog
+tvg_103/tvg_103_page_569.txt:de Koude Oorlog
+tvg_103/tvg_103_page_670.txt:de Tweede Engelse Oorlog
+tvg_103/tvg_103_page_672.txt:de Europese oorlog
+tvg_103/tvg_103_page_681.txt:de Tachtigjarige Oorlog
+tvg_103/tvg_103_page_692.txt:een Europese oorlog
+tvg_104/tvg_104_page_125.txt:de Koude Oorlog
+tvg_104/tvg_104_page_216.txt:de Tachtigjarige Oorlog
+tvg_104/tvg_104_page_216.txt:de Dertigjarige oorlog
+tvg_104/tvg_104_page_223.txt:de Dertigjarige Oorlog
+tvg_104/tvg_104_page_26.txt:de Russisch-Japanse oorlog
+tvg_104/tvg_104_page_312.txt:de Koude Oorlog
+tvg_104/tvg_104_page_312.txt:De Koude Oorlog
+tvg_104/tvg_104_page_312.txt:de Koude Oorlog
+tvg_104/tvg_104_page_312.txt:de Koude Oorlog
+tvg_104/tvg_104_page_312.txt:de Koude Oorlog
+tvg_104/tvg_104_page_312.txt:de Koude Oorlog
+tvg_104/tvg_104_page_312.txt:de Koude Oorlog
+tvg_104/tvg_104_page_312.txt:de Korea-oorlog
+tvg_104/tvg_104_page_314.txt:de Koreaanse Oorlog
+tvg_104/tvg_104_page_4.txt:de Peloponnesische Oorlog
+tvg_104/tvg_104_page_436.txt:de Frans-Duitse oorlog
+tvg_104/tvg_104_page_459.txt:op Johnsons oorlog
+tvg_104/tvg_104_page_500.txt:een Europese oorlog
+tvg_104/tvg_104_page_503.txt:grote Europese oorlog
+tvg_104/tvg_104_page_503.txt:mingen Eerste Silezische oorlog
+tvg_104/tvg_104_page_503.txt:en Tweede Silezische oorlog
+tvg_104/tvg_104_page_506.txt:de Tweede Silezische oorlog
+tvg_104/tvg_104_page_511.txt:Derde Silezische oorlog
+tvg_104/tvg_104_page_516.txt:den Pruissischen oorlog
+tvg_104/tvg_104_page_524.txt:de Zevenjarige oorlog
+tvg_104/tvg_104_page_577.txt:De Frans-Duitse oorlog
+tvg_104/tvg_104_page_61.txt:de Peloponnesische oorlog
+tvg_104/tvg_104_page_651.txt:De Arkelse Oorlog
+tvg_104/tvg_104_page_91.txt:de Dertigjarige Oorlog
+tvg_104/tvg_104_page_91.txt:vreselijke Dertigjarige Oorlog
+tvg_104/tvg_104_page_97.txt:De Spaanse Successie-oorlog
+tvg_105/tvg_105_page_139.txt:de Tachtigjarigen Oorlog
+tvg_105/tvg_105_page_162.txt:de Koude Oorlog
+tvg_105/tvg_105_page_167.txt:de Arkelse oorlog
+tvg_105/tvg_105_page_169.txt:de Arkelse oorlog
+tvg_105/tvg_105_page_176.txt:de Arkelse oorlog
+tvg_105/tvg_105_page_177.txt:de Friese oorlog
+tvg_105/tvg_105_page_177.txt:de Friese oorlog
+tvg_105/tvg_105_page_178.txt:de Friese oorlog
+tvg_105/tvg_105_page_178.txt:de Arkelse oorlog
+tvg_105/tvg_105_page_178.txt:de Arkelse oorlog
+tvg_105/tvg_105_page_185.txt:de Tachtigjarige oorlog
+tvg_105/tvg_105_page_208.txt:we Trojaanse oorlog
+tvg_105/tvg_105_page_212.txt:de Trojaanse oorlog
+tvg_105/tvg_105_page_257.txt:de Honderdjarige Oorlog
+tvg_105/tvg_105_page_258.txt:de Honderdjarige Oorlog
+tvg_105/tvg_105_page_258.txt:een Honderdjarige Oorlog
+tvg_105/tvg_105_page_261.txt:De Arkelse oorlog
+tvg_105/tvg_105_page_261.txt:de Arkelse oorlog
+tvg_105/tvg_105_page_265.txt:de Lijflandse oorlog
+tvg_105/tvg_105_page_266.txt:de Noordse oorlog
+tvg_105/tvg_105_page_284.txt:de Frans-Duitse oorlog
+tvg_105/tvg_105_page_309.txt:proefschrift De Arkelse oorlog
+tvg_105/tvg_105_page_386.txt:de Atjeh-oorlog
+tvg_105/tvg_105_page_453.txt:de Atjeh-oorlog
+tvg_105/tvg_105_page_502.txt:de Koude Oorlog
+tvg_105/tvg_105_page_503.txt:de Koude Oorlog
+tvg_105/tvg_105_page_531.txt:de Chaco-oorlog
+tvg_105/tvg_105_page_537.txt:de Koude Oorlog
+tvg_105/tvg_105_page_593.txt:de Koude Oorlog
+tvg_105/tvg_105_page_612.txt:de Koude Oorlog
+tvg_105/tvg_105_page_646.txt:de Dertigjarige Oorlog
+tvg_105/tvg_105_page_646.txt:de Dertigjarige Oorlog
+tvg_105/tvg_105_page_646.txt:de Dertigjarige oorlog
+tvg_105/tvg_105_page_646.txt:de Dertigjarige Oorlog
+tvg_105/tvg_105_page_678.txt:de Krim-oorlog
+tvg_105/tvg_105_page_68.txt:de Negenjarige oorlog
+tvg_105/tvg_105_page_685.txt:de Pacific-oorlog
+tvg_105/tvg_105_page_686.txt:de Frans-Duitse oorlog
+tvg_105/tvg_105_page_686.txt:de Frans-Duitse oorlog
+tvg_105/tvg_105_page_697.txt:de Grote Vaderlandse Oorlog
+tvg_105/tvg_105_page_76.txt:tweede Punische oorlog
+tvg_105/tvg_105_page_773.txt:De Arkelse oorlog
+tvg_106/tvg_106_page_108.txt:de Russisch-Turkse oorlog
+tvg_106/tvg_106_page_111.txt:Geen Koude Oorlog
+tvg_106/tvg_106_page_197.txt:de Vierde Engelse Oorlog
+tvg_106/tvg_106_page_283.txt:De Duits-Franse oorlog
+tvg_106/tvg_106_page_376.txt:de Frans-Duitse oorlog
+tvg_106/tvg_106_page_407.txt:de Peloponnesische oorlog
+tvg_106/tvg_106_page_447.txt:de Hollandse oorlog
+tvg_106/tvg_106_page_609.txt:Vierde Noordse Oorlog
+tvg_106/tvg_106_page_80.txt:de Tachtigjarige Oorlog
+tvg_107/tvg_107_page_151.txt:Van Koude Oorlog
+tvg_107/tvg_107_page_199.txt:De Friese oorlog
+tvg_107/tvg_107_page_255.txt:de Eerste Heilige Oorlog
+tvg_107/tvg_107_page_255.txt:de Melische oorlog
+tvg_107/tvg_107_page_511.txt:de Gentse oorlog
+tvg_107/tvg_107_page_574.txt:de Suez-oorlog
+tvg_107/tvg_107_page_602.txt:De Friese oorlog
+tvg_107/tvg_107_page_645.txt:de Vietnamese oorlog
+tvg_107/tvg_107_page_671.txt:De Friese oorlog
+tvg_107/tvg_107_page_99.txt:eigen Tachtigjarige Oorlog
+tvg_108/tvg_108_page_166.txt:Jacob Burckhardts Kultur Oorlog
+tvg_108/tvg_108_page_265.txt:De Java-oorlog
+tvg_108/tvg_108_page_270.txt:de Koreaanse Oorlog
+tvg_108/tvg_108_page_389.txt:de Dertigjarige oorlog
+tvg_108/tvg_108_page_392.txt:de Peloponnesische oorlog
+tvg_108/tvg_108_page_428.txt:de Koreaanse oorlog
+tvg_108/tvg_108_page_96.txt:De Krim-oorlog
+tvg_108/tvg_108_page_96.txt:grootste Europese oorlog
+tvg_109/tvg_109_page_229.txt:zijn Gallische Oorlog
+tvg_109/tvg_109_page_24.txt:de Tweede Punische Oorlog
+tvg_109/tvg_109_page_249.txt:de Eerste Engelse Oorlog
+tvg_109/tvg_109_page_25.txt:Tweede Punische Oorlog
+tvg_109/tvg_109_page_279.txt:de Koude Oorlog
+tvg_109/tvg_109_page_279.txt:de Koude Oorlog
+tvg_109/tvg_109_page_280.txt:de Koude Oorlog
+tvg_109/tvg_109_page_280.txt:de Koude Oorlog
+tvg_109/tvg_109_page_280.txt:de Koude Oorlog
+tvg_109/tvg_109_page_280.txt:een Koude Oorlog
+tvg_109/tvg_109_page_280.txt:die Koude Oorlog
+tvg_109/tvg_109_page_297.txt:de Grote Noordse Oorlog
+tvg_109/tvg_109_page_552.txt:de Honderdjarige Oorlog
+tvg_109/tvg_109_page_555.txt:de Negenjarige Oorlog
+tvg_109/tvg_109_page_607.txt:de Koude Oorlog
+tvg_11/tvg_11_page_148.txt:den Spaansclren oorlog
+tvg_11/tvg_11_page_149.txt:gevolgde Spaansche oorlog
+tvg_11/tvg_11_page_385.txt:laatsten Chineesch-Japanschen oorlog
+tvg_110/tvg_110_page_224.txt:de Honderdjarige Oorlog
+tvg_110/tvg_110_page_245.txt:de Java-oorlog
+tvg_110/tvg_110_page_253.txt:grootste Europese oorlog
+tvg_110/tvg_110_page_256.txt:de Koude Oorlog
+tvg_110/tvg_110_page_276.txt:de Koude Oorlog
+tvg_110/tvg_110_page_281.txt:De Peloponnesische oorlog
+tvg_110/tvg_110_page_281.txt:over De oorlog
+tvg_110/tvg_110_page_281.txt:de Tweede Punische Oorlog
+tvg_110/tvg_110_page_282.txt:verschenen De Joodse oorlog
+tvg_110/tvg_110_page_36.txt:de Duitse oorlog
+tvg_110/tvg_110_page_384.txt:de Noordse oorlog
+tvg_110/tvg_110_page_403.txt:de Koude Oorlog
+tvg_110/tvg_110_page_409.txt:de Koude Oorlog
+tvg_110/tvg_110_page_502.txt:Grote Vaderlandse Oorlog
+tvg_110/tvg_110_page_505.txt:de Koude Oorlog
+tvg_110/tvg_110_page_505.txt:de Koude Oorlog
+tvg_110/tvg_110_page_527.txt:de Koude Oorlog
+tvg_110/tvg_110_page_564.txt:de Koude Oorlog
+tvg_110/tvg_110_page_82.txt:noodlottige Zevenjarige Oorlog
+tvg_111/tvg_111_page_141.txt:de Falkland-oorlog
+tvg_111/tvg_111_page_147.txt:de Koude Oorlog
+tvg_111/tvg_111_page_156.txt:de Koude Oorlog
+tvg_111/tvg_111_page_156.txt:de Koude Oorlog
+tvg_111/tvg_111_page_207.txt:de Frans-Engelse oorlog
+tvg_111/tvg_111_page_23.txt:Grote Oosterse Oorlog
+tvg_111/tvg_111_page_30.txt:de Golf Oorlog
+tvg_111/tvg_111_page_311.txt:de Koude Oorlog
+tvg_111/tvg_111_page_445.txt:De Koude Oorlog
+tvg_111/tvg_111_page_452.txt:de Koude Oorlog
+tvg_111/tvg_111_page_452.txt:de Korea-oorlog
+tvg_111/tvg_111_page_452.txt:de Koude Oorlog
+tvg_111/tvg_111_page_452.txt:de Koude Oorlog
+tvg_111/tvg_111_page_453.txt:de Koude Oorlog
+tvg_111/tvg_111_page_453.txt:De Korea-oorlog
+tvg_111/tvg_111_page_453.txt:de Koude Oorlog
+tvg_111/tvg_111_page_454.txt:de Koude Oorlog
+tvg_111/tvg_111_page_520.txt:de Koude Oorlog
+tvg_111/tvg_111_page_528.txt:de Koude Oorlog
+tvg_112/tvg_112_page_144.txt:de Koude Oorlog
+tvg_112/tvg_112_page_230.txt:de Gurkha-oorlog
+tvg_112/tvg_112_page_262.txt:de Koude Oorlog
+tvg_112/tvg_112_page_262.txt:de Koude Oorlog
+tvg_112/tvg_112_page_263.txt:de Koude Oorlog
+tvg_112/tvg_112_page_303.txt:en Koude Oorlog
+tvg_112/tvg_112_page_318.txt:de Koude Oorlog
+tvg_112/tvg_112_page_318.txt:de Koude Oorlog
+tvg_112/tvg_112_page_318.txt:de Koude Oorlog
+tvg_112/tvg_112_page_326.txt:de Vierde Engelse Oorlog
+tvg_112/tvg_112_page_35.txt:de Dertigjarige Oorlog
+tvg_112/tvg_112_page_459.txt:de Dertigjarige Oorlog
+tvg_112/tvg_112_page_459.txt:een Europese oorlog
+tvg_112/tvg_112_page_459.txt:de Dertigjarige Oorlog
+tvg_112/tvg_112_page_460.txt:de Dertigjarige Oorlog
+tvg_112/tvg_112_page_482.txt:de Grote Oorlog
+tvg_112/tvg_112_page_489.txt:de Koude oorlog
+tvg_112/tvg_112_page_496.txt:de Koude oorlog
+tvg_112/tvg_112_page_496.txt:de Korea-oorlog
+tvg_112/tvg_112_page_501.txt:de Koude Oorlog
+tvg_112/tvg_112_page_620.txt:Die Suid-Afrikaanse oorlog
+tvg_113/tvg_113_page_136.txt:de Koude Oorlog
+tvg_113/tvg_113_page_137.txt:de Koude Oorlog
+tvg_113/tvg_113_page_144.txt:de Koude oorlog
+tvg_113/tvg_113_page_144.txt:de Koude oorlog
+tvg_113/tvg_113_page_145.txt:de Koude Oorlog
+tvg_113/tvg_113_page_145.txt:de Koude Oorlog
+tvg_113/tvg_113_page_146.txt:de Koude Oorlog
+tvg_113/tvg_113_page_151.txt:eindigende Peloponnesische Oorlog
+tvg_113/tvg_113_page_185.txt:de Koude Oorlog
+tvg_113/tvg_113_page_188.txt:de Koude Oorlog
+tvg_113/tvg_113_page_233.txt:Tweede Punische Oorlog
+tvg_113/tvg_113_page_297.txt:de Koude Oorlog
+tvg_113/tvg_113_page_30.txt:de Ruwisch-Poolse oorlog
+tvg_113/tvg_113_page_350.txt:de Grote Vaderlandse Oorlog
+tvg_113/tvg_113_page_424.txt:het Noorderkwartier Oorlog
+tvg_113/tvg_113_page_424.txt:de Nederlandse Oorlog
+tvg_113/tvg_113_page_454.txt:de Koude Oorlog
+tvg_113/tvg_113_page_468.txt:de Koude Oorlog
+tvg_113/tvg_113_page_469.txt:klassieke Koude Oorlog
+tvg_113/tvg_113_page_474.txt:herleving Koude Oorlog
+tvg_113/tvg_113_page_582.txt:De Seminolen oorlog
+tvg_113/tvg_113_page_610.txt:de Koude Oorlog
+tvg_113/tvg_113_page_613.txt:Het Studiecentrum Oorlog
+tvg_113/tvg_113_page_621.txt:De Koude Oorlog
+tvg_113/tvg_113_page_79.txt:de Trojaanse oorlog
+tvg_114/tvg_114_page_108.txt:de Koreaanse oorlog
+tvg_114/tvg_114_page_109.txt:de Atlantische oorlog
+tvg_114/tvg_114_page_138.txt:de Grote Vaderlandse oorlog
+tvg_114/tvg_114_page_138.txt:de Koude oorlog
+tvg_114/tvg_114_page_139.txt:de Koude Oorlog
+tvg_114/tvg_114_page_139.txt:de Koude Oorlog
+tvg_114/tvg_114_page_140.txt:de Koude Oorlog
+tvg_114/tvg_114_page_141.txt:de Koude Oorlog
+tvg_114/tvg_114_page_141.txt:de Koude Oorlog
+tvg_114/tvg_114_page_141.txt:de Koude Oorlog
+tvg_114/tvg_114_page_142.txt:De Koude Oorlog
+tvg_114/tvg_114_page_147.txt:de Vietnam-oorlog
+tvg_114/tvg_114_page_16.txt:de Trojaanse oorlog
+tvg_114/tvg_114_page_166.txt:de Honderdjarige Oorlog
+tvg_114/tvg_114_page_166.txt:de Honderdjarige Oorlog
+tvg_114/tvg_114_page_170.txt:de Koude Oorlog
+tvg_114/tvg_114_page_227.txt:de Koude Oorlog
+tvg_114/tvg_114_page_227.txt:de Koude Oorlog
+tvg_114/tvg_114_page_227.txt:de Koude Oorlog
+tvg_114/tvg_114_page_227.txt:de Koude Oorlog
+tvg_114/tvg_114_page_227.txt:de Koude Oorlog
+tvg_114/tvg_114_page_228.txt:de Koude Oorlog
+tvg_114/tvg_114_page_228.txt:de Koude Oorlog
+tvg_114/tvg_114_page_228.txt:de Koude Oorlog
+tvg_114/tvg_114_page_228.txt:de Koude Oorlog
+tvg_114/tvg_114_page_229.txt:de Koude Oorlog
+tvg_114/tvg_114_page_229.txt:de Koude Oorlog
+tvg_114/tvg_114_page_229.txt:De Koude Oorlog
+tvg_114/tvg_114_page_229.txt:de Koude Oorlog
+tvg_114/tvg_114_page_231.txt:de Koude Oorlog
+tvg_114/tvg_114_page_231.txt:de Koude Oorlog
+tvg_114/tvg_114_page_231.txt:de Koude Oorlog
+tvg_114/tvg_114_page_231.txt:de Koude Oorlog
+tvg_114/tvg_114_page_232.txt:de Koude Oorlog
+tvg_114/tvg_114_page_232.txt:de Koude Oorlog
+tvg_114/tvg_114_page_232.txt:de Koude Oorlog
+tvg_114/tvg_114_page_232.txt:de Koude Oorlog
+tvg_114/tvg_114_page_233.txt:de Koude Oorlog
+tvg_114/tvg_114_page_233.txt:de Koude Oorlog
+tvg_114/tvg_114_page_234.txt:een Koude Oorlog
+tvg_114/tvg_114_page_234.txt:de Koude Oorlog
+tvg_114/tvg_114_page_235.txt:de Koude Oorlog
+tvg_114/tvg_114_page_236.txt:de Koude Oorlog
+tvg_114/tvg_114_page_237.txt:de Koude Oorlog
+tvg_114/tvg_114_page_237.txt:de Koude Oorlog
+tvg_114/tvg_114_page_237.txt:de Koude Oorlog
+tvg_114/tvg_114_page_238.txt:De Koude Oorlog
+tvg_114/tvg_114_page_238.txt:de Koude Oorlog
+tvg_114/tvg_114_page_240.txt:de Koude Oorlog
+tvg_114/tvg_114_page_240.txt:de Koude Oorlog
+tvg_114/tvg_114_page_240.txt:de Koude Oorlog
+tvg_114/tvg_114_page_240.txt:de Koude Oorlog
+tvg_114/tvg_114_page_240.txt:de Koude Oorlog
+tvg_114/tvg_114_page_241.txt:de Koude Oorlog
+tvg_114/tvg_114_page_241.txt:de Koude Oorlog
+tvg_114/tvg_114_page_242.txt:de Koude Oorlog
+tvg_114/tvg_114_page_242.txt:uit Ronald Havenaars Van Koude Oorlog
+tvg_114/tvg_114_page_242.txt:de Koude Oorlog
+tvg_114/tvg_114_page_242.txt:in Koude Oorlog
+tvg_114/tvg_114_page_243.txt:de Koude Oorlog
+tvg_114/tvg_114_page_245.txt:de Koude Oorlog
+tvg_114/tvg_114_page_247.txt:de Koude Oorlog
+tvg_114/tvg_114_page_247.txt:de Koude Oorlog
+tvg_114/tvg_114_page_247.txt:de Koude Oorlog
+tvg_114/tvg_114_page_248.txt:de Koude Oorlog
+tvg_114/tvg_114_page_248.txt:de Koude Oorlog
+tvg_114/tvg_114_page_248.txt:de Koude Oorlog
+tvg_114/tvg_114_page_25.txt:de Peloponnesische Oorlog
+tvg_114/tvg_114_page_27.txt:de Peloponnesische Oorlog
+tvg_114/tvg_114_page_27.txt:de Perzische Oorlog
+tvg_114/tvg_114_page_284.txt:de Dertigjarige Oorlog
+tvg_114/tvg_114_page_297.txt:de Spaans-Amerikaanse oorlog
+tvg_114/tvg_114_page_304.txt:De Koude Oorlog
+tvg_114/tvg_114_page_305.txt:de Koude Oorlog
+tvg_114/tvg_114_page_311.txt:de Koude Oorlog
+tvg_114/tvg_114_page_311.txt:het Koude Oorlog
+tvg_114/tvg_114_page_311.txt:de Vietnam Oorlog
+tvg_114/tvg_114_page_311.txt:latere Vietnam Oorlog
+tvg_114/tvg_114_page_312.txt:de Korea Oorlog
+tvg_114/tvg_114_page_320.txt:de Koude Oorlog
+tvg_114/tvg_114_page_466.txt:de Dertigjarige Oorlog
+tvg_114/tvg_114_page_475.txt:de Chinees-japanse oorlog
+tvg_114/tvg_114_page_475.txt:de Koude Oorlog
+tvg_114/tvg_114_page_476.txt:de Russisch-Japanse oorlog
+tvg_114/tvg_114_page_477.txt:de Koude Oorlog
+tvg_114/tvg_114_page_477.txt:de Spaans-Amerikaanse Oorlog
+tvg_114/tvg_114_page_482.txt:de Koude Oorlog
+tvg_114/tvg_114_page_482.txt:de Koude Oorlog
+tvg_114/tvg_114_page_522.txt:eerste Punische oorlog
+tvg_114/tvg_114_page_530.txt:de Peloponesische oorlog
+tvg_114/tvg_114_page_534.txt:de Tweede Punische Oorlog
+tvg_114/tvg_114_page_553.txt:van Koude Oorlog
+tvg_114/tvg_114_page_554.txt:de Koude Oorlog
+tvg_114/tvg_114_page_595.txt:de Perzische oorlog
+tvg_114/tvg_114_page_599.txt:de Eerste Punische Oorlog
+tvg_115/tvg_115_page_123.txt:desastreuze Vierde Engelse Oorlog
+tvg_115/tvg_115_page_124.txt:DeVierde Engelse Oorlog
+tvg_115/tvg_115_page_146.txt:de Koude Oorlog
+tvg_115/tvg_115_page_196.txt:de Koude Oorlog
+tvg_115/tvg_115_page_280.txt:de Peloponnesische oorlog
+tvg_115/tvg_115_page_280.txt:in De Peloponnesische Oorlog
+tvg_115/tvg_115_page_341.txt:de Koude Oorlog
+tvg_115/tvg_115_page_342.txt:de Koude Oorlog
+tvg_115/tvg_115_page_343.txt:de Koude Oorlog
+tvg_115/tvg_115_page_472.txt:de Dertigjarige Oorlog
+tvg_115/tvg_115_page_473.txt:de Dertigjarige Oorlog
+tvg_115/tvg_115_page_474.txt:de Spaans-Nederlandse oorlog
+tvg_115/tvg_115_page_474.txt:de Dertigjarige Oorlog
+tvg_115/tvg_115_page_482.txt:de Algerĳnse oorlog
+tvg_115/tvg_115_page_496.txt:de Koude Oorlog
+tvg_115/tvg_115_page_531.txt:de Vierde Engelse Oorlog
+tvg_115/tvg_115_page_531.txt:empqgnir Missen oorlog
+tvg_115/tvg_115_page_537.txt:de Zevenjarige Oorlog
+tvg_115/tvg_115_page_537.txt:de Engelse Oorlog
+tvg_115/tvg_115_page_539.txt:de Engelse Oorlog
+tvg_115/tvg_115_page_540.txt:de Vierde Engelse Oorlog
+tvg_115/tvg_115_page_542.txt:de Vierde Engelse Oorlog
+tvg_115/tvg_115_page_542.txt:de Vierde Engelse Oorlog
+tvg_115/tvg_115_page_556.txt:de Fransen oorlog
+tvg_115/tvg_115_page_600.txt:de Heilige Oorlog
+tvg_115/tvg_115_page_637.txt:de Algerijnse oorlog
+tvg_116/tvg_116_page_113.txt:De Honderdjarige Oorlog
+tvg_116/tvg_116_page_122.txt:de Dertigarige Oorlog
+tvg_116/tvg_116_page_123.txt:de Dertigarige Oorlog
+tvg_116/tvg_116_page_205.txt:de Koude Oorlog
+tvg_116/tvg_116_page_257.txt:de Vuile Oorlog
+tvg_116/tvg_116_page_301.txt:de Tachtigjarige Oorlog
+tvg_116/tvg_116_page_367.txt:de Grote Oorlog
+tvg_116/tvg_116_page_368.txt:grote Europese oorlog
+tvg_116/tvg_116_page_368.txt:lìe Europeesche Oorlog
+tvg_116/tvg_116_page_368.txt:lìe Europeesche Oorlog
+tvg_116/tvg_116_page_369.txt:lìe Eumpecwlie Oorlog
+tvg_116/tvg_116_page_372.txt:De Europeesche Oorlog
+tvg_116/tvg_116_page_374.txt:een Europese oorlog
+tvg_116/tvg_116_page_377.txt:38 De oorlog
+tvg_116/tvg_116_page_379.txt:den Transvaalsclien oorlog
+tvg_116/tvg_116_page_457.txt:de Koude Oorlog
+tvg_116/tvg_116_page_457.txt:De Koude Oorlog
+tvg_116/tvg_116_page_458.txt:de Koude Oorlog
+tvg_116/tvg_116_page_459.txt:de Koude Oorlog
+tvg_116/tvg_116_page_460.txt:de Koude Oorlog
+tvg_116/tvg_116_page_463.txt:de Koude Oorlog
+tvg_116/tvg_116_page_484.txt:de Tweede Engelse Oorlog
+tvg_116/tvg_116_page_501.txt:de Frans-Duitse oorlog
+tvg_116/tvg_116_page_550.txt:de Koude Oorlog
+tvg_116/tvg_116_page_550.txt:de Koude Oorlog
+tvg_116/tvg_116_page_572.txt:de Peloponnesische oorlog
+tvg_116/tvg_116_page_592.txt:de Dertigjarige Oorlog
+tvg_116/tvg_116_page_595.txt:en Karel oorlog
+tvg_116/tvg_116_page_602.txt:de Negenjarige Oorlog
+tvg_116/tvg_116_page_603.txt:de Negenjarige oorlog
+tvg_116/tvg_116_page_631.txt:de Koude Oorlog
+tvg_116/tvg_116_page_98.txt:de Koude Oorlog
+tvg_117/tvg_117_page_107.txt:de Vierde Engelse oorlog
+tvg_117/tvg_117_page_108.txt:de Koude Oorlog
+tvg_117/tvg_117_page_124.txt:de Tachtigjarige oorlog
+tvg_117/tvg_117_page_131.txt:de Dertigjarige Oorlog
+tvg_117/tvg_117_page_132.txt:de Dertigjarige Oorlog
+tvg_117/tvg_117_page_148.txt:de Koude Oorlog
+tvg_117/tvg_117_page_174.txt:culturele Koude Oorlog
+tvg_117/tvg_117_page_268.txt:de Koude Oorlog
+tvg_117/tvg_117_page_322.txt:de Gentse oorlog
+tvg_117/tvg_117_page_347.txt:de Vietnam-oorlog
+tvg_117/tvg_117_page_348.txt:de Vietnam-oorlog
+tvg_117/tvg_117_page_361.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_361.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_361.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_363.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_365.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_365.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_365.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_367.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_367.txt:de Koreaanse Oorlog
+tvg_117/tvg_117_page_368.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_368.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_369.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_371.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_372.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_373.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_375.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_375.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_376.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_376.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_377.txt:de Vieumm Oorlog
+tvg_117/tvg_117_page_377.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_378.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_378.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_379.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_380.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_381.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_383.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_385.txt:de Vietxmm Oorlog
+tvg_117/tvg_117_page_387.txt:de Vietnam Oorlog
+tvg_117/tvg_117_page_393.txt:de Koude Oorlog
+tvg_117/tvg_117_page_412.txt:De Grote Oorlog
+tvg_117/tvg_117_page_45.txt:de Pacĳïr oorlog
+tvg_117/tvg_117_page_563.txt:de Keizer oorlog
+tvg_117/tvg_117_page_572.txt:de Trojaanse Oorlog
+tvg_117/tvg_117_page_589.txt:de Koude Oorlog
+tvg_117/tvg_117_page_605.txt:de Dertigarige Oorlog
+tvg_117/tvg_117_page_612.txt:de Tachtigjarige Oorlog
+tvg_117/tvg_117_page_VI.txt:De Tachtigjarige Oorlog
+tvg_118/tvg_118_page_10.txt:De Groote Oorlog
+tvg_118/tvg_118_page_108.txt:de Eerste Engelse Oorlog
+tvg_118/tvg_118_page_122.txt:de Koude Oorlog
+tvg_118/tvg_118_page_122.txt:De Koude Oorlog
+tvg_118/tvg_118_page_122.txt:De Koude Oorlog
+tvg_118/tvg_118_page_122.txt:de Koude Oorlog
+tvg_118/tvg_118_page_122.txt:de Koude Oorlog
+tvg_118/tvg_118_page_201.txt:beginnende Koude Oorlog
+tvg_118/tvg_118_page_205.txt:de Koude Oorlog
+tvg_118/tvg_118_page_234.txt:de Tachtigjarige Oorlog
+tvg_118/tvg_118_page_279.txt:de Koude Oorlog
+tvg_118/tvg_118_page_301.txt:de Zevenjarige Oorlog
+tvg_118/tvg_118_page_319.txt:de Koude Oorlog
+tvg_118/tvg_118_page_319.txt:de Koude Oorlog
+tvg_118/tvg_118_page_335.txt:de Koude Oorlog
+tvg_118/tvg_118_page_335.txt:de Koude Oorlog
+tvg_118/tvg_118_page_338.txt:de Koude Oorlog
+tvg_118/tvg_118_page_384.txt:de Heilige Oorlog
+tvg_118/tvg_118_page_403.txt:de Tachtigarige Oorlog
+tvg_118/tvg_118_page_469.txt:18 Aan Karels oorlog
+tvg_118/tvg_118_page_469.txt:de Frankische oorlog
+tvg_118/tvg_118_page_535.txt:de Grote Oorlog
+tvg_118/tvg_118_page_572.txt:de Vietnam-oorlog
+tvg_118/tvg_118_page_601.txt:eerste Frans-Habsburgse oorlog
+tvg_118/tvg_118_page_625.txt:beginnende Koude Oorlog
+tvg_118/tvg_118_page_63.txt:de Koude Oorlog
+tvg_118/tvg_118_page_74.txt:en Tweede Punische Oorlog
+tvg_119/tvg_119_page_125.txt:de Tachtigjarige Oorlog
+tvg_119/tvg_119_page_125.txt:De Tachtigjarige Oorlog
+tvg_119/tvg_119_page_125.txt:de Tachtigjarige Oorlog
+tvg_119/tvg_119_page_150.txt:de Korea oorlog
+tvg_119/tvg_119_page_154.txt:de Koude Oorlog
+tvg_119/tvg_119_page_161.txt:de Algerijnse oorlog
+tvg_119/tvg_119_page_163.txt:de Algerĳnse oorlog
+tvg_119/tvg_119_page_217.txt:de Koude Oorlog
+tvg_119/tvg_119_page_329.txt:de Frans-Duitse oorlog
+tvg_119/tvg_119_page_330.txt:de Tachtigjarige Oorlog
+tvg_119/tvg_119_page_336.txt:het Noarderkwartrer Oorlog
+tvg_119/tvg_119_page_406.txt:de Bondgenoten oorlog
+tvg_119/tvg_119_page_435.txt:de Grote Oorlog
+tvg_119/tvg_119_page_437.txt:de Koude Oorlog
+tvg_119/tvg_119_page_443.txt:de Koude Oorlog
+tvg_119/tvg_119_page_472.txt:de Koude Oorlog
+tvg_119/tvg_119_page_577.txt:de Koude Oorlog
+tvg_119/tvg_119_page_577.txt:de Koude Oorlog
+tvg_119/tvg_119_page_577.txt:de Koude Oorlog
+tvg_119/tvg_119_page_577.txt:beginnende Koude Oorlog
+tvg_119/tvg_119_page_98.txt:de Tachtigjarige Oorlog
+tvg_12/tvg_12_page_158.txt:le Engelsche oorlog
+tvg_12/tvg_12_page_55.txt:derden Silezischen oorlog
+tvg_12/tvg_12_page_IX.txt:3e Silezische oorlog
+tvg_120/tvg_120_page_133.txt:de Tachtigjarige Oorlog
+tvg_120/tvg_120_page_14.txt:de Geallieerde oorlog
+tvg_120/tvg_120_page_155.txt:de Koude Oorlog
+tvg_120/tvg_120_page_155.txt:de Koude Oorlog
+tvg_120/tvg_120_page_155.txt:de Koude Oorlog
+tvg_120/tvg_120_page_158.txt:de Koude Oorlog
+tvg_120/tvg_120_page_248.txt:tweede Punische Oorlog
+tvg_120/tvg_120_page_275.txt:de Koude Oorlog
+tvg_120/tvg_120_page_276.txt:de Koude Oorlog
+tvg_120/tvg_120_page_276.txt:de Koude Oorlog
+tvg_120/tvg_120_page_281.txt:de Koude Oorlog
+tvg_120/tvg_120_page_384.txt:de Tachtigjarige Oorlog
+tvg_120/tvg_120_page_425.txt:de Koude Oorlog
+tvg_120/tvg_120_page_425.txt:de Koude Oorlog
+tvg_120/tvg_120_page_43.txt:de Dertigjarige Oorlog
+tvg_120/tvg_120_page_43.txt:de Dertigjarige Oorlog
+tvg_120/tvg_120_page_440.txt:de Koude Oorlog
+tvg_120/tvg_120_page_440.txt:de Koude Oorlog
+tvg_120/tvg_120_page_440.txt:de Koude Oorlog
+tvg_120/tvg_120_page_461.txt:de Koude Oorlog
+tvg_120/tvg_120_page_462.txt:de Koude Oorlog
+tvg_120/tvg_120_page_473.txt:de Koude Oorlog
+tvg_120/tvg_120_page_515.txt:hele Koude Oorlog
+tvg_120/tvg_120_page_529.txt:de Tachtigjarige Oorlog
+tvg_120/tvg_120_page_575.txt:de Koude Oorlog
+tvg_120/tvg_120_page_580.txt:de Koude Oorlog
+tvg_120/tvg_120_page_583.txt:de Koude Oorlog
+tvg_120/tvg_120_page_588.txt:de Engels-Amerikaanse oorlog
+tvg_120/tvg_120_page_86.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_86.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_87.txt:de Algerijnse oorlog
+tvg_120/tvg_120_page_87.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_89.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_89.txt:tweede Algerĳnse oorlog
+tvg_120/tvg_120_page_89.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_90.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_90.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_91.txt:De Algerĳnse oorlog
+tvg_120/tvg_120_page_91.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_92.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_92.txt:de Algerijnse oorlog
+tvg_120/tvg_120_page_95.txt:de Algerĳnse oorlog
+tvg_120/tvg_120_page_97.txt:of Koude Oorlog
+tvg_120/tvg_120_page_99.txt:de Russisch-Turkse oorlog
+tvg_121/tvg_121_page_126.txt:ditionele Koude Oorlog
+tvg_121/tvg_121_page_149.txt:Nooit Meer Oorlog
+tvg_121/tvg_121_page_161.txt:de Koude Oorlog
+tvg_121/tvg_121_page_215.txt:de Peloponnesische Oorlog
+tvg_121/tvg_121_page_226.txt:e Tweede Engelse Oorlog
+tvg_121/tvg_121_page_226.txt:gebiedenTweede Engelse Oorlog
+tvg_121/tvg_121_page_236.txt:de Vendée-oorlog
+tvg_121/tvg_121_page_254.txt:de Vietnam-oorlog
+tvg_121/tvg_121_page_265.txt:de Irak-oorlog
+tvg_121/tvg_121_page_265.txt:De Irak-oorlog
+tvg_121/tvg_121_page_265.txt:de Irak-oorlog
+tvg_121/tvg_121_page_265.txt:de Irak-oorlog
+tvg_121/tvg_121_page_265.txt:de Koude Oorlog
+tvg_121/tvg_121_page_266.txt:de Koude Oorlog
+tvg_121/tvg_121_page_267.txt:de Koude Oorlog
+tvg_121/tvg_121_page_268.txt:de Korea-oorlog
+tvg_121/tvg_121_page_285.txt:de Koude Oorlog
+tvg_121/tvg_121_page_286.txt:de Koude Oorlog
+tvg_121/tvg_121_page_286.txt:de Koude Oorlog
+tvg_121/tvg_121_page_287.txt:De Koude Oorlog
+tvg_121/tvg_121_page_292.txt:de Oktober-oorlog
+tvg_121/tvg_121_page_292.txt:de Oktober-oorlog
+tvg_121/tvg_121_page_292.txt:de Arabisch-Israëlische Oktober-oorlog
+tvg_121/tvg_121_page_293.txt:tweede Koude Oorlog
+tvg_121/tvg_121_page_293.txt:tweede Koude Oorlog
+tvg_121/tvg_121_page_293.txt:tweede Koude Oorlog
+tvg_121/tvg_121_page_293.txt:nieuwe Koude Oorlog
+tvg_121/tvg_121_page_294.txt:Na Koude Oorlog
+tvg_121/tvg_121_page_295.txt:de Koude Oorlog
+tvg_121/tvg_121_page_295.txt:de Koude Oorlog
+tvg_121/tvg_121_page_295.txt:de Koude Oorlog
+tvg_121/tvg_121_page_295.txt:de Korea-oorlog
+tvg_121/tvg_121_page_315.txt:de Koude Oorlog
+tvg_121/tvg_121_page_325.txt:de Koude Oorlog
+tvg_121/tvg_121_page_343.txt:de Tachtigjarige oorlog
+tvg_121/tvg_121_page_37.txt:de Nederlandse oorlog
+tvg_121/tvg_121_page_370.txt:de Frans-Duitse oorlog
+tvg_121/tvg_121_page_372.txt:de Grote Oorlog
+tvg_121/tvg_121_page_375.txt:de Koude Oorlog
+tvg_121/tvg_121_page_375.txt:van Britsede Oorlog
+tvg_121/tvg_121_page_376.txt:de Koude Oorlog
+tvg_121/tvg_121_page_390.txt:de Tachtigjarige Oorlog
+tvg_121/tvg_121_page_393.txt:de Dertigjarige Oorlog
+tvg_121/tvg_121_page_393.txt:De Tachtigjarige Oorlog
+tvg_121/tvg_121_page_402.txt:de Grote Oorlog
+tvg_121/tvg_121_page_408.txt:krachtige Frans-Duitse oorlog
+tvg_121/tvg_121_page_41.txt:de Tachtigjarige Oorlog
+tvg_121/tvg_121_page_43.txt:voortschrijdende Tachtigjarige Oorlog
+tvg_121/tvg_121_page_43.txt:de Tachtigjarige Oorlog
+tvg_121/tvg_121_page_43.txt:de Tachtigjarige Oorlog
+tvg_121/tvg_121_page_43.txt:De Tachtigjarige Oorlog
+tvg_121/tvg_121_page_468.txt:de Koude Oorlog
+tvg_121/tvg_121_page_491.txt:De Frans-Duitse Oorlog
+tvg_121/tvg_121_page_54.txt:de Tachtigjarige Oorlog
+tvg_122/tvg_122_page_126.txt:de Koude Oorlog
+tvg_122/tvg_122_page_126.txt:ditionele Koude Oorlog
+tvg_122/tvg_122_page_137.txt:de Koude Oorlog
+tvg_122/tvg_122_page_149.txt:Nooit Meer Oorlog
+tvg_122/tvg_122_page_161.txt:de Koude Oorlog
+tvg_122/tvg_122_page_215.txt:de Peloponnesische Oorlog
+tvg_122/tvg_122_page_226.txt:e Tweede Engelse Oorlog
+tvg_122/tvg_122_page_226.txt:Tweede Engelse Oorlog
+tvg_122/tvg_122_page_236.txt:de Vendée-oorlog
+tvg_122/tvg_122_page_265.txt:de Irak-oorlog
+tvg_122/tvg_122_page_265.txt:de Koude Oorlog
+tvg_122/tvg_122_page_265.txt:de Irak-oorlog
+tvg_122/tvg_122_page_265.txt:De Irak-oorlog
+tvg_122/tvg_122_page_266.txt:de Koude Oorlog
+tvg_122/tvg_122_page_267.txt:de Koude Oorlog
+tvg_122/tvg_122_page_285.txt:de Koude Oorlog
+tvg_122/tvg_122_page_286.txt:de Koude Oorlog
+tvg_122/tvg_122_page_286.txt:de Koude Oorlog
+tvg_122/tvg_122_page_287.txt:De Koude Oorlog
+tvg_122/tvg_122_page_293.txt:tweede Koude Oorlog
+tvg_122/tvg_122_page_293.txt:tweede Koude Oorlog
+tvg_122/tvg_122_page_293.txt:tweede Koude Oorlog
+tvg_122/tvg_122_page_293.txt:nieuwe Koude Oorlog
+tvg_122/tvg_122_page_294.txt:Na Koude Oorlog
+tvg_122/tvg_122_page_295.txt:de Koude Oorlog
+tvg_122/tvg_122_page_295.txt:de Koude Oorlog
+tvg_122/tvg_122_page_295.txt:de Koude Oorlog
+tvg_122/tvg_122_page_315.txt:de Koude Oorlog
+tvg_122/tvg_122_page_325.txt:de Koude Oorlog
+tvg_122/tvg_122_page_343.txt:de Tachtigjarige oorlog
+tvg_122/tvg_122_page_37.txt:de Nederlandse oorlog
+tvg_122/tvg_122_page_370.txt:de Frans-Duitse oorlog
+tvg_122/tvg_122_page_372.txt:de Grote Oorlog
+tvg_122/tvg_122_page_375.txt:de Koude Oorlog
+tvg_122/tvg_122_page_376.txt:de Koude Oorlog
+tvg_122/tvg_122_page_390.txt:de Tachtigjarige Oorlog
+tvg_122/tvg_122_page_393.txt:de Dertigjarige Oorlog
+tvg_122/tvg_122_page_393.txt:De Tachtigjarige Oorlog
+tvg_122/tvg_122_page_402.txt:de Grote Oorlog
+tvg_122/tvg_122_page_41.txt:de Tachtigjarige Oorlog
+tvg_122/tvg_122_page_43.txt:voortschrijdende Tachtigjarige Oorlog
+tvg_122/tvg_122_page_43.txt:de Tachtigjarige Oorlog
+tvg_122/tvg_122_page_43.txt:de Tachtigjarige Oorlog
+tvg_122/tvg_122_page_43.txt:De Tachtigjarige Oorlog
+tvg_122/tvg_122_page_465.txt:de Koude Oorlog
+tvg_122/tvg_122_page_468.txt:de Koude Oorlog
+tvg_122/tvg_122_page_491.txt:De Frans-Duitse Oorlog
+tvg_122/tvg_122_page_510.txt:ontvouwende Koude Oorlog
+tvg_122/tvg_122_page_54.txt:de Tachtigjarige Oorlog
+tvg_13/tvg_13_page_370.txt:den Turksch-Grìekschen oorlog
+tvg_14/tvg_14_page_245.txt:den Java-oorlog
+tvg_14/tvg_14_page_52.txt:tegen Pruisen oorlog
+tvg_14/tvg_14_page_85.txt:den Marsischen oorlog
+tvg_15/tvg_15_page_119.txt:den Engelschrnan oorlog
+tvg_15/tvg_15_page_122.txt:den Tachtigjarigen oorlog
+tvg_15/tvg_15_page_127.txt:een Spaansch-Amerikaanschen oorlog
+tvg_15/tvg_15_page_159.txt:de Tachtigjarige oorlog
+tvg_15/tvg_15_page_184.txt:den Tachtigjarigen oorlog
+tvg_15/tvg_15_page_189.txt:den Padri-oorlog
+tvg_15/tvg_15_page_304.txt:den Tachtigjarigen oorlog
+tvg_15/tvg_15_page_V.txt:eerste Engelsche oorlog
+tvg_16/tvg_16_page_236.txt:eersten Punischen oorlog
+tvg_16/tvg_16_page_49.txt:den Russisch-Turkschen oorlog
+tvg_16/tvg_16_page_66.txt:De Noordsche oorlog
+tvg_16/tvg_16_page_99.txt:den Fransch-Duitschen oorlog
+tvg_16/tvg_16_page_VII.txt:den Eersten Punischen Oorlog
+tvg_17/tvg_17_page_104.txt:den Zweedschen oorlog
+tvg_18/tvg_18_page_103.txt:den Chineesch-Japanschen oorlog
+tvg_18/tvg_18_page_161.txt:den Sekoekoeni-oorlog
+tvg_18/tvg_18_page_180.txt:verhaalde Sekoekoeni-oorlog
+tvg_18/tvg_18_page_184.txt:de Kaffers oorlog
+tvg_18/tvg_18_page_2.txt:den Eersten Engelschen oorlog
+tvg_18/tvg_18_page_247.txt:den Noordschen oorlog
+tvg_19/tvg_19_page_142.txt:eersten Engelschen oorlog
+tvg_19/tvg_19_page_165.txt:de Heilige oorlog
+tvg_20/tvg_20_page_140.txt:4den Engelschen oorlog
+tvg_20/tvg_20_page_24.txt:den Gelderschen oorlog
+tvg_20/tvg_20_page_260.txt:tweede Engelsche oorlog
+tvg_20/tvg_20_page_VI.txt:4de Engelsche oorlog
+tvg_21/tvg_21_page_127.txt:3e Messenischen oorlog
+tvg_21/tvg_21_page_159.txt:den Russisch-Japanschen oorlog
+tvg_21/tvg_21_page_160.txt:den Krim-oorlog
+tvg_21/tvg_21_page_168.txt:de Russisch-Turksche oorlog
+tvg_21/tvg_21_page_215.txt:de Spaansche oorlog
+tvg_21/tvg_21_page_260.txt:den Zuid-Afrikaanschen oorlog
+tvg_21/tvg_21_page_261.txt:de Japansch-Russische oorlog
+tvg_21/tvg_21_page_63.txt:den Oostenrĳkschen Successie-oorlog
+tvg_22/tvg_22_page_103.txt:den Zevenjarigen Oorlog
+tvg_22/tvg_22_page_220.txt:den Jugurthijnschen oorlog
+tvg_22/tvg_22_page_257.txt:en Engelschen oorlog
+tvg_23/tvg_23_page_185.txt:den Gelderschen oorlog
+tvg_23/tvg_23_page_185.txt:den Gelderschen oorlog
+tvg_23/tvg_23_page_185.txt:dezen Oosterschen oorlog
+tvg_23/tvg_23_page_25.txt:de Russische oorlog
+tvg_23/tvg_23_page_288.txt:tweede Engelsche oorlog
+tvg_23/tvg_23_page_289.txt:zden Engelschen oorlog
+tvg_23/tvg_23_page_VIII.txt:tweede Engelsche oorlog
+tvg_24/tvg_24_page_141.txt:den Zevenjarigen oorlog
+tvg_24/tvg_24_page_160.txt:De Tachtigjarige Oorlog
+tvg_24/tvg_24_page_160.txt:den Tachtigjarigen Oorlog
+tvg_24/tvg_24_page_289.txt:tweeden Punischen Oorlog
+tvg_24/tvg_24_page_310.txt:De Tachtigjarige Oorlog
+tvg_24/tvg_24_page_311.txt:den Dertig-jarigen oorlog
+tvg_24/tvg_24_page_43.txt:den Russisch-Turkschen oorlog
+tvg_24/tvg_24_page_93.txt:den JOO-jarigen oorlog
+tvg_24/tvg_24_page_VIII.txt:De Java-oorlog
+tvg_25/tvg_25_page_25.txt:den Zevenjarigen Oorlog
+tvg_25/tvg_25_page_309.txt:dan Krim-oorlog
+tvg_25/tvg_25_page_311.txt:den Schmalkaldischen oorlog
+tvg_25/tvg_25_page_43.txt:De Zevenjarige Oorlog
+tvg_26/tvg_26_page_109.txt:den Gallischen oorlog
+tvg_26/tvg_26_page_110.txt:den Gallischen oorlog
+tvg_26/tvg_26_page_126.txt:dan Fransch- Duitschen oorlog
+tvg_26/tvg_26_page_127.txt:den Gelderschen oorlog
+tvg_26/tvg_26_page_133.txt:Spaanschen Successie-oorlog
+tvg_26/tvg_26_page_248.txt:den Poolschen Successie-oorlog
+tvg_26/tvg_26_page_303.txt:anderen Turkschen oorlog
+tvg_26/tvg_26_page_79.txt:als De Tachtig-jarige Oorlog
+tvg_26/tvg_26_page_VII.txt:den Fransch-Duitschen oorlog
+tvg_27/tvg_27_page_147.txt:den Smalkaldischen oorlog
+tvg_27/tvg_27_page_178.txt:den Italiaansch-Turkschen oorlog
+tvg_27/tvg_27_page_181.txt:den Russisch-Japanschen oorlog
+tvg_27/tvg_27_page_191.txt:olen Spaanschen Successie-oorlog
+tvg_27/tvg_27_page_VI.txt:den Dertigjarigen oorlog
+tvg_27/tvg_27_page_VI.txt:den Dertigjarigen oorlog
+tvg_28/tvg_28_page_184.txt:den Spaansch-Amerikaanschen Oorlog
+tvg_28/tvg_28_page_243.txt:tweeden Punischen oorlog
+tvg_28/tvg_28_page_292.txt:den Mexikaanscben oorlog
+tvg_28/tvg_28_page_296.txt:den Cubaanschen oorlog
+tvg_28/tvg_28_page_297.txt:den Cubaanschen oorlog
+tvg_28/tvg_28_page_312.txt:De Balkan-Oorlog
+tvg_28/tvg_28_page_316.txt:den Balkan-oorlog
+tvg_28/tvg_28_page_322.txt:de Duitsche oorlog
+tvg_28/tvg_28_page_327.txt:den Tachtigjarigen oorlog
+tvg_28/tvg_28_page_VII.txt:De Balkan-oorlog
+tvg_29/tvg_29_page_124.txt:den Russisch-japanschen oorlog
+tvg_29/tvg_29_page_280.txt:den Amerikaanschen oorlog
+tvg_29/tvg_29_page_282.txt:een Fransch-Engelschen oorlog
+tvg_29/tvg_29_page_371.txt:den Russisch-japanschen oorlog
+tvg_30/tvg_30_page_101.txt:den Spaansch-Amerikaanschen oorlog
+tvg_30/tvg_30_page_103.txt:den Balkan-oorlog
+tvg_30/tvg_30_page_145.txt:dan Eersten Engelschen oorlog
+tvg_30/tvg_30_page_147.txt:nu Engeland oorlog
+tvg_30/tvg_30_page_193.txt:den Punischen oorlog
+tvg_30/tvg_30_page_282.txt:dat Odoacar oorlog
+tvg_30/tvg_30_page_315.txt:den Europeeschen oorlog
+tvg_30/tvg_30_page_344.txt:eersten Engelschen oorlog
+tvg_30/tvg_30_page_344.txt:tweeden Engelschen oorlog
+tvg_30/tvg_30_page_82.txt:de Europeesche oorlog
+tvg_30/tvg_30_page_VII.txt:den Europeeschen oorlog
+tvg_30/tvg_30_page_VIII.txt:den Europeeschen Oorlog
+tvg_31/tvg_31_page_122.txt:grote Europese oorlog
+tvg_31/tvg_31_page_127.txt:den Balkan-oorlog
+tvg_31/tvg_31_page_18.txt:1sten Engelschen oorlog
+tvg_31/tvg_31_page_222.txt:den Spaanschen oorlog
+tvg_31/tvg_31_page_270.txt:den Zuidafrikaanschen oorlog
+tvg_31/tvg_31_page_293.txt:groote Europeesche oorlog
+tvg_31/tvg_31_page_293.txt:den Fransch-Duitschen oorlog
+tvg_31/tvg_31_page_356.txt:2en Engelschen oorlog
+tvg_31/tvg_31_page_364.txt:groote Europeesche oorlog
+tvg_31/tvg_31_page_370.txt:den Tachtigjarigen Oorlog
+tvg_31/tvg_31_page_53.txt:op Bosnië oorlog
+tvg_31/tvg_31_page_54.txt:den Balkan-Oorlog
+tvg_31/tvg_31_page_6.txt:den Dertigjarigen Oorlog
+tvg_32/tvg_32_page_103.txt:den Europeeschen oorlog
+tvg_32/tvg_32_page_111.txt:den Europeeschen oorlog
+tvg_32/tvg_32_page_162.txt:de Schmalkaldische oorlog
+tvg_32/tvg_32_page_186.txt:den Zweedschen oorlog
+tvg_32/tvg_32_page_284.txt:den Eersten Engelschen oorlog
+tvg_32/tvg_32_page_58.txt:den Europeeschen oorlog
+tvg_32/tvg_32_page_95.txt:gelijktijdigen Noordschen oorlog
+tvg_32/tvg_32_page_VII.txt:de Schmalkaldische Oorlog
+tvg_33/tvg_33_page_101.txt:vierden Englalschen Oorlog
+tvg_33/tvg_33_page_5.txt:den Spaanschen oorlog
+tvg_33/tvg_33_page_81.txt:den Dertigjarigen Oorlog
+tvg_33/tvg_33_page_89.txt:den Fransch-Duitschen oorlog
+tvg_34/tvg_34_page_1.txt:De Wereld-oorlog
+tvg_34/tvg_34_page_10.txt:den Fransch-Duitscben oorlog
+tvg_34/tvg_34_page_16.txt:den Tachtigjarigen Oorlog
+tvg_34/tvg_34_page_16.txt:den Tachtigjarigen Oorlog
+tvg_34/tvg_34_page_17.txt:den Tachtigjarigen Oorlog
+tvg_34/tvg_34_page_19.txt:schen Successie-oorlog
+tvg_34/tvg_34_page_200.txt:den Europeeschen oorlog
+tvg_34/tvg_34_page_225.txt:2en Engelschen oorlog
+tvg_34/tvg_34_page_263.txt:den Zevenjarigen Oorlog
+tvg_34/tvg_34_page_264.txt:den Vierden Engelscheu Oorlog
+tvg_34/tvg_34_page_324.txt:den Noordschen Oorlog
+tvg_34/tvg_34_page_336.txt:den Zevenjarigen Oorlog
+tvg_34/tvg_34_page_35.txt:tueelen West-Europeeschen oorlog
+tvg_34/tvg_34_page_43.txt:De Spaansche oorlog
+tvg_34/tvg_34_page_80.txt:de Geldersche oorlog
+tvg_34/tvg_34_page_IV.txt:den Europeeschen oorlog
+tvg_35/tvg_35_page_105.txt:den Zevenjarigen oorlog
+tvg_35/tvg_35_page_256.txt:den Veientischen oorlog
+tvg_35/tvg_35_page_262.txt:2den Punischen oorlog
+tvg_35/tvg_35_page_264.txt:eersten Punischen oorlog
+tvg_35/tvg_35_page_271.txt:den Europeeschen oorlog
+tvg_35/tvg_35_page_296.txt:eersten Engelsehen oorlog
+tvg_35/tvg_35_page_296.txt:eersten Engelschen oorlog
+tvg_35/tvg_35_page_325.txt:de Punische oorlog
+tvg_36/tvg_36_page_138.txt:de Europeesche oorlog
+tvg_36/tvg_36_page_201.txt:den Fransch-Duitschen oorlog
+tvg_36/tvg_36_page_299.txt:den Fransch-Duitschen oorlog
+tvg_37/tvg_37_page_127.txt:eersten Engelschen oorlog
+tvg_37/tvg_37_page_225.txt:4en Engelschen oorlog
+tvg_37/tvg_37_page_243.txt:den Zevenjarigen Oorlog
+tvg_37/tvg_37_page_246.txt:den Zevenjarigen Oorlog
+tvg_37/tvg_37_page_253.txt:de Zevenjarige Oorlog
+tvg_37/tvg_37_page_341.txt:den Secessie-oorlog
+tvg_37/tvg_37_page_344.txt:den Napoleontischen oorlog
+tvg_37/tvg_37_page_36.txt:de Parthen oorlog
+tvg_37/tvg_37_page_405.txt:De Zevenjarige Oorlog
+tvg_37/tvg_37_page_431.txt:land De oorlog
+tvg_37/tvg_37_page_442.txt:eersten Engelschen oorlog
+tvg_38/tvg_38_page_136.txt:tweeden Punischen oorlog
+tvg_38/tvg_38_page_183.txt:De Europeesche oorlog
+tvg_38/tvg_38_page_184.txt:den Europeeschen oorlog
+tvg_38/tvg_38_page_20.txt:den Peloponnesischen oorlog
+tvg_38/tvg_38_page_255.txt:den Honderdjarigen Oorlog
+tvg_38/tvg_38_page_406.txt:zevenjarigen Noorschen oorlog
+tvg_39/tvg_39_page_172.txt:lsten Punischen oorlog
+tvg_39/tvg_39_page_270.txt:den Negenjarigen Oorlog
+tvg_39/tvg_39_page_271.txt:tweeden Engelschen oorlog
+tvg_39/tvg_39_page_63.txt:eersten Munsterschen oorlog
+tvg_39/tvg_39_page_65.txt:tweede Munstersche oorlog
+tvg_39/tvg_39_page_91.txt:den Schmalkaldischen oorlog
+tvg_40/tvg_40_page_137.txt:Een Fransch-Engelsche oorlog
+tvg_40/tvg_40_page_149.txt:met Ruslandin oorlog
+tvg_40/tvg_40_page_212.txt:den Noordschen oorlog
+tvg_40/tvg_40_page_239.txt:tweeden Engelschen oorlog
+tvg_40/tvg_40_page_259.txt:de Grieksche Vrijheids- oorlog
+tvg_40/tvg_40_page_301.txt:denvierden Engelschen oorlog
+tvg_40/tvg_40_page_337.txt:vanden Dertigjarigen Oorlog
+tvg_40/tvg_40_page_337.txt:tijdensden Zevenjarigen Oorlog
+tvg_40/tvg_40_page_381.txt:tweede Puniese oorlog
+tvg_40/tvg_40_page_382.txt:tweede Puniese oorlog
+tvg_40/tvg_40_page_413.txt:vanden Java-oorlog
+tvg_41/tvg_41_page_134.txt:groote Joodsche oorlog
+tvg_41/tvg_41_page_135.txt:de Joodsche oorlog
+tvg_41/tvg_41_page_148.txt:den Dertigjarigen oorlog
+tvg_41/tvg_41_page_173.txt:den Zevenjarigen Oorlog
+tvg_41/tvg_41_page_214.txt:den Fransch-Duitschen oorlog
+tvg_41/tvg_41_page_3.txt:grooten Europeeschen oorlog
+tvg_41/tvg_41_page_319.txt:vierden Engelschen oorlog
+tvg_41/tvg_41_page_331.txt:de Fransch-Duitsche oorlog
+tvg_41/tvg_41_page_332.txt:den Fransch-Duitschen oorlog
+tvg_41/tvg_41_page_332.txt:den Krim-oorlog
+tvg_41/tvg_41_page_4.txt:en Europeesche oorlog
+tvg_41/tvg_41_page_443.txt:driejarigen Stichtschen oorlog
+tvg_41/tvg_41_page_469.txt:eersten Engelschen oorlog
+tvg_41/tvg_41_page_472.txt:den Devolutie-oorlog
+tvg_41/tvg_41_page_98.txt:den Eersten Engelschen Oorlog
+tvg_41/tvg_41_page_98.txt:den Tweeden Engelschen Oorlog
+tvg_42/tvg_42_page_110.txt:den Java-oorlog
+tvg_42/tvg_42_page_209.txt:eerste Engelsche oorlog
+tvg_42/tvg_42_page_210.txt:Eersten Engelschen Oorlog
+tvg_42/tvg_42_page_353.txt:de Atjeh-oorlog
+tvg_42/tvg_42_page_395.txt:de Dertigjarige Oorlog
+tvg_42/tvg_42_page_47.txt:den Turksohen oorlog
+tvg_43/tvg_43_page_218.txt:den Fransch-Duitschen oorlog
+tvg_43/tvg_43_page_222.txt:Mededeelingen Comité Onderzoek Oorzaken Oorlog
+tvg_43/tvg_43_page_284.txt:den Boeren-oorlog
+tvg_43/tvg_43_page_284.txt:uitgebroken Russisch-Japanschen oorlog
+tvg_43/tvg_43_page_284.txt:den Spaansch-Amerikaanschen oorlog
+tvg_43/tvg_43_page_289.txt:komenden Duitsch-Russischen oorlog
+tvg_43/tvg_43_page_322.txt:de Ceilonsche oorlog
+tvg_43/tvg_43_page_348.txt:een Europeeschen oorlog
+tvg_43/tvg_43_page_352.txt:de Russisch-Oostenrijksche oorlog
+tvg_43/tvg_43_page_361.txt:den Russisch-japanschen oorlog
+tvg_43/tvg_43_page_361.txt:den Russisch-japanschen oorlog
+tvg_43/tvg_43_page_401.txt:vierde Engelsche oorlog
+tvg_44/tvg_44_page_123.txt:De Vlaamsche Oorlog
+tvg_44/tvg_44_page_204.txt:de Dertigjarige oorlog
+tvg_44/tvg_44_page_204.txt:de Noordse oorlog
+tvg_44/tvg_44_page_207.txt:den Noordschen oorlog
+tvg_44/tvg_44_page_315.txt:den Eersten Engelschen Oorlog
+tvg_44/tvg_44_page_331.txt:in Europa oorlog
+tvg_44/tvg_44_page_405.txt:den Zweedsch-Deenschen oorlog
+tvg_44/tvg_44_page_68.txt:eersten Engelschen oorlog
+tvg_45/tvg_45_page_331.txt:de Russisch-Japansche oorlog
+tvg_45/tvg_45_page_335.txt:Mededeelingen Comité Onderzoek Oorzaken Oorlog
+tvg_45/tvg_45_page_43.txt:den Engelschen oorlog
+tvg_45/tvg_45_page_437.txt:den Java-oorlog
+tvg_45/tvg_45_page_44.txt:den Engelschen oorlog
+tvg_46/tvg_46_page_106.txt:den Spaansch-Amerikaanschen oorlog
+tvg_46/tvg_46_page_293.txt:den Perzischen oorlog
+tvg_46/tvg_46_page_314.txt:Eerste Engelsche oorlog
+tvg_46/tvg_46_page_314.txt:den Eersten Engelschen Oorlog
+tvg_46/tvg_46_page_316.txt:den Eersten Engelschen Oorlog
+tvg_46/tvg_46_page_438.txt:den Eersten Engelschen Oorlog
+tvg_47/tvg_47_page_104.txt:den Italiaansehen oorlog
+tvg_47/tvg_47_page_193.txt:de Tachtigjarige Oorlog
+tvg_47/tvg_47_page_227.txt:vierden Engelschen oorlog
+tvg_47/tvg_47_page_252.txt:vierden Engelschen oorlog
+tvg_47/tvg_47_page_299.txt:den Peloponnesischen oorlog
+tvg_47/tvg_47_page_93.txt:eersten Engelschen oorlog
+tvg_47/tvg_47_page_94.txt:2en Engelschen oorlog
+tvg_47/tvg_47_page_VI.txt:de Spaansche Successie oorlog
+tvg_48/tvg_48_page_206.txt:De Dertigjarige Oorlog
+tvg_48/tvg_48_page_433.txt:een Fransch-Duitsche oorlog
+tvg_48/tvg_48_page_433.txt:een Fransch-Duitschen oorlog
+tvg_49/tvg_49_page_17.txt:eersten Engelschen oorlog
+tvg_49/tvg_49_page_220.txt:de Noorsche Oorlog
+tvg_49/tvg_49_page_220.txt:de Eerste Oorlog
+tvg_49/tvg_49_page_223.txt:den Zevenjarigen Oorlog
+tvg_49/tvg_49_page_265.txt:den Pruisisch- Deenschen oorlog
+tvg_49/tvg_49_page_551.txt:eersten Engelschen Oorlog
+tvg_49/tvg_49_page_80.txt:den Peloponnesischen oorlog
+tvg_49/tvg_49_page_81.txt:de Chremonideische oorlog
+tvg_50/tvg_50_page_173.txt:de Engelsche oorlog
+tvg_50/tvg_50_page_28.txt:eersten Engelschen oorlog
+tvg_50/tvg_50_page_342.txt:menten Van oorlog
+tvg_50/tvg_50_page_422.txt:den Eersten Engelschen Oorlog
+tvg_50/tvg_50_page_423.txt:den Negenjamgen Oorlog
+tvg_51/tvg_51_page_258.txt:eerste Engelsche oorlog
+tvg_51/tvg_51_page_258.txt:De Engelsche oorlog
+tvg_51/tvg_51_page_261.txt:tweede Engelsche oorlog
+tvg_51/tvg_51_page_262.txt:tweede Engelsche oorlog
+tvg_51/tvg_51_page_294.txt:den Peloponnesischen oorlog
+tvg_51/tvg_51_page_301.txt:de Tachtigjarige Oorlog
+tvg_51/tvg_51_page_322.txt:de Atjeh-oorlog
+tvg_51/tvg_51_page_324.txt:de Atjeh-oorlog
+tvg_51/tvg_51_page_325.txt:gebroken Italiaansch-Turkschen oorlog
+tvg_51/tvg_51_page_42.txt:den Dertigjarigen Oorlog
+tvg_51/tvg_51_page_436.txt:de Tachtigjarige Oorlog
+tvg_51/tvg_51_page_472.txt:den Engelsch-Amerikaanschen oorlog
+tvg_51/tvg_51_page_478.txt:den Krim-oorlog
+tvg_51/tvg_51_page_480.txt:den Krim-oorlog
+tvg_51/tvg_51_page_481.txt:de Italiaanse oorlog
+tvg_52/tvg_52_page_143.txt:de Zevenjarige oorlog
+tvg_52/tvg_52_page_197.txt:2e Engelse oorlog
+tvg_52/tvg_52_page_268.txt:den Successie-oorlog
+tvg_52/tvg_52_page_312.txt:de Tachtigjarige oorlog
+tvg_52/tvg_52_page_382.txt:den Tachtigjarigen oorlog
+tvg_52/tvg_52_page_424.txt:tweeden Engelschen oorlog
+tvg_52/tvg_52_page_64.txt:den Tachtigjarigen oorlog
+tvg_52/tvg_52_page_70.txt:den Gallischen oorlog
+tvg_52/tvg_52_page_70.txt:den Punischen oorlog
+tvg_53/tvg_53_page_105.txt:den Fransch-Duitschen oorlog
+tvg_53/tvg_53_page_224b.txt:de Tachtigjarige oorlog
+tvg_53/tvg_53_page_226.txt:tweede Punische oorlog
+tvg_53/tvg_53_page_262.txt:Vierde Engelse oorlog
+tvg_53/tvg_53_page_275.txt:de Engelse oorlog
+tvg_53/tvg_53_page_297.txt:de Zevenjarige oorlog
+tvg_53/tvg_53_page_309.txt:de IIde Punische oorlog
+tvg_53/tvg_53_page_310.txt:11de Punische oorlog
+tvg_53/tvg_53_page_323.txt:de Tweede Engelse oorlog
+tvg_53/tvg_53_page_328.txt:de Italiaanse oorlog
+tvg_54/tvg_54_page_388.txt:de Oostenrijks-Servische oorlog
+tvg_54/tvg_54_page_390.txt:de Europese oorlog
+tvg_54/tvg_54_page_393.txt:de Oostenrijks-Servische oorlog
+tvg_54/tvg_54_page_47.txt:vierde Engelsche oorlog
+tvg_54/tvg_54_page_470.txt:den Tweeden Engelschen Oorlog
+tvg_55/tvg_55_page_141.txt:langdurigen Europeeschen oorlog
+tvg_55/tvg_55_page_165.txt:den Oostenrijkschen Successie- oorlog
+tvg_55/tvg_55_page_174.txt:de Honderdjarige oorlog
+tvg_55/tvg_55_page_175.txt:de Dertigjarige oorlog
+tvg_55/tvg_55_page_175.txt:den Spaanschen Successie-oorlog
+tvg_55/tvg_55_page_197.txt:tweeden Punischen oorlog
+tvg_55/tvg_55_page_201.txt:de Tachtigjarige oorlog
+tvg_55/tvg_55_page_273.txt:Tweeden Engelschen oorlog
+tvg_55/tvg_55_page_273.txt:den Negenjarigen oorlog
+tvg_55/tvg_55_page_275.txt:den Negenjarigen oorlog
+tvg_55/tvg_55_page_276.txt:de Noordsche oorlog
+tvg_55/tvg_55_page_336a.txt:de Noordse oorlog
+tvg_55/tvg_55_page_400.txt:Spaanse Successie-oorlog
+tvg_55/tvg_55_page_93.txt:den Tachtigjarigen oorlog
+tvg_56/tvg_56_page_173.txt:de Vierde Coalitie-oorlog
+tvg_56/tvg_56_page_214.txt:de Zevenjarige Oorlog
+tvg_56/tvg_56_page_227.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_227.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_227.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_229.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_230.txt:den Tachtigfarígen Oorlog
+tvg_56/tvg_56_page_231.txt:de Nederlandse oorlog
+tvg_56/tvg_56_page_231.txt:afgelopen Nederlandse Oorlog
+tvg_56/tvg_56_page_236.txt:de Nederlandse oorlog
+tvg_56/tvg_56_page_239.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_248.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_249.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_249.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_250.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_251.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_253.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_254.txt:onze Tachtigjarige Oorlog
+tvg_56/tvg_56_page_255.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_265.txt:de Honderdjarige oorlog
+tvg_56/tvg_56_page_3.txt:de Tachtigjarige Oorlog
+tvg_56/tvg_56_page_369.txt:De Tachtigjarige oorlog
+tvg_56/tvg_56_page_73.txt:de Peloponnesische oorlog
+tvg_57/tvg_57_page_233.txt:de Atjeh-oorlog
+tvg_57/tvg_57_page_32.txt:de Negenjarige oorlog
+tvg_57/tvg_57_page_5.txt:de Noordsche Oorlog
+tvg_58/tvg_58_page_132.txt:den Dacischen oorlog
+tvg_58/tvg_58_page_243.txt:eersten Engelschen oorlog
+tvg_59/tvg_59_page_121.txt:den Noordschen oorlog
+tvg_59/tvg_59_page_121.txt:den Tweeden Engelschen Oorlog
+tvg_59/tvg_59_page_134.txt:den Fransch-Duitschen oorlog
+tvg_59/tvg_59_page_134.txt:terminologie Fransch- Duitsche oorlog
+tvg_59/tvg_59_page_158.txt:dan Fransch-Duitschen oorlog
+tvg_59/tvg_59_page_228.txt:den Noordschen oorlog
+tvg_59/tvg_59_page_3.txt:Spaanschen Successie-oorlog
+tvg_59/tvg_59_page_315.txt:den Italiaanschen oorlog
+tvg_59/tvg_59_page_319.txt:de Fransch-Duitsche oorlog
+tvg_59/tvg_59_page_367.txt:den Peloponnesischen oorlog
+tvg_59/tvg_59_page_370.txt:de Lamische oorlog
+tvg_59/tvg_59_page_396.txt:den Syrischen oorlog
+tvg_59/tvg_59_page_399.txt:tweeden Perzischen oorlog
+tvg_60/tvg_60_page_112.txt:de Tachtigjarige Oorlog
+tvg_60/tvg_60_page_117.txt:de Amerikaanse oorlog
+tvg_60/tvg_60_page_118.txt:de Amerikaanse oorlog
+tvg_60/tvg_60_page_257.txt:de Spaanse Successie-Oorlog
+tvg_60/tvg_60_page_257.txt:den Spaansen Successie-oorlog
+tvg_60/tvg_60_page_259.txt:4en Engelsen oorlog
+tvg_60/tvg_60_page_6.txt:de Spaanse Successie-oorlog
+tvg_61/tvg_61_page_112.txt:eersten Engelschen oorlog
+tvg_61/tvg_61_page_13.txt:den Noordsen oorlog
+tvg_61/tvg_61_page_13.txt:eerste Engelse oorlog
+tvg_61/tvg_61_page_13.txt:tweeden Engelsen oorlog
+tvg_61/tvg_61_page_14.txt:De Negenjarige Oorlog
+tvg_61/tvg_61_page_14.txt:den Spaansen Successie-oorlog
+tvg_61/tvg_61_page_209.txt:de Tachtigjarige Oorlog
+tvg_61/tvg_61_page_231.txt:den Nederlands-Engelsen oorlog
+tvg_61/tvg_61_page_26.txt:den Oostenrijksen Successie-oorlog
+tvg_61/tvg_61_page_29.txt:den Zevenjarigen Oorlog
+tvg_61/tvg_61_page_313.txt:tweeden Engelschen oorlog
+tvg_61/tvg_61_page_317.txt:derde Engelsche oorlog
+tvg_61/tvg_61_page_361.txt:uitgebroken Russisch-Turkschen oorlog
+tvg_61/tvg_61_page_393.txt:de Peloponnesische oorlog
+tvg_61/tvg_61_page_408.txt:de Tachtigjarige Oorlog
+tvg_62/tvg_62_page_137.txt:de Tachtigjarige Oorlog
+tvg_62/tvg_62_page_139.txt:de Munsterse Oorlog
+tvg_62/tvg_62_page_143.txt:de Eerste Coalitie-oorlog
+tvg_62/tvg_62_page_282.txt:tweeden Punischen oorlog
+tvg_62/tvg_62_page_282.txt:tweeden Macedonischen oorlog
+tvg_62/tvg_62_page_409.txt:de Tachtigjarige Oorlog
+tvg_62/tvg_62_page_420.txt:de Duits-Russische oorlog
+tvg_62/tvg_62_page_79.txt:de Spaanse Successie oorlog
+tvg_63/tvg_63_page_121.txt:de Trojaanse oorlog
+tvg_63/tvg_63_page_121.txt:de Trojaanse oorlog
+tvg_63/tvg_63_page_121.txt:de Trojaanse oorlog
+tvg_63/tvg_63_page_198.txt:grote Europese oorlog
+tvg_63/tvg_63_page_245.txt:tweede Punische oorlog
+tvg_63/tvg_63_page_252.txt:s Heilige oorlog
+tvg_63/tvg_63_page_279.txt:De Tachtigjarige Oorlog
+tvg_63/tvg_63_page_382.txt:een Europese oorlog
+tvg_63/tvg_63_page_383.txt:de Europese oorlog
+tvg_63/tvg_63_page_385.txt:een Europese oorlog
+tvg_63/tvg_63_page_417.txt:de Tachtigjarige Oorlog
+tvg_64/tvg_64_page_111.txt:een Europese oorlog
+tvg_64/tvg_64_page_121.txt:de Russisch-japanse Oorlog
+tvg_64/tvg_64_page_188.txt:de Munsterse oorlog
+tvg_64/tvg_64_page_201.txt:4de Engelse oorlog
+tvg_64/tvg_64_page_30.txt:den Perzischen oorlog
+tvg_64/tvg_64_page_37.txt:den Peloponnesischen oorlog
+tvg_64/tvg_64_page_415.txt:tweeden Engelsen oorlog
+tvg_64/tvg_64_page_82.txt:De Europese Oorlog
+tvg_65/tvg_65_page_103.txt:de Perzische oorlog
+tvg_65/tvg_65_page_321.txt:uitgebroken Noordsen oorlog
+tvg_65/tvg_65_page_337.txt:den Tachtigjarigen Oorlog
+tvg_65/tvg_65_page_34.txt:de Krim-oorlog
+tvg_65/tvg_65_page_356.txt:de Chinese oorlog
+tvg_65/tvg_65_page_358.txt:de Dertigjarige Oorlog
+tvg_65/tvg_65_page_362.txt:de Turkse oorlog
+tvg_65/tvg_65_page_365.txt:de Turkse oorlog
+tvg_65/tvg_65_page_380.txt:de Honderdjarige oorlog
+tvg_65/tvg_65_page_39.txt:de Pruisisch-Oostenrijkse oorlog
+tvg_65/tvg_65_page_407.txt:de Honderdjarige Oorlog
+tvg_65/tvg_65_page_41.txt:de Frans-Duitse oorlog
+tvg_65/tvg_65_page_411.txt:eerste Engelse oorlog
+tvg_65/tvg_65_page_419.txt:de Europese oorlog
+tvg_65/tvg_65_page_77.txt:de Peloponnesische oorlog
+tvg_66/tvg_66_page_247.txt:de Sonderbund-oorlog
+tvg_66/tvg_66_page_263.txt:derde Samnietische oorlog
+tvg_66/tvg_66_page_263.txt:tweede Punische oorlog
+tvg_66/tvg_66_page_271.txt:de Honderdjarige oorlog
+tvg_66/tvg_66_page_286.txt:de Spaanse Successie-oorlog
+tvg_66/tvg_66_page_293.txt:de Sekoekoeni-oorlog
+tvg_66/tvg_66_page_394.txt:de Tachtigjarige oorlog
+tvg_66/tvg_66_page_400.txt:le Engelse oorlog
+tvg_66/tvg_66_page_400.txt:2e Engelse oorlog
+tvg_66/tvg_66_page_400.txt:3e Engelse oorlog
+tvg_66/tvg_66_page_400.txt:2e Engelse oorlog
+tvg_66/tvg_66_page_423.txt:de Paraguay-oorlog
+tvg_67/tvg_67_page_119.txt:de Vierde Engelse oorlog
+tvg_67/tvg_67_page_120.txt:de Frans-Engelse oorlog
+tvg_67/tvg_67_page_120.txt:4e Engelse oorlog
+tvg_67/tvg_67_page_177.txt:de Negenjarige oorlog
+tvg_67/tvg_67_page_204.txt:tweede Punische oorlog
+tvg_67/tvg_67_page_207.txt:tweede Punische oorlog
+tvg_67/tvg_67_page_238.txt:eerste Punische oorlog
+tvg_67/tvg_67_page_238.txt:tweede Punische oorlog
+tvg_67/tvg_67_page_238.txt:de Syrische oorlog
+tvg_67/tvg_67_page_238.txt:tweede Punische oorlog
+tvg_67/tvg_67_page_256.txt:De Witten-oorlog
+tvg_67/tvg_67_page_256.txt:De Zevenjarige oorlog
+tvg_67/tvg_67_page_257.txt:De Witten-oorlog
+tvg_67/tvg_67_page_257.txt:De Witten-oorlog
+tvg_67/tvg_67_page_32.txt:de Peloponnesische oorlog
+tvg_67/tvg_67_page_334.txt:laatste Punische oorlog
+tvg_67/tvg_67_page_387.txt:de Honderdjarige Oorlog
+tvg_67/tvg_67_page_41.txt:de Russisch-Perzische oorlog
+tvg_67/tvg_67_page_41.txt:de Russisch-Turkse oorlog
+tvg_67/tvg_67_page_417.txt:de Poolse oorlog
+tvg_67/tvg_67_page_418.txt:de Koreaanse oorlog
+tvg_67/tvg_67_page_45.txt:de Russisch-Turkse oorlog
+tvg_67/tvg_67_page_6.txt:De Witten-oorlog
+tvg_68/tvg_68_page_1.txt:eerste Punische oorlog
+tvg_68/tvg_68_page_120.txt:de Dertigjarige Oorlog
+tvg_68/tvg_68_page_123.txt:de Zevenjarige Oorlog
+tvg_68/tvg_68_page_124.txt:de Zevenjarige Oorlog
+tvg_68/tvg_68_page_239.txt:de Tachtigjarige Oorlog
+tvg_68/tvg_68_page_239.txt:de Tachtigjarige Oorlog
+tvg_68/tvg_68_page_262.txt:een Europese oorlog
+tvg_68/tvg_68_page_31.txt:eerste Punische oorlog
+tvg_68/tvg_68_page_336.txt:eerste Punische Oorlog
+tvg_68/tvg_68_page_337.txt:de Peloponnesische oorlog
+tvg_68/tvg_68_page_356.txt:eerste Punische oorlog
+tvg_68/tvg_68_page_364.txt:derde Punische oorlog
+tvg_68/tvg_68_page_397.txt:langdurige Franse oorlog
+tvg_68/tvg_68_page_4.txt:11de Punische oorlog
+tvg_68/tvg_68_page_59.txt:den Tachtigjarigen Oorlog
+tvg_69/tvg_69_page_102.txt:de Honderdjarige Oorlog
+tvg_69/tvg_69_page_117.txt:de Spaanse Successie-oorlog
+tvg_69/tvg_69_page_14.txt:de Grieks-Turkse oorlog
+tvg_69/tvg_69_page_141.txt:de Bojarige oorlog
+tvg_69/tvg_69_page_24.txt:de Italiaans-Turkse oorlog
+tvg_69/tvg_69_page_243.txt:eerste Punische oorlog
+tvg_69/tvg_69_page_243.txt:tweede Punische oorlog
+tvg_69/tvg_69_page_244.txt:eerste Punische oorlog
+tvg_69/tvg_69_page_244.txt:tweede Punische oorlog
+tvg_69/tvg_69_page_244.txt:de Syrische oorlog
+tvg_69/tvg_69_page_244.txt:tweede Macedonische oorlog
+tvg_69/tvg_69_page_244.txt:tweede Punische oorlog
+tvg_69/tvg_69_page_245.txt:eerste Punische oorlog
+tvg_69/tvg_69_page_245.txt:tweede Punische oorlog
+tvg_69/tvg_69_page_245.txt:tweede Punische oorlog
+tvg_69/tvg_69_page_278.txt:de Java-oorlog
+tvg_69/tvg_69_page_280.txt:de Europese oorlog
+tvg_69/tvg_69_page_331.txt:tweede Engelse oorlog
+tvg_69/tvg_69_page_358.txt:de Tweede Engelsche Oorlog
+tvg_69/tvg_69_page_62.txt:De Turks-Russische oorlog
+tvg_69/tvg_69_page_67.txt:De Russisch-japanse oorlog
+tvg_69/tvg_69_page_73.txt:de Russisch-japanse oorlog
+tvg_69/tvg_69_page_77.txt:de Russisch-Japanse oorlog
+tvg_69/tvg_69_page_78.txt:de Frans-Duitse oorlog
+tvg_69/tvg_69_page_83.txt:de Amerikaanse Secessie-oorlog
+tvg_70/tvg_70_page_100.txt:de Dertigjarige Oorlog
+tvg_70/tvg_70_page_116.txt:de Dertigjarige Oorlog
+tvg_70/tvg_70_page_117.txt:de Spaanse Successie-oorlog
+tvg_70/tvg_70_page_117.txt:de Grote Noordse Oorlog
+tvg_70/tvg_70_page_119.txt:de Negenjarige Oorlog
+tvg_70/tvg_70_page_251.txt:de Honderdjarige Oorlog
+tvg_70/tvg_70_page_262.txt:de Negenjarige Oorlog
+tvg_70/tvg_70_page_263.txt:de Negenjarige Oorlog
+tvg_70/tvg_70_page_279.txt:de Java-oorlog
+tvg_70/tvg_70_page_310.txt:de Oostenrijks-Pruisische oorlog
+tvg_70/tvg_70_page_312.txt:de Frans-Duitse oorlog
+tvg_70/tvg_70_page_313.txt:de Frans-Duitse oorlog
+tvg_70/tvg_70_page_322.txt:een Europese oorlog
+tvg_70/tvg_70_page_391.txt:eerste Macedonische oorlog
+tvg_70/tvg_70_page_391.txt:tweede Macedonische oorlog
+tvg_70/tvg_70_page_391.txt:de Syrische oorlog
+tvg_70/tvg_70_page_391.txt:derde Macedonische oorlog
+tvg_70/tvg_70_page_404.txt:een Duits-Franse oorlog
+tvg_70/tvg_70_page_5.txt:de Lelantische oorlog
+tvg_71/tvg_71_page_122.txt:tweede Engelsche oorlog
+tvg_71/tvg_71_page_154.txt:de Negenjarige oorlog
+tvg_71/tvg_71_page_168.txt:de Noordse oorlog
+tvg_71/tvg_71_page_175.txt:de Noordse oorlog
+tvg_71/tvg_71_page_176.txt:de Noordse oorlog
+tvg_71/tvg_71_page_177.txt:de Noordse oorlog
+tvg_71/tvg_71_page_179.txt:de Noordse oorlog
+tvg_71/tvg_71_page_182.txt:de Zevenjarige oorlog
+tvg_71/tvg_71_page_184.txt:de Noordse oorlog
+tvg_71/tvg_71_page_185.txt:de Zevenjarige oorlog
+tvg_71/tvg_71_page_260.txt:de Punische oorlog
+tvg_71/tvg_71_page_262.txt:onze Tachtigjarige Oorlog
+tvg_71/tvg_71_page_267.txt:de Dertigjarige Oorlog
+tvg_71/tvg_71_page_269.txt:de Spaanse Successie-oorlog
+tvg_71/tvg_71_page_274.txt:de Oostenrijkse Successie Oorlog
+tvg_71/tvg_71_page_326.txt:den Tachtigíarigm Oorlog
+tvg_71/tvg_71_page_343.txt:eerste Illyrische oorlog
+tvg_71/tvg_71_page_401.txt:den Poolsen Successie-oorlog
+tvg_71/tvg_71_page_97.txt:de Frans-Engels-Chinese oorlog
+tvg_71/tvg_71_page_97.txt:de Frans-Chinese oorlog
+tvg_71/tvg_71_page_97.txt:de Japans-Chinese oorlog
+tvg_72/tvg_72_page_104.txt:de Krim-oorlog
+tvg_72/tvg_72_page_127.txt:spaanse Successie-oorlog
+tvg_72/tvg_72_page_134.txt:tweede Punische oorlog
+tvg_72/tvg_72_page_195.txt:eerste Engelse oorlog
+tvg_72/tvg_72_page_206.txt:den Anwrikaaruclwn Oorlog
+tvg_72/tvg_72_page_206.txt:dm Noord-Amerikaanschtn Staten-Oorlog
+tvg_72/tvg_72_page_227.txt:De Burger Oorlog
+tvg_72/tvg_72_page_227.txt:de Burger Oorlog
+tvg_72/tvg_72_page_234.txt:de Burger Oorlog
+tvg_72/tvg_72_page_236.txt:de Burger Oorlog
+tvg_72/tvg_72_page_236.txt:de Burger Oorlog
+tvg_72/tvg_72_page_243.txt:de Burger Oorlog
+tvg_72/tvg_72_page_244.txt:De Burger Oorlog
+tvg_72/tvg_72_page_244.txt:de Burger-oorlog
+tvg_72/tvg_72_page_26.txt:de Tachtigíarige Oorlog
+tvg_72/tvg_72_page_291.txt:den Noordsen oorlog
+tvg_72/tvg_72_page_294.txt:den Noordsen oorlog
+tvg_72/tvg_72_page_301.txt:de Pruisisch-Oostenrijkse oorlog
+tvg_72/tvg_72_page_307.txt:de Tachtigjarige oorlog
+tvg_72/tvg_72_page_361.txt:eersten Engelsen Oorlog
+tvg_72/tvg_72_page_361.txt:tweede Engelse oorlog
+tvg_72/tvg_72_page_376.txt:de Peloponnesische oorlog
+tvg_72/tvg_72_page_379.txt:De Russisch-Japanse oorlog
+tvg_72/tvg_72_page_382.txt:de Russisch-Japanse oorlog
+tvg_72/tvg_72_page_385.txt:een Engels-Russische oorlog
+tvg_72/tvg_72_page_391.txt:een Engels-Russische oorlog
+tvg_72/tvg_72_page_393.txt:de Korea-oorlog
+tvg_72/tvg_72_page_433.txt:de Spaanse Successie-oorlog
+tvg_72/tvg_72_page_435.txt:de Negenjarige Oorlog
+tvg_72/tvg_72_page_458.txt:de Honderdjarige oorlog
+tvg_72/tvg_72_page_7.txt:de Tachtigjarige Oorlog
+tvg_73/tvg_73_page_114.txt:de Honderdjarige Oorlog
+tvg_73/tvg_73_page_114.txt:de Honderdjarige Oorlog
+tvg_73/tvg_73_page_115.txt:de Honderdjarige Oorlog
+tvg_73/tvg_73_page_120.txt:de Frans-Nederlandse oorlog
+tvg_73/tvg_73_page_133.txt:de Vierde Engelse Oorlog
+tvg_73/tvg_73_page_140.txt:de Russisch-Japanse oorlog
+tvg_73/tvg_73_page_187.txt:de Eerste Punische Oorlog
+tvg_73/tvg_73_page_187.txt:Tweede Punische Oorlog
+tvg_73/tvg_73_page_188.txt:de Eerste Punische Oorlog
+tvg_73/tvg_73_page_189.txt:de Eerste Punische Oorlog
+tvg_73/tvg_73_page_196.txt:Tweede Punische Oorlog
+tvg_73/tvg_73_page_280.txt:de Peloponndische oorlog
+tvg_73/tvg_73_page_313.txt:de Russisch-Japanse oorlog
+tvg_73/tvg_73_page_314.txt:de Russisch-Japanse oorlog
+tvg_73/tvg_73_page_36.txt:de Dertigjarige Oorlog
+tvg_73/tvg_73_page_361.txt:de Tweede Engelse oorlog
+tvg_73/tvg_73_page_37.txt:eerste Engelse oorlog
+tvg_73/tvg_73_page_403.txt:Derde Punische oorlog
+tvg_73/tvg_73_page_419.txt:de Frans-Duitse oorlog
+tvg_73/tvg_73_page_438.txt:de Dertigjarige Oorlog
+tvg_73/tvg_73_page_44.txt:de Tachtigjarige oorlog
+tvg_73/tvg_73_page_462.txt:eerste Messenische oorlog
+tvg_73/tvg_73_page_462.txt:de Tweede oorlog
+tvg_73/tvg_73_page_463.txt:de Plato-oorlog
+tvg_73/tvg_73_page_476.txt:de Spaanse Successie-oorlog
+tvg_73/tvg_73_page_V.txt:de Honderdjarige Oorlog
+tvg_74/tvg_74_page_103.txt:eerste Punische oorlog
+tvg_74/tvg_74_page_103.txt:eerste Punische oorlog
+tvg_74/tvg_74_page_141.txt:den Frans-Duimen oorlog
+tvg_74/tvg_74_page_150.txt:emlen Engelsen Oorlog
+tvg_74/tvg_74_page_172.txt:de Peloponnesische oorlog
+tvg_74/tvg_74_page_173.txt:de Peloponnesische oorlog
+tvg_74/tvg_74_page_18.txt:de Honderdjarige Oorlog
+tvg_74/tvg_74_page_261.txt:de Frans-Duitse oorlog
+tvg_74/tvg_74_page_464.txt:de Pools-Russische oorlog
+tvg_74/tvg_74_page_546.txt:de Peloponnesische oorlog
+tvg_74/tvg_74_page_566.txt:vierde Engelse oorlog
+tvg_75/tvg_75_page_106.txt:de Dertigjarige oorlog
+tvg_75/tvg_75_page_110.txt:de Zweeds-Poolse oorlog
+tvg_75/tvg_75_page_110.txt:de Dertigjarige oorlog
+tvg_75/tvg_75_page_133.txt:vierde Engelse oorlog
+tvg_75/tvg_75_page_145.txt:Vierde Engelse oorlog
+tvg_75/tvg_75_page_147.txt:de Vierde Engelse oorlog
+tvg_75/tvg_75_page_233.txt:de Peloponnesische oorlog
+tvg_75/tvg_75_page_265.txt:de Spaanse Successie-oorlog
+tvg_75/tvg_75_page_266.txt:den Oostenrĳksen Successie-oorlog
+tvg_75/tvg_75_page_28.txt:de Gotische oorlog
+tvg_75/tvg_75_page_28.txt:de Gotische Oorlog
+tvg_75/tvg_75_page_304.txt:de Argeaden oorlog
+tvg_75/tvg_75_page_352.txt:de Tachtigjarige Oorlog
+tvg_75/tvg_75_page_353.txt:de Koude Oorlog
+tvg_75/tvg_75_page_493.txt:de Honderdjarige Oorlog
+tvg_75/tvg_75_page_494.txt:de Honderdjarige Oorlog
+tvg_75/tvg_75_page_494.txt:de Honderdjarige Oorlog
+tvg_75/tvg_75_page_512.txt:de Frans-Duitse oorlog
+tvg_75/tvg_75_page_516.txt:de Italiaans-Turkse oorlog
+tvg_75/tvg_75_page_520.txt:de Koreaanse oorlog
+tvg_76/tvg_76_page_16.txt:de Tathtigjarige oorlog
+tvg_76/tvg_76_page_224.txt:de Goud-oorlog
+tvg_76/tvg_76_page_230.txt:De Peloponnesische oorlog
+tvg_76/tvg_76_page_286.txt:algemene Europese oorlog
+tvg_76/tvg_76_page_352.txt:De Zevenjarige Oorlog
+tvg_76/tvg_76_page_366.txt:een Japans-Engelse oorlog
+tvg_76/tvg_76_page_468.txt:de Sleeswijk-Holsteinse oorlog
+tvg_76/tvg_76_page_68.txt:de Zevenjarige Oorlog
+tvg_76/tvg_76_page_95.txt:de Honderdjarige oorlog
+tvg_77/tvg_77_page_246.txt:de Frans-Duitse oorlog
+tvg_77/tvg_77_page_255.txt:De Tachtigjarige Oorlog
+tvg_77/tvg_77_page_353.txt:de Tachtigjarige Oorlog
+tvg_77/tvg_77_page_412.txt:tweede Punische oorlog
+tvg_77/tvg_77_page_488.txt:2e Messenische oorlog
+tvg_77/tvg_77_page_488.txt:de Tweede Messenische oorlog
+tvg_77/tvg_77_page_499.txt:de Dertigjarige Oorlog
+tvg_77/tvg_77_page_499.txt:de Dertigjarige Oorlog
+tvg_77/tvg_77_page_506.txt:de Zevenjarige oorlog
+tvg_77/tvg_77_page_53.txt:de Spaanse oorlog
+tvg_77/tvg_77_page_544.txt:De Tachtigjarige Oorlog
+tvg_77/tvg_77_page_76.txt:en Derde Punische oorlog
+tvg_77/tvg_77_page_76.txt:de Jugurthijnse oorlog
+tvg_77/tvg_77_page_88.txt:de Dertigjarige Oorlog
+tvg_78/tvg_78_page_110.txt:de Grote Vaderlandse Oorlog
+tvg_78/tvg_78_page_110.txt:de Totale Oorlog
+tvg_78/tvg_78_page_279.txt:de Peloponnesische oorlog
+tvg_78/tvg_78_page_281.txt:de Peloponnesische oorlog
+tvg_78/tvg_78_page_282.txt:de Peloponnesische oorlog
+tvg_78/tvg_78_page_284.txt:de Peloponnesische oorlog
+tvg_78/tvg_78_page_287.txt:De Lamische oorlog
+tvg_78/tvg_78_page_299.txt:de Negenjarige Oorlog
+tvg_78/tvg_78_page_333.txt:de Venetiaans-Turkse oorlog
+tvg_78/tvg_78_page_439.txt:de Zevenjarige Oorlog
+tvg_78/tvg_78_page_476.txt:de Goud-oorlog
+tvg_78/tvg_78_page_71.txt:de Frans-Duitse oorlog
+tvg_78/tvg_78_page_99.txt:de Brits-Amerikaanse oorlog
+tvg_79/tvg_79_page_129.txt:de Negenjarige oorlog
+tvg_79/tvg_79_page_141.txt:de Noordse oorlog
+tvg_79/tvg_79_page_329.txt:de Indiaanse oorlog
+tvg_79/tvg_79_page_336.txt:tweede Punische oorlog
+tvg_79/tvg_79_page_345.txt:de Dertigjarige oorlog
+tvg_79/tvg_79_page_354.txt:de Zevenjarige oorlog
+tvg_79/tvg_79_page_45.txt:bij Prmsers Tachtigjarige Oorlog
+tvg_79/tvg_79_page_457.txt:de Honderdjarige Oorlog
+tvg_79/tvg_79_page_466.txt:de Tachtigjarige oorlog
+tvg_79/tvg_79_page_471.txt:de Spaanse Successie-oorlog
+tvg_79/tvg_79_page_81.txt:de Honderdjarige Oorlog
+tvg_80/tvg_80_page_101.txt:de Tachtig-jarige oorlog
+tvg_80/tvg_80_page_146.txt:en Tweede Punische oorlog
+tvg_80/tvg_80_page_155.txt:de Tweede Punische oorlog
+tvg_80/tvg_80_page_178.txt:de Europese oorlog
+tvg_80/tvg_80_page_209.txt:de Peloponnesische oorlog
+tvg_80/tvg_80_page_210.txt:de Peloponnesische oorlog
+tvg_80/tvg_80_page_234.txt:tweede Engelse oorlog
+tvg_80/tvg_80_page_243.txt:de Zoeloe-oorlog
+tvg_80/tvg_80_page_252.txt:een Europese oorlog
+tvg_80/tvg_80_page_273.txt:De Japans-Russische oorlog
+tvg_80/tvg_80_page_297.txt:zogenaamde Opium Oorlog
+tvg_80/tvg_80_page_345.txt:de U-boot-oorlog
+tvg_80/tvg_80_page_346.txt:de Gambetta-oorlog
+tvg_80/tvg_80_page_366.txt:de Tweede Punische Oorlog
+tvg_80/tvg_80_page_392.txt:de Peloponnesische oorlog
+tvg_80/tvg_80_page_392.txt:de Samische oorlog
+tvg_80/tvg_80_page_392.txt:de Peloponnesische oorlog
+tvg_80/tvg_80_page_558.txt:komende Europese oorlog
+tvg_81/tvg_81_page_111.txt:de Russisch-Turkse oorlog
+tvg_81/tvg_81_page_116.txt:een Europese oorlog
+tvg_81/tvg_81_page_149.txt:de Tachtigjarige Oorlog
+tvg_81/tvg_81_page_150.txt:de Tachtigjarige Oorlog
+tvg_81/tvg_81_page_151.txt:de Tachtigjarige Oorlog
+tvg_81/tvg_81_page_200.txt:3e Punische oorlog
+tvg_81/tvg_81_page_200.txt:2e Punische oorlog
+tvg_81/tvg_81_page_200.txt:2e Punische oorlog
+tvg_81/tvg_81_page_201.txt:eerste Punische oorlog
+tvg_81/tvg_81_page_201.txt:de Syrische oorlog
+tvg_81/tvg_81_page_244.txt:de Dertigjarige oorlog
+tvg_81/tvg_81_page_293.txt:de Parthische oorlog
+tvg_81/tvg_81_page_352.txt:de Egyptische oorlog
+tvg_81/tvg_81_page_353.txt:2e Macedonische oorlog
+tvg_81/tvg_81_page_354.txt:eerste Macedonische oorlog
+tvg_81/tvg_81_page_394.txt:Tweede Engelse oorlog
+tvg_81/tvg_81_page_394.txt:De Tweede Engelse Oorlog
+tvg_81/tvg_81_page_394.txt:de Tweede Engelse oorlog
+tvg_81/tvg_81_page_394.txt:de Nederlandse oorlog
+tvg_81/tvg_81_page_435.txt:de Honderdjarige Oorlog
+tvg_81/tvg_81_page_459.txt:de Dertigjarige oorlog
+tvg_81/tvg_81_page_528.txt:de Dertigjarige Oorlog
+tvg_81/tvg_81_page_536.txt:de Zevenjarige Oorlog
+tvg_81/tvg_81_page_572.txt:de Honderdjarige Oorlog
+tvg_81/tvg_81_page_59.txt:Mackay Hitsman Die oorlog
+tvg_81/tvg_81_page_84.txt:De Honderdjarige Oorlog
+tvg_81/tvg_81_page_84.txt:de Honderdjarige Oorlog
+tvg_81/tvg_81_page_84.txt:de Honderdjarige Oorlog
+tvg_81/tvg_81_page_84.txt:de Honderdjarige Oorlog
+tvg_81/tvg_81_page_II.txt:de Honderdjarige Oorlog
+tvg_82/tvg_82_page_121.txt:de Krim-oorlog
+tvg_82/tvg_82_page_122.txt:eerste Afghaanse oorlog
+tvg_82/tvg_82_page_239.txt:de Honderdjarige Oorlog
+tvg_82/tvg_82_page_242.txt:de Dertigjarige Oorlog
+tvg_82/tvg_82_page_355.txt:de Atjeh-oorlog
+tvg_82/tvg_82_page_360.txt:de Frans-Duitse oorlog
+tvg_82/tvg_82_page_416.txt:grote Noordse oorlog
+tvg_82/tvg_82_page_544.txt:de Schmalkaldische oorlog
+tvg_82/tvg_82_page_554.txt:de Spaanse Successie-oorlog
+tvg_82/tvg_82_page_64.txt:de Zevenjarige Oorlog
+tvg_82/tvg_82_page_78.txt:de Mexicaanse oorlog
+tvg_82/tvg_82_page_90.txt:de Corinthische oorlog
+tvg_82/tvg_82_page_90.txt:de Tweede Punische oorlog
+tvg_83/tvg_83_page_132.txt:tweede Samnitische oorlog
+tvg_83/tvg_83_page_143.txt:De Atjeh-oorlog
+tvg_83/tvg_83_page_324.txt:Grote Vaderlandse oorlog
+tvg_83/tvg_83_page_359.txt:De Tachtigjarige Oorlog
+tvg_83/tvg_83_page_374.txt:De Tachtigjarige Oorlog
+tvg_83/tvg_83_page_375.txt:De Tachtigjarige Oorlog
+tvg_83/tvg_83_page_446.txt:de Zevenjarige Oorlog
+tvg_83/tvg_83_page_447.txt:de Grote Noordse oorlog
+tvg_83/tvg_83_page_447.txt:de Grote Noordse oorlog
+tvg_83/tvg_83_page_447.txt:de Turks-Russische oorlog
+tvg_83/tvg_83_page_447.txt:de Westelijke oorlog
+tvg_83/tvg_83_page_448.txt:de Noordse oorlog
+tvg_83/tvg_83_page_454.txt:de Libische oorlog
+tvg_83/tvg_83_page_457.txt:de Frans-Duitse oorlog
+tvg_83/tvg_83_page_498.txt:in De Tachtigjarige Oorlog
+tvg_83/tvg_83_page_505.txt:dcn Perzischen oorlog
+tvg_83/tvg_83_page_521.txt:de Frans-Habsburgse oorlog
+tvg_83/tvg_83_page_580.txt:de Peloponnesische oorlog
+tvg_84/tvg_84_page_115.txt:de Pruisisch-Oostenrijkse oorlog
+tvg_84/tvg_84_page_116.txt:De Atjeh-oorlog
+tvg_84/tvg_84_page_116.txt:de Atjeh-oorlog
+tvg_84/tvg_84_page_117.txt:de Atjeh-oorlog
+tvg_84/tvg_84_page_117.txt:De Atjeh-oorlog
+tvg_84/tvg_84_page_287.txt:de Gentse Oorlog
+tvg_84/tvg_84_page_395.txt:de Dertigjarige Oorlog
+tvg_84/tvg_84_page_395.txt:de Negenjarige Oorlog
+tvg_84/tvg_84_page_437.txt:de Dertigjarige oorlog
+tvg_84/tvg_84_page_532.txt:de Russisch-Japanse oorlog
+tvg_84/tvg_84_page_533.txt:de Russisch-Japanse oorlog
+tvg_84/tvg_84_page_580.txt:de Zevenjarige Oorlog
+tvg_84/tvg_84_page_580.txt:de Spaanse Successie-oorlog
+tvg_84/tvg_84_page_604.txt:de Zevenjarige Oorlog
+tvg_84/tvg_84_page_610.txt:de Atjeh-oorlog
+tvg_84/tvg_84_page_644.txt:De Atjeh-oorlog
+tvg_84/tvg_84_page_8.txt:tweede Punische oorlog
+tvg_84/tvg_84_page_88.txt:de Gentse Oorlog
+tvg_84/tvg_84_page_V.txt:De Atjeh-oorlog
+tvg_85/tvg_85_page_123.txt:verlopen Chaco-oorlog
+tvg_85/tvg_85_page_123.txt:de Chaco-oorlog
+tvg_85/tvg_85_page_123.txt:de Chaco-oorlog
+tvg_85/tvg_85_page_123.txt:de Chaco-oorlog
+tvg_85/tvg_85_page_193.txt:de Spaanse Successie-oorlog
+tvg_85/tvg_85_page_194.txt:de Spaanse Successie-oorlog
+tvg_85/tvg_85_page_208.txt:de Krim-oorlog
+tvg_85/tvg_85_page_238.txt:de Peloponnesische Oorlog
+tvg_85/tvg_85_page_257.txt:eerste Engelse oorlog
+tvg_85/tvg_85_page_259.txt:grote Noordse Oorlog
+tvg_85/tvg_85_page_265.txt:de Vierde Engelse oorlog
+tvg_85/tvg_85_page_281.txt:de Russisch-Japanse oorlog
+tvg_85/tvg_85_page_46.txt:de Honderdjarige Oorlog
+tvg_85/tvg_85_page_488.txt:over Afghaanse oorlog
+tvg_85/tvg_85_page_49.txt:de Algerijnse oorlog
+tvg_85/tvg_85_page_531.txt:de Russisch-Japanse oorlog
+tvg_85/tvg_85_page_556.txt:de Frans-Duitse oorlog
+tvg_85/tvg_85_page_9.txt:de Tweede Punische oorlog
+tvg_86/tvg_86_page_223.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_425.txt:tweede Macedonische oorlog
+tvg_86/tvg_86_page_425.txt:tweede Punische oorlog
+tvg_86/tvg_86_page_450.txt:naar Geyls De Willen-oorlog
+tvg_86/tvg_86_page_477.txt:grote Europese oorlog
+tvg_86/tvg_86_page_553.txt:de FransDuitse oorlog
+tvg_86/tvg_86_page_589.txt:de Peloponnesische oorlog
+tvg_86/tvg_86_page_59.txt:de Koreaanse Oorlog
+tvg_86/tvg_86_page_591.txt:de Peloponnesische Oorlog
+tvg_86/tvg_86_page_607.txt:De Dertigjarige Oorlog
+tvg_86/tvg_86_page_607.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_608.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_608.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_608.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_609.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_609.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_609.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_610.txt:de Dertigjarige Oorlog
+tvg_86/tvg_86_page_611.txt:die Dertigjarige Oorlog
+tvg_86/tvg_86_page_62.txt:de Koreaanse Oorlog
+tvg_86/tvg_86_page_623.txt:de Vierde Engelse Oorlog
+tvg_86/tvg_86_page_II.txt:de Pacific-oorlog
+tvg_86/tvg_86_page_IV.txt:algemene Europese oorlog
+tvg_87/tvg_87_page_140.txt:de Frans-Duitse oorlog
+tvg_87/tvg_87_page_200.txt:de Spaans-Amerikaanse oorlog
+tvg_87/tvg_87_page_232.txt:de Archidamische Oorlog
+tvg_87/tvg_87_page_232.txt:de Jonische Oorlog
+tvg_87/tvg_87_page_24.txt:de Frans-Duitse oorlog
+tvg_87/tvg_87_page_298.txt:de Tachtigjarige Oorlog
+tvg_87/tvg_87_page_305.txt:de Koude Oorlog
+tvg_87/tvg_87_page_411.txt:en Vietnamese oorlog
+tvg_87/tvg_87_page_536.txt:de Frans-Habsburgse oorlog
+tvg_87/tvg_87_page_537.txt:de Frans-Habsburgse oorlog
+tvg_87/tvg_87_page_538.txt:de Frans-Habsburgse oorlog
+tvg_87/tvg_87_page_632.txt:en Frans-Duitse oorlog
+tvg_87/tvg_87_page_78.txt:de Honderdjarige oorlog
+tvg_87/tvg_87_page_98.txt:de Dertigjarige Oorlog
+tvg_88/tvg_88_page_113.txt:de Zevenjarige Oorlog
+tvg_88/tvg_88_page_133.txt:De Chaco oorlog
+tvg_88/tvg_88_page_162.txt:een Heilige Oorlog
+tvg_88/tvg_88_page_166.txt:de Katharen-oorlog
+tvg_88/tvg_88_page_276.txt:de Grote Oorlog
+tvg_88/tvg_88_page_325.txt:de Trojaanse oorlog
+tvg_88/tvg_88_page_407.txt:2e Engelse oorlog
+tvg_88/tvg_88_page_409.txt:de Zevenjarige Oorlog
+tvg_88/tvg_88_page_409.txt:de Zevenjarige Oorlog
+tvg_88/tvg_88_page_410.txt:zijn Witten-oorlog
+tvg_88/tvg_88_page_413.txt:4e Engelse oorlog
+tvg_88/tvg_88_page_613.txt:de Zevenjarige oorlog
+tvg_88/tvg_88_page_617.txt:de Vierde Engelse oorlog
+tvg_88/tvg_88_page_618.txt:de Vierde Engelse oorlog
+tvg_88/tvg_88_page_618.txt:de Vierde Engelse oorlog
+tvg_88/tvg_88_page_618.txt:de Vierde Engelse oorlog
+tvg_88/tvg_88_page_621.txt:de Vierde Engelse oorlog
+tvg_88/tvg_88_page_87.txt:laatste Macedonische oorlog
+tvg_89/tvg_89_page_107.txt:de Vierde Engelse oorlog
+tvg_89/tvg_89_page_118.txt:de Frans-Duitse oorlog
+tvg_89/tvg_89_page_128.txt:De Koude Oorlog
+tvg_89/tvg_89_page_128.txt:de Koude Oorlog
+tvg_89/tvg_89_page_128.txt:de Koude Oorlog
+tvg_89/tvg_89_page_128.txt:de Koude Oorlog
+tvg_89/tvg_89_page_128.txt:de Koude Oorlog
+tvg_89/tvg_89_page_128.txt:de Koude Oorlog
+tvg_89/tvg_89_page_128.txt:de Koude Oorlog
+tvg_89/tvg_89_page_129.txt:de Koude Oorlog
+tvg_89/tvg_89_page_129.txt:echte Koude Oorlog
+tvg_89/tvg_89_page_130.txt:de Koude Oorlog
+tvg_89/tvg_89_page_243.txt:de Peloponnesische oorlog
+tvg_89/tvg_89_page_287.txt:derde Engelse oorlog
+tvg_89/tvg_89_page_299.txt:de Tachtigjarige Oorlog
+tvg_89/tvg_89_page_299.txt:de Tachtigjarige Oorlog
+tvg_89/tvg_89_page_299.txt:term Tachtigjarige Oorlog
+tvg_89/tvg_89_page_414.txt:de Tachtigjarige Oorlog
+tvg_89/tvg_89_page_418.txt:de Tachtigjarige Oorlog
+tvg_89/tvg_89_page_421.txt:den Tachtigjarigen Oorlog
+tvg_89/tvg_89_page_421.txt:De Tachtigjarige Oorlog
+tvg_89/tvg_89_page_426.txt:den Tachtigjarigen Oorlog
+tvg_89/tvg_89_page_549.txt:eerste Macedonische oorlog
+tvg_89/tvg_89_page_549.txt:eerste Illyrische oorlog
+tvg_89/tvg_89_page_549.txt:eerste Mithradatische oorlog
+tvg_89/tvg_89_page_582.txt:de Zevenjarige Oorlog
+tvg_89/tvg_89_page_601.txt:de Koude Oorlog
+tvg_89/tvg_89_page_602.txt:de Vietnamese oorlog
+tvg_90/tvg_90_page_103.txt:de Dertigjarige Oorlog
+tvg_90/tvg_90_page_216.txt:de Noordse Oorlog
+tvg_90/tvg_90_page_254.txt:de IGO-jarige oorlog
+tvg_90/tvg_90_page_273.txt:de Frans-Duitse oorlog
+tvg_90/tvg_90_page_392.txt:vierde Engelse oorlog
+tvg_90/tvg_90_page_437.txt:de Turkse oorlog
+tvg_90/tvg_90_page_437.txt:de Turkse oorlog
+tvg_90/tvg_90_page_443.txt:de Zevenjarige Oorlog
+tvg_91/tvg_91_page_120.txt:Grote Noordse Oorlog
+tvg_91/tvg_91_page_137.txt:De Koude Oorlog
+tvg_91/tvg_91_page_142.txt:de Tweede Werel oorlog
+tvg_91/tvg_91_page_155.txt:de Abessijnse oorlog
+tvg_91/tvg_91_page_229.txt:de Pruisisch-Poolse oorlog
+tvg_91/tvg_91_page_275.txt:de Negenjarige oorlog
+tvg_91/tvg_91_page_275.txt:Spaanse Successie oorlog
+tvg_91/tvg_91_page_309.txt:de Negenjarige oorlog
+tvg_91/tvg_91_page_387.txt:de Tachtigjarige Oorlog
+tvg_91/tvg_91_page_387.txt:de Dertigjarige Oorlog
+tvg_91/tvg_91_page_387.txt:de Dertigjarige Oorlog
+tvg_91/tvg_91_page_388.txt:de Smalkaldische oorlog
+tvg_91/tvg_91_page_389.txt:de Negenjarige Oorlog
+tvg_91/tvg_91_page_390.txt:De Tweede Engelse Oorlog
+tvg_91/tvg_91_page_398.txt:de Tachtigjarige Oorlog
+tvg_91/tvg_91_page_405.txt:de Dertigjarige Oorlog
+tvg_91/tvg_91_page_471.txt:de Frans-Duitse oorlog
+tvg_91/tvg_91_page_475.txt:Stille Zuidzee-oorlog
+tvg_91/tvg_91_page_475.txt:2e Engels-Afghaanse oorlog
+tvg_91/tvg_91_page_475.txt:1e Filippijnen oorlog
+tvg_91/tvg_91_page_475.txt:2e Filippijnen oorlog
+tvg_91/tvg_91_page_476.txt:de Atjeh-oorlog
+tvg_91/tvg_91_page_479.txt:de Atjeh-oorlog
+tvg_91/tvg_91_page_479.txt:de Atjeh-oorlog
+tvg_91/tvg_91_page_481.txt:de Zoeloe-oorlog
+tvg_91/tvg_91_page_481.txt:de Atjeh-oorlog
+tvg_91/tvg_91_page_481.txt:De Aĳeh-oorlog
+tvg_91/tvg_91_page_482.txt:De Aĳeh-oorlog
+tvg_91/tvg_91_page_484.txt:De Atjeh-oorlog
+tvg_91/tvg_91_page_489.txt:de Rusisch-Japanse oorlog
+tvg_91/tvg_91_page_489.txt:de Grote Oorlog
+tvg_91/tvg_91_page_518.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_518.txt:de Algerĳnse oorlog
+tvg_91/tvg_91_page_518.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_518.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_518.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_519.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_519.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_519.txt:gehele Algerijnse oorlog
+tvg_91/tvg_91_page_520.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_520.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_521.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_522.txt:de Algerijnse oorlog
+tvg_91/tvg_91_page_528.txt:de Negenjarige Oorlog
+tvg_91/tvg_91_page_529.txt:de Dertigjarige Oorlog
+tvg_91/tvg_91_page_530.txt:de Spaanse Successie Oorlog
+tvg_91/tvg_91_page_530.txt:de Zevenjarige Oorlog
+tvg_91/tvg_91_page_534.txt:de Java-oorlog
+tvg_91/tvg_91_page_534.txt:de Pacific-oorlog
+tvg_91/tvg_91_page_572.txt:eerste Atjeh-oorlog
+tvg_91/tvg_91_page_572.txt:De Atjeh-Oorlog
+tvg_91/tvg_91_page_573.txt:De Atjeh-oorlog
+tvg_91/tvg_91_page_580.txt:de Venetiaans-Turkse oorlog
+tvg_91/tvg_91_page_591.txt:den Dertigjarigen Oorlog
+tvg_91/tvg_91_page_63.txt:gecoördineerde Amerikaans-Engelse oorlog
+tvg_91/tvg_91_page_631.txt:2e Punische oorlog
+tvg_91/tvg_91_page_662.txt:kritieke Frans-Duitse oorlog
+tvg_91/tvg_91_page_673.txt:een Brits-Duitse oorlog
+tvg_91/tvg_91_page_674.txt:een Duits-Russische oorlog
+tvg_91/tvg_91_page_698.txt:de Algerijnse oorlog
+tvg_92/tvg_92_page_104.txt:de Negenjarige Oorlog
+tvg_92/tvg_92_page_164.txt:t Veer De Arjeh- oorlog
+tvg_92/tvg_92_page_169.txt:de Opium-oorlog
+tvg_92/tvg_92_page_179.txt:de Atjeh-oorlog
+tvg_92/tvg_92_page_180.txt:de Atjeh-oorlog
+tvg_92/tvg_92_page_185.txt:bloedige Atjeh-oorlog
+tvg_92/tvg_92_page_233.txt:de Negenjarige oorlog
+tvg_92/tvg_92_page_233.txt:de Oostenrijkse Successie oorlog
+tvg_92/tvg_92_page_233.txt:de Zevenjarige oorlog
+tvg_92/tvg_92_page_238.txt:de Spaanse Successie-oorlog
+tvg_92/tvg_92_page_251.txt:de Krim-oorlog
+tvg_92/tvg_92_page_32.txt:de Zevenjarige Oorlog
+tvg_92/tvg_92_page_53.txt:nieuwe Europese oorlog
+tvg_92/tvg_92_page_623.txt:de Tachtigjarige Oorlog
+tvg_92/tvg_92_page_646.txt:De Libische oorlog
+tvg_92/tvg_92_page_646.txt:de Libische oorlog
+tvg_92/tvg_92_page_647.txt:de Koude Oorlog
+tvg_92/tvg_92_page_650.txt:de Koude Oorlog
+tvg_92/tvg_92_page_650.txt:de Koude Oorlog
+tvg_92/tvg_92_page_650.txt:de Koude Oorlog
+tvg_92/tvg_92_page_651.txt:de Koude Oorlog
+tvg_92/tvg_92_page_652.txt:de Grote Oorlog
+tvg_92/tvg_92_page_653.txt:de Koude Oorlog
+tvg_92/tvg_92_page_90.txt:de Honderdjarige oorlog
+tvg_92/tvg_92_page_90.txt:de Honderdjarige oorlog
+tvg_92/tvg_92_page_90.txt:de Honderdjarige oorlog
+tvg_92/tvg_92_page_98.txt:nutteloze Franse oorlog
+tvg_93/tvg_93_page_121.txt:de Negenjarige Oorlog
+tvg_93/tvg_93_page_121.txt:de Spaanse Successie-oorlog
+tvg_93/tvg_93_page_156.txt:de Koude Oorlog
+tvg_93/tvg_93_page_156.txt:de Israëlisch-Arabische oorlog
+tvg_93/tvg_93_page_179.txt:de Vlaams-Brabantse oorlog
+tvg_93/tvg_93_page_318.txt:de Koude Oorlog
+tvg_93/tvg_93_page_319.txt:de Koude Oorlog
+tvg_93/tvg_93_page_412.txt:de Honderdjarige Oorlog
+tvg_93/tvg_93_page_413.txt:de Dertigjarige Oorlog
+tvg_93/tvg_93_page_600.txt:de Peloponnesische oorlog
+tvg_93/tvg_93_page_611.txt:De Honderdjarige Oorlog
+tvg_93/tvg_93_page_638.txt:de Dertigjarige Oorlog
+tvg_93/tvg_93_page_641.txt:de Zevenjarige Oorlog
+tvg_93/tvg_93_page_676.txt:de Koude Oorlog
+tvg_94/tvg_94_page_112.txt:de Dertigjarige Oorlog
+tvg_94/tvg_94_page_119.txt:De Negenjarige Oorlog
+tvg_94/tvg_94_page_119.txt:deze Negenjarige Oorlog
+tvg_94/tvg_94_page_119.txt:volgende Spaanse Successie-oorlog
+tvg_94/tvg_94_page_142.txt:Nederlandsche Anti-Oorlog
+tvg_94/tvg_94_page_154.txt:de Koreaanse oorlog
+tvg_94/tvg_94_page_174.txt:de Algerijnse oorlog
+tvg_94/tvg_94_page_180.txt:hevige Italische oorlog
+tvg_94/tvg_94_page_184.txt:of Italische oorlog
+tvg_94/tvg_94_page_187.txt:de Italische oorlog
+tvg_94/tvg_94_page_187.txt:de Italische oorlog
+tvg_94/tvg_94_page_222.txt:de Frans-Duitse oorlog
+tvg_94/tvg_94_page_257.txt:eerste Punische oorlog
+tvg_94/tvg_94_page_258.txt:de Eerste Punische oorlog
+tvg_94/tvg_94_page_278.txt:de Oostenrijkse Successie-Oorlog
+tvg_94/tvg_94_page_321.txt:de Koude Oorlog
+tvg_94/tvg_94_page_321.txt:de Koude Oorlog
+tvg_94/tvg_94_page_573.txt:de Russisch-Turkse oorlog
+tvg_94/tvg_94_page_68.txt:de Honderdjarige Oorlog
+tvg_94/tvg_94_page_8.txt:de Java-oorlog
+tvg_94/tvg_94_page_90.txt:Eerste Messcnische Oorlog
+tvg_95/tvg_95_page_111.txt:de Eerste Engelse Oorlog
+tvg_95/tvg_95_page_119.txt:de Zevenjarige Oorlog
+tvg_95/tvg_95_page_273.txt:de Zevenjarige Oorlog
+tvg_95/tvg_95_page_274.txt:de Zevenjarige Oorlog
+tvg_95/tvg_95_page_283.txt:of Secessic-oorlog
+tvg_95/tvg_95_page_285.txt:de Secessie-oorlog
+tvg_95/tvg_95_page_347.txt:de Tachtigjarige Oorlog
+tvg_95/tvg_95_page_348.txt:de Dertigjarige Oorlog
+tvg_95/tvg_95_page_348.txt:de Tachtigjarige Oorlog
+tvg_95/tvg_95_page_354.txt:de Dertigjarige Oorlog
+tvg_95/tvg_95_page_357.txt:de Tachtigjarige Oorlog
+tvg_95/tvg_95_page_360.txt:de Dertigjarige Oorlog
+tvg_95/tvg_95_page_422.txt:de Tweede Engelse Oorlog
+tvg_95/tvg_95_page_510.txt:de Frans-Duitse oorlog
+tvg_95/tvg_95_page_640.txt:afgelopen Pools-Russische oorlog
+tvg_95/tvg_95_page_85.txt:de Koude Oorlog
+tvg_95/tvg_95_page_85.txt:de Koude Oorlog
+tvg_95/tvg_95_page_90.txt:de Koude Oorlog
+tvg_96/tvg_96_page_137.txt:de Koude Oorlog
+tvg_96/tvg_96_page_142.txt:Tweede Werel oorlog
+tvg_96/tvg_96_page_165.txt:de Tachtigjarige Oorlog
+tvg_96/tvg_96_page_168.txt:de Dertigjarige Oorlog
+tvg_96/tvg_96_page_168.txt:de Dertigjarige Oorlog
+tvg_96/tvg_96_page_175.txt:de Tachtigjarige Oorlog
+tvg_96/tvg_96_page_175.txt:den Tarhltgjurigen Oorlog
+tvg_96/tvg_96_page_177.txt:de Tachtigjarige Oorlog
+tvg_96/tvg_96_page_178.txt:de Tachtigjarige Oorlog
+tvg_96/tvg_96_page_186.txt:de Eerste Engelse Oorlog
+tvg_96/tvg_96_page_208.txt:de Koude Oorlog
+tvg_96/tvg_96_page_226.txt:tweede Punische oorlog
+tvg_96/tvg_96_page_242.txt:de Tachtigjarige Oorlog
+tvg_96/tvg_96_page_251.txt:de Zevenjarige Oorlog
+tvg_96/tvg_96_page_293.txt:een Zuidafrikaanse oorlog
+tvg_96/tvg_96_page_536.txt:de Noordse Oorlog
+tvg_96/tvg_96_page_539.txt:de Noordse Oorlog
+tvg_96/tvg_96_page_548.txt:de Vierde Engelse Oorlog
+tvg_96/tvg_96_page_576.txt:de Tweede Werel oorlog
+tvg_96/tvg_96_page_594.txt:de Peloponnesische oorlog
+tvg_97/tvg_97_page_101.txt:de Dertigjarige Oorlog
+tvg_97/tvg_97_page_102.txt:de Dertigarige Oorlog
+tvg_97/tvg_97_page_146.txt:de Ethiopische oorlog
+tvg_97/tvg_97_page_251.txt:de Honderdjarige Oorlog
+tvg_97/tvg_97_page_265.txt:de Tachtigjarige Oorlog
+tvg_97/tvg_97_page_271.txt:uitgebroken Dertigjarige Oorlog
+tvg_97/tvg_97_page_343.txt:de Tachtigjarige Oorlog
+tvg_97/tvg_97_page_457.txt:de Gentse Oorlog
+tvg_97/tvg_97_page_558.txt:de Koude Oorlog
+tvg_97/tvg_97_page_573.txt:de Koude Oorlog
+tvg_97/tvg_97_page_611.txt:de Tachtigjarige Oorlog
+tvg_97/tvg_97_page_636.txt:de Frans-Duitse oorlog
+tvg_97/tvg_97_page_79.txt:de Tweede Punische Oorlog
+tvg_98/tvg_98_page_131.txt:en Koude Oorlog
+tvg_98/tvg_98_page_132.txt:de Koude Oorlog
+tvg_98/tvg_98_page_178.txt:geen Balkan-oorlog
+tvg_98/tvg_98_page_178.txt:grote Europese oorlog
+tvg_98/tvg_98_page_178.txt:de Krim-oorlog
+tvg_98/tvg_98_page_181.txt:de Boeren-oorlog
+tvg_98/tvg_98_page_185.txt:de Peloponnesische oorlog
+tvg_98/tvg_98_page_206.txt:de Koude Oorlog
+tvg_98/tvg_98_page_207.txt:de Koude Oorlog
+tvg_98/tvg_98_page_207.txt:de Koude Oorlog
+tvg_98/tvg_98_page_209.txt:de Koreaanse oorlog
+tvg_98/tvg_98_page_209.txt:de Koude Oorlog
+tvg_98/tvg_98_page_210.txt:de Koude Oorlog
+tvg_98/tvg_98_page_249.txt:de Dertigjarige Oorlog
+tvg_98/tvg_98_page_250.txt:de Dertigjarige Oorlog
+tvg_98/tvg_98_page_257.txt:vierde Noordse Oorlog
+tvg_98/tvg_98_page_258.txt:de Pools-Zweedse oorlog
+tvg_98/tvg_98_page_285.txt:de Koude Oorlog
+tvg_98/tvg_98_page_287.txt:de Koude Oorlog
+tvg_98/tvg_98_page_292.txt:bevorderde Koude Oorlog
+tvg_98/tvg_98_page_297.txt:de Koude Oorlog
+tvg_98/tvg_98_page_427.txt:de Dertigjarige Oorlog
+tvg_98/tvg_98_page_436.txt:de Mantuaansc Oorlog
+tvg_98/tvg_98_page_438.txt:de Dertigjarige Oorlog
+tvg_98/tvg_98_page_453.txt:de Iraaks-Iraanse oorlog
+tvg_98/tvg_98_page_472.txt:de Koude Oorlog
+tvg_98/tvg_98_page_83.txt:de Honderdjarige oorlog
+tvg_98/tvg_98_page_86.txt:de Gentse oorlog
+tvg_99/tvg_99_page_052.txt:verwachte Pacific-oorlog
+tvg_99/tvg_99_page_099.txt:de Vierde Engelse oorlog
+tvg_99/tvg_99_page_122.txt:de Vietnamese Oorlog
+tvg_99/tvg_99_page_124.txt:de Koude Oorlog
+tvg_99/tvg_99_page_124.txt:de Koude Oorlog
+tvg_99/tvg_99_page_124.txt:de Koude Oorlog
+tvg_99/tvg_99_page_218.txt:de Atjeh-oorlog
+tvg_99/tvg_99_page_235.txt:de Koude Oorlog
+tvg_99/tvg_99_page_259.txt:de Schmalkaldische Oorlog
+tvg_99/tvg_99_page_266.txt:de Dertigjarige Oorlog
+tvg_99/tvg_99_page_378.txt:de Eerste Wereld-oorlog
+tvg_99/tvg_99_page_380.txt:De Wereld-oorlog
+tvg_99/tvg_99_page_614.txt:de Eerste Wereld-oorlog
+tvg_99/tvg_99_page_615.txt:de Grote Oorlog
+tvg_99/tvg_99_page_650.txt:deGrote Noordse Oorlog
+tvg_99/tvg_99_page_650.txt:de Dertigjarige Oorlog
+tvg_99/tvg_99_page_653.txt:de Russische oorlog
+tvg_99/tvg_99_page_655.txt:de Dertigjarige Oorlog
+tvg_99/tvg_99_page_655.txt:de Zweedse oorlog
+tvg_99/tvg_99_page_677.txt:de Koude Oorlog

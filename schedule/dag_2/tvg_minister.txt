@@ -1,0 +1,1447 @@
+tvg_01/tvg_01_page_111.txt:minister Von
+tvg_01/tvg_01_page_160.txt:minister Korphiotakis
+tvg_01/tvg_01_page_169.txt:minister van Buitenlandsche Zaken
+tvg_01/tvg_01_page_169.txt:minister van Buitenlandsche Zaken
+tvg_01/tvg_01_page_289.txt:minister Zanot
+tvg_01/tvg_01_page_316.txt:minister Zanoﬁ
+tvg_01/tvg_01_page_343.txt:minister Wellington
+tvg_01/tvg_01_page_355.txt:minister John Bright
+tvg_01/tvg_01_page_370.txt:minister Arlington
+tvg_01/tvg_01_page_94.txt:minister de Pomponne
+tvg_02/tvg_02_page_136.txt:minister Ilirhelieu
+tvg_02/tvg_02_page_226.txt:minister van Rusland
+tvg_02/tvg_02_page_226.txt:minister van Pruisen
+tvg_02/tvg_02_page_270.txt:Minister van Koloniën
+tvg_02/tvg_02_page_286.txt:minister Canning
+tvg_02/tvg_02_page_296.txt:Minister van Koloniën
+tvg_02/tvg_02_page_296.txt:Minister van de Kaap
+tvg_02/tvg_02_page_3.txt:minister Metternich
+tvg_02/tvg_02_page_305.txt:Minister van de Kaap
+tvg_04/tvg_04_page_106.txt:minister Lanza
+tvg_04/tvg_04_page_196.txt:minister Buckingham
+tvg_04/tvg_04_page_215.txt:Minister Mancini
+tvg_04/tvg_04_page_217.txt:Minister Mancini
+tvg_04/tvg_04_page_220.txt:Minister van Buitenlandsche Zaken
+tvg_04/tvg_04_page_225.txt:Minister van Buitenlandsche Zaken
+tvg_04/tvg_04_page_228.txt:Minister van Bnitenlanda
+tvg_04/tvg_04_page_272.txt:minister van Buitenlandsche
+tvg_04/tvg_04_page_277.txt:minister Molerus
+tvg_04/tvg_04_page_320.txt:minister van Buit
+tvg_04/tvg_04_page_80.txt:minister Decazès
+tvg_05/tvg_05_page_317.txt:Minister van Marine
+tvg_05/tvg_05_page_33.txt:Minister van Oorlog
+tvg_05/tvg_05_page_35.txt:minister Crispi
+tvg_06/tvg_06_page_100.txt:Minister van Ko
+tvg_06/tvg_06_page_128.txt:minister van Buitenlandsche Zaken
+tvg_06/tvg_06_page_152.txt:minister Mackay
+tvg_06/tvg_06_page_152.txt:Minister van Oorlog
+tvg_06/tvg_06_page_152.txt:minister Mackay
+tvg_06/tvg_06_page_153.txt:minister Kappeyne
+tvg_06/tvg_06_page_154.txt:minister van Bin
+tvg_06/tvg_06_page_285.txt:Minister van Oorlog
+tvg_06/tvg_06_page_288.txt:Minister van Oorlog Angelesco
+tvg_06/tvg_06_page_357.txt:minister Castlereagh
+tvg_06/tvg_06_page_86.txt:Minister van Bosse
+tvg_06/tvg_06_page_89.txt:Minister Van Reenen
+tvg_06/tvg_06_page_90.txt:minister van Bin
+tvg_06/tvg_06_page_90.txt:minister Vrolik
+tvg_06/tvg_06_page_93.txt:minister van Koloniën Uhlenbeck
+tvg_06/tvg_06_page_95.txt:minister Van Zuylen
+tvg_06/tvg_06_page_95.txt:minister van Buit
+tvg_06/tvg_06_page_96.txt:minister van Buit
+tvg_07/tvg_07_page_10.txt:Minister Van
+tvg_07/tvg_07_page_101.txt:Minister van de Fransche
+tvg_07/tvg_07_page_165.txt:minister Teste
+tvg_07/tvg_07_page_166.txt:minister Périer
+tvg_07/tvg_07_page_188.txt:Minister van Koloniën Mr
+tvg_07/tvg_07_page_25.txt:minister Talleyrand
+tvg_07/tvg_07_page_280.txt:Minister van Buitenlandsche Zaken
+tvg_07/tvg_07_page_6.txt:Minister van Marine
+tvg_07/tvg_07_page_65.txt:minister Martignac
+tvg_08/tvg_08_page_193.txt:Minister Cecil Rhodes
+tvg_08/tvg_08_page_329.txt:Minister Li
+tvg_09/tvg_09_page_131.txt:minister Dom Rodrigo
+tvg_09/tvg_09_page_281.txt:minister Andrassy
+tvg_09/tvg_09_page_316.txt:minister van Philips
+tvg_09/tvg_09_page_73.txt:Minister van Marine
+tvg_09/tvg_09_page_74.txt:Minister van Marine
+tvg_09/tvg_09_page_77.txt:minister Deeres
+tvg_09/tvg_09_page_78.txt:Minister de Champagny
+tvg_10/tvg_10_page_109.txt:minister van Binnenlandsche
+tvg_10/tvg_10_page_14.txt:minister van Buitenlandsche
+tvg_10/tvg_10_page_158.txt:minister Mattioli
+tvg_10/tvg_10_page_16.txt:minister Nauwelijks
+tvg_10/tvg_10_page_185.txt:minister van Watershuii
+tvg_10/tvg_10_page_223.txt:minister van Hendrik IV
+tvg_10/tvg_10_page_243.txt:Minister van Binnenl
+tvg_10/tvg_10_page_243.txt:Minister van Binnenl
+tvg_10/tvg_10_page_376.txt:minister Von Giers
+tvg_10/tvg_10_page_388.txt:minister van Philips
+tvg_100/tvg_100_page_230.txt:minister van Karnebeek
+tvg_100/tvg_100_page_29.txt:minister van Bui-
+tvg_100/tvg_100_page_31.txt:minister van Justitie
+tvg_100/tvg_100_page_32.txt:minister van Koloniën
+tvg_100/tvg_100_page_34.txt:minister Luns
+tvg_100/tvg_100_page_37.txt:minister Luns
+tvg_100/tvg_100_page_39.txt:minister van Buitenlandse Zaken
+tvg_100/tvg_100_page_39.txt:Minister Schmelzer
+tvg_100/tvg_100_page_403.txt:minister Hymans
+tvg_100/tvg_100_page_404.txt:minister Hymans
+tvg_100/tvg_100_page_405.txt:minister H.A. van Karnebeek
+tvg_100/tvg_100_page_408.txt:minister E. Vandervelde
+tvg_100/tvg_100_page_42.txt:minister van CRM
+tvg_100/tvg_100_page_436.txt:minister van Maatschappe
+tvg_100/tvg_100_page_449.txt:Minister van Justitie
+tvg_100/tvg_100_page_450.txt:Minister Klompé
+tvg_100/tvg_100_page_46.txt:Minister M. van der Stoel
+tvg_100/tvg_100_page_462.txt:minister van Sociale Zaken
+tvg_100/tvg_100_page_462.txt:minister Boersma
+tvg_100/tvg_100_page_468.txt:minister van Natio-
+tvg_100/tvg_100_page_481.txt:Minister Engels
+tvg_100/tvg_100_page_481.txt:Minister van Suriname
+tvg_100/tvg_100_page_481.txt:Minister van Justitie
+tvg_100/tvg_100_page_481.txt:minister van Suriname
+tvg_101/tvg_101_page_319.txt:Minister van Buitenlandse Zaken
+tvg_101/tvg_101_page_40.txt:minister van Buitenlandse Zaken
+tvg_101/tvg_101_page_47.txt:minister van Buitenlandse Zaken
+tvg_101/tvg_101_page_49.txt:minister van Buitenlandse Zaken
+tvg_101/tvg_101_page_68.txt:minister Takahashi
+tvg_102/tvg_102_page_144.txt:minister Van Delden
+tvg_102/tvg_102_page_144.txt:Minister Lieftincks
+tvg_102/tvg_102_page_145.txt:Minister van Economische Zaken
+tvg_102/tvg_102_page_145.txt:Minister van Financiën
+tvg_102/tvg_102_page_146.txt:minister W. Dreesjr
+tvg_102/tvg_102_page_146.txt:minister van Financiën
+tvg_102/tvg_102_page_146.txt:minister Sehmelzer
+tvg_102/tvg_102_page_311.txt:Minister van Economische
+tvg_102/tvg_102_page_316.txt:minister Van Kleffens
+tvg_102/tvg_102_page_564.txt:minister van Buiten-
+tvg_103/tvg_103_page_149.txt:minister van Oorlog Richard Burdon Haldane
+tvg_103/tvg_103_page_155.txt:minister Von Neurath
+tvg_103/tvg_103_page_155.txt:minister van Buitenlandse Zaken
+tvg_103/tvg_103_page_160.txt:Minister van Buiten-
+tvg_103/tvg_103_page_161.txt:Minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_166.txt:Minister Sassen
+tvg_103/tvg_103_page_21.txt:minister van Karel Ven
+tvg_103/tvg_103_page_22.txt:minister van Karel
+tvg_103/tvg_103_page_30.txt:minister van Buitenlandse Zaken
+tvg_103/tvg_103_page_31.txt:minister Vergennes
+tvg_103/tvg_103_page_33.txt:minister Ver-
+tvg_103/tvg_103_page_38.txt:minister Vergennes
+tvg_103/tvg_103_page_452.txt:minister van Financiën
+tvg_103/tvg_103_page_459.txt:minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_460.txt:minister van Buitenlandse Zaken
+tvg_103/tvg_103_page_460.txt:minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_518.txt:minister van Justitie
+tvg_103/tvg_103_page_523.txt:minister Hijmans
+tvg_103/tvg_103_page_524.txt:minister van Economische Zaken
+tvg_103/tvg_103_page_573.txt:Minister van Landbouw
+tvg_103/tvg_103_page_574.txt:minister van Buitenlandse Zaken Alexander
+tvg_103/tvg_103_page_575.txt:Minister van Binnenlandse
+tvg_103/tvg_103_page_579.txt:minister Stolypin
+tvg_103/tvg_103_page_582.txt:Minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_582.txt:minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_594.txt:Minister van Binnenlandse Zaken Pleve
+tvg_103/tvg_103_page_594.txt:minister van Binnenlandse Zaken Stolypin
+tvg_103/tvg_103_page_594.txt:minister Witte
+tvg_103/tvg_103_page_595.txt:minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_604.txt:minister van Koloniën
+tvg_103/tvg_103_page_604.txt:minister van Kolo-
+tvg_103/tvg_103_page_608.txt:minister van Koloniën
+tvg_103/tvg_103_page_609.txt:minister van Koloniën
+tvg_103/tvg_103_page_609.txt:minister De Graaff
+tvg_103/tvg_103_page_611.txt:minister van Koloniën
+tvg_103/tvg_103_page_611.txt:minister van Koloniën
+tvg_103/tvg_103_page_613.txt:minister van Koloniën
+tvg_103/tvg_103_page_641.txt:minister Pierson
+tvg_103/tvg_103_page_700.txt:minister Richelieu
+tvg_103/tvg_103_page_706.txt:minister Van Son
+tvg_103/tvg_103_page_713.txt:minister van Binnenlandse Zaken
+tvg_103/tvg_103_page_83.txt:minister van WVC
+tvg_104/tvg_104_page_126.txt:minister Schuman
+tvg_104/tvg_104_page_28.txt:minister van Buiten-
+tvg_104/tvg_104_page_290.txt:minister van Binnenlandse Zaken
+tvg_104/tvg_104_page_290.txt:minister van Binnenlandse Zaken
+tvg_104/tvg_104_page_290.txt:minister van Binnenlandse Zaken
+tvg_104/tvg_104_page_307.txt:minister van Defen
+tvg_104/tvg_104_page_312.txt:minister van Buitenlandse Zaken Ernest Bevin
+tvg_104/tvg_104_page_36.txt:minister van Buitenlandse Zaken
+tvg_104/tvg_104_page_38.txt:minister Taimourtache
+tvg_104/tvg_104_page_38.txt:Minister Beelaerts
+tvg_104/tvg_104_page_40.txt:minister Patijn
+tvg_104/tvg_104_page_42.txt:Minister Van Karnebeek
+tvg_104/tvg_104_page_429.txt:minister van Oorlog Le Tellier
+tvg_104/tvg_104_page_429.txt:minister van Finan
+tvg_104/tvg_104_page_43.txt:minister Beelaerts
+tvg_104/tvg_104_page_440.txt:minister van Financiën
+tvg_104/tvg_104_page_441.txt:minister van Financiën
+tvg_104/tvg_104_page_489.txt:minister van Willem
+tvg_105/tvg_105_page_102.txt:minister Blathwayt
+tvg_105/tvg_105_page_141.txt:Minister Stikker
+tvg_105/tvg_105_page_144.txt:Minister Stikker
+tvg_105/tvg_105_page_144.txt:minister van Overzeese Gebieds-
+tvg_105/tvg_105_page_144.txt:minister van Overzeese Gebiedsdelen
+tvg_105/tvg_105_page_218.txt:Minister van Koloniën Idenburg
+tvg_105/tvg_105_page_22.txt:minister Herbert Her-
+tvg_105/tvg_105_page_221.txt:Minister van Koloniën
+tvg_105/tvg_105_page_223.txt:Minister van Buitenlandse Zaken
+tvg_105/tvg_105_page_225.txt:Minister van Koloniën
+tvg_105/tvg_105_page_226.txt:Minister van Kolo-
+tvg_105/tvg_105_page_23.txt:minister Caspar Coolhaes
+tvg_105/tvg_105_page_232.txt:Minister van Koloniën Th
+tvg_105/tvg_105_page_236.txt:Minister van Koloniën De
+tvg_105/tvg_105_page_239.txt:Minister van Koloniën
+tvg_105/tvg_105_page_280.txt:minister Rainilaiarivony
+tvg_105/tvg_105_page_287.txt:minister Van Maa-
+tvg_105/tvg_105_page_299.txt:minister Klomp
+tvg_105/tvg_105_page_300.txt:minister van WVC
+tvg_105/tvg_105_page_351.txt:minister van Binnenlandse Zaken
+tvg_105/tvg_105_page_354.txt:Minister van Binnenlandse Zaken
+tvg_105/tvg_105_page_354.txt:Minister van Houten
+tvg_105/tvg_105_page_355.txt:minister van Binnenlandse Zaken
+tvg_105/tvg_105_page_358.txt:minister van Binnenlandse Za-
+tvg_105/tvg_105_page_397.txt:minister van Koloniën
+tvg_105/tvg_105_page_399.txt:minister van Koloniën
+tvg_105/tvg_105_page_418.txt:minister van Koloniën
+tvg_105/tvg_105_page_421.txt:minister van Koloniën
+tvg_105/tvg_105_page_484.txt:minister Jan
+tvg_105/tvg_105_page_502.txt:minister Pronk
+tvg_105/tvg_105_page_513.txt:minister Idenburg
+tvg_105/tvg_105_page_647.txt:minister Oxenstierna
+tvg_105/tvg_105_page_647.txt:minister Olivarez
+tvg_105/tvg_105_page_677.txt:minister van Landbouw
+tvg_105/tvg_105_page_706.txt:minister Van Gobbelschroy
+tvg_105/tvg_105_page_714.txt:minister Aalberse
+tvg_105/tvg_105_page_717.txt:minister van Koloniën
+tvg_106/tvg_106_page_285.txt:minister Van Buuren
+tvg_106/tvg_106_page_285.txt:minister Tromp
+tvg_106/tvg_106_page_287.txt:minister van Overzeese
+tvg_106/tvg_106_page_287.txt:minister Stikker
+tvg_106/tvg_106_page_32.txt:minister van Bui
+tvg_106/tvg_106_page_440.txt:minister van Volkshuisves-
+tvg_107/tvg_107_page_105.txt:minister van Koloniën
+tvg_107/tvg_107_page_105.txt:minister van Koloniën
+tvg_107/tvg_107_page_106.txt:minister Colijn
+tvg_107/tvg_107_page_111.txt:minister Thorbecke
+tvg_107/tvg_107_page_111.txt:minister H. Goeman Bor-
+tvg_107/tvg_107_page_224.txt:minister van Binnenlandse Zaken
+tvg_107/tvg_107_page_224.txt:Minister van Binnenlandse Zaken Kuyper
+tvg_107/tvg_107_page_224.txt:minister van Binnenlandse
+tvg_107/tvg_107_page_225.txt:minister van Binnenlandse Zaken Kuy-
+tvg_107/tvg_107_page_31.txt:Minister van Onderwijs
+tvg_107/tvg_107_page_333.txt:minister van VROM
+tvg_107/tvg_107_page_334.txt:minister Alders
+tvg_107/tvg_107_page_344.txt:minister van VOMIL
+tvg_107/tvg_107_page_344.txt:minister van VOMIL
+tvg_107/tvg_107_page_448.txt:minister van Binnenlandse
+tvg_107/tvg_107_page_457.txt:minister van Binnenlandse Zaken
+tvg_107/tvg_107_page_490.txt:minister van Justitie
+tvg_107/tvg_107_page_550.txt:minister van Binnenlandse Zaken
+tvg_107/tvg_107_page_554.txt:minister van Binnenlandse Zaken
+tvg_108/tvg_108_page_417.txt:minister Har-
+tvg_108/tvg_108_page_605.txt:Minister van Tewerkstelling
+tvg_108/tvg_108_page_626.txt:minister P.A. Stolvpin
+tvg_109/tvg_109_page_215.txt:minister van Buitenlandse Zaken John
+tvg_109/tvg_109_page_276.txt:minister van Financiën Treub
+tvg_109/tvg_109_page_45.txt:minister van Koloniën
+tvg_109/tvg_109_page_47.txt:minister D. Fock
+tvg_109/tvg_109_page_51.txt:minister George Hamilton
+tvg_109/tvg_109_page_57.txt:minister van Koloniën
+tvg_109/tvg_109_page_60.txt:minister van Onderwijs
+tvg_109/tvg_109_page_60.txt:minister van Openbaar Onderwijs
+tvg_109/tvg_109_page_60.txt:minister van Kolo-
+tvg_109/tvg_109_page_68.txt:minister Idenburg
+tvg_11/tvg_11_page_157.txt:minister van Na-
+tvg_11/tvg_11_page_229.txt:Minister der Kaapkolonie
+tvg_11/tvg_11_page_229.txt:minister der Kaapkolonie
+tvg_11/tvg_11_page_234.txt:minister Chamberlain
+tvg_11/tvg_11_page_329.txt:minister van Justitie
+tvg_110/tvg_110_page_104.txt:minister Dehler
+tvg_110/tvg_110_page_11.txt:Minister van Buitenlandse
+tvg_110/tvg_110_page_12.txt:Minister Steenberghe
+tvg_110/tvg_110_page_22.txt:minister Funk
+tvg_110/tvg_110_page_256.txt:minister van Bin-
+tvg_110/tvg_110_page_257.txt:minister van Binnenlandse
+tvg_110/tvg_110_page_258.txt:minister van Binnenlandse Zaken
+tvg_110/tvg_110_page_264.txt:minister van Buiten-
+tvg_110/tvg_110_page_392.txt:minister van Koloniën
+tvg_110/tvg_110_page_392.txt:minister van Koloniën
+tvg_110/tvg_110_page_415.txt:minister van Binnenlandse Zaken
+tvg_110/tvg_110_page_415.txt:minister van Binnenlandse
+tvg_110/tvg_110_page_415.txt:minister van Binnenlandse Zaken
+tvg_110/tvg_110_page_415.txt:minister van Justitie
+tvg_110/tvg_110_page_473.txt:minister Kappeyne
+tvg_111/tvg_111_page_128.txt:minister Olivares
+tvg_111/tvg_111_page_144.txt:minister Van Kleffens
+tvg_111/tvg_111_page_159.txt:minister van Verkeer
+tvg_111/tvg_111_page_19.txt:minister van Onderwijs
+tvg_111/tvg_111_page_414.txt:Minister R.H. Pos
+tvg_111/tvg_111_page_415.txt:Minister van Verkeer
+tvg_111/tvg_111_page_415.txt:Minister Pos
+tvg_111/tvg_111_page_417.txt:Minister Korthals
+tvg_111/tvg_111_page_419.txt:Minister van Financiën
+tvg_111/tvg_111_page_422.txt:Minister Pos
+tvg_111/tvg_111_page_422.txt:Minister W.F.M. Lampe
+tvg_111/tvg_111_page_426.txt:Minister Sedney
+tvg_111/tvg_111_page_428.txt:Minister Morpurgo
+tvg_111/tvg_111_page_429.txt:Minister Luns
+tvg_111/tvg_111_page_429.txt:Minister Luns
+tvg_111/tvg_111_page_444.txt:minister van Buitenlandse
+tvg_111/tvg_111_page_448.txt:minister van Buitenlandse
+tvg_111/tvg_111_page_461.txt:minister Van
+tvg_111/tvg_111_page_521.txt:minister van Sociale Zaken
+tvg_111/tvg_111_page_9.txt:minister van Buiten-
+tvg_112/tvg_112_page_144.txt:minister Luns
+tvg_112/tvg_112_page_202.txt:minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_206.txt:minister van Defensie
+tvg_112/tvg_112_page_206.txt:minister van Buitenlandse
+tvg_112/tvg_112_page_209.txt:minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_212.txt:Minister van Landbouw Marijnen
+tvg_112/tvg_112_page_214.txt:minister van Buitenland-
+tvg_112/tvg_112_page_220.txt:Minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_344.txt:minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_348.txt:minister van Buiten-
+tvg_112/tvg_112_page_349.txt:minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_364.txt:minister van Overzeese Gebiedsdelen
+tvg_112/tvg_112_page_364.txt:minister van Over-
+tvg_112/tvg_112_page_368.txt:minister van Uniezaken
+tvg_112/tvg_112_page_376.txt:minister Van
+tvg_112/tvg_112_page_377.txt:Minister van Overzeese Rijksdelen
+tvg_112/tvg_112_page_379.txt:minister van Over-
+tvg_112/tvg_112_page_484.txt:minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_485.txt:minister van Buitenlandse Zaken
+tvg_112/tvg_112_page_495.txt:minister van Buitenlandse Zaken Shige-
+tvg_112/tvg_112_page_496.txt:minister van Economische Zaken
+tvg_113/tvg_113_page_143.txt:Minister van Buitenlandse
+tvg_113/tvg_113_page_145.txt:minister MacMillan
+tvg_113/tvg_113_page_188.txt:minister van Overzeese
+tvg_113/tvg_113_page_188.txt:minister van Buitenlandse
+tvg_113/tvg_113_page_189.txt:Minister Sassen
+tvg_113/tvg_113_page_190.txt:minister Sassen
+tvg_113/tvg_113_page_193.txt:Minister Sassen
+tvg_113/tvg_113_page_221.txt:Minister van Binnenlandse
+tvg_113/tvg_113_page_30.txt:minister van Buitenlandse Zakenj
+tvg_113/tvg_113_page_32.txt:minister van Buitenlandse Zaken Vyacheslav Molotov
+tvg_113/tvg_113_page_39.txt:minister van Buitenlandse Zaken
+tvg_113/tvg_113_page_44.txt:minister van Oorlog
+tvg_113/tvg_113_page_441.txt:minister Kuyper
+tvg_113/tvg_113_page_464.txt:minister van Defensie
+tvg_113/tvg_113_page_47.txt:minister van Oorlog
+tvg_113/tvg_113_page_487.txt:Minister van Buitenlandse Zaken
+tvg_113/tvg_113_page_503.txt:minister van Buitenlandse Zaken Joseph Luns
+tvg_113/tvg_113_page_508.txt:minister Luns
+tvg_113/tvg_113_page_508.txt:minister Luns
+tvg_113/tvg_113_page_508.txt:minister Luns
+tvg_113/tvg_113_page_523.txt:minister van Overzeese
+tvg_113/tvg_113_page_598.txt:minister Heemskerk
+tvg_114/tvg_114_page_110.txt:minister Walsingham
+tvg_114/tvg_114_page_154.txt:minister van Buitenlandse Zaken Luns
+tvg_114/tvg_114_page_197.txt:minister Soisson
+tvg_114/tvg_114_page_234.txt:minister van Buitenlandse Zaken Ernest Bevin
+tvg_115/tvg_115_page_182.txt:minister Luns
+tvg_115/tvg_115_page_183.txt:minister van Buitenlandse Zaken
+tvg_115/tvg_115_page_186.txt:minister van Buitenlandse Zaken Luns
+tvg_115/tvg_115_page_187.txt:minister van Buitenland-
+tvg_115/tvg_115_page_187.txt:minister van Buitenlandse Zaken
+tvg_115/tvg_115_page_188.txt:Minister Malik
+tvg_115/tvg_115_page_188.txt:minister van Binnenlandse Zaken
+tvg_115/tvg_115_page_193.txt:minister van Buitenlandse Zaken
+tvg_115/tvg_115_page_348.txt:minister van Defensie
+tvg_115/tvg_115_page_621.txt:minister van Binnenlandse Zaken
+tvg_115/tvg_115_page_627.txt:minister van Buitenlandse
+tvg_116/tvg_116_page_160.txt:minister van Landbouw
+tvg_116/tvg_116_page_180.txt:minister van Landbouw
+tvg_116/tvg_116_page_190.txt:minister van Defensie
+tvg_116/tvg_116_page_191.txt:minister van Defensie
+tvg_116/tvg_116_page_206.txt:minister van Buiten-
+tvg_116/tvg_116_page_207.txt:minister Van Mierlo
+tvg_116/tvg_116_page_216.txt:minister van Binnenlandse
+tvg_116/tvg_116_page_227.txt:Minister van Defensie Joris Voorhoeve
+tvg_116/tvg_116_page_234.txt:minister Kooĳmans
+tvg_116/tvg_116_page_241.txt:minister Yossi Beilin
+tvg_116/tvg_116_page_242.txt:minister van Buitenlandse Zaken Mark Eyskens
+tvg_116/tvg_116_page_279.txt:minister Voorhoeve
+tvg_116/tvg_116_page_282.txt:minister De Grave
+tvg_116/tvg_116_page_305.txt:minister Voorhoeve
+tvg_116/tvg_116_page_314.txt:minister van Buitenlandse Zaken Hans
+tvg_116/tvg_116_page_372.txt:minister van Buitenlandse
+tvg_116/tvg_116_page_537.txt:minister van Binnenlandse
+tvg_116/tvg_116_page_628.txt:minister van Landbouw
+tvg_116/tvg_116_page_634.txt:minister van Buiten-
+tvg_117/tvg_117_page_162.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_262.txt:minister van Buitenlandse
+tvg_117/tvg_117_page_338.txt:Minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_342.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_342.txt:minister van Buitenlandse
+tvg_117/tvg_117_page_347.txt:minister van Economische Zaken
+tvg_117/tvg_117_page_349.txt:minister van Defensie
+tvg_117/tvg_117_page_349.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_351.txt:minister Marga
+tvg_117/tvg_117_page_352.txt:minister van Buitenlandse Zaken Rusk
+tvg_117/tvg_117_page_356.txt:minister Klompé
+tvg_117/tvg_117_page_364.txt:minister van Defensie Robert McNamara
+tvg_117/tvg_117_page_367.txt:minister van Buitenlandse Zaken John Foster Dulles
+tvg_117/tvg_117_page_371.txt:minister van Buitenlandse Zaken Dean Rusk
+tvg_117/tvg_117_page_471.txt:minister van Binnenlandse
+tvg_117/tvg_117_page_48.txt:minister van Handel
+tvg_117/tvg_117_page_481.txt:minister Beel
+tvg_117/tvg_117_page_49.txt:minister van Oorlog
+tvg_117/tvg_117_page_490.txt:minister van Sociale Zaken
+tvg_117/tvg_117_page_490.txt:minister van Financiën Lieftinck
+tvg_117/tvg_117_page_50.txt:minister van Buiten
+tvg_117/tvg_117_page_514.txt:minister Van Boxtel
+tvg_117/tvg_117_page_53.txt:minister van Koloniën ChJ
+tvg_117/tvg_117_page_54.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_543.txt:minister van Financiën
+tvg_117/tvg_117_page_547.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_547.txt:minister van Politie
+tvg_117/tvg_117_page_547.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_547.txt:minister van Oorlogzjérôme Zieseniss
+tvg_117/tvg_117_page_547.txt:minister van Oorlogsadministratie
+tvg_117/tvg_117_page_547.txt:minister van Marine
+tvg_117/tvg_117_page_548.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_549.txt:minister Fouché
+tvg_117/tvg_117_page_550.txt:minister van Politie
+tvg_117/tvg_117_page_551.txt:minister van Politie
+tvg_117/tvg_117_page_551.txt:minister van Politie
+tvg_117/tvg_117_page_552.txt:minister van Politie
+tvg_117/tvg_117_page_552.txt:minister van Politie
+tvg_117/tvg_117_page_554.txt:minister van Politie
+tvg_117/tvg_117_page_554.txt:minister van Politie
+tvg_117/tvg_117_page_556.txt:minister van Justitie
+tvg_117/tvg_117_page_557.txt:minister van Justitie
+tvg_117/tvg_117_page_558.txt:minister van Binnenlandse Zaken
+tvg_117/tvg_117_page_558.txt:minister van Staat
+tvg_117/tvg_117_page_559.txt:minister van Napoleon
+tvg_117/tvg_117_page_56.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_561.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_562.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_563.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_563.txt:minister van Buitenlandse Zaken
+tvg_117/tvg_117_page_563.txt:minister van Politie
+tvg_117/tvg_117_page_564.txt:minister van Politie
+tvg_117/tvg_117_page_564.txt:minister van Politie
+tvg_117/tvg_117_page_57.txt:minister Stikker
+tvg_117/tvg_117_page_58.txt:minister Stikker
+tvg_117/tvg_117_page_59.txt:minister van Buitenlandse Zaken
+tvg_118/tvg_118_page_135.txt:minister van Financiën
+tvg_118/tvg_118_page_136.txt:minister van Buitenlandse
+tvg_118/tvg_118_page_340.txt:minister Rumsfeld
+tvg_118/tvg_118_page_341.txt:minister Henry Kissinger
+tvg_118/tvg_118_page_342.txt:minister Rumsfeld
+tvg_118/tvg_118_page_427.txt:minister Heinrich
+tvg_118/tvg_118_page_434.txt:minister Chasdai
+tvg_118/tvg_118_page_539.txt:minister van Openbare Werken
+tvg_118/tvg_118_page_541.txt:minister van Financiën
+tvg_118/tvg_118_page_541.txt:minister van Financiën
+tvg_118/tvg_118_page_542.txt:minister van Financiën
+tvg_118/tvg_118_page_542.txt:minister van Financiën
+tvg_118/tvg_118_page_544.txt:minister van Financiën
+tvg_118/tvg_118_page_545.txt:minister van Financiën
+tvg_118/tvg_118_page_623.txt:minister van Binnenlandse Zaken
+tvg_118/tvg_118_page_626.txt:minister van Sport
+tvg_118/tvg_118_page_627.txt:minister van Werkgelegenheid Martine Aubry
+tvg_119/tvg_119_page_148.txt:Minister van Agt
+tvg_119/tvg_119_page_148.txt:minister van Justitie
+tvg_119/tvg_119_page_155.txt:minister van Buitenlandse Zaken
+tvg_119/tvg_119_page_161.txt:minister Sarkozy
+tvg_119/tvg_119_page_219.txt:minister van Financiën
+tvg_119/tvg_119_page_223.txt:minister van Arbeid
+tvg_119/tvg_119_page_228.txt:minister van Financiën
+tvg_119/tvg_119_page_306.txt:minister Ed
+tvg_119/tvg_119_page_351.txt:minister van Ko-
+tvg_119/tvg_119_page_352.txt:minister van Koloniën
+tvg_119/tvg_119_page_352.txt:minister van Koloniën
+tvg_119/tvg_119_page_435.txt:Minister David Lloyd George
+tvg_119/tvg_119_page_442.txt:minister van Financiën
+tvg_119/tvg_119_page_486.txt:minister Du-
+tvg_12/tvg_12_page_102.txt:minister Narbonne
+tvg_12/tvg_12_page_107.txt:minister van Buitenlandsche
+tvg_12/tvg_12_page_114.txt:minister Cottington
+tvg_12/tvg_12_page_140.txt:minister Montmorin
+tvg_12/tvg_12_page_143.txt:minister van Oorlog
+tvg_12/tvg_12_page_149.txt:minister Servan
+tvg_12/tvg_12_page_204.txt:Minister Koumondoures
+tvg_12/tvg_12_page_204.txt:Minister van Buitenlamlsche
+tvg_12/tvg_12_page_207.txt:Minister F1eveinet
+tvg_12/tvg_12_page_270.txt:minister Servan
+tvg_12/tvg_12_page_274.txt:Minister van Buitenlandsche Zaken
+tvg_12/tvg_12_page_336.txt:minister van Oorlog
+tvg_12/tvg_12_page_338.txt:Minister van Oorlog
+tvg_12/tvg_12_page_340.txt:Minister van Oorlog
+tvg_12/tvg_12_page_341.txt:minister Pitt
+tvg_12/tvg_12_page_366.txt:minister Baross
+tvg_12/tvg_12_page_98.txt:minister Ai9
+tvg_120/tvg_120_page_10.txt:minister Remkes
+tvg_120/tvg_120_page_146.txt:minister van Sociale Zaken
+tvg_120/tvg_120_page_155.txt:minister van Financiën Henry Morgenthau
+tvg_120/tvg_120_page_181.txt:minister van Bui
+tvg_120/tvg_120_page_183.txt:minister van Buitenlandse Zaken
+tvg_120/tvg_120_page_186.txt:minister van Buitenlandse Zaken
+tvg_120/tvg_120_page_189.txt:minister van Buitenlandse
+tvg_120/tvg_120_page_209.txt:minister van de RKSP
+tvg_120/tvg_120_page_234.txt:minister Arthur Vander-
+tvg_120/tvg_120_page_234.txt:minister van Cultuur
+tvg_120/tvg_120_page_359.txt:minister van Waterstaat
+tvg_120/tvg_120_page_384.txt:minister van Onderwĳs
+tvg_120/tvg_120_page_384.txt:minister Plasterk
+tvg_120/tvg_120_page_384.txt:minister van Binnenlandse Zaken
+tvg_120/tvg_120_page_384.txt:minister van Oorlog
+tvg_120/tvg_120_page_385.txt:minister Nicolas Sarkozy
+tvg_120/tvg_120_page_487.txt:minister van Buitenlandse Zaken Bot
+tvg_120/tvg_120_page_511.txt:minister Rita Verdonk
+tvg_120/tvg_120_page_511.txt:minister Piet Hein Donner
+tvg_120/tvg_120_page_511.txt:minister Verdonk
+tvg_120/tvg_120_page_513.txt:minister Verdonk
+tvg_120/tvg_120_page_516.txt:minister van Binnenlandse
+tvg_120/tvg_120_page_520.txt:Minister Verdonk
+tvg_120/tvg_120_page_520.txt:Minister Verdonk
+tvg_120/tvg_120_page_521.txt:minister Verdonk
+tvg_120/tvg_120_page_521.txt:minister Verdonk
+tvg_120/tvg_120_page_596.txt:minister Netelenbos
+tvg_120/tvg_120_page_597.txt:minister Verdonk
+tvg_120/tvg_120_page_597.txt:minister Hirsch
+tvg_120/tvg_120_page_602.txt:minister Verdonk
+tvg_120/tvg_120_page_609.txt:minister Van
+tvg_120/tvg_120_page_609.txt:Minister OCW
+tvg_120/tvg_120_page_96.txt:Minister Bot
+tvg_120/tvg_120_page_99.txt:minister van Binnenlandse Zaken
+tvg_121/tvg_121_page_128.txt:minister van Justitie
+tvg_121/tvg_121_page_153.txt:minister van Landsverdediging
+tvg_121/tvg_121_page_165.txt:minister van Arbeid
+tvg_121/tvg_121_page_268.txt:minister van Defensie
+tvg_121/tvg_121_page_287.txt:Minister van Bui-
+tvg_121/tvg_121_page_288.txt:minister Stikker
+tvg_121/tvg_121_page_290.txt:minister van Buitenlandse Zaken Christian
+tvg_121/tvg_121_page_290.txt:minister Luns
+tvg_121/tvg_121_page_291.txt:minister van Buitenlandse Za-
+tvg_121/tvg_121_page_291.txt:Minister van Bui-
+tvg_121/tvg_121_page_291.txt:minister Luns
+tvg_121/tvg_121_page_291.txt:minister Luns
+tvg_121/tvg_121_page_292.txt:minister Luns
+tvg_121/tvg_121_page_292.txt:minister van Buiten-
+tvg_121/tvg_121_page_292.txt:minister Van
+tvg_121/tvg_121_page_292.txt:minister van Defensie
+tvg_121/tvg_121_page_292.txt:minister van Buitenlandse Zaken
+tvg_121/tvg_121_page_292.txt:minister van Bui-
+tvg_121/tvg_121_page_294.txt:minister van Buitenlandse Zaken
+tvg_121/tvg_121_page_294.txt:minister van Buitenlandse
+tvg_121/tvg_121_page_294.txt:minister van Buitenlandse Zaken
+tvg_121/tvg_121_page_295.txt:minister van Buitenlandse
+tvg_121/tvg_121_page_378.txt:minister Joseph Luns
+tvg_121/tvg_121_page_44.txt:Minister van Onderwijs
+tvg_121/tvg_121_page_448.txt:minister van Financiën
+tvg_121/tvg_121_page_450.txt:Minister van Defensie Frank
+tvg_121/tvg_121_page_453.txt:minister van Bui-
+tvg_121/tvg_121_page_456.txt:minister van Defensie Henk Kamp
+tvg_121/tvg_121_page_456.txt:minister van Buitenlandse Zaken
+tvg_121/tvg_121_page_461.txt:minister van Defensie Kamp
+tvg_121/tvg_121_page_495.txt:minister van Arbeid
+tvg_121/tvg_121_page_496.txt:minister Treub
+tvg_121/tvg_121_page_496.txt:minister Aalberse
+tvg_121/tvg_121_page_500.txt:minister Ruys
+tvg_121/tvg_121_page_500.txt:minister De Vlugt
+tvg_122/tvg_122_page_128.txt:minister van Justitie
+tvg_122/tvg_122_page_153.txt:minister van Landsverdediging
+tvg_122/tvg_122_page_165.txt:minister van Arbeid
+tvg_122/tvg_122_page_265.txt:minister van Defensie Donald Rumsfeld
+tvg_122/tvg_122_page_268.txt:minister van Defensie
+tvg_122/tvg_122_page_287.txt:Minister van Bui
+tvg_122/tvg_122_page_288.txt:minister Stikker
+tvg_122/tvg_122_page_290.txt:minister van Buitenlandse Zaken Christian
+tvg_122/tvg_122_page_290.txt:minister Luns
+tvg_122/tvg_122_page_291.txt:minister van Buitenlandse Za-
+tvg_122/tvg_122_page_291.txt:Minister van Bui-
+tvg_122/tvg_122_page_291.txt:minister Luns
+tvg_122/tvg_122_page_291.txt:minister Luns
+tvg_122/tvg_122_page_292.txt:minister Luns
+tvg_122/tvg_122_page_292.txt:minister van Buiten
+tvg_122/tvg_122_page_292.txt:minister van Buitenlandse Zaken
+tvg_122/tvg_122_page_292.txt:minister van Bui
+tvg_122/tvg_122_page_292.txt:minister Van
+tvg_122/tvg_122_page_292.txt:minister van Defensie
+tvg_122/tvg_122_page_294.txt:minister van Buitenlandse
+tvg_122/tvg_122_page_294.txt:minister van Buitenlandse Zaken
+tvg_122/tvg_122_page_294.txt:minister van Buitenlandse Zaken
+tvg_122/tvg_122_page_295.txt:minister van Buitenlandse
+tvg_122/tvg_122_page_378.txt:minister Joseph Luns
+tvg_122/tvg_122_page_44.txt:Minister van Onderwijs
+tvg_122/tvg_122_page_448.txt:minister van Financiën
+tvg_122/tvg_122_page_450.txt:Minister van Defensie Frank
+tvg_122/tvg_122_page_450.txt:minister van VROM
+tvg_122/tvg_122_page_453.txt:minister van Bui
+tvg_122/tvg_122_page_456.txt:minister van Defensie Henk Kamp
+tvg_122/tvg_122_page_456.txt:minister van Buitenlandse Zaken
+tvg_122/tvg_122_page_461.txt:minister van Defensie Kamp
+tvg_122/tvg_122_page_471.txt:minister Wim
+tvg_122/tvg_122_page_491.txt:minister van Oorlog Sidney
+tvg_122/tvg_122_page_495.txt:minister van Arbeid
+tvg_122/tvg_122_page_496.txt:minister Treub
+tvg_122/tvg_122_page_496.txt:minister Aalberse
+tvg_122/tvg_122_page_500.txt:minister Ruys
+tvg_122/tvg_122_page_500.txt:minister De Vlugt
+tvg_122/tvg_122_page_502.txt:minister van Financiën
+tvg_13/tvg_13_page_109.txt:minister Rainilaiarivoni
+tvg_13/tvg_13_page_111.txt:minister Rainilaiarivoni
+tvg_13/tvg_13_page_196.txt:Minister van Koloniën
+tvg_13/tvg_13_page_256.txt:minister Van Limburg Stirum
+tvg_13/tvg_13_page_314.txt:Minister van Marine
+tvg_13/tvg_13_page_70.txt:Minister Cremer
+tvg_13/tvg_13_page_70.txt:minister van Houten
+tvg_14/tvg_14_page_13.txt:Minister van Openbaar Onderwĳs
+tvg_14/tvg_14_page_133.txt:Minister van Oorlog
+tvg_14/tvg_14_page_16.txt:Minister van Onderwĳs
+tvg_14/tvg_14_page_196.txt:minister Harden-
+tvg_14/tvg_14_page_238.txt:minister Falk
+tvg_14/tvg_14_page_372.txt:minister Lely
+tvg_14/tvg_14_page_4.txt:Minister van Justitie
+tvg_14/tvg_14_page_51.txt:minister van Koloniën Myer
+tvg_14/tvg_14_page_52.txt:minister Borret
+tvg_14/tvg_14_page_81.txt:minister Colbert
+tvg_14/tvg_14_page_9.txt:Minister van Justitie
+tvg_14/tvg_14_page_9.txt:Minister van Binnenlandsche Zaken
+tvg_15/tvg_15_page_116.txt:minister Bryce
+tvg_15/tvg_15_page_308.txt:minister Cremer
+tvg_15/tvg_15_page_42.txt:minister van Koloniën
+tvg_15/tvg_15_page_51.txt:minister van Waterboer
+tvg_16/tvg_16_page_331.txt:minister van Water-
+tvg_16/tvg_16_page_342.txt:minister van Binnenlandsche Zaken
+tvg_16/tvg_16_page_362.txt:minister van Buitenl
+tvg_16/tvg_16_page_72.txt:minister te Londen
+tvg_18/tvg_18_page_180.txt:minister van Koloniën
+tvg_18/tvg_18_page_303.txt:Minister Van Asch
+tvg_18/tvg_18_page_303.txt:Minister van Koloniën
+tvg_18/tvg_18_page_31.txt:Minister Nagel
+tvg_19/tvg_19_page_10.txt:minister Necker
+tvg_19/tvg_19_page_107.txt:Minister van Binnenlandsche Zaken
+tvg_19/tvg_19_page_13.txt:minister Necker
+tvg_19/tvg_19_page_167.txt:Minister van Binnen-
+tvg_19/tvg_19_page_168.txt:Minister Combes
+tvg_19/tvg_19_page_200.txt:Minister van Binnenlansche
+tvg_19/tvg_19_page_23.txt:minister Necker
+tvg_19/tvg_19_page_265.txt:minister der Vereenigde
+tvg_19/tvg_19_page_279.txt:minister Witte
+tvg_19/tvg_19_page_3.txt:minister Necker
+tvg_19/tvg_19_page_42.txt:minister Choiseul
+tvg_19/tvg_19_page_46.txt:Minister Ferry
+tvg_19/tvg_19_page_75.txt:minister Ilg
+tvg_20/tvg_20_page_144.txt:minister van Zuylen
+tvg_20/tvg_20_page_225.txt:minister van Luxemburg
+tvg_20/tvg_20_page_293.txt:minister Canning
+tvg_20/tvg_20_page_47.txt:minister Von Manteuffel
+tvg_21/tvg_21_page_1.txt:Minister van Buitenlandsche
+tvg_21/tvg_21_page_14.txt:Minister van Oorlog
+tvg_21/tvg_21_page_14.txt:Minister van Buitenlandsche
+tvg_21/tvg_21_page_162.txt:Minister William Cecil Lord Burleigh
+tvg_21/tvg_21_page_163.txt:Minister van Buitenlandsche
+tvg_21/tvg_21_page_163.txt:Minister van Binnenlandsche Zaken
+tvg_21/tvg_21_page_166.txt:Minister van Buitenlandsche Zaken
+tvg_21/tvg_21_page_241.txt:Minister van Buitenlandsche Zaken
+tvg_21/tvg_21_page_257.txt:Minister Cham-
+tvg_21/tvg_21_page_260.txt:Minister van Koloniën
+tvg_21/tvg_21_page_260.txt:Minister van Buiten-
+tvg_21/tvg_21_page_5.txt:Minister van Buitenlandsche Zaken
+tvg_21/tvg_21_page_8.txt:Minister van Financiën Magnin
+tvg_21/tvg_21_page_83.txt:Minister Plenipotentiaris
+tvg_21/tvg_21_page_84.txt:Minister van Buiten
+tvg_21/tvg_21_page_87.txt:Minister Plenipotentiarìs
+tvg_21/tvg_21_page_92.txt:Minister van Buitenlandsche Zaken
+tvg_21/tvg_21_page_97.txt:Minister Hawkes-
+tvg_21/tvg_21_page_99.txt:Minister Taleyrand
+tvg_22/tvg_22_page_59.txt:minister Maurepas
+tvg_23/tvg_23_page_134.txt:minister van Binnenlandsche Zaken
+tvg_23/tvg_23_page_144.txt:minister Necker
+tvg_23/tvg_23_page_242.txt:minister van Keizer Frans Jozef
+tvg_23/tvg_23_page_244.txt:minister Schwarzenberg
+tvg_23/tvg_23_page_246.txt:Minister Bool
+tvg_23/tvg_23_page_248.txt:minister Buol
+tvg_23/tvg_23_page_249.txt:Minister te Weenen
+tvg_23/tvg_23_page_250.txt:Minister Buol
+tvg_23/tvg_23_page_251.txt:Minister Buol
+tvg_23/tvg_23_page_252.txt:Minister Buol
+tvg_23/tvg_23_page_255.txt:minister Buol
+tvg_23/tvg_23_page_297.txt:minister van Openbaar
+tvg_24/tvg_24_page_15.txt:minister Sould
+tvg_24/tvg_24_page_184.txt:minister Colbert
+tvg_24/tvg_24_page_185.txt:minister Le Tellier
+tvg_24/tvg_24_page_211.txt:minister Herzberg
+tvg_24/tvg_24_page_26.txt:Minister van Binnenlandsche
+tvg_24/tvg_24_page_26.txt:Minister van Financiën
+tvg_24/tvg_24_page_284.txt:Minister van Buitenlandsche Zaken
+tvg_24/tvg_24_page_308.txt:minister van Beieren
+tvg_24/tvg_24_page_41.txt:minister van Oorlog
+tvg_24/tvg_24_page_80.txt:minister van Binnenlandsche Zaken
+tvg_25/tvg_25_page_124.txt:minister John
+tvg_26/tvg_26_page_157.txt:Minister van Kolonien
+tvg_26/tvg_26_page_186.txt:minister Harley
+tvg_26/tvg_26_page_191.txt:minister Stan-
+tvg_26/tvg_26_page_218.txt:minister van Beieren
+tvg_26/tvg_26_page_242.txt:minister Walpole
+tvg_26/tvg_26_page_265.txt:minister Della
+tvg_27/tvg_27_page_16.txt:minister Von Görz
+tvg_27/tvg_27_page_30.txt:minister North
+tvg_27/tvg_27_page_77.txt:minister Maret
+tvg_28/tvg_28_page_157.txt:Minister Narbonne
+tvg_28/tvg_28_page_157.txt:Minister Narbonne
+tvg_28/tvg_28_page_157.txt:minister van Buitenlandsche Zaken
+tvg_28/tvg_28_page_16.txt:minister de Rémusat
+tvg_28/tvg_28_page_21.txt:minister de Rémusat
+tvg_28/tvg_28_page_259.txt:Minister van Oorlog
+tvg_28/tvg_28_page_331.txt:minister Bathurst
+tvg_28/tvg_28_page_7.txt:minister de Rémusat
+tvg_28/tvg_28_page_9.txt:minister de Rémusat
+tvg_28/tvg_28_page_9.txt:Minister de Rémusat
+tvg_29/tvg_29_page_116.txt:minister Loudon
+tvg_29/tvg_29_page_17.txt:minister Godoy
+tvg_29/tvg_29_page_18.txt:Minister van Buitenlandsche Zaken
+tvg_29/tvg_29_page_220.txt:Minister van Staat
+tvg_29/tvg_29_page_281.txt:minister Hertzberg
+tvg_29/tvg_29_page_282.txt:minister Hertzberg
+tvg_30/tvg_30_page_133.txt:Minister van Justitie
+tvg_30/tvg_30_page_242.txt:minister van Elisabeth
+tvg_30/tvg_30_page_257.txt:minister van Kau-
+tvg_30/tvg_30_page_258.txt:minister Gortschakow
+tvg_30/tvg_30_page_330.txt:minister Schleinitz
+tvg_31/tvg_31_page_121.txt:minister van Buitenlandsche Zaken
+tvg_31/tvg_31_page_211.txt:minister Doumergue
+tvg_31/tvg_31_page_225.txt:minister te Berlĳn
+tvg_31/tvg_31_page_226.txt:minister van Buitenlandsche Zaken
+tvg_31/tvg_31_page_228.txt:minister van Buiten-
+tvg_31/tvg_31_page_229.txt:minister van Buitenlandsche
+tvg_31/tvg_31_page_289.txt:Minister van Onderwĳs
+tvg_31/tvg_31_page_295.txt:minister van Buitenlandsche Zaken
+tvg_31/tvg_31_page_296.txt:Minister van Koloniën
+tvg_31/tvg_31_page_296.txt:Minister van Buitenlandsche Zaken
+tvg_31/tvg_31_page_300.txt:Minister van Koloniën
+tvg_32/tvg_32_page_294.txt:Minister Fork
+tvg_32/tvg_32_page_30.txt:minister Falck
+tvg_32/tvg_32_page_300.txt:minister Clerck
+tvg_32/tvg_32_page_92.txt:minister Pitt
+tvg_33/tvg_33_page_103.txt:minister van Karel II
+tvg_33/tvg_33_page_117.txt:minister Van Bosse
+tvg_33/tvg_33_page_122.txt:Minister Van Bosse
+tvg_33/tvg_33_page_126.txt:minister Van Hall
+tvg_33/tvg_33_page_185.txt:Minister van Zuy-
+tvg_33/tvg_33_page_186.txt:Minister van Justitie
+tvg_33/tvg_33_page_277.txt:Minister van Frankrĳk
+tvg_33/tvg_33_page_282.txt:Minister Townshend
+tvg_33/tvg_33_page_285.txt:Minister Baron
+tvg_33/tvg_33_page_291.txt:Minister van Zweden
+tvg_33/tvg_33_page_292.txt:Minister van Groot
+tvg_33/tvg_33_page_303.txt:Minister van Karel XII
+tvg_33/tvg_33_page_48.txt:minister Wyndham
+tvg_34/tvg_34_page_223.txt:minister Sasonof
+tvg_34/tvg_34_page_24.txt:minister van Zuylen
+tvg_34/tvg_34_page_24.txt:minister De Marees
+tvg_34/tvg_34_page_253.txt:minister Vergennes
+tvg_34/tvg_34_page_28.txt:Minister Descamps
+tvg_34/tvg_34_page_31.txt:Minister van Buitenlandsche Zaken
+tvg_34/tvg_34_page_32.txt:Minister van Oorlog
+tvg_34/tvg_34_page_320.txt:Minister van Buitenlandsche Zaken
+tvg_34/tvg_34_page_336.txt:minister van den Stad
+tvg_34/tvg_34_page_339.txt:Minister van Binnenlandsche Zaken
+tvg_34/tvg_34_page_346.txt:minister Cremer
+tvg_35/tvg_35_page_186.txt:minister van Binnenlandsche
+tvg_35/tvg_35_page_99.txt:Minister van Binnenlandsche Zaken
+tvg_35/tvg_35_page_99.txt:Minister van Binnenlandsche Zaken
+tvg_36/tvg_36_page_127.txt:minister Salisbury
+tvg_36/tvg_36_page_239.txt:Minister van Onderwĳs
+tvg_36/tvg_36_page_291.txt:minister Duruy
+tvg_36/tvg_36_page_348.txt:minister Bernstorf
+tvg_38/tvg_38_page_170.txt:minister van Buitenlandsche Zaken
+tvg_38/tvg_38_page_321.txt:Minister van Marine
+tvg_38/tvg_38_page_36.txt:minister van Onderwijs
+tvg_38/tvg_38_page_43.txt:minister van Binnenlandsche Zaken
+tvg_38/tvg_38_page_43.txt:minister van Onderwijs
+tvg_38/tvg_38_page_58.txt:Minister van Onderwijs
+tvg_38/tvg_38_page_62.txt:Minister van Binnenlandsche Zaken
+tvg_38/tvg_38_page_63.txt:Minister van Binnenlandsche Zaken
+tvg_39/tvg_39_page_142.txt:Minister van Koloniën
+tvg_39/tvg_39_page_146.txt:minister Giers
+tvg_39/tvg_39_page_339.txt:Minister van Onderwijs
+tvg_39/tvg_39_page_340.txt:Minister Falck
+tvg_39/tvg_39_page_345.txt:minister Falck
+tvg_40/tvg_40_page_249.txt:minister van Oorlog
+tvg_40/tvg_40_page_254.txt:minister van Koloniën
+tvg_40/tvg_40_page_263.txt:minister Van Gobelschroy
+tvg_41/tvg_41_page_3.txt:minister Milowanowitsj
+tvg_41/tvg_41_page_5.txt:minister de Selves
+tvg_42/tvg_42_page_404.txt:minister Hardenberg
+tvg_42/tvg_42_page_410.txt:minister Ludwig
+tvg_42/tvg_42_page_417.txt:minister van Bosse
+tvg_42/tvg_42_page_417.txt:minister Von Manteuffel
+tvg_43/tvg_43_page_281.txt:minister van Buitenlandsche Zaken
+tvg_43/tvg_43_page_281.txt:minister van Buitenl
+tvg_43/tvg_43_page_282.txt:minister van Koloniën
+tvg_43/tvg_43_page_284.txt:Minister van Buitenl
+tvg_43/tvg_43_page_284.txt:Minister van Buite-nl
+tvg_43/tvg_43_page_285.txt:Minister van Buitenl
+tvg_43/tvg_43_page_288.txt:Minister van Buitenl
+tvg_43/tvg_43_page_294.txt:minister Marie
+tvg_43/tvg_43_page_333.txt:minister Prins Wittgenstein
+tvg_43/tvg_43_page_362.txt:minister Delcassé
+tvg_43/tvg_43_page_366.txt:minister Lloyd George
+tvg_43/tvg_43_page_372.txt:minister Viviani
+tvg_43/tvg_43_page_56.txt:minister van Koloniën
+tvg_43/tvg_43_page_56.txt:minister van Koloniën
+tvg_44/tvg_44_page_141.txt:minister Strens
+tvg_44/tvg_44_page_250.txt:Minister van Oorlog
+tvg_44/tvg_44_page_257.txt:Minister van Buitenlandsche
+tvg_44/tvg_44_page_260.txt:Minister van Buitenlandsche
+tvg_44/tvg_44_page_278.txt:Minister van Staat
+tvg_44/tvg_44_page_279.txt:Minister van Staat
+tvg_44/tvg_44_page_383.txt:minister te Parijs
+tvg_44/tvg_44_page_4.txt:minister van Marine
+tvg_44/tvg_44_page_5.txt:Minister van Binnenlandsche
+tvg_44/tvg_44_page_65.txt:minister Bosboom
+tvg_44/tvg_44_page_9.txt:minister van Buitenlandsche Zaken
+tvg_45/tvg_45_page_328.txt:minister van Buitenlandsche Zaken
+tvg_46/tvg_46_page_26.txt:minister van Buitenlandsche Zaken
+tvg_46/tvg_46_page_391.txt:minister Van
+tvg_46/tvg_46_page_399.txt:minister Baud
+tvg_47/tvg_47_page_24.txt:minister Necker
+tvg_47/tvg_47_page_328.txt:minister Witte
+tvg_47/tvg_47_page_341.txt:Minister van Onderwijs
+tvg_47/tvg_47_page_5.txt:minister Louis Barthou
+tvg_48/tvg_48_page_246.txt:minister van Oorlog
+tvg_48/tvg_48_page_248.txt:minister van Marine
+tvg_48/tvg_48_page_248.txt:minister Hanotaux
+tvg_48/tvg_48_page_427.txt:minister Rochussen
+tvg_48/tvg_48_page_430.txt:Minister van Oorlog
+tvg_48/tvg_48_page_99.txt:minister Vergennes
+tvg_49/tvg_49_page_128.txt:Minister van Financiën
+tvg_49/tvg_49_page_262.txt:Minister de Jonge
+tvg_49/tvg_49_page_301.txt:Minister van Onderwijs
+tvg_49/tvg_49_page_347.txt:Minister van Finan-
+tvg_49/tvg_49_page_353.txt:Minister van Binnenlandsche Zaken
+tvg_49/tvg_49_page_403.txt:Minister van Binnenlandsche Zaken
+tvg_49/tvg_49_page_49.txt:Minister van Buitenlandsche Zaken
+tvg_49/tvg_49_page_65.txt:Minister van Buitenlandsche
+tvg_50/tvg_50_page_217.txt:Minister Buol
+tvg_50/tvg_50_page_359.txt:Minister van Engeland
+tvg_50/tvg_50_page_384.txt:Minister van Eere
+tvg_50/tvg_50_page_386.txt:Minister van Binnen-
+tvg_51/tvg_51_page_326.txt:minister Cretziana
+tvg_51/tvg_51_page_328.txt:minister Geschow
+tvg_51/tvg_51_page_397.txt:Minister van Onderwijs
+tvg_51/tvg_51_page_429.txt:minister Van Maanen
+tvg_51/tvg_51_page_472.txt:minister van Buitenlandsche Zaken
+tvg_51/tvg_51_page_472.txt:minister van Buitenlandsche ZakenAdams
+tvg_51/tvg_51_page_478.txt:minister van Buitenl
+tvg_51/tvg_51_page_479.txt:minister van Binnenl
+tvg_51/tvg_51_page_481.txt:minister van Buitenl
+tvg_51/tvg_51_page_488.txt:minister van Onderwijs Rust
+tvg_52/tvg_52_page_131.txt:minister Chavigny
+tvg_52/tvg_52_page_133.txt:minister Chavigny
+tvg_52/tvg_52_page_210.txt:minister van Bui-
+tvg_52/tvg_52_page_23.txt:minister van Pruisen
+tvg_52/tvg_52_page_238.txt:minister van Sandro
+tvg_52/tvg_52_page_24.txt:minister Altenstein
+tvg_52/tvg_52_page_283.txt:Minister van Onderwijs
+tvg_52/tvg_52_page_283.txt:minister van Justitie
+tvg_52/tvg_52_page_325.txt:Minister Elout
+tvg_52/tvg_52_page_407.txt:minister Frh
+tvg_52/tvg_52_page_419.txt:minister Harley
+tvg_52/tvg_52_page_42.txt:minister van Pruisen
+tvg_52/tvg_52_page_434.txt:minister van Buitenlandsche Zaken
+tvg_53/tvg_53_page_430.txt:minister Van Heemstra
+tvg_53/tvg_53_page_431.txt:minister Thorbecke
+tvg_53/tvg_53_page_97.txt:minister Speranskij
+tvg_54/tvg_54_page_102.txt:minister van Buitenlandse Zaken
+tvg_54/tvg_54_page_179.txt:Minister van Onderwijs
+tvg_54/tvg_54_page_227.txt:minister van Koloniën
+tvg_54/tvg_54_page_258.txt:minister Iswolski
+tvg_54/tvg_54_page_280.txt:minister Heinitz
+tvg_54/tvg_54_page_320.txt:minister Colijn
+tvg_54/tvg_54_page_389.txt:Minister van Buitenlandse Zaken
+tvg_54/tvg_54_page_470.txt:minister van Marine
+tvg_55/tvg_55_page_131.txt:minister Törring
+tvg_55/tvg_55_page_139.txt:minister Törring
+tvg_55/tvg_55_page_205.txt:minister Funk
+tvg_55/tvg_55_page_240.txt:Minister van Financiën
+tvg_55/tvg_55_page_255.txt:minister van Oorlog
+tvg_55/tvg_55_page_255.txt:minister van Oorlog
+tvg_56/tvg_56_page_104.txt:minister van Binnenlandse
+tvg_56/tvg_56_page_167.txt:minister van Binnenlandse Zaken
+tvg_56/tvg_56_page_308.txt:minister Ramel
+tvg_56/tvg_56_page_322.txt:minister Thugut
+tvg_56/tvg_56_page_324.txt:minister Delacroix
+tvg_56/tvg_56_page_35.txt:minister Russell
+tvg_56/tvg_56_page_62.txt:Minister van Oorlog
+tvg_56/tvg_56_page_67.txt:minister Hóman
+tvg_57/tvg_57_page_168.txt:minister van Financiën
+tvg_57/tvg_57_page_270.txt:minister Mustafa Kahn
+tvg_58/tvg_58_page_32.txt:minister Richelieu
+tvg_58/tvg_58_page_36.txt:minister Gortschakow
+tvg_59/tvg_59_page_139.txt:Minister van Buitenlandsche Zaken
+tvg_59/tvg_59_page_150.txt:Minister van Buitenlandsche
+tvg_59/tvg_59_page_152.txt:Minister van Buitenlandsche Zaken
+tvg_59/tvg_59_page_153.txt:Minister van Buitenlandsche Zaken
+tvg_59/tvg_59_page_153.txt:Minister van Buitenlandsche Zaken
+tvg_59/tvg_59_page_155.txt:Minister van Buitenlandsche Zaken
+tvg_59/tvg_59_page_157.txt:Minister van Buitenland-
+tvg_59/tvg_59_page_201.txt:minister van Ptole-
+tvg_59/tvg_59_page_284.txt:minister Elout
+tvg_59/tvg_59_page_284.txt:Minister Elout
+tvg_59/tvg_59_page_304.txt:minister Natuurlijk
+tvg_59/tvg_59_page_327.txt:minister van Binnenlandsche Zaken
+tvg_60/tvg_60_page_117.txt:minister Walpole
+tvg_60/tvg_60_page_118.txt:minister Verschuur
+tvg_60/tvg_60_page_118.txt:Minister Verschuur
+tvg_60/tvg_60_page_119.txt:Minister Verschuur
+tvg_60/tvg_60_page_157.txt:minister Rochussen
+tvg_60/tvg_60_page_161.txt:minister Baud
+tvg_60/tvg_60_page_161.txt:minister van Binnenlandse Zaken
+tvg_60/tvg_60_page_164.txt:minister van der Heim
+tvg_60/tvg_60_page_165.txt:minister van der Heim
+tvg_60/tvg_60_page_166.txt:minister van Financiën
+tvg_60/tvg_60_page_166.txt:minister van Rappard
+tvg_60/tvg_60_page_166.txt:minister van Rappard
+tvg_60/tvg_60_page_167.txt:minister van Randwijck
+tvg_60/tvg_60_page_167.txt:minister van Binnenlandse Zaken
+tvg_60/tvg_60_page_168.txt:minister Lighten-
+tvg_60/tvg_60_page_168.txt:minister van Oorlog
+tvg_60/tvg_60_page_170.txt:Minister De Kempenaer
+tvg_60/tvg_60_page_170.txt:minister Donker Curtius
+tvg_60/tvg_60_page_171.txt:minister van Binnen-
+tvg_60/tvg_60_page_171.txt:minister van Buitenlandse Zaken
+tvg_60/tvg_60_page_172.txt:minister Lightenveld
+tvg_60/tvg_60_page_177.txt:Minister van Buitenlandse Zaken
+tvg_60/tvg_60_page_177.txt:minister van Koloniën
+tvg_60/tvg_60_page_179.txt:minister van Buitenlandse Zaken
+tvg_60/tvg_60_page_180.txt:minister van Buitenlandse Zaken
+tvg_60/tvg_60_page_225.txt:minister van Bin-
+tvg_60/tvg_60_page_228.txt:minister Heemskerk
+tvg_60/tvg_60_page_231.txt:minister Heemskerk
+tvg_60/tvg_60_page_231.txt:minister Geertsema
+tvg_60/tvg_60_page_234.txt:minister Fortoul
+tvg_60/tvg_60_page_266.txt:minister van Marine
+tvg_60/tvg_60_page_340.txt:minister van Buitenlandsche
+tvg_60/tvg_60_page_435.txt:minister van Hessen Hassenpflug
+tvg_61/tvg_61_page_382.txt:Minister van Kleffens
+tvg_61/tvg_61_page_437.txt:Minister Thorbecke
+tvg_62/tvg_62_page_150.txt:minister Lord Carnarvon
+tvg_62/tvg_62_page_213.txt:minister van Buitenlandse
+tvg_62/tvg_62_page_224.txt:minister van Buitenlandse Zaken
+tvg_62/tvg_62_page_233.txt:minister van Binnenlandse Zaken
+tvg_62/tvg_62_page_423.txt:Minister Talma
+tvg_62/tvg_62_page_84.txt:Minister Danew
+tvg_62/tvg_62_page_84.txt:minister Sasonow
+tvg_62/tvg_62_page_87.txt:minister Veniselos
+tvg_62/tvg_62_page_88.txt:minister Veniselos
+tvg_62/tvg_62_page_89.txt:minister Ghenadiew
+tvg_62/tvg_62_page_89.txt:minister Berchtold
+tvg_62/tvg_62_page_90.txt:minister Berchtold
+tvg_62/tvg_62_page_93.txt:minister Pichon
+tvg_63/tvg_63_page_138.txt:minister Lely
+tvg_63/tvg_63_page_16.txt:Minister van Koophandel
+tvg_63/tvg_63_page_17.txt:Minister van Oorlog
+tvg_63/tvg_63_page_18.txt:Minister van Buitenlandse Zaken
+tvg_63/tvg_63_page_199.txt:Minister van Engeland
+tvg_63/tvg_63_page_2.txt:minister van Engeland
+tvg_63/tvg_63_page_21.txt:Minister Secretaris
+tvg_63/tvg_63_page_21.txt:Minister der Marine Maarschalk
+tvg_63/tvg_63_page_22.txt:Minister van Binnenlandse Zaken
+tvg_63/tvg_63_page_24.txt:Minister van Oorlog
+tvg_63/tvg_63_page_24.txt:Minister van Oorlog
+tvg_63/tvg_63_page_24.txt:Minister van Oorlog
+tvg_63/tvg_63_page_26.txt:Minister van Binnenlandsche Zaken
+tvg_63/tvg_63_page_26.txt:Minister der Marine
+tvg_63/tvg_63_page_28.txt:Minister van Koophandel
+tvg_63/tvg_63_page_28.txt:Minister van Koop-
+tvg_63/tvg_63_page_29.txt:Minister van Buitenlandsche
+tvg_63/tvg_63_page_29.txt:Minister van Finantiën
+tvg_63/tvg_63_page_29.txt:Minister van Finantiën
+tvg_63/tvg_63_page_30.txt:Minister van Zijne
+tvg_63/tvg_63_page_30.txt:Minister van Buitenlandsche Zaken
+tvg_63/tvg_63_page_307.txt:Minister van Onderwijs
+tvg_63/tvg_63_page_31.txt:Minister van Binnenlandsche
+tvg_63/tvg_63_page_31.txt:Minister van Buiten-
+tvg_63/tvg_63_page_317.txt:minister Lord North
+tvg_63/tvg_63_page_32.txt:Minister van Buitenlandsche Zaken
+tvg_63/tvg_63_page_32.txt:Minister van Finantien
+tvg_63/tvg_63_page_320.txt:minister van de Franse
+tvg_63/tvg_63_page_33.txt:Minister van Finantien
+tvg_63/tvg_63_page_33.txt:Minister van Finantiën
+tvg_63/tvg_63_page_33.txt:Minister van Buitenlandse Zaken
+tvg_63/tvg_63_page_33.txt:Minister van Finantiën
+tvg_63/tvg_63_page_33.txt:Minister van Finantiën
+tvg_63/tvg_63_page_34.txt:Minister van Buitenlandse Zaken
+tvg_63/tvg_63_page_34.txt:Minister van Buiten
+tvg_63/tvg_63_page_35.txt:Minister te Parijs
+tvg_63/tvg_63_page_36.txt:Minister Secretaris
+tvg_63/tvg_63_page_36.txt:Minister Secretaris
+tvg_63/tvg_63_page_36.txt:Minister Secretaris
+tvg_63/tvg_63_page_36.txt:Minister Secretaris
+tvg_63/tvg_63_page_36.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_37.txt:Minister Secretaris
+tvg_63/tvg_63_page_376.txt:minister Doumergue
+tvg_63/tvg_63_page_424.txt:minister Harte
+tvg_64/tvg_64_page_105.txt:minister de Duitse
+tvg_64/tvg_64_page_109.txt:minister Loudon
+tvg_64/tvg_64_page_112.txt:minister van Buitenlandse Zaken
+tvg_64/tvg_64_page_140.txt:minister Gouvion-Saint-Cyr
+tvg_64/tvg_64_page_391.txt:minister Van Sambeek
+tvg_64/tvg_64_page_391.txt:minister Van Kame-
+tvg_64/tvg_64_page_428.txt:minister van Bosse
+tvg_64/tvg_64_page_64.txt:minister Brockdorff-Rantzau
+tvg_64/tvg_64_page_78.txt:minister van Koloniën
+tvg_64/tvg_64_page_78.txt:minister van Oorlog
+tvg_64/tvg_64_page_80.txt:minister Zimmermann
+tvg_64/tvg_64_page_83.txt:minister van Marine
+tvg_64/tvg_64_page_86.txt:minister van Buitenlandse Zaken
+tvg_64/tvg_64_page_88.txt:minister van Buitenlandse Zaken
+tvg_65/tvg_65_page_245.txt:Minister van Oorlog
+tvg_65/tvg_65_page_257.txt:Minister Bosboom
+tvg_65/tvg_65_page_257.txt:Minister van Oorlog
+tvg_65/tvg_65_page_258.txt:Minister van Buitenlandse Zaken
+tvg_65/tvg_65_page_258.txt:Minister Loudon
+tvg_65/tvg_65_page_260.txt:Minister Loudon
+tvg_65/tvg_65_page_261.txt:Minister Bosboom
+tvg_65/tvg_65_page_261.txt:Minister Cort
+tvg_65/tvg_65_page_261.txt:Minister Bosboom
+tvg_65/tvg_65_page_261.txt:Minister Loudon
+tvg_65/tvg_65_page_264.txt:Minister Bosboom
+tvg_65/tvg_65_page_266.txt:Minister van Oorlog
+tvg_65/tvg_65_page_266.txt:Minister van Oor-
+tvg_65/tvg_65_page_267.txt:Minister Balfour
+tvg_65/tvg_65_page_268.txt:Minister van Oorlog
+tvg_65/tvg_65_page_269.txt:Minister de Jonge
+tvg_65/tvg_65_page_270.txt:Minister Ihr
+tvg_65/tvg_65_page_270.txt:Minister Alting
+tvg_65/tvg_65_page_271.txt:Minister van Buitenlandse Zaken
+tvg_65/tvg_65_page_351.txt:minister Kwiat-
+tvg_65/tvg_65_page_418.txt:Minister van Buitenlandse Zaken
+tvg_65/tvg_65_page_48.txt:Minister Graf
+tvg_65/tvg_65_page_72.txt:Minister van Onderwijs
+tvg_66/tvg_66_page_300.txt:Minister van Onderwijs
+tvg_66/tvg_66_page_311.txt:minister van Buitenlandse
+tvg_66/tvg_66_page_360.txt:minister Medina-Celi
+tvg_66/tvg_66_page_415.txt:minister van Buitenlandse Zaken
+tvg_66/tvg_66_page_415.txt:minister Rochussen
+tvg_66/tvg_66_page_422.txt:minister van Openbaar
+tvg_66/tvg_66_page_423.txt:minister Avellaneda
+tvg_67/tvg_67_page_139.txt:minister van Karel
+tvg_67/tvg_67_page_230.txt:Minister Dr Abraham Kuyper
+tvg_67/tvg_67_page_278.txt:minister van Lode-
+tvg_67/tvg_67_page_345.txt:minister van Buitenlandse Zaken
+tvg_67/tvg_67_page_345.txt:minister van Justitie
+tvg_67/tvg_67_page_348.txt:Minister Lord Aberdeen
+tvg_67/tvg_67_page_352.txt:minister van Buiten-
+tvg_67/tvg_67_page_373.txt:minister van Binnenlandse Zaken
+tvg_67/tvg_67_page_401.txt:Minister van Politie
+tvg_67/tvg_67_page_408.txt:minister van Staat
+tvg_67/tvg_67_page_44.txt:minister Verstolk
+tvg_67/tvg_67_page_44.txt:minister van Buiten-
+tvg_67/tvg_67_page_48.txt:minister Sébastiani
+tvg_68/tvg_68_page_123.txt:minister van Buitenlandse Zaken Batoezjew Rjoemin
+tvg_68/tvg_68_page_194.txt:Minister van de Staten-Generaal
+tvg_68/tvg_68_page_282.txt:minister van Lodewijk XVIII
+tvg_69/tvg_69_page_125.txt:Minister van Oorlog
+tvg_69/tvg_69_page_127.txt:minister Cardwell
+tvg_69/tvg_69_page_13.txt:minister Moeraview
+tvg_69/tvg_69_page_146.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_146.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_147.txt:minister van Buitenlandse
+tvg_69/tvg_69_page_147.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_149.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_149.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_151.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_151.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_153.txt:minister Bothner
+tvg_69/tvg_69_page_16.txt:minister Moeravìew
+tvg_69/tvg_69_page_184.txt:minister van Justitie
+tvg_69/tvg_69_page_187.txt:minister van Financiën
+tvg_69/tvg_69_page_26.txt:minister Achrenthal
+tvg_69/tvg_69_page_27.txt:minister Grey
+tvg_69/tvg_69_page_270.txt:Minister Hymans
+tvg_69/tvg_69_page_28.txt:minister Iswolski
+tvg_69/tvg_69_page_35.txt:minister Pichon
+tvg_69/tvg_69_page_36.txt:minister Lord
+tvg_69/tvg_69_page_413.txt:Minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_413.txt:Minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_68.txt:Minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_73.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_74.txt:minister de Beaufort
+tvg_69/tvg_69_page_74.txt:minister van Staat Prof
+tvg_69/tvg_69_page_74.txt:minister van Buitenlandse Zaken
+tvg_69/tvg_69_page_76.txt:minister van Staat
+tvg_69/tvg_69_page_78.txt:minister van Oorlog
+tvg_69/tvg_69_page_79.txt:minister van Kolonien
+tvg_69/tvg_69_page_81.txt:minister van Buiten-
+tvg_69/tvg_69_page_86.txt:minister van Buitenlandse Zaken
+tvg_70/tvg_70_page_145.txt:minister van Justitie
+tvg_70/tvg_70_page_157.txt:minister van Groot Britannië
+tvg_70/tvg_70_page_169.txt:minister George Canning
+tvg_70/tvg_70_page_191.txt:minister van Publiek Onderwijs
+tvg_70/tvg_70_page_321.txt:minister van Buitenlandse
+tvg_70/tvg_70_page_405.txt:minister Kuyper
+tvg_70/tvg_70_page_410.txt:Minister Lieftinck
+tvg_70/tvg_70_page_63.txt:Minister van Koloniën
+tvg_70/tvg_70_page_75.txt:minister Van Goltstein
+tvg_71/tvg_71_page_134.txt:minister Frick
+tvg_71/tvg_71_page_407.txt:minister Lloyd George
+tvg_71/tvg_71_page_409.txt:minister Stikker
+tvg_71/tvg_71_page_54.txt:Minister van Justitie
+tvg_71/tvg_71_page_54.txt:Minister van Binnenlandse Zaken
+tvg_71/tvg_71_page_54.txt:Minister de Kempenaer
+tvg_71/tvg_71_page_63.txt:Minister van Justitie Nedermeĳer
+tvg_71/tvg_71_page_63.txt:Minister van Justitie Donker Curtius
+tvg_71/tvg_71_page_64.txt:Minister Nedermeĳer
+tvg_71/tvg_71_page_67.txt:Minister Donker Curtius
+tvg_71/tvg_71_page_71.txt:minister Pahud
+tvg_71/tvg_71_page_71.txt:Minister van Marine
+tvg_71/tvg_71_page_71.txt:Minister van Marine
+tvg_72/tvg_72_page_103.txt:Minister van Buitenlandsche Zaken
+tvg_72/tvg_72_page_103.txt:Minister van Marine
+tvg_72/tvg_72_page_103.txt:Minister van Buitenlandsche Zaken
+tvg_72/tvg_72_page_106.txt:minister Van Rappard
+tvg_72/tvg_72_page_106.txt:minister Van Zuylen
+tvg_72/tvg_72_page_209.txt:minister Cremers
+tvg_72/tvg_72_page_215.txt:minister van Zuylen
+tvg_72/tvg_72_page_221.txt:minister Seward
+tvg_72/tvg_72_page_224.txt:minister Cremers Lincoln
+tvg_72/tvg_72_page_224.txt:minister William
+tvg_72/tvg_72_page_245.txt:Minister van Binnenlandse Zaken
+tvg_72/tvg_72_page_297.txt:Minister Hymans
+tvg_72/tvg_72_page_297.txt:minister Van Karnebeek
+tvg_72/tvg_72_page_303.txt:minister Stresemann
+tvg_72/tvg_72_page_381.txt:minister Iswolsky
+tvg_72/tvg_72_page_385.txt:minister Delcassé
+tvg_72/tvg_72_page_385.txt:minister Lansdowne
+tvg_72/tvg_72_page_391.txt:minister Lamsdorf
+tvg_72/tvg_72_page_447.txt:minister van Financiën
+tvg_72/tvg_72_page_448.txt:minister Pleyte
+tvg_72/tvg_72_page_450.txt:Minister van Financiën
+tvg_72/tvg_72_page_453.txt:minister Gerbrandy
+tvg_72/tvg_72_page_75.txt:Minister van Financiën
+tvg_72/tvg_72_page_76.txt:Minister van Koloniën
+tvg_72/tvg_72_page_88.txt:minister Schimmelpenninck
+tvg_72/tvg_72_page_92.txt:minister Van Son
+tvg_72/tvg_72_page_92.txt:minister Van Son
+tvg_72/tvg_72_page_94.txt:minister van Son
+tvg_72/tvg_72_page_99.txt:Minister Thorbecke
+tvg_73/tvg_73_page_141.txt:minister Kuyper
+tvg_73/tvg_73_page_145.txt:minister van Handel
+tvg_73/tvg_73_page_223.txt:Minister van Financiën
+tvg_73/tvg_73_page_319.txt:minister te Rome
+tvg_73/tvg_73_page_411.txt:minister van Karnebeek
+tvg_73/tvg_73_page_439.txt:Minister Graaf Brühl
+tvg_73/tvg_73_page_489.txt:minister Tweedmouth
+tvg_74/tvg_74_page_156.txt:minister Olivares
+tvg_74/tvg_74_page_194.txt:Minister van Koloniën Míjer
+tvg_74/tvg_74_page_194.txt:Minister van Koloniën
+tvg_74/tvg_74_page_197.txt:Minister van Koloniën
+tvg_74/tvg_74_page_201.txt:Minister van Buitenlandse Zaken
+tvg_74/tvg_74_page_206.txt:minister Olivares
+tvg_74/tvg_74_page_255.txt:minister Simon
+tvg_75/tvg_75_page_191.txt:Minister Baud
+tvg_75/tvg_75_page_280.txt:minister Koiso
+tvg_75/tvg_75_page_356.txt:Minister van Onderwijs
+tvg_75/tvg_75_page_356.txt:Minister van Onderwijs
+tvg_75/tvg_75_page_406.txt:minister van Waterstaat
+tvg_75/tvg_75_page_446.txt:minister Rochussen
+tvg_75/tvg_75_page_446.txt:minister van Financiën
+tvg_75/tvg_75_page_451.txt:Minister Baud
+tvg_75/tvg_75_page_452.txt:minister van Hervormde
+tvg_75/tvg_75_page_452.txt:minister van Justitie
+tvg_75/tvg_75_page_453.txt:minister Van Son
+tvg_75/tvg_75_page_454.txt:Minister van Binnenlandsche Zaken
+tvg_75/tvg_75_page_455.txt:Minister Baud
+tvg_75/tvg_75_page_456.txt:minister van Buitenlandse Zaken
+tvg_75/tvg_75_page_456.txt:minister van Justitie
+tvg_75/tvg_75_page_456.txt:minister van Hervormde Eeredienst
+tvg_75/tvg_75_page_457.txt:minister van Financiën
+tvg_75/tvg_75_page_516.txt:minister De Marees
+tvg_75/tvg_75_page_521.txt:minister van de Duitse
+tvg_75/tvg_75_page_62.txt:Minister van Justitie
+tvg_76/tvg_76_page_118.txt:minister Van Aehrenthal
+tvg_76/tvg_76_page_125.txt:minister Van Zuylen
+tvg_76/tvg_76_page_129.txt:minister van Buitenlandse Zaken
+tvg_76/tvg_76_page_142.txt:minister N. G. Pierson
+tvg_76/tvg_76_page_219.txt:minister Falck
+tvg_76/tvg_76_page_221.txt:minister van Finantiën
+tvg_76/tvg_76_page_221.txt:minister Thorbecke
+tvg_76/tvg_76_page_252.txt:minister Crispi
+tvg_76/tvg_76_page_355.txt:Minister Drs
+tvg_76/tvg_76_page_368.txt:minister Speer
+tvg_76/tvg_76_page_41.txt:Minister Hammond
+tvg_76/tvg_76_page_426.txt:minister Horace Walpole
+tvg_76/tvg_76_page_476.txt:minister van Economische Zaken
+tvg_76/tvg_76_page_477.txt:minister van Voorlichting
+tvg_76/tvg_76_page_477.txt:minister van Justitie
+tvg_77/tvg_77_page_101.txt:minister De Waal
+tvg_77/tvg_77_page_249.txt:minister Matsoeoka
+tvg_78/tvg_78_page_106.txt:minister Grey
+tvg_78/tvg_78_page_228.txt:minister te Brunswijk
+tvg_78/tvg_78_page_308.txt:Minister van de Spaanse
+tvg_78/tvg_78_page_351.txt:minister Van Son
+tvg_78/tvg_78_page_358.txt:minister Kuyper
+tvg_78/tvg_78_page_38.txt:minister Van Hall
+tvg_78/tvg_78_page_429.txt:minister van Binnenlandse Zaken
+tvg_79/tvg_79_page_104.txt:minister Franz Friedrich Wilhelm
+tvg_79/tvg_79_page_119.txt:minister van Koloniën Idenburg
+tvg_79/tvg_79_page_119.txt:minister van Koloniën
+tvg_79/tvg_79_page_120.txt:minister van Koloniën
+tvg_79/tvg_79_page_120.txt:Minister van Oorlog
+tvg_79/tvg_79_page_121.txt:minister van Koloniën
+tvg_79/tvg_79_page_13.txt:minister van de Unie
+tvg_79/tvg_79_page_159.txt:minister van Financiën
+tvg_79/tvg_79_page_160.txt:minister van Financiën
+tvg_79/tvg_79_page_160.txt:Minister van Financiën
+tvg_79/tvg_79_page_160.txt:minister van Financiën
+tvg_79/tvg_79_page_161.txt:minister Lely
+tvg_79/tvg_79_page_166.txt:minister van Binnenlandse Zaken
+tvg_79/tvg_79_page_167.txt:minister van Justitie
+tvg_79/tvg_79_page_168.txt:Minister van Justitie
+tvg_79/tvg_79_page_169.txt:minister van Binnenlandse Zaken
+tvg_79/tvg_79_page_170.txt:minister van Binnenlandse Zaken
+tvg_79/tvg_79_page_213.txt:minister van Justitie
+tvg_79/tvg_79_page_410.txt:minister van Lodewĳk Napoleon
+tvg_79/tvg_79_page_466.txt:minister Calvinininsis
+tvg_79/tvg_79_page_482.txt:minister van Oorlog Millerand
+tvg_79/tvg_79_page_67.txt:Minister Baud
+tvg_80/tvg_80_page_110.txt:minister Rogier
+tvg_80/tvg_80_page_117.txt:minister van Koloniën
+tvg_80/tvg_80_page_158.txt:minister van Justitie
+tvg_80/tvg_80_page_185.txt:minister Root
+tvg_80/tvg_80_page_191.txt:minister Balfour
+tvg_80/tvg_80_page_247.txt:minister Lerdo
+tvg_80/tvg_80_page_254.txt:minister S. de Graaff
+tvg_80/tvg_80_page_255.txt:minister Wallenberg
+tvg_80/tvg_80_page_304.txt:minister te Brussel
+tvg_80/tvg_80_page_318.txt:minister Cobenzl
+tvg_80/tvg_80_page_349.txt:minister van Buitenlandse
+tvg_80/tvg_80_page_451.txt:minister Rathenau
+tvg_80/tvg_80_page_48.txt:minister van Karel
+tvg_80/tvg_80_page_488.txt:minister Johann Masch
+tvg_80/tvg_80_page_557.txt:minister Boncour
+tvg_80/tvg_80_page_558.txt:minister Hijmans
+tvg_80/tvg_80_page_558.txt:Minister Simon
+tvg_80/tvg_80_page_558.txt:minister Van Zeeland
+tvg_80/tvg_80_page_559.txt:minister Flandin
+tvg_81/tvg_81_page_108.txt:minister Van Maanen
+tvg_81/tvg_81_page_256.txt:minister van India
+tvg_81/tvg_81_page_256.txt:minister van India
+tvg_81/tvg_81_page_323.txt:minister De Decker
+tvg_81/tvg_81_page_401.txt:Minister Pierson
+tvg_81/tvg_81_page_411.txt:minister Flandin
+tvg_81/tvg_81_page_412.txt:minister De Graeff
+tvg_81/tvg_81_page_90.txt:minister van Finan-
+tvg_82/tvg_82_page_112.txt:minister Hamilton
+tvg_82/tvg_82_page_113.txt:minister Grenville
+tvg_82/tvg_82_page_130.txt:minister Von Ribbentrop
+tvg_82/tvg_82_page_142.txt:minister A. W. P. Weitzel
+tvg_82/tvg_82_page_250.txt:Minister van Binnenlandsche Zaken
+tvg_82/tvg_82_page_566.txt:minister van Binnenlandse Zaken
+tvg_82/tvg_82_page_75.txt:Minister van Koloniën
+tvg_83/tvg_83_page_108.txt:minister van Koloniën
+tvg_83/tvg_83_page_111.txt:minister A. W. P. Weitzel
+tvg_83/tvg_83_page_123.txt:minister Rathenau
+tvg_83/tvg_83_page_234.txt:minister Witte
+tvg_83/tvg_83_page_390.txt:Minister Loe-
+tvg_83/tvg_83_page_454.txt:minister Sidney
+tvg_83/tvg_83_page_479.txt:minister Eden
+tvg_83/tvg_83_page_538.txt:minister Miliukov
+tvg_83/tvg_83_page_619.txt:minister Rasjid Ali
+tvg_83/tvg_83_page_650.txt:minister A. W. P. Weitzel
+tvg_83/tvg_83_page_III.txt:minister A. W. P. Weitzel
+tvg_84/tvg_84_page_338.txt:minister van Financiën
+tvg_84/tvg_84_page_558.txt:minister De Geer
+tvg_84/tvg_84_page_560.txt:minister Aalberse
+tvg_84/tvg_84_page_574.txt:minister van Staat Gijsbert Karel
+tvg_84/tvg_84_page_575.txt:minister van Justitie
+tvg_85/tvg_85_page_125.txt:minister De Giers
+tvg_85/tvg_85_page_58.txt:minister Jonkman
+tvg_85/tvg_85_page_61.txt:minister Jonkman
+tvg_86/tvg_86_page_118.txt:minister van Onderwijs
+tvg_86/tvg_86_page_120.txt:minister Lely
+tvg_86/tvg_86_page_120.txt:minister van Marine
+tvg_86/tvg_86_page_484.txt:minister De Stefani
+tvg_86/tvg_86_page_644.txt:Minister A. Devèze
+tvg_87/tvg_87_page_278.txt:minister Jaspar
+tvg_87/tvg_87_page_604.txt:minister van Justitie
+tvg_88/tvg_88_page_136.txt:minister Halifax
+tvg_88/tvg_88_page_306.txt:minister Duruy
+tvg_88/tvg_88_page_334.txt:Minister van Koloniën
+tvg_88/tvg_88_page_336.txt:Minister van Koloniën
+tvg_88/tvg_88_page_354.txt:Minister van Justitie
+tvg_88/tvg_88_page_381.txt:minister van Verkeer
+tvg_88/tvg_88_page_381.txt:minister van Financiën
+tvg_88/tvg_88_page_500.txt:minister G.C.J. van Reenen
+tvg_88/tvg_88_page_556.txt:minister van Binnenlandse Zaken
+tvg_88/tvg_88_page_556.txt:minister van Binnenlandse Zaken
+tvg_89/tvg_89_page_106.txt:minister te Brussel
+tvg_89/tvg_89_page_123.txt:minister Van Kamebeek
+tvg_89/tvg_89_page_217.txt:Minister van Koloniën Mr
+tvg_89/tvg_89_page_222.txt:Minister van Koloniën
+tvg_89/tvg_89_page_226.txt:Minister van Justitie
+tvg_89/tvg_89_page_267.txt:minister Van
+tvg_89/tvg_89_page_388.txt:minister Ulricus
+tvg_89/tvg_89_page_40.txt:minister Falck
+tvg_89/tvg_89_page_43.txt:minister Falck
+tvg_89/tvg_89_page_503.txt:Minister van Binnenlandse Zaken
+tvg_89/tvg_89_page_511.txt:minister van Lodewĳk Napoleon
+tvg_89/tvg_89_page_548.txt:minister Donker Curtius
+tvg_89/tvg_89_page_589.txt:minister Thorbecke
+tvg_89/tvg_89_page_593.txt:minister Treub
+tvg_89/tvg_89_page_70.txt:Minister van Onderwijs
+tvg_89/tvg_89_page_73.txt:Minister van Onderwijs
+tvg_89/tvg_89_page_73.txt:Minister Luns
+tvg_89/tvg_89_page_73.txt:Minister van Onderwijs
+tvg_89/tvg_89_page_75.txt:Minister van Overzeese Gebiedsdelen
+tvg_90/tvg_90_page_119.txt:minister van Buitenlandse Zaken Roest
+tvg_90/tvg_90_page_123.txt:minister Van Tets
+tvg_90/tvg_90_page_127.txt:minister Baud
+tvg_90/tvg_90_page_271.txt:Minister van Justitie Van Maanen
+tvg_90/tvg_90_page_43.txt:Minister van Binne-
+tvg_90/tvg_90_page_455.txt:minister Trauttmansdorff
+tvg_90/tvg_90_page_528.txt:Minister Metternich
+tvg_90/tvg_90_page_530.txt:minister te Brussel
+tvg_90/tvg_90_page_547.txt:minister van Justitie
+tvg_90/tvg_90_page_56.txt:Minister van Koloniën
+tvg_91/tvg_91_page_128.txt:minister Mijer
+tvg_91/tvg_91_page_152.txt:minister Hoffmann
+tvg_91/tvg_91_page_321.txt:minister Rochussen
+tvg_91/tvg_91_page_329.txt:minister van Oorlog
+tvg_91/tvg_91_page_336.txt:minister van Overzeese Gebiedsdelen
+tvg_91/tvg_91_page_339.txt:minister van OK
+tvg_91/tvg_91_page_51.txt:minister van Justitie
+tvg_91/tvg_91_page_51.txt:minister Van
+tvg_91/tvg_91_page_514.txt:minister van Defensie
+tvg_91/tvg_91_page_515.txt:minister Hore Belisha
+tvg_91/tvg_91_page_572.txt:minister van Koloniën
+tvg_91/tvg_91_page_572.txt:minister van Buitenlandse Zaken
+tvg_91/tvg_91_page_60.txt:minister Van Klef-
+tvg_91/tvg_91_page_671.txt:minister Brocqueville
+tvg_91/tvg_91_page_672.txt:Minister Van Karnebeek
+tvg_91/tvg_91_page_676.txt:minister Welter
+tvg_91/tvg_91_page_676.txt:minister Ch
+tvg_92/tvg_92_page_166.txt:Minister van Koloniën
+tvg_92/tvg_92_page_166.txt:Minister van Koloniën
+tvg_92/tvg_92_page_171.txt:Minister van Koloniën
+tvg_92/tvg_92_page_172.txt:Minister van Koloniën
+tvg_92/tvg_92_page_172.txt:Minister van Koloniën
+tvg_92/tvg_92_page_173.txt:Minister van Koloniën James Loudon
+tvg_92/tvg_92_page_173.txt:Minister Fransen
+tvg_92/tvg_92_page_174.txt:Minister van Staat
+tvg_92/tvg_92_page_176.txt:Minister van Koloniën
+tvg_92/tvg_92_page_177.txt:Minister van Koloniën
+tvg_92/tvg_92_page_178.txt:Minister van Koloniën
+tvg_92/tvg_92_page_179.txt:Minister van Koloniën
+tvg_92/tvg_92_page_179.txt:Minister van Koloniën Fransen
+tvg_92/tvg_92_page_266.txt:minister van Buitenlandse Zaken
+tvg_92/tvg_92_page_295.txt:minister J. Malou
+tvg_92/tvg_92_page_429.txt:minister van Reenen
+tvg_92/tvg_92_page_433.txt:Minister Thorbecke
+tvg_92/tvg_92_page_435.txt:minister Van
+tvg_92/tvg_92_page_441.txt:minister van Binnenlandse
+tvg_92/tvg_92_page_441.txt:minister van Financiën
+tvg_92/tvg_92_page_444.txt:minister Van Bosse
+tvg_92/tvg_92_page_444.txt:minister van Justitie Donker Curtius
+tvg_92/tvg_92_page_445.txt:minister De
+tvg_92/tvg_92_page_636.txt:minister Edwin Montagu
+tvg_92/tvg_92_page_644.txt:minister Van Kamebeek
+tvg_92/tvg_92_page_644.txt:minister van Buitenlandse Zaken Hymans
+tvg_92/tvg_92_page_645.txt:minister van Buiten-
+tvg_92/tvg_92_page_656.txt:minister J. H. van Maarseveen
+tvg_93/tvg_93_page_301.txt:Minister van Buitenlandse Zaken
+tvg_93/tvg_93_page_317.txt:Minister Stikker
+tvg_93/tvg_93_page_37.txt:Minister Arita
+tvg_93/tvg_93_page_44.txt:Minister van Kleffens
+tvg_93/tvg_93_page_46.txt:Minister Attlee
+tvg_93/tvg_93_page_46.txt:Minister van Kleffens
+tvg_93/tvg_93_page_49.txt:Minister van Kleffens
+tvg_93/tvg_93_page_54.txt:Minister W. Schermerhorn
+tvg_93/tvg_93_page_567.txt:minister van Buitenlandse Zaken
+tvg_93/tvg_93_page_567.txt:minister Rochussen
+tvg_93/tvg_93_page_568.txt:minister van Buitenlandse Zaken
+tvg_93/tvg_93_page_569.txt:Minister van Buitenlandse
+tvg_93/tvg_93_page_574.txt:minister de Slotakte
+tvg_93/tvg_93_page_642.txt:minister Vergennes
+tvg_93/tvg_93_page_677.txt:minister van Defensie
+tvg_93/tvg_93_page_678.txt:Minister van Overzeese Gebiedsdelen Jonkman
+tvg_93/tvg_93_page_678.txt:Minister van Onderwijs
+tvg_93/tvg_93_page_683.txt:Minister Wijers
+tvg_93/tvg_93_page_683.txt:Minister Struycken
+tvg_94/tvg_94_page_132.txt:minister van Justitie
+tvg_94/tvg_94_page_150.txt:minister van Buitenlandse Zaken
+tvg_94/tvg_94_page_153.txt:Minister Jonkman
+tvg_94/tvg_94_page_21.txt:minister Fock
+tvg_94/tvg_94_page_22.txt:Minister Fock
+tvg_94/tvg_94_page_289.txt:minister Guillaume Dubois
+tvg_94/tvg_94_page_298.txt:minister van Buitenlandse Zaken Bemstorf
+tvg_94/tvg_94_page_580.txt:minister van Buitenlandse Zaken
+tvg_94/tvg_94_page_580.txt:minister van BZ
+tvg_94/tvg_94_page_582.txt:minister Granville
+tvg_94/tvg_94_page_582.txt:minister Van Lynden
+tvg_95/tvg_95_page_140.txt:minister van Buitenlandse Zaken
+tvg_95/tvg_95_page_208.txt:Minister van Justitie
+tvg_95/tvg_95_page_218.txt:Minister van Justitie
+tvg_95/tvg_95_page_284.txt:minister Rogier
+tvg_95/tvg_95_page_417.txt:minister Olivares
+tvg_95/tvg_95_page_458.txt:minister Gutt
+tvg_95/tvg_95_page_458.txt:minister van Koloniën De Vleeschauwer
+tvg_95/tvg_95_page_464.txt:minister van Economische
+tvg_95/tvg_95_page_511.txt:minister Beemaert
+tvg_95/tvg_95_page_95.txt:minister H. A. van Kamebeek
+tvg_96/tvg_96_page_141.txt:Minister C. Lely
+tvg_96/tvg_96_page_144.txt:minister Burger
+tvg_96/tvg_96_page_144.txt:minister Beel
+tvg_96/tvg_96_page_161.txt:Minister Stikker
+tvg_96/tvg_96_page_409.txt:minister Kuypers
+tvg_96/tvg_96_page_415.txt:minister Bertin
+tvg_96/tvg_96_page_450.txt:minister Thorbecke
+tvg_96/tvg_96_page_452.txt:Minister van Binnenlandse Zaken
+tvg_96/tvg_96_page_470.txt:minister Aalberse
+tvg_96/tvg_96_page_471.txt:Minister Verschuur
+tvg_96/tvg_96_page_63.txt:minister Verchovskij
+tvg_96/tvg_96_page_666.txt:Minister van Onderwijs
+tvg_97/tvg_97_page_294.txt:Minister van Waterstaat
+tvg_97/tvg_97_page_636.txt:minister van Financiën
+tvg_97/tvg_97_page_656.txt:Minister Stikker
+tvg_97/tvg_97_page_656.txt:minister van Buitenlandse
+tvg_97/tvg_97_page_687.txt:Minister Stikker
+tvg_98/tvg_98_page_193.txt:minister van Binnenlandse Zaken Witteman
+tvg_98/tvg_98_page_208.txt:Minister Konmgsbcrger
+tvg_98/tvg_98_page_277.txt:minister van Justitie
+tvg_98/tvg_98_page_472.txt:Minister van Overzeese Gebiedsdelen Sassen
+tvg_98/tvg_98_page_567.txt:minister van Sociale Zaken
+tvg_98/tvg_98_page_569.txt:minister van Economische Zaken
+tvg_98/tvg_98_page_569.txt:Minister Van
+tvg_98/tvg_98_page_570.txt:minister Van Aardenne
+tvg_99/tvg_99_page_134.txt:minister van Financiën De Geer
+tvg_99/tvg_99_page_141.txt:Minister van Defensie-coördinatie
+tvg_99/tvg_99_page_186.txt:minister van Binnenlandse
+tvg_99/tvg_99_page_186.txt:minister van Binnenlandse Zaken
+tvg_99/tvg_99_page_187.txt:minister Cort
+tvg_99/tvg_99_page_187.txt:Minister Cort
+tvg_99/tvg_99_page_187.txt:Minister Bosboom
+tvg_99/tvg_99_page_187.txt:Minister Bosboom
+tvg_99/tvg_99_page_187.txt:minister Bosboom
+tvg_99/tvg_99_page_187.txt:minister Bosboom
+tvg_99/tvg_99_page_187.txt:minister Cort
+tvg_99/tvg_99_page_187.txt:minister van Oorlog
+tvg_99/tvg_99_page_191.txt:minister Cort
+tvg_99/tvg_99_page_191.txt:minister van Binnenlandse Zaken
+tvg_99/tvg_99_page_193.txt:minister Cort
+tvg_99/tvg_99_page_194.txt:minister Cort
+tvg_99/tvg_99_page_195.txt:minister Cort
+tvg_99/tvg_99_page_197.txt:minister Cort
+tvg_99/tvg_99_page_199.txt:minister Cort
+tvg_99/tvg_99_page_202.txt:minister van Onderwijs
+tvg_99/tvg_99_page_202.txt:minister van BiZa
+tvg_99/tvg_99_page_203.txt:minister van Binnenlandse Zaken
+tvg_99/tvg_99_page_292.txt:minister van OKW
+tvg_99/tvg_99_page_312.txt:minister Sassen
+tvg_99/tvg_99_page_312.txt:Minister Stikker
+tvg_99/tvg_99_page_347.txt:minister van Binnenlandse Zaken
+tvg_99/tvg_99_page_361.txt:Minister van Binnenlandse Zaken
+tvg_99/tvg_99_page_509.txt:minister van Buiten-landse Zaken
+tvg_99/tvg_99_page_509.txt:minister van Voorlich-ting
