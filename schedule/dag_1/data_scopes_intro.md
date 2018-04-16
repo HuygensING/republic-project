@@ -9,14 +9,24 @@
     - What should I document of this process to I can share it with others?
     - Which parts of this process are specific to my analysis and which are generically applicable?
 
-## Focus on data interactions:
+## Example: project Legal Structures
+
+- Analyse networks of internal references in national constitutions
+- Investigate relations between network structure and legal, social and political variables
+- Questions:
+    - Which constitutions? Only current or only first or all versions? What counts as a version?
+    - When are two constitutions representing the same country?
+    - What elements are we identifying in each constitution? References, logical structure of constitutions (
+    - Only internal references or also external? What counts as a reference? 
+
+## Focus on data interactions
 - It's not about specific tools
     - Many tutorials online for that, e.g. the excellent [Programming Historian](https://programminghistorian.org)
 - It's about what you're doing, how and why
 - Translating research questions, assumption and interpretations to data interactions
 - Consequences of interactions for questions, assumptions and interpretations
 
-## Frameworks:
+## Frameworks
 
 - Data Scope: select, model, normalise, link, classify
 - Other models focusing on process:
@@ -27,52 +37,84 @@
 
 <img src="../../images/schema-data-scope.jpg"/>
 
-## Modelling:
+### Modelling
 
-- "heuristic process of constructing and manipulating models" (McCarty, 2004)
-- model: 
+- "Heuristic process of constructing and manipulating models" (McCarty, 2004)
+- Model: 
     - "a representation of something for purposes of study,"
     - "or a design for realizing something new"
-- model determines what aspects of data to focus on
-    - structures data in sources around research focus
-    - transforms data, affects interpretation!
+- Model determines what aspects of data to focus on
+    - Structures data in sources around research focus
+    - Transforms data, affects interpretation!
 
-## Modelling:
+### Data axes
 
-- defining data axes: 
-    - persons, organisations, locations, dates, topics, 
-    - themes, life courses, events, actions, decisions
-- defining categories or classes along those axes: 
-    - roles of people and organisations
-    - periods, regions
+- Defining data axes: 
+    - Persons, organisations, locations, dates, topics, 
+    - Themes, life courses, events, actions, decisions
+- Defining categories or classes along those axes: 
+    - Roles of people and organisations
+    - Periods, regions
     - Research stages:
-- model is updated as research progresses
-    - this updating reflects growing insights
+- Model is updated as research progresses
+    - This updating reflects growing insights
 
-## Selecting:
+## Selecting
 
 - Which materials do I include? Which data elements do I focus on?
-    - data axes
-- algorithmic selection:
-    - everything matching a (set of) keyword(s)
-    - documents by type, creator, title, size, ...
+    - Data axes
+- Algorithmic selection:
+    - Everything matching a (set of) keyword(s)
+    - Documents by type, creator, title, size, ...
 - What are consequences of these selections?
     - What am I excluding?
 
-## Normalizing:
+## Normalizing
 
-- map variation, 
-    - essential for next step: linking 
+- Bringing surface forms expressed in data back to an underlying standard form
+- Map variation onto a single representation:
+    - E.g. linguistic variation, geographical and spatial variation
+    - What is irrelevant variation?
+    - Essential for next step: linking
 
-## Linking:
+## Linking
 
-- linking across different corpora
-    - e.g. mentions of same person, location, date, ...
+- Establishing explicit connections between objects in the data sources that are not there from the beginning
+    - Connecting representations of a single element across different documents or data sets
+    - Connection different elements through relations
+- Linking within a corpus:
+    - Relations between people, between people and events, between topics and dates, ...
+- Linking across different corpora:
+    - E.g. mentions of same person, location, date, ...
+    - Can bring together disparate data about single entity from different sources
+- Allows querying across different types of source materials
 
-## Classifying:
+## Classifying
 
-- reducing complexity
-    - especially for low-frequency items
+- Reduction of complexity by grouping (data) objects into predefined categories, or classes
+    - Bringing together objects with similar properties
+    - Separating objects with unlike
+- Adds new layers of structure and interpretation to data
+    - Especially useful for low-frequency items
+    - Many data axes have "long tails" which are hard to structure
+- Facets
+    - multiple, indepdent classifications that can be combined
+    - allows very flexible selection and querying
 
+## Domain and subject expertise
 
+- All these activities require both:
+    - Technical know-how of how digital tools handle data
+    - Intimate knowledge of the domain and subject of source materials
+- But also:
+    - Reflection on how choices are informed by prior knowledge and experience
+    - Reflection on how choices put emphasis on some aspects, while pushing back others
+- Often requires collaboration...
+    - How to organise that
+- ... and lots of discussion
+    - Choices that one collaborator makes should be visible to the rest
+
+#
+
+[Back to main program](programma_dag1.md)
 
