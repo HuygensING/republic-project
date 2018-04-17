@@ -10,6 +10,9 @@
     + [Overzicht van datums, jaartallen en periodes](#grep-dates)
     + [Overzicht van namen](#grep-names)
     + [Zoeken naar auteursnamen](#grep-author-names)
++ [Term snowballing en het modelleren van topics](#grep-topics)
+    + [Snowballing voor nieuwe termen uit Woordcontexten](#grep-snowballing)
+    + [Snowballing met bigrammen](#grep-snowballing-bigrams)
 
 Eerdere delen TvG opdracht:
 
@@ -21,7 +24,7 @@ Eerdere delen TvG opdracht:
 <a name="grep-words-frequencies"></a>
 ## Overzicht met woordfrequentielijsten
 
-In deze opdracht leer je hoe je een woordenlijst met frequenties kan maken van tekstuele data, hoe je een stopwoordenlijst kunt maken en die kunt gebruiken om woordenlijsten te filteren. Daarnaast leer je ook om lijsten van bigrammen (woordparen) en trigrammen (sets van drie woorden) te maken.
+In deze opdracht leer je hoe je een woordenlijst met frequenties kan maken van tekstuele data, hoe je een stopwoordenlijst kunt maken en die kunt gebruiken om woordenlijsten te filteren. Daarnaast leer je ook om lijsten van woord-bigrammen (woordparen) en woord-trigrammen (sets van drie woorden) te maken.
 
 <a name="grep-tr"></a>
 ### Transliteratie: eenvoudige datatransformaties voor normalisatie
@@ -113,7 +116,7 @@ cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n
 <a name="grep-bigrams"></a>
 ### Bigrammen: combinaties van twee woorden
 
-Het commando `awk` kan gebruikt worden om voor een woordenlijst de vorige regel te combineren met de huidige regel van de output, waarmee je bigrammen kunt creeeren. Als je die stap doet voor het filteren van stopwoorden, krijg je bigrammen waarbij beide woorden geen stopwoorden zijn:
+Het commando `awk` kan gebruikt worden om voor een woordenlijst de vorige regel te combineren met de huidige regel van de output, waarmee je woord-bigrammen kunt creeeren. Als je die stap doet voor het filteren van stopwoorden, krijg je woord-bigrammen waarbij beide woorden geen stopwoorden zijn:
 
 ```bash
 cat tvg_111/*.txt | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | awk 'prev!="" {print prev,$0} {prev=$0}' | grep -v -w -f stopwoorden_tvg.txt | sort | uniq -c | sort -g
@@ -392,6 +395,47 @@ grep -E -o -w "([A-Z][a-z]?\.)+( van| de| der| den)*( [A-Z](\w|-)+)+" tvg_11[0-9
 ### Topic modelling
 
 Een populaire optie is [probabilistic topic modelling](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4122269/) waarmee je algoritmisch coherente woordensets ("groups of tightly co-occurring words", topics) laat ontdekken in de data. Dit is vergelijkbaar met het handmatig modelleren van topics a.d.h.v. woordensets, alleen is dit vrijwel puur data-gedreven, dus je hebt weinig controle over het proces en de uitkomst (dit is in principe een positief aspect maar kan ook tot onbevredigende, oninterpreteerbare resultaten leiden). De [Topic Modelling Tool](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html) pagina geeft goede instructies die ook toepasbaar zijn op het TvG corpus. Dit is een vorm van *classificatie*, alhoewel de tool zelf onder de motorkap allerlei bewerkingen uitvoert die onder *selectie* en *normalisatie* vallen (en in zekere zin ook *linking*).
+
+<a name="grep-topics"></a>
+## Term snowballing en het modelleren van topics
+
+Om grip te krijgen op onderwerpen rondom een of meer specifieke termen (e.g. `migratie`, of `Gouden Eeuw`) is het handig om eerst te zien welke andere woorden en woord-bigrammen (woordcombinaties van twee woorden) daarbij in de buurt voorkomen. Onderstaande oefeningen laten zien hoe je met een zogenaamde *snowballing* strategie kunt zoeken naar gerelateerde termen waarmee je data-gedreven het onderwerp kunt modelleren.
+
+De term *snowballing* is een bestaande term voor een zoekstrategie waarbij je beginnend met een enkele of een paar termen gaat zoeken naar materialen en door close reading gerelateerde termen vindt, waarme je vervolgens opnieuw kunt zoeken en nog meer termen te vinden, totdat je geen nieuwe gerelateerde termen meer vindt. 
+
+<a name="grep-snowballing"></a>
+### Snowballing voor nieuwe termen uit Woordcontexten
+
+Met de volgende keten van commando's kun je de woorden in de zinnen rondom een zoekpatroon analyseren:
+
+```bash
+grep -r -E -h -i -w "\w+migra[nt]\w+" tvg_*/ | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | grep -v -w -f tvg_stopwoorden.txt | grep -v -E -w "\w{,2}" | sort | uniq -c | sort -g
+```
+
+Wat staat hier eigenlijk? Een ontleding van deze keten:
+
+    + `grep -r -E -h -i -w`: grep recursief door een of meer directories (`-r`), interpreteer het zoekpatroon als reguliere expressie (`-E`), laat de namen van matchende bestanden weg (`-h`), match hoofdletter-*ongevoelig*, en match alleen als het zoekpatroon begint en eindigt op een woordgrens (`-w`). Deze laatste optie is in dit geval overbodig omdat zowel aan het begin als eind van het zoekpatroon `\w+` staat waarmee zogenaamd *greedy* gematched, e.g. stop pas als je geen `\w` karakters meer tegenkomt rondom het patroon daartussen.
+    + `"\w*migra[nt]\w+"`: match nul of meer `\w` karakters die gevolgd worden door `migra`, gevolgd door `n` of `t`, gevolgd door een of meer `\w` karakters. dus woorden die de string `migran` of `migrat` bevatten.
+    + `tvg_*/`: begin de directory recursie met de directories `tvg_*/`, dus alle directories die beginnen met `tvg_`.
+    + `tr '[:punct:]' ' '`: vervang elk punctuatiesymbool met een spatie.
+    + `tr '[:upper:]' '[:lower:]'`: vervang hoofdletters door kleine letters
+    + `tr ' ' '\n'`: vervang spaties door *newlines*, i.e. zet alle symbolen na een spatie op een volgende regel.
+    + `grep -v -w -f tvg_stopwoorden.txt`: grep alle regels die niet als woord (`-w`) matchen met de patronen gespecificeerd in het bestand (`-f`) `tvg_stopwoorden.txt`
+    + `grep -v -E -w "\w{,2}"`: grep alle regels met woorden die langer zijn dan 2 karakters.
+    + `sort | uniq -c | sort -g`: sorteer de output alfabetisch, tel daarna het aantal voorkomens van elk unieke regel, en sorteer vervolgens nog eens numerisch op frequentie.
+
+Je kunt ook nog bepalen hoeveel context je wilt gebruiken door bijvoorbeeld ook de voorafgaande en volgende zinnen mee te nemen in het eerste grep commando. Met `-A 2` geef je aan dat je de twee regels na (**A**fter) een matchende regel wilt zien. Met `-B 3` krijg je de drie regels voor (**B**efore) de matchende regel.
+
+<a name="grep-snowballing-bigrams"></a>
+### Snowballing met bigrammen
+
+Je kunt de commando-keten ook aanpassen zodat er woord-bigrammen worden geteld. In de oefening [Bigrammen: combinaties van twee woorden](#grep-bigrams) kun je zien hoe je met `awk` het woord op de huidige regel kunt aanpassen door het woord op de vorige regel ervoor te plaatsen met `awk 'prev!="" {print prev,$0}{prev=$0}'`
+
+```bash
+grep -r -E -h -i -w "\w+migra[nt]\w+" tvg_*/ | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | awk 'prev!="" {print prev,$0} {prev=$0}' | grep -v -w -f tvg_stopwoorden.txt | grep -v -E -w "\w{,2}" | sort | uniq -c | sort -g
+```
+
+#
 
 + [Link naar deel 3 van de TvG opdracht](../dag_2/tvg_opdracht3.md) (dag 2)
 
