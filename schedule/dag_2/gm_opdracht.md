@@ -18,7 +18,7 @@ We hebben de beschikking over de registers van de gedrukte delen missiven. Voor 
 <a name="data"></a>
 ### Dataset: Geselecteerde delen Generale missiven. Zie ook de [toelichting](gm_toelichting.md)
 
-De [Generale Missiven data](https://surfdrive.surf.nl/files/index.php/s/bBvdclKgYqgsJsY) zijn als gezipt bestand te downloaden.
+De [Generale Missiven data](https://surfdrive.surf.nl/files/index.php/s/OjzD8hZlVvDU12c) zijn als gezipt bestand te downloaden.
 
 
 <a href="opdracht"></a>
