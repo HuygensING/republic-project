@@ -1,0 +1,585 @@
+tvg_08/tvg_08_page_125.txt:opstand der Kleinaziatische Grieken 
+tvg_103/tvg_103_page_447.txt:opstand in Moskou 
+tvg_110/tvg_110_page_269.txt:Opstand in de Nederlanden 
+tvg_12/tvg_12_page_257.txt:opstand op de Filippĳnen 
+tvg_121/tvg_121_page_113.txt:opstand tegen de Franse 
+tvg_19/tvg_19_page_148.txt:opstand der Turkornannen 
+tvg_34/tvg_34_page_274.txt:opstand van Edward Bruce 
+tvg_35/tvg_35_page_289.txt:opstand van Boeotië 
+tvg_38/tvg_38_page_190.txt:opstand in de Vendée 
+tvg_52/tvg_52_page_54.txt:opstand tegen Spanje 
+tvg_56/tvg_56_page_253.txt:Opstand tegen Spanie 
+tvg_57/tvg_57_page_89.txt:opstand tegen Spanje 
+tvg_59/tvg_59_page_268.txt:Opstand tegen Filips II 
+tvg_61/tvg_61_page_289.txt:opstand van Firmus 
+tvg_62/tvg_62_page_2.txt:opstand tegen Spanje 
+tvg_62/tvg_62_page_246.txt:opstand in Friesland in November 
+tvg_76/tvg_76_page_311.txt:opstand tegen Filips II 
+tvg_78/tvg_78_page_202.txt:opstand van An Lu_shan 
+tvg_79/tvg_79_page_96.txt:opstand van Pontiac 
+tvg_83/tvg_83_page_364.txt:opstand tegen Spanje 
+tvg_84/tvg_84_page_639.txt:Opstand tot Koninkrijk 
+tvg_91/tvg_91_page_363.txt:opstand tegen Lodewijk van Male 
+tvg_91/tvg_91_page_366.txt:opstand tegen Maximiliaan van Oostenrijk 
+tvg_91/tvg_91_page_587.txt:opstand in Zevenburgen en Opper-Hongarĳe 
+tvg_95/tvg_95_page_639.txt:opstand onder leiding van Tadeusz Kosciuszko 
+tvg_98/tvg_98_page_192.txt:Opstand van De 
+tvg_99/tvg_99_page_042.txt:Opstand in de Nederlanden 
+tvg_99/tvg_99_page_630.txt:opstand van Pugacev 
+tvg_99/tvg_99_page_649.txt:opstand tegen koning Sigis-mond 
+tvg_01/tvg_01_page_196.txt:Nederlandschen opstand
+tvg_02/tvg_02_page_108.txt:Grieksche opstand
+tvg_02/tvg_02_page_28.txt:Poolsche opstand
+tvg_04/tvg_04_page_341.txt:De opstand
+tvg_04/tvg_04_page_62.txt:Een opstand
+tvg_06/tvg_06_page_183.txt:Belgischen opstand
+tvg_07/tvg_07_page_161.txt:De opstand
+tvg_07/tvg_07_page_279.txt:De opstand
+tvg_08/tvg_08_page_365.txt:Belgische opstand
+tvg_09/tvg_09_page_274.txt:Magyaarsehen opstand
+tvg_09/tvg_09_page_324.txt:Belgischen opstand
+tvg_09/tvg_09_page_327.txt:Arabieren-opstand
+tvg_09/tvg_09_page_334.txt:Belgische opstand
+tvg_09/tvg_09_page_97.txt:Belgischen opstand
+tvg_10/tvg_10_page_211.txt:Vollen opstand
+tvg_10/tvg_10_page_389.txt:De opstand
+tvg_100/tvg_100_page_141.txt:Hongaarse opstand
+tvg_100/tvg_100_page_157.txt:Nederlandse Opstand
+tvg_100/tvg_100_page_177.txt:De Opstand
+tvg_100/tvg_100_page_178.txt:De Opstand
+tvg_100/tvg_100_page_446.txt:Hongaarse opstand
+tvg_100/tvg_100_page_497.txt:Nederlandse opstand
+tvg_100/tvg_100_page_619.txt:Nederlandse Opstand
+tvg_100/tvg_100_page_620.txt:Nederlandse Opstand
+tvg_100/tvg_100_page_63.txt:Commune-opstand
+tvg_101/tvg_101_page_273.txt:De opstand
+tvg_101/tvg_101_page_9.txt:Nederlandse Opstand
+tvg_102/tvg_102_page_164.txt:Deze opstand
+tvg_102/tvg_102_page_223.txt:Amaru-opstand
+tvg_102/tvg_102_page_41.txt:Nederlandse opstand
+tvg_102/tvg_102_page_565.txt:De Belgische opstand
+tvg_102/tvg_102_page_566.txt:De Belgische opstand
+tvg_102/tvg_102_page_567.txt:De opstand
+tvg_102/tvg_102_page_567.txt:De opstand
+tvg_102/tvg_102_page_567.txt:Belgische opstand
+tvg_102/tvg_102_page_568.txt:Belgische opstand
+tvg_102/tvg_102_page_572.txt:Brabantse opstand
+tvg_102/tvg_102_page_579.txt:Brabantse opstand
+tvg_102/tvg_102_page_590.txt:Commune-opstand
+tvg_103/tvg_103_page_10.txt:Nederlandse Opstand
+tvg_103/tvg_103_page_11.txt:Nederlandse Opstand
+tvg_103/tvg_103_page_113.txt:De opstand
+tvg_103/tvg_103_page_13.txt:Nederlandse Opstand
+tvg_103/tvg_103_page_13.txt:Nederlandse Opstand
+tvg_103/tvg_103_page_21.txt:Nederlandse Opstand
+tvg_103/tvg_103_page_32.txt:De opstand
+tvg_103/tvg_103_page_449.txt:Deze opstand
+tvg_103/tvg_103_page_549.txt:De opstand
+tvg_103/tvg_103_page_663.txt:Nederlandse Opstand
+tvg_104/tvg_104_page_388.txt:Belgische opstand
+tvg_104/tvg_104_page_399.txt:Gentse opstand
+tvg_104/tvg_104_page_415.txt:Gentse opstand
+tvg_104/tvg_104_page_415.txt:Gentse opstand
+tvg_104/tvg_104_page_423.txt:Nederlandse opstand
+tvg_104/tvg_104_page_481.txt:Bataafse Opstand
+tvg_104/tvg_104_page_603.txt:De Opstand
+tvg_104/tvg_104_page_649.txt:Bataafse Opstand
+tvg_105/tvg_105_page_273.txt:Nederlandse Opstand
+tvg_105/tvg_105_page_616.txt:Nika-opstand
+tvg_105/tvg_105_page_657.txt:Nederlandse Opstand
+tvg_105/tvg_105_page_704.txt:Belgische Opstand
+tvg_107/tvg_107_page_129.txt:Nederlandse opstand
+tvg_107/tvg_107_page_129.txt:Nederlandse opstand
+tvg_107/tvg_107_page_278.txt:Mau-Mau-opstand
+tvg_108/tvg_108_page_144.txt:Nederlandse Opstand
+tvg_108/tvg_108_page_28.txt:Deze opstand
+tvg_108/tvg_108_page_429.txt:De opstand
+tvg_108/tvg_108_page_559.txt:Nika-opstand
+tvg_108/tvg_108_page_565.txt:Boheemse Opstand
+tvg_108/tvg_108_page_565.txt:Boheemse Opstand
+tvg_108/tvg_108_page_566.txt:Nederlandse Opstand
+tvg_108/tvg_108_page_567.txt:De Noord-Ierse opstand
+tvg_108/tvg_108_page_634.txt:Singalese opstand
+tvg_109/tvg_109_page_247.txt:De Opstand
+tvg_109/tvg_109_page_312.txt:De opstand
+tvg_109/tvg_109_page_467.txt:Bataafse opstand
+tvg_109/tvg_109_page_467.txt:Nederlandse opstand
+tvg_109/tvg_109_page_477.txt:Bataafse opstand
+tvg_109/tvg_109_page_477.txt:Bataafse opstand
+tvg_109/tvg_109_page_507.txt:Bolsjewistische opstand
+tvg_110/tvg_110_page_269.txt:De Opstand
+tvg_110/tvg_110_page_269.txt:De Opstand
+tvg_110/tvg_110_page_269.txt:Nederlandse Opstand
+tvg_110/tvg_110_page_595.txt:De Opstand
+tvg_111/tvg_111_page_362.txt:Nederlandse Opstand
+tvg_111/tvg_111_page_365.txt:De Nederlandse Opstand
+tvg_111/tvg_111_page_365.txt:De Nederlandse Opstand
+tvg_111/tvg_111_page_377.txt:Belgische opstand
+tvg_111/tvg_111_page_377.txt:Belgische opstand
+tvg_111/tvg_111_page_398.txt:De Belgische opstand
+tvg_111/tvg_111_page_398.txt:Belgische opstand
+tvg_111/tvg_111_page_525.txt:Zeeuwse opstand
+tvg_112/tvg_112_page_109.txt:De opstand
+tvg_112/tvg_112_page_509.txt:Amerikaanse opstand
+tvg_112/tvg_112_page_98.txt:Jong-lerland-opstand
+tvg_113/tvg_113_page_312.txt:Bataafse opstand
+tvg_113/tvg_113_page_339.txt:De opstand
+tvg_113/tvg_113_page_356.txt:De opstand
+tvg_113/tvg_113_page_505.txt:Een opstand
+tvg_113/tvg_113_page_507.txt:De opstand
+tvg_114/tvg_114_page_141.txt:Hongaarse Opstand
+tvg_114/tvg_114_page_141.txt:Hongaarse opstand
+tvg_114/tvg_114_page_324.txt:Nederlandse Opstand
+tvg_115/tvg_115_page_287.txt:De opstand
+tvg_115/tvg_115_page_304.txt:Nederlandse Opstand
+tvg_115/tvg_115_page_374.txt:De opstand
+tvg_115/tvg_115_page_453.txt:De opstand
+tvg_115/tvg_115_page_474.txt:De Nederlandse Opstand
+tvg_116/tvg_116_page_201.txt:Servische opstand
+tvg_116/tvg_116_page_431.txt:Nederlandse Opstand
+tvg_116/tvg_116_page_451.txt:Belgische Opstand
+tvg_116/tvg_116_page_564.txt:Belgische opstand
+tvg_116/tvg_116_page_594.txt:Noordelijke opstand
+tvg_117/tvg_117_page_128.txt:Nederlandse Opstand
+tvg_117/tvg_117_page_128.txt:Nederlandse Opstand
+tvg_117/tvg_117_page_129.txt:Nederlandse Opstand
+tvg_117/tvg_117_page_329.txt:De Gentse opstand
+tvg_117/tvg_117_page_445.txt:Boheemse opstand
+tvg_118/tvg_118_page_427.txt:Die opstand
+tvg_118/tvg_118_page_93.txt:Nederlandse Opstand
+tvg_118/tvg_118_page_94.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_109.txt:Bataafse opstand
+tvg_119/tvg_119_page_315.txt:De Brugse opstand
+tvg_119/tvg_119_page_316.txt:Brugse Opstand
+tvg_119/tvg_119_page_319.txt:Vlaamse opstand
+tvg_119/tvg_119_page_319.txt:Brugse opstand
+tvg_119/tvg_119_page_322.txt:Hoekse opstand
+tvg_119/tvg_119_page_327.txt:Vlaamse opstand
+tvg_119/tvg_119_page_329.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_329.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_329.txt:De opstand
+tvg_119/tvg_119_page_329.txt:De Gentse opstand
+tvg_119/tvg_119_page_330.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_330.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_330.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_330.txt:Deze opstand
+tvg_119/tvg_119_page_330.txt:De Vlaamse Opstand
+tvg_119/tvg_119_page_330.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_332.txt:De Vlaamse Opstand
+tvg_119/tvg_119_page_332.txt:Nederlandse opstand
+tvg_119/tvg_119_page_334.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_334.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_334.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_335.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_336.txt:De Gentse opstand
+tvg_119/tvg_119_page_336.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_336.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_336.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_336.txt:Nederlandse opstand
+tvg_119/tvg_119_page_339.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_339.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_340.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_340.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_341.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_343.txt:De Nederlandse Opstand
+tvg_119/tvg_119_page_343.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_343.txt:De Nederlandse Opstand
+tvg_119/tvg_119_page_343.txt:De Opstand
+tvg_119/tvg_119_page_344.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_344.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_346.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_346.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_346.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_347.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_347.txt:Vlaamse Opstand
+tvg_119/tvg_119_page_347.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_347.txt:Nederlandse Opstand
+tvg_119/tvg_119_page_399.txt:Saksische opstand
+tvg_119/tvg_119_page_403.txt:Bataafse opstand
+tvg_119/tvg_119_page_420.txt:Túpac Amaru opstand
+tvg_119/tvg_119_page_420.txt:De opstand
+tvg_119/tvg_119_page_420.txt:Túpac Amaru opstand
+tvg_12/tvg_12_page_160.txt:De opstand
+tvg_120/tvg_120_page_133.txt:Nederlandse Opstand
+tvg_121/tvg_121_page_180.txt:Palestijnse opstand
+tvg_121/tvg_121_page_393.txt:Nederlandse Opstand
+tvg_121/tvg_121_page_396.txt:Nederlandse Opstand
+tvg_122/tvg_122_page_180.txt:Palestĳnse opstand
+tvg_122/tvg_122_page_393.txt:Nederlandse Opstand
+tvg_122/tvg_122_page_396.txt:Nederlandse Opstand
+tvg_14/tvg_14_page_119.txt:Taiping-opstand
+tvg_14/tvg_14_page_241.txt:Grieksche Opstand
+tvg_14/tvg_14_page_242.txt:Griekschen opstand
+tvg_15/tvg_15_page_301.txt:Belgischen opstand
+tvg_16/tvg_16_page_78.txt:De opstand
+tvg_16/tvg_16_page_99.txt:Een opstand
+tvg_18/tvg_18_page_182.txt:Indischen opstand
+tvg_18/tvg_18_page_19.txt:De opstand
+tvg_18/tvg_18_page_22.txt:De Opstand
+tvg_18/tvg_18_page_23.txt:Hollandschen opstand
+tvg_18/tvg_18_page_23.txt:Hollandsche opstand
+tvg_18/tvg_18_page_24.txt:Nederlandschen opstand
+tvg_18/tvg_18_page_24.txt:Nederlandsche opstand
+tvg_18/tvg_18_page_31.txt:Nederlandschen opstand
+tvg_18/tvg_18_page_95.txt:Belgische opstand
+tvg_18/tvg_18_page_96.txt:Belgischen opstand
+tvg_20/tvg_20_page_160.txt:Boxer-opstand
+tvg_21/tvg_21_page_59.txt:De opstand
+tvg_21/tvg_21_page_VIII.txt:Belgischen opstand
+tvg_22/tvg_22_page_227.txt:De opstand
+tvg_22/tvg_22_page_VII.txt:De opstand
+tvg_23/tvg_23_page_VI.txt:De opstand
+tvg_25/tvg_25_page_79.txt:Belgischen opstand
+tvg_25/tvg_25_page_81.txt:Belgischen opstand
+tvg_25/tvg_25_page_VI.txt:Belgischen Opstand
+tvg_28/tvg_28_page_318.txt:Een opstand
+tvg_29/tvg_29_page_104.txt:Jonischen opstand
+tvg_29/tvg_29_page_106.txt:Jonischen opstand
+tvg_29/tvg_29_page_272.txt:De Parijsche opstand
+tvg_29/tvg_29_page_VI.txt:Jonischen opstand
+tvg_30/tvg_30_page_178.txt:Noord-Duitschen opstand
+tvg_30/tvg_30_page_240.txt:Belgischen opstand
+tvg_31/tvg_31_page_17.txt:Belgischen opstand
+tvg_32/tvg_32_page_313.txt:Belgische Opstand
+tvg_33/tvg_33_page_146.txt:De opstand
+tvg_33/tvg_33_page_215.txt:Belgischen opstand
+tvg_33/tvg_33_page_59.txt:Yunnan-opstand
+tvg_34/tvg_34_page_317.txt:Spaanschen opstand
+tvg_34/tvg_34_page_54.txt:Deze opstand
+tvg_35/tvg_35_page_188.txt:Juli-opstand
+tvg_35/tvg_35_page_188.txt:Juni-opstand
+tvg_35/tvg_35_page_56.txt:December-opstand
+tvg_37/tvg_37_page_150.txt:Nederlandse opstand
+tvg_37/tvg_37_page_36.txt:De opstand
+tvg_37/tvg_37_page_410.txt:De Poolsche opstand
+tvg_37/tvg_37_page_440.txt:De opstand
+tvg_38/tvg_38_page_191.txt:De opstand
+tvg_38/tvg_38_page_194.txt:Belgischen opstand
+tvg_38/tvg_38_page_425.txt:Belgischen opstand
+tvg_39/tvg_39_page_145.txt:Bosnischen opstand
+tvg_39/tvg_39_page_42.txt:Nederlandsche opstand
+tvg_40/tvg_40_page_198.txt:De opstand
+tvg_40/tvg_40_page_96.txt:Nederlandsche opstand
+tvg_41/tvg_41_page_218.txt:De Satsuma-opstand
+tvg_41/tvg_41_page_332.txt:Sepoy-opstand
+tvg_42/tvg_42_page_321.txt:Belgischen Opstand
+tvg_43/tvg_43_page_105.txt:Macedonischen opstand
+tvg_43/tvg_43_page_140.txt:Nederlands opstand
+tvg_43/tvg_43_page_149.txt:Nederlands opstand
+tvg_43/tvg_43_page_211.txt:Amerikaanschen opstand
+tvg_44/tvg_44_page_104.txt:Poolschen opstand
+tvg_44/tvg_44_page_114.txt:De opstand
+tvg_44/tvg_44_page_331.txt:De Amerikaanse Opstand
+tvg_46/tvg_46_page_101.txt:De Nederlandsche opstand
+tvg_46/tvg_46_page_341.txt:Nederlands opstand
+tvg_46/tvg_46_page_390.txt:De Belgische opstand
+tvg_46/tvg_46_page_99.txt:De Brusselsche opstand
+tvg_47/tvg_47_page_280.txt:Nederlandse opstand
+tvg_47/tvg_47_page_336a.txt:De Belgische opstand
+tvg_47/tvg_47_page_43.txt:De opstand
+tvg_48/tvg_48_page_206.txt:Boheemsche opstand
+tvg_48/tvg_48_page_213.txt:Onze opstand
+tvg_48/tvg_48_page_417.txt:Onze Opstand
+tvg_48/tvg_48_page_439.txt:Poolsche opstand
+tvg_49/tvg_49_page_103.txt:De Belgische opstand
+tvg_49/tvg_49_page_103.txt:Belgischen opstand
+tvg_49/tvg_49_page_VI.txt:Goslinga De Belgische opstand
+tvg_50/tvg_50_page_110.txt:Nederlandschen opstand
+tvg_50/tvg_50_page_224a.txt:Van Opstand
+tvg_50/tvg_50_page_429.txt:Van opstand
+tvg_50/tvg_50_page_438.txt:De opstand
+tvg_51/tvg_51_page_421.txt:Belgischen opstand
+tvg_51/tvg_51_page_VI.txt:Van opstand
+tvg_52/tvg_52_page_104.txt:Bokser-opstand
+tvg_52/tvg_52_page_112b.txt:Van opstand
+tvg_52/tvg_52_page_224b.txt:Van opstand
+tvg_52/tvg_52_page_323.txt:Belgische opstand
+tvg_52/tvg_52_page_336b.txt:Van opstand
+tvg_52/tvg_52_page_54.txt:Van Opstand
+tvg_52/tvg_52_page_54.txt:Nederlands opstand
+tvg_53/tvg_53_page_108.txt:De opstand
+tvg_53/tvg_53_page_112b.txt:Van opstand
+tvg_53/tvg_53_page_336b.txt:Van opstand
+tvg_55/tvg_55_page_326.txt:Belgische Opstand
+tvg_56/tvg_56_page_18.txt:Deze opstand
+tvg_56/tvg_56_page_200.txt:De opstand
+tvg_56/tvg_56_page_253.txt:Nederlands Opstand
+tvg_56/tvg_56_page_40.txt:Belgische opstand
+tvg_57/tvg_57_page_116.txt:Een opstand
+tvg_57/tvg_57_page_187.txt:Gentse Opstand
+tvg_57/tvg_57_page_81.txt:De opstand
+tvg_57/tvg_57_page_89.txt:Nederlands opstand
+tvg_59/tvg_59_page_252.txt:Gentse opstand
+tvg_59/tvg_59_page_427.txt:Belgische opstand
+tvg_60/tvg_60_page_124.txt:Nederlandschen Opstand
+tvg_60/tvg_60_page_262.txt:De Belgische opstand
+tvg_60/tvg_60_page_3.txt:Ionische opstand
+tvg_60/tvg_60_page_80.txt:Ionische opstand
+tvg_60/tvg_60_page_80.txt:De Ionische opstand
+tvg_60/tvg_60_page_83.txt:Ionische opstand
+tvg_60/tvg_60_page_84.txt:Ionische opstand
+tvg_61/tvg_61_page_391.txt:De opstand
+tvg_62/tvg_62_page_268.txt:Nederlandse opstand
+tvg_62/tvg_62_page_272.txt:Nederlandse opstand
+tvg_62/tvg_62_page_391.txt:Nederlandse opstand
+tvg_62/tvg_62_page_420.txt:Belgische opstand
+tvg_62/tvg_62_page_420.txt:Poolse opstand
+tvg_63/tvg_63_page_306.txt:Belgischen Opstand
+tvg_64/tvg_64_page_129.txt:De Opstand
+tvg_65/tvg_65_page_199.txt:Belgische opstand
+tvg_65/tvg_65_page_428.txt:Belgischen opstand
+tvg_66/tvg_66_page_436.txt:Poolse opstand
+tvg_67/tvg_67_page_24.txt:Griekse opstand
+tvg_67/tvg_67_page_24.txt:De opstand
+tvg_67/tvg_67_page_24.txt:Griekse opstand
+tvg_67/tvg_67_page_25.txt:Griekse opstand
+tvg_67/tvg_67_page_29.txt:Griekse opstand
+tvg_67/tvg_67_page_32.txt:Hun opstand
+tvg_67/tvg_67_page_48.txt:Belgische opstand
+tvg_69/tvg_69_page_396.txt:De Drentse Opstand
+tvg_69/tvg_69_page_410.txt:Belgische opstand
+tvg_69/tvg_69_page_423.txt:De Nederlandse opstand
+tvg_70/tvg_70_page_137.txt:Poolse opstand
+tvg_70/tvg_70_page_169.txt:Poolsen opstand
+tvg_70/tvg_70_page_258.txt:Boheemse opstand
+tvg_70/tvg_70_page_V.txt:De Nederlandse Opstand
+tvg_71/tvg_71_page_126.txt:De Opstand
+tvg_71/tvg_71_page_138.txt:Een opstand
+tvg_71/tvg_71_page_221.txt:Gentse opstand
+tvg_71/tvg_71_page_97.txt:Taiping-opstand
+tvg_72/tvg_72_page_135.txt:Siciliaanse opstand
+tvg_72/tvg_72_page_136.txt:De opstand
+tvg_72/tvg_72_page_136.txt:De Siciliaanse opstand
+tvg_72/tvg_72_page_432.txt:Jacobitische opstand
+tvg_72/tvg_72_page_437.txt:Een opstand
+tvg_73/tvg_73_page_267.txt:Amerikaanse opstand
+tvg_73/tvg_73_page_321.txt:Belgische opstand
+tvg_73/tvg_73_page_323.txt:Geweldlazt opstand
+tvg_73/tvg_73_page_441.txt:Algerijnse opstand
+tvg_73/tvg_73_page_498.txt:De Belgische opstand
+tvg_73/tvg_73_page_64.txt:Belgische opstand
+tvg_73/tvg_73_page_II.txt:De opstand
+tvg_73/tvg_73_page_VIII.txt:Geweldloze opstand
+tvg_74/tvg_74_page_101.txt:De opstand
+tvg_74/tvg_74_page_132.txt:De opstand
+tvg_74/tvg_74_page_161.txt:Portugese opstand
+tvg_74/tvg_74_page_478.txt:Belgische opstand
+tvg_74/tvg_74_page_590.txt:Belgische Opstand
+tvg_74/tvg_74_page_69.txt:De opstand
+tvg_75/tvg_75_page_325.txt:Amerikaanse opstand
+tvg_75/tvg_75_page_353.txt:Hongaarse opstand
+tvg_75/tvg_75_page_382.txt:De Nederlandse opstand
+tvg_76/tvg_76_page_228.txt:Belgische opstand
+tvg_76/tvg_76_page_244.txt:Tiroolse opstand
+tvg_76/tvg_76_page_56.txt:De opstand
+tvg_76/tvg_76_page_62.txt:Ierse opstand
+tvg_77/tvg_77_page_351.txt:Nederlandse Opstand
+tvg_77/tvg_77_page_385.txt:Hongaarse opstand
+tvg_77/tvg_77_page_39.txt:De opstand
+tvg_78/tvg_78_page_190.txt:Nederlandse Opstand
+tvg_78/tvg_78_page_190.txt:Nederlandse opstand
+tvg_78/tvg_78_page_199.txt:De Nederlandse Opstand
+tvg_78/tvg_78_page_199.txt:Nederlandse Opstand
+tvg_78/tvg_78_page_454.txt:Joodse opstand
+tvg_79/tvg_79_page_166.txt:Belgische opstand
+tvg_79/tvg_79_page_414.txt:Spaanse opstand
+tvg_80/tvg_80_page_307.txt:Luikse opstand
+tvg_80/tvg_80_page_321.txt:De opstand
+tvg_80/tvg_80_page_67.txt:Joodse opstand
+tvg_80/tvg_80_page_95.txt:Nederlandse Opstand
+tvg_81/tvg_81_page_142.txt:Belgische opstand
+tvg_81/tvg_81_page_149.txt:De Opstand
+tvg_81/tvg_81_page_150.txt:Nederlands Opstand
+tvg_81/tvg_81_page_151.txt:Nederlandse Opstand
+tvg_81/tvg_81_page_151.txt:De Nederlandsche Opstand
+tvg_81/tvg_81_page_152.txt:De Opstand
+tvg_81/tvg_81_page_152.txt:Nederlands Opstand
+tvg_81/tvg_81_page_154.txt:Calvinistische opstand
+tvg_81/tvg_81_page_155.txt:Nederlands Opstand
+tvg_81/tvg_81_page_264.txt:De opstand
+tvg_81/tvg_81_page_295.txt:De opstand
+tvg_81/tvg_81_page_315.txt:Belgische opstand
+tvg_81/tvg_81_page_316.txt:Brusselse opstand
+tvg_81/tvg_81_page_316.txt:Belgisch-nationale opstand
+tvg_81/tvg_81_page_403.txt:Mohammedaanse opstand
+tvg_81/tvg_81_page_403.txt:Mohammedaanse opstand
+tvg_81/tvg_81_page_544.txt:Bantamse opstand
+tvg_81/tvg_81_page_545.txt:De opstand
+tvg_82/tvg_82_page_547.txt:Nederlandse Opstand
+tvg_83/tvg_83_page_110.txt:Parijse opstand
+tvg_83/tvg_83_page_344.txt:De Opstand
+tvg_83/tvg_83_page_364.txt:Nederlands opstand
+tvg_83/tvg_83_page_364.txt:Van Vlotens Opstand
+tvg_83/tvg_83_page_369.txt:De opstand
+tvg_83/tvg_83_page_375.txt:De opstand
+tvg_83/tvg_83_page_430.txt:Pilgrimage-opstand
+tvg_83/tvg_83_page_436.txt:Nederlandse Opstand
+tvg_83/tvg_83_page_496.txt:Amerikaanse opstand
+tvg_83/tvg_83_page_520.txt:Nederlandse opstand
+tvg_83/tvg_83_page_601.txt:Schotse Stuart-opstand
+tvg_83/tvg_83_page_616.txt:De opstand
+tvg_83/tvg_83_page_83.txt:De opstand
+tvg_83/tvg_83_page_84.txt:Aristonicus-opstand
+tvg_84/tvg_84_page_426.txt:Belgische Opstand
+tvg_84/tvg_84_page_435.txt:Van Opstand
+tvg_84/tvg_84_page_435.txt:Nederlandse Opstand
+tvg_84/tvg_84_page_435.txt:Nederlandse Opstand
+tvg_84/tvg_84_page_517.txt:De Nederlandse opstand
+tvg_84/tvg_84_page_639.txt:Van Opstand
+tvg_85/tvg_85_page_212.txt:De opstand
+tvg_85/tvg_85_page_229.txt:De opstand
+tvg_85/tvg_85_page_267.txt:Poolse opstand
+tvg_85/tvg_85_page_592.txt:Nederlandse opstand
+tvg_85/tvg_85_page_99.txt:De opstand
+tvg_86/tvg_86_page_275.txt:Van opstand
+tvg_86/tvg_86_page_356.txt:Nederlandse Opstand
+tvg_86/tvg_86_page_357.txt:Nederlandse Opstand
+tvg_86/tvg_86_page_462.txt:Belgische Opstand
+tvg_86/tvg_86_page_470.txt:Hongaarse opstand
+tvg_86/tvg_86_page_489.txt:De Hongaarse opstand
+tvg_86/tvg_86_page_598.txt:Gentse opstand
+tvg_86/tvg_86_page_608.txt:Boheemse opstand
+tvg_86/tvg_86_page_610.txt:Boheemse Opstand
+tvg_86/tvg_86_page_611.txt:Boheemse Opstand
+tvg_86/tvg_86_page_628.txt:Belgische opstand
+tvg_87/tvg_87_page_109.txt:Nederlandse opstand
+tvg_87/tvg_87_page_231.txt:Jonische opstand
+tvg_87/tvg_87_page_263.txt:Griekse opstand
+tvg_87/tvg_87_page_381.txt:Amerikaanse opstand
+tvg_88/tvg_88_page_110.txt:Hongaarse opstand
+tvg_88/tvg_88_page_113.txt:Amerikaanse Opstand
+tvg_88/tvg_88_page_269.txt:Amerikaanse Opstand
+tvg_88/tvg_88_page_42.txt:Amerikaanse opstand
+tvg_89/tvg_89_page_251.txt:De opstand
+tvg_89/tvg_89_page_267.txt:Belgische Opstand
+tvg_89/tvg_89_page_298.txt:Nederlandse Opstand
+tvg_89/tvg_89_page_298.txt:Nederlandse Opstand
+tvg_89/tvg_89_page_299.txt:De Opstand
+tvg_89/tvg_89_page_325.txt:Van opstand
+tvg_89/tvg_89_page_352.txt:Van opstand
+tvg_89/tvg_89_page_36.txt:Belgische opstand
+tvg_89/tvg_89_page_368.txt:De Nederlandse Opstand
+tvg_89/tvg_89_page_369.txt:Nederlandse opstand
+tvg_89/tvg_89_page_422.txt:Nederlandse Opstand
+tvg_89/tvg_89_page_621.txt:Nederlandse Opstand
+tvg_91/tvg_91_page_111.txt:Nederlandse opstand
+tvg_91/tvg_91_page_117.txt:Boheemse opstand
+tvg_91/tvg_91_page_127.txt:Belgische opstand
+tvg_91/tvg_91_page_127.txt:Belgische opstand
+tvg_91/tvg_91_page_244.txt:Kennemer opstand
+tvg_91/tvg_91_page_314.txt:Nederlandse opstand
+tvg_91/tvg_91_page_34.txt:Een opstand
+tvg_91/tvg_91_page_371.txt:Gentse Opstand
+tvg_91/tvg_91_page_372.txt:Gentse opstand
+tvg_91/tvg_91_page_373.txt:Gentse Opstand
+tvg_91/tvg_91_page_374.txt:De Gentse opstand
+tvg_91/tvg_91_page_463.txt:Poolse opstand
+tvg_91/tvg_91_page_476.txt:Bokser-opstand
+tvg_91/tvg_91_page_506.txt:Ierse opstand
+tvg_91/tvg_91_page_528.txt:Nederlandse Opstand
+tvg_91/tvg_91_page_577.txt:Boheemse opstand
+tvg_91/tvg_91_page_586.txt:Hongaarse opstand
+tvg_91/tvg_91_page_587.txt:Boheemse opstand
+tvg_91/tvg_91_page_587.txt:Bocskai-opstand
+tvg_91/tvg_91_page_588.txt:Bocskai-opstand
+tvg_91/tvg_91_page_589.txt:Bocskai-opstand
+tvg_91/tvg_91_page_589.txt:Boheemse opstand
+tvg_91/tvg_91_page_589.txt:Boheemse opstand
+tvg_91/tvg_91_page_602.txt:Boheemse opstand
+tvg_91/tvg_91_page_607.txt:Boheemse opstand
+tvg_92/tvg_92_page_281.txt:De Nederlandse opstand
+tvg_92/tvg_92_page_615.txt:Nederlandse Opstand
+tvg_92/tvg_92_page_616.txt:Wat Tyler-opstand
+tvg_92/tvg_92_page_616.txt:Ketts opstand
+tvg_92/tvg_92_page_617.txt:De opstand
+tvg_92/tvg_92_page_617.txt:Vendée-opstand
+tvg_92/tvg_92_page_98.txt:De Opstand
+tvg_92/tvg_92_page_99.txt:De Opstand
+tvg_92/tvg_92_page_99.txt:Nederlandse opstand
+tvg_93/tvg_93_page_256.txt:Nederlandse Opstand
+tvg_93/tvg_93_page_256.txt:Nederlandse Opstand
+tvg_93/tvg_93_page_258.txt:Nederlandse Opstand
+tvg_93/tvg_93_page_5.txt:De opstand
+tvg_93/tvg_93_page_628.txt:Nederlandse Opstand
+tvg_93/tvg_93_page_628.txt:Nederlandse Opstand
+tvg_93/tvg_93_page_642.txt:Amerikaanse opstand
+tvg_94/tvg_94_page_265.txt:De opstand
+tvg_94/tvg_94_page_310.txt:Nederlandse Opstand
+tvg_94/tvg_94_page_320.txt:Een opstand
+tvg_94/tvg_94_page_565.txt:Transvaalse opstand
+tvg_94/tvg_94_page_575.txt:Transvaalse opstand
+tvg_94/tvg_94_page_575.txt:Transvaalse opstand
+tvg_94/tvg_94_page_608.txt:Nederlandse opstand
+tvg_95/tvg_95_page_124.txt:Belgische opstand
+tvg_95/tvg_95_page_345.txt:Nederlandse Opstand
+tvg_95/tvg_95_page_348.txt:Catalaanse opstand
+tvg_95/tvg_95_page_411.txt:Nederlandse Opstand
+tvg_95/tvg_95_page_553.txt:Belgische opstand
+tvg_96/tvg_96_page_110.txt:Nederlandse Opstand
+tvg_96/tvg_96_page_24.txt:Lydische opstand
+tvg_96/tvg_96_page_24.txt:Ionische opstand
+tvg_96/tvg_96_page_244.txt:Nederlandse Opstand
+tvg_96/tvg_96_page_37.txt:De Gewapende Opstand
+tvg_96/tvg_96_page_38.txt:Gewapende Opstand
+tvg_96/tvg_96_page_38.txt:Gewapende Opstand
+tvg_96/tvg_96_page_4.txt:Assyrische opstand
+tvg_96/tvg_96_page_423.txt:Belgische Opstand
+tvg_96/tvg_96_page_43.txt:De opstand
+tvg_96/tvg_96_page_44.txt:De Gewapende Opstand
+tvg_96/tvg_96_page_53.txt:Gewapende Opstand
+tvg_96/tvg_96_page_54.txt:Gewapende Opstand
+tvg_96/tvg_96_page_629.txt:Belgische Opstand
+tvg_96/tvg_96_page_670.txt:Arabische opstand
+tvg_96/tvg_96_page_678.txt:Belgische opstand
+tvg_96/tvg_96_page_68.txt:De opstand
+tvg_96/tvg_96_page_9.txt:Makkabese opstand
+tvg_97/tvg_97_page_112.txt:Vendée-opstand
+tvg_97/tvg_97_page_112.txt:Vendée-opstand
+tvg_97/tvg_97_page_201.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_203.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_206.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_206.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_259.txt:Boheemse Opstand
+tvg_97/tvg_97_page_369.txt:Hongaarse opstand
+tvg_97/tvg_97_page_370.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_377.txt:De Nederlandse Opstand
+tvg_97/tvg_97_page_379.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_379.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_381.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_433.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_53.txt:Commune-opstand
+tvg_97/tvg_97_page_609.txt:Nederlandse Opstand
+tvg_97/tvg_97_page_633.txt:Pattimura-opstand
+tvg_97/tvg_97_page_653.txt:De opstand
+tvg_97/tvg_97_page_92.txt:Nederlandse opstand
+tvg_98/tvg_98_page_116.txt:De Belgische Opstand
+tvg_98/tvg_98_page_116.txt:Brusselse Opstand
+tvg_98/tvg_98_page_117.txt:Belgische Opstand
+tvg_98/tvg_98_page_191.txt:De Hongaarse opstand
+tvg_98/tvg_98_page_191.txt:Hongaarse opstand
+tvg_98/tvg_98_page_192.txt:Hongaarse Opstand
+tvg_98/tvg_98_page_205.txt:De opstand
+tvg_98/tvg_98_page_206.txt:Hongaarse opstand
+tvg_98/tvg_98_page_207.txt:Hongaarse opstand
+tvg_98/tvg_98_page_209.txt:Hongaarse opstand
+tvg_98/tvg_98_page_267.txt:Nederlandse Opstand
+tvg_98/tvg_98_page_602.txt:Boheemse Opstand
+tvg_98/tvg_98_page_609.txt:Hongaarse Opstand
+tvg_98/tvg_98_page_658.txt:De Hongaarse opstand
+tvg_98/tvg_98_page_92.txt:Nederlandse Opstand
+tvg_98/tvg_98_page_94.txt:Nederlandse opstand
+tvg_99/tvg_99_page_035.txt:Nederlandse Opstand
+tvg_99/tvg_99_page_056.txt:Boheemse opstand
+tvg_99/tvg_99_page_073.txt:Engelse opstand
+tvg_99/tvg_99_page_073.txt:Engelse opstand
+tvg_99/tvg_99_page_092.txt:De Thököly-opstand
+tvg_99/tvg_99_page_093.txt:Hongaarse opstand
+tvg_99/tvg_99_page_093.txt:Thököly-opstand
+tvg_99/tvg_99_page_111.txt:De opstand
+tvg_99/tvg_99_page_259.txt:Deze opstand
+tvg_99/tvg_99_page_259.txt:De opstand
+tvg_99/tvg_99_page_259.txt:Boheemse Opstand
+tvg_99/tvg_99_page_331.txt:De Nederlandse Opstand
+tvg_99/tvg_99_page_402.txt:Nederlandse Opstand
+tvg_99/tvg_99_page_470.txt:Belgische opstand
+tvg_99/tvg_99_page_649.txt:Kareis opstand
