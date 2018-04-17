@@ -16,8 +16,8 @@
 
 Eerdere delen TvG opdracht:
 
-+ [Link naar deel 1 van de TvG opdracht](../dag_1/tvg_opdracht1.md) (dag 1)
-+ [Link naar deel 3 van de TvG opdracht](../dag_2/tvg_opdracht3.md) (dag 2)
++ [Deel 1 van de TvG opdracht](../dag_1/tvg_opdracht1.md) (dag 1)
++ [Deel 3 van de TvG opdracht](../dag_2/tvg_opdracht3.md) (dag 2)
 
 **Open een document voor het bijhouden van data interacties om tot data scope te komen en overwegingen daarbij.** Gebruik bij voorkeur een nieuw Google Doc in de [workshop drive folder](https://drive.google.com/drive/folders/1R8Rex2v0YwfWhW8omEp0esqBkdX_Ymhr) op Google Drive, zodat alle aantekeningen bij elkaar staan zodat we die aan het eind de dag makkelijk kunnen vergelijken. 
 
@@ -392,10 +392,6 @@ Je kunt met `sed` ook de bestandsnaam nog veranderen zodat je een makkelijker le
 grep -E -o -w "([A-Z][a-z]?\.)+( van| de| der| den)*( [A-Z](\w|-)+)+" tvg_11[0-9]/*.txt | sed -E 's/.txt:/,/' | sed -E 's/tvg_[0-9]+\///' | sed -E 's/_page/,page/' > tvg_persoonsnamen.txt
 ```
 
-### Topic modelling
-
-Een populaire optie is [probabilistic topic modelling](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4122269/) waarmee je algoritmisch coherente woordensets ("groups of tightly co-occurring words", topics) laat ontdekken in de data. Dit is vergelijkbaar met het handmatig modelleren van topics a.d.h.v. woordensets, alleen is dit vrijwel puur data-gedreven, dus je hebt weinig controle over het proces en de uitkomst (dit is in principe een positief aspect maar kan ook tot onbevredigende, oninterpreteerbare resultaten leiden). De [Topic Modelling Tool](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html) pagina geeft goede instructies die ook toepasbaar zijn op het TvG corpus. Dit is een vorm van *classificatie*, alhoewel de tool zelf onder de motorkap allerlei bewerkingen uitvoert die onder *selectie* en *normalisatie* vallen (en in zekere zin ook *linking*).
-
 <a name="grep-topics"></a>
 ## Term snowballing en het modelleren van topics
 
@@ -435,7 +431,9 @@ Je kunt de commando-keten ook aanpassen zodat er woord-bigrammen worden geteld. 
 grep -r -E -h -i -w "\w+migra[nt]\w+" tvg_*/ | tr '[:punct:]' ' ' | tr '[:upper:]' '[:lower:]' | tr ' ' '\n' | awk 'prev!="" {print prev,$0} {prev=$0}' | grep -v -w -f tvg_stopwoorden.txt | grep -v -E -w "\w{,2}" | sort | uniq -c | sort -g
 ```
 
-#
+### Topic modelling
 
-+ [Link naar deel 3 van de TvG opdracht](../dag_2/tvg_opdracht3.md) (dag 2)
+Een populaire optie is [probabilistic topic modelling](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4122269/) waarmee je algoritmisch coherente woordensets ("groups of tightly co-occurring words", topics) laat ontdekken in de data. Dit is vergelijkbaar met het handmatig modelleren van topics a.d.h.v. woordensets, alleen is dit vrijwel puur data-gedreven, dus je hebt weinig controle over het proces en de uitkomst (dit is in principe een positief aspect maar kan ook tot onbevredigende, oninterpreteerbare resultaten leiden). De [Topic Modelling Tool](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html) pagina geeft goede instructies die ook toepasbaar zijn op het TvG corpus. Dit is een vorm van *classificatie*, alhoewel de tool zelf onder de motorkap allerlei bewerkingen uitvoert die onder *selectie* en *normalisatie* vallen (en in zekere zin ook *linking*).
+
+Als je hiermee uitgeoefend bent, kun je door naar [deel 3 van de TvG opdracht](../dag_2/tvg_opdracht3.md) (dag 2)
 
