@@ -1,0 +1,131 @@
+resolution_categories = {
+    "resolution_accepted": [
+        "is goedgevonden ende verftaan",
+        "IS naar voorgaande deliberatie goedgevonden ende verstaan",
+        "de voorfchreve Miffive copielijck overgenomen",
+    ],
+    "resolution_decision": [
+        "gehouden voor gecommiteert",
+        "waar by goedgevonden is",
+        "voor de genomen moeyte bedanckt", # should probably move somewhere else
+    ],
+    "resolution_not_accepted": [
+        "WAAR op geen refolutie is gevallen",
+    ],
+    "resolution_opening": [
+        "hebben ter Vergaderinge ingebraght",
+        "Is ter Vergaderinge gelefen",
+        "IS gehoort het rapport van",
+        "Ontvangen een Miffive van",
+        "Op de Requefte van",
+        "Zynde ter Vergaderinge getoont",
+    ],
+    "resolution_considered": [
+        "WAAR op gedelibereert en in achtinge genomen zynde",
+        "WAAR op gedelibereert zijnde",
+        "WAAR op gedelibereert",
+    ],
+    "resolution_resumed": [
+        "BY refumptie gedelibereert zynde",
+    ],
+    "resolution_summarized": [
+        "DE Refolutien, gifteren genomen",
+        "zyn gelefen en gerefumeert",
+    ],
+    "non_meeting_date": [
+        "Nihil actum eft.",
+    ],
+    "resolution_first_entry": [
+        "Zynde Nieuwejaarsdagh",
+    ],
+    "participant_list": [
+        "PRAESIDE",
+        "PRAESENTIBUS",
+    ],
+}
+
+category_index = {phrase: category for category in resolution_categories for phrase in resolution_categories[category]}
+
+resolution_phrases = [phrase for category in resolution_categories for phrase in resolution_categories[category]]
+
+participant_list_phrases = [
+    "PRAESIDE",
+    "PRAESENTIBUS",
+]
+
+week_day_names = [
+    "Lunae",
+    "Martis",
+    "Mercurii",
+    "Jovis",
+    "Veneris",
+    "Sabbathi",
+    "Dominica"
+]
+
+month_names = [
+    "Januarii",
+    "Februarii",
+    "Maart",
+    "April",
+    "Mey",
+    "Junii",
+    "Juli",
+    "Augufti",
+    "September",
+    "October",
+    "November",
+    "December"
+]
+
+week_day_name_map = {
+    "Lunae": 1,
+    "Martis": 2,
+    "Mercurii": 3,
+    "Jovis": 4,
+    "Veneris": 5,
+    "Sabbathi": 6,
+    "Dominica": 7
+}
+
+month_map = {
+    "Januarii": 1,
+    "Februarii": 2,
+    "Maart": 3,
+    "April": 4,
+    "Mey": 5,
+    "Junii": 6,
+    "Juli": 7,
+    "Augufti": 8,
+    "September": 9,
+    "October": 10,
+    "November": 11,
+    "December": 12
+}
+
+keywords = resolution_phrases
+
+spelling_variants = {
+    "DE Refolutien, gifteren genomen": [
+        "DE Refolutien, eergifteren genomen",
+    ],
+    "Ontvangen een Miffive van": [
+        "ON een Miffive van",
+        "Ontfangen een Miffive van",
+        "Ontfangen twee Missiven van"
+    ],
+    "PRAESENTIBUS": [
+        "PRASENTIBUS",
+        "PRESENTIBUS"
+    ],
+    #"Junii": [
+    #    "Juni"
+    #],
+    "is goedgevonden ende verftaan": [
+        "IS goedgevonden ende verftaan",
+    ],
+    "WAAR op geen refolutie is gevallen": [
+        "WAAR op geen refolutie voor alsnoch is gevallen",
+    ]
+}
+
