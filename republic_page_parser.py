@@ -5,6 +5,7 @@ import copy
 from collections import defaultdict
 from parse_hocr_files import make_hocr_page, filter_tiny_words_from_lines
 from elasticsearch import Elasticsearch
+from inventory_mapping import inventory_mapping
 
 # filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr
 
@@ -12,6 +13,25 @@ repeat_symbol = "——"
 
 def get_scan_num(fname):
     return int(fname.split(".")[2].split("_")[2])
+
+def get_inventory_num(fname):
+    return int(fname.split(".")[2].split("_")[1])
+
+def get_inventory_period(fname):
+    inventory_num = get_inventory_num(fname)
+    for inventory in inventory_mapping:
+        if inventory_num == inventory["inventory_num"]:
+            return inventory["period"]
+    else:
+        return None
+
+def get_inventory_year(fname):
+    inventory_num = get_inventory_num(fname)
+    for inventory in inventory_mapping:
+        if inventory_num == inventory["inventory_num"]:
+            return inventory["year"]
+    else:
+        return None
 
 def get_column_num(fname):
     return int(fname.split(".")[3].split("-")[1])
@@ -33,7 +53,7 @@ def get_scan_slant(fname):
 
 def get_page_side(fname):
     parts = fname.split(".")[3].split("-")
-    if int(parts[2]) < 2400:
+    if int(parts[2]) < 2200:
         return "even"
     else:
         return "odd"
@@ -43,6 +63,9 @@ def get_scan_info(fname, root_dir):
         "scan_num": get_scan_num(fname),
         "scan_column": get_column_num(fname),
         "scan_num_column_num": get_scan_num(fname) + 0.1 * get_column_num(fname),
+        "inventory_num": get_inventory_num(fname),
+        "inventory_year": get_inventory_year(fname),
+        "inventory_period": get_inventory_period(fname),
         "page_id": "scan-{}-{}".format(get_scan_num(fname), get_page_side(fname)),
         "page_num": get_scan_page_num(fname),
         "page_side": get_page_side(fname),
@@ -57,6 +80,9 @@ def gather_page_columns(scan_files):
         if scan_file["page_id"] not in page_info:
             page_info[scan_file["page_id"]] = {
                 "scan_num": scan_file["scan_num"],
+                "inventory_num": scan_file["inventory_num"],
+                "inventory_year": scan_file["inventory_year"],
+                "inventory_period": scan_file["inventory_period"],
                 "page_id": scan_file["page_id"],
                 "page_num": scan_file["page_num"],
                 "page_side": scan_file["page_side"],
@@ -282,6 +308,37 @@ def proper_column_cut(hocr_page):
 
 def line_has_page_ref(line):
     return re.search(r"\b\d+\.", line["line_text"])
+
+def is_title_page(page_info):
+    # title page has large word lines in the top half of the page
+    # so top of line is below 2000
+    large_word_lines = [line for line in get_large_word_lines(page_info, min_word_height=60, min_char_width=40) if line["top"] < 2000]
+    return len(large_word_lines) >= 2
+
+def get_large_word_lines(page_info, min_word_height=100, min_char_width=40):
+    for column_info in page_info["columns"]:
+        for line in column_info["column_hocr"]["lines"]:
+            num_large_words = 0
+            num_words= len(line["words"])
+            for word in line["words"]:
+                avg_char_width = word["width"] / len(word["word_text"])
+                if avg_char_width < min_char_width:
+                    continue
+                if word["height"] >= min_word_height:
+                    num_large_words += 1
+            num_small_words = num_words - num_large_words
+            if num_large_words > num_small_words:
+                yield line
+
+def get_large_words(page_info, min_word_height=100, min_char_width=40):
+    for column_info in page_info["columns"]:
+        for line in column_info["column_hocr"]["lines"]:
+            for word in line["words"]:
+                avg_char_width = word["width"] / len(word["word_text"])
+                if avg_char_width < min_char_width:
+                    continue
+                if word["height"] >= min_word_height:
+                    yield word
 
 def count_page_ref_lines(page_info):
     count = 0
