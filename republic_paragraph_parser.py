@@ -20,6 +20,8 @@ def get_resolution_page_paragraphs(page_doc):
     for column_info in page_doc["columns"]:
         paragraph_lines = [] # reset paragraph_lines at the beginning of each column
         prev_line_bottom = None
+        if not "column_hocr" in column_info:
+            continue
         for line in column_info["column_hocr"]["lines"]:
             boundary = False
             if is_empty_line(line):
