@@ -1,4 +1,5 @@
 inventory_mapping = [
+    {"inventory_num": 3234, "year": 1667, "period": ["1667-07-01", "1667-12-31"]},
     {"inventory_num": 3760, "year": 1705, "period": ["1705-01-01", "1705-12-31"]},
     {"inventory_num": 3761, "year": 1706, "period": ["1706-01-01", "1706-12-31"]},
     {"inventory_num": 3762, "year": 1707, "period": ["1707-01-01", "1707-12-31"]},

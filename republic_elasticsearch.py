@@ -27,6 +27,14 @@ def retrieve_page_doc(page_id, config):
     else:
         return None
 
+def retrieve_paragraph_by_type_page_number(page_number, config):
+    query = {"query": {"match": {"metadata.type_page_num": page_number}}, "size": 100}
+    response = es.search(index=config["paragraph_index"], doc_type=config["paragraph_doc_type"], body=query)
+    if response["hits"]["total"] == 0:
+        return []
+    else:
+        return [hit["_source"] for hit in response["hits"]["hits"]]
+
 def delete_es_index(index):
     if es.indices.exists(index=index):
         print("exists, deleting")

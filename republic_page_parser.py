@@ -1,6 +1,8 @@
 import json
 import re
 import copy
+from typing import Dict, List, Any, Union
+
 from parse_hocr_files import make_hocr_page, filter_tiny_words_from_lines
 from elasticsearch import Elasticsearch
 import republic_elasticsearch as rep_es
@@ -8,8 +10,10 @@ import republic_index_page_parser as index_parser
 import republic_base_page_parser as page_parser
 import republic_resolution_page_parser as resolution_parser
 
+
 def get_page_columns_hocr(page_info, config):
     return {column_info["column_id"]: get_column_hocr(column_info, config) for column_info in page_info["columns"]}
+
 
 def get_column_hocr(column_info, config):
     hocr_page = make_hocr_page(column_info["filepath"], column_info["column_id"], config=config)
@@ -18,6 +22,16 @@ def get_column_hocr(column_info, config):
     if "remove_tiny_words" in config and config["remove_tiny_words"]:
         column_hocr["lines"] = filter_tiny_words_from_lines(hocr_page, config)
     return column_hocr
+
+
+def get_double_page_hocr(scan_info, config):
+    hocr_page = make_hocr_page(scan_info["filepath"], scan_info["scan_num"], config)
+    double_page_hocr: Dict[str, Union[Union[List[int], int], Any]] = hocr_page.carea
+    double_page_hocr["lines"] = hocr_page.lines
+    if "remove_tiny_words" in config and config["remove_tiny_words"]:
+        double_page_hocr["lines"] = filter_tiny_words_from_lines(hocr_page, config)
+    return double_page_hocr
+
 
 def get_page_type(page_info, config, DEBUG=False):
     resolution_score = 0
