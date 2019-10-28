@@ -1,6 +1,7 @@
 import re
 import copy
 import republic_base_page_parser as page_parser
+from typing import Union
 
 #################################
 # Parse and correct index pages #
@@ -9,15 +10,15 @@ import republic_base_page_parser as page_parser
 repeat_symbol = "——"
 
 
-def remove_repeat_symbol(line):
+def remove_repeat_symbol(line: dict) -> str:
     return line["line_text"].replace(line["words"][0]["word_text"], "")
 
 
-def count_repeat_symbols_page(page_info):
-    return sum([count_repeat_symbols_column(column_info["column_hocr"]) for column_info in page_info["columns"]])
+def count_repeat_symbols_page(page_hocr: dict) -> int:
+    return sum([count_repeat_symbols_column(column_hocr) for column_hocr in page_hocr["columns"]])
 
 
-def count_repeat_symbols_column(column_hocr):
+def count_repeat_symbols_column(column_hocr: dict) -> int:
     count = 0
     for line in column_hocr["lines"]:
         if has_repeat_symbol(line):
@@ -25,7 +26,7 @@ def count_repeat_symbols_column(column_hocr):
     return count
 
 
-def has_repeat_symbol(line):
+def has_repeat_symbol(line: dict) -> bool:
     if len(line["words"]) == 0:
         return False
     if re.match(r"^[\-_—]+$", line["words"][0]["word_text"]):
@@ -34,31 +35,31 @@ def has_repeat_symbol(line):
         return False
 
 
-def has_page_reference(line):
+def has_page_reference(line: dict) -> bool:
     if re.match(r"^\d+[\.\:\;,]$", line["words"][-1]["word_text"]):
         return True
     else:
         return False
 
 
-def line_has_page_ref(line):
-    return re.search(r"\b\d+\.", line["line_text"])
+def line_has_page_ref(line: dict) -> bool:
+    return re.search(r"\b\d+\.", line["line_text"]) is not None
 
 
-def count_page_ref_lines(page_info):
+def count_page_ref_lines(page_hocr: dict) -> int:
     count = 0
-    for column_info in page_info["columns"]:
-        for line in column_info["column_hocr"]["lines"]:
+    for column_hocr in page_hocr["columns"]:
+        for line in column_hocr["lines"]:
             if line_has_page_ref(line):
                 count += 1
     return count
 
 
-def fix_repeat_symbols_lines(lines):
+def fix_repeat_symbols_lines(lines: list) -> list:
     return [fix_repeat_symbols_line(line) for line in lines]
 
 
-def fix_repeat_symbols_line(line):
+def fix_repeat_symbols_line(line: dict) -> dict:
     copy_line = copy.copy(line)
     if has_repeat_symbol(copy_line):
         return copy_line
@@ -73,7 +74,7 @@ def fix_repeat_symbols_line(line):
     return copy_line
 
 
-def get_repeat_symbol_length(lines):
+def get_repeat_symbol_length(lines: list) -> int:
     repeat_symbol_lengths = []
     for line_index, line in enumerate(lines):
         # print("start:", line["words"][0]["word_text"])
@@ -82,7 +83,7 @@ def get_repeat_symbol_length(lines):
     return int(sum(repeat_symbol_lengths) / len(repeat_symbol_lengths))
 
 
-def add_repeat_symbol(line, avg_repeat_symbol_length, minimum_start):
+def add_repeat_symbol(line: dict, avg_repeat_symbol_length: int, minimum_start: int) -> dict:
     copy_line = copy.copy(line)
     avg_char_width = 20
     repeat_symbol_start = line["left"] - avg_char_width - avg_repeat_symbol_length
@@ -109,7 +110,7 @@ def add_repeat_symbol(line, avg_repeat_symbol_length, minimum_start):
     return copy_line
 
 
-def find_missing_repeat_symbols(lines):
+def find_missing_repeat_symbols(lines: list) -> list:
     avg_repeat_symbol_length = get_repeat_symbol_length(lines)
     fixed_lines = []
     for line_index, curr_line in enumerate(lines):
@@ -126,27 +127,27 @@ def find_missing_repeat_symbols(lines):
     return fixed_lines
 
 
-def get_line_neighbourhood_lines(lines, line_index):
+def get_line_neighbourhood_lines(lines: list, line_index: int) -> list:
     prev_start, next_end = get_line_neighbourhood(lines, line_index)
     return [lines[index] for index in range(prev_start, next_end)]
 
 
-def get_line_neighbourhood(lines, line_index, num_before=4, num_after=4):
+def get_line_neighbourhood(lines: list, line_index: int, num_before: int = 4, num_after: int = 4) -> tuple:
     num_lines = len(lines)
     prev_start = line_index - num_before if line_index >= num_before else 0
     next_end = line_index + (num_after + 1) if line_index < num_lines - (num_after + 1) else num_lines
     return prev_start, next_end
 
 
-def is_page_reference(word):
-    return re.match(r"^\d+[\.\:\;,]$", word["word_text"])
+def is_page_reference(word: dict) -> bool:
+    return re.match(r"^\d+[\.\:\;,]$", word["word_text"]) is not None
 
 
-def get_page_reference(word):
+def get_page_reference(word: dict) -> int:
     return int(re.sub(r"\D", "", word["word_text"]))
 
 
-def get_page_references(line):
+def get_page_references(line: dict) -> list:
     page_refs = []
     for word in line["words"]:
         if is_page_reference(word):
@@ -155,8 +156,7 @@ def get_page_references(line):
     return page_refs
 
 
-def remove_page_references(line):
-    page_refs = []
+def remove_page_references(line: dict) -> str:
     line_text = line["line_text"]
     for word in line["words"]:
         if is_page_reference(word):
@@ -164,7 +164,7 @@ def remove_page_references(line):
     return line_text
 
 
-def is_index_header(line, hocr_page, DEBUG=False):
+def is_index_header(line: dict, hocr_page: dict, debug: bool = False) -> bool:
     # index header has either
     #  year I N D
     #  year D E X
@@ -176,51 +176,51 @@ def is_index_header(line, hocr_page, DEBUG=False):
         return False
     if not page_parser.has_mid_column_text(line,
                                            hocr_page):  # some of the index header letters are in the middle of the column
-        if DEBUG:
+        if debug:
             print("\tNO MID_COLUMN_TEXT:", line, hocr_page)
         return False
-    index_score = score_index_header(line, hocr_page, DEBUG=DEBUG)
+    index_score = score_index_header(line, hocr_page, debug=debug)
     if index_score > 3:
-        if DEBUG:
+        if debug:
             print("header_score:", index_score, "line: #{}#".format(line["line_text"]))
         return True
     else:
         return False
 
 
-def score_index_header(line, hocr_page, DEBUG=False):
+def score_index_header(line: object, hocr_page: object, debug: bool = False) -> object:
     index_score = 0
     if not line:
         return index_score
     if len(line["words"]) <= 5:  # index header has few "words"
         index_score += 1
-        if DEBUG:
+        if debug:
             print("\tIndex test - few words")
     if page_parser.num_line_chars(
             line) < 10:  # index header has few characters (sometimes year +  I N D or year + D E X)
         index_score += 1
-        if DEBUG:
+        if debug:
             print("\tIndex test - few chars")
     if line["top"] < 250:  # index header is near the top of the page
         index_score += 1
-        if DEBUG:
+        if debug:
             print("\tIndex test - near top")
     if line["width"] > 250 and page_parser.num_line_chars(line) < 10:  # index header is wide for having few characters
         index_score += 1
-        if DEBUG:
+        if debug:
             print("\tIndex test - wide")
     if page_parser.get_highest_inter_word_space(
             line) > 150:  # The I N D E X characters usually have around 200 pixels between them
         index_score += 1
-        if DEBUG:
+        if debug:
             print("\tIndex test - high inter-word space")
     if index_score > 3:
-        if DEBUG:
+        if debug:
             print("\tIndex test - index_header_score:", index_score, "line: #{}#".format(line["line_text"]))
     return index_score
 
 
-def check_lemma(line):
+def check_lemma(line: dict) -> bool:
     first_main_word_index = 0
     if has_preceeding_stopwords(line):
         first_main_word_index = find_first_main_word(line)
@@ -228,17 +228,19 @@ def check_lemma(line):
     if main_word["word_text"][0].isupper():
         print("HAS LEMMA:", line["line_text"])
         return True
+    else:
+        return False
 
 
-def is_stopword(word):
+def is_stopword(word: dict) -> bool:
     return word["word_text"].lower() in ["de", "den", "der", "een", "het", "van", "in", "aan", "op"]
 
 
-def has_preceeding_stopwords(line):
+def has_preceeding_stopwords(line: dict) -> bool:
     return is_stopword(line["words"][0])
 
 
-def find_first_main_word(line):
+def find_first_main_word(line: dict) -> Union[int, None]:
     for word_index, word in enumerate(line["words"]):
         if is_stopword(word):
             continue
@@ -246,12 +248,11 @@ def find_first_main_word(line):
     return None
 
 
-def remove_lemma(curr_lemma, line):
+def remove_lemma(curr_lemma: str, line: dict) -> str:
     return line["line_text"].replace(curr_lemma, "")
 
 
-def get_lemma(line):
-    lemma = None
+def get_lemma(line: dict) -> str:
     match = re.match(r"(.*?)[\,;\.„]", line["line_text"])
     if match:
         print("LEMMA:", match.group(1))
@@ -261,31 +262,31 @@ def get_lemma(line):
     return lemma
 
 
-def get_index_entry_lines(hocr_index_page, DEBUG=False):
+def get_index_entry_lines(hocr_index_page: dict, debug: bool = False) -> list:
     in_body = False
     index_entry_lines = []
     if not page_parser.proper_column_cut(hocr_index_page):
-        if (DEBUG):
+        if (debug):
             print("\tCOLUMN IMPROPERLY CUT")
         return index_entry_lines
     for line_index, line in enumerate(hocr_index_page["lines"]):
         next_line = page_parser.get_next_line(line_index, hocr_index_page["lines"])
         if page_parser.is_in_top_margin(line):
-            if (DEBUG):
+            if (debug):
                 print("\tIS IN TOP MARGIN")
             continue
-        if not in_body and is_index_header(line, hocr_index_page, DEBUG=False):
-            if (DEBUG):
+        if not in_body and is_index_header(line, hocr_index_page, debug=False):
+            if (debug):
                 print("\tIS INDEX HEADER:", line_index, line["top"], "\t##", line["spaced_line_text"])
             in_body = True
             continue
         if not in_body and page_parser.is_full_text_line(line):
-            if (DEBUG):
+            if (debug):
                 print("\tFIRST BODY LINE:", line_index, line["top"], "\t##", line["spaced_line_text"])
             in_body = True
             # continue
         if not in_body and page_parser.is_header(line, next_line):
-            if (DEBUG):
+            if (debug):
                 print("Header:", line["spaced_line_text"])
                 print("\tscan:", "don't know", "line:", line_index, "top:", line["top"], line["left"], line["right"],
                       line["width"])
@@ -296,12 +297,12 @@ def get_index_entry_lines(hocr_index_page, DEBUG=False):
     return index_entry_lines
 
 
-def fix_repeat_symbols(lines):
+def fix_repeat_symbols(lines: list) -> list:
     fixed_lines = fix_repeat_symbols_lines(lines)
     return find_missing_repeat_symbols(fixed_lines)
 
 
-def index_lemmata(column_id, lines, lemma_index, curr_lemma):
+def index_lemmata(column_id: str, lines: list, lemma_index: dict, curr_lemma: str) -> str:
     if len(lines) == 0:
         return curr_lemma
     description = ""
