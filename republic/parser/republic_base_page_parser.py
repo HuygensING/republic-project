@@ -1,6 +1,6 @@
 import re
 from typing import Union
-from model.republic_hocr_model import HOCRPage
+from republic.model.republic_hocr_model import HOCRPage
 
 
 def get_highest_inter_word_space(line: object) -> int:

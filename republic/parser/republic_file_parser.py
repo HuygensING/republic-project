@@ -1,9 +1,9 @@
 import os
 from typing import Union
 from collections import defaultdict
-from model.inventory_mapping import inventory_mapping
-from model.republic_hocr_model import make_hocr_page
-from parser.republic_index_page_parser import count_page_ref_lines
+from republic.model.inventory_mapping import inventory_mapping
+from republic.model.republic_hocr_model import make_hocr_page
+from republic.parser.republic_index_page_parser import count_page_ref_lines
 
 
 # filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr

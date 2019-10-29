@@ -1,6 +1,6 @@
 import re
 import copy
-import parser.republic_base_page_parser as page_parser
+import republic.parser.republic_base_page_parser as page_parser
 from typing import Union
 
 #################################

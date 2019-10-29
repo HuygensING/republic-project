@@ -1,13 +1,13 @@
 import copy
 from typing import Dict, List, Any, Union
 
-from model.republic_hocr_model import make_hocr_page, filter_tiny_words_from_lines
-import parser.republic_base_page_parser as base_parser
-import parser.republic_index_page_parser as index_parser
-import parser.republic_resolution_page_parser as resolution_parser
-import parser.republic_column_parser as column_parser
-from model.republic_phrase_model import resolution_phrases, spelling_variants
-from fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
+from republic.model.republic_hocr_model import make_hocr_page, filter_tiny_words_from_lines
+import republic.parser.republic_base_page_parser as base_parser
+import republic.parser.republic_index_page_parser as index_parser
+import republic.parser.republic_resolution_page_parser as resolution_parser
+import republic.parser.republic_column_parser as column_parser
+from republic.model.republic_phrase_model import resolution_phrases, spelling_variants
+from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 
 fuzzy_search_config = {
     "char_match_threshold": 0.8,

@@ -1,7 +1,7 @@
 import uuid
-import json
 from itertools import combinations
 from collections import defaultdict
+
 
 class Keyword(object):
 

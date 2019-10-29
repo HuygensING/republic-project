@@ -1,7 +1,7 @@
 import re
 import datetime
-from model.republic_phrase_model import resolution_phrases, participant_list_phrases
-from model.republic_phrase_model import month_names, week_day_names, month_map, week_day_name_map
+from republic.model.republic_phrase_model import resolution_phrases, participant_list_phrases
+from republic.model.republic_phrase_model import month_names, week_day_names, month_map, week_day_name_map
 
 
 def is_empty_line(line):

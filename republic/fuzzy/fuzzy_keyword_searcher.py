@@ -1,6 +1,6 @@
 import re
 from collections import defaultdict
-from fuzzy.fuzzy_keyword import Keyword, text2skipgrams
+from republic.fuzzy.fuzzy_keyword import Keyword, text2skipgrams
 
 
 #################################

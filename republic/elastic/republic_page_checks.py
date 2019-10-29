@@ -1,5 +1,4 @@
-from collections import Counter, defaultdict
-import elastic.republic_elasticsearch as rep_es
+import republic.elastic.republic_elasticsearch as rep_es
 from elasticsearch import Elasticsearch
 
 

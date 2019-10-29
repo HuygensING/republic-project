@@ -1,6 +1,6 @@
 import copy
 import os
-from model.inventory_mapping import get_inventory_by_num, get_inventory_by_year
+from republic.model.inventory_mapping import get_inventory_by_num, get_inventory_by_year
 
 
 def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: str) -> dict:

@@ -2,10 +2,10 @@ from typing import Union
 from elasticsearch import Elasticsearch
 import json
 import copy
-from config.republic_config import set_config_inventory_num
-import parser.republic_base_page_parser as base_parser
-import parser.republic_file_parser as file_parser
-import parser.republic_page_parser as page_parser
+from republic.config.republic_config import set_config_inventory_num
+import republic.parser.republic_base_page_parser as base_parser
+import republic.parser.republic_file_parser as file_parser
+import republic.parser.republic_page_parser as page_parser
 
 
 def create_es_scan_doc(scan_doc: dict) -> dict:

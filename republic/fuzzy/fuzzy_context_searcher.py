@@ -1,6 +1,6 @@
 import re
-import fuzzy.fuzzy_patterns as fuzzy_patterns
-from fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
+import republic.fuzzy.fuzzy_patterns as fuzzy_patterns
+from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
 
 
 #######################################
