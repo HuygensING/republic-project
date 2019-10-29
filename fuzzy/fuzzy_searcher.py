@@ -1,5 +1,6 @@
 import re
 
+
 class FuzzySearcher(object):
 
     def __init__(self, char_match_threshold=0.5, ngram_threshold=0.5, levenshtein_threshold=0.5, max_length_variance=1):
@@ -122,10 +123,13 @@ class FuzzySearcher(object):
     def rank_candidates(self, candidates, keyword, ngram_size=2):
         total_scores = []
         for candidate in candidates:
+            match_string = None
             if isinstance(candidate, str):
                 match_string = candidate
             elif isinstance(candidate, dict):
                 match_string = candidate["match_string"]
+            else:
+                raise ValueError("candidate must string or fuzzy match object")
             score = {
                 "candidate": candidate,
                 "char": self.score_char_overlap_ratio(match_string, keyword),

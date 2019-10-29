@@ -49,7 +49,17 @@ def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, No
 
 
 def retrieve_paragraph_by_type_page_number(es: Elasticsearch, page_number: int, config: dict) -> list:
-    query = {"query": {"match": {"metadata.type_page_num": page_number}}, "size": 100}
+    query = {
+        "query": {
+            "bool": {
+                "must": [
+                    {"match": {"metadata.type_page_num": page_number}},
+                    {"match": {"metadata.inventory_year": config["year"]}}
+                ]
+            }
+        },
+        "size": 100
+    }
     response = es.search(index=config["paragraph_index"], doc_type=config["paragraph_doc_type"], body=query)
     if response["hits"]["total"] == 0:
         return []

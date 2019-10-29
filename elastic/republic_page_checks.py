@@ -1,5 +1,6 @@
 from collections import Counter, defaultdict
 import elastic.republic_elasticsearch as rep_es
+from elasticsearch import Elasticsearch
 
 
 def score_levenshtein_distance(s1, s2):
@@ -30,14 +31,14 @@ def score_levenshtein_distance(s1, s2):
 ###########################################################################
 
 
-def correct_page_types(year_info):
-    ordered_page_ids = get_ordered_page_ids(year_info)
+def correct_page_types(es: Elasticsearch, year_info: dict):
+    ordered_page_ids = get_ordered_page_ids(es, year_info)
     ordered_parts = ["index_page", "resolution_page"]  # "non_text_page",
     prev_part = None
     prev_is_title_page = None
     current_part = None
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_doc(page_id, year_info)
+        page_doc = rep_es.retrieve_page_doc(es, page_id, year_info)
         if not page_doc:
             continue  # skip unindexed pages
         if page_doc["is_title_page"] and not prev_is_title_page:
@@ -54,7 +55,7 @@ def correct_page_types(year_info):
             print("correcting:", page_id, "from type", page_doc["page_type"], "to type", current_part)
             page_doc["page_type"] = current_part
             doc = rep_es.create_es_page_doc(page_doc)
-            rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
+            es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
         prev_part = current_part
         prev_is_title_page = page_doc["is_title_page"]
     print("\nDone!")
@@ -135,37 +136,37 @@ def is_duplicate(page_doc, prev_page_doc, similarity_threshold=0.8):
     return compute_page_similarity(page_doc, prev_page_doc) > similarity_threshold
 
 
-def get_page_pairs(ordered_page_ids, es_config):
+def get_page_pairs(es: Elasticsearch, ordered_page_ids: list, es_config: dict) -> iter:
     for curr_page_index, curr_page_id in enumerate(ordered_page_ids):
         if curr_page_index == 0:  # skip
             continue
-        curr_page_doc = rep_es.retrieve_page_doc(curr_page_id, es_config)
+        curr_page_doc = rep_es.retrieve_page_doc(es, curr_page_id, es_config)
         prev_page_id = ordered_page_ids[curr_page_index - 2]
-        prev_page_doc = rep_es.retrieve_page_doc(prev_page_id, es_config)
+        prev_page_doc = rep_es.retrieve_page_doc(es, prev_page_id, es_config)
         yield curr_page_doc, prev_page_doc
 
 
-def get_ordered_page_ids(year_info):
+def get_ordered_page_ids(es: Elasticsearch, year_info: dict) -> list:
     query = {"query": {"term": {"inventory_year": year_info["year"]}}, "_source": ["page_num", "page_id"],
              "size": 10000}
     # query = {"query": {"term": {"inventory_year": year_info["year"]}}}
-    response = rep_es.es.search(index=year_info["page_index"], doc_type=year_info["page_doc_type"], body=query)
+    response = es.search(index=year_info["page_index"], doc_type=year_info["page_doc_type"], body=query)
     if response["hits"]["total"] == 0:
         return []
     pages_info = [hit["_source"] for hit in response["hits"]["hits"]]
     return [page_info["page_id"] for page_info in sorted(pages_info, key=lambda x: x["page_num"])]
 
 
-def detect_duplicate_scans(year_info):
-    ordered_page_ids = get_ordered_page_ids(year_info)
-    for curr_page_doc, prev_page_doc in get_page_pairs(ordered_page_ids, year_info):
+def detect_duplicate_scans(es: Elasticsearch, year_info: dict):
+    ordered_page_ids = get_ordered_page_ids(es, year_info)
+    for curr_page_doc, prev_page_doc in get_page_pairs(es, ordered_page_ids, year_info):
         curr_page_doc["is_duplicate"] = False
         if is_duplicate(curr_page_doc, prev_page_doc, similarity_threshold=0.8):
             curr_page_doc["is_duplicate"] = True
             curr_page_doc["is_duplicate_of"] = prev_page_doc["page_id"]
             print("Page {} is duplicate of page {}".format(curr_page_doc["page_id"], prev_page_doc["page_id"]))
         doc = rep_es.create_es_page_doc(curr_page_doc)
-        rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=curr_page_doc["page_id"],
+        es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=curr_page_doc["page_id"],
                         body=doc)
     print("\nDone!")
 
@@ -182,11 +183,11 @@ def detect_duplicate_scans(year_info):
 #
 ########################################################################
 
-def correct_page_numbers(year_info):
-    ordered_page_ids = get_ordered_page_ids(year_info)
+def correct_page_numbers(es: Elasticsearch, year_info: dict):
+    ordered_page_ids = get_ordered_page_ids(es, year_info)
     prev_numbered_page_number = 0
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_doc(page_id, year_info)
+        page_doc = rep_es.retrieve_page_doc(es, page_id, year_info)
         year = page_doc["inventory_year"]
         if not page_doc:  # skip unindexed pages
             continue
@@ -196,7 +197,7 @@ def correct_page_numbers(year_info):
         if page_doc["page_type"] != "resolution_page":  # skip non-resolution pages
             continue
         if page_doc["is_duplicate"]:
-            duplicated_page_doc = rep_es.retrieve_page_doc(page_doc["is_duplicate_of"], year_info)
+            duplicated_page_doc = rep_es.retrieve_page_doc(es, page_doc["is_duplicate_of"], year_info)
             print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"],
                   duplicated_page_doc["type_page_num"])
             page_doc["type_page_num"] = duplicated_page_doc["type_page_num"]
@@ -210,6 +211,6 @@ def correct_page_numbers(year_info):
             page_doc["type_page_num"] = prev_numbered_page_number + 1
         page_doc["type_page_num_checked"] = True
         doc = rep_es.create_es_page_doc(page_doc)
-        rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
+        es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
         prev_numbered_page_number = page_doc["type_page_num"]
     print("\nDone!")

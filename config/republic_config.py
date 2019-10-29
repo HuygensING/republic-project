@@ -31,6 +31,8 @@ base_config = {
     "page_doc_type": "page",
     "scan_index": "republic_hocr_scans",
     "scan_doc_type": "scan",
+    "paragraph_index": "republic_paragraphs",
+    "paragraph_doc_type": "paragraph",
     "tiny_word_width": 15, # pixel width
     "avg_char_width": 20,
     "remove_tiny_words": True,
