@@ -1,3 +1,15 @@
+def get_inventory_by_num(inventory_num: int) -> dict:
+    for inv_map in inventory_mapping:
+        if inv_map["inventory_num"] == inventory_num:
+            return inv_map
+
+
+def get_inventory_by_year(inventory_year: int) -> dict:
+    for inv_map in inventory_mapping:
+        if inv_map["year"] == inventory_year:
+            return inv_map
+
+
 inventory_mapping = [
     {"inventory_num": 3234, "year": 1667, "period": ["1667-07-01", "1667-12-31"]},
     {"inventory_num": 3760, "year": 1705, "period": ["1705-01-01", "1705-12-31"]},

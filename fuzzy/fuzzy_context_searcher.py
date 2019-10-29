@@ -1,11 +1,30 @@
 import re
-import fuzzy_patterns
-from fuzzy_searcher import FuzzySearcher
-from fuzzy_keyword_searcher import FuzzyKeywordSearcher
+import fuzzy.fuzzy_patterns as fuzzy_patterns
+from fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
+
 
 #######################################
 # Functions for person name searching #
 #######################################
+
+
+def make_search_context_patterns(context_string, person_name_patterns, context_patterns):
+    return fuzzy_patterns.make_search_context_patterns(context_string, person_name_patterns, context_patterns)
+
+
+def find_patterns_in_context(context, patterns, context_patterns=None):
+    for search_context in make_search_context_patterns(context["match_string"], patterns, context_patterns):
+        # print("search_context:", search_context)
+        for pattern_re_match in re.finditer(search_context["pattern"], context["match_term_in_context"]):
+            yield pattern_re_match, search_context
+
+
+def get_term_context(text, term_match, context_size=20, before_context=True, after_context=True):
+    context = make_base_context(term_match)
+    adjust_context_offset(context, context_size, before_context, after_context)
+    add_context_text(context, text)
+    return context
+
 
 class FuzzyContextSearcher(FuzzyKeywordSearcher):
 
@@ -24,9 +43,6 @@ class FuzzyContextSearcher(FuzzyKeywordSearcher):
         if "context_size" in config:
             self.context_size = config["context_size"]
 
-    def make_search_context_patterns(self, context_string, person_name_patterns, context_patterns):
-        return fuzzy_patterns.make_search_context_patterns(context_string, person_name_patterns, context_patterns)
-
     def set_pattern_names_by_type(self, pattern_type):
         self.pattern_names = fuzzy_patterns.list_pattern_names(pattern_type)
 
@@ -38,26 +54,19 @@ class FuzzyContextSearcher(FuzzyKeywordSearcher):
 
     def set_context_pattern_types(self, context_pattern_types):
         for context_pattern_type in context_pattern_types:
-            if context_pattern_type not in fuzzy_patterns.context_pattern_types.keys():
+            if context_pattern_type not in fuzzy_patterns.context_pattern.keys():
                 raise KeyError("Context pattern type does not exist")
         self.context_pattern_types = context_pattern_types
 
-    def find_patterns_in_context(self, context, patterns, context_patterns=None):
-        for search_context in self.make_search_context_patterns(context["match_string"], patterns, context_patterns):
-            #print("search_context:", search_context)
-            for pattern_re_match in re.finditer(search_context["pattern"], context["match_term_in_context"]):
-                yield pattern_re_match, search_context
-
-
     def find_candidates_in_context(self, context_match, keyword=None, ngram_size=2,
-            use_word_boundaries=None, match_initial_char=False,
-            include_variants=False, filter_distractors=False):
+                                   use_word_boundaries=None, match_initial_char=False,
+                                   include_variants=False, filter_distractors=False):
         text = context_match["match_term_in_context"]
         self.find_candidates(text, keyword=keyword, ngram_size=ngram_size,
-                use_word_boundaries=use_word_boundaries,
-                match_initial_char=match_initial_char,
-                include_variants=include_variants,
-                filter_distractors=filter_distractors)
+                             use_word_boundaries=use_word_boundaries,
+                             match_initial_char=match_initial_char,
+                             include_variants=include_variants,
+                             filter_distractors=filter_distractors)
         self.update_candidate_offsets(context_match)
         return self.candidates["accept"]
 
@@ -65,18 +74,13 @@ class FuzzyContextSearcher(FuzzyKeywordSearcher):
         for candidate in self.candidates["accept"]:
             candidate["match_offset"] += context_match["start_offset"]
 
-    def get_term_context(self, text, term_match, context_size=20, before_context=True, after_context=True):
-        context = make_base_context(term_match)
-        adjust_context_offset(context, context_size, before_context, after_context)
-        add_context_text(context, text)
-        return context
-
 
 def add_context_text(context, text):
     if context["end_offset"] > len(text):
-        context["end_offset"] == len(text)
+        context["end_offset"] = len(text)
     context_text = text[context["start_offset"]:context["end_offset"]]
     context["match_term_in_context"] = context_text
+
 
 def make_base_context(term_match):
     return {
@@ -87,6 +91,7 @@ def make_base_context(term_match):
         "start_offset": term_match["match_offset"],
         "end_offset": term_match["match_offset"] + len(term_match["match_string"]),
     }
+
 
 def adjust_context_offset(context, context_size, before_context, after_context):
     if before_context:
@@ -99,4 +104,3 @@ def adjust_context_offset(context, context_size, before_context, after_context):
 
 if __name__ == "__main__":
     sample_text = "A'nthony van der Truyn en Adriaen Bosman, Makelaers tot Rotterdam, prefenteren, uyt de Hint te verkopen etfn curieufc Party opreckw ?al somfl'e Schalyen of Leyen."
-

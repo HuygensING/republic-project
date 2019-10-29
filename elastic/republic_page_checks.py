@@ -1,5 +1,5 @@
 from collections import Counter, defaultdict
-import republic_elasticsearch as rep_es
+import elastic.republic_elasticsearch as rep_es
 
 
 def score_levenshtein_distance(s1, s2):
@@ -7,7 +7,7 @@ def score_levenshtein_distance(s1, s2):
         s1, s2 = s2, s1
     distances = range(len(s1) + 1)
     for i2, c2 in enumerate(s2):
-        distances_ = [i2+1]
+        distances_ = [i2 + 1]
         for i1, c1 in enumerate(s1):
             if c1 == c2:
                 distances_.append(distances[i1])
@@ -15,6 +15,7 @@ def score_levenshtein_distance(s1, s2):
                 distances_.append(1 + min((distances[i1], distances[i1 + 1], distances_[-1])))
         distances = distances_
     return distances[-1]
+
 
 ###########################################################################
 # Correcting page types
@@ -31,14 +32,14 @@ def score_levenshtein_distance(s1, s2):
 
 def correct_page_types(year_info):
     ordered_page_ids = get_ordered_page_ids(year_info)
-    ordered_parts = ["index_page", "resolution_page"] # "non_text_page",
+    ordered_parts = ["index_page", "resolution_page"]  # "non_text_page",
     prev_part = None
     prev_is_title_page = None
     current_part = None
     for page_id in ordered_page_ids:
         page_doc = rep_es.retrieve_page_doc(page_id, year_info)
         if not page_doc:
-            continue # skip unindexed pages
+            continue  # skip unindexed pages
         if page_doc["is_title_page"] and not prev_is_title_page:
             current_part = ordered_parts[0]
             print("Switching to part", current_part)
@@ -50,13 +51,14 @@ def correct_page_types(year_info):
                 page_doc["is_parseable"] = False
             else:
                 page_doc["is_parseable"] = True
-            print("correcting:", page_id, current_part, page_doc["page_type"], page_doc["is_parseable"])
+            print("correcting:", page_id, "from type", page_doc["page_type"], "to type", current_part)
             page_doc["page_type"] = current_part
             doc = rep_es.create_es_page_doc(page_doc)
             rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
         prev_part = current_part
         prev_is_title_page = page_doc["is_title_page"]
     print("\nDone!")
+
 
 ################################################################
 # Duplicate page detection
@@ -76,7 +78,8 @@ def correct_page_types(year_info):
 ################################################################
 
 def get_column_text(column):
-    return "\n".join([line["line_text"] for line in column["column_hocr"]["lines"]])
+    return "\n".join([line["line_text"] for line in column["lines"]])
+
 
 def compute_column_similarity(curr_column, prev_column,
                               chunk_size=200, chunk_sim_threshold=0.5):
@@ -96,21 +99,21 @@ def compute_column_similarity(curr_column, prev_column,
     Assumption: if cumulative chunk similarity drops below threshold, return with current chunk similarity
     Assumption: similarity is normalized by the length of the current page.
     """
-    if "column_hocr" not in curr_column or "column_hocr" not in prev_column:
-        return 0.0
     curr_text = get_column_text(curr_column)
     prev_text = get_column_text(prev_column)
     if len(curr_text) < len(prev_text):
-        curr_text, prev_text = prev_text, curr_text # use longest text for chunking
+        curr_text, prev_text = prev_text, curr_text  # use longest text for chunking
     sum_chunk_dist = 0
+    chunk_sim = 1
     for start_offset in range(0, len(curr_text), chunk_size):
         end_offset = start_offset + chunk_size
         chunk_dist = score_levenshtein_distance(curr_text[start_offset:end_offset], prev_text[start_offset:end_offset])
         sum_chunk_dist += chunk_dist
         chunk_sim = 1 - sum_chunk_dist / min(end_offset, len(curr_text))
-        if chunk_sim < chunk_sim_threshold: # stop as soon as similarity drops below 0.5
+        if chunk_sim < chunk_sim_threshold:  # stop as soon as similarity drops below 0.5
             return chunk_sim
     return chunk_sim
+
 
 def compute_page_similarity(curr_page, prev_page):
     """Compute similarity of two Republic hOCR pages using levenshtein distance.
@@ -127,26 +130,31 @@ def compute_page_similarity(curr_page, prev_page):
         sim += compute_column_similarity(curr_column, prev_column)
     return sim / len(curr_page["columns"])
 
+
 def is_duplicate(page_doc, prev_page_doc, similarity_threshold=0.8):
     return compute_page_similarity(page_doc, prev_page_doc) > similarity_threshold
 
+
 def get_page_pairs(ordered_page_ids, es_config):
     for curr_page_index, curr_page_id in enumerate(ordered_page_ids):
-        if curr_page_index == 0: # skip
+        if curr_page_index == 0:  # skip
             continue
         curr_page_doc = rep_es.retrieve_page_doc(curr_page_id, es_config)
-        prev_page_id = ordered_page_ids[curr_page_index-2]
+        prev_page_id = ordered_page_ids[curr_page_index - 2]
         prev_page_doc = rep_es.retrieve_page_doc(prev_page_id, es_config)
         yield curr_page_doc, prev_page_doc
 
+
 def get_ordered_page_ids(year_info):
-    query = {"query": {"term": {"inventory_year": year_info["year"]}}, "_source": ["page_num", "page_id"], "size": 10000}
-    #query = {"query": {"term": {"inventory_year": year_info["year"]}}}
+    query = {"query": {"term": {"inventory_year": year_info["year"]}}, "_source": ["page_num", "page_id"],
+             "size": 10000}
+    # query = {"query": {"term": {"inventory_year": year_info["year"]}}}
     response = rep_es.es.search(index=year_info["page_index"], doc_type=year_info["page_doc_type"], body=query)
     if response["hits"]["total"] == 0:
         return []
     pages_info = [hit["_source"] for hit in response["hits"]["hits"]]
-    return [page_info["page_id"] for page_info in sorted(pages_info, key = lambda x: x["page_num"])]
+    return [page_info["page_id"] for page_info in sorted(pages_info, key=lambda x: x["page_num"])]
+
 
 def detect_duplicate_scans(year_info):
     ordered_page_ids = get_ordered_page_ids(year_info)
@@ -157,9 +165,9 @@ def detect_duplicate_scans(year_info):
             curr_page_doc["is_duplicate_of"] = prev_page_doc["page_id"]
             print("Page {} is duplicate of page {}".format(curr_page_doc["page_id"], prev_page_doc["page_id"]))
         doc = rep_es.create_es_page_doc(curr_page_doc)
-        rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=curr_page_doc["page_id"], body=doc)
+        rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=curr_page_doc["page_id"],
+                        body=doc)
     print("\nDone!")
-
 
 
 ########################################################################
@@ -180,30 +188,28 @@ def correct_page_numbers(year_info):
     for page_id in ordered_page_ids:
         page_doc = rep_es.retrieve_page_doc(page_id, year_info)
         year = page_doc["inventory_year"]
-        if not page_doc: # skip unindexed pages
+        if not page_doc:  # skip unindexed pages
             continue
-        #if "type_page_num_checked" in page_doc and page_doc["type_page_num_checked"]:
+        # if "type_page_num_checked" in page_doc and page_doc["type_page_num_checked"]:
         #    prev_numbered_page_number += 1
         #    continue
-        if page_doc["page_type"] != "resolution_page": # skip non-resolution pages
+        if page_doc["page_type"] != "resolution_page":  # skip non-resolution pages
             continue
         if page_doc["is_duplicate"]:
             duplicated_page_doc = rep_es.retrieve_page_doc(page_doc["is_duplicate_of"], year_info)
-            print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"], duplicated_page_doc["type_page_num"])
+            print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"],
+                  duplicated_page_doc["type_page_num"])
             page_doc["type_page_num"] = duplicated_page_doc["type_page_num"]
-            #prev_numbered_page_number -= 2
+            # prev_numbered_page_number -= 2
         elif page_doc["page_type"] == "resolution_page" and page_doc["type_page_num"] == prev_numbered_page_number + 1:
-            #print("CORRECT:", page_id, page_doc["page_type"], page_doc["type_page_num"], prev_numbered_page_number + 1)
+            # print("CORRECT:", page_id, page_doc["page_type"], page_doc["type_page_num"], prev_numbered_page_number + 1)
             pass
         else:
-            print("CORRECTING PAGE NUMBER OF PAGE {} FROM {} TO {}:".format(page_id, page_doc["type_page_num"], prev_numbered_page_number + 1))
+            print("CORRECTING PAGE NUMBER OF PAGE {} FROM {} TO {}:".format(page_id, page_doc["type_page_num"],
+                                                                            prev_numbered_page_number + 1))
             page_doc["type_page_num"] = prev_numbered_page_number + 1
         page_doc["type_page_num_checked"] = True
         doc = rep_es.create_es_page_doc(page_doc)
         rep_es.es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
         prev_numbered_page_number = page_doc["type_page_num"]
     print("\nDone!")
-
-
-
-

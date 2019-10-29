@@ -1,6 +1,4 @@
-import copy
 from collections import Counter
-import republic_page_parser as page_parser
 
 
 def word_gap(curr_word: dict, next_word: dict) -> int:
@@ -89,15 +87,17 @@ def split_line_on_column_gaps(line: dict, gap_info: list) -> list:
     return columns
 
 
-def determine_column_start_end(dp_hocr: dict, column_config: dict) -> list:
-    lines = select_fulltext_lines(dp_hocr["lines"], column_config)
-    gap_pixel_freq_threshold = int(len(lines)* column_config["gap_pixel_freq_ratio"])
+def determine_column_start_end(doc_hocr: dict, column_config: dict) -> list:
+    columns_info = []
+    if len(doc_hocr["lines"]) == 0:
+        return columns_info
+    lines = select_fulltext_lines(doc_hocr["lines"], column_config)
+    gap_pixel_freq_threshold = int(len(lines) * column_config["gap_pixel_freq_ratio"])
     #print("num lines:", len(dp_hocr["lines"]), "num fulltext lines:", len(lines), gap_pixel_freq_threshold)
     gap_pixel_dist = compute_gap_pixel_dist(lines, column_config)
     #print("pixel dist:", gap_pixel_dist.items())
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, column_config)
     #print("intervals:", gap_pixel_intervals)
-    columns_info = []
     for interval_index, curr_interval in enumerate(gap_pixel_intervals[:-1]):
         next_interval = gap_pixel_intervals[interval_index+1]
         columns_info += [{"start": curr_interval["end"], "end": next_interval["start"]}]
@@ -207,76 +207,6 @@ def construct_line_from_words(words):
         "words": words,
         "line_text": " ".join([word["word_text"] for word in words])
     }
-
-
-def initialize_pages_hocr(dp_hocr: dict) -> tuple:
-    odd_page_hocr = {"page_id": "year-{}-scan-{}-odd".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
-                     "page_num": dp_hocr["scan_num"] * 2 - 1, "page_side": "odd",
-                     "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
-    even_page_hocr = {"page_id": "year-{}-scan-{}-even".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
-                      "page_num": dp_hocr["scan_num"] * 2, "page_side": "even",
-                      "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
-    odd_page_hocr["hocr_box"]["right"] = dp_hocr["page_boundary"] + 100
-    even_page_hocr["hocr_box"]["left"] = dp_hocr["page_boundary"] - 100
-    scan_props = ["scan_num", "scan_type", "filepath", "inventory_num", "inventory_year", "inventory_period"]
-    for scan_prop in scan_props:
-        if scan_prop in dp_hocr:
-            odd_page_hocr[scan_prop] = dp_hocr[scan_prop]
-            even_page_hocr[scan_prop] = dp_hocr[scan_prop]
-    return odd_page_hocr, even_page_hocr
-
-def split_lines_on_pages(dp_hocr: dict, columns_info: list, column_config: dict) -> list:
-    odd_page_hocr, even_page_hocr = initialize_pages_hocr(dp_hocr)
-    for line in dp_hocr["lines"]: # split line on page boundary
-        odd_page_words = [word for word in line["words"] if word["right"] < dp_hocr["page_boundary"]]
-        even_page_words = [word for word in line["words"] if word["left"] > dp_hocr["page_boundary"]]
-        if len(odd_page_words) > 0:
-            odd_page_hocr["lines"] += [construct_line_from_words(odd_page_words)]
-        if len(even_page_words) > 0:
-            even_page_hocr["lines"] += [construct_line_from_words(even_page_words)]
-    return [odd_page_hocr, even_page_hocr]
-
-
-def parse_double_page_scan(scan_hocr: dict, column_config: dict):
-    column_config = copy.copy(column_config)
-    column_config["hocr_box"] = scan_hocr["hocr_box"]
-    scan_hocr["page_boundary"] = int(scan_hocr["hocr_box"]["right"] / 2)
-    columns_info = determine_column_start_end(scan_hocr, column_config)
-    single_pages_hocr = split_lines_on_pages(scan_hocr, columns_info, column_config)
-    for single_page_hocr in single_pages_hocr:
-        single_page_hocr["is_parseable"] = True
-        columns_hocr = parse_single_page(single_page_hocr, column_config)
-        if single_page_hocr["num_columns"] == 0:
-            single_page_hocr["num_lines"] = 0
-            single_page_hocr["num_words"] = 0
-            single_page_hocr["columns"] = []
-        else:
-            single_page_hocr["columns"] = columns_hocr["columns"]
-            single_page_hocr["num_lines"] = max([column["num_lines"] for column in single_page_hocr["columns"]])
-            single_page_hocr["num_words"] = sum([column["num_words"] for column in single_page_hocr["columns"]])
-        del single_page_hocr["lines"]
-        single_page_hocr["page_type"] += [page_parser.get_page_type(single_page_hocr, debug=False)]
-    return single_pages_hocr
-
-
-def parse_single_page(sp_hocr, column_config: dict):
-    #print("sp_hocr hocr_box", sp_hocr["hocr_box"])
-    column_config["hocr_box"] = sp_hocr["hocr_box"]
-    #print("column_config hocr_box", column_config["hocr_box"])
-    column_config["fulltext_words_threshold"] = 8
-    columns_info = determine_column_start_end(sp_hocr, column_config)
-    sp_hocr["num_columns"] = len(columns_info)
-    if sp_hocr["num_columns"] == 0:
-        sp_hocr["page_type"] = ["special", "no_column"]
-        return sp_hocr
-    elif sp_hocr["num_columns"] == 2:
-        sp_hocr["page_type"] = ["normal", "double_column"]
-    elif sp_hocr["num_columns"] == 1:
-        sp_hocr["page_type"] = ["special", "single_column"]
-    else:
-        sp_hocr["page_type"] = ["special", "multi_column"]
-    #print(columns_info)
-    return split_lines_on_columns(sp_hocr, columns_info, column_config)
 
 
 def parse_hocr_columns(sp_hocr: dict, columns_info: list, column_config: dict) -> dict:

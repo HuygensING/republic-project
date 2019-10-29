@@ -1,9 +1,9 @@
 import os
 from typing import Union
 from collections import defaultdict
-from inventory_mapping import inventory_mapping
-from parse_hocr_files import make_hocr_page
-from republic_index_page_parser import count_page_ref_lines
+from model.inventory_mapping import inventory_mapping
+from model.republic_hocr_model import make_hocr_page
+from parser.republic_index_page_parser import count_page_ref_lines
 
 
 # filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr
@@ -58,7 +58,7 @@ def get_column_num(fname: str) -> int:
         # file is whole page, not individual column
         return 1
     elif fname_parts[3].startswith("jpg-"):
-        return int(fname_parts.split("-")[1])
+        return int(fname_parts[3].split("-")[1])
     else:
         raise TypeError("Unexpected structure of filename")
 

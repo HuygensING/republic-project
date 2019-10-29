@@ -1,8 +1,9 @@
 import re
 from typing import Union
+from model.republic_hocr_model import HOCRPage
 
 
-def get_highest_inter_word_space(line: dict) -> int:
+def get_highest_inter_word_space(line: object) -> int:
     highest_inter_word_space = -1
     for word_index, word in enumerate(line["words"][:-1]):
         next_word = line["words"][word_index + 1]
@@ -12,30 +13,30 @@ def get_highest_inter_word_space(line: dict) -> int:
     return highest_inter_word_space
 
 
-def has_mid_column_text(line: dict, hocr_page: dict) -> bool:
+def has_mid_column_text(line: object, hocr_page: dict) -> bool:
     for word in line["words"]:
         if word["left"] - hocr_page["left"] > 250 and hocr_page["right"] - word["right"] > 300:
             return True
     return False
 
 
-def has_left_aligned_text(line: dict, hocr_page: dict) -> bool:
+def has_left_aligned_text(line: object, hocr_page: dict) -> bool:
     if line["words"][0]["left"] - hocr_page["left"] > 100:
         return False
     return True
 
 
-def has_right_aligned_text(line: dict, hocr_page: dict) -> bool:
+def has_right_aligned_text(line: object, hocr_page: dict) -> bool:
     if hocr_page["right"] - line["words"][-1]["right"] > 100:
         return False
     return True
 
 
-def num_line_chars(line: dict) -> int:
+def num_line_chars(line: object) -> int:
     return len(line["line_text"].replace(" ", ""))
 
 
-def is_header(line: dict, next_line: dict) -> bool:
+def is_header(line: object, next_line: dict) -> bool:
     if line["top"] > 350:  # if top is above 350, this line is definitely not a header
         return False
     if line["top"] < 150:  # header has some margin form the top of the page, any text in this margin is noise
@@ -49,7 +50,7 @@ def is_header(line: dict, next_line: dict) -> bool:
     return False
 
 
-def contains_year(line: dict) -> bool:
+def contains_year(line: object) -> bool:
     for word in line["words"]:
         if looks_like_year(word):
             return True
@@ -69,21 +70,21 @@ def looks_like_year(word: dict) -> bool:
         return False
 
 
-def is_in_top_margin(line: dict) -> bool:
+def is_in_top_margin(line: object) -> bool:
     if line["top"] < 150:  # index header has some margin form the top of the page
         return True
     return False
 
 
-def is_full_text_line(line: dict) -> bool:
+def is_full_text_line(line: object) -> bool:
     return len(line["line_text"].replace(" ", "")) > 25
 
 
-def is_short_text_line(line: dict) -> bool:
+def is_short_text_line(line: object) -> bool:
     return len(line["line_text"].replace(" ", "")) < 15
 
 
-def merge_text_lines(hocr_page: dict) -> str:
+def merge_text_lines(hocr_page: HOCRPage) -> str:
     page_text = ""
     for line in hocr_page.lines:
         if line["line_text"][-1] == "-":
@@ -93,7 +94,7 @@ def merge_text_lines(hocr_page: dict) -> str:
     return page_text
 
 
-def proper_column_cut(hocr_page: dict) -> bool:
+def proper_column_cut(hocr_page: object) -> bool:
     if hocr_page["width"] < 850:
         return False
     if hocr_page["width"] > 1200:
@@ -101,7 +102,7 @@ def proper_column_cut(hocr_page: dict) -> bool:
     return True
 
 
-def is_title_page(page_hocr: dict, min_word_height: int = 60, min_char_width: int = 40) -> bool:
+def is_title_page(page_hocr: object, min_word_height: int = 60, min_char_width: int = 40) -> bool:
     # title page has large word lines in the top half of the page
     # so top of line is below 2000
     large_word_lines = [line for line in get_large_word_lines(page_hocr, min_word_height, min_char_width) if

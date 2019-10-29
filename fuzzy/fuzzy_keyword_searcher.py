@@ -1,6 +1,156 @@
 import re
 from collections import defaultdict
-from fuzzy_keyword import Keyword, text2skipgrams
+from fuzzy.fuzzy_keyword import Keyword, text2skipgrams
+
+
+#################################
+# String manipulation functions #
+#################################
+
+def make_ngrams(term, n):
+    term = "#{t}#".format(t=term)
+    max_start = len(term) - n + 1
+    return [term[start:start + n] for start in range(0, max_start)]
+
+
+def strip_suffix(match):
+    if len(match) <= 2:
+        pass
+    elif match[-2] in [" ", ","]:
+        match = match[:-2]
+    elif match[-2:] in [", ", ". ", "? ", ".f"]:
+        match = match[:-2]
+    elif match[-1] in [" ", ",", "."]:
+        match = match[:-1]
+    return match
+
+
+#####################################
+# Term similarity scoring functions #
+#####################################
+
+
+def score_ngram_overlap(term1, term2, ngram_size):
+    term1_ngrams = make_ngrams(term1, ngram_size)
+    term2_ngrams = make_ngrams(term2, ngram_size)
+    overlap = 0
+    for ngram in term1_ngrams:
+        if ngram in term2_ngrams:
+            term2_ngrams.pop(term2_ngrams.index(ngram))
+            overlap += 1
+    return overlap
+
+
+def score_char_overlap_ratio(term1, term2):
+    max_overlap = len(term1)
+    overlap = score_char_overlap(term1, term2)
+    return overlap / max_overlap
+
+
+def score_ngram_overlap_ratio(term1, term2, ngram_size):
+    max_overlap = len(make_ngrams(term1, ngram_size))
+    overlap = score_ngram_overlap(term1, term2, ngram_size)
+    return overlap / max_overlap
+
+
+def score_levenshtein_distance_ratio(term1, term2):
+    max_distance = max(len(term1), len(term2))
+    distance = score_levenshtein_distance(term1, term2)
+    return 1 - distance / max_distance
+
+
+def score_levenshtein_distance(s1, s2, use_confuse=False):
+    """Calculate Levenshtein distance between two string. Beyond the
+    normal algorithm, a confusion matrix can be used to get non-binary
+    scores for common confusion pairs.
+    To use the confusion matrix, config the searcher with use_confuse=True"""
+    if len(s1) > len(s2):
+        s1, s2 = s2, s1
+    distances = range(len(s1) + 1)
+    for i2, c2 in enumerate(s2):
+        distances_ = [i2 + 1]
+        for i1, c1 in enumerate(s1):
+            if c1 == c2:
+                distances_.append(distances[i1])
+            else:
+                dist = confuse_distance(c1, c2) if use_confuse else 1
+                distances_.append(dist + min((distances[i1], distances[i1 + 1], distances_[-1])))
+        distances = distances_
+    return distances[-1]
+
+
+def score_char_overlap(term1, term2):
+    num_char_matches = 0
+    for char in term2:
+        if char in term1:
+            term1 = term1.replace(char, "", 1)
+            num_char_matches += 1
+    return num_char_matches
+
+
+#################################
+# Helper functions #
+#################################
+
+
+def get_match_terms(match_term, candidate):
+    if isinstance(candidate, str):
+        return match_term, candidate
+    else:
+        return candidate["match_term"], candidate["match_string"]
+
+
+def add_candidate_scores(info, candidate):
+    if "char_match" in candidate:
+        info["char_match"] = candidate["char_match"]
+    if "ngram_match" in candidate:
+        info["ngram_match"] = candidate["ngram_match"]
+    if "levenshtein_distance" in candidate:
+        info["levenshtein_distance"] = candidate["levenshtein_distance"]
+
+
+def matches_overlap(match1, match2):
+    """Determines wether two match strings overlap in the text"""
+    if match1["match_offset"] <= match2["match_offset"]:
+        return match1["match_offset"] + len(match1["match_string"]) > match2["match_offset"]
+    elif match1["match_offset"] > match2["match_offset"]:
+        return match2["match_offset"] + len(match2["match_string"]) > match1["match_offset"]
+
+
+def rank_candidates(candidates, keyword, ngram_size=2):
+    total_scores = []
+    for candidate in candidates:
+        if isinstance(candidate, str):
+            match_string = candidate
+        elif isinstance(candidate, dict):
+            match_string = candidate["match_string"]
+        score = {
+            "candidate": candidate,
+            "char": score_char_overlap_ratio(match_string, keyword),
+            "ngram": score_ngram_overlap_ratio(match_string, keyword, ngram_size),
+            "levenshtein": score_levenshtein_distance_ratio(match_string, keyword),
+        }
+        score["total"] = score["char"] + score["ngram"] + score["levenshtein"]
+        total_scores += [score]
+    return sorted(total_scores, key=lambda x: x["total"], reverse=True)
+
+
+def get_best_keyword_offset(keyword_string, keyword_ngram_offsets, matches):
+    # check if current keyword ngram closely follows last found keyword ngram
+    last_keyword_offset = matches[-1][2]
+    for offset in keyword_ngram_offsets:
+        # skip offsets before last found offsets
+        if offset < last_keyword_offset:
+            continue
+        # if offset is too far beyond last found ngram from
+        elif offset > last_keyword_offset + 3:
+            return None
+        else:
+            return offset
+    # if no closely following offset can be found, return the first to start
+    # a new candidate
+    return keyword_ngram_offsets[0]
+
 
 class FuzzyKeywordSearcher(object):
 
@@ -68,11 +218,12 @@ class FuzzyKeywordSearcher(object):
         mention."""
         if not ignorecase:
             ignorecase = self.ignorecase
-        self.keyword_index = make_keyword_index(keywords, ngram_size=self.ngram_size, skip_size=self.skip_size, ignorecase=ignorecase)
+        self.keyword_index = make_keyword_index(keywords, ngram_size=self.ngram_size, skip_size=self.skip_size,
+                                                ignorecase=ignorecase)
         self.ngram_index = index_keyword_ngrams(self.keyword_index)
         self.early_ngram_index = index_early_keyword_ngrams(self.keyword_index)
         self.late_ngram_index = index_late_keyword_ngrams(self.keyword_index)
-        #print("set late_ngram_index:", self.late_ngram_index)
+        # print("set late_ngram_index:", self.late_ngram_index)
 
     def index_spelling_variants(self, keyword_variants):
         """Index spelling variants of an indexed keyword, to see if a keyword mention is
@@ -84,7 +235,8 @@ class FuzzyKeywordSearcher(object):
                 self.index_spelling_variant(keyword, variant)
 
     def index_spelling_variant(self, keyword, variant):
-        variant_keyword = Keyword(variant, ngram_size=self.ngram_size, skip_size=self.skip_size, ignorecase=self.ignorecase)
+        variant_keyword = Keyword(variant, ngram_size=self.ngram_size, skip_size=self.skip_size,
+                                  ignorecase=self.ignorecase)
         self.variant_map[variant][keyword] = variant_keyword
         self.has_variant[keyword][variant] = variant_keyword
         for ngram, offset in variant_keyword.early_ngrams.items():
@@ -92,7 +244,6 @@ class FuzzyKeywordSearcher(object):
 
     def index_distractor_terms(self, keyword_distractor_terms):
         """input: a dictionary with keywords as keys and lists of distractor terms as values."""
-        tests = []
         for keyword in keyword_distractor_terms:
             self.distractor_terms[keyword] = keyword_distractor_terms[keyword]
         self.update_known_candidates(keyword_distractor_terms)
@@ -117,89 +268,13 @@ class FuzzyKeywordSearcher(object):
             self.test_known_candidate_status(match_string, match_term, distractor_terms[keyword])
 
     def test_known_candidate_status(self, match_string, match_term, distractors):
-        accept_distance = self.score_levenshtein_distance(match_string, match_term)
+        accept_distance = score_levenshtein_distance(match_string, match_term)
         for distractor in distractors:
-            reject_distance = self.score_levenshtein_distance(match_string, distractor)
+            reject_distance = score_levenshtein_distance(match_string, distractor)
             if reject_distance < accept_distance:
                 self.known_candidates[match_string][match_term]["status"] = "reject"
                 return True
         return False
-
-    #################################
-    # String manipulation functions #
-    #################################
-
-    def make_ngrams(self, term, n):
-        term = "#{t}#".format(t=term)
-        max_start = len(term) - n + 1
-        return [term[start:start+n] for start in range(0, max_start)]
-
-    def strip_suffix(self, match):
-        if len(match) <= 2:
-            pass
-        elif match[-2] in [" ", ","]:
-            match = match[:-2]
-        elif match[-2:] in [", ", ". ", "? ", ".f"]:
-            match = match[:-2]
-        elif match[-1] in [" ", ",", "."]:
-            match = match[:-1]
-        return match
-
-    #####################################
-    # Term similarity scoring functions #
-    #####################################
-
-    def score_levenshtein_distance(self, s1, s2, use_confuse=False):
-        """Calculate Levenshtein distance between two string. Beyond the
-        normal algorithm, a confusion matrix can be used to get non-binary
-        scores for common confusion pairs.
-        To use the confusion matrix, config the searcher with use_confuse=True"""
-        if len(s1) > len(s2):
-            s1, s2 = s2, s1
-        distances = range(len(s1) + 1)
-        for i2, c2 in enumerate(s2):
-            distances_ = [i2+1]
-            for i1, c1 in enumerate(s1):
-                if c1 == c2:
-                    distances_.append(distances[i1])
-                else:
-                    dist = confuse_distance(c1, c2) if self.use_confuse else 1
-                    distances_.append(dist + min((distances[i1], distances[i1 + 1], distances_[-1])))
-            distances = distances_
-        return distances[-1]
-
-    def score_char_overlap(self, term1, term2):
-        num_char_matches = 0
-        for char in term2:
-            if char in term1:
-                term1 = term1.replace(char, "", 1)
-                num_char_matches += 1
-        return num_char_matches
-
-    def score_ngram_overlap(self, term1, term2, ngram_size):
-        term1_ngrams = self.make_ngrams(term1, ngram_size)
-        term2_ngrams = self.make_ngrams(term2, ngram_size)
-        overlap = 0
-        for ngram in term1_ngrams:
-            if ngram in term2_ngrams:
-                term2_ngrams.pop(term2_ngrams.index(ngram))
-                overlap += 1
-        return overlap
-
-    def score_char_overlap_ratio(self, term1, term2):
-        max_overlap = len(term1)
-        overlap = self.score_char_overlap(term1, term2)
-        return overlap / max_overlap
-
-    def score_ngram_overlap_ratio(self, term1, term2, ngram_size):
-        max_overlap = len(self.make_ngrams(term1, ngram_size))
-        overlap = self.score_ngram_overlap(term1, term2, ngram_size)
-        return overlap / max_overlap
-
-    def score_levenshtein_distance_ratio(self, term1, term2):
-        max_distance = max(len(term1), len(term2))
-        distance = self.score_levenshtein_distance(term1, term2)
-        return 1 - distance / max_distance
 
     #################################
     # Helper functions #
@@ -217,12 +292,6 @@ class FuzzyKeywordSearcher(object):
         if filter_type == "levenshtein_distance" and self.tracking_level <= 3:
             return True
 
-    def get_match_terms(self, match_term, candidate):
-        if isinstance(candidate, str):
-            return match_term, candidate
-        else:
-            return candidate["match_term"], candidate["match_string"]
-
     def add_known_candidate(self, candidate, status):
         if not self.track_candidates:
             return None
@@ -231,16 +300,16 @@ class FuzzyKeywordSearcher(object):
         self.known_candidates[match_string][match_term] = {
             "status": status,
         }
-        self.add_candidate_scores(self.known_candidates[match_string][match_term], candidate)
+        add_candidate_scores(self.known_candidates[match_string][match_term], candidate)
 
     def get_candidate_score(self, match_term, candidate, filter_type, ngram_size):
-            term1, term2 = self.get_match_terms(match_term, candidate)
-            if filter_type == "char_match":
-                return self.score_char_overlap_ratio(term1, term2)
-            if filter_type == "ngram_match":
-                return self.score_ngram_overlap_ratio(term1, term2, ngram_size)
-            if filter_type == "levenshtein_distance":
-                return self.score_levenshtein_distance_ratio(term1, term2)
+        term1, term2 = get_match_terms(match_term, candidate)
+        if filter_type == "char_match":
+            return score_char_overlap_ratio(term1, term2)
+        if filter_type == "ngram_match":
+            return score_ngram_overlap_ratio(term1, term2, ngram_size)
+        if filter_type == "levenshtein_distance":
+            return score_levenshtein_distance_ratio(term1, term2)
 
     def above_threshold(self, score, filter_type):
         if filter_type == "char_match":
@@ -258,9 +327,9 @@ class FuzzyKeywordSearcher(object):
         # if keyword has no distractor_terms, candidate is not distractor term
         if keyword not in self.distractor_terms:
             return False
-        keyword_distance = self.score_levenshtein_distance(candidate["match_term"], candidate["match_string"])
+        keyword_distance = score_levenshtein_distance(candidate["match_term"], candidate["match_string"])
         for distractor_term in self.distractor_terms[keyword]:
-            distractor_distance = self.score_levenshtein_distance(distractor_term, candidate["match_string"])
+            distractor_distance = score_levenshtein_distance(distractor_term, candidate["match_string"])
             if distractor_distance < keyword_distance:
                 return True
         return False
@@ -295,7 +364,7 @@ class FuzzyKeywordSearcher(object):
         return match_offset
 
     def get_match_end(self, text, match_offset, keyword_string):
-        match_end = match_offset+len(keyword_string)
+        match_end = match_offset + len(keyword_string)
         if self.use_word_boundaries:
             match_end = adjust_match_end(match_end, text)
         return match_end
@@ -311,7 +380,7 @@ class FuzzyKeywordSearcher(object):
             return None
         match_string = text[match_offset:match_end]
         if self.perform_strip_suffix:
-            match_string = self.strip_suffix(match_string)
+            match_string = strip_suffix(match_string)
         return self.make_ngram_match(keyword_string, match_string, match_offset)
 
     def make_ngram_match(self, keyword_string, match_string, match_offset):
@@ -352,16 +421,8 @@ class FuzzyKeywordSearcher(object):
                 info = {
                     "status": status,
                 }
-                self.add_candidate_scores(info, candidate)
+                add_candidate_scores(info, candidate)
                 self.known_candidates[match_string][keyword] = info
-
-    def add_candidate_scores(self, info, candidate):
-            if "char_match" in candidate:
-                info["char_match"] = candidate["char_match"]
-            if "ngram_match" in candidate:
-                info["ngram_match"] = candidate["ngram_match"]
-            if "levenshtein_distance" in candidate:
-                info["levenshtein_distance"] = candidate["levenshtein_distance"]
 
     def is_known_candidate(self, candidate):
         if candidate["match_string"] not in self.known_candidates:
@@ -375,14 +436,6 @@ class FuzzyKeywordSearcher(object):
         """Determines whether a combination of match string and
         match term has been seen before and has a known status."""
         return self.known_candidates[candidate["match_string"]][candidate["match_term"]]["status"]
-
-    def matches_overlap(self, match1, match2):
-        """Determines wether two match strings overlap in the text"""
-        if match1["match_offset"] <= match2["match_offset"]:
-            return match1["match_offset"] + len(match1["match_string"]) > match2["match_offset"]
-        elif match1["match_offset"] > match2["match_offset"]:
-            return match2["match_offset"] + len(match2["match_string"]) > match1["match_offset"]
-
 
     #################################
     # Candidate filtering functions #
@@ -421,7 +474,8 @@ class FuzzyKeywordSearcher(object):
         best_distance = {}
         for candidate in self.candidates["filter"]:
             if "levenshtein_distance" not in candidate:
-                levenshtein_distance = self.score_levenshtein_distance_ratio(candidate["match_term"], candidate["match_string"])
+                levenshtein_distance = score_levenshtein_distance_ratio(candidate["match_term"],
+                                                                        candidate["match_string"])
                 candidate["levenshtein_distance"] = levenshtein_distance
             offset = candidate["match_offset"]
             if candidate["match_term"] in self.keyword_index:
@@ -452,12 +506,11 @@ class FuzzyKeywordSearcher(object):
         self.candidates["filter"] = []
 
     def filter_overlapping_matches(self):
-        found = defaultdict(list)
         self.candidates["filter"].sort(key=lambda x: x["match_offset"])
         filtered = []
         for match in self.candidates["filter"]:
             if len(filtered) == 0:
-                #print("Adding match", match)
+                # print("Adding match", match)
                 filtered += [match]
                 continue
             prev_offset = filtered[-1]["match_offset"]
@@ -473,23 +526,6 @@ class FuzzyKeywordSearcher(object):
                 continue
         self.candidates["filter"] = filtered
 
-    def rank_candidates(self, candidates, keyword, ngram_size=2):
-        total_scores = []
-        for candidate in candidates:
-            if isinstance(candidate, str):
-                match_string = candidate
-            elif isinstance(candidate, dict):
-                match_string = candidate["match_string"]
-            score = {
-                "candidate": candidate,
-                "char": self.score_char_overlap_ratio(match_string, keyword),
-                "ngram": self.score_ngram_overlap_ratio(match_string, keyword, ngram_size),
-                "levenshtein": self.score_levenshtein_distance_ratio(match_string, keyword),
-            }
-            score["total"] = score["char"] + score["ngram"] + score["levenshtein"]
-            total_scores += [score]
-        return sorted(total_scores, key=lambda x: x["total"], reverse=True)
-
     ##########################################
     # Functions for finding patterns in text #
     ##########################################
@@ -499,7 +535,7 @@ class FuzzyKeywordSearcher(object):
             max_length_variance = self.max_length_variance
         initial = term[0]
         length_range = {"min": len(term[1:]) - max_length_variance, "max": len(term[1:]) + max_length_variance}
-        if initial in ["[","]", "*", "(",")", "."]:
+        if initial in ["[", "]", "*", "(", ")", "."]:
             initial = "\\" + initial
         pattern = initial + ".{" + str(length_range["min"]) + "," + str(length_range["max"]) + "}"
         if self.use_word_boundaries:
@@ -516,7 +552,7 @@ class FuzzyKeywordSearcher(object):
     def find_initial_char_candidates(self, text, term):
         for match in self.find_initial_char_matches(text, term):
             if self.perform_strip_suffix:
-                match["match_string"] = self.strip_suffix(match["match_string"])
+                match["match_string"] = strip_suffix(match["match_string"])
             yield match
 
     def find_ngram_candidates_new(self, text, ignorecase=None):
@@ -540,7 +576,7 @@ class FuzzyKeywordSearcher(object):
     def find_ngram_matches_new(self, ngram_string, ngram_offset, text):
         matches = []
         for keyword_string, keyword_ngram_offsets in self.get_ngram_entries_new(ngram_string):
-            #print(keyword_string, keyword_ngram_offsets, ngram_string, ngram_offset)
+            # print(keyword_string, keyword_ngram_offsets, ngram_string, ngram_offset)
             if keyword_string in self.open_candidates:
                 if self.test_open_candidate(ngram_string, ngram_offset, keyword_string, keyword_ngram_offsets):
                     continue
@@ -548,8 +584,9 @@ class FuzzyKeywordSearcher(object):
             # the keyword string
             if keyword_ngram_offsets[0] < 3:
                 # add ngram as start of new open candidate
-                self.open_candidates[keyword_string][ngram_offset] = [(ngram_string, ngram_offset, keyword_ngram_offsets[0])]
-                #print("starting candidate:", self.open_candidates[keyword_string][ngram_offset], ngram_string, ngram_offset)
+                self.open_candidates[keyword_string][ngram_offset] = [
+                    (ngram_string, ngram_offset, keyword_ngram_offsets[0])]
+                # print("starting candidate:", self.open_candidates[keyword_string][ngram_offset], ngram_string, ngram_offset)
             else:
                 pass
 
@@ -561,45 +598,28 @@ class FuzzyKeywordSearcher(object):
             if ngram_offset > matches[-1][1] + 3:
                 remove_offsets += [start_offset]
             else:
-                best_keyword_offset = self.get_best_keyword_offset(keyword_string, keyword_ngram_offsets, matches)
+                best_keyword_offset = get_best_keyword_offset(keyword_string, keyword_ngram_offsets, matches)
                 if best_keyword_offset != None and best_keyword_offset >= matches[-1][2]:
                     # if best offset closely follows last match, add current
                     # as next match
                     matches += [(ngram_string, ngram_offset, best_keyword_offset)]
                     matches_open_candidate = True
-                #print(keyword_string, keyword_ngram_offsets, ngram_string, ngram_offset)
-                #print("continuing candidate:", keyword_string, self.open_candidates[keyword_string], ngram_string, ngram_offset)
+                # print(keyword_string, keyword_ngram_offsets, ngram_string, ngram_offset)
+                # print("continuing candidate:", keyword_string, self.open_candidates[keyword_string], ngram_string, ngram_offset)
         for start_offset in remove_offsets:
             self.remove_candidate(keyword_string, start_offset)
         return matches_open_candidate
-
-    def get_best_keyword_offset(self, keyword_string, keyword_ngram_offsets, matches):
-        # check if current keyword ngram closely follows last found keyword ngram
-        last_keyword_offset = matches[-1][2]
-        for offset in keyword_ngram_offsets:
-            # skip offsets before last found offsets
-            if offset < last_keyword_offset:
-                continue
-            # if offset is too far beyond last found ngram from
-            elif offset > last_keyword_offset + 3:
-                return None
-            else:
-                return offset
-        # if no closely following offset can be found, return the first to start
-        # a new candidate
-        return keyword_ngram_offsets[0]
-
 
     def remove_candidate(self, keyword_string, start_offset):
         matches = self.open_candidates[keyword_string][start_offset]
         last_ngram = matches[-1][0]
         last_offset = matches[-1][2]
-        #print("last_gram:", last_ngram)
-        #print("late_ngram_index:", self.late_ngram_index[last_ngram])
+        # print("last_gram:", last_ngram)
+        # print("late_ngram_index:", self.late_ngram_index[last_ngram])
         if keyword_string in self.late_ngram_index[last_ngram]:
             if self.late_ngram_index[last_ngram][keyword_string] == last_offset:
                 self.close_candidate(keyword_string, start_offset)
-        #print("removing candidate:", keyword_string, self.open_candidates[keyword_string])
+        # print("removing candidate:", keyword_string, self.open_candidates[keyword_string])
         del self.open_candidates[keyword_string][start_offset]
         if len(self.open_candidates[keyword_string].keys()) == 0:
             del self.open_candidates[keyword_string]
@@ -610,10 +630,10 @@ class FuzzyKeywordSearcher(object):
         keyword_offset = first[2]
         last = self.open_candidates[keyword_string][start_offset][-1]
         text_end = last[1] + len(keyword_string) - last[2] + 1
-        #print("text_start:", text_offset, "text_end:", text_end, "keyword length:", len(keyword_string))
+        # print("text_start:", text_offset, "text_end:", text_end, "keyword length:", len(keyword_string))
         self.closed_candidates += [(keyword_string, text_offset, text_end, keyword_offset)]
-        #print(self.closed_candidates)
-        #print("closing candidate:", keyword_string, self.open_candidates[keyword_string])
+        # print(self.closed_candidates)
+        # print("closing candidate:", keyword_string, self.open_candidates[keyword_string])
 
     def find_ngram_candidates(self, text, ignorecase=None):
         candidates = []
@@ -640,12 +660,12 @@ class FuzzyKeywordSearcher(object):
             if self.is_known_candidate(match):
                 known_candidate = self.get_known_candidate(match)
                 match["status"] = known_candidate["status"]
-                self.add_candidate_scores(match, known_candidate)
-            #print("\t", match)
-            #print()
+                add_candidate_scores(match, known_candidate)
+            # print("\t", match)
+            # print()
             yield match
 
-    def find_all_candidates(self, text):
+    def find_all_candidates(self, text, keyword):
         self.candidates = defaultdict(list)
         if self.match_initial_char:
             candidates = self.find_initial_char_candidates(text, keyword)
@@ -653,19 +673,21 @@ class FuzzyKeywordSearcher(object):
             candidates = self.find_ngram_candidates(text)
         self.candidates["filter"] = [candidate for candidate in candidates if not self.is_rejected_candidate(candidate)]
 
-    def find_candidates(self, text, keyword=None, ngram_size=2, use_word_boundaries=None, match_initial_char=False, include_variants=False, filter_distractors=False):
+    def find_candidates(self, text, keyword=None, ngram_size=2, use_word_boundaries=None, match_initial_char=False,
+                        include_variants=False, filter_distractors=False):
         self.include_variants = include_variants
         self.filter_distractors = filter_distractors
         self.match_initial_char = match_initial_char
         if isinstance(use_word_boundaries, bool):
             self.use_word_boundaries = use_word_boundaries
-        self.find_all_candidates(text)
+        self.find_all_candidates(text, keyword)
         self.filter_all_candidates(ngram_size)
         if self.track_candidates:
             self.set_known_candidate_status()
         return self.candidates["accept"]
 
-    def find_candidates_new(self, text, keyword=None, ngram_size=2, use_word_boundaries=None, match_initial_char=False, include_variants=False, filter_distractors=False):
+    def find_candidates_new(self, text, keyword=None, ngram_size=2, use_word_boundaries=None, match_initial_char=False,
+                            include_variants=False, filter_distractors=False):
         self.include_variants = include_variants
         self.filter_distractors = filter_distractors
         self.match_initial_char = match_initial_char
@@ -683,7 +705,7 @@ class FuzzyKeywordSearcher(object):
         close_distance_keywords = defaultdict(list)
         for index, keyword1 in enumerate(keyword_list):
             string1 = get_keyword_string(keyword1).lower()
-            for keyword2 in keyword_list[index+1:]:
+            for keyword2 in keyword_list[index + 1:]:
                 string2 = get_keyword_string(keyword2).lower()
                 # TODO:
                 # - consider use of initials for first or last keyword, e.g. A. Doelman
@@ -693,11 +715,12 @@ class FuzzyKeywordSearcher(object):
                 if abs(len(string1) - len(string2)) > 3: continue
                 # - keywords have low overlap in characters
                 char_overlap = self.score_char_overlap(string1, string2)
-                #print(string1, string2, char_overlap, char_overlap/len(string1))
+                # print(string1, string2, char_overlap, char_overlap/len(string1))
                 if char_overlap / len(string1) < 0.5: continue
                 distance = self.score_levenshtein_distance(string1, string2)
-                #print(string1, string2, distance, distance / len(string1), distance/len(string2))
-                if distance < 10 and (distance / len(string1) < max_distance_ratio or distance / len(string2) < max_distance_ratio):
+                # print(string1, string2, distance, distance / len(string1), distance/len(string2))
+                if distance < 10 and (
+                        distance / len(string1) < max_distance_ratio or distance / len(string2) < max_distance_ratio):
                     close_distance_keywords[keyword1].append(keyword2)
                     close_distance_keywords[keyword2].append(keyword1)
         return close_distance_keywords
@@ -705,14 +728,14 @@ class FuzzyKeywordSearcher(object):
     def find_closer_terms(self, candidate, keyword, close_terms):
         closer_terms = {}
         keyword_distance = self.score_levenshtein_distance(keyword, candidate)
-        #print("candidate:", candidate, "\tkeyword:", keyword)
-        #print("keyword_distance", keyword_distance)
+        # print("candidate:", candidate, "\tkeyword:", keyword)
+        # print("keyword_distance", keyword_distance)
         for close_term in close_terms:
             close_term_distance = self.score_levenshtein_distance(close_term, candidate)
-            #print("close_term:", close_term, "\tdistance:", close_term_distance)
+            # print("close_term:", close_term, "\tdistance:", close_term_distance)
             if close_term_distance < keyword_distance:
                 closer_terms[close_term] = close_term_distance
-        return sorted(closer_terms, key = lambda closer_terms: closer_terms[1])
+        return sorted(closer_terms, key=lambda closer_terms: closer_terms[1])
 
 
 ####################
@@ -722,6 +745,7 @@ class FuzzyKeywordSearcher(object):
 def make_closed_candidate_matches(text, candidates):
     return [make_closed_candidate_match(text, candidate) for candidate in candidates]
 
+
 def make_closed_candidate_match(text, candidate):
     return {
         "match_keyword": candidate[0],
@@ -730,49 +754,50 @@ def make_closed_candidate_match(text, candidate):
         "match_offset": candidate[1],
     }
 
+
 def adjust_match_offset(match_offset, text):
     if match_offset <= 0:
         return 0
-        #return match_offset
+        # return match_offset
     # if match starts with single whitespace, skip first char
-    elif text[match_offset] == " " and text[match_offset+1 != " "]:
+    elif text[match_offset] == " " and text[match_offset + 1 != " "]:
         return match_offset + 1
     # if match is preceded by a non alpha-numeric character, keep match offset
-    elif re.match(r"\W", text[match_offset-1]):
+    elif re.match(r"\W", text[match_offset - 1]):
         return match_offset
     # if word boundary is one char before offset, adjust offset to preceding char
-    elif re.match(r"\W", text[match_offset-2]) or match_offset == 1:
+    elif re.match(r"\W", text[match_offset - 2]) or match_offset == 1:
         return match_offset - 1
     # if match is in middle of word, set impossible offset so match is ignored
     else:
         return -1
 
+
 def adjust_match_end(match_end, text):
     # if match_end is more than two characters beyond end of text, match is invalid
-    if match_end > len(text)+2:
+    if match_end > len(text) + 2:
         return -1
     # if match_end is end of text or at most two characters more, use text end
     elif match_end >= len(text):
         return len(text)
-    elif text[match_end-2] == " ":
-        return match_end-2
-    elif text[match_end-1] == " ":
-        return match_end-1
-    elif text[match_end] == " " or match_end+1 == len(text):
+    elif text[match_end - 2] == " ":
+        return match_end - 2
+    elif text[match_end - 1] == " ":
+        return match_end - 1
+    elif text[match_end] == " " or match_end + 1 == len(text):
         return match_end
     elif re.match(r"\W", text[match_end]):
         return match_end
-    elif text[match_end+1] == " " or match_end+2 == len(text):
-        return match_end+1
-    elif re.match(r"\W", text[match_end+1]):
-        return match_end+1
-    elif text[match_end+2] == " " or match_end+3 == len(text):
-        return match_end+2
-    elif re.match(r"\W", text[match_end+2]):
-        return match_end+2
+    elif text[match_end + 1] == " " or match_end + 2 == len(text):
+        return match_end + 1
+    elif re.match(r"\W", text[match_end + 1]):
+        return match_end + 1
+    elif text[match_end + 2] == " " or match_end + 3 == len(text):
+        return match_end + 2
+    elif re.match(r"\W", text[match_end + 2]):
+        return match_end + 2
     else:
         return -1
-
 
 
 def create_regex_match(re_match, term):
@@ -782,19 +807,23 @@ def create_regex_match(re_match, term):
         "match_offset": re_match.start()
     }
 
+
 def make_keyword(keyword, ngram_size=2, skip_size=2, ignorecase=False):
     if isinstance(keyword, Keyword):
         return keyword
     elif isinstance(keyword, dict) or isinstance(keyword, str):
         return Keyword(keyword, ngram_size=ngram_size, skip_size=skip_size, ignorecase=ignorecase)
 
+
 def make_keyword_index(keywords, ngram_size=2, skip_size=2, ignorecase=True):
     if not isinstance(keywords, list):
         keywords = [keywords]
-    keywords = [make_keyword(keyword, ngram_size=ngram_size, skip_size=skip_size, ignorecase=ignorecase) for keyword in keywords]
+    keywords = [make_keyword(keyword, ngram_size=ngram_size, skip_size=skip_size, ignorecase=ignorecase) for keyword in
+                keywords]
     return {
         keyword.name: keyword for keyword in keywords
     }
+
 
 def index_keyword_ngrams(keyword_index):
     ngram_index = defaultdict(dict)
@@ -805,6 +834,7 @@ def index_keyword_ngrams(keyword_index):
             ngram_index[ngram][keyword_string] += [offset]
     return ngram_index
 
+
 def index_early_keyword_ngrams(keyword_index):
     early_ngram_index = defaultdict(dict)
     for keyword_string in keyword_index:
@@ -812,13 +842,15 @@ def index_early_keyword_ngrams(keyword_index):
             early_ngram_index[ngram][keyword_string] = offset
     return early_ngram_index
 
+
 def index_late_keyword_ngrams(keyword_index):
     late_ngram_index = defaultdict(dict)
     for keyword_string in keyword_index:
         for ngram, offset in keyword_index[keyword_string].late_ngrams.items():
             late_ngram_index[ngram][keyword_string] = offset
-    #print("returning late_ngram_index:", late_ngram_index)
+    # print("returning late_ngram_index:", late_ngram_index)
     return late_ngram_index
+
 
 def get_keyword_string(keyword):
     if isinstance(keyword, str):
@@ -830,6 +862,7 @@ def get_keyword_string(keyword):
     else:
         return None
 
+
 def is_confuse_pair(c1, c2):
     if (c1, c2) in pairs:
         return True
@@ -838,6 +871,7 @@ def is_confuse_pair(c1, c2):
     else:
         return False
 
+
 def confuse_distance(c1, c2):
     if (c1, c2) in pairs:
         return pairs[(c1, c2)]
@@ -845,6 +879,7 @@ def confuse_distance(c1, c2):
         return pairs[(c2, c1)]
     else:
         return 1
+
 
 pairs = {
     # common variants lower case
@@ -915,5 +950,3 @@ pairs = {
     ('u', 'ü'): 0.1,
     ('u', 'ù'): 0.1,
 }
-
-

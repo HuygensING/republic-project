@@ -1,9 +1,6 @@
 # Created by: Marijn Koolen
 # Created on: 2018-08-13
 # Context: parsing digitized charter books to extract geographic attestations and dates
-
-
-import re
 from bs4 import BeautifulSoup as bsoup
 
 
@@ -35,6 +32,7 @@ class HOCRPage(object):
         self.class_ = hocr_page_soup['class']
         self.attributes = get_hocr_title_attributes(hocr_page_soup)
         self.box = get_hocr_box(hocr_page_soup)
+        self.carea = self.set_carea(hocr_page_soup)
         self.lines = []
         self.paragraphs = []
         self.minimum_paragraph_gap = 10
@@ -52,7 +50,7 @@ class HOCRPage(object):
 
     def set_carea(self, hocr_page_soup):
         hocr_carea_soup = get_hocr_carea_soup(hocr_page_soup)
-        self.carea = get_hocr_box(hocr_carea_soup)
+        return get_hocr_box(hocr_carea_soup)
 
     def set_paragraphs(self, hocr_soup):
         line_count = 0
@@ -244,7 +242,7 @@ def is_tiny_word(word, tiny_word_width, tiny_word_height):
 
 
 def filter_words(words, tiny_word_width=10):
-    #for word in words:
+    # for word in words:
     #    if is_tiny_word(word, tiny_word_width, tiny_word_width):
     #        print("\ntiny word:", word, "\n")
     words = [word for word in words if not is_tiny_word(word, tiny_word_width, tiny_word_width)]

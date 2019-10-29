@@ -1,6 +1,6 @@
 import re
 import copy
-import republic_base_page_parser as page_parser
+import parser.republic_base_page_parser as page_parser
 from typing import Union
 
 #################################
@@ -52,6 +52,15 @@ def count_page_ref_lines(page_hocr: dict) -> int:
         for line in column_hocr["lines"]:
             if line_has_page_ref(line):
                 count += 1
+    return count
+
+
+def count_number_chars(page_hocr: dict) -> int:
+    count = 0
+    for column_hocr in page_hocr["columns"]:
+        for line in column_hocr["lines"]:
+            digit_line = re.sub(r"\D+", "", line["line_text"])
+            count += len(digit_line)
     return count
 
 
