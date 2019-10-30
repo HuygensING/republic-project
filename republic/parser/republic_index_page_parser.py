@@ -65,10 +65,10 @@ def count_number_chars(page_hocr: dict) -> int:
 
 
 def fix_repeat_symbols_lines(lines: list) -> list:
-    return [fix_repeat_symbols_line(line) for line in lines]
+    return [fix_repeat_symbols_line(line, line_index) for line_index, line in enumerate(lines)]
 
 
-def fix_repeat_symbols_line(line: dict) -> dict:
+def fix_repeat_symbols_line(line: dict, line_index: int) -> dict:
     copy_line = copy.copy(line)
     if has_repeat_symbol(copy_line):
         return copy_line
@@ -76,7 +76,7 @@ def fix_repeat_symbols_line(line: dict) -> dict:
     if first_word["left"] > copy_line["left"]:
         print("Gap between line start and first word:", line["left"], first_word["left"], line["line_text"])
     if first_word["width"] > 120 and len(first_word["word_text"]) <= 3:
-        print("possibly misrecognised repeat symbol:", first_word["width"], first_word["word_text"])
+        print("possibly misrecognised repeat symbol:", line_index, first_word["width"], first_word["word_text"])
         copy_line["line_text"] = copy_line["line_text"].replace(first_word["word_text"], repeat_symbol, 1)
         copy_line["spaced_line_text"] = copy_line["spaced_line_text"].replace(first_word["word_text"], repeat_symbol, 1)
         first_word["word_text"] = repeat_symbol
@@ -311,7 +311,7 @@ def fix_repeat_symbols(lines: list) -> list:
     return find_missing_repeat_symbols(fixed_lines)
 
 
-def index_lemmata(column_id: str, lines: list, lemma_index: dict, curr_lemma: str) -> str:
+def index_lemmata(lines: list, lemma_index: dict, curr_lemma: str) -> str:
     if len(lines) == 0:
         return curr_lemma
     description = ""
@@ -322,7 +322,10 @@ def index_lemmata(column_id: str, lines: list, lemma_index: dict, curr_lemma: st
         values_left = [line["left"] for line in get_line_neighbourhood_lines(fixed_lines, line_index)]
         sum_left = sum(values_left)
         avg_left = int(sum_left / len(values_left))
-        # print(prev_start, line_index, next_end, sum_left, avg_left, values_left)
+        prev_start = None
+        if line_index > 0:
+            prev_start = fixed_lines[line_index-1]["left"]
+        #print(prev_start, line_index, sum_left, avg_left, values_left)
         diff = line["left"] - avg_left
         line["line_type"] = "start"
         if diff > 0:

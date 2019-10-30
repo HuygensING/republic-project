@@ -31,6 +31,11 @@ def get_column_hocr(column_info, config):
     hocr_page = make_hocr_page(column_info["filepath"], column_info["column_id"], config=config)
     column_hocr = hocr_page.carea
     column_hocr["lines"] = hocr_page.lines
+    for line in column_hocr["lines"]:
+        #print("num words before:", len(line["words"]))
+        line["words"] = column_parser.filter_low_confidence_words(line["words"], config)
+        #print("num words after:", len(line["words"]))
+        #print(line["line_text"])
     if "remove_tiny_words" in config and config["remove_tiny_words"]:
         column_hocr["lines"] = filter_tiny_words_from_lines(hocr_page, config)
     column_hocr["num_lines"] = len(column_hocr["lines"])
@@ -69,7 +74,7 @@ def get_scan_hocr(scan_info, config):
 def get_page_type(page_hocr: object, debug: bool = False) -> str:
     resolution_score = 0
     index_score = 0
-    if page_hocr["num_columns"] == 0:
+    if page_hocr["num_columns"] == 0 or page_hocr["num_lines"] == 0 or page_hocr["num_words"] == 0:
         return "empty_page"
     for column_hocr in page_hocr["columns"]:
         #if not "column_hocr" in column_hocr:

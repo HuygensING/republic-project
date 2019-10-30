@@ -167,6 +167,8 @@ def calculate_left_jumps(page_hocr: dict) -> float:
             elif abs(left - prev_left) > 20:
                 left_jumps += 1
             prev_left = left
+    if num_lines == 0:
+        return 0
     left_jump_fraction = left_jumps / num_lines
     # print(lefts)
     # print(num_lines, left_jumps, left_jump_fraction)
