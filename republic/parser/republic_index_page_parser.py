@@ -2,6 +2,7 @@ import re
 import copy
 import republic.parser.republic_base_page_parser as page_parser
 from typing import Union
+from statistics import median, pstdev
 
 #################################
 # Parse and correct index pages #
@@ -62,6 +63,13 @@ def count_number_chars(page_hocr: dict) -> int:
             digit_line = re.sub(r"\D+", "", line["line_text"])
             count += len(digit_line)
     return count
+
+
+def line_has_abbrev_date(line: dict) -> bool:
+    if re.search(r"\b\d+ (Jan|Feb|Maa|Apr|Mey|Jun|Jul|Aug|Sep|Okt|Nov|Dec)", line["line_text"]):
+        return True
+    else:
+        return False
 
 
 def fix_repeat_symbols_lines(lines: list) -> list:
@@ -197,7 +205,7 @@ def is_index_header(line: dict, hocr_page: dict, debug: bool = False) -> bool:
         return False
 
 
-def score_index_header(line: object, hocr_page: object, debug: bool = False) -> object:
+def score_index_header(line: object, hocr_page: object, debug: bool = False) -> int:
     index_score = 0
     if not line:
         return index_score
@@ -226,6 +234,54 @@ def score_index_header(line: object, hocr_page: object, debug: bool = False) -> 
     if index_score > 3:
         if debug:
             print("\tIndex test - index_header_score:", index_score, "line: #{}#".format(line["line_text"]))
+    return index_score
+
+
+def score_index_page(page_hocr: dict, page_type_info: dict, config: dict) -> int:
+    index_score = 0
+    index_score += page_type_info["index_header_score"]
+    if config["inventory_num"] < config["index_page_early_print"]["inventory_threshold"]:
+        index_early_print_score = score_index_page_early_print(page_type_info, config["index_page_early_print"])
+        if index_early_print_score > index_score:
+            index_score = index_early_print_score
+    if config["inventory_num"] > config["index_page_late_print"]["inventory_threshold"]:
+        index_late_print_score = score_index_page_late_print(page_hocr, config["index_page_late_print"])
+        if index_late_print_score > index_score:
+            index_score = index_late_print_score
+    return index_score
+
+
+def score_index_page_early_print(page_type_info: dict, config: dict) -> int:
+    index_score = 0
+    if page_type_info["num_page_ref_lines"] >= config["page_ref_line_threshold"]:
+        index_score += int(page_type_info["num_page_ref_lines"] / config["page_ref_line_threshold"])
+    index_score += page_type_info["num_repeat_symbols"]
+    if page_type_info["left_jump_ratio"] > config["left_jump_ratio_threshold"]:
+        index_score += page_type_info["left_jump_ratio"] * 5
+    return index_score
+
+
+def score_index_page_late_print(page_hocr: dict, config: dict) -> int:
+    lines = [line for column in page_hocr["columns"] for line in column["lines"]]
+    line_widths = [line["width"] for line in lines]
+    num_lines = len(line_widths)
+    num_page_refs = len([line for line in lines if line["words"][-1]["word_text"].isdigit()])
+    num_dates = sum([1 for line in lines if line_has_abbrev_date(line)])
+    index_score = 0
+    if num_dates >= config["num_dates_threshold"] and num_page_refs >= config["num_page_refs_threshold"]:
+        index_score += 5
+    lw_median = int(median(line_widths))
+    lw_stdev = int(pstdev(line_widths))
+    if config["num_lines_min"] <= num_lines <= config["num_lines_max"]:
+        if config["num_words_max"] >= page_hocr["num_words"] >= config["num_words_min"]:
+            index_score += 5
+    if page_hocr["num_words"] > config["num_words_max"]:
+        index_score -= 5
+    if config["median_line_width_min"] <= lw_median <= config["median_line_width_max"]:
+        index_score += 5
+    if lw_stdev >= config["stdev_line_width_min"] and lw_median <= config["stdev_line_width_max"]:
+        index_score += 5
+    #print(index_score, "page num", page_hocr["page_num"], "\tnum words:", page_hocr["num_words"], "\tnum lines:", len(line_widths), "median:", lw_median, "lw_stdev:", lw_stdev, "num_dates:", num_dates, "num_page_refs:", num_page_refs)
     return index_score
 
 

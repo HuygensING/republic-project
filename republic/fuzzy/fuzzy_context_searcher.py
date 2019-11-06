@@ -34,6 +34,7 @@ class FuzzyContextSearcher(FuzzyKeywordSearcher):
         self.context_patterns = fuzzy_patterns.get_context_patterns(None)
         self.context_size = 100
         self.configure_context(config)
+        self.context_pattern_types = fuzzy_patterns.list_context_pattern_types()
 
     def configure_context(self, config):
         if "pattern_type" in config:

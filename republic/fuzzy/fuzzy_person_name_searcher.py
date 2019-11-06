@@ -38,13 +38,33 @@ def remove_close_distance_names(close_distance_names, name1, name2):
     close_distance_names[name2].remove(name1)
 
 
+def filter_distant_names(name1, name2, max_distance_ratio):
+    distance = score_levenshtein_distance(name1, name2)
+    # print("distance:", distance, "ratio 1:", distance / len(name1), "ratio 2:", distance / len(name2))
+    if distance / len(name1) > max_distance_ratio:
+        return True
+    elif distance / len(name2) > max_distance_ratio:
+        return True
+    else:
+        return False
+
+
 class FuzzyPersonNameSearcher(FuzzyContextSearcher):
 
-    def find_close_distance_names(self, name_list, max_distance_ratio=0.3):
+    def __init__(self, config):
+        FuzzyContextSearcher.__init__(self, config)
+        self.preferred = {}
+        self.max_distance_ratio = 0.3
+        if "max_distance_ratio" in config:
+            self.max_distance_ratio = config["max_distance_ratio"]
+
+    def find_close_distance_names(self, name_list, max_distance_ratio=None):
         # TODO:
         # - make a specific version for person name:
         # - consider use of initials for first or last name, e.g. A. Doelman
         # - consider use of only last name, e.g. Doelman
+        if not max_distance_ratio:
+            max_distance_ratio = self.max_distance_ratio
         close_distance_names = self.find_close_distance_keywords(name_list, max_distance_ratio=max_distance_ratio)
         max_distance_ratio = 0.5
         self.preferred = {}
@@ -52,33 +72,27 @@ class FuzzyPersonNameSearcher(FuzzyContextSearcher):
         self.filter_distant_last_names(close_distance_names, max_distance_ratio)
         return close_distance_names
 
-    def filter_distant_first_names(self, close_distance_names, max_distance_ratio):
+    def filter_distant_first_names(self, close_distance_names, max_distance_ratio=None):
+        if not max_distance_ratio:
+            max_distance_ratio = self.max_distance_ratio
         for name1 in close_distance_names:
             first_name1 = name1.split(" ")[0]
             for name2 in close_distance_names[name1]:
                 first_name2 = name2.split(" ")[0]
                 # print("comparing first names:", first_name1, first_name2)
-                if self.filter_distant_names(first_name1, first_name2, max_distance_ratio):
+                if filter_distant_names(first_name1, first_name2, max_distance_ratio):
                     remove_close_distance_names(close_distance_names, name1, name2)
 
-    def filter_distant_last_names(self, close_distance_names, max_distance_ratio):
+    def filter_distant_last_names(self, close_distance_names, max_distance_ratio=None):
+        if not max_distance_ratio:
+            max_distance_ratio = self.max_distance_ratio
         for name1 in close_distance_names:
             last_name1 = name1.split(" ")[-1]
             for name2 in close_distance_names[name1]:
                 last_name2 = name2.split(" ")[-1]
                 # print("comparing last names:", last_name1, last_name2)
-                if self.filter_distant_names(last_name1, last_name2, max_distance_ratio):
+                if filter_distant_names(last_name1, last_name2, max_distance_ratio):
                     remove_close_distance_names(close_distance_names, name1, name2)
-
-    def filter_distant_names(self, name1, name2, max_distance_ratio):
-        distance = score_levenshtein_distance(name1, name2)
-        # print("distance:", distance, "ratio 1:", distance / len(name1), "ratio 2:", distance / len(name2))
-        if distance / len(name1) > max_distance_ratio:
-            return True
-        elif distance / len(name2) > max_distance_ratio:
-            return True
-        else:
-            return False
 
 
 def is_new_name_match(name_match, known_matches):
@@ -145,4 +159,4 @@ if __name__ == "__main__":
     from fuzzy.fuzzy_patterns import dutch_person_name_patterns as name_patterns
 
     sample_text = "A'nthony van der Truyn en Adriaen Bosman, Makelaers tot Rotterdam, prefenteren, uyt de Hint te verkopen etfn curieufc Party opreckw ?al somfl'e Schalyen of Leyen."
-    name_matches = find_person_names_in_context()
+    sample_name_matches = find_person_names_in_context()

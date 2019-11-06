@@ -2,7 +2,7 @@ import os
 from typing import Union
 from collections import defaultdict
 from republic.model.inventory_mapping import inventory_mapping
-from republic.model.republic_hocr_model import make_hocr_page
+from republic.parser.generic_hocr_parser import make_hocr_doc
 from republic.parser.republic_index_page_parser import count_page_ref_lines
 
 
@@ -19,10 +19,10 @@ def get_files(data_dir: str) -> list:
 
 def read_hocr_scan(scan_file: str, config) -> int:
     column_id = "{}-{}".format(scan_file["scan_num"], scan_file["scan_column"])
-    hocr_page = make_hocr_page(scan_file["filepath"], scan_file["page_num"], config)
-    hocr_page.scan_info = scan_file
-    hocr_page.scan_info["num_page_ref_lines"] = count_page_ref_lines(hocr_page)
-    return hocr_page
+    hocr_doc = make_hocr_doc(scan_file["filepath"], scan_file["page_num"], config)
+    hocr_doc.scan_info = scan_file
+    hocr_doc.scan_info["num_page_ref_lines"] = count_page_ref_lines(hocr_doc)
+    return hocr_doc
 
 
 def get_scan_num(fname: str) -> int:

@@ -1,6 +1,6 @@
 import re
 from typing import Union
-from republic.model.republic_hocr_model import HOCRPage
+from republic.parser.generic_hocr_parser import HOCRDoc
 
 
 def get_highest_inter_word_space(line: object) -> int:
@@ -84,7 +84,7 @@ def is_short_text_line(line: object) -> bool:
     return len(line["line_text"].replace(" ", "")) < 15
 
 
-def merge_text_lines(hocr_page: HOCRPage) -> str:
+def merge_text_lines(hocr_page: HOCRDoc) -> str:
     page_text = ""
     for line in hocr_page.lines:
         if line["line_text"][-1] == "-":
@@ -102,12 +102,43 @@ def proper_column_cut(hocr_page: object) -> bool:
     return True
 
 
-def is_title_page(page_hocr: object, min_word_height: int = 60, min_char_width: int = 40) -> bool:
+def is_title_page(page_hocr: object, config: dict) -> bool:
     # title page has large word lines in the top half of the page
     # so top of line is below 2000
-    large_word_lines = [line for line in get_large_word_lines(page_hocr, min_word_height, min_char_width) if
+    top_lines = []
+    for column in page_hocr["columns"]:
+        for line in column["lines"]:
+            if line["top"] < config["title_line_top_threshold"]:
+                top_lines.append(line)
+    num_top_half_words = len([word for line in top_lines for word in line["words"]])
+    num_top_half_chars = sum([len(word["word_text"]) for line in top_lines for word in line["words"]])
+    #print("num_top_half_words:", num_top_half_words)
+    #print("num_top_half_chars:", num_top_half_chars)
+    large_word_lines = [line for line in get_large_word_lines(page_hocr, config) if
                         line["top"] < 2000]
-    return len(large_word_lines) >= 2
+    #print("num large word lines:", len(large_word_lines))
+    if len(large_word_lines) < config["large_word_lines_threshold"]:
+        return False
+    if num_top_half_words > config["num_top_half_words"]:
+        #print(page_hocr["page_num"], "TOO MANY TOP WORDS", num_top_half_words)
+        return False
+    max_width = max([line["width"] for line in large_word_lines])
+    num_words = len([word for column in page_hocr["columns"] for line in column["lines"] for word in line["words"]])
+    #print(page_hocr["page_num"], len(large_word_lines))
+    if max_width < config["max_line_width_threshold"]:
+        return False
+    #print(page_hocr["page_num"], "max_width:", max_width)
+    #print(page_hocr["page_num"], "num_words:", num_words)
+    if num_words < config["min_word_num"] or num_words > config["max_word_num"]:
+        return False
+    #print(page_hocr["page_num"], "num_words:", num_words)
+    for line in large_word_lines:
+        if line["width"] < config["max_line_width_threshold"]:
+            continue
+        #print("large word line width:", line["width"])
+        #print("\t", line["line_text"])
+    else:
+        return True
 
 
 def get_lines(page_hocr: Union[list, dict]) -> list:
@@ -122,18 +153,19 @@ def get_lines(page_hocr: Union[list, dict]) -> list:
         return []
 
 
-def get_large_word_lines(page_hocr: Union[list, dict], min_word_height:int = 100, min_char_width: int = 40) -> iter:
+def get_large_word_lines(page_hocr: Union[list, dict], config: dict) -> iter:
     for line in get_lines(page_hocr):
         num_large_words = 0
         num_words = len(line["words"])
         for word in line["words"]:
             avg_char_width = word["width"] / len(word["word_text"])
-            if avg_char_width < min_char_width:
+            if avg_char_width < config["min_char_width"]:
                 continue
-            if word["height"] >= min_word_height:
+            if word["height"] >= config["min_word_height"]:
                 num_large_words += 1
         num_small_words = num_words - num_large_words
         if num_large_words > num_small_words:
+            #print("LARGE WORD LINE:", page_hocr["page_num"], line)
             yield line
 
 

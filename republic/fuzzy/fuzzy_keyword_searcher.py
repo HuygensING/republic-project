@@ -714,10 +714,10 @@ class FuzzyKeywordSearcher(object):
                 # - keywords are very different in length
                 if abs(len(string1) - len(string2)) > 3: continue
                 # - keywords have low overlap in characters
-                char_overlap = self.score_char_overlap(string1, string2)
+                char_overlap = score_char_overlap(string1, string2)
                 # print(string1, string2, char_overlap, char_overlap/len(string1))
                 if char_overlap / len(string1) < 0.5: continue
-                distance = self.score_levenshtein_distance(string1, string2)
+                distance = score_levenshtein_distance(string1, string2)
                 # print(string1, string2, distance, distance / len(string1), distance/len(string2))
                 if distance < 10 and (
                         distance / len(string1) < max_distance_ratio or distance / len(string2) < max_distance_ratio):
@@ -727,11 +727,11 @@ class FuzzyKeywordSearcher(object):
 
     def find_closer_terms(self, candidate, keyword, close_terms):
         closer_terms = {}
-        keyword_distance = self.score_levenshtein_distance(keyword, candidate)
+        keyword_distance = score_levenshtein_distance(keyword, candidate)
         # print("candidate:", candidate, "\tkeyword:", keyword)
         # print("keyword_distance", keyword_distance)
         for close_term in close_terms:
-            close_term_distance = self.score_levenshtein_distance(close_term, candidate)
+            close_term_distance = score_levenshtein_distance(close_term, candidate)
             # print("close_term:", close_term, "\tdistance:", close_term_distance)
             if close_term_distance < keyword_distance:
                 closer_terms[close_term] = close_term_distance

@@ -1,9 +1,11 @@
 import copy
+import json
 from typing import Dict, List, Any, Union
 
-from republic.model.republic_hocr_model import make_hocr_page, filter_tiny_words_from_lines
+from republic.parser.generic_hocr_parser import make_hocr_doc, filter_tiny_words_from_lines
 import republic.parser.republic_base_page_parser as base_parser
 import republic.parser.republic_index_page_parser as index_parser
+import republic.parser.republic_respect_page_parser as respect_parser
 import republic.parser.republic_resolution_page_parser as resolution_parser
 import republic.parser.republic_column_parser as column_parser
 from republic.model.republic_phrase_model import resolution_phrases, spelling_variants
@@ -23,21 +25,21 @@ fuzzy_searcher.index_keywords(resolution_phrases)
 fuzzy_searcher.index_spelling_variants(spelling_variants)
 
 
-def get_page_columns_hocr(page_info: object, config: dict) -> object:
+def get_page_columns_hocr(page_info: object, config: dict) -> dict:
     return {column_info["column_id"]: get_column_hocr(column_info, config) for column_info in page_info["columns"]}
 
 
-def get_column_hocr(column_info, config):
-    hocr_page = make_hocr_page(column_info["filepath"], column_info["column_id"], config=config)
-    column_hocr = hocr_page.carea
-    column_hocr["lines"] = hocr_page.lines
+def get_column_hocr(column_info: dict, config: dict) -> dict:
+    hocr_doc = make_hocr_doc(column_info["filepath"], column_info["column_id"], config=config)
+    column_hocr = hocr_doc.carea
+    column_hocr["lines"] = hocr_doc.lines
     for line in column_hocr["lines"]:
         #print("num words before:", len(line["words"]))
         line["words"] = column_parser.filter_low_confidence_words(line["words"], config)
         #print("num words after:", len(line["words"]))
         #print(line["line_text"])
     if "remove_tiny_words" in config and config["remove_tiny_words"]:
-        column_hocr["lines"] = filter_tiny_words_from_lines(hocr_page, config)
+        column_hocr["lines"] = filter_tiny_words_from_lines(hocr_doc, config)
     column_hocr["num_lines"] = len(column_hocr["lines"])
     column_hocr["num_words"] = len([word for line in column_hocr["lines"] for word in line["words"]])
     return column_hocr
@@ -54,81 +56,83 @@ def determine_scan_type(scan_hocr: object, config: dict) -> list:
         return ["normal", "double_page"]
 
 
-def get_scan_hocr(scan_info, config):
-    hocr_page = make_hocr_page(scan_info["filepath"], scan_info["scan_num"], config)
-    scan_hocr: Dict[str, Union[Union[List[int], int], Any]] = hocr_page.carea
+def get_scan_hocr(scan_info: dict, config: dict) -> dict:
+    hocr_doc = make_hocr_doc(scan_info["filepath"], scan_info["scan_num"], config)
+    scan_hocr: Dict[str, Union[Union[List[int], int], Any]] = hocr_doc.carea
     scan_hocr["scan_num"] = scan_info["scan_num"]
     scan_hocr["scan_id"] = "year-{}-scan-{}".format(scan_info["inventory_year"], scan_info["scan_num"])
     scan_hocr["filepath"] = scan_info["filepath"]
     scan_hocr["inventory_num"] = scan_info["inventory_num"]
     scan_hocr["inventory_year"] = scan_info["inventory_year"]
     scan_hocr["inventory_period"] = scan_info["inventory_period"]
-    scan_hocr["hocr_box"] = hocr_page.box
+    scan_hocr["hocr_box"] = hocr_doc.box
     scan_hocr["scan_type"] = determine_scan_type(scan_hocr, config)
-    scan_hocr["lines"] = hocr_page.lines
+    scan_hocr["lines"] = hocr_doc.lines
     if "remove_tiny_words" in config and config["remove_tiny_words"]:
-        scan_hocr["lines"] = filter_tiny_words_from_lines(hocr_page, config)
+        scan_hocr["lines"] = filter_tiny_words_from_lines(hocr_doc, config)
     return scan_hocr
 
 
-def get_page_type(page_hocr: object, debug: bool = False) -> str:
-    resolution_score = 0
-    index_score = 0
-    if page_hocr["num_columns"] == 0 or page_hocr["num_lines"] == 0 or page_hocr["num_words"] == 0:
-        return "empty_page"
+def get_page_type_info(page_hocr: dict, debug: bool = False) -> dict:
+    page_type_info = {
+        "num_words": page_hocr["num_words"],
+        "num_page_ref_lines": index_parser.count_page_ref_lines((page_hocr)),
+        "num_repeat_symbols": index_parser.count_repeat_symbols_page((page_hocr)),
+        "left_jump_ratio": base_parser.calculate_left_jumps(page_hocr),
+        "phrase_matches": len(fuzzy_searcher.find_candidates(get_page_text(page_hocr))),
+        "resolution_header_score": 0,
+        "index_header_score": 0,
+        "respect_header_score": 0,
+    }
     for column_hocr in page_hocr["columns"]:
-        #if not "column_hocr" in column_hocr:
-        #    return "bad_page"
-        #column_hocr = column_hocr["column_hocr"]
-        #if not page_parser.proper_column_cut(column_hocr):
-        #    page_type = "bad_page"
-        #    return page_type
         column_header_line = base_parser.get_column_header_line(column_hocr)
-        if not column_header_line:
-        #    print("\t\tNO HEADER LINE for column id", column_hocr["column_id"])
+        if column_header_line:
             continue
-        resolution_score += resolution_parser.score_resolution_header(column_header_line, debug=debug)
-        index_score += index_parser.score_index_header(column_header_line, column_hocr, debug=debug)
-    if page_hocr["num_words"] > 700:
-        resolution_score += int(page_hocr["num_words"] / 100)
-    if index_parser.count_page_ref_lines(page_hocr) >= 10:
-        index_score += int(index_parser.count_page_ref_lines(page_hocr) / 10)
-        if debug:
-            print("\tIndex test - many page references:", index_parser.count_page_ref_lines(page_hocr))
-    if index_parser.count_repeat_symbols_page(page_hocr) == 0:
-        resolution_score += 1
-        if debug:
-            print("\tResolution test - no repeat symbols:")
-    else:
-        index_score += index_parser.count_repeat_symbols_page(page_hocr)
-        if debug and index_parser.count_repeat_symbols_page(page_hocr) > 3:
-            print("\tIndex test - many repeat symbols:", index_parser.count_repeat_symbols_page(page_hocr))
-    if base_parser.calculate_left_jumps(page_hocr) < 0.3:
-        resolution_score += (1 - base_parser.calculate_left_jumps(page_hocr)) * 10
-        if (debug):
-            print("\tfew left jumps")
-    elif base_parser.calculate_left_jumps(page_hocr) > 0.5:
-        if (debug):
-            print("\tmany left jumps")
-        index_score += base_parser.calculate_left_jumps(page_hocr) * 10
-    text = " ".join([line["line_text"] for column in page_hocr["columns"] for line in column["lines"]])
-    phrase_matches = fuzzy_searcher.find_candidates(text)
-    if phrase_matches:
-        resolution_score += len(phrase_matches)
-        if debug:
-            print("\tresolution phrase matches:", len(phrase_matches))
-    if debug:
-        print("res_score:", resolution_score, "ind_score:", index_score)
-        print(" ".join(base_parser.get_page_header_words(page_hocr)))
-    if resolution_score >= 5 and resolution_score > index_score:
-        return "resolution_page"
-    elif index_score >= 10 and index_score > resolution_score:
-        return "index_page"
-    else:
-        return "unknown_page_type"
+        resolution_header_score = resolution_parser.score_resolution_header(column_header_line, debug=debug)
+        page_type_info["resolution_header_score"] = resolution_header_score
+        index_header_score = index_parser.score_index_header(column_header_line, column_hocr, debug=debug)
+        page_type_info["index_header_score"] = index_header_score
+    return page_type_info
 
 
-def make_page_doc(page_id: str, pages_info: dict, config: dict) -> object:
+def get_page_text(page_hocr: dict) -> str:
+    return " ".join([line["line_text"] for column in page_hocr["columns"] for line in column["lines"]])
+
+
+def is_empty_page(page_hocr: dict) -> bool:
+    if page_hocr["num_columns"] == 0 or page_hocr["num_lines"] == 0 or page_hocr["num_words"] == 0:
+        return True
+    else:
+        return False
+
+
+def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
+    page_type = get_single_page_column_type(page_hocr)
+    if is_empty_page(page_hocr):
+        page_type += ["empty_page"]
+    elif respect_parser.is_respect_page(page_hocr, config):
+        page_type += ["respect_page"]
+    else:
+        page_type_info = get_page_type_info(page_hocr, debug=debug)
+        resolution_score = resolution_parser.score_resolution_page(page_type_info)
+        index_score = index_parser.score_index_page(page_hocr, page_type_info, config)
+        if debug:
+            print(json.dumps(page_type_info, indent=2))
+        if debug:
+            print("res_score:", resolution_score, "ind_score:", index_score)
+            print(" ".join(base_parser.get_page_header_words(page_hocr)))
+        if resolution_score >= 5 and resolution_score > index_score:
+            page_type += ["resolution_page"]
+        elif index_score >= 5 and index_score > resolution_score:
+            page_type += ["index_page"]
+        else:
+            page_type += ["unknown_page_type"]
+    if base_parser.is_title_page(page_hocr, config["title_page"]):
+        page_type += ["title_page"]
+    return page_type
+
+
+def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
     page_doc = {}
     for prop in pages_info[page_id]:
         if prop is "columns":
@@ -176,42 +180,46 @@ def split_lines_on_pages(dp_hocr: dict, columns_info: list, column_config: dict)
     return [odd_page_hocr, even_page_hocr]
 
 
-def parse_double_page_scan(scan_hocr: dict, column_config: dict):
-    column_config = copy.copy(column_config)
-    column_config["hocr_box"] = scan_hocr["hocr_box"]
+def parse_double_page_scan(scan_hocr: dict, config: dict):
+    config = copy.copy(config)
+    config["hocr_box"] = scan_hocr["hocr_box"]
     scan_hocr["page_boundary"] = int(scan_hocr["hocr_box"]["right"] / 2)
-    columns_info = column_parser.determine_column_start_end(scan_hocr, column_config)
-    single_pages_hocr = split_lines_on_pages(scan_hocr, columns_info, column_config)
+    scan_columns_info = column_parser.determine_column_start_end(scan_hocr, config)
+    #print("scan columns info:", scan_columns_info)
+    single_pages_hocr = split_lines_on_pages(scan_hocr, scan_columns_info, config)
     for single_page_hocr in single_pages_hocr:
-        single_page_hocr["is_parseable"] = True
-        columns_hocr = parse_single_page(single_page_hocr, column_config)
-        if single_page_hocr["num_columns"] == 0:
-            single_page_hocr["num_lines"] = 0
-            single_page_hocr["num_words"] = 0
-            single_page_hocr["columns"] = []
-        else:
-            single_page_hocr["columns"] = columns_hocr["columns"]
-            single_page_hocr["num_lines"] = max([column["num_lines"] for column in single_page_hocr["columns"]])
-            single_page_hocr["num_words"] = sum([column["num_words"] for column in single_page_hocr["columns"]])
-        del single_page_hocr["lines"]
-        single_page_hocr["page_type"] += [get_page_type(single_page_hocr, debug=False)]
+        parse_single_page(single_page_hocr, config)
     return single_pages_hocr
 
 
-def parse_single_page(sp_hocr, column_config: dict):
-    column_config["hocr_box"] = sp_hocr["hocr_box"]
-    columns_info = column_parser.determine_column_start_end(sp_hocr, column_config)
-    sp_hocr["num_columns"] = len(columns_info)
+def get_single_page_column_type(sp_hocr: dict):
     if sp_hocr["num_columns"] == 0:
-        sp_hocr["page_type"] = ["special", "no_column"]
-        return sp_hocr
+        return ["special", "no_column"]
     elif sp_hocr["num_columns"] == 2:
-        sp_hocr["page_type"] = ["normal", "double_column"]
+        return ["normal", "double_column"]
     elif sp_hocr["num_columns"] == 1:
-        sp_hocr["page_type"] = ["special", "single_column"]
+        return ["special", "single_column"]
     else:
-        sp_hocr["page_type"] = ["special", "multi_column"]
-    #print(columns_info)
-    return column_parser.split_lines_on_columns(sp_hocr, columns_info, column_config)
+        return ["special", "multi_column"]
+
+
+def parse_single_page(single_page_hocr: dict, config: dict):
+    config["hocr_box"] = single_page_hocr["hocr_box"]
+    page_columns_info = column_parser.determine_column_start_end(single_page_hocr, config)
+    columns_hocr = column_parser.split_lines_on_columns(single_page_hocr, page_columns_info, config)
+    #print(page_columns_info)
+    single_page_hocr["num_columns"] = len(page_columns_info)
+    single_page_hocr["is_parseable"] = True
+    if single_page_hocr["num_columns"] == 0:
+        single_page_hocr["num_lines"] = 0
+        single_page_hocr["num_words"] = 0
+        single_page_hocr["columns"] = []
+    else:
+        single_page_hocr["columns"] = columns_hocr["columns"]
+        single_page_hocr["num_lines"] = max([column["num_lines"] for column in single_page_hocr["columns"]])
+        single_page_hocr["num_words"] = sum([column["num_words"] for column in single_page_hocr["columns"]])
+    del single_page_hocr["lines"]
+    single_page_hocr["page_type"] = get_page_type(single_page_hocr, config)
+    single_page_hocr["is_title_page"] = True if "title_page" in single_page_hocr["page_type"] else False
 
 

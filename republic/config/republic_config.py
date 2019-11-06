@@ -38,22 +38,64 @@ base_config = {
     "remove_tiny_words": True,
     "remove_line_numbers": False,
     "normal_scan_width": 4840,
+    "column_gap": {
+        "gap_threshold": 50,
+        "gap_pixel_freq_ratio": 0.75,
+    },
     "word_conf_threshold": 10,
-    "column_gap_threshold": 50,
-    "gap_pixel_freq_ratio": 0.75,
     "fulltext_char_threshold": 0.5,
-    "fulltext_words_threshold": 15,
-    "filter_words": ["|", "{", "$"]
+    "filter_words": ["|", "{", "$", "}"],
+    "index_page": {
+        "left_jump_ratio_min": 0.5
+    },
+    "index_page_early_print": {
+        "page_ref_line_threshold": 10,
+        "left_jump_ratio_threshold": 0.5,
+        "num_words_min": 200,
+        "num_words_max": 600,
+        "inventory_threshold": 3819,
+    },
+    "index_page_late_print": {
+        "median_line_width_min": 250,
+        "median_line_width_max": 400,
+        "num_words_min": 200,
+        "num_words_max": 500,
+        "stdev_line_width_min": 100,
+        "stdev_line_width_max": 400,
+        "num_lines_min": 130,
+        "num_lines_max": 230,
+        "num_dates_threshold": 5,
+        "num_page_refs_threshold": 15,
+        "inventory_threshold": 3798,
+        "left_jump_ratio_min": 0.5,
+    },
+    "resolution_page": {
+        "left_jump_ratio_max": 0.3,
+        "num_words_min": 700,
+        "num_words_max": 1200,
+    },
+    "respect_page": {
+        "column_min_threshold": 3,
+        "column_max_threshold": 4,
+        "capitalized_word_line_ratio": 0.3,
+        "capital_freq_ratio": 0.5,
+    },
+    "title_page": {
+        "min_char_width": 40,
+        "min_word_height": 60,
+        "min_word_num": 10,
+        "num_top_half_words": 60,
+        "num_top_half_chars": 150,
+        "max_line_width_threshold": 1000,
+        "large_word_lines_threshold": 2,
+        "title_line_top_threshold": 1300,
+        "max_word_num": 500
+    }
 }
 
 column_config = {
     "avg_char_width": 20,
     "word_conf_threshold": 10,
-    "column_gap_threshold": 50,
-    "gap_pixel_freq_ratio": 0.75,
-    "fulltext_char_threshold": 0.5,
-    "fulltext_words_threshold": 15,
-    "filter_words": ["|", "{", "$"]
 }
 
 

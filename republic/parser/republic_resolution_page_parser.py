@@ -67,3 +67,18 @@ def score_resolution_header(line, debug=False):
                   "line: #{}#".format(line["line_text"]))
         # print(json.dumps(line, indent=2))
     return resolution_score
+
+
+def score_resolution_page(page_type_info: dict) -> int:
+    resolution_score = 0
+    resolution_score += page_type_info["resolution_header_score"]
+    if page_type_info["num_words"] > 700:
+        resolution_score += int(page_type_info["num_words"] / 100)
+    if page_type_info["num_repeat_symbols"] == 0:
+        resolution_score += 1
+    if page_type_info["left_jump_ratio"] < 0.3:
+        resolution_score += (1 - page_type_info["left_jump_ratio"]) * 10
+    resolution_score += page_type_info["phrase_matches"] * 2
+    return resolution_score
+
+

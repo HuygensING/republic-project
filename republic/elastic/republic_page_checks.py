@@ -1,4 +1,5 @@
 import republic.elastic.republic_elasticsearch as rep_es
+import republic.analyser.republic_inventory_analyser as inv_analyser
 from elasticsearch import Elasticsearch
 
 
@@ -30,14 +31,46 @@ def score_levenshtein_distance(s1, s2):
 ###########################################################################
 
 
-def correct_page_types(es: Elasticsearch, year_info: dict):
-    ordered_page_ids = get_ordered_page_ids(es, year_info)
+def correct_page_types(es: Elasticsearch, inventory_config: dict):
+    print("Gathering section information for inventory", inventory_config["inventory_num"])
+    section_types = ["index_page", "resolution_page", "respect_page", "unknown_page_type"]
+    inventory_data = inv_analyser.get_inventory_summary(es, inventory_config)
+    for section in inventory_data["sections"]:
+        corrected = 0
+        page_type = section["page_type"]
+        for page_num in range(section["start"], section["end"]+1):
+            page_doc = rep_es.retrieve_page_by_page_number(es, page_num, inventory_config)
+            if not page_doc:
+                print("no document for page number", page_num)
+                continue
+            if "page_type" not in page_doc:
+                print(page_doc["page_num"], page_doc["page_id"], page_doc["scan_num"])
+                print(page_doc["num_columns"])
+            if page_type not in page_doc["page_type"]:
+                #incorrect_type = [page_type for page_type in page_doc["page_type"] if page_type in section_types]
+                page_doc["page_type"] = [page_type for page_type in page_doc["page_type"] if page_type not in section_types]
+                page_doc["page_type"] += [page_type]
+                #print(page_doc["page_num"], page_doc["page_type"])
+                rep_es.index_page(es, page_doc, inventory_config)
+                #print(page_doc["page_num"], "correcting", incorrect_type, "to", page_type)
+                corrected += 1
+            #else:
+            #    print(page_doc["page_num"], "correct")
+        print("Inventory {} section {} ({}-{})\tcorrected types of {} pages".format(inventory_config["inventory_num"],
+                                                                                    section["page_type"],
+                                                                                    section["start"],
+                                                                                    section["end"], corrected))
+    print("\nDone!")
+
+
+def correct_page_types_old(es: Elasticsearch, config: dict):
+    ordered_page_ids = get_ordered_page_ids(es, config)
     ordered_parts = ["index_page", "resolution_page"]  # "non_text_page",
     prev_part = None
     prev_is_title_page = None
     current_part = None
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_doc(es, page_id, year_info)
+        page_doc = rep_es.retrieve_page_doc(es, page_id, config)
         if not page_doc:
             continue  # skip unindexed pages
         if page_doc["is_title_page"] and not prev_is_title_page:
@@ -54,7 +87,7 @@ def correct_page_types(es: Elasticsearch, year_info: dict):
             print("correcting:", page_id, "from type", page_doc["page_type"], "to type", current_part)
             page_doc["page_type"] = current_part
             doc = rep_es.create_es_page_doc(page_doc)
-            es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
+            es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id, body=doc)
         prev_part = current_part
         prev_is_title_page = page_doc["is_title_page"]
     print("\nDone!")
@@ -145,29 +178,29 @@ def get_page_pairs(es: Elasticsearch, ordered_page_ids: list, es_config: dict) -
         yield curr_page_doc, prev_page_doc
 
 
-def get_ordered_page_ids(es: Elasticsearch, year_info: dict) -> list:
-    query = {"query": {"term": {"inventory_year": year_info["year"]}}, "_source": ["page_num", "page_id"],
+def get_ordered_page_ids(es: Elasticsearch, config: dict) -> list:
+    query = {"query": {"term": {"inventory_year": config["year"]}}, "_source": ["page_num", "page_id"],
              "size": 10000}
-    # query = {"query": {"term": {"inventory_year": year_info["year"]}}}
-    response = es.search(index=year_info["page_index"], doc_type=year_info["page_doc_type"], body=query)
+    # query = {"query": {"term": {"inventory_year": config["year"]}}}
+    response = es.search(index=config["page_index"], doc_type=config["page_doc_type"], body=query)
     if response["hits"]["total"] == 0:
         return []
     pages_info = [hit["_source"] for hit in response["hits"]["hits"]]
     return [page_info["page_id"] for page_info in sorted(pages_info, key=lambda x: x["page_num"])]
 
 
-def detect_duplicate_scans(es: Elasticsearch, year_info: dict):
-    ordered_page_ids = get_ordered_page_ids(es, year_info)
-    for curr_page_doc, prev_page_doc in get_page_pairs(es, ordered_page_ids, year_info):
+def detect_duplicate_scans(es: Elasticsearch, config: dict):
+    ordered_page_ids = get_ordered_page_ids(es, config)
+    for curr_page_doc, prev_page_doc in get_page_pairs(es, ordered_page_ids, config):
         curr_page_doc["is_duplicate"] = False
         if is_duplicate(curr_page_doc, prev_page_doc, similarity_threshold=0.8):
             curr_page_doc["is_duplicate"] = True
             curr_page_doc["is_duplicate_of"] = prev_page_doc["page_id"]
             print("Page {} is duplicate of page {}".format(curr_page_doc["page_id"], prev_page_doc["page_id"]))
         doc = rep_es.create_es_page_doc(curr_page_doc)
-        es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=curr_page_doc["page_id"],
-                        body=doc)
-    print("\nDone!")
+        #es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=curr_page_doc["page_id"],
+        #                body=doc)
+    print("\nDone with year {}, inventory {}!".format(config["year"], config["inventory_year"]))
 
 
 ########################################################################
@@ -182,11 +215,11 @@ def detect_duplicate_scans(es: Elasticsearch, year_info: dict):
 #
 ########################################################################
 
-def correct_page_numbers(es: Elasticsearch, year_info: dict):
-    ordered_page_ids = get_ordered_page_ids(es, year_info)
+def correct_page_numbers(es: Elasticsearch, config: dict):
+    ordered_page_ids = get_ordered_page_ids(es, config)
     prev_numbered_page_number = 0
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_doc(es, page_id, year_info)
+        page_doc = rep_es.retrieve_page_doc(es, page_id, config)
         year = page_doc["inventory_year"]
         if not page_doc:  # skip unindexed pages
             continue
@@ -196,7 +229,7 @@ def correct_page_numbers(es: Elasticsearch, year_info: dict):
         if page_doc["page_type"] != "resolution_page":  # skip non-resolution pages
             continue
         if page_doc["is_duplicate"]:
-            duplicated_page_doc = rep_es.retrieve_page_doc(es, page_doc["is_duplicate_of"], year_info)
+            duplicated_page_doc = rep_es.retrieve_page_doc(es, page_doc["is_duplicate_of"], config)
             print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"],
                   duplicated_page_doc["type_page_num"])
             page_doc["type_page_num"] = duplicated_page_doc["type_page_num"]
@@ -210,6 +243,6 @@ def correct_page_numbers(es: Elasticsearch, year_info: dict):
             page_doc["type_page_num"] = prev_numbered_page_number + 1
         page_doc["type_page_num_checked"] = True
         doc = rep_es.create_es_page_doc(page_doc)
-        es.index(index=year_info["page_index"], doc_type=year_info["page_doc_type"], id=page_id, body=doc)
+        es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id, body=doc)
         prev_numbered_page_number = page_doc["type_page_num"]
     print("\nDone!")

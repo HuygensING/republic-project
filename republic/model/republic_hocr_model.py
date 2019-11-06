@@ -1,307 +1,198 @@
-# Created by: Marijn Koolen
-# Created on: 2018-08-13
-# Context: parsing digitized charter books to extract geographic attestations and dates
-from bs4 import BeautifulSoup as bsoup
+from typing import Union, TypeVar, List
+
+Word = TypeVar('Word', bound='HOCRWord')
+Line = TypeVar('Line', bound='HOCRLine')
+Column = TypeVar('Column', bound='HOCRColumn')
+Object = TypeVar('Object', bound='HOCRObject')
 
 
-class HOCRPage(object):
-
-    def __init__(self, hocr_page_soup, page_num=None, config={}):
-        """
-        Action: parses a hOCR page document based on HTML parser Beautiful Soup
-        Input: a Beautiful Soup object of the hOCR page
-        Output: a HOCRPAGE object with paragraphs, lines and words and their page positions
-                as well as a representation of the lines with whitespace restored based on
-                word positioning.
-
-        Three optional input arguments:
-
-        1. page_num: set a page number for this page
-
-        2. minimum_paragraph_gap: is used to estimate line skips between paragraphs
-        as boundaries. Default value is based on OHZ charter books, for others
-        it's possibly higher or lower.
-
-        3. avg_char_width: is used to estimate width of whitespaces between words
-        default value is based on averaging over pixel width and character
-        length of recognised words in OHZ charter books.
-
-        """
-        self.tag = hocr_page_soup.name
-        self.page_num = page_num
-        self.class_ = hocr_page_soup['class']
-        self.attributes = get_hocr_title_attributes(hocr_page_soup)
-        self.box = get_hocr_box(hocr_page_soup)
-        self.carea = self.set_carea(hocr_page_soup)
-        self.lines = []
-        self.paragraphs = []
-        self.minimum_paragraph_gap = 10
-        if "minimum_paragraph_gap" in config:
-            self.minimum_paragraph_gap = config["minimum_paragraph_gap"]
-        self.avg_char_width = 20
-        if "avg_char_width" in config:
-            self.avg_char_width = config["avg_char_width"]
-        self.remove_tiny_words = False
-        if "remove_tiny_words" in config:
-            self.remove_tiny_words = config["remove_tiny_words"]
-        self.tiny_word_width = 10
-        if "tiny_word_width" in config:
-            self.tiny_word_width = config["tiny_word_width"]
-
-    def set_carea(self, hocr_page_soup):
-        hocr_carea_soup = get_hocr_carea_soup(hocr_page_soup)
-        return get_hocr_box(hocr_carea_soup)
-
-    def set_paragraphs(self, hocr_soup):
-        line_count = 0
-        for hocr_paragraph_soup in get_hocr_pars(hocr_soup):
-            paragraph = make_empty_paragraph(hocr_paragraph_soup)
-            for hocr_line_soup in get_hocr_lines(hocr_paragraph_soup):
-                line_count += 1
-                paragraph["line_numbers"] += [line_count]
-            self.paragraphs.append(paragraph)
-
-    def merge_paragraph_lines(self):
-        for paragraph in self.paragraphs:
-            text = ""
-            for line in paragraph["line_texts"]:
-                if len(line) == 0:
-                    continue
-                if line[-1] == "-":
-                    # Crude but quick. TODO more proper line break hyphenation analysis
-                    text += line[:-1].strip()
-                else:
-                    text += line.strip() + " "
-            paragraph["merged_text"] = text
-
-    def is_even_side(self):
-        if self.page_num % 2 == 0:
-            return True
-        else:
-            return False
-
-    def set_lines(self, hocr_page_soup):
-        # store all lines separately as:
-        # line_text:        simple text representation
-        # spaced_line_text: whitespace maintained representation (for indentation, column spacing, margins, ...)
-        # words:            keep individual words and their coordinates
-        for hocr_line_soup in get_hocr_lines(hocr_page_soup):
-            line = get_hocr_box(hocr_line_soup)
-            line["words"] = get_words(hocr_line_soup)
-            line["line_text"] = " ".join([word["word_text"] for word in line["words"]])
-            # line["line_text"] = hocr_line_soup.get_text().replace("\n", " ")
-            line["spaced_line_text"] = self.get_spaced_line_text(line["words"])
-            # occasionally, lines only contain a pipe char based on edge shading in scan
-            # skip those lines.
-            if line["line_text"].strip() == "|" or line["line_text"].strip() == "|" or len(line["line_text"]) == 1:
-                continue
-            self.lines.append(line)
-
-    def get_spaced_line_text(self, words):
-        # use word coordinates to reconstruct spacing between words
-        spaced_line_text = ""
-        if len(words) == 0:
-            return spaced_line_text
-        offset = words[0]["bbox"][0] - self.carea["left"]
-        spaced_line_text = " " * int(round(offset / self.avg_char_width))
-        for index, word in enumerate(words[:-1]):
-            spaced_line_text += word["word_text"]
-            spaced_line_text += self.get_spaces(word, words[index + 1])
-        spaced_line_text += words[-1]["word_text"]
-        return spaced_line_text
-
-    def get_spaces(self, word1, word2):
-        # Simple computation based on word coordinates to determine
-        # white spacing between them.
-        space_to_next = word2["left"] - word1["right"]
-        spaces = int(round(space_to_next / self.avg_char_width))
-        if spaces == 0:
-            spaces = 1
-        return " " * spaces
-
-
-def filter_tiny_words_from_lines(hocr_page, config):
-    return [filter_tiny_words_from_line(hocr_page, line, config) for line in hocr_page.lines]
-
-
-def set_lines(hocr_page, hocr_page_soup):
-    # store all lines separately as:
-    # line_text:        simple text representation
-    # spaced_line_text: whitespace maintained representation (for indentation, column spacing, margins, ...)
-    # words:            keep individual words and their coordinates
-    for hocr_line_soup in get_hocr_lines(hocr_page_soup):
-        line = get_hocr_box(hocr_line_soup)
-        line["words"] = get_words(hocr_line_soup)
-        line["line_text"] = " ".join([word["word_text"] for word in line["words"]])
-        # line["line_text"] = hocr_line_soup.get_text().replace("\n", " ")
-        line["spaced_line_text"] = get_spaced_line_text(hocr_page, line["words"])
-
-
-def get_spaced_line_text(hocr_page, words, config):
-    # use word coordinates to reconstruct spacing between words
-    spaced_line_text = ""
-    if len(words) == 0:
-        return spaced_line_text
-    offset = words[0]["bbox"][0] - hocr_page.carea["left"]
-    spaced_line_text = " " * int(round(offset / config["avg_char_width"]))
-    for index, word in enumerate(words[:-1]):
-        spaced_line_text += word["word_text"]
-        spaced_line_text += get_spaces(word, words[index + 1], config["avg_char_width"])
-    spaced_line_text += words[-1]["word_text"]
-    return spaced_line_text
-
-
-def get_spaces(word1, word2, avg_char_width):
-    # Simple computation based on word coordinates to determine
-    # white spacing between them.
-    space_to_next = word2["left"] - word1["right"]
-    spaces = int(round(space_to_next / avg_char_width))
-    if spaces == 0:
-        spaces = 1
-    return " " * spaces
-
-
-def make_empty_paragraph(hocr_soup):
-    paragraph = get_hocr_box(hocr_soup)
-    paragraph["type"] = None
-    paragraph["line_numbers"] = []
-    paragraph["line_texts"] = []
-    if "lang" in hocr_soup.attrs:
-        paragraph["lang"] = hocr_soup["lang"]
-    return paragraph
-    # return {
-    #    "type": None,
-    #    "line_texts": [],
-    #    "line_numbers": [],
-    # }
-
-
-def get_hocr_box(hocr_soup):
-    # extract hocr bounding box, compute size and explicate offsets
-    element_bbox = get_hocr_bbox(hocr_soup)
-    box_size = get_bbox_size(element_bbox)
+def construct_box_from_items(items: List[Object]) -> dict:
+    left = min([item.left for item in items])
+    right = max([item.right for item in items])
+    top = min([item.top for item in items])
+    bottom = max([item.bottom for item in items])
     return {
-        "bbox": element_bbox,
-        "width": box_size[0],
-        "height": box_size[1],
-        "left": element_bbox[0],
-        "right": element_bbox[2],
-        "top": element_bbox[1],
-        "bottom": element_bbox[3]
+        "left": left,
+        "right": right,
+        "top": top,
+        "bottom": bottom,
+        "height": bottom - top,
+        "width": right - left,
     }
 
 
-def get_hocr_content(hocr_file):
-    with open(hocr_file, 'rt') as fh:
-        return bsoup(fh, 'lxml')
+def construct_line_from_words(words: List[Word], config: Union[dict, None]) -> Line:
+    line = construct_box_from_items(words)
+    line["words"] = words
+    return HOCRLine(line, config)
 
 
-def get_hocr_page_soup(hocr_soup):
-    return hocr_soup.find("div", class_="ocr_page")
+def filter_low_confidence_words(words: List[Word], conf_threshold: int = 0) -> List[Word]:
+    return [word for word in words if word.word_conf >= conf_threshold]
 
 
-def get_hocr_carea_soup(hocr_soup):
-    return hocr_soup.find("div", class_="ocr_carea")
+def filter_blacklist_words(words: List[Word], blacklist: List[str]) -> List[Word]:
+    return [word for word in words if word.word_text not in blacklist]
 
 
-def get_hocr_pars(hocr_soup):
-    return hocr_soup.find_all("p", class_="ocr_par")
+def filter_words(words: List[Word], config: dict) -> List[Word]:
+    filtered_words = filter_low_confidence_words(words, conf_threshold=config["word_conf_threshold"])
+    return filter_blacklist_words(filtered_words, config["filter_words"])
 
 
-def get_hocr_lines(hocr_soup):
-    return hocr_soup.find_all("span", class_="ocr_line")
+def filter_lines(lines: List[Line], config: dict) -> List[Line]:
+    filtered_lines = []
+    for line in lines:
+        words = filter_words(line["words"], config)
+        if len(words) > 0:
+            filtered_line = construct_line_from_words(words, config)
+            filtered_lines += [filtered_line]
+    return filtered_lines
 
 
-def get_hocr_words(hocr_soup):
-    return hocr_soup.find_all("span", class_="ocrx_word")
+def add_line_distances(lines):
+    for curr_index, curr_line in enumerate(lines):
+        if curr_index > 0:
+            prev_line = lines[curr_index - 1]
+            line_gap = curr_line.line_gap(prev_line)
+            prev_line.set_line_distance(to_next=line_gap)
+            curr_line.set_line_distance(to_prev=line_gap)
+        if curr_index < len(lines) - 1:
+            next_line = lines[curr_index + 1]
+            line_gap = curr_line.line_gap(next_line)
+            next_line.set_line_distance(to_prev=line_gap)
+            curr_line.set_line_distance(to_next=line_gap)
 
 
-def get_hocr_bbox(hocr_element):
-    attributes = get_hocr_title_attributes(hocr_element)
-    return [int(coord) for coord in attributes["bbox"].split(" ")]
+class HOCRObject:
+
+    def __init__(self, hocr_data: dict):
+        self.width = hocr_data["width"]
+        self.height = hocr_data["height"]
+        self.left = hocr_data["left"]
+        self.right = hocr_data["right"]
+        self.top = hocr_data["top"]
+        self.bottom = hocr_data["bottom"]
 
 
-def get_hocr_title_attributes(hocr_element):
-    return {part.split(" ", 1)[0]: part.split(" ", 1)[1] for part in hocr_element['title'].split("; ")}
+class HOCRWord(HOCRObject):
+
+    def __init__(self, word: dict):
+        HOCRObject.__init__(self, word)
+        self.word_text = word["word_text"]
+        self.word_conf = word["word_conf"]
+
+    def text(self) -> str:
+        return self.word_text
+
+    def word_gap(self, other: Word) -> int:
+        if self.left > other.right:
+            return self.left - other.right
+        elif self.right < other.left:
+            return other.left - self.right
+        else:
+            raise ValueError("word boxes overlap!")
 
 
-def get_bbox_size(hocr_bbox):
-    return hocr_bbox[2] - hocr_bbox[0], hocr_bbox[3] - hocr_bbox[1]
+class HOCRLine(HOCRObject):
+
+    def __init__(self, line: dict, config: Union[dict, None]):
+        HOCRObject.__init__(self, line)
+        self.words = [HOCRWord(word) for word in line["words"]]
+        self.num_words = len(self.words)
+        self.line_text = " ".join([word.word_text for word in self.words])
+        self.distance_to_prev = None
+        self.distance_to_next = None
+        self.spaced_line_text = None
+        if config and "avg_char_width" in config:
+            self.set_spaced_line_text(config)
+
+    def set_spaced_line_text(self, config: dict):
+        self.spaced_line_text = ""
+        for curr_index, curr_word in enumerate(self.words):
+            if curr_index > 0:
+                word_gap = curr_word.word_gap(self.words[curr_index - 1])
+                num_spaces = int(round(word_gap / config["avg_char_width"]))
+                self.spaced_line_text += " " * num_spaces
+            self.spaced_line_text += curr_word.word_text
+
+    def set_line_distance(self, to_prev: Union[int, None], to_next: Union[int, None]):
+        if to_prev:
+            self.distance_to_prev = to_prev
+        if to_next:
+            self.distance_to_next = to_next
+
+    def word_gaps(self, gap_threshold: int = 50) -> List[dict[int, int, int]]:
+        gaps = []
+        for curr_index, curr_word in enumerate(self.words[1:]):
+            prev_word = self.words[curr_index-1]
+            if curr_word.word_gap(prev_word) > gap_threshold:
+                gaps += [{"gap_size": curr_word.word_gap(prev_word), "from_index": curr_index-1, "to_index": curr_index}]
+        return gaps
+
+    def line_gap(self, other: Line) -> int:
+        return abs(self.bottom - other.bottom)
+
+    def split_line_on_gaps(self, gaps: List[dict]) -> List[list[Word]]:
+        words_from_index = 0
+        word_sets = []
+        for gap in gaps:
+            words_to_index = gap["from_index"]
+            words = self.words[words_from_index:words_to_index]
+            word_sets += [words]
+            words_from_index = gap["to_index"]
+        return word_sets
 
 
-def get_word_conf(hocr_word):
-    if "ocrx_word" in hocr_word['class']:
-        attributes = get_hocr_title_attributes(hocr_word)
-        if "x_wconf" in attributes:
-            return int(attributes["x_wconf"])
-    return None
+class HOCRColumn(HOCRObject):
+
+    def __init__(self, column: dict, config: Union[dict, None]):
+        HOCRObject.__init__(self, column)
+        self.lines = [HOCRLine(line, config) for line in column["lines"]]
+        self.num_lines = len(self.lines)
+        self.num_words = sum([line.num_words for line in self.lines])
+        add_line_distances(self.lines)
+
+    def as_text(self) -> str:
+        return "\n".join([line.line_text for line in self.lines])
 
 
-def is_tiny_word(word, tiny_word_width, tiny_word_height):
-    return word["width"] <= tiny_word_width and word["height"] <= tiny_word_height
+class HOCRParagraph(HOCRObject):
+
+    def __init__(self, lines: List[Line], config: Union[dict, None]):
+        box = construct_box_from_items(lines)
+        HOCRObject.__init__(self, box)
+        self.lines = lines
+        self.type = []
 
 
-def filter_words(words, tiny_word_width=10):
-    # for word in words:
-    #    if is_tiny_word(word, tiny_word_width, tiny_word_width):
-    #        print("\ntiny word:", word, "\n")
-    words = [word for word in words if not is_tiny_word(word, tiny_word_width, tiny_word_width)]
-    # words = [word for word in words if word["height"] > tiny_word_width]
-    return words
+class HocrPage(HOCRObject):
+
+    def __init__(self, columns: List[Column] = [], config: Union[dict, None] = None):
+        box = construct_box_from_items(columns)
+        HOCRObject.__init__(self, box)
+        self.columns = columns
+        self.num_columns = len(columns)
+        self.num_lines = sum([column.num_lines for column in self.columns])
+        self.num_words = sum([column.num_words for column in self.columns])
+        self.type = "unknown"
 
 
-def get_words(hocr_line):
-    return [get_word(hocr_word) for hocr_word in get_hocr_words(hocr_line)]
+class HocrScan(HOCRObject):
 
-
-def get_word(hocr_word_soup):
-    # Extract all word information, including bounding box and confidence
-    word_bbox = get_hocr_bbox(hocr_word_soup)
-    word = get_hocr_box(hocr_word_soup)
-    word["word_text"] = hocr_word_soup.get_text()
-    word["word_conf"] = get_word_conf(hocr_word_soup)
-    bbox_size = get_bbox_size(word_bbox)
-    return word
-
-
-def filter_tiny_words_from_line(hocr_page, line, config):
-    filtered_words = filter_words(line["words"], tiny_word_width=config["tiny_word_width"])
-    filtered_line = {
-        "words": filtered_words,
-        "line_text": " ".join([word["word_text"] for word in filtered_words]),
-        "spaced_line_text": get_spaced_line_text(hocr_page, filtered_words, config)
-    }
-    span_filtered_line(line, filtered_line)
-    return filtered_line
-
-
-def span_filtered_line(line, filtered_line):
-    if len(filtered_line["words"]) == 0:
-        filtered_line["top"] = line["top"]
-        filtered_line["bottom"] = line["top"]
-        filtered_line["left"] = line["left"]
-        filtered_line["right"] = line["left"]
-    else:
-        filtered_line["top"] = min([word["top"] for word in filtered_line["words"]])
-        filtered_line["bottom"] = max([word["bottom"] for word in filtered_line["words"]])
-        filtered_line["left"] = filtered_line["words"][0]["left"]
-        filtered_line["right"] = filtered_line["words"][-1]["right"]
-    filtered_line["height"] = filtered_line["bottom"] - filtered_line["top"]
-    filtered_line["width"] = filtered_line["right"] - filtered_line["left"]
-
-
-def make_hocr_page(filepath, page_num=None, config={}):
-    """
-    make_hocr_page takes as input a filepath to a hOCR file and generates various textual representations of
-    the hOCR data. For explanation of the optional arguments, see the HOCRPAGE class above.
-    """
-    hocr_soup = get_hocr_content(filepath)
-    hocr_page_soup = get_hocr_page_soup(hocr_soup)
-    hocr_page = HOCRPage(hocr_page_soup, page_num=page_num, config=config)
-    hocr_page.set_carea(hocr_page_soup)
-    hocr_page.set_lines(hocr_page_soup)
-    if "remove_line_numbers" in config and config["remove_line_numbers"]:
-        hocr_page.remove_line_numbers()
-    hocr_page.set_paragraphs(hocr_page_soup)
-    hocr_page.merge_paragraph_lines()
-    return hocr_page
+    def __init__(self, scan_hocr: dict, scan_id: str, config: Union[dict, None]):
+        HOCRObject.__init__(self, scan_hocr)
+        self.scan_id = scan_id
+        self.lines = []
+        self.columns = []
+        self.type = ["normal", "double_page"]
+        self.filepath = scan_hocr["filepath"]
+        if self.width > config["normal_scan_width"] * 1.1:
+            self.type = ["special", "extended"]
+        elif self.width < config["normal_scan_width"] * 0.9:
+            self.type = ["special", "reduced"]
+        add_line_distances(self.lines)
+        if "lines" in scan_hocr:
+            self.lines = [HOCRLine(line, config) for line in scan_hocr["lines"]]
+        if "columns" in scan_hocr:
+            self.columns = [HOCRColumn(column) for column in scan_hocr["columns"]]
