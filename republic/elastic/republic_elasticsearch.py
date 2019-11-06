@@ -52,6 +52,27 @@ def make_bool_query(match_fields, size: int = 10000) -> dict:
     }
 
 
+def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num: int) -> dict:
+    match_fields = [
+        {"match": {"inventory_num": inventory_num}},
+        {
+            "range": {
+                "num_columns": {
+                    "gte": num_columns_min,
+                    "lte": num_columns_max
+                }
+            }
+        }
+    ]
+    return make_bool_query(match_fields)
+
+
+def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
+                                        num_columns_max: int, inventory_config: dict) -> list:
+    query = make_column_query(num_columns_min, num_columns_max, inventory_config["inventory_num"])
+    return retrieve_pages_with_query(es, query, inventory_config)
+
+
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:

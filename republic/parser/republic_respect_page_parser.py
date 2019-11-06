@@ -20,7 +20,7 @@ def is_respect_page(page_hocr: dict, config: dict) -> bool:
 
 
 def get_one_capitalized_word_line_words(page_hocr: dict) -> iter:
-    stops = ["de", "den", "der", "van", "vanden", "tot", "in", "le", "op"]
+    stops = ["de", "den", "der", "van", "vanden", "tot", "in", "le", "la", "op"]
     for column in page_hocr["columns"]:
         for line in column["lines"]:
             if len(line["words"]) == 1:
