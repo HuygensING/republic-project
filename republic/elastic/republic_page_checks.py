@@ -31,28 +31,39 @@ def score_levenshtein_distance(s1, s2):
 ###########################################################################
 
 
+def correct_single_page_type(es: Elasticsearch, page_num: int, correct_page_type: str, inventory_config: dict) -> bool:
+    section_types = ["index_page", "resolution_page", "respect_page", "unknown_page_type"]
+    page_doc = rep_es.retrieve_page_by_page_number(es, page_num, inventory_config)
+    if not page_doc:
+        print("no document for page number", page_num)
+        return False
+    if "page_type" not in page_doc:
+        print("No page_type in page_doc:", page_doc["page_num"], page_doc["page_id"], page_doc["scan_num"])
+        print(page_doc["num_columns"])
+        page_doc["page_type"] = correct_page_type
+        return True
+    if correct_page_type is not "index_page" and "index_page" in page_doc["page_type"]:
+        page_doc["page_type"] = [page_type for page_type in page_doc["page_type"] if
+                                 "index_page" not in page_doc["page_type"]]
+    if correct_page_type not in page_doc["page_type"]:
+        # incorrect_type = [page_type for page_type in page_doc["page_type"] if page_type in section_types]
+        page_doc["page_type"] = [page_type for page_type in page_doc["page_type"] if page_type not in section_types]
+        page_doc["page_type"] += [correct_page_type]
+        # print(page_doc["page_num"], page_doc["page_type"])
+        rep_es.index_page(es, page_doc, inventory_config)
+        # print(page_doc["page_num"], "correcting", incorrect_type, "to", page_type)
+        return True
+    return False
+
+
 def correct_page_types(es: Elasticsearch, inventory_config: dict):
     print("Gathering section information for inventory", inventory_config["inventory_num"])
-    section_types = ["index_page", "resolution_page", "respect_page", "unknown_page_type"]
     inventory_data = inv_analyser.get_inventory_summary(es, inventory_config)
     for section in inventory_data["sections"]:
         corrected = 0
-        page_type = section["page_type"]
+        correct_page_type = section["page_type"]
         for page_num in range(section["start"], section["end"]+1):
-            page_doc = rep_es.retrieve_page_by_page_number(es, page_num, inventory_config)
-            if not page_doc:
-                print("no document for page number", page_num)
-                continue
-            if "page_type" not in page_doc:
-                print(page_doc["page_num"], page_doc["page_id"], page_doc["scan_num"])
-                print(page_doc["num_columns"])
-            if page_type not in page_doc["page_type"]:
-                #incorrect_type = [page_type for page_type in page_doc["page_type"] if page_type in section_types]
-                page_doc["page_type"] = [page_type for page_type in page_doc["page_type"] if page_type not in section_types]
-                page_doc["page_type"] += [page_type]
-                #print(page_doc["page_num"], page_doc["page_type"])
-                rep_es.index_page(es, page_doc, inventory_config)
-                #print(page_doc["page_num"], "correcting", incorrect_type, "to", page_type)
+            if correct_single_page_type(es, page_num, correct_page_type, inventory_config):
                 corrected += 1
             #else:
             #    print(page_doc["page_num"], "correct")

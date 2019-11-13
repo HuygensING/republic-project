@@ -20,7 +20,7 @@ def find_large_word_gaps(words: list, config: dict) -> list:
 
 
 def filter_low_confidence_words(words: list, config) -> list:
-    return [word for word in words if word["word_conf"] > config["word_conf_threshold"] and word["word_text"] not in config["filter_words"]]
+    return [word for word in words if len(word["word_text"]) >= 4 or (word["word_conf"] >= config["word_conf_threshold"] and word["word_text"] not in config["filter_words"])]
 
 
 def fulltext_char_ratio(line: dict, fulltext_num_chars: int) -> float:

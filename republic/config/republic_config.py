@@ -27,6 +27,8 @@ base_config = {
     "year": None,
     "inventory_num": None,
     "base_dir": None,
+    "inventory_index": "republic_inventory",
+    "inventory_doc_type": "inventory",
     "page_index": "republic_hocr_pages",
     "page_doc_type": "page",
     "scan_index": "republic_hocr_scans",
@@ -44,7 +46,7 @@ base_config = {
     },
     "word_conf_threshold": 10,
     "fulltext_char_threshold": 0.5,
-    "filter_words": ["|", "{", "$", "}"],
+    "filter_words": ["|", "{", "$", "}", "/", "\\", "[", "]", ";", ":", "(", ")", "!"],
     "index_page": {
         "left_jump_ratio_min": 0.5
     },

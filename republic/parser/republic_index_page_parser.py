@@ -1,8 +1,8 @@
 import re
 import copy
 import republic.parser.republic_base_page_parser as page_parser
-from typing import Union
-from statistics import median, pstdev
+from typing import Union, Tuple
+from statistics import median, mean, pstdev, stdev
 
 #################################
 # Parse and correct index pages #
@@ -84,10 +84,14 @@ def fix_repeat_symbols_line(line: dict, line_index: int) -> dict:
     if first_word["left"] > copy_line["left"]:
         print("Gap between line start and first word:", line["left"], first_word["left"], line["line_text"])
     if first_word["width"] > 120 and len(first_word["word_text"]) <= 3:
-        print("possibly misrecognised repeat symbol:", line_index, first_word["width"], first_word["word_text"])
+        #print("possibly misrecognised repeat symbol:", line_index, first_word["width"], first_word["word_text"])
         copy_line["line_text"] = copy_line["line_text"].replace(first_word["word_text"], repeat_symbol, 1)
         copy_line["spaced_line_text"] = copy_line["spaced_line_text"].replace(first_word["word_text"], repeat_symbol, 1)
         first_word["word_text"] = repeat_symbol
+        #if first_word["width"] > avg_repeat_symbol_length:
+        #    left_shift = first_word["width"] - avg_repeat_symbol_length
+        #    first_word["left"] += left_shift
+        #    first_word["width"] = avg_repeat_symbol_length
     return copy_line
 
 
@@ -129,18 +133,42 @@ def add_repeat_symbol(line: dict, avg_repeat_symbol_length: int, minimum_start: 
 
 def find_missing_repeat_symbols(lines: list) -> list:
     avg_repeat_symbol_length = get_repeat_symbol_length(lines)
-    fixed_lines = []
-    for line_index, curr_line in enumerate(lines):
-        neighbour_lines = get_line_neighbourhood_lines(lines, line_index)
+    #fixed_lines = []
+    fixed_lines = copy.deepcopy(lines)
+    for line_index, curr_line in enumerate(fixed_lines):
+        neighbour_lines = get_line_neighbourhood_lines(fixed_lines, line_index)
         left_values = [neighbour_line["left"] for neighbour_line in neighbour_lines]
-        if curr_line["left"] - min(left_values) > 100:
-            print("DEVIATING LINE:", curr_line["left"], left_values, curr_line["line_text"])
-            fixed_line = add_repeat_symbol(curr_line, avg_repeat_symbol_length, min(left_values))
-            fixed_lines.append(fixed_line)
-            print("avg_repeat_symbol_length:", avg_repeat_symbol_length)
-        # if curr_line["left"] -
-        else:
-            fixed_lines.append(copy.deepcopy(curr_line))
+        first_word = curr_line["words"][0]
+        mean_left = mean(left_values)
+        stdev_left = stdev(left_values)
+        low_left = int(mean_left - stdev_left)
+        high_left = int(mean_left + stdev_left)
+        #print("mean:", mean_left, "stdev:", stdev_left, "min:", low_left)
+        #if curr_line["left"] - min(left_values) > 100:
+        if curr_line["left"] > high_left and curr_line["left"] - int(mean_left) > 70:
+            #print("DEVIATING LINE:", line_index, curr_line["left"], "high value:", high_left, "left values:", left_values, "mean left:", mean_left, curr_line["line_text"])
+            fixed_line = add_repeat_symbol(curr_line, avg_repeat_symbol_length, low_left)
+            fixed_lines.remove(curr_line)
+            fixed_lines.insert(line_index, fixed_line)
+            #fixed_lines.append(fixed_line)
+            #print("avg_repeat_symbol_length:", avg_repeat_symbol_length)
+        elif curr_line["left"] < low_left:
+            #print("DEVIATING LINE:", line_index, curr_line["left"], "low value:", low_left, "left values:", left_values, curr_line["line_text"])
+            if first_word["word_text"] == repeat_symbol:
+                left_shift = low_left - first_word["width"]
+                first_word["left"] = low_left
+                first_word["width"] = first_word["width"] - left_shift
+                curr_line["left"] = low_left
+                curr_line["width"] -= left_shift
+                #print("This repeat symbol length:", first_word["width"], "left shift:", left_shift)
+            #fixed_lines.append(copy.deepcopy(curr_line))
+        #else:
+            #print("NORMAL LINE:", line_index, curr_line["left"], "low value:", low_left, "left values:", left_values, curr_line["line_text"])
+            #fixed_lines.append(copy.deepcopy(curr_line))
+    if len(fixed_lines) > len(lines):
+        raise IndexError("fixed_lines has more lines than original")
+    elif len(fixed_lines) < len(lines):
+        raise IndexError("fixed_lines has fewer lines than original")
     return fixed_lines
 
 
@@ -237,18 +265,22 @@ def score_index_header(line: object, hocr_page: object, debug: bool = False) -> 
     return index_score
 
 
-def score_index_page(page_hocr: dict, page_type_info: dict, config: dict) -> int:
+def score_index_page(page_hocr: dict, page_type_info: dict, config: dict) -> Tuple[int, str]:
     index_score = 0
     index_score += page_type_info["index_header_score"]
+    index_page_type = "index_page_early_print"
     if config["inventory_num"] < config["index_page_early_print"]["inventory_threshold"]:
         index_early_print_score = score_index_page_early_print(page_type_info, config["index_page_early_print"])
+        index_early_print_score += page_type_info["index_header_score"]
         if index_early_print_score > index_score:
             index_score = index_early_print_score
     if config["inventory_num"] > config["index_page_late_print"]["inventory_threshold"]:
         index_late_print_score = score_index_page_late_print(page_hocr, config["index_page_late_print"])
+        index_late_print_score += page_type_info["index_header_score"]
         if index_late_print_score > index_score:
             index_score = index_late_print_score
-    return index_score
+            index_page_type = "index_page_late_print"
+    return index_score, index_page_type
 
 
 def score_index_page_early_print(page_type_info: dict, config: dict) -> int:
@@ -289,9 +321,11 @@ def check_lemma(line: dict) -> bool:
     first_main_word_index = 0
     if has_preceeding_stopwords(line):
         first_main_word_index = find_first_main_word(line)
+    if first_main_word_index is None:
+        return False
     main_word = line["words"][first_main_word_index]
     if main_word["word_text"][0].isupper():
-        print("HAS LEMMA:", line["line_text"])
+        #print("HAS LEMMA:", line["line_text"])
         return True
     else:
         return False
@@ -320,10 +354,12 @@ def remove_lemma(curr_lemma: str, line: dict) -> str:
 def get_lemma(line: dict) -> str:
     match = re.match(r"(.*?)[\,;\.„]", line["line_text"])
     if match:
-        print("LEMMA:", match.group(1))
+        #print("LEMMA:", match.group(1))
         lemma = match.group(1).strip()
     else:
-        lemma = line["words"][0]["word_text"]
+        main_word_index = find_first_main_word(line)
+        lemma = " ".join([word["word_text"] for word in line["words"][:main_word_index+1]])
+        #lemma = line["words"][0]["word_text"]
     return lemma
 
 
@@ -384,23 +420,23 @@ def index_lemmata(lines: list, lemma_index: dict, curr_lemma: str) -> str:
         #print(prev_start, line_index, sum_left, avg_left, values_left)
         diff = line["left"] - avg_left
         line["line_type"] = "start"
-        if diff > 0:
+        if diff > -10:
             line["line_type"] = "continue"
             # description += " " + line["line_text"]
         if has_page_reference(line):
             line["line_type"] += "_stop"
             page_refs = get_page_references(line)
             description += " " + remove_page_references(line)
-            print("\tPAGE_REFS:", page_refs, "\tCURR LEMMA:", curr_lemma)
+            #print("\tPAGE_REFS:", page_refs, "\tCURR LEMMA:", curr_lemma)
             if curr_lemma:
                 lemma_index[curr_lemma] += [{"page_refs": page_refs, "description": description}]
                 description = ""
         if line["line_type"].startswith("start") and check_lemma(line):
             curr_lemma = get_lemma(line)
-            print("setting lemma:", get_lemma(line))
+            #print("setting lemma:", get_lemma(line))
             description += " " + remove_lemma(curr_lemma, line)
             lemma_index[curr_lemma] = []
         elif line["line_type"].startswith("start") and has_repeat_symbol(line):
             description += " " + remove_repeat_symbol(line)
-        print(line_index, line["left"], diff, line["line_type"], "\t", line["spaced_line_text"])
+        #print(line_index, line["left"], diff, line["line_type"], "\t", line["spaced_line_text"])
     return curr_lemma

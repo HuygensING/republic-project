@@ -67,12 +67,6 @@ def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num:
     return make_bool_query(match_fields)
 
 
-def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
-                                        num_columns_max: int, inventory_config: dict) -> list:
-    query = make_column_query(num_columns_min, num_columns_max, inventory_config["inventory_num"])
-    return retrieve_pages_with_query(es, query, inventory_config)
-
-
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
@@ -80,6 +74,13 @@ def make_page_type_query(page_type: str, year: Union[int, None] = None,
     if inventory_num: match_fields += [{"match": {"inventory_num": inventory_num}}]
     if year: match_fields += [{"match": {"year": year}}]
     return make_bool_query(match_fields, size)
+
+
+def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
+    if not es.exists(index=config["inventory_index"], doc_type=config["inventory_doc_type"], id=inventory_num):
+        raise ValueError("No inventory metadata available for inventory num {}".format(inventory_num))
+    response = es.get(index=config["inventory_index"], doc_type=config["inventory_doc_type"], id=inventory_num)
+    return response["_source"]
 
 
 def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, None]:
@@ -117,6 +118,12 @@ def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int
     return retrieve_pages_with_query(es, query, config)
 
 
+def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
+                                        num_columns_max: int, inventory_config: dict) -> list:
+    query = make_column_query(num_columns_min, num_columns_max, inventory_config["inventory_num"])
+    return retrieve_pages_with_query(es, query, inventory_config)
+
+
 def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     return retrieve_pages_by_type(es, "title_page", inventory_num, config)
 
@@ -152,12 +159,17 @@ def delete_es_index(es: Elasticsearch, index: str):
         es.indices.delete(index=index)
 
 
-def index_scan(es, scan_hocr, config):
+def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config: dict):
+    es.index(index=config["inventory_index"], doc_type=config["inventory_doc_type"],
+             id=inventory_metadata["inventory_num"], body=inventory_metadata)
+
+
+def index_scan(es: Elasticsearch, scan_hocr: dict, config: dict):
     doc = create_es_scan_doc(scan_hocr)
     es.index(index=config["scan_index"], doc_type=config["scan_doc_type"], id=scan_hocr["scan_id"], body=doc)
 
 
-def index_page(es, page_hocr, config):
+def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     doc = create_es_page_doc(page_hocr)
     es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_hocr["page_id"], body=doc)
 
@@ -172,7 +184,7 @@ def parse_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, ba
             #print("double page scan:", scan_hocr["scan_num"], scan_hocr["scan_type"])
             pages_hocr = page_parser.parse_double_page_scan(scan_hocr, inventory_config)
             for page_hocr in pages_hocr:
-                print(inventory_num, page_hocr["page_num"], page_hocr["page_type"])
+                #print(inventory_num, page_hocr["page_num"], page_hocr["page_type"])
                 index_page(es, page_hocr, inventory_config)
         else:
             #print("NOT DOUBLE PAGE:", scan_hocr["scan_num"], scan_hocr["scan_type"])

@@ -16,11 +16,41 @@ def get_page_metadata(page_doc):
     }
 
 
+def initialize_paragraph_metadata(paragraph_lines: list, paragraph_num: int, page_doc: dict) -> dict:
+    paragraph = {"metadata": get_page_metadata(page_doc), "lines": paragraph_lines}
+    paragraph_text = merge_paragraph_lines(paragraph)
+    paragraph["metadata"]["categories"] = set()
+    paragraph["text"] = paragraph_text
+    paragraph["metadata"]["paragraph_num_on_page"] = paragraph_num
+    paragraph["metadata"]["paragraph_id"] = "{}-para-{}".format(page_doc["page_id"], paragraph_num)
+    return paragraph
+
+
+def track_meeting_date(paragraph: dict, matches: list, current_date: dict, config: dict) -> dict:
+    if len(matches) == 0 and paragraph_starts_with_centered_date(paragraph):
+        print("DATE LINE:", paragraph["text"])
+        current_date = extract_meeting_date(paragraph, config["year"], current_date)
+    if matches_participant_list(matches):
+        print("DAY START:", paragraph["text"])
+        if paragraph_has_centered_date(paragraph):
+            current_date = extract_meeting_date(paragraph, config["year"], current_date)
+            paragraph["metadata"]["categories"].add("meeting_date")
+        paragraph["metadata"]["type"] = "participant_list"
+    paragraph["metadata"]["meeting_date_info"] = current_date
+    if current_date:
+        try:
+            paragraph["metadata"]["meeting_date"] = datetime.date(current_date["year"], current_date["month"], current_date["month_day"])
+        except ValueError:
+            pass
+    return current_date
+
+
 def get_resolution_page_paragraphs(page_doc):
     paragraphs = []
     header = []
     # TODO: improve to allow paragraphs to run across two subsequent pages
     for column_hocr in page_doc["columns"]:
+        paragraph_num = len(paragraphs) + 1
         paragraph_lines = []  # reset paragraph_lines at the beginning of each column
         prev_line_bottom = None
         for line in column_hocr["lines"]:
@@ -40,12 +70,14 @@ def get_resolution_page_paragraphs(page_doc):
                 header += paragraph_lines
                 paragraph_lines = []  # start new paragraph, ignore header line
             elif boundary:
-                paragraphs.append({"metadata": get_page_metadata(page_doc), "lines": paragraph_lines})
+                paragraph = initialize_paragraph_metadata(paragraph_lines, paragraph_num, page_doc)
+                paragraphs.append(paragraph)
                 paragraph_lines = []
             paragraph_lines.append(line)
             prev_line_bottom = line["bottom"]
         if len(paragraph_lines) > 0:
-            paragraphs.append({"metadata": get_page_metadata(page_doc), "lines": paragraph_lines})
+            paragraph = initialize_paragraph_metadata(paragraph_lines, paragraph_num, page_doc)
+            paragraphs.append(paragraph)
     return paragraphs, header
 
 
@@ -193,6 +225,17 @@ def line_is_centered_text(line, left_offset=200, right_offset=800):
     return line["words"][0]["left"] >= left_offset and line["words"][-1]["right"] <= right_offset
 
 
+def line_has_date(line):
+    if line_has_week_day_name(line) and line_has_month_name(line):
+        # print("\n\tCentered date line (based on week_day month pattern):\t", line["line_text"])
+        return True
+    if line_has_week_day_name(line) and line_has_month_day(line):
+        # print("\n\tCentered date line (based on day month pattern):\t", line["line_text"])
+        return True
+    # line has week_day den number month
+    return False
+
+
 def line_is_centered_date(line):
     # line is centered
     if not line_is_centered_text(line):
@@ -204,6 +247,20 @@ def line_is_centered_date(line):
         # print("\n\tCentered date line (based on day month pattern):\t", line["line_text"])
         return True
     # line has week_day den number month
+    return False
+
+
+def paragraph_has_date(paragraph):
+    for line in paragraph["lines"]:
+        if line_has_date(line):
+            return True
+    return False
+
+
+def paragraph_has_centered_date(paragraph):
+    for line in paragraph["lines"]:
+        if line_is_centered_date(line):
+            return True
     return False
 
 
@@ -224,11 +281,14 @@ def merge_paragraph_lines(paragraph):
 
 
 def extract_meeting_date(paragraph, year, previous_date):
+    current_date = None
     for line in paragraph["lines"]:
-        if line_is_centered_date(line):
+        if line_has_date(line):
             current_date = get_date_from_line(line, year)
             break
-    if current_date["month_day"] == None:
+    if not current_date:
+        raise ValueError("Cannot locate meeting date in this paragaraph")
+    if current_date["month_day"] is None:
         print("DERIVING MEETING DATE FROM PREVIOUS DATE")
         current_date = derive_month_day_from_previous_date(previous_date, current_date)
         print(current_date)
@@ -277,14 +337,14 @@ def generate_meeting_date(current_date):
 
 def matches_resolution_phrase(matches):
     for match in matches:
-        if match["match_term"] in resolution_phrases:
+        if match["match_keyword"] in resolution_phrases:
             return True
     return False
 
 
 def matches_participant_list(matches):
     for match in matches:
-        if match["match_term"] in participant_list_phrases:
+        if match["match_keyword"] in participant_list_phrases:
             return True
     return False
 

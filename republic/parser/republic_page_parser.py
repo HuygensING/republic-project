@@ -115,7 +115,7 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
     else:
         page_type_info = get_page_type_info(page_hocr, debug=debug)
         resolution_score = resolution_parser.score_resolution_page(page_type_info)
-        index_score = index_parser.score_index_page(page_hocr, page_type_info, config)
+        index_score, index_page_type = index_parser.score_index_page(page_hocr, page_type_info, config)
         if debug:
             print(json.dumps(page_type_info, indent=2))
         if debug:
@@ -124,7 +124,7 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
         if resolution_score >= 5 and resolution_score > index_score:
             page_type += ["resolution_page"]
         elif index_score >= 5 and index_score > resolution_score:
-            page_type += ["index_page"]
+            page_type += ["index_page", index_page_type]
         else:
             page_type += ["unknown_page_type"]
     if base_parser.is_title_page(page_hocr, config["title_page"]):
