@@ -6,6 +6,33 @@ from republic.config.republic_config import set_config_inventory_num
 import republic.parser.republic_base_page_parser as base_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_page_parser as page_parser
+from settings import config
+
+
+def initialize_es() -> Elasticsearch:
+    es_config = config["elastic_config"]
+    if es_config["url_prefix"]:
+        es_republic = Elasticsearch(
+            [{"host": es_config["host"], "port": es_config["port"], "url_prefix": es_config["url_prefix"]}])
+    else:
+        es_republic = Elasticsearch([{"host": es_config["host"], "port": es_config["port"]}])
+    return es_republic
+
+
+def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size: int = 100) -> iter:
+    response = es.search(index=index, doc_type=doc_type, scroll='2m', size=size, body=query)
+    sid = response['_scroll_id']
+    scroll_size = response['hits']['total']
+    # Start scrolling
+    while scroll_size > 0:
+        for hit in response['hits']['hits']:
+            yield hit
+        response = es.scroll(scroll_id=sid, scroll='2m')
+        # Update the scroll ID
+        sid = response['_scroll_id']
+        # Get the number of results that we returned in the last scroll
+        scroll_size = len(response['hits']['hits'])
+        # Do something with the obtained page
 
 
 def create_es_scan_doc(scan_doc: dict) -> dict:
@@ -176,7 +203,7 @@ def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
 
 def parse_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
     inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir)
-    print(inventory_config)
+    #print(inventory_config)
     scan_files = file_parser.get_files(inventory_config["data_dir"])
     for scan_file in scan_files:
         scan_hocr = page_parser.get_scan_hocr(scan_file, inventory_config)
@@ -198,10 +225,6 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         delete_es_index(es, config["page_index"])
     for page_id in pages_info:
         numbering += 1
-        if pages_info[page_id]["scan_num"] <= 0:
-            continue
-        if pages_info[page_id]["scan_num"] >= 700:
-            continue
         page_doc = page_parser.make_page_doc(page_id, pages_info, config)
         page_doc["num_columns"] = len(page_doc["columns"])
         try:
@@ -221,8 +244,8 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         page_doc["type_page_num_checked"] = False
         ##################################
         # DIRTY HACK FOR INVENTORY 3780! #
-        if page_doc["page_num"] in [90, 565, 567]:
-            if ["title_page"] not in page_doc["page_type"]:
+        if page_doc["page_num"] in [89, 563, 565]:
+            if "title_page" not in page_doc["page_type"]:
                 page_doc["page_type"] += ["title_page"]
             page_doc["is_title_page"] = True
         ##################################

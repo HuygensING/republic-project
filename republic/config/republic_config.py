@@ -19,7 +19,7 @@ def set_config_year(base_config: dict, year: int, base_dir: str) -> dict:
     inv_map = get_inventory_by_year(year)
     config["year"] = year
     config["inventory_num"] = inv_map["inventory_num"]
-    config["data_dir"] = os.path.join(config["base_dir"], "{}/".format(year))
+    config["data_dir"] = os.path.join(config["base_dir"], "{}/".format(config["inventory_num"]))
     return config
 
 

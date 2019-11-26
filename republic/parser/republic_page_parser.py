@@ -152,32 +152,32 @@ def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
 
 
 def initialize_pages_hocr(dp_hocr: dict) -> tuple:
+    even_page_hocr = {"page_id": "year-{}-scan-{}-even".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
+                      "page_num": dp_hocr["scan_num"] * 2 - 2, "page_side": "even",
+                      "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
     odd_page_hocr = {"page_id": "year-{}-scan-{}-odd".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
                      "page_num": dp_hocr["scan_num"] * 2 - 1, "page_side": "odd",
                      "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
-    even_page_hocr = {"page_id": "year-{}-scan-{}-even".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
-                      "page_num": dp_hocr["scan_num"] * 2, "page_side": "even",
-                      "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
-    odd_page_hocr["hocr_box"]["right"] = dp_hocr["page_boundary"] + 100
-    even_page_hocr["hocr_box"]["left"] = dp_hocr["page_boundary"] - 100
+    even_page_hocr["hocr_box"]["right"] = dp_hocr["page_boundary"] + 100
+    odd_page_hocr["hocr_box"]["left"] = dp_hocr["page_boundary"] - 100
     scan_props = ["scan_num", "scan_type", "filepath", "inventory_num", "inventory_year", "inventory_period"]
     for scan_prop in scan_props:
         if scan_prop in dp_hocr:
-            odd_page_hocr[scan_prop] = dp_hocr[scan_prop]
             even_page_hocr[scan_prop] = dp_hocr[scan_prop]
-    return odd_page_hocr, even_page_hocr
+            odd_page_hocr[scan_prop] = dp_hocr[scan_prop]
+    return even_page_hocr, odd_page_hocr
 
 
 def split_lines_on_pages(dp_hocr: dict, columns_info: list, column_config: dict) -> list:
-    odd_page_hocr, even_page_hocr = initialize_pages_hocr(dp_hocr)
+    even_page_hocr, odd_page_hocr = initialize_pages_hocr(dp_hocr)
     for line in dp_hocr["lines"]: # split line on page boundary
-        odd_page_words = [word for word in line["words"] if word["right"] < dp_hocr["page_boundary"]]
-        even_page_words = [word for word in line["words"] if word["left"] > dp_hocr["page_boundary"]]
-        if len(odd_page_words) > 0:
-            odd_page_hocr["lines"] += [column_parser.construct_line_from_words(odd_page_words)]
+        even_page_words = [word for word in line["words"] if word["right"] < dp_hocr["page_boundary"]]
+        odd_page_words = [word for word in line["words"] if word["left"] > dp_hocr["page_boundary"]]
         if len(even_page_words) > 0:
             even_page_hocr["lines"] += [column_parser.construct_line_from_words(even_page_words)]
-    return [odd_page_hocr, even_page_hocr]
+        if len(odd_page_words) > 0:
+            odd_page_hocr["lines"] += [column_parser.construct_line_from_words(odd_page_words)]
+    return [even_page_hocr, odd_page_hocr]
 
 
 def parse_double_page_scan(scan_hocr: dict, config: dict):

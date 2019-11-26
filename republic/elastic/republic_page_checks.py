@@ -209,9 +209,9 @@ def detect_duplicate_scans(es: Elasticsearch, config: dict):
             curr_page_doc["is_duplicate_of"] = prev_page_doc["page_id"]
             print("Page {} is duplicate of page {}".format(curr_page_doc["page_id"], prev_page_doc["page_id"]))
         doc = rep_es.create_es_page_doc(curr_page_doc)
-        #es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=curr_page_doc["page_id"],
-        #                body=doc)
-    print("\nDone with year {}, inventory {}!".format(config["year"], config["inventory_year"]))
+        es.index(index=config["page_index"], doc_type=config["page_doc_type"],
+                 id=curr_page_doc["page_id"], body=doc)
+    print("\nDone with year {}, inventory {}!".format(config["year"], config["inventory_num"]))
 
 
 ########################################################################
@@ -237,15 +237,18 @@ def correct_page_numbers(es: Elasticsearch, config: dict):
         # if "type_page_num_checked" in page_doc and page_doc["type_page_num_checked"]:
         #    prev_numbered_page_number += 1
         #    continue
-        if page_doc["page_type"] != "resolution_page":  # skip non-resolution pages
+        if "resolution_page" not in page_doc["page_type"]:  # skip non-resolution pages
             continue
+        if "is_duplicate" not in page_doc:
+            print("No is_duplicate field for page", page_doc["page_id"], ", inventory", page_doc["inventory_num"])
+            print(page_doc["page_type"])
         if page_doc["is_duplicate"]:
             duplicated_page_doc = rep_es.retrieve_page_doc(es, page_doc["is_duplicate_of"], config)
             print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"],
                   duplicated_page_doc["type_page_num"])
             page_doc["type_page_num"] = duplicated_page_doc["type_page_num"]
             # prev_numbered_page_number -= 2
-        elif page_doc["page_type"] == "resolution_page" and page_doc["type_page_num"] == prev_numbered_page_number + 1:
+        elif "resolution_page" in page_doc["page_type"] and page_doc["type_page_num"] == prev_numbered_page_number + 1:
             # print("CORRECT:", page_id, page_doc["page_type"], page_doc["type_page_num"], prev_numbered_page_number + 1)
             pass
         else:

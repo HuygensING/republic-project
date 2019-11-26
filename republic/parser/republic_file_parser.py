@@ -64,7 +64,7 @@ def get_column_num(fname: str) -> int:
 
 
 def get_scan_page_num(fname: str) -> int:
-    page_num = get_scan_num(fname) * 2
+    page_num = get_scan_num(fname) * 2 - 2
     if get_page_side(fname) == "odd":
         page_num += 1
     return page_num
