@@ -8,9 +8,18 @@ from republic.parser.republic_index_page_parser import count_page_ref_lines
 
 # filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr
 
+OCR_FILE_TYPES = [".hocr", ".page.xml"]
+
+def is_ocr_file(fname):
+    """make sure only OCR files are included"""
+    for file_type in OCR_FILE_TYPES:
+        if fname[-len(file_type):] == file_type:
+            return True
+    return False
+
 def get_files(data_dir: str) -> list:
     for root_dir, sub_dirs, filenames in os.walk(data_dir):
-        scan_info = [get_scan_info(fname, root_dir) for fname in filenames]
+        scan_info = [get_scan_info(fname, root_dir) for fname in filenames if is_ocr_file(fname)]
         if "scan_num_column_num" in scan_info[0]:
             return sorted(scan_info, key=lambda x: x["scan_num_column_num"])
         else:
