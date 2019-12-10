@@ -10,7 +10,7 @@ def find_large_word_gaps(words: list, config: dict) -> list:
     if len(words) < 2:
         return gap_indices
     words = [{"right": 0}] + words # add begin of page boundary]
-    words = words + [{"left": config["hocr_box"]["right"]}]
+    words = words + [{"left": words[-1]["right"] + 150}] # add empty word for gap from last word to end of page/column
     for curr_index, curr_word in enumerate(words[:-1]):
         next_word = words[curr_index+1]
         gap = word_gap(curr_word, next_word)
@@ -104,7 +104,7 @@ def determine_column_start_end(doc_hocr: dict, config: dict) -> list:
         columns_info += [{"start": curr_interval["end"], "end": next_interval["start"]}]
     if len(doc_hocr["lines"]) > 0 and len(columns_info) == 0:
         try:
-            columns_info += [{"start": doc_hocr["hocr_box"]["left"], "end": doc_hocr["hocr_box"]["right"]}]
+            columns_info += [{"start": doc_hocr["left"], "end": doc_hocr["right"]}]
         except KeyError:
             print(doc_hocr)
             raise
@@ -162,13 +162,13 @@ def compute_interval_overlap(start1: int, end1: int, start2: int, end2: int) -> 
     return end_overlap - start_overlap
 
 
-def find_column_number(line_column: dict, columns_info: list, hocr_box) -> int:
+def find_column_number(line_column: dict, columns_info: list, page_hocr) -> int:
     left = line_column["left"]
     right = line_column["right"]
     for column_index, column_info in enumerate(columns_info):
         column_start = column_info["start"]
         column_end = column_info["end"]
-        next_start = columns_info[column_index+1] if len(columns_info) > column_index+1 else hocr_box["right"] # end of page
+        next_start = columns_info[column_index+1] if len(columns_info) > column_index+1 else page_hocr["right"] # end of page
         #print(column_index, column_start, next_start, left, right)
         overlap = compute_interval_overlap(column_start, column_end, left, right)
         #print(left, right, overlap, overlap / (right - left))
@@ -204,7 +204,7 @@ def split_lines_on_columns(sp_hocr: dict, columns_info: list, config: dict) -> d
         line_columns = split_line_on_columns(line, columns_info, config)
         #print("line columns:", line_columns)
         for line_column in line_columns:
-            column_index = find_column_number(line_column, columns_info, config["hocr_box"])
+            column_index = find_column_number(line_column, columns_info, sp_hocr)
             line_column["column_num"] = column_index + 1
             columns_hocr["columns"][column_index]["lines"] += [line_column]
     for column in columns_hocr["columns"]:

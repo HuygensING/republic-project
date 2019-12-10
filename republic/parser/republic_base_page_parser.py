@@ -3,7 +3,7 @@ from typing import Union
 from republic.parser.generic_hocr_parser import HOCRDoc
 
 
-def get_highest_inter_word_space(line: object) -> int:
+def get_highest_inter_word_space(line: dict) -> int:
     highest_inter_word_space = -1
     for word_index, word in enumerate(line["words"][:-1]):
         next_word = line["words"][word_index + 1]
@@ -13,30 +13,30 @@ def get_highest_inter_word_space(line: object) -> int:
     return highest_inter_word_space
 
 
-def has_mid_column_text(line: object, hocr_page: dict) -> bool:
+def has_mid_column_text(line: dict, hocr_page: dict) -> bool:
     for word in line["words"]:
         if word["left"] - hocr_page["left"] > 250 and hocr_page["right"] - word["right"] > 300:
             return True
     return False
 
 
-def has_left_aligned_text(line: object, hocr_page: dict) -> bool:
+def has_left_aligned_text(line: dict, hocr_page: dict) -> bool:
     if line["words"][0]["left"] - hocr_page["left"] > 100:
         return False
     return True
 
 
-def has_right_aligned_text(line: object, hocr_page: dict) -> bool:
+def has_right_aligned_text(line: dict, hocr_page: dict) -> bool:
     if hocr_page["right"] - line["words"][-1]["right"] > 100:
         return False
     return True
 
 
-def num_line_chars(line: object) -> int:
+def num_line_chars(line: dict) -> int:
     return len(line["line_text"].replace(" ", ""))
 
 
-def is_header(line: object, next_line: dict) -> bool:
+def is_header(line: dict, next_line: dict) -> bool:
     if line["top"] > 350:  # if top is above 350, this line is definitely not a header
         return False
     if line["top"] < 150:  # header has some margin form the top of the page, any text in this margin is noise
@@ -50,7 +50,7 @@ def is_header(line: object, next_line: dict) -> bool:
     return False
 
 
-def contains_year(line: object) -> bool:
+def contains_year(line: dict) -> bool:
     for word in line["words"]:
         if looks_like_year(word):
             return True

@@ -154,12 +154,16 @@ def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
 def initialize_pages_hocr(dp_hocr: dict) -> tuple:
     even_page_hocr = {"page_id": "year-{}-scan-{}-even".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
                       "page_num": dp_hocr["scan_num"] * 2 - 2, "page_side": "even",
-                      "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
+                      "lines": []}
     odd_page_hocr = {"page_id": "year-{}-scan-{}-odd".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
                      "page_num": dp_hocr["scan_num"] * 2 - 1, "page_side": "odd",
-                     "lines": [], "hocr_box": copy.copy(dp_hocr["hocr_box"])}
-    even_page_hocr["hocr_box"]["right"] = dp_hocr["page_boundary"] + 100
-    odd_page_hocr["hocr_box"]["left"] = dp_hocr["page_boundary"] - 100
+                     "lines": []}
+    box_items = ["width", "height", "left", "right", "top", "bottom"]
+    for box_item in box_items:
+        even_page_hocr[box_item] = dp_hocr["hocr_box"][box_item]
+        odd_page_hocr[box_item] = dp_hocr["hocr_box"][box_item]
+    even_page_hocr["right"] = dp_hocr["page_boundary"] + 100
+    odd_page_hocr["left"] = dp_hocr["page_boundary"] - 100
     scan_props = ["scan_num", "scan_type", "filepath", "inventory_num", "inventory_year", "inventory_period"]
     for scan_prop in scan_props:
         if scan_prop in dp_hocr:
@@ -168,7 +172,7 @@ def initialize_pages_hocr(dp_hocr: dict) -> tuple:
     return even_page_hocr, odd_page_hocr
 
 
-def split_lines_on_pages(dp_hocr: dict, columns_info: list, column_config: dict) -> list:
+def split_lines_on_pages(dp_hocr: dict, columns_info: list) -> list:
     even_page_hocr, odd_page_hocr = initialize_pages_hocr(dp_hocr)
     for line in dp_hocr["lines"]: # split line on page boundary
         even_page_words = [word for word in line["words"] if word["right"] < dp_hocr["page_boundary"]]
@@ -182,11 +186,11 @@ def split_lines_on_pages(dp_hocr: dict, columns_info: list, column_config: dict)
 
 def parse_double_page_scan(scan_hocr: dict, config: dict):
     config = copy.copy(config)
-    config["hocr_box"] = scan_hocr["hocr_box"]
+    #config["hocr_box"] = scan_hocr["hocr_box"]
     scan_hocr["page_boundary"] = int(scan_hocr["hocr_box"]["right"] / 2)
     scan_columns_info = column_parser.determine_column_start_end(scan_hocr, config)
     #print("scan columns info:", scan_columns_info)
-    single_pages_hocr = split_lines_on_pages(scan_hocr, scan_columns_info, config)
+    single_pages_hocr = split_lines_on_pages(scan_hocr, scan_columns_info)
     for single_page_hocr in single_pages_hocr:
         parse_single_page(single_page_hocr, config)
     return single_pages_hocr
@@ -204,7 +208,7 @@ def get_single_page_column_type(sp_hocr: dict):
 
 
 def parse_single_page(single_page_hocr: dict, config: dict):
-    config["hocr_box"] = single_page_hocr["hocr_box"]
+    #config["hocr_box"] = single_page_hocr["hocr_box"]
     page_columns_info = column_parser.determine_column_start_end(single_page_hocr, config)
     columns_hocr = column_parser.split_lines_on_columns(single_page_hocr, page_columns_info, config)
     #print(page_columns_info)

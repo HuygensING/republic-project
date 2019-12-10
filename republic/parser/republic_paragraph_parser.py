@@ -1,28 +1,30 @@
 import re
 import datetime
+from typing import List, Union, Dict
 from republic.model.republic_phrase_model import resolution_phrases, participant_list_phrases
 from republic.model.republic_phrase_model import month_names, week_day_names, month_map, week_day_name_map
+from republic.model.republic_hocr_model import HOCRPage, HOCRColumn, HOCRParagraph, HOCRLine, HOCRWord
 
 
-def is_empty_line(line):
-    return len(line["words"]) == 0
+def is_empty_line(line: HOCRLine) -> bool:
+    return line.num_words == 0
 
 
-def get_page_metadata(page_doc):
+def get_page_metadata(hocr_page: HOCRPage) -> Dict[str, int]:
     return {
-        "inventory_num": page_doc["inventory_num"],
-        "inventory_year": page_doc["inventory_year"],
-        "type_page_num": page_doc["type_page_num"],
+        "inventory_num": hocr_page.inventory_num,
+        "inventory_year": hocr_page.inventory_year,
+        "type_page_num": hocr_page.type_page_num,
     }
 
 
-def initialize_paragraph_metadata(paragraph_lines: list, paragraph_num: int, page_doc: dict) -> dict:
-    paragraph = {"metadata": get_page_metadata(page_doc), "lines": paragraph_lines}
+def initialize_paragraph_metadata(paragraph_lines: list, paragraph_num: int, hocr_page: HOCRPage) -> dict:
+    paragraph = {"metadata": get_page_metadata(hocr_page), "lines": paragraph_lines}
     paragraph_text = merge_paragraph_lines(paragraph)
     paragraph["metadata"]["categories"] = set()
     paragraph["text"] = paragraph_text
     paragraph["metadata"]["paragraph_num_on_page"] = paragraph_num
-    paragraph["metadata"]["paragraph_id"] = "{}-para-{}".format(page_doc["page_id"], paragraph_num)
+    paragraph["metadata"]["paragraph_id"] = "{}-para-{}".format(hocr_page.page_id, paragraph_num)
     return paragraph
 
 
@@ -81,42 +83,80 @@ def get_resolution_page_paragraphs(page_doc):
     return paragraphs, header
 
 
-def line_has_week_day_name(line):
+def get_resolution_paragraphs(hocr_page: HOCRPage, config: dict) -> List[HOCRParagraph]:
+    paragraphs = []
+    paragraph_lines = []
+    paragraph_num = len(paragraphs) + 1
+    paragraph_id = "{}-para-{}".format(hocr_page.page_id, paragraph_num)
+    for column in hocr_page.columns:
+        for line_index, line in enumerate(column.lines):
+            #print(line_index, "({}, {}) ({}-{})".format(line.top, line.bottom, line.distance_to_prev, line.distance_to_next), line.line_text)
+            boundary = False
+            if is_empty_line(line) or is_header_line(line, column):
+                continue
+            if line.distance_to_prev and line.distance_to_prev > 80:
+                boundary = True
+            elif line.distance_to_prev and line.distance_to_prev > 50 and line_is_centered_date(line):
+                boundary = True
+            if boundary and len(paragraph_lines) > 0:
+                paragraph = HOCRParagraph(paragraph_lines, paragraph_id, paragraph_num)
+                paragraphs.append(paragraph)
+                paragraph_lines = []
+                paragraph_num = len(paragraphs) + 1
+                paragraph_id = "{}-para-{}".format(hocr_page.page_id, paragraph_num)
+            paragraph_lines.append(line)
+    if len(paragraph_lines) > 0:
+        paragraph = HOCRParagraph(paragraph_lines, paragraph_id, paragraph_num)
+        paragraphs.append(paragraph)
+    return paragraphs
+
+
+def is_header_line(line: HOCRLine, column: HOCRColumn) -> bool:
+    if line.top > 400:
+        return False
+    if len(line.line_text) > 20:
+        return False
+    else:
+        return True
+    return False
+
+
+def line_has_week_day_name(line: HOCRLine) -> bool:
     return line_has_word_from_list(line, week_day_names)
 
 
-def line_has_month_name(line):
+def line_has_month_name(line: HOCRLine) -> bool:
     return line_has_word_from_list(line, month_names)
 
 
-def word_is_number(word):
-    if word["word_text"].isdigit():
+def word_is_number(word: HOCRWord) -> bool:
+    if word.word_text.isdigit():
         return True
         # return int(word["word_text"])
     # TODO: do fuzzy number matching
-    match = re.match(r"(\d+)", word["word_text"])
+    match = re.match(r"(\d+)", word.word_text)
     if match:
         return True  # very hacky
         # return match.group(1)
     return False
 
 
-def get_word_number(word):
-    if word["word_text"].isdigit():
-        return int(word["word_text"])
+def get_word_number(word: HOCRWord) -> Union[int, None]:
+    if word.word_text.isdigit():
+        return int(word.word_text)
     # TODO: do fuzzy number matching
-    match = re.match(r"(\d+)", word["word_text"])
+    match = re.match(r"(\d+)", word.word_text)
     if match:
         return int(match.group(1))
     return None
 
 
-def line_has_month_day(line):
-    if len(line["words"]) < 2:
+def line_has_month_day(line: HOCRLine) -> bool:
+    if len(line.words) < 2:
         return False  # single word lines have no day and month
     try:
-        for word_index, word in enumerate(line["words"][:-1]):
-            next_word = line["words"][word_index + 1]
+        for word_index, word in enumerate(line.words[:-1]):
+            next_word = line.words[word_index + 1]
             if word_is_number(word) and word_is_in_list(next_word, month_names):
                 return True
     except ValueError:
@@ -124,18 +164,18 @@ def line_has_month_day(line):
     return False
 
 
-def get_month_days_from_line(line):
+def get_month_days_from_line(line: HOCRLine) -> List[Dict[str, Union[str, int, float]]]:
     month_day_words = []
-    if len(line["words"]) < 2:
+    if len(line.words) < 2:
         return month_day_words  # single word lines have no day and month
-    for word_index, word in enumerate(line["words"][:-1]):
-        next_word = line["words"][word_index + 1]
+    for word_index, word in enumerate(line.words[:-1]):
+        next_word = line.words[word_index + 1]
         if word_is_number(word) and word_is_in_list(next_word, month_names):
             month_day_words.append({"word": word, "match": get_word_number(word), "score": 1.0})
     return month_day_words
 
 
-def get_month_day_from_line(line):
+def get_month_day_from_line(line: HOCRLine) -> Dict[str, Union[str, int, None, float]]:
     # HACK: return first month day from line
     try:
         return get_month_days_from_line(line)[0]
@@ -143,7 +183,7 @@ def get_month_day_from_line(line):
         return {"word": None, "match": None, "score": 0.0}
 
 
-def get_month_names_from_line(line):
+def get_month_names_from_line(line: HOCRLine):
     return line_get_words_from_list(line, month_names)
 
 
@@ -152,16 +192,16 @@ def get_month_name_from_line(line):
     return get_month_names_from_line(line)[0]
 
 
-def get_week_day_names_from_line(line):
+def get_week_day_names_from_line(line) -> List[Dict[str, Union[HOCRWord, str, float]]]:
     return line_get_words_from_list(line, week_day_names)
 
 
-def get_week_day_name_from_line(line):
+def get_week_day_name_from_line(line: HOCRLine) -> Dict[str, Union[HOCRWord, str, float]]:
     # HACK: return first week_day_name in line
     return get_week_day_names_from_line(line)[0]
 
 
-def get_date_from_line(line, year):
+def get_date_from_line(line: HOCRLine, year: int) -> dict:
     return {
         "month_day": get_month_day_from_line(line)["match"],
         "month_name": get_month_name_from_line(line)["match"],
@@ -171,11 +211,11 @@ def get_date_from_line(line, year):
     }
 
 
-def word_is_in_list(word, word_list):
+def word_is_in_list(word: HOCRWord, word_list: List[str]):
     best_match = None
     best_score = 1
     for list_word in word_list:
-        score = score_levenshtein_distance(word["word_text"], list_word)
+        score = score_levenshtein_distance(word.word_text, list_word)
         relative_score = score / len(list_word)
         if relative_score < 0.4:
             if relative_score < best_score:
@@ -187,13 +227,13 @@ def word_is_in_list(word, word_list):
     return False
 
 
-def line_get_words_from_list(line, word_list):
+def line_get_words_from_list(line: HOCRLine, word_list: List[str]) -> List[Dict[str, Union[HOCRWord, str, float]]]:
     line_words_from_list = []
-    for line_word in line["words"]:
+    for line_word in line.words:
         best_match = None
         best_score = 1
         for list_word in word_list:
-            score = score_levenshtein_distance(line_word["word_text"], list_word)
+            score = score_levenshtein_distance(line_word.word_text, list_word)
             relative_score = score / len(list_word)
             if relative_score < 0.4:
                 if relative_score < best_score:
@@ -204,12 +244,12 @@ def line_get_words_from_list(line, word_list):
     return line_words_from_list
 
 
-def line_has_word_from_list(line, word_list):
-    for line_word in line["words"]:
+def line_has_word_from_list(line: HOCRLine, word_list: List[str]) -> bool:
+    for line_word in line.words:
         best_match = None
         best_score = 1
         for list_word in word_list:
-            score = score_levenshtein_distance(line_word["word_text"], list_word)
+            score = score_levenshtein_distance(line_word.word_text, list_word)
             relative_score = score / len(list_word)
             if relative_score < 0.4:
                 if relative_score < best_score:
@@ -221,11 +261,11 @@ def line_has_word_from_list(line, word_list):
     return False
 
 
-def line_is_centered_text(line, left_offset=200, right_offset=800):
-    return line["words"][0]["left"] >= left_offset and line["words"][-1]["right"] <= right_offset
+def line_is_centered_text(line: HOCRLine, left_offset: int=200, right_offset: int=800) -> bool:
+    return line.words[0].left >= left_offset and line.words[-1].right <= right_offset
 
 
-def line_has_date(line):
+def line_has_date(line: HOCRLine) -> bool:
     if line_has_week_day_name(line) and line_has_month_name(line):
         # print("\n\tCentered date line (based on week_day month pattern):\t", line["line_text"])
         return True
@@ -236,7 +276,7 @@ def line_has_date(line):
     return False
 
 
-def line_is_centered_date(line):
+def line_is_centered_date(line: HOCRLine) -> bool:
     # line is centered
     if not line_is_centered_text(line):
         return False
@@ -295,7 +335,8 @@ def extract_meeting_date(paragraph, year, previous_date):
     return current_date
 
 
-def derive_month_day_from_previous_date(previous_date, current_date):
+def derive_month_day_from_previous_date(previous_date: Dict[str, Union[int, str]],
+                                        current_date: Dict[str, Union[int, str]]) -> Dict[str, Union[str, int, datetime.date]]:
     day_shift = get_day_shift(current_date["week_day_name"], previous_date["week_day_name"])
     curr_date = shift_date(previous_date, day_shift)
     if curr_date.month != current_date["month"]:
@@ -316,7 +357,7 @@ def derive_month_day_from_previous_date(previous_date, current_date):
     }
 
 
-def get_day_shift(curr_week_day, prev_week_day):
+def get_day_shift(curr_week_day: str, prev_week_day: str) -> int:
     day_shift = week_day_name_map[curr_week_day] - week_day_name_map[prev_week_day]
     if day_shift < 0:
         day_shift += 7
@@ -327,29 +368,29 @@ def get_day_shift(curr_week_day, prev_week_day):
     return day_shift
 
 
-def shift_date(previous_date, day_shift):
+def shift_date(previous_date: Dict[str, int], day_shift: int) -> datetime.date:
     return generate_meeting_date(previous_date) + datetime.timedelta(days=day_shift)
 
 
-def generate_meeting_date(current_date):
+def generate_meeting_date(current_date: Dict[str, int]) -> datetime.date:
     return datetime.date(current_date["year"], current_date["month"], current_date["month_day"])
 
 
-def matches_resolution_phrase(matches):
+def matches_resolution_phrase(matches: List[Dict[str, Union[str, int, float, None]]]) -> bool:
     for match in matches:
         if match["match_keyword"] in resolution_phrases:
             return True
     return False
 
 
-def matches_participant_list(matches):
+def matches_participant_list(matches: List[Dict[str, Union[str, int, float, None]]]) -> bool:
     for match in matches:
         if match["match_keyword"] in participant_list_phrases:
             return True
     return False
 
 
-def score_levenshtein_distance(s1, s2):
+def score_levenshtein_distance(s1: str, s2: str) -> int:
     if len(s1) > len(s2):
         s1, s2 = s2, s1
     distances = range(len(s1) + 1)

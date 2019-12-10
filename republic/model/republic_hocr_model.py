@@ -1,4 +1,4 @@
-from typing import Union, TypeVar, List
+from typing import Union, TypeVar, List, Dict
 
 Word = TypeVar('Word', bound='HOCRWord')
 Line = TypeVar('Line', bound='HOCRLine')
@@ -67,12 +67,20 @@ def add_line_distances(lines):
 class HOCRObject:
 
     def __init__(self, hocr_data: dict):
-        self.width = hocr_data["width"]
-        self.height = hocr_data["height"]
-        self.left = hocr_data["left"]
-        self.right = hocr_data["right"]
-        self.top = hocr_data["top"]
-        self.bottom = hocr_data["bottom"]
+        if "hocr_box" in hocr_data:
+            self.width = hocr_data["hocr_box"]["width"]
+            self.height = hocr_data["hocr_box"]["height"]
+            self.left = hocr_data["hocr_box"]["left"]
+            self.right = hocr_data["hocr_box"]["right"]
+            self.top = hocr_data["hocr_box"]["top"]
+            self.bottom = hocr_data["hocr_box"]["bottom"]
+        else:
+            self.width = hocr_data["width"]
+            self.height = hocr_data["height"]
+            self.left = hocr_data["left"]
+            self.right = hocr_data["right"]
+            self.top = hocr_data["top"]
+            self.bottom = hocr_data["bottom"]
 
 
 class HOCRWord(HOCRObject):
@@ -86,12 +94,13 @@ class HOCRWord(HOCRObject):
         return self.word_text
 
     def word_gap(self, other: Word) -> int:
-        if self.left > other.right:
+        if self.left >= other.right:
             return self.left - other.right
-        elif self.right < other.left:
+        elif self.right <= other.left:
             return other.left - self.right
         else:
-            raise ValueError("word boxes overlap!")
+            return 0
+            #raise ValueError("word boxes overlap!")
 
 
 class HOCRLine(HOCRObject):
@@ -101,6 +110,7 @@ class HOCRLine(HOCRObject):
         self.words = [HOCRWord(word) for word in line["words"]]
         self.num_words = len(self.words)
         self.line_text = " ".join([word.word_text for word in self.words])
+        self.line_type = "normal"
         self.distance_to_prev = None
         self.distance_to_next = None
         self.spaced_line_text = None
@@ -116,13 +126,13 @@ class HOCRLine(HOCRObject):
                 self.spaced_line_text += " " * num_spaces
             self.spaced_line_text += curr_word.word_text
 
-    def set_line_distance(self, to_prev: Union[int, None], to_next: Union[int, None]):
+    def set_line_distance(self, to_prev: Union[int, None] = None, to_next: Union[int, None] = None):
         if to_prev:
             self.distance_to_prev = to_prev
         if to_next:
             self.distance_to_next = to_next
 
-    def word_gaps(self, gap_threshold: int = 50) -> List[dict[int, int, int]]:
+    def word_gaps(self, gap_threshold: int = 50) -> List[Dict[str, int]]:
         gaps = []
         for curr_index, curr_word in enumerate(self.words[1:]):
             prev_word = self.words[curr_index-1]
@@ -133,7 +143,7 @@ class HOCRLine(HOCRObject):
     def line_gap(self, other: Line) -> int:
         return abs(self.bottom - other.bottom)
 
-    def split_line_on_gaps(self, gaps: List[dict]) -> List[list[Word]]:
+    def split_line_on_gaps(self, gaps: List[dict]) -> List[List[Word]]:
         words_from_index = 0
         word_sets = []
         for gap in gaps:
@@ -159,20 +169,33 @@ class HOCRColumn(HOCRObject):
 
 class HOCRParagraph(HOCRObject):
 
-    def __init__(self, lines: List[Line], config: Union[dict, None]):
+    def __init__(self, lines: List[Line], paragraph_id, paragraph_num_on_page):
         box = construct_box_from_items(lines)
         HOCRObject.__init__(self, box)
+        self.paragraph_id = paragraph_id
+        self.paragraph_num_on_page = paragraph_num_on_page
+        self.categories = set()
         self.lines = lines
+        self.text = merge_paragraph_lines(lines)
         self.type = []
 
 
-class HocrPage(HOCRObject):
+class HOCRPage(HOCRObject):
 
-    def __init__(self, columns: List[Column] = [], config: Union[dict, None] = None):
-        box = construct_box_from_items(columns)
-        HOCRObject.__init__(self, box)
-        self.columns = columns
-        self.num_columns = len(columns)
+    def __init__(self, page_doc: dict, config: Union[dict, None] = None):
+        HOCRObject.__init__(self, page_doc)
+        self.inventory_num = page_doc["inventory_num"]
+        self.inventory_year = page_doc["inventory_year"]
+        self.page_id = page_doc["page_id"]
+        self.page_type = page_doc["page_type"]
+        self.page_num = page_doc["page_num"]
+        self.type_page_num = None
+        if "type_page_num" in page_doc:
+            self.type_page_num = page_doc["type_page_num"]
+        self.scan_num = page_doc["scan_num"]
+        self.page_jpg_url = page_doc["page_jpg_url"]
+        self.columns = [HOCRColumn(column, config) for column in page_doc["columns"]]
+        self.num_columns = len(self.columns)
         self.num_lines = sum([column.num_lines for column in self.columns])
         self.num_words = sum([column.num_words for column in self.columns])
         self.type = "unknown"
@@ -196,3 +219,15 @@ class HocrScan(HOCRObject):
             self.lines = [HOCRLine(line, config) for line in scan_hocr["lines"]]
         if "columns" in scan_hocr:
             self.columns = [HOCRColumn(column) for column in scan_hocr["columns"]]
+
+
+def merge_paragraph_lines(lines: List[HOCRLine]) -> str:
+    paragraph_text = ""
+    for line in lines:
+        if line.line_text[-1] == "-":
+            paragraph_text += line.line_text[:-1]
+        else:
+            paragraph_text += line.line_text + " "
+    return paragraph_text
+
+
