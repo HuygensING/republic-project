@@ -150,3 +150,39 @@ def get_inventory_summary(es: Elasticsearch, inventory_config: dict) -> dict:
     return inventory_data
 
 
+def add_inventory_metadata(metadata: dict, inventory_data: dict, config: dict) -> dict:
+    metadata["year"] = config["year"]
+    metadata["num_pages"] = inventory_data["num_pages"]
+    metadata["title_page_nums"] = inventory_data["title_page_nums"]
+    metadata["sections"] = find_page_type_sections(inventory_data)
+    add_type_page_num_offsets(metadata)
+    return metadata
+
+
+def add_type_page_num_offsets(metadata: dict):
+    type_page_num_offsets = {}
+    for section in metadata["sections"]:
+        if section["page_type"] not in type_page_num_offsets:
+            type_page_num_offsets[section["page_type"]] = section["start"]
+        elif section["start"] < type_page_num_offsets[section["page_type"]]:
+            type_page_num_offsets[section["page_type"]] = section["start"]
+    metadata["type_page_num_offsets"] = []
+    for page_type in type_page_num_offsets:
+        page_num_offset = type_page_num_offsets[page_type]
+        metadata["type_page_num_offsets"] += [{"page_type": page_type,
+                                               "page_num_offset": page_num_offset}]
+
+
+def make_inventory_metadata_doc(es: Elasticsearch, inventory_num: int, inventory_data: dict,
+                                config: dict) -> dict:
+    if es.exists(index=config["inventory_index"],
+                 doc_type=config["inventory_doc_type"], id=inventory_num):
+        response = es.get(index=config["inventory_index"],
+                               doc_type=config["inventory_doc_type"], id=inventory_num)
+        metadata = response["_source"]
+    else:
+        metadata = {"inventory_num": inventory_num}
+    metadata = add_inventory_metadata(metadata, inventory_data, config)
+    return metadata
+
+
