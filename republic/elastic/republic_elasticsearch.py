@@ -122,7 +122,7 @@ def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, No
 
 
 def retrieve_pages_with_query(es: Elasticsearch, query: dict, config: dict) -> list:
-    response = es.search(index=config["page_index"], doc_type=config["page_doc_type"], body=query)
+    response = es.search(index=config["page_index"], body=query)
     if response['hits']['total'] == 0:
         return []
     return parse_hits_as_pages(response['hits']['hits'])
