@@ -3,9 +3,13 @@ from elasticsearch import Elasticsearch
 import json
 import copy
 from republic.config.republic_config import set_config_inventory_num
+from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
+from republic.model.republic_hocr_model import HOCRPage
+from republic.model.republic_phrase_model import category_index
 import republic.parser.republic_base_page_parser as base_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_page_parser as page_parser
+import republic.parser.republic_paragraph_parser as para_parser
 from settings import config
 
 
@@ -23,6 +27,8 @@ def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size:
     response = es.search(index=index, doc_type=doc_type, scroll='2m', size=size, body=query)
     sid = response['_scroll_id']
     scroll_size = response['hits']['total']
+    if type(scroll_size) == dict:
+        scroll_size = scroll_size["value"]
     # Start scrolling
     while scroll_size > 0:
         for hit in response['hits']['hits']:
@@ -254,6 +260,29 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id, body=page_es_doc)
         #print(page_id, page_type, numbering)
 
+
+def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, inventory_num: int, inventory_config: dict):
+    current_date = para_parser.initialize_current_date(inventory_config)
+    page_docs = retrieve_resolution_pages(es, inventory_num, inventory_config)
+    print("Pages retrieved:", len(page_docs), "\n")
+    for page_doc in sorted(page_docs, key = lambda x: x["page_num"]):
+        hocr_page = HOCRPage(page_doc, inventory_config)
+        paragraphs, header = para_parser.get_resolution_page_paragraphs(hocr_page)
+        for paragraph_order, paragraph in enumerate(paragraphs):
+            matches = fuzzy_searcher.find_candidates(paragraph["text"], include_variants=True)
+            if para_parser.matches_resolution_phrase(matches):
+                paragraph["metadata"]["type"] = "resolution"
+            current_date = para_parser.track_meeting_date(paragraph, matches, current_date, inventory_config)
+            paragraph["metadata"]["keyword_matches"] = matches
+            for match in matches:
+                if match["match_keyword"] in category_index:
+                    category = category_index[match["match_keyword"]]
+                    match["match_category"] = category
+                    paragraph["metadata"]["categories"].add(category)
+            paragraph["metadata"]["categories"] = list(paragraph["metadata"]["categories"])
+            del paragraph["lines"]
+            es.index(index=inventory_config["paragraph_index"], doc_type=inventory_config["paragraph_doc_type"],
+                     id=paragraph["metadata"]["paragraph_id"], body=paragraph)
 
 
 
