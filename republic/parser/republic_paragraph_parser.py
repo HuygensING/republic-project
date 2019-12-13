@@ -47,23 +47,23 @@ def track_meeting_date(paragraph: dict, matches: list, current_date: dict, confi
     return current_date
 
 
-def get_resolution_page_paragraphs(page_doc):
+def get_resolution_page_paragraphs(hocr_page: HOCRPage):
     paragraphs = []
     header = []
     # TODO: improve to allow paragraphs to run across two subsequent pages
-    for column_hocr in page_doc["columns"]:
+    for column in hocr_page.columns: #page_doc["columns"]:
         paragraph_num = len(paragraphs) + 1
         paragraph_lines = []  # reset paragraph_lines at the beginning of each column
         prev_line_bottom = None
-        for line in column_hocr["lines"]:
+        for line in column.lines:
             boundary = False
             if is_empty_line(line):
                 continue
-            if prev_line_bottom == None:
-                prev_line_bottom = line["bottom"]
+            if prev_line_bottom is None:
+                prev_line_bottom = line.bottom
                 paragraph_lines.append(line)
                 continue
-            line_gap = line["top"] - prev_line_bottom
+            line_gap = line.top - prev_line_bottom
             if line_gap > 30:  # boundary between top of this line and bottom of previous line
                 boundary = True
             elif line_gap > 10 and line_is_centered_date(line):
@@ -72,13 +72,13 @@ def get_resolution_page_paragraphs(page_doc):
                 header += paragraph_lines
                 paragraph_lines = []  # start new paragraph, ignore header line
             elif boundary:
-                paragraph = initialize_paragraph_metadata(paragraph_lines, paragraph_num, page_doc)
+                paragraph = initialize_paragraph_metadata(paragraph_lines, paragraph_num, hocr_page)
                 paragraphs.append(paragraph)
                 paragraph_lines = []
             paragraph_lines.append(line)
-            prev_line_bottom = line["bottom"]
+            prev_line_bottom = line.bottom
         if len(paragraph_lines) > 0:
-            paragraph = initialize_paragraph_metadata(paragraph_lines, paragraph_num, page_doc)
+            paragraph = initialize_paragraph_metadata(paragraph_lines, paragraph_num, hocr_page)
             paragraphs.append(paragraph)
     return paragraphs, header
 
@@ -313,10 +313,10 @@ def paragraph_starts_with_centered_date(paragraph):
 def merge_paragraph_lines(paragraph):
     paragraph_text = ""
     for line in paragraph["lines"]:
-        if line["line_text"][-1] == "-":
-            paragraph_text += line["line_text"][:-1]
+        if line.line_text[-1] == "-":
+            paragraph_text += line.line_text[:-1]
         else:
-            paragraph_text += line["line_text"] + " "
+            paragraph_text += line.line_text + " "
     return paragraph_text
 
 
@@ -403,3 +403,17 @@ def score_levenshtein_distance(s1: str, s2: str) -> int:
                 distances_.append(1 + min((distances[i1], distances[i1 + 1], distances_[-1])))
         distances = distances_
     return distances[-1]
+
+
+def initialize_current_date(inventory_config: dict) -> dict:
+    year = inventory_config["year"]
+    current_date = {
+        "month_day": 1,
+        "month_name": "Januarii",
+        "month": 1,
+        "week_day_name": None,
+        "year": year
+    }
+    return current_date
+
+
