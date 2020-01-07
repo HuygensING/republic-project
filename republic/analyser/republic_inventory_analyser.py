@@ -150,6 +150,14 @@ def get_inventory_summary(es: Elasticsearch, inventory_config: dict) -> dict:
     return inventory_data
 
 
+def get_inventory_uuid(es: Elasticsearch, inventory_num: int, inventory_config: dict) -> Union[str, None]:
+    inventory_doc = get_inventory_doc(es, inventory_num, inventory_config)
+    if not inventory_doc or "inventory_uuid" not in inventory_doc:
+        return None
+    else:
+        return inventory_doc["inventory_uuid"]
+
+
 def add_inventory_metadata(metadata: dict, inventory_data: dict, config: dict) -> dict:
     metadata["year"] = config["year"]
     metadata["num_pages"] = inventory_data["num_pages"]
@@ -178,11 +186,59 @@ def make_inventory_metadata_doc(es: Elasticsearch, inventory_num: int, inventory
     if es.exists(index=config["inventory_index"],
                  doc_type=config["inventory_doc_type"], id=inventory_num):
         response = es.get(index=config["inventory_index"],
-                               doc_type=config["inventory_doc_type"], id=inventory_num)
+                          doc_type=config["inventory_doc_type"], id=inventory_num)
         metadata = response["_source"]
     else:
         metadata = {"inventory_num": inventory_num}
     metadata = add_inventory_metadata(metadata, inventory_data, config)
     return metadata
+
+
+def get_inventory_doc(es: Elasticsearch, inventory_num: int, config: dict) -> Union[dict, None]:
+    if not es.exists(index=config["inventory_index"],
+                     doc_type=config["inventory_doc_type"],
+                     id=inventory_num):
+        return None
+    response = es.get(index=config["inventory_index"],
+                      doc_type=config["inventory_doc_type"],
+                      id=inventory_num)
+    return response["_source"]
+
+
+def update_inventory_doc(es: Elasticsearch, inventory_info: dict, config: dict) -> Union[dict, None]:
+    changed = False
+    inventory_doc = get_inventory_doc(es, inventory_info["inventory_num"], config)
+    if not inventory_doc:
+        return inventory_info
+    for key in inventory_info:
+        if key not in inventory_doc:
+            inventory_doc[key] = inventory_info[key]
+            changed = True
+    if changed:
+        return inventory_doc
+    else:
+        return None
+
+
+def index_inventory_info(es: Elasticsearch, inventory_info: dict, config: dict):
+    action = "creating"
+    inv_num = inventory_info["inventory_num"]
+    if not es.indices.exists(index=config["inventory_index"]):
+        pass
+    elif es.exists(index=config["inventory_index"],
+                   doc_type=config["inventory_doc_type"],
+                   id=inventory_info["inventory_num"]):
+        action = "updating"
+        inventory_info = update_inventory_doc(es, inventory_info, config)
+    if inventory_info:
+        es.index(index=config["inventory_index"],
+                 doc_type=config["inventory_doc_type"],
+                 id=inventory_info["inventory_num"],
+                 body=inventory_info)
+    else:
+        action = "skipping"
+    print(f"{action} inventory {inv_num}")
+    return inventory_info
+
 
 

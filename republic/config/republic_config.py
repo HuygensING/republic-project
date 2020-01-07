@@ -9,7 +9,8 @@ def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: st
     inv_map = get_inventory_by_num(inventory_num)
     config["year"] = inv_map["year"]
     config["inventory_num"] = inventory_num
-    config["data_dir"] = os.path.join(config["base_dir"], "{}/".format(inventory_num))
+    config["hocr_dir"] = os.path.join(config["base_dir"], "hocr/{}/".format(inventory_num))
+    config["pagexml_dir"] = os.path.join(config["base_dir"], "PageXML/{}/".format(config["inventory_num"]))
     return config
 
 
@@ -19,7 +20,8 @@ def set_config_year(base_config: dict, year: int, base_dir: str) -> dict:
     inv_map = get_inventory_by_year(year)
     config["year"] = year
     config["inventory_num"] = inv_map["inventory_num"]
-    config["data_dir"] = os.path.join(config["base_dir"], "{}/".format(config["inventory_num"]))
+    config["hocr_dir"] = os.path.join(config["base_dir"], "hocr/{}/".format(config["inventory_num"]))
+    config["pagexml_dir"] = os.path.join(config["base_dir"], "PageXML/{}/".format(config["inventory_num"]))
     return config
 
 

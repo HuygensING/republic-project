@@ -8,6 +8,9 @@ config = {
         "port": port,
         "url_prefix": url_prefix,
         "url": f"http://{host}:{port}/" + f"{url_prefix}/" if url_prefix else ""
+    },
+    "data_host": {
+        "host_url": "<host.for.downloading.ocr/htr.data>"
     }
 }
 

@@ -1,3 +1,4 @@
+from typing import List, Dict, Union
 import re
 from collections import defaultdict
 from republic.fuzzy.fuzzy_keyword import Keyword, text2skipgrams
@@ -701,7 +702,9 @@ class FuzzyKeywordSearcher(object):
             self.set_known_candidate_status()
         return self.candidates["accept"]
 
-    def find_close_distance_keywords(self, keyword_list, max_distance_ratio=0.3):
+    def find_close_distance_keywords(self, keyword_list: List[str], max_distance_ratio: float = 0.3,
+                                     max_length_difference: int = 3, min_char_overlap: float = 0.5,
+                                     max_distance: int = 10) -> Dict[str, List[str]]:
         close_distance_keywords = defaultdict(list)
         for index, keyword1 in enumerate(keyword_list):
             string1 = get_keyword_string(keyword1).lower()
@@ -712,14 +715,14 @@ class FuzzyKeywordSearcher(object):
                 # - consider use of only last keyword, e.g. Doelman
                 # skip comparison if:
                 # - keywords are very different in length
-                if abs(len(string1) - len(string2)) > 3: continue
+                if abs(len(string1) - len(string2)) > max_length_difference: continue
                 # - keywords have low overlap in characters
                 char_overlap = score_char_overlap(string1, string2)
                 # print(string1, string2, char_overlap, char_overlap/len(string1))
-                if char_overlap / len(string1) < 0.5: continue
+                if char_overlap / len(string1) < min_char_overlap: continue
                 distance = score_levenshtein_distance(string1, string2)
                 # print(string1, string2, distance, distance / len(string1), distance/len(string2))
-                if distance < 10 and (
+                if distance < max_distance and (
                         distance / len(string1) < max_distance_ratio or distance / len(string2) < max_distance_ratio):
                     close_distance_keywords[keyword1].append(keyword2)
                     close_distance_keywords[keyword2].append(keyword1)
