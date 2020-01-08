@@ -223,10 +223,10 @@ def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_co
                 pages_hocr = page_parser.parse_double_page_scan(scan_hocr, inventory_config)
                 for page_hocr in pages_hocr:
                     print(inventory_num, "indexing page", page_hocr["page_id"])
-                    #index_page(es, page_hocr, inventory_config)
+                    index_page(es, page_hocr, inventory_config)
             else:
                 print("indexing scan")
-                #index_scan(es, scan_hocr, inventory_config)
+                index_scan(es, scan_hocr, inventory_config)
                 continue
 
 

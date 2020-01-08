@@ -9,11 +9,7 @@ def get_inventory_by_num(inventory_num: int) -> dict:
 def get_inventories_by_year(inventory_years: Union[int, List[int]]) -> list:
     if isinstance(inventory_years, int):
         inventory_years = [inventory_years]
-    print(inventory_years)
     return [inv_map for inv_map in inventory_mapping if inv_map["year"] in inventory_years]
-    #for inv_map in inventory_mapping:
-    #    if inv_map["year"] == inventory_year:
-    #        return inv_map
 
 
 inventory_mapping = [
