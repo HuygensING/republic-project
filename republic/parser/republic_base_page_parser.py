@@ -41,6 +41,8 @@ def is_header(line: dict, next_line: dict) -> bool:
         return False
     if line["top"] < 150:  # header has some margin form the top of the page, any text in this margin is noise
         return False
+    if not next_line: # if there is no next line this no header (empty pages don't have headers)
+        return False
     if line["bottom"] > next_line["top"] + 10:  # header has margin with next line
         return True
     if len(line["words"]) == 1:
