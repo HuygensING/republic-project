@@ -28,7 +28,7 @@ def get_files(data_dir: str) -> list:
 
 def read_hocr_scan(scan_file: str, config) -> int:
     column_id = "{}-{}".format(scan_file["scan_num"], scan_file["scan_column"])
-    hocr_doc = make_hocr_doc(scan_file["filepath"], scan_file["page_num"], config)
+    hocr_doc = make_hocr_doc(scan_file["filepath"], doc_id=scan_file["page_num"], config=config)
     hocr_doc.scan_info = scan_file
     hocr_doc.scan_info["num_page_ref_lines"] = count_page_ref_lines(hocr_doc)
     return hocr_doc

@@ -2,6 +2,8 @@ from typing import Union, List, Dict
 from elasticsearch import Elasticsearch
 import json
 import copy
+import os
+import zipfile
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
@@ -207,12 +209,33 @@ def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_hocr["page_id"], body=doc)
 
 
-def parse_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
+def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
+    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir)
+    hocr_dir = os.path.join(base_dir, "hocr")
+    inv_file = os.path.join(hocr_dir, f"{inventory_num}.zip")
+    z = zipfile.ZipFile(inv_file)
+    for scan_file in z.namelist():
+        scan_info = file_parser.get_scan_info(scan_file, inventory_config["hocr_dir"])
+        with z.open(scan_file) as fh:
+            scan_data = fh.read()
+            scan_hocr = page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=inventory_config)
+            if "double_page" in scan_hocr["scan_type"]:
+                pages_hocr = page_parser.parse_double_page_scan(scan_hocr, inventory_config)
+                for page_hocr in pages_hocr:
+                    print(inventory_num, "indexing page", page_hocr["page_id"])
+                    #index_page(es, page_hocr, inventory_config)
+            else:
+                print("indexing scan")
+                #index_scan(es, scan_hocr, inventory_config)
+                continue
+
+
+def parse_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
     inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir)
     #print(inventory_config)
-    scan_files = file_parser.get_files(inventory_config["data_dir"])
+    scan_files = file_parser.get_files(inventory_config["hocr_dir"])
     for scan_file in scan_files:
-        scan_hocr = page_parser.get_scan_hocr(scan_file, inventory_config)
+        scan_hocr = page_parser.get_scan_hocr(scan_file, config=inventory_config)
         if "double_page" in scan_hocr["scan_type"]:
             #print("double page scan:", scan_hocr["scan_num"], scan_hocr["scan_type"])
             pages_hocr = page_parser.parse_double_page_scan(scan_hocr, inventory_config)

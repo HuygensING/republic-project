@@ -291,12 +291,15 @@ def span_filtered_line(line, filtered_line):
     filtered_line["width"] = filtered_line["right"] - filtered_line["left"]
 
 
-def make_hocr_doc(filepath, doc_id=None, config={}):
+def make_hocr_doc(filepath, scan_data=None, doc_id=None, config={}):
     """
     make_hocr_doc takes as input a filepath to a hOCR file and generates various textual representations of
     the hOCR data. For explanation of the optional arguments, see the HOCRPAGE class above.
     """
-    hocr_soup = get_hocr_content(filepath)
+    if scan_data:
+        hocr_soup = bsoup(scan_data, "lxml")
+    else:
+        hocr_soup = get_hocr_content(filepath)
     hocr_doc_soup = get_hocr_doc_soup(hocr_soup)
     hocr_doc = HOCRDoc(hocr_doc_soup, doc_id=doc_id, config=config)
     set_carea(hocr_doc_soup)
