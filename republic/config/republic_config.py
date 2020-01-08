@@ -1,6 +1,6 @@
 import copy
 import os
-from republic.model.inventory_mapping import get_inventory_by_num, get_inventory_by_year
+from republic.model.inventory_mapping import get_inventory_by_num, get_inventories_by_year
 
 
 def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: str) -> dict:
@@ -17,7 +17,7 @@ def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: st
 def set_config_year(base_config: dict, year: int, base_dir: str) -> dict:
     config = copy.deepcopy(base_config)
     config["base_dir"] = base_dir
-    inv_map = get_inventory_by_year(year)
+    inv_map = get_inventories_by_year(year)
     config["year"] = year
     config["inventory_num"] = inv_map["inventory_num"]
     config["hocr_dir"] = os.path.join(config["base_dir"], "hocr/{}/".format(config["inventory_num"]))
