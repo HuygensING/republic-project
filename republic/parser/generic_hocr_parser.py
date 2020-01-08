@@ -223,6 +223,9 @@ def get_hocr_bbox(hocr_element):
 
 
 def get_hocr_title_attributes(hocr_element):
+    if not hocr_element or not hocr_element['title']:
+        print(hocr_element)
+        return None
     return {part.split(" ", 1)[0]: part.split(" ", 1)[1] for part in hocr_element['title'].split("; ")}
 
 
@@ -233,7 +236,7 @@ def get_bbox_size(hocr_bbox):
 def get_word_conf(hocr_word):
     if "ocrx_word" in hocr_word['class']:
         attributes = get_hocr_title_attributes(hocr_word)
-        if "x_wconf" in attributes:
+        if attributes and "x_wconf" in attributes:
             return int(attributes["x_wconf"])
     return None
 
@@ -257,11 +260,11 @@ def get_words(hocr_line):
 
 def get_word(hocr_word_soup):
     # Extract all word information, including bounding box and confidence
-    word_bbox = get_hocr_bbox(hocr_word_soup)
+    #word_bbox = get_hocr_bbox(hocr_word_soup)
     word = get_hocr_box(hocr_word_soup)
     word["word_text"] = hocr_word_soup.get_text()
     word["word_conf"] = get_word_conf(hocr_word_soup)
-    bbox_size = get_bbox_size(word_bbox)
+    #bbox_size = get_bbox_size(word_bbox)
     return word
 
 
