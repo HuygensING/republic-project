@@ -223,9 +223,6 @@ def get_hocr_bbox(hocr_element):
 
 
 def get_hocr_title_attributes(hocr_element):
-    if not hocr_element or not hocr_element['title']:
-        print(hocr_element)
-        return None
     return {part.split(" ", 1)[0]: part.split(" ", 1)[1] for part in hocr_element['title'].split("; ")}
 
 
@@ -246,11 +243,7 @@ def is_tiny_word(word, tiny_word_width, tiny_word_height):
 
 
 def filter_words(words, tiny_word_width=10):
-    # for word in words:
-    #    if is_tiny_word(word, tiny_word_width, tiny_word_width):
-    #        print("\ntiny word:", word, "\n")
     words = [word for word in words if not is_tiny_word(word, tiny_word_width, tiny_word_width)]
-    # words = [word for word in words if word["height"] > tiny_word_width]
     return words
 
 
@@ -305,7 +298,9 @@ def make_hocr_doc(filepath, scan_data=None, doc_id=None, config={}):
         hocr_soup = get_hocr_content(filepath)
     hocr_doc_soup = get_hocr_doc_soup(hocr_soup)
     hocr_doc = HOCRDoc(hocr_doc_soup, doc_id=doc_id, config=config)
-    set_carea(hocr_doc_soup)
+    carea = set_carea(hocr_doc_soup)
+    if not carea:
+        return None
     hocr_doc.set_lines(hocr_doc_soup)
     hocr_doc.set_paragraphs(hocr_doc_soup)
     hocr_doc.merge_paragraph_lines()

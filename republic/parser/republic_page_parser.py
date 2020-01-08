@@ -31,6 +31,8 @@ def get_page_columns_hocr(page_info: object, config: dict) -> dict:
 
 def get_column_hocr(column_info: dict, config: dict) -> dict:
     hocr_doc = make_hocr_doc(column_info["filepath"], doc_id=column_info["column_id"], config=config)
+    if not hocr_doc:
+        return None
     column_hocr = hocr_doc.carea
     column_hocr["lines"] = hocr_doc.lines
     for line in column_hocr["lines"]:
@@ -58,6 +60,8 @@ def determine_scan_type(scan_hocr: object, config: dict) -> list:
 
 def get_scan_hocr(scan_info: dict, scan_data: str = None, config: dict = {}) -> dict:
     hocr_doc = make_hocr_doc(scan_info["filepath"], scan_data=scan_data, doc_id=scan_info["scan_num"], config=config)
+    if not hocr_doc:
+        return None
     scan_hocr = hocr_doc.carea
     scan_hocr["scan_num"] = scan_info["scan_num"]
     scan_hocr["scan_id"] = "year-{}-scan-{}".format(scan_info["inventory_year"], scan_info["scan_num"])

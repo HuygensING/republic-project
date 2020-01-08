@@ -219,13 +219,13 @@ def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_co
         with z.open(scan_file) as fh:
             scan_data = fh.read()
             scan_hocr = page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=inventory_config)
+            if not scan_hocr:
+                continue
             if "double_page" in scan_hocr["scan_type"]:
                 pages_hocr = page_parser.parse_double_page_scan(scan_hocr, inventory_config)
                 for page_hocr in pages_hocr:
-                    print(inventory_num, "indexing page", page_hocr["page_id"])
                     index_page(es, page_hocr, inventory_config)
             else:
-                print("indexing scan")
                 index_scan(es, scan_hocr, inventory_config)
                 continue
 
@@ -236,6 +236,8 @@ def parse_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dic
     scan_files = file_parser.get_files(inventory_config["hocr_dir"])
     for scan_file in scan_files:
         scan_hocr = page_parser.get_scan_hocr(scan_file, config=inventory_config)
+        if not scan_hocr:
+            continue
         if "double_page" in scan_hocr["scan_type"]:
             #print("double page scan:", scan_hocr["scan_num"], scan_hocr["scan_type"])
             pages_hocr = page_parser.parse_double_page_scan(scan_hocr, inventory_config)
