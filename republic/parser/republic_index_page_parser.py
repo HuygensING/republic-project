@@ -1,8 +1,11 @@
 import re
+import csv
+import os
 import copy
-import republic.parser.republic_base_page_parser as page_parser
 from typing import Union, Tuple
 from statistics import median, mean, pstdev, stdev
+
+import republic.parser.republic_base_page_parser as page_parser
 
 #################################
 # Parse and correct index pages #
@@ -86,7 +89,9 @@ def fix_repeat_symbols_line(line: dict, line_index: int) -> dict:
     if first_word["width"] > 120 and len(first_word["word_text"]) <= 3:
         #print("possibly misrecognised repeat symbol:", line_index, first_word["width"], first_word["word_text"])
         copy_line["line_text"] = copy_line["line_text"].replace(first_word["word_text"], repeat_symbol, 1)
-        copy_line["spaced_line_text"] = copy_line["spaced_line_text"].replace(first_word["word_text"], repeat_symbol, 1)
+        if "spaced_line_text" in copy_line:
+            copy_line["spaced_line_text"] = copy_line["spaced_line_text"].replace(first_word["word_text"],
+                                                                                  repeat_symbol, 1)
         first_word["word_text"] = repeat_symbol
         #if first_word["width"] > avg_repeat_symbol_length:
         #    left_shift = first_word["width"] - avg_repeat_symbol_length
@@ -124,10 +129,11 @@ def add_repeat_symbol(line: dict, avg_repeat_symbol_length: int, minimum_start: 
     }
     copy_line["words"] = [repeat_symbol] + copy_line["words"]
     copy_line["line_text"] = repeat_symbol["word_text"] + " " + copy_line["line_text"]
-    copy_line["spaced_line_text"] = re.sub(r"(^ +)(.*)", r"\1" + repeat_symbol["word_text"] + " " + r"\2",
+    if "spaced_line_text" in copy_line:
+        copy_line["spaced_line_text"] = re.sub(r"(^ +)(.*)", r"\1" + repeat_symbol["word_text"] + " " + r"\2",
                                            copy_line["spaced_line_text"])
-    white_space = " " * round((avg_char_width + avg_repeat_symbol_length) / avg_char_width)
-    copy_line["spaced_line_text"] = copy_line["spaced_line_text"].replace(white_space, "")
+        white_space = " " * round((avg_char_width + avg_repeat_symbol_length) / avg_char_width)
+        copy_line["spaced_line_text"] = copy_line["spaced_line_text"].replace(white_space, "")
     return copy_line
 
 
@@ -172,8 +178,8 @@ def find_missing_repeat_symbols(lines: list) -> list:
     return fixed_lines
 
 
-def get_line_neighbourhood_lines(lines: list, line_index: int) -> list:
-    prev_start, next_end = get_line_neighbourhood(lines, line_index)
+def get_line_neighbourhood_lines(lines: list, line_index: int, num_before: int = 4, num_after: int = 4) -> list:
+    prev_start, next_end = get_line_neighbourhood(lines, line_index, num_before=num_before, num_after=num_after)
     return [lines[index] for index in range(prev_start, next_end)]
 
 
@@ -392,7 +398,9 @@ def get_index_entry_lines(hocr_index_page: dict, debug: bool = False) -> list:
                 print("\tscan:", "don't know", "line:", line_index, "top:", line["top"], line["left"], line["right"],
                       line["width"])
             # in_body = True
-        if in_body and line["left"] < 300 and len(line["words"]) > 0:
+        neighbour_lines = get_line_neighbourhood_lines(hocr_index_page["lines"], line_index, num_before=10)
+        avg_left = sum([line["left"] for line in neighbour_lines]) / len(neighbour_lines)
+        if in_body and line["left"] < avg_left + 300 and len(line["words"]) > 0:
             index_entry_lines += [line]
             # in_body = True
     return index_entry_lines
@@ -403,40 +411,68 @@ def fix_repeat_symbols(lines: list) -> list:
     return find_missing_repeat_symbols(fixed_lines)
 
 
-def index_lemmata(lines: list, lemma_index: dict, curr_lemma: str) -> str:
-    if len(lines) == 0:
-        return curr_lemma
+def find_index_lemmata(page_doc: dict, lemma_index: dict, curr_lemma: str) -> str:
     description = ""
-    fixed_lines = fix_repeat_symbols(lines)
-    for line_index, line in enumerate(fixed_lines):
-        if len(line["words"]) == 0:
-            continue
-        values_left = [line["left"] for line in get_line_neighbourhood_lines(fixed_lines, line_index)]
-        sum_left = sum(values_left)
-        avg_left = int(sum_left / len(values_left))
-        prev_start = None
-        if line_index > 0:
-            prev_start = fixed_lines[line_index-1]["left"]
-        #print(prev_start, line_index, sum_left, avg_left, values_left)
-        diff = line["left"] - avg_left
-        line["line_type"] = "start"
-        if diff > -10:
-            line["line_type"] = "continue"
-            # description += " " + line["line_text"]
-        if has_page_reference(line):
-            line["line_type"] += "_stop"
-            page_refs = get_page_references(line)
-            description += " " + remove_page_references(line)
-            #print("\tPAGE_REFS:", page_refs, "\tCURR LEMMA:", curr_lemma)
-            if curr_lemma:
-                lemma_index[curr_lemma] += [{"page_refs": page_refs, "description": description}]
-                description = ""
-        if line["line_type"].startswith("start") and check_lemma(line):
-            curr_lemma = get_lemma(line)
-            #print("setting lemma:", get_lemma(line))
-            description += " " + remove_lemma(curr_lemma, line)
-            lemma_index[curr_lemma] = []
-        elif line["line_type"].startswith("start") and has_repeat_symbol(line):
-            description += " " + remove_repeat_symbol(line)
-        #print(line_index, line["left"], diff, line["line_type"], "\t", line["spaced_line_text"])
+    for column_hocr in page_doc["columns"]:
+        lines = get_index_entry_lines(column_hocr)
+        if len(lines) == 0:
+            return curr_lemma
+        try:
+            fixed_lines = fix_repeat_symbols(lines)
+        except ZeroDivisionError:
+            print(page_doc["page_id"])
+            print(len(column_hocr["lines"]))
+            print(len(lines))
+            for line in column_hocr["lines"]:
+                print(line["left"], line["right"], line["line_text"])
+            raise
+        for line_index, line in enumerate(fixed_lines):
+            if len(line["words"]) == 0:
+                continue
+            values_left = [line["left"] for line in get_line_neighbourhood_lines(fixed_lines, line_index)]
+            sum_left = sum(values_left)
+            avg_left = int(sum_left / len(values_left))
+            prev_start = None
+            if line_index > 0:
+                prev_start = fixed_lines[line_index-1]["left"]
+            #print(prev_start, line_index, sum_left, avg_left, values_left)
+            diff = line["left"] - avg_left
+            line["line_type"] = "start"
+            if diff > -10:
+                line["line_type"] = "continue"
+                # description += " " + line["line_text"]
+            if has_page_reference(line):
+                line["line_type"] += "_stop"
+                page_refs = get_page_references(line)
+                description += " " + remove_page_references(line)
+                #print("\tPAGE_REFS:", page_refs, "\tCURR LEMMA:", curr_lemma)
+                if curr_lemma:
+                    lemma_index[curr_lemma] += [{"page_refs": page_refs, "description": description,
+                                                 "source_page": page_doc["page_id"]}]
+                    description = ""
+            if line["line_type"].startswith("start") and check_lemma(line):
+                curr_lemma = get_lemma(line)
+                #print("setting lemma:", get_lemma(line))
+                description += " " + remove_lemma(curr_lemma, line)
+                lemma_index[curr_lemma] = []
+            elif line["line_type"].startswith("start") and has_repeat_symbol(line):
+                description += " " + remove_repeat_symbol(line)
+            #print(line_index, line["left"], diff, line["line_type"], "\t", line["spaced_line_text"])
     return curr_lemma
+
+
+def write_index_to_csv(inventory_num, lemma_index, data_type: str, config: dict):
+    if data_type not in ["hocr", "pagexml"]:
+        raise ValueError("data_type should be 'hocr' or 'pagexml'")
+    fname = f"index-{inventory_num}-{data_type}.csv"
+    outfile = os.path.join(config["csv_dir"], fname)
+    with open(outfile, 'wt') as fh:
+        csv_writer = csv.writer(fh, delimiter="\t")
+        headers = ["inventory_num", "source_page", "lemma", "description", "page_refs"]
+        csv_writer.writerow(headers)
+        for lemma in lemma_index:
+            for entry in lemma_index[lemma]:
+                page_refs = ",".join([str(page_ref) for page_ref in entry["page_refs"]])
+                csv_writer.writerow([inventory_num, entry["source_page"],
+                                    lemma, entry["description"], page_refs])
+

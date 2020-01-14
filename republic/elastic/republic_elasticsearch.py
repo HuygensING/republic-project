@@ -1,9 +1,10 @@
 from typing import Union, List, Dict
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, RequestError
 import json
 import copy
 import os
 import zipfile
+from collections import defaultdict
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
@@ -12,11 +13,12 @@ import republic.parser.republic_base_page_parser as base_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_page_parser as page_parser
 import republic.parser.republic_paragraph_parser as para_parser
-from settings import config
+import republic.parser.republic_index_page_parser as index_parser
+from settings import config as republic_config
 
 
 def initialize_es() -> Elasticsearch:
-    es_config = config["elastic_config"]
+    es_config = republic_config["elastic_config"]
     if es_config["url_prefix"]:
         es_republic = Elasticsearch(
             [{"host": es_config["host"], "port": es_config["port"], "url_prefix": es_config["url_prefix"]}])
@@ -72,6 +74,14 @@ def parse_es_page_doc(page_doc: dict) -> dict:
     return page_doc
 
 
+def create_es_index_lemma_doc(lemma: str, lemma_index: dict, config: dict):
+    return {
+        "lemma": lemma,
+        "inventory_num": config["inventory_num"],
+        "lemma_entries": lemma_index[lemma]
+    }
+
+
 def parse_hits_as_pages(hits: dict) -> List[dict]:
     return [parse_es_page_doc(hit["_source"]) for hit in hits]
 
@@ -116,6 +126,11 @@ def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
         raise ValueError("No inventory metadata available for inventory num {}".format(inventory_num))
     response = es.get(index=config["inventory_index"], doc_type=config["inventory_doc_type"], id=inventory_num)
     return response["_source"]
+
+
+def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+    query = {"query": {"match": {"inventory_num": inventory_num}}, "size": 10000}
+    return retrieve_pages_with_query(es, query, config)
 
 
 def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, None]:
@@ -207,6 +222,22 @@ def index_scan(es: Elasticsearch, scan_hocr: dict, config: dict):
 def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     doc = create_es_page_doc(page_hocr)
     es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_hocr["page_id"], body=doc)
+
+
+def index_lemmata(es: Elasticsearch, lemma_index: dict, config: dict):
+    for lemma in lemma_index:
+        lemma_doc = create_es_index_lemma_doc(lemma, lemma_index, config)
+        doc_id = f"{config['inventory_num']}---{normalize_lemma(lemma)}"
+        try:
+            es.index(index=config["lemma_index"], doc_type=config["lemma_doc_type"], id=doc_id, body=lemma_doc)
+        except RequestError:
+            print(f"Error indexing lemma term with id {doc_id}")
+            raise
+
+
+def normalize_lemma(lemma):
+    lemma = lemma.replace(" ", "_").replace("/", "_").replace("ê", "e")
+    return lemma
 
 
 def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
@@ -308,6 +339,21 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, in
             del paragraph["lines"]
             es.index(index=inventory_config["paragraph_index"], doc_type=inventory_config["paragraph_doc_type"],
                      id=paragraph["metadata"]["paragraph_id"], body=paragraph)
+
+
+def parse_inventory_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> dict:
+    lemma_index = defaultdict(list)
+    curr_lemma = None
+    pages = retrieve_pages_by_type(es, "index_page", inventory_num, config)
+    for page_doc in sorted(pages, key = lambda x: x["page_num"]):
+        #print("\n\n", page_doc["page_id"])
+        if "index_page" not in page_doc["page_type"]:
+            print("skipping non-index page")
+            continue
+        page_doc["num_page_ref_lines"] = index_parser.count_page_ref_lines(page_doc)
+        curr_lemma = index_parser.find_index_lemmata(page_doc, lemma_index, curr_lemma)
+        #print("returned lemma:", curr_lemma)
+    return lemma_index
 
 
 

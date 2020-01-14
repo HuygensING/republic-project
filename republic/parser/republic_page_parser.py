@@ -110,6 +110,25 @@ def is_empty_page(page_hocr: dict) -> bool:
         return False
 
 
+def is_section_start_page(page_hocr: dict) -> bool:
+    lines = [line for column in page_hocr["columns"] for line in column["lines"]]
+    top_third = [line for line in lines if line["bottom"] < 1200]
+    num_lines_top = len(top_third)
+    num_lines_all = len(lines)
+    num_chars_top = sum([len(line["line_text"].replace(" ", "")) for line in top_third])
+    num_chars_all = sum([len(line["line_text"].replace(" ", "")) for line in lines])
+    lines_fraction = 0
+    chars_fraction = 0
+    if num_lines_all > 0:
+        lines_fraction = round(num_lines_top / num_lines_all, 2)
+    if num_chars_all > 0:
+        chars_fraction = round(num_chars_top / num_chars_all, 2)
+    if 150 < page_hocr["num_words"] < 450 and chars_fraction < 0.15 and lines_fraction < 0.25:
+        return True
+    else:
+        return False
+
+
 def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
     page_type = get_single_page_column_type(page_hocr)
     if is_empty_page(page_hocr):
@@ -133,6 +152,10 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
             page_type += ["unknown_page_type"]
     if base_parser.is_title_page(page_hocr, config["title_page"]):
         page_type += ["title_page"]
+    if is_section_start_page(page_hocr):
+        page_type += ["section_start"]
+        if "title_page" not in page_type:
+            page_type += ["title_page"]
     return page_type
 
 

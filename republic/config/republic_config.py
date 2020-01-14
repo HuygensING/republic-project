@@ -11,6 +11,7 @@ def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: st
     config["inventory_num"] = inventory_num
     config["hocr_dir"] = os.path.join(config["base_dir"], "hocr/{}/".format(inventory_num))
     config["pagexml_dir"] = os.path.join(config["base_dir"], "PageXML/{}/".format(config["inventory_num"]))
+    config["csv_dir"] = os.path.join(config["base_dir"], "csv")
     return config
 
 
@@ -22,6 +23,7 @@ def set_config_year(base_config: dict, year: int, base_dir: str) -> dict:
     config["inventory_num"] = inv_map["inventory_num"]
     config["hocr_dir"] = os.path.join(config["base_dir"], "hocr/{}/".format(config["inventory_num"]))
     config["pagexml_dir"] = os.path.join(config["base_dir"], "PageXML/{}/".format(config["inventory_num"]))
+    config["csv_dir"] = os.path.join(config["base_dir"], "csv")
     return config
 
 
@@ -31,6 +33,8 @@ base_config = {
     "base_dir": None,
     "inventory_index": "republic_inventory",
     "inventory_doc_type": "inventory",
+    "lemma_index": "republic_lemma",
+    "lemma_doc_type": "lemma",
     "page_index": "republic_hocr_pages",
     "page_doc_type": "page",
     "scan_index": "republic_hocr_scans",
