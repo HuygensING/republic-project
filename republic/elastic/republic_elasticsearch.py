@@ -129,7 +129,7 @@ def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
 
 def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     query = {"query": {"match": {"inventory_num": inventory_num}}, "size": 10000}
-    response = es.search(index=config["scan_index"], doc_type=config["scan_doc_type"], body=query)
+    response = es.search(index=config["scan_index"], body=query)
     if response['hits']['total'] == 0:
         return []
     return [parse_es_scan_doc(hit['_source']) for hit in response['hits']['hits']]
