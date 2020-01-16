@@ -151,11 +151,11 @@ def get_inventory_summary(es: Elasticsearch, inventory_config: dict) -> dict:
 
 
 def get_inventory_uuid(es: Elasticsearch, inventory_num: int, inventory_config: dict) -> Union[str, None]:
-    inventory_doc = get_inventory_doc(es, inventory_num, inventory_config)
-    if not inventory_doc or "inventory_uuid" not in inventory_doc:
+    inventory_metadata = get_inventory_metadata(es, inventory_num, inventory_config)
+    if not inventory_metadata or "inventory_uuid" not in inventory_metadata:
         return None
     else:
-        return inventory_doc["inventory_uuid"]
+        return inventory_metadata["inventory_uuid"]
 
 
 def add_inventory_metadata(metadata: dict, inventory_data: dict, config: dict) -> dict:
@@ -183,18 +183,14 @@ def add_type_page_num_offsets(metadata: dict):
 
 def make_inventory_metadata_doc(es: Elasticsearch, inventory_num: int, inventory_data: dict,
                                 config: dict) -> dict:
-    if es.exists(index=config["inventory_index"],
-                 doc_type=config["inventory_doc_type"], id=inventory_num):
-        response = es.get(index=config["inventory_index"],
-                          doc_type=config["inventory_doc_type"], id=inventory_num)
-        metadata = response["_source"]
-    else:
+    metadata = get_inventory_metadata(es, inventory_num, config)
+    if not metadata:
         metadata = {"inventory_num": inventory_num}
     metadata = add_inventory_metadata(metadata, inventory_data, config)
     return metadata
 
 
-def get_inventory_doc(es: Elasticsearch, inventory_num: int, config: dict) -> Union[dict, None]:
+def get_inventory_metadata(es: Elasticsearch, inventory_num: int, config: dict) -> Union[dict, None]:
     if not es.exists(index=config["inventory_index"],
                      doc_type=config["inventory_doc_type"],
                      id=inventory_num):
@@ -205,40 +201,40 @@ def get_inventory_doc(es: Elasticsearch, inventory_num: int, config: dict) -> Un
     return response["_source"]
 
 
-def update_inventory_doc(es: Elasticsearch, inventory_info: dict, config: dict) -> Union[dict, None]:
+def update_inventory_metadata(es: Elasticsearch, inventory_info: dict, config: dict) -> Union[dict, None]:
     changed = False
-    inventory_doc = get_inventory_doc(es, inventory_info["inventory_num"], config)
-    if not inventory_doc:
+    inventory_metadata = get_inventory_metadata(es, inventory_info["inventory_num"], config)
+    if not inventory_metadata:
         return inventory_info
     for key in inventory_info:
-        if key not in inventory_doc:
-            inventory_doc[key] = inventory_info[key]
+        if key not in inventory_metadata:
+            inventory_metadata[key] = inventory_info[key]
             changed = True
     if changed:
-        return inventory_doc
+        return inventory_metadata
     else:
         return None
 
 
-def index_inventory_info(es: Elasticsearch, inventory_info: dict, config: dict):
+def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config: dict):
     action = "creating"
-    inv_num = inventory_info["inventory_num"]
+    inv_num = inventory_metadata["inventory_num"]
     if not es.indices.exists(index=config["inventory_index"]):
         pass
     elif es.exists(index=config["inventory_index"],
                    doc_type=config["inventory_doc_type"],
-                   id=inventory_info["inventory_num"]):
+                   id=inventory_metadata["inventory_num"]):
         action = "updating"
-        inventory_info = update_inventory_doc(es, inventory_info, config)
-    if inventory_info:
+        inventory_metadata = update_inventory_metadata(es, inventory_metadata, config)
+    if inventory_metadata:
         es.index(index=config["inventory_index"],
                  doc_type=config["inventory_doc_type"],
-                 id=inventory_info["inventory_num"],
-                 body=inventory_info)
+                 id=inventory_metadata["inventory_num"],
+                 body=inventory_metadata)
     else:
         action = "skipping"
     print(f"{action} inventory {inv_num}")
-    return inventory_info
+    return inventory_metadata
 
 
 

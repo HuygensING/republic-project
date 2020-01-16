@@ -324,20 +324,36 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         #print(page_id, page_type, numbering)
 
 
-def index_inventory_hocr_scans(es: Elasticsearch, inventory_num: int,
-                               config: dict):
+def index_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: dict):
     scan_files = file_parser.get_files(config["hocr_dir"])
     for scan_file in scan_files:
         scan_hocr = page_parser.get_scan_hocr(scan_file, config=config)
         if not scan_hocr:
             continue
-        print(scan_hocr["scan_id"])
-        scan_hocr["lines"] = json.dumps(scan_hocr["lines"])
+        print("Indexing scan", scan_hocr["scan_id"])
+        scan_es_doc = create_es_scan_doc(scan_hocr)
         es.index(index=config["scan_index"], doc_type=config["scan_doc_type"],
-                 id=scan_hocr["scan_id"], body=scan_hocr)
+                 id=scan_es_doc["scan_id"], body=scan_es_doc)
 
 
-def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, config: dict):
+    hocr_dir = os.path.join(config["base_dir"], "hocr")
+    inv_file = os.path.join(hocr_dir, f"{inventory_num}.zip")
+    z = zipfile.ZipFile(inv_file)
+    for scan_file in z.namelist():
+        scan_info = file_parser.get_scan_info(scan_file, config["hocr_dir"])
+        with z.open(scan_file) as fh:
+            scan_data = fh.read()
+            scan_hocr = page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=config)
+            if not scan_hocr:
+                continue
+            print("Indexing scan", scan_hocr["scan_id"])
+            scan_es_doc = create_es_scan_doc(scan_hocr)
+            es.index(index=config["scan_index"], doc_type=config["scan_doc_type"],
+                     id=scan_es_doc["scan_id"], body=scan_es_doc)
+
+
+def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict):
     scans_hocr: list = retrieve_inventory_hocr_scans(es, inventory_num, config)
     for scan_hocr in scans_hocr:
         if "double_page" in scan_hocr["scan_type"]:
