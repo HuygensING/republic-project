@@ -4,7 +4,6 @@ import json
 import copy
 import os
 import zipfile
-from collections import defaultdict
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
@@ -128,6 +127,14 @@ def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
     return response["_source"]
 
 
+def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+    query = {"query": {"match": {"inventory_num": inventory_num}}, "size": 10000}
+    response = es.search(index=config["scan_index"], doc_type=config["scan_doc_type"], body=query)
+    if response['hits']['total'] == 0:
+        return []
+    return [parse_es_scan_doc(hit['_source']) for hit in response['hits']['hits']]
+
+
 def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     query = {"query": {"match": {"inventory_num": inventory_num}}, "size": 10000}
     return retrieve_pages_with_query(es, query, config)
@@ -151,7 +158,7 @@ def retrieve_pages_with_query(es: Elasticsearch, query: dict, config: dict) -> l
     return parse_hits_as_pages(response['hits']['hits'])
 
 
-def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict) -> dict:
+def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict) -> Union[dict, None]:
     match_fields = [{"match": {"page_num": page_num}}]
     if "inventory_num" in config: match_fields += [{"match": {"inventory_num": config["inventory_num"]}}]
     elif "year" in config: match_fields += [{"match": {"year": config["year"]}}]
@@ -317,6 +324,28 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         #print(page_id, page_type, numbering)
 
 
+def index_inventory_hocr_scans(es: Elasticsearch, inventory_num: int,
+                               config: dict):
+    scan_files = file_parser.get_files(config["hocr_dir"])
+    for scan_file in scan_files:
+        scan_hocr = page_parser.get_scan_hocr(scan_file, config=config)
+        if not scan_hocr:
+            continue
+        print(scan_hocr["scan_id"])
+        scan_hocr["lines"] = json.dumps(scan_hocr["lines"])
+        es.index(index=config["scan_index"], doc_type=config["scan_doc_type"],
+                 id=scan_hocr["scan_id"], body=scan_hocr)
+
+
+def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+    scans_hocr: list = retrieve_inventory_hocr_scans(es, inventory_num, config)
+    for scan_hocr in scans_hocr:
+        if "double_page" in scan_hocr["scan_type"]:
+            pages_hocr = page_parser.parse_double_page_scan(scan_hocr, config)
+            for page_hocr in pages_hocr:
+                index_page(es, page_hocr, config)
+
+
 def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, inventory_num: int, inventory_config: dict):
     current_date = para_parser.initialize_current_date(inventory_config)
     page_docs = retrieve_resolution_pages(es, inventory_num, inventory_config)
@@ -339,21 +368,6 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, in
             del paragraph["lines"]
             es.index(index=inventory_config["paragraph_index"], doc_type=inventory_config["paragraph_doc_type"],
                      id=paragraph["metadata"]["paragraph_id"], body=paragraph)
-
-
-def parse_inventory_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> dict:
-    lemma_index = defaultdict(list)
-    curr_lemma = None
-    pages = retrieve_pages_by_type(es, "index_page", inventory_num, config)
-    for page_doc in sorted(pages, key = lambda x: x["page_num"]):
-        #print("\n\n", page_doc["page_id"])
-        if "index_page" not in page_doc["page_type"]:
-            print("skipping non-index page")
-            continue
-        page_doc["num_page_ref_lines"] = index_parser.count_page_ref_lines(page_doc)
-        curr_lemma = index_parser.find_index_lemmata(page_doc, lemma_index, curr_lemma)
-        #print("returned lemma:", curr_lemma)
-    return lemma_index
 
 
 

@@ -42,7 +42,7 @@ def new_gap_pixel_interval(pixel: int) -> dict:
 
 
 def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config: dict) -> list:
-    common_pixels = sorted([pixel for pixel, freq in  pixel_dist.items() if freq > freq_threshold])
+    common_pixels = sorted([pixel for pixel, freq in pixel_dist.items() if freq > freq_threshold])
     gap_pixel_intervals = []
     if len(common_pixels) == 0:
         return gap_pixel_intervals
@@ -66,8 +66,9 @@ def compute_gap_pixel_dist(lines: list, config) -> Counter:
     pixel_dist = Counter()
     for line in lines:
         words = filter_low_confidence_words(line["words"], config)
-        #print("line", len(line["words"]), len(words))
+        #print("line, all words:", len(line["words"]), "\thigh-confidence words:", len(words), "\t", line["line_text"])
         for gap in find_large_word_gaps(words, config):
+            #print("gap:", gap)
             pixel_dist.update([pixel for pixel in range(gap["starts_at"], gap["ends_at"]+1)])
     return pixel_dist
     #print(pixel_dist.most_common(2000))
@@ -127,6 +128,7 @@ def split_line_on_columns(line: dict, column_info: list, config: dict) -> list:
     gaps = find_large_word_gaps(words, config)
     column_gaps = [gap for gap in gaps if is_column_gap(gap, column_info, config)]
     line_columns = []
+    left_margin = None
     from_index = 0
     num_line_column_words = 0
     for gap in column_gaps:
@@ -136,6 +138,7 @@ def split_line_on_columns(line: dict, column_info: list, config: dict) -> list:
             if line_column["right"] < column_info[0]["start"]: # skip margin noise before first column starts
                 num_line_column_words += len(line_column["words"])
                 from_index = to_index
+                left_margin = line_column
                 continue
             line_columns += [line_column]
             num_line_column_words += len(line_column["words"])
@@ -144,11 +147,22 @@ def split_line_on_columns(line: dict, column_info: list, config: dict) -> list:
         line_column = construct_line_from_words(words[from_index:])
         line_columns += [line_column]
         num_line_column_words += len(line_column["words"])
-    #print("len words:", len(words), "from_index:", from_index, "num_lines_column_word:", num_line_column_words)
     if num_line_column_words != len(words):
         for line_column in line_columns:
             print("line column len:", len(line_column["words"]))
         raise IndexError("Not all words selected!")
+    if left_margin:
+        if len(line_columns) == 0:
+            line_columns += [{"words": [],
+                              "left": left_margin["right"],
+                              "right": left_margin["right"],
+                              "top": left_margin["top"],
+                              "bottom": left_margin["bottom"],
+                              "height": left_margin["height"],
+                              "width": 0,
+                              "line_text": ""
+                              }]
+        line_columns[0]["left_margin"] = left_margin
     return line_columns
 
 

@@ -3,6 +3,7 @@ import csv
 import os
 import copy
 from typing import Union, Tuple
+from collections import defaultdict
 from statistics import median, mean, pstdev, stdev
 
 import republic.parser.republic_base_page_parser as page_parser
@@ -69,7 +70,8 @@ def count_number_chars(page_hocr: dict) -> int:
 
 
 def line_has_abbrev_date(line: dict) -> bool:
-    if re.search(r"\b\d+ (Jan|Feb|Maa|Apr|Mey|Jun|Jul|Aug|Sep|Okt|Nov|Dec)", line["line_text"]):
+    # Months are abbreviated, repeated entries for same months use 'dito'
+    if re.search(r"\b\d+ (Jan|Feb|Maa|Apr|Mey|Jun|Jul|Aug|Sep|Okt|Nov|Dec|dito)", line["line_text"]):
         return True
     else:
         return False
@@ -106,6 +108,8 @@ def get_repeat_symbol_length(lines: list) -> int:
         # print("start:", line["words"][0]["word_text"])
         if has_repeat_symbol(line):
             repeat_symbol_lengths += [line["words"][0]["width"]]
+    if len(repeat_symbol_lengths) == 0:
+        return 120
     return int(sum(repeat_symbol_lengths) / len(repeat_symbol_lengths))
 
 
@@ -303,7 +307,7 @@ def score_index_page_late_print(page_hocr: dict, config: dict) -> int:
     lines = [line for column in page_hocr["columns"] for line in column["lines"]]
     line_widths = [line["width"] for line in lines]
     num_lines = len(line_widths)
-    num_page_refs = len([line for line in lines if line["words"][-1]["word_text"].isdigit()])
+    num_page_refs = len([line for line in lines if len(line["words"]) > 0 and line["words"][-1]["word_text"].isdigit()])
     num_dates = sum([1 for line in lines if line_has_abbrev_date(line)])
     index_score = 0
     if num_dates >= config["num_dates_threshold"] and num_page_refs >= config["num_page_refs_threshold"]:
@@ -475,4 +479,19 @@ def write_index_to_csv(inventory_num, lemma_index, data_type: str, config: dict)
                 page_refs = ",".join([str(page_ref) for page_ref in entry["page_refs"]])
                 csv_writer.writerow([inventory_num, entry["source_page"],
                                     lemma, entry["description"], page_refs])
+
+
+def parse_inventory_index_pages(pages: list) -> dict:
+    lemma_index = defaultdict(list)
+    curr_lemma = None
+    for page_doc in sorted(pages, key = lambda x: x["page_num"]):
+        #print("\n\n", page_doc["page_id"])
+        if "index_page" not in page_doc["page_type"]:
+            print("skipping non-index page")
+            continue
+        page_doc["num_page_ref_lines"] = count_page_ref_lines(page_doc)
+        curr_lemma = find_index_lemmata(page_doc, lemma_index, curr_lemma)
+        #print("returned lemma:", curr_lemma)
+    return lemma_index
+
 

@@ -58,7 +58,7 @@ def determine_scan_type(scan_hocr: object, config: dict) -> list:
         return ["normal", "double_page"]
 
 
-def get_scan_hocr(scan_info: dict, scan_data: str = None, config: dict = {}) -> dict:
+def get_scan_hocr(scan_info: dict, scan_data: str = None, config: dict = {}) -> Union[dict, None]:
     hocr_doc = make_hocr_doc(scan_info["filepath"], scan_data=scan_data, doc_id=scan_info["scan_num"], config=config)
     if not hocr_doc:
         return None
