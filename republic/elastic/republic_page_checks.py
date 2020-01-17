@@ -1,3 +1,4 @@
+from typing import List
 import republic.elastic.republic_elasticsearch as rep_es
 import republic.analyser.republic_inventory_analyser as inv_analyser
 from elasticsearch import Elasticsearch
@@ -29,6 +30,77 @@ def score_levenshtein_distance(s1, s2):
 # precede the resolution pages, we can identify misclassified page and correct their labels.
 #
 ###########################################################################
+
+
+def filter_page_type(page_doc: dict) -> List[str]:
+    filtered = []
+    for page_type in page_doc["page_type"]:
+        if "index_" in page_type:
+            continue
+        if "respect_" in page_type:
+            continue
+        if "resolution_" in page_type:
+            continue
+        filtered += [page_type]
+    return filtered
+
+
+def swap_page_type(page_doc: dict, new_page_type: str) -> List[str]:
+    page_type = filter_page_type(page_doc)
+    page_type += [new_page_type]
+    return page_type
+
+
+def in_section(page_doc: dict, section_type: str, inventory_info: dict) -> bool:
+    if section_type not in inventory_info:
+        return False
+    return inventory_info[section_type]["from"] <= page_doc["page_num"] <= inventory_info[section_type]["to"]
+
+
+def has_correct_page_type(page_doc: dict, inventory_info: dict) -> bool:
+    if in_section(page_doc, "respect_page", inventory_info):
+        return "respect_page" in page_doc["page_type"]
+    if in_section(page_doc, "index_page", inventory_info):
+        return "index_page" in page_doc["page_type"]
+    if in_section(page_doc, "resolution_page", inventory_info):
+        return "resolution_page" in page_doc["page_type"]
+    # outside these ranges, page_type must be either empty, title_page or unknown_page_type
+    for page_type in ["empty_page", "title_page", "unknown_page_type"]:
+        if page_type in page_doc["page_type"]:
+            return True
+    return False
+
+
+def get_correct_page_type(page_doc: dict, inventory_info: dict) -> str:
+    if in_section(page_doc, "respect_page", inventory_info):
+        return "respect_page"
+    if in_section(page_doc, "index_page", inventory_info):
+        return "index_page"
+    if in_section(page_doc, "resolution_page", inventory_info):
+        return "resolution_page"
+    if page_doc["page_num"] in inventory_info["title_page_nums"]:
+        return "title_page"
+    else:
+        return "empty_page"
+
+
+def correct_page_type_external_info(es: Elasticsearch, inventory_info: dict, inv_num: int, inv_config: dict) -> None:
+    print("correcting page_type using external info for inventory", inv_num)
+    pages = rep_es.retrieve_inventory_pages(es, inv_num, inv_config)
+    pages.sort(key = lambda x: x["page_num"])
+    print("pages retrieved for inventory", inv_num)
+    for page_doc in pages:
+        correct_page_type = get_correct_page_type(page_doc, inventory_info[inv_num])
+        if correct_page_type in page_doc["page_type"]:
+            print("CORRECT:", page_doc["page_num"], page_doc["page_type"])
+            continue
+        print(inv_num, page_doc["page_num"], swap_page_type(page_doc, correct_page_type), page_doc["page_type"])
+        page_doc["page_type"] = swap_page_type(page_doc, correct_page_type)
+        if correct_page_type == "index_page":
+            late_print_starts = inv_config["index_page_late_print"]["inventory_threshold"]
+            period_type = "index_page_early_print" if inv_num < late_print_starts else "index_page_late_print"
+            page_doc["page_type"] += [period_type]
+        rep_es.index_page(es, page_doc, inv_config)
 
 
 def correct_single_page_type(es: Elasticsearch, page_num: int, correct_page_type: str, inventory_config: dict) -> bool:

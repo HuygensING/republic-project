@@ -61,7 +61,7 @@ base_config = {
         "left_jump_ratio_threshold": 0.5,
         "num_words_min": 200,
         "num_words_max": 600,
-        "inventory_threshold": 3819,
+        "inventory_threshold": 3804,
     },
     "index_page_late_print": {
         "median_line_width_min": 250,
@@ -74,7 +74,7 @@ base_config = {
         "num_lines_max": 230,
         "num_dates_threshold": 5,
         "num_page_refs_threshold": 15,
-        "inventory_threshold": 3798,
+        "inventory_threshold": 3805,
         "left_jump_ratio_min": 0.5,
     },
     "resolution_page": {

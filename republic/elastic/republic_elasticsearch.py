@@ -13,16 +13,19 @@ import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_page_parser as page_parser
 import republic.parser.republic_paragraph_parser as para_parser
 import republic.parser.republic_index_page_parser as index_parser
-from settings import config as republic_config
+from settings import set_elasticsearch_config
 
 
-def initialize_es() -> Elasticsearch:
+def initialize_es(scheme: str = "internal") -> Elasticsearch:
+    republic_config = set_elasticsearch_config(scheme)
+    print("scheme:", scheme)
     es_config = republic_config["elastic_config"]
     if es_config["url_prefix"]:
         es_republic = Elasticsearch(
-            [{"host": es_config["host"], "port": es_config["port"], "url_prefix": es_config["url_prefix"]}])
+            [{"host": es_config["host"], "port": es_config["port"],
+              "scheme": scheme, "url_prefix": es_config["url_prefix"]}])
     else:
-        es_republic = Elasticsearch([{"host": es_config["host"], "port": es_config["port"]}])
+        es_republic = Elasticsearch([{"host": es_config["host"], "port": es_config["port"], "scheme": scheme}])
     return es_republic
 
 
@@ -347,7 +350,6 @@ def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, c
             scan_hocr = page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=config)
             if not scan_hocr:
                 continue
-            print("Indexing scan", scan_hocr["scan_id"])
             scan_es_doc = create_es_scan_doc(scan_hocr)
             es.index(index=config["scan_index"], doc_type=config["scan_doc_type"],
                      id=scan_es_doc["scan_id"], body=scan_es_doc)
