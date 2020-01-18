@@ -2,11 +2,12 @@ import os
 import requests
 from elasticsearch import Elasticsearch
 from typing import Dict, Union
-from settings import config
+from settings import set_elasticsearch_config
 
 from republic.analyser.republic_inventory_analyser import get_inventory_uuid
 
-HOST_URL = config["data_host"]["host_url"]
+elasticsearch_config = set_elasticsearch_config()
+HOST_URL = elasticsearch_config["data_host"]["host_url"]
 
 
 def get_download_urls(uuid: str) -> Dict[str, str]:
@@ -27,16 +28,16 @@ def get_inventory_data(url: str) -> Union[bytes, None]:
         return None
 
 
-def store_inventory_data(inventory_data: bytes, inventory_num: int, data_type: str, config: dict):
-    out_file = get_output_filename(inventory_num, data_type, config)
+def store_inventory_data(inventory_data: bytes, inventory_num: int, data_type: str, inventory_config: dict):
+    out_file = get_output_filename(inventory_num, data_type, inventory_config)
     with open(out_file, 'wb') as fh:
         fh.write(inventory_data)
 
 
-def get_output_filename(inventory_num: int, data_type: str, config: dict) -> str:
+def get_output_filename(inventory_num: int, data_type: str, inventory_config: dict) -> str:
     data_dir = None
     if data_type == "hocr" or data_type == "pagexml":
-        data_dir = os.path.join(config["base_dir"], data_type)
+        data_dir = os.path.join(inventory_config["base_dir"], data_type)
     if data_dir:
         return os.path.join(data_dir, f"{inventory_num}.zip")
     else:
