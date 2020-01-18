@@ -16,16 +16,18 @@ import republic.parser.republic_index_page_parser as index_parser
 from settings import set_elasticsearch_config
 
 
-def initialize_es(scheme: str = "internal") -> Elasticsearch:
-    republic_config = set_elasticsearch_config(scheme)
-    print("scheme:", scheme)
+def initialize_es(host_type: str = "internal") -> Elasticsearch:
+    republic_config = set_elasticsearch_config(host_type)
     es_config = republic_config["elastic_config"]
     if es_config["url_prefix"]:
-        es_republic = Elasticsearch(
-            [{"host": es_config["host"], "port": es_config["port"],
-              "scheme": scheme, "url_prefix": es_config["url_prefix"]}])
+        es_republic = Elasticsearch([{"host": es_config["host"],
+                                      "port": es_config["port"],
+                                      "scheme": es_config["scheme"],
+                                      "url_prefix": es_config["url_prefix"]}])
     else:
-        es_republic = Elasticsearch([{"host": es_config["host"], "port": es_config["port"], "scheme": scheme}])
+        es_republic = Elasticsearch([{"host": es_config["host"],
+                                      "port": es_config["port"],
+                                      "scheme": es_config["scheme"]}])
     return es_republic
 
 

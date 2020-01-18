@@ -92,7 +92,7 @@ def correct_page_type_external_info(es: Elasticsearch, inventory_info: dict, inv
     for page_doc in pages:
         correct_page_type = get_correct_page_type(page_doc, inventory_info[inv_num])
         if correct_page_type in page_doc["page_type"]:
-            print("CORRECT:", page_doc["page_num"], page_doc["page_type"])
+            #print("CORRECT:", page_doc["page_num"], page_doc["page_type"])
             continue
         print(inv_num, page_doc["page_num"], swap_page_type(page_doc, correct_page_type), page_doc["page_type"])
         page_doc["page_type"] = swap_page_type(page_doc, correct_page_type)

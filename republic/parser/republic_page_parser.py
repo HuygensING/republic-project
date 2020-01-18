@@ -64,13 +64,15 @@ def get_scan_hocr(scan_info: dict, scan_data: str = None, config: dict = {}) -> 
         return None
     scan_hocr = hocr_doc.carea
     scan_hocr["scan_num"] = scan_info["scan_num"]
-    scan_hocr["scan_id"] = "year-{}-scan-{}".format(scan_info["inventory_year"], scan_info["scan_num"])
+    scan_hocr["scan_id"] = "inventory-{}-scan-{}".format(scan_info["inventory_num"], scan_info["scan_num"])
     scan_hocr["filepath"] = scan_info["filepath"]
     scan_hocr["inventory_num"] = scan_info["inventory_num"]
     scan_hocr["inventory_year"] = scan_info["inventory_year"]
     scan_hocr["inventory_period"] = scan_info["inventory_period"]
     scan_hocr["hocr_box"] = hocr_doc.box
     scan_hocr["scan_type"] = determine_scan_type(scan_hocr, config)
+    if "double_page" in scan_hocr["scan_type"]:
+        scan_hocr["page_boundary"] = int(scan_hocr["hocr_box"]["right"] / 2)
     scan_hocr["lines"] = hocr_doc.lines
     if "remove_tiny_words" in config and config["remove_tiny_words"]:
         scan_hocr["lines"] = filter_tiny_words_from_lines(hocr_doc, config)

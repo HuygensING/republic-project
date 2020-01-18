@@ -1,4 +1,5 @@
 from collections import Counter
+from typing import Union
 
 
 def word_gap(curr_word: dict, next_word: dict) -> int:
@@ -77,7 +78,7 @@ def compute_gap_pixel_dist(lines: list, config) -> Counter:
 def split_line_on_column_gaps(line: dict, gap_info: list) -> list:
     words = [word for word in line["words"]]
     columns = []
-    for gap_info in sorted(gap_info, lambda x: x["word_index"], reverse=True):
+    for gap_info in sorted(gap_info, key=lambda x: x["word_index"], reverse=True):
         print("gap_index:", gap_info["word_index"], gap_info["gap"])
         column = words[gap_info["word_index"]:]
         print("num words:", len(column))
@@ -123,10 +124,26 @@ def is_column_gap(gap: dict, columns_info: list, config: dict) -> bool:
     return False
 
 
+def filter_margin_noise(words: list) -> list:
+    if len(words) == 0:
+        return words
+    if words[-1]["right"] < 2400:
+        left_margin_threshold = 300
+    else:
+        left_margin_threshold = 2500
+    return [word for word in words if word["left"] > left_margin_threshold]
+
+
 def split_line_on_columns(line: dict, column_info: list, config: dict) -> list:
+    #print("line text:", line["line_text"])
     words = filter_low_confidence_words(line["words"], config)
+    words = filter_margin_noise(words)
+    #print("words word_text:", [word["word_text"] for word in words])
+    #print("words left:", [word["left"] for word in words])
+    #print("words right:", [word["right"] for word in words])
     gaps = find_large_word_gaps(words, config)
     column_gaps = [gap for gap in gaps if is_column_gap(gap, column_info, config)]
+    #print("column gaps:", column_gaps)
     line_columns = []
     left_margin = None
     from_index = 0
@@ -145,7 +162,10 @@ def split_line_on_columns(line: dict, column_info: list, config: dict) -> list:
         from_index = to_index
     if len(words) > from_index:
         line_column = construct_line_from_words(words[from_index:])
-        line_columns += [line_column]
+        if line_column["right"] < column_info[0]["start"]:  # skip margin noise before first column starts
+            left_margin = line_column
+        else: # add remaining words as additional column
+            line_columns += [line_column]
         num_line_column_words += len(line_column["words"])
     if num_line_column_words != len(words):
         for line_column in line_columns:
@@ -153,17 +173,23 @@ def split_line_on_columns(line: dict, column_info: list, config: dict) -> list:
         raise IndexError("Not all words selected!")
     if left_margin:
         if len(line_columns) == 0:
-            line_columns += [{"words": [],
-                              "left": left_margin["right"],
-                              "right": left_margin["right"],
-                              "top": left_margin["top"],
-                              "bottom": left_margin["bottom"],
-                              "height": left_margin["height"],
-                              "width": 0,
-                              "line_text": ""
-                              }]
+            line_columns += [make_margin_only_line(left_margin)]
         line_columns[0]["left_margin"] = left_margin
     return line_columns
+
+
+def make_margin_only_line(left_margin: dict) -> dict:
+    return {
+        "words": [],
+        "left": left_margin["right"],
+        "right": left_margin["right"],
+        "top": left_margin["top"],
+        "bottom": left_margin["bottom"],
+        "height": left_margin["height"],
+        "width": 0,
+        "line_text": "",
+        "left_margin": left_margin
+    }
 
 
 def compute_interval_overlap(start1: int, end1: int, start2: int, end2: int) -> int:
@@ -212,15 +238,32 @@ def set_column_stats(column: dict):
 
 
 def split_lines_on_columns(sp_hocr: dict, columns_info: list, config: dict) -> dict:
+    #print("splitting lines on columns")
     columns_hocr = {"columns": [{"lines": []} for _ in columns_info]}
     for line in sp_hocr["lines"]:
         #print("line left", line["left"], "line right:", line["right"], line["line_text"])
         line_columns = split_line_on_columns(line, columns_info, config)
-        #print("line columns:", line_columns)
+        #if len(line_columns) > 0:
+        #    print("line columns left:", line_columns[0]["left"], "num words:", len(line["words"]))
+        #else:
+        #    print("no line columns, num words:", len(line["words"]))
+        prev_column_index = None
         for line_column in line_columns:
             column_index = find_column_number(line_column, columns_info, sp_hocr)
-            line_column["column_num"] = column_index + 1
-            columns_hocr["columns"][column_index]["lines"] += [line_column]
+            #print("\t\tcolumn_index:", column_index)
+            if prev_column_index and prev_column_index == column_index:
+                # line_column belongs to the same column as the previous line_column, so merge them
+                prev_line = columns_hocr["columns"][column_index]["lines"][-1]
+                words = prev_line["words"] + line_column["words"]
+                line_column = construct_line_from_words(words)
+                if "left_margin" in prev_line:
+                    line_column["left_margin"] = prev_line["left_margin"]
+                    columns_hocr["columns"][column_index]["lines"][-1] = line_column
+            else:
+                line_column["column_num"] = column_index + 1
+                columns_hocr["columns"][column_index]["lines"] += [line_column]
+            #print("\t", line_column["left"], line_column["right"], [word["word_text"] for word in line_column["words"]])
+            prev_column_index = column_index
     for column in columns_hocr["columns"]:
         set_column_stats(column)
     return columns_hocr

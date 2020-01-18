@@ -124,11 +124,11 @@ def get_scan_info_column(fname: str, root_dir: str) -> dict:
         "inventory_num": get_inventory_num(fname),
         "inventory_year": get_inventory_year(fname),
         "inventory_period": get_inventory_period(fname),
-        "page_id": "year-{}-scan-{}-{}".format(get_inventory_year(fname), get_scan_num(fname), get_page_side(fname)),
+        "page_id": "inventory-{}-scan-{}-page-{}".format(get_inventory_num(fname), get_scan_num(fname), get_scan_page_num(fname)),
         "page_num": get_scan_page_num(fname),
         "page_side": get_page_side(fname),
         "slant": get_scan_slant(fname),
-        "column_id": "scan-{}-{}-{}".format(get_scan_num(fname), get_page_side(fname), get_column_num(fname)),
+        "column_id": "scan-{}-{}-{}".format(get_scan_num(fname), get_scan_page_num(fname), get_column_num(fname)),
         "filepath": os.path.join(root_dir, fname)
     }
 
