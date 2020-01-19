@@ -11,7 +11,8 @@ def find_large_word_gaps(words: list, config: dict) -> list:
     if len(words) < 2:
         return gap_indices
     words = [{"right": 0}] + words # add begin of page boundary]
-    words = words + [{"left": words[-1]["right"] + 150}] # add empty word for gap from last word to end of page/column
+    right_boundary = 2500 if words[-1]["right"] < 2500 else 4900
+    words = words + [{"left": right_boundary}] # add empty word for gap from last word to end of page/column
     for curr_index, curr_word in enumerate(words[:-1]):
         next_word = words[curr_index+1]
         gap = word_gap(curr_word, next_word)

@@ -5,8 +5,11 @@ from bs4 import BeautifulSoup as bsoup
 
 
 def set_carea(hocr_doc_soup):
-    hocr_carea_soup = get_hocr_carea_soup(hocr_doc_soup)
-    return get_hocr_box(hocr_carea_soup)
+    try:
+        hocr_carea_soup = get_hocr_carea_soup(hocr_doc_soup)
+        return get_hocr_box(hocr_carea_soup)
+    except TypeError:
+        return None
 
 
 class HOCRDoc(object):
@@ -297,7 +300,10 @@ def make_hocr_doc(filepath, scan_data=None, doc_id=None, config={}):
     else:
         hocr_soup = get_hocr_content(filepath)
     hocr_doc_soup = get_hocr_doc_soup(hocr_soup)
-    hocr_doc = HOCRDoc(hocr_doc_soup, doc_id=doc_id, config=config)
+    try:
+        hocr_doc = HOCRDoc(hocr_doc_soup, doc_id=doc_id, config=config)
+    except TypeError:
+        return None
     carea = set_carea(hocr_doc_soup)
     if not carea:
         return None
