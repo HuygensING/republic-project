@@ -6,7 +6,7 @@ from typing import Union, Tuple
 from collections import defaultdict
 from statistics import median, mean, pstdev, stdev
 
-import republic.parser.republic_base_page_parser as page_parser
+import republic.parser.republic_base_page_parser as base_parser
 
 #################################
 # Parse and correct index pages #
@@ -223,13 +223,13 @@ def is_index_header(line: dict, hocr_page: dict, debug: bool = False) -> bool:
     # index header has either
     #  year I N D
     #  year D E X
-    next_line = page_parser.get_next_line(hocr_page["lines"].index(line), hocr_page["lines"])
-    if not page_parser.is_header(line, next_line):
+    next_line = base_parser.get_next_line(hocr_page["lines"].index(line), hocr_page["lines"])
+    if not base_parser.is_header(line, next_line):
         return False
-    if len(line["words"]) > 1 and page_parser.get_highest_inter_word_space(
+    if len(line["words"]) > 1 and base_parser.get_highest_inter_word_space(
             line) > 500:  # if there is only text at the edges of the column, it's not a header
         return False
-    if not page_parser.has_mid_column_text(line,
+    if not base_parser.has_mid_column_text(line,
                                            hocr_page):  # some of the index header letters are in the middle of the column
         if debug:
             print("\tNO MID_COLUMN_TEXT:", line, hocr_page)
@@ -251,7 +251,7 @@ def score_index_header(line: object, hocr_page: object, debug: bool = False) -> 
         index_score += 1
         if debug:
             print("\tIndex test - few words")
-    if page_parser.num_line_chars(
+    if base_parser.num_line_chars(
             line) < 10:  # index header has few characters (sometimes year +  I N D or year + D E X)
         index_score += 1
         if debug:
@@ -260,11 +260,11 @@ def score_index_header(line: object, hocr_page: object, debug: bool = False) -> 
         index_score += 1
         if debug:
             print("\tIndex test - near top")
-    if line["width"] > 250 and page_parser.num_line_chars(line) < 10:  # index header is wide for having few characters
+    if line["width"] > 250 and base_parser.num_line_chars(line) < 10:  # index header is wide for having few characters
         index_score += 1
         if debug:
             print("\tIndex test - wide")
-    if page_parser.get_highest_inter_word_space(
+    if base_parser.get_highest_inter_word_space(
             line) > 150:  # The I N D E X characters usually have around 200 pixels between them
         index_score += 1
         if debug:
@@ -279,6 +279,10 @@ def score_index_page(page_hocr: dict, page_type_info: dict, config: dict) -> Tup
     index_score = 0
     index_score += page_type_info["index_header_score"]
     index_page_type = "index_page_early_print"
+    # if there is little text, it should be concentrated in the top of the page
+    num_top_words = len(base_parser.get_words_above(page_hocr, threshold=800))
+    if page_hocr["num_words"] < 50 and num_top_words / page_hocr["num_words"] < 0.8:
+        index_score -= 10
     if config["inventory_num"] < config["index_page_early_print"]["inventory_threshold"]:
         index_early_print_score = score_index_page_early_print(page_type_info, config["index_page_early_print"])
         index_early_print_score += page_type_info["index_header_score"]
@@ -376,28 +380,28 @@ def get_lemma(line: dict) -> str:
 def get_index_entry_lines(hocr_index_page: dict, debug: bool = False) -> list:
     in_body = False
     index_entry_lines = []
-    if not page_parser.proper_column_cut(hocr_index_page):
-        if (debug):
+    if not base_parser.proper_column_cut(hocr_index_page):
+        if debug:
             print("\tCOLUMN IMPROPERLY CUT")
         return index_entry_lines
     for line_index, line in enumerate(hocr_index_page["lines"]):
-        next_line = page_parser.get_next_line(line_index, hocr_index_page["lines"])
-        if page_parser.is_in_top_margin(line):
-            if (debug):
+        next_line = base_parser.get_next_line(line_index, hocr_index_page["lines"])
+        if base_parser.is_in_top_margin(line):
+            if debug:
                 print("\tIS IN TOP MARGIN")
             continue
         if not in_body and is_index_header(line, hocr_index_page, debug=False):
-            if (debug):
+            if debug:
                 print("\tIS INDEX HEADER:", line_index, line["top"], "\t##", line["spaced_line_text"])
             in_body = True
             continue
-        if not in_body and page_parser.is_full_text_line(line):
-            if (debug):
+        if not in_body and base_parser.is_full_text_line(line):
+            if debug:
                 print("\tFIRST BODY LINE:", line_index, line["top"], "\t##", line["spaced_line_text"])
             in_body = True
             # continue
-        if not in_body and page_parser.is_header(line, next_line):
-            if (debug):
+        if not in_body and base_parser.is_header(line, next_line):
+            if debug:
                 print("Header:", line["spaced_line_text"])
                 print("\tscan:", "don't know", "line:", line_index, "top:", line["top"], line["left"], line["right"],
                       line["width"])

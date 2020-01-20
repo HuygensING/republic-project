@@ -51,18 +51,18 @@ def swap_page_type(page_doc: dict, new_page_type: str) -> List[str]:
     return page_type
 
 
-def in_section(page_doc: dict, section_type: str, inventory_info: dict) -> bool:
+def in_section(page_num: int, section_type: str, inventory_info: dict) -> bool:
     if section_type not in inventory_info:
         return False
-    return inventory_info[section_type]["from"] <= page_doc["page_num"] <= inventory_info[section_type]["to"]
+    return inventory_info[section_type]["from"] <= page_num <= inventory_info[section_type]["to"]
 
 
 def has_correct_page_type(page_doc: dict, inventory_info: dict) -> bool:
-    if in_section(page_doc, "respect_page", inventory_info):
+    if in_section(page_doc["page_num"], "respect_page", inventory_info):
         return "respect_page" in page_doc["page_type"]
-    if in_section(page_doc, "index_page", inventory_info):
+    if in_section(page_doc["page_num"], "index_page", inventory_info):
         return "index_page" in page_doc["page_type"]
-    if in_section(page_doc, "resolution_page", inventory_info):
+    if in_section(page_doc["page_num"], "resolution_page", inventory_info):
         return "resolution_page" in page_doc["page_type"]
     # outside these ranges, page_type must be either empty, title_page or unknown_page_type
     for page_type in ["empty_page", "title_page", "unknown_page_type"]:
@@ -72,11 +72,11 @@ def has_correct_page_type(page_doc: dict, inventory_info: dict) -> bool:
 
 
 def get_correct_page_type(page_doc: dict, inventory_info: dict) -> str:
-    if in_section(page_doc, "respect_page", inventory_info):
+    if in_section(page_doc["page_num"], "respect_page", inventory_info):
         return "respect_page"
-    if in_section(page_doc, "index_page", inventory_info):
+    if in_section(page_doc["page_num"], "index_page", inventory_info):
         return "index_page"
-    if in_section(page_doc, "resolution_page", inventory_info):
+    if in_section(page_doc["page_num"], "resolution_page", inventory_info):
         return "resolution_page"
     if page_doc["page_num"] in inventory_info["title_page_nums"]:
         return "title_page"

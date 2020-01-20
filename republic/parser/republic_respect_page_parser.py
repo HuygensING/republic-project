@@ -1,4 +1,5 @@
 from collections import Counter
+import republic.parser.republic_base_page_parser as base_parser
 
 
 def is_respect_page(page_hocr: dict, config: dict) -> bool:
@@ -8,6 +9,11 @@ def is_respect_page(page_hocr: dict, config: dict) -> bool:
         return False
     if page_hocr["num_columns"] > config["respect_page"]["column_max_threshold"]:
         return False
+    if page_hocr["num_words"] < 50:
+        # if there is little text, it should be concentrated in the top of the page
+        num_top_words = base_parser.get_words_above(page_hocr, threshold=800)
+        if num_top_words / page_hocr["num_words"] < 0.8:
+            return False
     capitals = get_capital_word_initials(page_hocr)
     count = len(capitals)
     cap_freq = Counter(capitals)

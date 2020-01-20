@@ -52,6 +52,42 @@ def is_header(line: dict, next_line: dict) -> bool:
     return False
 
 
+def get_lines_below(hocr_doc: dict, threshold: int) -> list:
+    lines = []
+    if "columns" in hocr_doc:
+        for column in hocr_doc["columns"]:
+            for line in column["lines"]:
+                if line["top"] >= threshold:
+                    lines += [line]
+    if "lines" in hocr_doc:
+        for line in hocr_doc["lines"]:
+            if line["top"] > threshold:
+                lines += [line]
+    return lines
+
+
+def get_words_below(hocr_doc: dict, threshold: int) -> list:
+    return [word for line in get_lines_below(hocr_doc, threshold) for word in line["words"]]
+
+
+def get_lines_above(hocr_doc: dict, threshold: int) -> list:
+    lines = []
+    if "columns" in hocr_doc:
+        for column in hocr_doc["columns"]:
+            for line in column["lines"]:
+                if line["bottom"] < threshold:
+                    lines += [line]
+    if "lines" in hocr_doc:
+        for line in hocr_doc["lines"]:
+            if line["bottom"] < threshold:
+                lines += [line]
+    return lines
+
+
+def get_words_above(hocr_doc: dict, threshold: int) -> list:
+    return [word for line in get_lines_above(hocr_doc, threshold) for word in line["words"]]
+
+
 def contains_year(line: dict) -> bool:
     for word in line["words"]:
         if looks_like_year(word):

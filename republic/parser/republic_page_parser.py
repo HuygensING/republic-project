@@ -108,7 +108,34 @@ def get_page_text(page_hocr: dict) -> str:
 def is_empty_page(page_hocr: dict) -> bool:
     if page_hocr["num_columns"] == 0 or page_hocr["num_lines"] == 0 or page_hocr["num_words"] == 0:
         return True
+    if is_noise_word_page(page_hocr):
+        return True
     else:
+        return False
+
+
+def is_noise_word_page(page_hocr: dict) -> bool:
+    if page_hocr["num_words"] > 50:
+        return False
+    all_words = base_parser.get_words_above(page_hocr, threshold=4000)
+    long_words = [word for word in all_words if len(word["word_text"]) >= 5]
+    short_words = [word for word in all_words if len(word["word_text"]) <= 3]
+    num_non_words = 0
+    for short_word in short_words:
+        if short_word["word_text"].lower() not in ['de', 'het', 'in', 'een', 'van', 'op', 'er', 'u', 'is', 'der', 'den']:
+            num_non_words += 1
+    if num_non_words / len(all_words) > 0.6:
+        return True
+    if len(long_words) < 5:
+        return True
+
+
+def is_section_end_page(page_hocr: dict) -> bool:
+    # a page ending a section has few words, concentrated in the top
+    if page_hocr["num_words"] > 100:
+        return False
+    num_top_words = len(base_parser.get_words_above(page_hocr, threshold=800))
+    if num_top_words / page_hocr["num_words"] < 0.8:
         return False
 
 
@@ -141,6 +168,8 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
         page_type_info = get_page_type_info(page_hocr, debug=debug)
         resolution_score = resolution_parser.score_resolution_page(page_type_info)
         index_score, index_page_type = index_parser.score_index_page(page_hocr, page_type_info, config)
+        print("index_score:", index_score)
+        print("resolution_score:", resolution_score)
         if debug:
             print(json.dumps(page_type_info, indent=2))
         if debug:
