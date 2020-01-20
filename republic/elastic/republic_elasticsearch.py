@@ -1,4 +1,4 @@
-from typing import Union, List, Dict
+from typing import Union, List
 from elasticsearch import Elasticsearch, RequestError
 import json
 import copy
@@ -12,7 +12,6 @@ import republic.parser.republic_base_page_parser as base_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_page_parser as page_parser
 import republic.parser.republic_paragraph_parser as para_parser
-import republic.parser.republic_index_page_parser as index_parser
 from settings import set_elasticsearch_config
 
 
@@ -365,11 +364,15 @@ def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, c
 
 def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict):
     scans_hocr: list = retrieve_inventory_hocr_scans(es, inventory_num, config)
+    print("number of scans:", len(scans_hocr))
     for scan_hocr in scans_hocr:
         if "double_page" in scan_hocr["scan_type"]:
             pages_hocr = page_parser.parse_double_page_scan(scan_hocr, config)
             for page_hocr in pages_hocr:
+                print("Indexing page", page_hocr["page_id"])
                 index_page(es, page_hocr, config)
+        else:
+            print("Non-double page:", scan_hocr["scan_num"], scan_hocr["scan_type"])
 
 
 def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, inventory_num: int, inventory_config: dict):
