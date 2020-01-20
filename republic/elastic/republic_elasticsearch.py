@@ -146,6 +146,7 @@ def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict
 
 
 def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, None]:
+    print("page_id:", page_id)
     if not es.exists(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id):
         return None
     response = es.get(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id)
@@ -341,7 +342,7 @@ def index_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: di
                  id=scan_es_doc["scan_id"], body=scan_es_doc)
 
 
-def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, config: dict):
+def read_from_zip(inventory_num: int, config: dict) -> iter:
     hocr_dir = os.path.join(config["base_dir"], "hocr")
     inv_file = os.path.join(hocr_dir, f"{inventory_num}.zip")
     z = zipfile.ZipFile(inv_file)
@@ -349,12 +350,17 @@ def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, c
         scan_info = file_parser.get_scan_info(scan_file, config["hocr_dir"])
         with z.open(scan_file) as fh:
             scan_data = fh.read()
-            scan_hocr = page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=config)
-            if not scan_hocr:
-                continue
-            scan_es_doc = create_es_scan_doc(scan_hocr)
-            es.index(index=config["scan_index"], doc_type=config["scan_doc_type"],
-                     id=scan_es_doc["scan_id"], body=scan_es_doc)
+            yield scan_info, scan_data
+
+
+def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, config: dict):
+    for scan_info, scan_data in read_from_zip(inventory_num, config):
+        scan_hocr = page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=config)
+        if not scan_hocr:
+            continue
+        scan_es_doc = create_es_scan_doc(scan_hocr)
+        es.index(index=config["scan_index"], doc_type=config["scan_doc_type"],
+                 id=scan_es_doc["scan_id"], body=scan_es_doc)
 
 
 def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict):
