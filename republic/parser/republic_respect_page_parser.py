@@ -11,7 +11,7 @@ def is_respect_page(page_hocr: dict, config: dict) -> bool:
         return False
     if page_hocr["num_words"] < 50:
         # if there is little text, it should be concentrated in the top of the page
-        num_top_words = base_parser.get_words_above(page_hocr, threshold=800)
+        num_top_words = len(base_parser.get_words_above(page_hocr, threshold=800))
         if num_top_words / page_hocr["num_words"] < 0.8:
             return False
     capitals = get_capital_word_initials(page_hocr)

@@ -1,6 +1,6 @@
 import copy
 import json
-from typing import Dict, List, Any, Union
+from typing import Union
 
 from republic.parser.generic_hocr_parser import make_hocr_doc, filter_tiny_words_from_lines
 import republic.parser.republic_base_page_parser as base_parser
@@ -168,8 +168,8 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
         page_type_info = get_page_type_info(page_hocr, debug=debug)
         resolution_score = resolution_parser.score_resolution_page(page_type_info)
         index_score, index_page_type = index_parser.score_index_page(page_hocr, page_type_info, config)
-        print("index_score:", index_score)
-        print("resolution_score:", resolution_score)
+        #print("index_score:", index_score)
+        #print("resolution_score:", resolution_score)
         if debug:
             print(json.dumps(page_type_info, indent=2))
         if debug:
@@ -210,10 +210,14 @@ def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
 
 
 def initialize_pages_hocr(dp_hocr: dict) -> tuple:
-    even_page_hocr = {"page_id": "year-{}-scan-{}-even".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
-                      "page_num": dp_hocr["scan_num"] * 2 - 2, "page_side": "even",
+    even_page_num = dp_hocr["scan_num"] * 2 - 2
+    odd_page_num = dp_hocr["scan_num"] * 2 - 1
+    even_page_hocr = {"page_id": "inventory-{}-scan-{}-page-{}".format(dp_hocr["inventory_num"],
+                                                                  dp_hocr["scan_num"], even_page_num),
+                      "page_num": even_page_num, "page_side": "even",
                       "lines": []}
-    odd_page_hocr = {"page_id": "year-{}-scan-{}-odd".format(dp_hocr["inventory_year"], dp_hocr["scan_num"]),
+    odd_page_hocr = {"page_id": "inventory-{}-scan-{}-page-{}".format(dp_hocr["inventory_num"],
+                                                                      dp_hocr["scan_num"], odd_page_num),
                      "page_num": dp_hocr["scan_num"] * 2 - 1, "page_side": "odd",
                      "lines": []}
     box_items = ["width", "height", "left", "right", "top", "bottom"]
