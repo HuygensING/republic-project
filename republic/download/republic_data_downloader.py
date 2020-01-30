@@ -47,7 +47,10 @@ def get_output_filename(inventory_num: int, ocr_type: str, inventory_config: dic
 
 def download_inventory(es: Elasticsearch, inventory_num: int, ocr_type: str, inventory_config: dict):
     uuid = get_inventory_uuid(es, inventory_num, inventory_config)
-    urls = get_download_urls(uuid)
+    try:
+        urls = get_download_urls(uuid)
+    except (TypeError, KeyError):
+        return False
     if ocr_type == "hocr":
         url = urls["hocr_url"]
     elif ocr_type == "pagexml":
