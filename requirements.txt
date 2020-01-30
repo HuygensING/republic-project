@@ -1,0 +1,4 @@
+requests==2.18.4
+elasticsearch==7.1.0
+beautifulsoup4==4.8.2
+xmltodict==0.12.0
