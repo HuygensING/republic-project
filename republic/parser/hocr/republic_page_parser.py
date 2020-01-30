@@ -200,7 +200,8 @@ def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
             for column_info in pages_info[page_id]["columns"]:
                 try:
                     column_hocr = get_column_hocr(column_info, config)
-                    page_doc["columns"] += [column_hocr]
+                    if column_hocr:
+                        page_doc["columns"] += [column_hocr]
                 except TypeError:
                     print("Error parsing file", column_info["filepath"])
             page_doc["num_columns"] = len(page_doc["columns"])
