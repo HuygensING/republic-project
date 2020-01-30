@@ -1,4 +1,4 @@
-import republic.parser.republic_base_page_parser as base_parser
+import republic.parser.hocr.republic_base_page_parser as base_parser
 
 
 def is_resolution_header(line, hocr_page, debug=False):

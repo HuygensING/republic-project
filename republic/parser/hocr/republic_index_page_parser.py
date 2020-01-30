@@ -6,7 +6,7 @@ from typing import Union, Tuple
 from collections import defaultdict
 from statistics import median, mean, pstdev, stdev
 
-import republic.parser.republic_base_page_parser as base_parser
+import republic.parser.hocr.republic_base_page_parser as base_parser
 
 #################################
 # Parse and correct index pages #

@@ -1,6 +1,6 @@
 import re
 from typing import Union
-from republic.parser.generic_hocr_parser import HOCRDoc
+from republic.parser.hocr.generic_hocr_parser import HOCRDoc
 
 
 def get_highest_inter_word_space(line: dict) -> int:
@@ -149,7 +149,7 @@ def is_title_page(page_hocr: object, config: dict) -> bool:
             if line["top"] < config["title_line_top_threshold"]:
                 top_lines.append(line)
     num_top_half_words = len([word for line in top_lines for word in line["words"]])
-    num_top_half_chars = sum([len(word["word_text"]) for line in top_lines for word in line["words"]])
+    #num_top_half_chars = sum([len(word["word_text"]) for line in top_lines for word in line["words"]])
     #print("num_top_half_words:", num_top_half_words)
     #print("num_top_half_chars:", num_top_half_chars)
     large_word_lines = [line for line in get_large_word_lines(page_hocr, config) if

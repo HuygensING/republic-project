@@ -1,5 +1,5 @@
 from collections import Counter
-import republic.parser.republic_base_page_parser as base_parser
+import republic.parser.hocr.republic_base_page_parser as base_parser
 
 
 def is_respect_page(page_hocr: dict, config: dict) -> bool:
