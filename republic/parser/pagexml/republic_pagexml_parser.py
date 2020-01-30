@@ -10,8 +10,11 @@ def parse_republic_pagexml_file(pagexml_file: str, inventory_config: dict) -> di
     try:
         scan_json = file_parser.read_pagexml_file(pagexml_file)
         scan_doc = pagexml_parser.parse_pagexml(scan_json)
-        scan_doc['metadata'] = file_parser.get_republic_scan_metadata(pagexml_file, inventory_config)
-        scan_doc['coords'] = parse_derived_coords(scan_doc['textregions'])
+        metadata = file_parser.get_republic_scan_metadata(pagexml_file, inventory_config)
+        for field in metadata:
+            scan_doc['metadata'][field] = metadata[field]
+        if 'coords' not in scan_doc:
+            scan_doc['coords'] = parse_derived_coords(scan_doc['textregions'])
         return scan_doc
     except (AssertionError, KeyError, TypeError):
         print(f"Error parsing file {pagexml_file}")
@@ -19,13 +22,19 @@ def parse_republic_pagexml_file(pagexml_file: str, inventory_config: dict) -> di
 
 
 def get_scan_pagexml(pagexml_file: str, pagexml_data: Union[str, None] = None, config: dict = {}) -> dict:
+    print('Parsing file', pagexml_file)
     scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
-    scan_doc = pagexml_parser.parse_pagexml(scan_json)
-    if 'textregions' not in scan_doc:
-        scan_doc['coords'] = parse_derived_coords([])
-    else:
-        scan_doc['coords'] = parse_derived_coords(scan_doc['textregions'])
-    scan_doc['metadata'] = file_parser.get_republic_scan_metadata(pagexml_file, config)
+    try:
+        scan_doc = pagexml_parser.parse_pagexml(scan_json)
+    except (AssertionError, KeyError, TypeError):
+        print('Error parsing file', pagexml_file)
+        raise
+    if 'coords' not in scan_doc: # add scan coordinates if they're not in the XML
+        textregions = scan_doc['textregions'] if 'textregions' in scan_doc else []
+        scan_doc['coords'] = parse_derived_coords(textregions)
+    metadata = file_parser.get_republic_scan_metadata(pagexml_file, config)
+    for field in metadata:
+        scan_doc['metadata'][field] = metadata[field]
     if scan_doc['coords']['right'] == 0:
         scan_doc['metadata']['scan_type'] = ['empty_scan']
     elif scan_doc['coords']['right'] < 2500:
@@ -110,7 +119,6 @@ def coords_overlap(item1: dict, item2: dict) -> int:
 def split_column_regions(page_doc: dict) -> dict:
     header = {'textregions': []}
     columns = []
-    print('splitting columns for page side', page_doc['metadata']['page_side'])
     textregions = []
     for textregion in page_doc['textregions']:
         textregions += [textregion] if 'lines' in textregion else textregion['textregions']
@@ -119,31 +127,25 @@ def split_column_regions(page_doc: dict) -> dict:
     for textregion in textregions:
         if 'lines' in textregion and textregion['coords']['width'] > 1200:
             header['textregions'] += [textregion]
-            #print("HEADER")
-            #print(textregion['coords'])
             continue
         # check if this text region overlaps with an existing column
         overlapping_column = None
         for column in columns:
             overlap = coords_overlap(column, textregion)
-            #print('overlap:', overlap, textregion['coords']['left'], textregion['coords']['right'],
             #      column['coords']['left'], column['coords']['right'])
             tr_overlap_frac = overlap / textregion['coords']['width']
             cl_overlap_frac = overlap / column['coords']['width']
             if min(tr_overlap_frac, cl_overlap_frac) > 0.5 and max(tr_overlap_frac, cl_overlap_frac) > 0.75:
-                #if overlap > 0.75 * textregion['coords']['width'] and overlap > 0.75 * column['coords']['width']:
                 overlapping_column = column
                 break
         # if there is an overlapping column, add this text region
         if overlapping_column:
             overlapping_column['textregions'] += [textregion]
             overlapping_column['coords'] = parse_derived_coords(overlapping_column['textregions'])
-            #print('extending column')
         # if no, create a new column for this text region
         else:
             column = {'coords': parse_derived_coords([textregion]), 'textregions': [textregion]}
             columns += [column]
-            #print('adding column')
     for column in columns:
         if 'coords' not in column:
             print('COLUMN NO COORDS:', column)

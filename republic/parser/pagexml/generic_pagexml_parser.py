@@ -1,4 +1,5 @@
 from typing import List, Dict
+from datetime import datetime
 
 
 def check_textline_textequiv_assertions(text_equiv: dict) -> None:
@@ -58,14 +59,24 @@ def check_textregion_assertions(textregion: dict) -> None:
             assert(textregion['@orientation'] == '0.0')
 
 
+def check_page_metadata_assertions(metadata: dict) -> None:
+    fields = ['Creator', 'Created', 'LastChange', 'TranskribusMetadata', 'Comments']
+    for field in fields:
+        if field in ['Creator', 'TranskribusMetadata', 'Comments']:
+            assert(metadata[field] is None)
+        if field in ['Created', 'LastChange']:
+            assert(metadata[field].isdigit() is True)
+
+
 def check_page_assertions(page_json: dict) -> None:
     """These assertions are to check if the PageXML format changes based on additional output of OCR/HTR analysis."""
     assert(page_json['PcGts']['schemaLocation'] is None)
-    assert(page_json['PcGts']['Metadata'] is None)
+    if page_json['PcGts']['Metadata']:
+        check_page_metadata_assertions(page_json['PcGts']['Metadata'])
     if 'pcGtsId' in page_json['PcGts']:
         assert(page_json['PcGts']['pcGtsId'] is None)
-    assert(page_json['PcGts']['Page']['@imageWidth'] is '0')
-    assert(page_json['PcGts']['Page']['@imageHeight'] is '0')
+    assert(page_json['PcGts']['Page']['@imageWidth'].isdigit() is True)
+    assert(page_json['PcGts']['Page']['@imageHeight'].isdigit() is True)
     assert(page_json['PcGts']['Page']['ReadingOrder'] is None)
     assert(page_json['PcGts']['Page']['PrintSpace'] is None)
     pcgts_children = ['schemaLocation', 'Metadata', 'pcGtsId', 'Page']
@@ -167,10 +178,46 @@ def parse_textregion_list(textregion_list: list) -> List[dict]:
     return [parse_textregion(textregion) for textregion in textregion_list]
 
 
+def parse_page_metadata(metadata_json: dict) -> dict:
+    metadata = {}
+    for field in metadata_json:
+        if not metadata_json[field]:
+            continue
+        if field in ['Created', 'LastChange']:
+            metadata[field] = datetime.fromtimestamp(int(metadata_json[field]) / 1000)
+        elif metadata_json[field].isdigit():
+            metadata[field] = int(metadata_json[field])
+        elif metadata_json[field]:
+            metadata[field] = metadata_json[field]
+    return metadata
+
+
+def parse_page_image_size(page_json: dict) -> dict:
+    coords = {
+        'left': 0,
+        'right': 0,
+        'top': 0,
+        'bottom': 0,
+        'width': 0,
+        'height': 0
+    }
+    if page_json['@imageWidth'] is not '0':
+        coords['width'] = int(page_json['@imageWidth'])
+        coords['right'] = coords['width']
+    if page_json['@imageHeight'] is not '0':
+        coords['height'] = int(page_json['@imageHeight'])
+        coords['bottom'] = coords['height']
+    return coords
+
+
 def parse_pagexml(scan_json: dict) -> dict:
     check_page_assertions(scan_json)
+    scan_doc = {'metadata': {}}
+    if 'Metadata' in scan_json['PcGts'] and scan_json['PcGts']['Metadata']:
+        scan_doc['metadata'] = parse_page_metadata(scan_json['PcGts']['Metadata'])
     scan_json = scan_json['PcGts']['Page']
-    scan_doc = {}
+    if scan_json['@imageWidth'] is not '0' and scan_json['@imageHeight'] is not '0':
+        scan_doc['coords'] = parse_page_image_size(scan_json)
     if 'TextRegion' in scan_json:
         if isinstance(scan_json['TextRegion'], list):
             scan_doc['textregions'] = parse_textregion_list(scan_json['TextRegion'])
