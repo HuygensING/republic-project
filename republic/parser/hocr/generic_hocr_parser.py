@@ -2,6 +2,7 @@
 # Created on: 2018-08-13
 # Context: parsing digitized charter books to extract geographic attestations and dates
 from bs4 import BeautifulSoup as bsoup
+from typing import Union
 
 
 def set_carea(hocr_doc_soup):
@@ -290,13 +291,14 @@ def span_filtered_line(line, filtered_line):
     filtered_line["width"] = filtered_line["right"] - filtered_line["left"]
 
 
-def make_hocr_doc(filepath, scan_data=None, doc_id=None, config={}):
+def make_hocr_doc(filepath: str, hocr_data: Union[str, None] = None,
+                  doc_id: Union[str, None] = None, config: dict = {}):
     """
     make_hocr_doc takes as input a filepath to a hOCR file and generates various textual representations of
     the hOCR data. For explanation of the optional arguments, see the HOCRPAGE class above.
     """
-    if scan_data:
-        hocr_soup = bsoup(scan_data, "lxml")
+    if hocr_data:
+        hocr_soup = bsoup(hocr_data, "lxml")
     else:
         hocr_soup = get_hocr_content(filepath)
     hocr_doc_soup = get_hocr_doc_soup(hocr_soup)

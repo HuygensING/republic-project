@@ -103,16 +103,25 @@ def correct_page_type_external_info(es: Elasticsearch, inventory_info: dict, inv
         rep_es.index_page(es, page_doc, inv_config)
 
 
-def correct_single_page_type(es: Elasticsearch, page_num: int, correct_page_type: str, inventory_config: dict) -> bool:
+def correct_single_page_type(es: Elasticsearch, page_num: int, section: dict, inventory_config: dict) -> bool:
     section_types = ["index_page", "resolution_page", "respect_page", "unknown_page_type"]
+    correct_page_type = section["page_type"]
     page_doc = rep_es.retrieve_page_by_page_number(es, page_num, inventory_config)
     if not page_doc:
         print("no document for page number", page_num)
         return False
+    if "empty_page" in page_doc["page_type"] and section["end"] - page_num < 5:
+        # empty pages at the end of section should keep page_type "empty_page"
+        return False
     if "page_type" not in page_doc:
         print("No page_type in page_doc:", page_doc["page_num"], page_doc["page_id"], page_doc["scan_num"])
         print(page_doc["num_columns"])
-        page_doc["page_type"] = correct_page_type
+        page_doc["page_type"] = [correct_page_type]
+        if correct_page_type == "index_page":
+            if inventory_config["inventory_num"] <= inventory_config["index_page_early_print"]["inventory_threshold"]:
+                page_doc["page_type"] += ["index_page_early_print"]
+            else:
+                page_doc["page_type"] += ["index_page_late_print"]
         return True
     if correct_page_type is not "index_page" and "index_page" in page_doc["page_type"]:
         page_doc["page_type"] = [page_type for page_type in page_doc["page_type"] if
@@ -124,6 +133,11 @@ def correct_single_page_type(es: Elasticsearch, page_num: int, correct_page_type
         # print(page_doc["page_num"], page_doc["page_type"])
         rep_es.index_page(es, page_doc, inventory_config)
         # print(page_doc["page_num"], "correcting", incorrect_type, "to", page_type)
+        if correct_page_type == "index_page":
+            if inventory_config["inventory_num"] <= inventory_config["index_page_early_print"]["inventory_threshold"]:
+                page_doc["page_type"] += ["index_page_early_print"]
+            else:
+                page_doc["page_type"] += ["index_page_late_print"]
         return True
     return False
 
@@ -133,9 +147,8 @@ def correct_page_types(es: Elasticsearch, inventory_config: dict):
     inventory_data = inv_analyser.get_inventory_summary(es, inventory_config)
     for section in inventory_data["sections"]:
         corrected = 0
-        correct_page_type = section["page_type"]
         for page_num in range(section["start"], section["end"]+1):
-            if correct_single_page_type(es, page_num, correct_page_type, inventory_config):
+            if correct_single_page_type(es, page_num, section, inventory_config):
                 corrected += 1
             #else:
             #    print(page_doc["page_num"], "correct")

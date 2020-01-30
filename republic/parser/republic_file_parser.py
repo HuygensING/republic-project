@@ -1,23 +1,84 @@
 import os
-from typing import Union
+import glob
+import xmltodict
+from typing import Union, List
 from collections import defaultdict
 from republic.model.inventory_mapping import inventory_mapping
-from republic.parser.generic_hocr_parser import make_hocr_doc
-from republic.parser.republic_index_page_parser import count_page_ref_lines
+from republic.parser.hocr.generic_hocr_parser import make_hocr_doc
+from republic.parser.hocr.republic_index_page_parser import count_page_ref_lines
 
 
-# filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr
+# column split filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr
+# filename hOCR format: NL-HaNA_1.01.02_3780_0016.jpg.hocr
+# filename PageXML format: NL-HaNA_1.01.02_3780_0016.jpg.page.xml
 
-OCR_FILE_TYPES = [".hocr", ".page.xml"]
+OCR_FILE_TYPES = ['.hocr', '.page.xml']
+ocr_type_file_extensions = {
+    'hocr': '.hocr',
+    'pagexml': '.page.xml'
+}
 
-def is_ocr_file(fname):
+
+#####################
+# Generic functions #
+#####################
+
+
+def get_ocr_type(filename: str) -> str:
+    for ocr_type in ocr_type_file_extensions:
+        if filename.endswith(ocr_type_file_extensions[ocr_type]):
+            return ocr_type
+    raise ValueError('Unknown OCR type file extension')
+
+
+def get_republic_scan_metadata(scan_file: str, config: dict) -> dict:
+    _scan_dir, scan_fname = os.path.split(scan_file)
+    _, inv_num, scan_num = [int(part) for part in scan_fname.split('.')[2].split('_')]
+    ocr_type = get_ocr_type(scan_file)
+    inv_period = get_inventory_period(scan_file)
+    return {
+        'series_name': scan_fname.split('_')[0],
+        'inventory_num': inv_num,
+        'inventory_year': config['year'],
+        'inventory_period_start': inv_period[0],
+        'inventory_period_end': inv_period[1],
+        'scan_file': scan_file,
+        'scan_num': scan_num,
+        'scan_id': f'{ocr_type}-inventory-{inv_num}-year-{config["year"]}-scan-{scan_num}'
+    }
+
+
+#####################
+# PageXML functions #
+#####################
+
+
+def read_pagexml_file(pagexml_file: str, pagexml_data: Union[str, None] = None) -> dict:
+    if pagexml_data:
+        return xmltodict.parse(pagexml_data)
+    with open(pagexml_file, 'rt') as fh:
+        data = xmltodict.parse(fh.read())
+        return data
+
+
+def get_pagexml_files(pagexml_dir: str) -> List[str]:
+    return glob.glob(os.path.join(pagexml_dir, "*.xml"))
+
+
+##################
+# hOCR functions #
+##################
+
+
+def is_ocr_file(fname: str) -> bool:
     """make sure only OCR files are included"""
     for file_type in OCR_FILE_TYPES:
         if fname[-len(file_type):] == file_type:
             return True
     return False
 
-def get_files(data_dir: str) -> list:
+
+def get_hocr_files(data_dir: str) -> list:
     for root_dir, sub_dirs, filenames in os.walk(data_dir):
         scan_info = [get_scan_info(fname, root_dir) for fname in filenames if is_ocr_file(fname)]
         if "scan_num_column_num" in scan_info[0]:

@@ -2,12 +2,12 @@ import copy
 import json
 from typing import Union
 
-from republic.parser.generic_hocr_parser import make_hocr_doc, filter_tiny_words_from_lines
-import republic.parser.republic_base_page_parser as base_parser
-import republic.parser.republic_index_page_parser as index_parser
-import republic.parser.republic_respect_page_parser as respect_parser
-import republic.parser.republic_resolution_page_parser as resolution_parser
-import republic.parser.republic_column_parser as column_parser
+from republic.parser.hocr.generic_hocr_parser import make_hocr_doc, filter_tiny_words_from_lines
+import republic.parser.hocr.republic_base_page_parser as base_parser
+import republic.parser.hocr.republic_index_page_parser as index_parser
+import republic.parser.hocr.republic_respect_page_parser as respect_parser
+import republic.parser.hocr.republic_resolution_page_parser as resolution_parser
+import republic.parser.hocr.republic_column_parser as column_parser
 from republic.model.republic_phrase_model import resolution_phrases, spelling_variants
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 
@@ -58,8 +58,8 @@ def determine_scan_type(scan_hocr: object, config: dict) -> list:
         return ["normal", "double_page"]
 
 
-def get_scan_hocr(scan_info: dict, scan_data: str = None, config: dict = {}) -> Union[dict, None]:
-    hocr_doc = make_hocr_doc(scan_info["filepath"], scan_data=scan_data, doc_id=scan_info["scan_num"], config=config)
+def get_scan_hocr(scan_info: dict, hocr_data: str = None, config: dict = {}) -> Union[dict, None]:
+    hocr_doc = make_hocr_doc(scan_info["filepath"], hocr_data=hocr_data, doc_id=scan_info["scan_num"], config=config)
     if not hocr_doc:
         return None
     scan_hocr = hocr_doc.carea
@@ -106,6 +106,8 @@ def get_page_text(page_hocr: dict) -> str:
 
 
 def is_empty_page(page_hocr: dict) -> bool:
+    if "num_columns" not in page_hocr:
+        return True
     if page_hocr["num_columns"] == 0 or page_hocr["num_lines"] == 0 or page_hocr["num_words"] == 0:
         return True
     if is_noise_word_page(page_hocr):
@@ -259,7 +261,7 @@ def parse_double_page_scan(scan_hocr: dict, config: dict):
 
 
 def get_single_page_column_type(sp_hocr: dict):
-    if sp_hocr["num_columns"] == 0:
+    if "num_columns" not in sp_hocr or sp_hocr["num_columns"] == 0:
         return ["special", "no_column"]
     elif sp_hocr["num_columns"] == 2:
         return ["normal", "double_column"]

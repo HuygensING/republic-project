@@ -194,6 +194,8 @@ def get_lines(page_hocr: Union[list, dict]) -> list:
 def get_large_word_lines(page_hocr: Union[list, dict], config: dict) -> iter:
     for line in get_lines(page_hocr):
         num_large_words = 0
+        if "words" not in line:
+            continue
         num_words = len(line["words"])
         for word in line["words"]:
             avg_char_width = word["width"] / len(word["word_text"])
