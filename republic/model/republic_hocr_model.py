@@ -193,7 +193,7 @@ class HOCRPage(HOCRObject):
         if "type_page_num" in page_doc:
             self.type_page_num = page_doc["type_page_num"]
         self.scan_num = page_doc["scan_num"]
-        self.page_jpg_url = page_doc["page_jpg_url"]
+        self.page_jpg_url = page_doc["page_jpg_url"] if "page_jpg_url" in page_doc else None
         self.columns = [HOCRColumn(column, config) for column in page_doc["columns"]]
         self.num_columns = len(self.columns)
         self.num_lines = sum([column.num_lines for column in self.columns])

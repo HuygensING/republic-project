@@ -2,7 +2,8 @@ import re
 import datetime
 from typing import List, Union, Dict
 from republic.model.republic_phrase_model import resolution_phrases, participant_list_phrases
-from republic.model.republic_phrase_model import month_names, week_day_names, month_map, week_day_name_map
+from republic.model.republic_phrase_model import week_day_names, week_day_name_map
+from republic.model.republic_phrase_model import month_names_early, month_names_late, month_map_late, month_map_early
 from republic.model.republic_hocr_model import HOCRPage, HOCRColumn, HOCRParagraph, HOCRLine, HOCRWord
 
 
@@ -31,11 +32,11 @@ def initialize_paragraph_metadata(paragraph_lines: list, paragraph_num: int, hoc
 def track_meeting_date(paragraph: dict, matches: list, current_date: dict, config: dict) -> dict:
     if len(matches) == 0 and paragraph_starts_with_centered_date(paragraph):
         print("DATE LINE:", paragraph["text"])
-        current_date = extract_meeting_date(paragraph, config["year"], current_date)
+        current_date = extract_meeting_date(paragraph, config, current_date)
     if matches_participant_list(matches):
         print("DAY START:", paragraph["text"])
         if paragraph_has_centered_date(paragraph):
-            current_date = extract_meeting_date(paragraph, config["year"], current_date)
+            current_date = extract_meeting_date(paragraph, config, current_date)
             paragraph["metadata"]["categories"].add("meeting_date")
         paragraph["metadata"]["type"] = "participant_list"
     paragraph["metadata"]["meeting_date_info"] = current_date
@@ -47,7 +48,7 @@ def track_meeting_date(paragraph: dict, matches: list, current_date: dict, confi
     return current_date
 
 
-def get_resolution_page_paragraphs(hocr_page: HOCRPage):
+def get_resolution_page_paragraphs(hocr_page: HOCRPage, config: dict) -> tuple:
     paragraphs = []
     header = []
     # TODO: improve to allow paragraphs to run across two subsequent pages
@@ -66,7 +67,7 @@ def get_resolution_page_paragraphs(hocr_page: HOCRPage):
             line_gap = line.top - prev_line_bottom
             if line_gap > 30:  # boundary between top of this line and bottom of previous line
                 boundary = True
-            elif line_gap > 10 and line_is_centered_date(line):
+            elif line_gap > 10 and line_is_centered_date(line, config):
                 boundary = True
             if boundary and prev_line_bottom < 400:
                 header += paragraph_lines
@@ -96,7 +97,7 @@ def get_resolution_paragraphs(hocr_page: HOCRPage, config: dict) -> List[HOCRPar
                 continue
             if line.distance_to_prev and line.distance_to_prev > 80:
                 boundary = True
-            elif line.distance_to_prev and line.distance_to_prev > 50 and line_is_centered_date(line):
+            elif line.distance_to_prev and line.distance_to_prev > 50 and line_is_centered_date(line, config):
                 boundary = True
             if boundary and len(paragraph_lines) > 0:
                 paragraph = HOCRParagraph(paragraph_lines, paragraph_id, paragraph_num)
@@ -118,14 +119,14 @@ def is_header_line(line: HOCRLine, column: HOCRColumn) -> bool:
         return False
     else:
         return True
-    return False
 
 
 def line_has_week_day_name(line: HOCRLine) -> bool:
     return line_has_word_from_list(line, week_day_names)
 
 
-def line_has_month_name(line: HOCRLine) -> bool:
+def line_has_month_name(line: HOCRLine, config: dict) -> bool:
+    month_names = month_names_late if config['year'] > 1750 else month_names_early
     return line_has_word_from_list(line, month_names)
 
 
@@ -151,7 +152,8 @@ def get_word_number(word: HOCRWord) -> Union[int, None]:
     return None
 
 
-def line_has_month_day(line: HOCRLine) -> bool:
+def line_has_month_day(line: HOCRLine, config: dict) -> bool:
+    month_names = month_names_late if config['year'] > 1750 else month_names_early
     if len(line.words) < 2:
         return False  # single word lines have no day and month
     try:
@@ -164,7 +166,8 @@ def line_has_month_day(line: HOCRLine) -> bool:
     return False
 
 
-def get_month_days_from_line(line: HOCRLine) -> List[Dict[str, Union[str, int, float]]]:
+def get_month_days_from_line(line: HOCRLine, config: dict) -> List[Dict[str, Union[str, int, float]]]:
+    month_names = month_names_late if config['year'] > 1750 else month_names_early
     month_day_words = []
     if len(line.words) < 2:
         return month_day_words  # single word lines have no day and month
@@ -183,16 +186,17 @@ def get_month_day_from_line(line: HOCRLine) -> Dict[str, Union[str, int, None, f
         return {"word": None, "match": None, "score": 0.0}
 
 
-def get_month_names_from_line(line: HOCRLine):
+def get_month_names_from_line(line: HOCRLine, config: dict) -> list:
+    month_names = month_names_late if config['year'] > 1750 else month_names_early
     return line_get_words_from_list(line, month_names)
 
 
-def get_month_name_from_line(line):
+def get_month_name_from_line(line: HOCRLine, config: dict):
     # HACK: return first month_name in line
-    return get_month_names_from_line(line)[0]
+    return get_month_names_from_line(line, config)[0]
 
 
-def get_week_day_names_from_line(line) -> List[Dict[str, Union[HOCRWord, str, float]]]:
+def get_week_day_names_from_line(line: HOCRLine) -> List[Dict[str, Union[HOCRWord, str, float]]]:
     return line_get_words_from_list(line, week_day_names)
 
 
@@ -201,13 +205,14 @@ def get_week_day_name_from_line(line: HOCRLine) -> Dict[str, Union[HOCRWord, str
     return get_week_day_names_from_line(line)[0]
 
 
-def get_date_from_line(line: HOCRLine, year: int) -> dict:
+def get_date_from_line(line: HOCRLine, config: dict) -> dict:
+    month_map = month_map_early if config['year'] <= 1750 else month_map_late
     return {
         "month_day": get_month_day_from_line(line)["match"],
-        "month_name": get_month_name_from_line(line)["match"],
+        "month_name": get_month_name_from_line(line, config)["match"],
         "month": month_map[get_month_name_from_line(line)["match"]],
         "week_day_name": get_week_day_name_from_line(line)["match"],
-        "year": year,
+        "year": config['year'],
     }
 
 
@@ -265,52 +270,52 @@ def line_is_centered_text(line: HOCRLine, left_offset: int=200, right_offset: in
     return line.words[0].left >= left_offset and line.words[-1].right <= right_offset
 
 
-def line_has_date(line: HOCRLine) -> bool:
-    if line_has_week_day_name(line) and line_has_month_name(line):
+def line_has_date(line: HOCRLine, config: dict) -> bool:
+    if line_has_week_day_name(line) and line_has_month_name(line, config):
         # print("\n\tCentered date line (based on week_day month pattern):\t", line["line_text"])
         return True
-    if line_has_week_day_name(line) and line_has_month_day(line):
+    if line_has_week_day_name(line) and line_has_month_day(line, config):
         # print("\n\tCentered date line (based on day month pattern):\t", line["line_text"])
         return True
     # line has week_day den number month
     return False
 
 
-def line_is_centered_date(line: HOCRLine) -> bool:
+def line_is_centered_date(line: HOCRLine, config: dict) -> bool:
     # line is centered
     if not line_is_centered_text(line):
         return False
-    if line_has_week_day_name(line) and line_has_month_name(line):
+    if line_has_week_day_name(line) and line_has_month_name(line, config):
         # print("\n\tCentered date line (based on week_day month pattern):\t", line["line_text"])
         return True
-    if line_has_week_day_name(line) and line_has_month_day(line):
+    if line_has_week_day_name(line) and line_has_month_day(line, config):
         # print("\n\tCentered date line (based on day month pattern):\t", line["line_text"])
         return True
     # line has week_day den number month
     return False
 
 
-def paragraph_has_date(paragraph):
+def paragraph_has_date(paragraph, config):
     for line in paragraph["lines"]:
-        if line_has_date(line):
+        if line_has_date(line, config):
             return True
     return False
 
 
-def paragraph_has_centered_date(paragraph):
+def paragraph_has_centered_date(paragraph: dict, config: dict) -> bool:
     for line in paragraph["lines"]:
-        if line_is_centered_date(line):
+        if line_is_centered_date(line, config):
             return True
     return False
 
 
-def paragraph_starts_with_centered_date(paragraph):
-    if line_is_centered_date(paragraph["lines"][0]):
+def paragraph_starts_with_centered_date(paragraph: dict, config: dict) -> bool:
+    if line_is_centered_date(paragraph["lines"][0], config):
         return True
     return False
 
 
-def merge_paragraph_lines(paragraph):
+def merge_paragraph_lines(paragraph: dict) -> str:
     paragraph_text = ""
     for line in paragraph["lines"]:
         if line.line_text[-1] == "-":
@@ -320,11 +325,12 @@ def merge_paragraph_lines(paragraph):
     return paragraph_text
 
 
-def extract_meeting_date(paragraph, year, previous_date):
+def extract_meeting_date(paragraph: dict, config: dict,
+                         previous_date: Dict[str, Union[int, str]]) -> dict:
     current_date = None
     for line in paragraph["lines"]:
-        if line_has_date(line):
-            current_date = get_date_from_line(line, year)
+        if line_has_date(line, config):
+            current_date = get_date_from_line(line, config)
             break
     if not current_date:
         raise ValueError("Cannot locate meeting date in this paragaraph")

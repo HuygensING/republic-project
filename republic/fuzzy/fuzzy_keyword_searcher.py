@@ -182,6 +182,8 @@ class FuzzyKeywordSearcher(object):
             self.char_match_threshold = config["char_match_threshold"]
         if "ngram_threshold" in config:
             self.ngram_threshold = config["ngram_threshold"]
+        if "perform_strip_suffix" in config:
+            self.perform_strip_suffix = config["perform_strip_suffix"]
         if "levenshtein_threshold" in config:
             self.levenshtein_threshold = config["levenshtein_threshold"]
         if "max_length_variance" in config:

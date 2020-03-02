@@ -410,11 +410,12 @@ def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: di
             print('Non-double page:', scan_hocr['scan_num'], scan_hocr['scan_type'])
 
 
-def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, inventory_num: int, inventory_config: dict):
+def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
+                     inventory_num: int, inventory_config: dict):
     current_date = hocr_para_parser.initialize_current_date(inventory_config)
     page_docs = retrieve_resolution_pages(es, inventory_num, inventory_config)
     print('Pages retrieved:', len(page_docs), '\n')
-    for page_doc in sorted(page_docs, key = lambda x: x['page_num']):
+    for page_doc in sorted(page_docs, key=lambda x: x['page_num']):
         hocr_page = HOCRPage(page_doc, inventory_config)
         paragraphs, header = hocr_para_parser.get_resolution_page_paragraphs(hocr_page)
         for paragraph_order, paragraph in enumerate(paragraphs):
@@ -432,6 +433,3 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher, in
             del paragraph['lines']
             es.index(index=inventory_config['paragraph_index'], doc_type=inventory_config['paragraph_doc_type'],
                      id=paragraph['metadata']['paragraph_id'], body=paragraph)
-
-
-

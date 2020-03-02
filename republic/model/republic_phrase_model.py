@@ -63,7 +63,7 @@ week_day_names = [
     "Dominica"
 ]
 
-month_names = [
+month_names_early = [
     "Januarii",
     "Februarii",
     "Maart",
@@ -72,6 +72,21 @@ month_names = [
     "Junii",
     "Juli",
     "Augufti",
+    "September",
+    "October",
+    "November",
+    "December"
+]
+
+month_names_late = [
+    "January",
+    "February",
+    "Maart",
+    "April",
+    "Mey",
+    "Juny",
+    "July",
+    "Augufty",
     "September",
     "October",
     "November",
@@ -88,7 +103,7 @@ week_day_name_map = {
     "Dominica": 7
 }
 
-month_map = {
+month_map_early = {
     "Januarii": 1,
     "Februarii": 2,
     "Maart": 3,
@@ -97,6 +112,21 @@ month_map = {
     "Junii": 6,
     "Juli": 7,
     "Augufti": 8,
+    "September": 9,
+    "October": 10,
+    "November": 11,
+    "December": 12
+}
+
+month_map_late = {
+    "January": 1,
+    "February": 2,
+    "Maart": 3,
+    "April": 4,
+    "Mey": 5,
+    "Juny": 6,
+    "July": 7,
+    "Augufty": 8,
     "September": 9,
     "October": 10,
     "November": 11,
