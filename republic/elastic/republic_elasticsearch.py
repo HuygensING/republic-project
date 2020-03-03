@@ -416,8 +416,16 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
     page_docs = retrieve_resolution_pages(es, inventory_num, inventory_config)
     print('Pages retrieved:', len(page_docs), '\n')
     for page_doc in sorted(page_docs, key=lambda x: x['page_num']):
-        hocr_page = HOCRPage(page_doc, inventory_config)
-        paragraphs, header = hocr_para_parser.get_resolution_page_paragraphs(hocr_page)
+        if 'resolution_page' not in page_doc['page_type']:
+            continue
+        try:
+            hocr_page = HOCRPage(page_doc, inventory_config)
+        except KeyError:
+            print('Error parsing page', page_doc['page_id'])
+            continue
+            print(json.dumps(page_doc, indent=2))
+            raise
+        paragraphs, header = hocr_para_parser.get_resolution_page_paragraphs(hocr_page, inventory_config)
         for paragraph_order, paragraph in enumerate(paragraphs):
             matches = fuzzy_searcher.find_candidates(paragraph['text'], include_variants=True)
             if hocr_para_parser.matches_resolution_phrase(matches):

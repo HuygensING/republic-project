@@ -30,12 +30,12 @@ def initialize_paragraph_metadata(paragraph_lines: list, paragraph_num: int, hoc
 
 
 def track_meeting_date(paragraph: dict, matches: list, current_date: dict, config: dict) -> dict:
-    if len(matches) == 0 and paragraph_starts_with_centered_date(paragraph):
+    if len(matches) == 0 and paragraph_starts_with_centered_date(paragraph, config):
         print("DATE LINE:", paragraph["text"])
         current_date = extract_meeting_date(paragraph, config, current_date)
     if matches_participant_list(matches):
         print("DAY START:", paragraph["text"])
-        if paragraph_has_centered_date(paragraph):
+        if paragraph_has_centered_date(paragraph, config):
             current_date = extract_meeting_date(paragraph, config, current_date)
             paragraph["metadata"]["categories"].add("meeting_date")
         paragraph["metadata"]["type"] = "participant_list"
@@ -178,10 +178,10 @@ def get_month_days_from_line(line: HOCRLine, config: dict) -> List[Dict[str, Uni
     return month_day_words
 
 
-def get_month_day_from_line(line: HOCRLine) -> Dict[str, Union[str, int, None, float]]:
+def get_month_day_from_line(line: HOCRLine, config: dict) -> Dict[str, Union[str, int, None, float]]:
     # HACK: return first month day from line
     try:
-        return get_month_days_from_line(line)[0]
+        return get_month_days_from_line(line, config)[0]
     except IndexError:
         return {"word": None, "match": None, "score": 0.0}
 
@@ -208,9 +208,9 @@ def get_week_day_name_from_line(line: HOCRLine) -> Dict[str, Union[HOCRWord, str
 def get_date_from_line(line: HOCRLine, config: dict) -> dict:
     month_map = month_map_early if config['year'] <= 1750 else month_map_late
     return {
-        "month_day": get_month_day_from_line(line)["match"],
+        "month_day": get_month_day_from_line(line, config)["match"],
         "month_name": get_month_name_from_line(line, config)["match"],
-        "month": month_map[get_month_name_from_line(line)["match"]],
+        "month": month_map[get_month_name_from_line(line, config)["match"]],
         "week_day_name": get_week_day_name_from_line(line)["match"],
         "year": config['year'],
     }
