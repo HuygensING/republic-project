@@ -32,7 +32,13 @@ def initialize_paragraph_metadata(paragraph_lines: list, paragraph_num: int, hoc
 def track_meeting_date(paragraph: dict, matches: list, current_date: dict, config: dict) -> dict:
     if len(matches) == 0 and paragraph_starts_with_centered_date(paragraph, config):
         print("DATE LINE:", paragraph["text"])
-        current_date = extract_meeting_date(paragraph, config, current_date)
+        try:
+            current_date = extract_meeting_date(paragraph, config, current_date)
+        except KeyError:
+            print(matches)
+            for match in matches:
+                print(match)
+            raise
     if matches_participant_list(matches):
         print("DAY START:", paragraph["text"])
         if paragraph_has_centered_date(paragraph, config):
@@ -328,7 +334,9 @@ def merge_paragraph_lines(paragraph: dict) -> str:
 def extract_meeting_date(paragraph: dict, config: dict,
                          previous_date: Dict[str, Union[int, str]]) -> dict:
     current_date = None
-    for line in paragraph["lines"]:
+    for li, line in enumerate(paragraph["lines"]):
+        if len(line.words) < 2 and li < len(paragraph['lines']) - 1:
+            line.words += paragraph['lines'][li+1].words
         if line_has_date(line, config):
             current_date = get_date_from_line(line, config)
             break
@@ -337,7 +345,6 @@ def extract_meeting_date(paragraph: dict, config: dict,
     if current_date["month_day"] is None:
         print("DERIVING MEETING DATE FROM PREVIOUS DATE")
         current_date = derive_month_day_from_previous_date(previous_date, current_date)
-        print(current_date)
     return current_date
 
 
@@ -346,12 +353,12 @@ def derive_month_day_from_previous_date(previous_date: Dict[str, Union[int, str]
     day_shift = get_day_shift(current_date["week_day_name"], previous_date["week_day_name"])
     curr_date = shift_date(previous_date, day_shift)
     if curr_date.month != current_date["month"]:
-        raise (
+        raise ValueError(
             "Date derivation error. Derived month '{}' is not the same as extracted month '{}'".format(curr_date.month,
                                                                                                        current_date[
                                                                                                            "month"]))
     if curr_date.year != current_date["year"]:
-        raise ("Date derivation error. Derived year '{}' is not the same as extracted year '{}'".format(curr_date.year,
+        raise ValueError("Date derivation error. Derived year '{}' is not the same as extracted year '{}'".format(curr_date.year,
                                                                                                         current_date[
                                                                                                             "year"]))
     return {
