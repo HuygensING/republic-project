@@ -2,3 +2,5 @@
 .ipynb_checkpoints
 settings.py
 __pycache__
+
+*.pcl

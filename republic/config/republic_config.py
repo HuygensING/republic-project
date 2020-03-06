@@ -13,6 +13,8 @@ def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: st
     config['page_index'] = f'republic_{ocr_type}_pages'
     config['scan_index'] = f'republic_{ocr_type}_scans'
     config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'
+    config['meeting_index'] = f'republic_{ocr_type}_meeting'
+    config['meeting_doc_type'] = 'meeting'
     inv_map = get_inventory_by_num(inventory_num)
     config['year'] = inv_map['year']
     config['inventory_num'] = inventory_num

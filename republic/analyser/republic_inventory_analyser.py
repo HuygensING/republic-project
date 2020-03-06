@@ -1,5 +1,6 @@
 from typing import Union, Dict, List
 from elasticsearch import Elasticsearch
+
 import republic.elastic.republic_elasticsearch as rep_es
 
 
@@ -237,4 +238,16 @@ def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config
     return inventory_metadata
 
 
-
+def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_config: dict) -> tuple:
+    inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_num, inv_config)
+    offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
+    resolution_start = 0
+    for offset in inv_metadata['type_page_num_offsets']:
+        if offset['page_type'] == 'resolution_page':
+            resolution_start = offset['page_num_offset']
+    if resolution_start != offsets[-1]:
+        next_section_offset = offsets[offsets.index(resolution_start) + 1]
+        resolution_end = next_section_offset - 1
+    else:
+        resolution_end = inv_metadata['num_pages'] - 1
+    return resolution_start, resolution_end

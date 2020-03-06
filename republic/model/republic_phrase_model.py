@@ -136,6 +136,9 @@ month_map_late = {
 keywords = resolution_phrases
 
 spelling_variants = {
+    "WAAR op gedelibereert zijnde": [
+        "Waer op gedelibereert zynde"
+    ],
     "DE Refolutien, gifteren genomen": [
         "DE Refolutien, eergifteren genomen",
     ],
@@ -146,16 +149,24 @@ spelling_variants = {
     ],
     "PRAESENTIBUS": [
         "PRASENTIBUS",
-        "PRESENTIBUS"
+        "PRESENTIBUS",
+        "P R A S E N T I B U S",
+        "P R E S E N T I B U S"
     ],
-    #"Junii": [
-    #    "Juni"
-    #],
+    "PRAESIDE": [
+        "PRASIDE",
+        "PRESIDE",
+        "P R A S I D E",
+        "P R E S I D E"
+    ],
     "is goedgevonden ende verftaan": [
         "IS goedgevonden ende verftaan",
+        "Is goedgevonden en verftaan",
     ],
     "WAAR op geen refolutie is gevallen": [
+        "Waer op geen refolutie is gevallen",
         "WAAR op geen refolutie voor alsnoch is gevallen",
+        "Waer op geen refolutie voor alsnoch is gevallen",
     ]
 }
 

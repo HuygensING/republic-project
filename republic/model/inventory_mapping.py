@@ -1,5 +1,6 @@
 from typing import Dict, List, Union
 
+
 def get_inventory_by_num(inventory_num: int) -> dict:
     for inv_map in inventory_mapping:
         if inv_map["inventory_num"] == inventory_num:

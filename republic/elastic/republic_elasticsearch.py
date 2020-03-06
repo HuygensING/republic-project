@@ -4,6 +4,8 @@ import json
 import copy
 import os
 import zipfile
+
+import republic.analyser.republic_inventory_analyser as inv_analyser
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
@@ -13,6 +15,7 @@ import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
+import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
 from settings import set_elasticsearch_config
 
 
@@ -116,6 +119,19 @@ def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num:
     return make_bool_query(match_fields)
 
 
+def make_range_query(field: str, start: int, end: int):
+    return {
+        "query": {
+            "range": {
+                field: {
+                    "gte": start,
+                    "lte": end
+                }
+            }
+        }
+    }
+
+
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
@@ -175,6 +191,22 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict)
         return pages[0]
 
 
+def retrieve_page_by_page_number_range(es: Elasticsearch, page_num_start: int,
+                                       page_num_end: int, config: dict) -> Union[List[dict], None]:
+    """Retrieve a range of Republic PageXML pages based on page number"""
+    match_fields = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
+    if 'inventory_num' in config:
+        match_fields += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
+    elif 'year' in config:
+        match_fields += [{'match': {'year': config['year']}}]
+    query = make_bool_query(match_fields)
+    pages = retrieve_pages_with_query(es, query, config)
+    if len(pages) == 0:
+        return None
+    else:
+        return sorted(pages, key=lambda x: x['metadata']['page_num'])
+
+
 def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int, config: dict) -> List[dict]:
     query = make_page_type_query(page_type, inventory_num=inventory_num)
     return retrieve_pages_with_query(es, query, config)
@@ -196,6 +228,11 @@ def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) ->
 
 def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     return retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
+
+
+def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int, inv_config: dict) -> List[dict]:
+    resolution_start, resolution_end = inv_analyser.get_pagexml_resolution_page_range(es, inv_num, inv_config)
+    return retrieve_page_by_page_number_range(es, resolution_start, resolution_end, inv_config)
 
 
 def retrieve_respect_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
@@ -423,8 +460,8 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
         except KeyError:
             print('Error parsing page', page_doc['page_id'])
             continue
-            print(json.dumps(page_doc, indent=2))
-            raise
+            # print(json.dumps(page_doc, indent=2))
+            # raise
         paragraphs, header = hocr_para_parser.get_resolution_page_paragraphs(hocr_page, inventory_config)
         for paragraph_order, paragraph in enumerate(paragraphs):
             matches = fuzzy_searcher.find_candidates(paragraph['text'], include_variants=True)
@@ -441,3 +478,16 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
             del paragraph['lines']
             es.index(index=inventory_config['paragraph_index'], doc_type=inventory_config['paragraph_doc_type'],
                      id=paragraph['metadata']['paragraph_id'], body=paragraph)
+
+
+def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+    pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
+    for meeting in meeting_parser.get_meeting_dates(pages, inv_num):
+        if len(meeting['meeting_lines']) > 4000:
+            print('Error: too many lines for meeting on date', meeting_parser.make_date_object(meeting['meeting_date']))
+            continue
+        print('Indexing meeting on date', meeting_parser.make_date_object(meeting['meeting_date']),
+              '\tnum meeting lines:', len(meeting['meeting_lines']))
+        es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
+                 id=meeting['id'], body=meeting)
+    return None
