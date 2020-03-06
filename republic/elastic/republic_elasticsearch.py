@@ -5,7 +5,6 @@ import copy
 import os
 import zipfile
 
-import republic.analyser.republic_inventory_analyser as inv_analyser
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
@@ -136,8 +135,10 @@ def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
     match_fields = [{'match': {'page_type': page_type}}]
-    if inventory_num: match_fields += [{'match': {'inventory_num': inventory_num}}]
-    if year: match_fields += [{'match': {'year': year}}]
+    if inventory_num:
+        match_fields += [{'match': {'inventory_num': inventory_num}}]
+    if year:
+        match_fields += [{'match': {'year': year}}]
     return make_bool_query(match_fields, size)
 
 
@@ -181,8 +182,10 @@ def retrieve_pages_with_query(es: Elasticsearch, query: dict, config: dict) -> l
 
 def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict) -> Union[dict, None]:
     match_fields = [{'match': {'page_num': page_num}}]
-    if 'inventory_num' in config: match_fields += [{'match': {'inventory_num': config['inventory_num']}}]
-    elif 'year' in config: match_fields += [{'match': {'year': config['year']}}]
+    if 'inventory_num' in config:
+        match_fields += [{'match': {'inventory_num': config['inventory_num']}}]
+    elif 'year' in config:
+        match_fields += [{'match': {'year': config['year']}}]
     query = make_bool_query(match_fields)
     pages = retrieve_pages_with_query(es, query, config)
     if len(pages) == 0:
@@ -231,7 +234,7 @@ def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dic
 
 
 def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int, inv_config: dict) -> List[dict]:
-    resolution_start, resolution_end = inv_analyser.get_pagexml_resolution_page_range(es, inv_num, inv_config)
+    resolution_start, resolution_end = get_pagexml_resolution_page_range(es, inv_num, inv_config)
     return retrieve_page_by_page_number_range(es, resolution_start, resolution_end, inv_config)
 
 
@@ -317,7 +320,7 @@ def parse_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
 
 
 def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
-    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir)
+    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir, ocr_type="hocr")
     hocr_dir = os.path.join(base_dir, 'hocr')
     inv_file = os.path.join(hocr_dir, f'{inventory_num}.zip')
     z = zipfile.ZipFile(inv_file)
@@ -338,21 +341,21 @@ def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_co
 
 
 def parse_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
-    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir)
-    #print(inventory_config)
-    scan_files = file_parser.get_files(inventory_config['hocr_dir'])
+    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir, ocr_type="hocr")
+    # print(inventory_config)
+    scan_files = file_parser.get_hocr_files(inventory_config['hocr_dir'])
     for scan_file in scan_files:
         scan_hocr = hocr_page_parser.get_scan_hocr(scan_file, config=inventory_config)
         if not scan_hocr:
             continue
         if 'double_page' in scan_hocr['metadata']['scan_type']:
-            #print('double page scan:', scan_hocr['scan_num'], scan_hocr['scan_type'])
+            # print('double page scan:', scan_hocr['scan_num'], scan_hocr['scan_type'])
             pages_hocr = hocr_page_parser.parse_double_page_scan(scan_hocr, inventory_config)
             for page_hocr in pages_hocr:
-                #print(inventory_num, page_hocr['page_num'], page_hocr['page_type'])
+                # print(inventory_num, page_hocr['page_num'], page_hocr['page_type'])
                 index_page(es, page_hocr, inventory_config)
         else:
-            #print('NOT DOUBLE PAGE:', scan_hocr['scan_num'], scan_hocr['scan_type'])
+            # print('NOT DOUBLE PAGE:', scan_hocr['scan_num'], scan_hocr['scan_type'])
             index_scan(es, scan_hocr, inventory_config)
             continue
 
@@ -373,8 +376,9 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         page_doc['page_type'] = page_type
         page_doc['is_parseable'] = True if page_type != 'bad_page' else False
         if hocr_base_parser.is_title_page(page_doc, config['title_page']):
-            numbering = 1 # reset numbering
-            #page_doc['page_type'] += ['title_page']
+            # reset numbering
+            numbering = 1
+            # page_doc['page_type'] += ['title_page']
             page_doc['is_title_page'] = True
         else:
             page_doc['is_title_page'] = False
@@ -390,11 +394,11 @@ def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         page_es_doc = create_es_page_doc(page_doc)
         print(config['inventory_num'], page_doc['page_num'], page_doc['page_type'])
         es.index(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id, body=page_es_doc)
-        #print(page_id, page_type, numbering)
+        # print(page_id, page_type, numbering)
 
 
-def index_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: dict):
-    scan_files = file_parser.get_files(config['hocr_dir'])
+def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
+    scan_files = file_parser.get_hocr_files(config['hocr_dir'])
     for scan_file in scan_files:
         scan_hocr = hocr_page_parser.get_scan_hocr(scan_file, config=config)
         if not scan_hocr:
@@ -418,7 +422,7 @@ def read_from_zip(inventory_num: int, config: dict) -> iter:
 
 def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, config: dict):
     for scan_info, scan_data in read_from_zip(inventory_num, config):
-        scan_hocr = hocr_page_parser.get_scan_hocr(scan_info, scan_data=scan_data, config=config)
+        scan_hocr = hocr_page_parser.get_scan_hocr(scan_info, hocr_data=scan_data, config=config)
         if not scan_hocr:
             continue
         scan_es_doc = create_es_scan_doc(scan_hocr)
@@ -478,6 +482,21 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
             del paragraph['lines']
             es.index(index=inventory_config['paragraph_index'], doc_type=inventory_config['paragraph_doc_type'],
                      id=paragraph['metadata']['paragraph_id'], body=paragraph)
+
+
+def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_config: dict) -> tuple:
+    inv_metadata = retrieve_inventory_metadata(es, inv_num, inv_config)
+    offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
+    resolution_start = 0
+    for offset in inv_metadata['type_page_num_offsets']:
+        if offset['page_type'] == 'resolution_page':
+            resolution_start = offset['page_num_offset']
+    if resolution_start != offsets[-1]:
+        next_section_offset = offsets[offsets.index(resolution_start) + 1]
+        resolution_end = next_section_offset - 1
+    else:
+        resolution_end = inv_metadata['num_pages'] - 1
+    return resolution_start, resolution_end
 
 
 def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:

@@ -28,17 +28,18 @@ def find_page_type_sequences(es: Elasticsearch, inventory_num: int, config: dict
     for page_type in page_types:
         pages = rep_es.retrieve_pages_by_type(es, page_type, inventory_num, config)
         if len(pages) == 0:
-            continue # skip types that have no pages
+            # skip types that have no pages
+            continue
         page_nums = sorted([page["page_num"] for page in pages])
-        #print(page_type, "page_nums:", page_nums)
+        # print(page_type, "page_nums:", page_nums)
         page_type_sequence = find_sequence(page_nums)
-        #print(page_type, page_type_sequence)
+        # print(page_type, page_type_sequence)
         page_type_sequence["page_type"] = page_type
         page_type_sequences += [page_type_sequence]
     return page_type_sequences
 
 
-def find_sequence(pages: List[int]) -> Dict[str, int]:
+def find_sequence(pages: List[int]) -> Dict[str, Union[int, str]]:
     longest_sequence = []
     longest_sequence_length = 0
     sequence = [pages[0]]
@@ -64,8 +65,8 @@ def find_pages_with_little_text(es: Elasticsearch, word_num_threshold: int, inve
     return rep_es.retrieve_pages_with_query(es, query, config)
 
 
-def find_page_type_order(es: Elasticsearch, inventory_num: int, config: dict) -> Dict[
-    str, Union[Dict[str, int], List[str]]]:
+def find_page_type_order(es: Elasticsearch, inventory_num: int,
+                         config: dict) -> Dict[str, Union[Dict[str, int], List[str]]]:
     index_sequence = find_index_page_sequence(es, inventory_num, config)
     resolution_sequence = find_resolution_page_sequence(es, inventory_num, config)
     if resolution_sequence["end"] - resolution_sequence["start"] < 200:
@@ -121,11 +122,11 @@ def find_page_type_sequence_overlap(inventory_data: dict, section: dict) -> str:
     largest_overlap_type = "unknown_page_type"
     largest_sequence = None
     for page_type_sequence in inventory_data["page_type_sequences"]:
-        #print(page_type_sequence, section)
+        # print(page_type_sequence, section)
         sequence_length = page_type_sequence["end"] - page_type_sequence["start"]
         overlap = section_sequence_overlap(section, page_type_sequence)
         if overlap and overlap == largest_overlap:
-            #print("choose smallest sequence page_type")
+            # print("choose smallest sequence page_type")
             if sequence_length < largest_sequence:
                 largest_overlap_type = page_type_sequence["page_type"]
                 largest_sequence = sequence_length
@@ -141,13 +142,13 @@ def get_inventory_summary(es: Elasticsearch, inventory_config: dict) -> dict:
     inventory_num = inventory_config["inventory_num"]
     inventory_data = {}
     title_pages = rep_es.retrieve_title_pages(es, inventory_num, inventory_config)
-    title_pages.sort(key= lambda x: x["page_num"])
+    title_pages.sort(key=lambda x: x["page_num"])
     inventory_data["title_pages"] = title_pages
     inventory_data["title_page_nums"] = [title_page["page_num"] for title_page in title_pages]
     inventory_data["num_pages"] = get_inventory_num_pages(es, inventory_num, inventory_config)
     inventory_data["page_type_sequences"] = find_page_type_sequences(es, inventory_num, inventory_config)
     inventory_data["sections"] = find_page_type_sections(inventory_data)
-    #inventory_data["page_type_sequences"] = page_type_sequences
+    # inventory_data["page_type_sequences"] = page_type_sequences
     return inventory_data
 
 
@@ -236,18 +237,3 @@ def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config
         action = "skipping"
     print(f"{action} inventory {inv_num}")
     return inventory_metadata
-
-
-def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_config: dict) -> tuple:
-    inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_num, inv_config)
-    offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
-    resolution_start = 0
-    for offset in inv_metadata['type_page_num_offsets']:
-        if offset['page_type'] == 'resolution_page':
-            resolution_start = offset['page_num_offset']
-    if resolution_start != offsets[-1]:
-        next_section_offset = offsets[offsets.index(resolution_start) + 1]
-        resolution_end = next_section_offset - 1
-    else:
-        resolution_end = inv_metadata['num_pages'] - 1
-    return resolution_start, resolution_end

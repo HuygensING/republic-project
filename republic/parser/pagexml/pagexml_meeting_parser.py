@@ -432,5 +432,3 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int) -> iter:
         "meeting_metadata": meeting_metadata,
         "meeting_lines": meeting_lines
     }
-
-

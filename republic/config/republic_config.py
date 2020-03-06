@@ -3,8 +3,8 @@ import os
 from republic.model.inventory_mapping import get_inventory_by_num
 
 
-def set_config_inventory_num(base_config: dict, inventory_num: int, base_dir: str, ocr_type: str) -> dict:
-    config = copy.deepcopy(base_config)
+def set_config_inventory_num(inventory_config: dict, inventory_num: int, base_dir: str, ocr_type: str) -> dict:
+    config = copy.deepcopy(inventory_config)
     assert(ocr_type == 'hocr' or ocr_type == 'pagexml')
     config['ocr_type'] = ocr_type
     config['base_dir'] = base_dir
@@ -32,7 +32,8 @@ base_config = {
     'page_doc_type': 'page',
     'scan_doc_type': 'scan',
     'paragraph_doc_type': 'paragraph',
-    'tiny_word_width': 15, # pixel width
+    # width numbers are pixel width
+    'tiny_word_width': 15,
     'avg_char_width': 20,
     'remove_tiny_words': True,
     'remove_line_numbers': False,
@@ -96,5 +97,3 @@ column_config = {
     'avg_char_width': 20,
     'word_conf_threshold': 10,
 }
-
-
