@@ -20,6 +20,17 @@ strict_config = {
     "ngram_size": 2,
     "skip_size": 2,
 }
+meetingdate_config = {
+    'char_match_threshold': 0.6,
+    'ngram_threshold': 0.5,
+    'levenshtein_threshold': 0.6,
+    'max_length_variance': 3,
+    'use_word_boundaries': False,
+    'perform_strip_suffix': False,
+    'ignorecase': False,
+    'ngram_size': 2,
+    'skip_size': 2
+}
 attendance_config = {
     "char_match_threshold": 0.6,
     "ngram_threshold": 0.5,
@@ -44,7 +55,7 @@ attendance_variants = {
 }
 
 
-def initialize_attendance_searcher(year: int, config: Union[dict, None] = None,
+def initialize_attendance_searcher(config: Union[dict, None] = None,
                                    keywords: Union[list, None] = None,
                                    variants: Union[dict, None] = None) -> FuzzyKeywordSearcher:
     """Initialize a FuzzyKeywordSearcher with phrases for attendence list formulas."""
@@ -55,7 +66,7 @@ def initialize_attendance_searcher(year: int, config: Union[dict, None] = None,
     if not variants:
         variants = attendance_variants
     attendance_searcher = FuzzyKeywordSearcher(config)
-    attendance_searcher.index_keywords(keywords + [str(year)])
+    attendance_searcher.index_keywords(keywords)
     attendance_searcher.index_spelling_variants(variants)
     return attendance_searcher
 
@@ -109,6 +120,46 @@ def get_next_date(current_date: dict) -> dict:
     }
 
 
+def is_work_day(current_date: datetime.date) -> bool:
+    sample_weekday = determine_week_day_name(current_date)
+    if sample_weekday == 'Dominica':
+        return False
+    elif sample_weekday == 'Sabbathi' and current_date.year >= 1754:
+        # From 1754, the States General stopped working on Saturdays
+        #
+        return False
+    else:
+        return True
+
+
+def get_next_work_day(current_date: datetime.date) -> datetime.date:
+    sample_weekday = determine_week_day_name(current_date)
+    if sample_weekday == 'Sabbathi':
+        # next day is Sunday, so next work day is 2 days from now
+        next_date = current_date + datetime.timedelta(days=2)
+    elif sample_weekday == 'Veneris' and current_date.year >= 1754:
+        # From 1754, the States General stopped working on Saturdays
+        # next day is Saturday, so next work day is 3 days from now
+        next_date = current_date + datetime.timedelta(days=3)
+    else:
+        next_date = current_date + datetime.timedelta(days=1)
+    return next_date
+
+
+def get_previous_work_day(current_date: datetime.date) -> datetime.date:
+    sample_weekday = determine_week_day_name(current_date)
+    if sample_weekday == 'Lunae' and current_date.year < 1754:
+        # previous day is Sunday, so previous work day is 2 days ago
+        prev_date = current_date - datetime.timedelta(days=2)
+    elif sample_weekday == 'Lunae' and current_date.year >= 1754:
+        # From 1754, the States General stopped working on Saturdays
+        # previous day is Saturday, so previous work day is 3 days ago
+        prev_date = current_date - datetime.timedelta(days=3)
+    else:
+        prev_date = current_date - datetime.timedelta(days=1)
+    return prev_date
+
+
 def get_date_text_string(current_date: dict, include_year: bool = True) -> str:
     month_name = get_current_date_month(current_date)
     if include_year:
@@ -121,14 +172,17 @@ def get_next_date_strings(current_date: dict, num_dates: int = 3, include_year: 
     date_strings = [get_date_text_string(current_date, include_year=include_year)]
     next_date = get_next_date(current_date)
     for i in range(1, num_dates):
+        if next_date['year'] != current_date['year']:
+            # avoid going beyond December 31 into the next year
+            continue
         date_strings += [get_date_text_string(next_date, include_year=include_year)]
         next_date = get_next_date(next_date)
     return date_strings
 
 
-def update_meeting_date_searcher(date_strings: List[str]) -> FuzzyKeywordSearcher:
-    meeting_date_searcher = FuzzyKeywordSearcher(strict_config)
-    meeting_date_searcher.index_keywords(date_strings)
+def update_meeting_date_searcher(date_strings: List[str], year: int) -> FuzzyKeywordSearcher:
+    meeting_date_searcher = FuzzyKeywordSearcher(meetingdate_config)
+    meeting_date_searcher.index_keywords(date_strings + [str(year)])
     return meeting_date_searcher
 
 
@@ -163,15 +217,16 @@ def determine_week_day_name(current_date: Union[datetime.date, dict]) -> str:
     return current_week_day_name
 
 
-def initialize_inventory_date(inventory_num: int) -> Dict[str, Union[str, int]]:
+def initialize_inventory_date(inventory_num: int, inv_metadata: dict) -> Dict[str, Union[str, int]]:
     inventory_info = get_inventory_by_num(inventory_num)
     year = inventory_info['year']
-    new_years_day = datetime.date(year, 1, 1)
+    year, month, day = [int(part) for part in inv_metadata['period_start'].split('-')]
+    start_day = datetime.date(year, month, day)
     return {
         'year': year,
-        'month': 1,
-        'day_num': 1,
-        'weekday': determine_week_day_name(new_years_day)
+        'month': month,
+        'day_num': day,
+        'weekday': determine_week_day_name(start_day)
     }
 
 
@@ -209,17 +264,18 @@ def make_paragraph(page: dict, textregion: dict, current_date: Dict[str, Union[s
 
 
 def update_meeting_date(current_date: Dict[str, Union[str, int]], date_strings: List[str],
-                        meeting_matches: List[dict]) -> tuple:
+                        meeting_matches: List[dict]) -> Dict[str, Union[str, int]]:
     last_index = 0
     for match in meeting_matches:
+        if match['match_keyword'] == str(current_date['year']):
+            continue
         index = date_strings.index(match['match_keyword'])
         if index > last_index:
             last_index = index
     for i in range(0, last_index):
         current_date = get_next_date(current_date)
         # print('\tupdating current date:', current_date)
-    next_date = get_next_date(current_date)
-    return current_date, next_date
+    return current_date
 
 
 def get_vertical_overlap(line1: dict, line2: dict) -> int:
@@ -287,13 +343,27 @@ def print_line_info(line_info: dict) -> None:
 
 
 def get_meeting_elements(sliding_window: List[dict], year: int) -> Dict[str, int]:
+    """
+    Check which lines in sliding window match meeting opening elements.
+    The elements should match at or near the start of the line.
+    """
+    # year can be on separate line, so should start at beginning of line, or
+    # on same line as rest of date, so at the end of the line.
     meeting_elements = {}
     for li, line_info in enumerate(sliding_window):
         if line_info['meeting_matches']:
+            match_offset = min([match['match_offset'] for match in line_info['meeting_matches']])
+            if match_offset > 4:
+                continue
+            # print('meeting_matches:', line_info['meeting_matches'])
+            for match in line_info['meeting_matches']:
+                if match['match_keyword'] == str(year):
+                    meeting_elements['meeting_year'] = li
             meeting_elements['meeting_date'] = li
         for match in line_info['attendance_matches']:
-            if match['match_keyword'] == str(year):
-                meeting_elements['meeting_year'] = li
+            if match['match_offset'] > 4:
+                continue
+            # print(match['match_keyword'], '\toffset:', match['match_offset'])
             if match['match_keyword'] in attendance_keywords:
                 meeting_elements[match['match_keyword']] = li
     return meeting_elements
@@ -316,8 +386,8 @@ def parse_meeting_metadata(meeting_elements: Dict[str, int], current_date: Dict[
     meeting_date = datetime.date(current_date['year'], current_date['month'], current_date['day_num']).isoformat()
     meeting_metadata = {
         'id': f'meeting-{meeting_date}',
-        'meeting_date': current_date,
-        'lines': [sliding_window],
+        'meeting_date': copy.copy(current_date),
+        'lines': sliding_window,
         'has_meeting_date_element': False
     }
     for meeting_element, line_index in sorted(meeting_elements.items(), key=lambda x: x[1]):
@@ -357,16 +427,15 @@ def score_element_order(element_list: List[any]) -> float:
     return order_score
 
 
-def get_meeting_dates(sorted_pages: List[dict], inv_num: int) -> iter:
-    current_date = initialize_inventory_date(inv_num)
+def get_meeting_dates(sorted_pages: List[dict], inv_num: int, inv_metadata: dict) -> iter:
+    current_date = initialize_inventory_date(inv_num, inv_metadata)
     date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
-    attendance_searcher = initialize_attendance_searcher(current_date['year'])
-    meetingdate_searcher = update_meeting_date_searcher(date_strings)
+    attendance_searcher = initialize_attendance_searcher()
+    meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
     sliding_window = []
     sliding_window_size = 20
     meeting_metadata = None
     print('indexing start for current date:', current_date)
-    print('date_strings:', date_strings)
     meeting_lines = []
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages)):
         # list all lines belonging to the same meeting date
@@ -378,7 +447,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int) -> iter:
                                                                               include_variants=True)
         line_info['meeting_matches'] = meetingdate_searcher.find_candidates(line_info['text'],
                                                                             use_word_boundaries=False,
-                                                                            include_variants=True)
+                                                                            include_variants=False)
         if len(sliding_window) < sliding_window_size:
             sliding_window += [line_info]
         else:
@@ -390,35 +459,51 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int) -> iter:
             new_meeting_index = meeting_lines.index(first_new_meeting_line)
             if first_new_meeting_line in meeting_lines:
                 print('\tfirst_new_meeting_line:', meeting_lines.index(first_new_meeting_line))
-            meeting_date = datetime.date(current_date['year'],
-                                         current_date['month'],
-                                         current_date['day_num']).isoformat()
+            meeting_date = make_date_object(current_date)
             yield {
-                'id': f'meeting-{meeting_date}',
+                'id': f'meeting-{meeting_date.isoformat()}',
                 "inventory_num": inv_num,
                 "year": current_date["year"],
                 "meeting_date": current_date,
                 "meeting_metadata": meeting_metadata,
                 "meeting_lines": meeting_lines[:new_meeting_index]
             }
+            if not is_work_day(meeting_date):
+                print('copying rest day to next work day')
+                next_work_date = get_next_work_day(meeting_date)
+                if next_work_date.year == current_date['year']:
+                    next_weekday = determine_week_day_name(next_work_date)
+                    yield {
+                        'id': f'meeting-{next_work_date.isoformat()}',
+                        "inventory_num": inv_num,
+                        "year": current_date["year"],
+                        "meeting_date": {
+                            'weekday': next_weekday,
+                            'day_num': next_work_date.day,
+                            'month': next_work_date.month,
+                            'year': next_work_date.year
+                        },
+                        "meeting_metadata": meeting_metadata,
+                        "meeting_lines": meeting_lines[:new_meeting_index]
+                    }
             meeting_lines = meeting_lines[new_meeting_index:]
             has_meeting_date_element = False
             for meeting_element in meeting_elements:
                 line_info = sliding_window[meeting_elements[meeting_element]]
                 if meeting_element == 'meeting_date':
                     has_meeting_date_element = True
-                    current_date, next_date = update_meeting_date(current_date,
+                    current_date = update_meeting_date(current_date,
                                                                   date_strings,
                                                                   line_info['meeting_matches'])
                     date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
-                    meetingdate_searcher = update_meeting_date_searcher(date_strings)
+                    meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
                     print('\tcurrent_date:', current_date)
             if not has_meeting_date_element:
                 # Dirty hack: no explicit meeting date string found, assume this is the next day, but string
                 # is missing or not recognised.
                 current_date = get_next_date(current_date)
                 date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
-                meetingdate_searcher = update_meeting_date_searcher(date_strings)
+                meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
             meeting_metadata = parse_meeting_metadata(meeting_elements, current_date, sliding_window)
             sliding_window = []
     meeting_date = datetime.date(current_date['year'],

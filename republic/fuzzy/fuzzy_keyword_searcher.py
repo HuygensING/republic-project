@@ -518,7 +518,7 @@ class FuzzyKeywordSearcher(object):
                 continue
             prev_offset = filtered[-1]["match_offset"]
             curr_offset = match["match_offset"]
-            if prev_offset + len(filtered[-1]["match_term"]) < curr_offset:
+            if prev_offset + len(filtered[-1]["match_string"]) <= curr_offset:
                 filtered += [match]
                 continue
             elif match["levenshtein_distance"] > filtered[-1]["levenshtein_distance"]:

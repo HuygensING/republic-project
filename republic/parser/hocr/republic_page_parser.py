@@ -50,9 +50,9 @@ def get_column_hocr(column_info: dict, config: dict) -> Union[dict, None]:
 def determine_scan_type(scan_hocr: dict, config: dict) -> list:
     if "normal_scan_width" not in config:
         return ["unknown"]
-    if scan_hocr["hocr_box"]["width"] > config["normal_scan_width"] * 1.1:
+    if scan_hocr["coords"]["width"] > config["normal_scan_width"] * 1.1:
         return ["special", "extended"]
-    elif scan_hocr["hocr_box"]["width"] < config["normal_scan_width"] * 0.9:
+    elif scan_hocr["coords"]["width"] < config["normal_scan_width"] * 0.9:
         return ["special", "small"]
     else:
         return ["normal", "double_page"]
@@ -62,20 +62,17 @@ def get_scan_hocr(scan_info: dict, hocr_data: str = None, config: dict = {}) -> 
     hocr_doc = make_hocr_doc(scan_info["filepath"], hocr_data=hocr_data, doc_id=scan_info["scan_num"], config=config)
     if not hocr_doc:
         return None
-    scan_hocr = hocr_doc.carea
-    scan_hocr["scan_num"] = scan_info["scan_num"]
-    scan_hocr["scan_id"] = "inventory-{}-scan-{}".format(scan_info["inventory_num"], scan_info["scan_num"])
-    scan_hocr["filepath"] = scan_info["filepath"]
-    scan_hocr["inventory_num"] = scan_info["inventory_num"]
-    scan_hocr["inventory_year"] = scan_info["inventory_year"]
-    scan_hocr["inventory_period"] = scan_info["inventory_period"]
-    scan_hocr["hocr_box"] = hocr_doc.box
-    scan_hocr["scan_type"] = determine_scan_type(scan_hocr, config)
-    if "double_page" in scan_hocr["scan_type"]:
-        scan_hocr["page_boundary"] = int(scan_hocr["hocr_box"]["right"] / 2)
-    scan_hocr["lines"] = hocr_doc.lines
+    scan_hocr = {
+        'coords': hocr_doc.carea,
+        'metadata': scan_info,
+        'textregions': []
+    }
+    scan_hocr["metadata"]["scan_type"] = determine_scan_type(scan_hocr, config)
+    if "double_page" in scan_hocr["metadata"]["scan_type"]:
+        scan_hocr["metadata"]["page_boundary"] = int(scan_hocr["coords"]["right"] / 2)
+    scan_hocr["textregions"] = [{"lines": hocr_doc.lines}]
     if "remove_tiny_words" in config and config["remove_tiny_words"]:
-        scan_hocr["lines"] = filter_tiny_words_from_lines(hocr_doc, config)
+        scan_hocr["textregions"] = [{"lines": filter_tiny_words_from_lines(hocr_doc, config)}]
     return scan_hocr
 
 
@@ -214,48 +211,46 @@ def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
 
 
 def initialize_pages_hocr(dp_hocr: dict) -> tuple:
-    even_page_num = dp_hocr["scan_num"] * 2 - 2
-    odd_page_num = dp_hocr["scan_num"] * 2 - 1
-    even_page_hocr = {"page_id": "inventory-{}-scan-{}-page-{}".format(dp_hocr["inventory_num"],
-                                                                       dp_hocr["scan_num"], even_page_num),
-                      "page_num": even_page_num, "page_side": "even",
-                      "lines": []}
-    odd_page_hocr = {"page_id": "inventory-{}-scan-{}-page-{}".format(dp_hocr["inventory_num"],
-                                                                      dp_hocr["scan_num"], odd_page_num),
-                     "page_num": dp_hocr["scan_num"] * 2 - 1, "page_side": "odd",
-                     "lines": []}
+    even_page_num = dp_hocr["metadata"]["scan_num"] * 2 - 2
+    odd_page_num = dp_hocr["metadata"]["scan_num"] * 2 - 1
+    even_page_hocr = {'metadata': dp_hocr['metadata']}
+    even_page_hocr["metadata"]["page_id"] = f"{dp_hocr['metadata']['scan_id']}-page-{even_page_num}"
+    even_page_hocr["metadata"]["page_num"] = even_page_num
+    even_page_hocr["metadata"]["page_side"] = "even"
+    even_page_hocr["coords"] = {}
+    even_page_hocr["textregions"] = [{"lines": []}]
+    odd_page_hocr = {'metadata': dp_hocr['metadata']}
+    odd_page_hocr["metadata"]["page_id"] = f"{dp_hocr['metadata']['scan_id']}-page-{odd_page_num}"
+    odd_page_hocr["metadata"]["page_num"] = odd_page_num
+    odd_page_hocr["metadata"]["page_side"] = "odd"
+    odd_page_hocr["coords"] = {}
+    odd_page_hocr["textregions"] = [{"lines": []}]
     box_items = ["width", "height", "left", "right", "top", "bottom"]
     for box_item in box_items:
-        even_page_hocr[box_item] = dp_hocr["hocr_box"][box_item]
-        odd_page_hocr[box_item] = dp_hocr["hocr_box"][box_item]
-    even_page_hocr["right"] = dp_hocr["page_boundary"] + 100
-    odd_page_hocr["left"] = dp_hocr["page_boundary"] - 100
-    scan_props = ["scan_num", "scan_type", "filepath", "inventory_num", "inventory_year", "inventory_period"]
-    for scan_prop in scan_props:
-        if scan_prop in dp_hocr:
-            even_page_hocr[scan_prop] = dp_hocr[scan_prop]
-            odd_page_hocr[scan_prop] = dp_hocr[scan_prop]
+        even_page_hocr["coords"][box_item] = dp_hocr["coords"][box_item]
+        odd_page_hocr["coords"][box_item] = dp_hocr["coords"][box_item]
+    even_page_hocr["coords"]["right"] = dp_hocr["metadata"]["page_boundary"] + 100
+    odd_page_hocr["coords"]["left"] = dp_hocr["metadata"]["page_boundary"] - 100
     return even_page_hocr, odd_page_hocr
 
 
 def split_lines_on_pages(dp_hocr: dict) -> list:
     even_page_hocr, odd_page_hocr = initialize_pages_hocr(dp_hocr)
-    for line in dp_hocr["lines"]:
+    for line in dp_hocr["textregions"][0]["lines"]:
         # split line on page boundary
         even_page_words = [word for word in line["words"] if word["right"] < dp_hocr["page_boundary"]]
         odd_page_words = [word for word in line["words"] if word["left"] > dp_hocr["page_boundary"]]
         if len(even_page_words) > 0:
-            even_page_hocr["lines"] += [column_parser.construct_line_from_words(even_page_words)]
+            even_page_hocr["textregions"][0]["lines"] += [column_parser.construct_line_from_words(even_page_words)]
         if len(odd_page_words) > 0:
-            odd_page_hocr["lines"] += [column_parser.construct_line_from_words(odd_page_words)]
+            odd_page_hocr["textregions"][0]["lines"] += [column_parser.construct_line_from_words(odd_page_words)]
     return [even_page_hocr, odd_page_hocr]
 
 
 def parse_double_page_scan(scan_hocr: dict, config: dict):
     config = copy.copy(config)
-    # config["hocr_box"] = scan_hocr["hocr_box"]
-    scan_hocr["page_boundary"] = int(scan_hocr["hocr_box"]["right"] / 2)
-    column_parser.determine_column_start_end(scan_hocr, config)
+    scan_hocr["metadata"]["page_boundary"] = int(scan_hocr["coords"]["right"] / 2)
+    # column_parser.determine_column_start_end(scan_hocr, config)
     single_pages_hocr = split_lines_on_pages(scan_hocr)
     for single_page_hocr in single_pages_hocr:
         parse_single_page(single_page_hocr, config)
@@ -278,16 +273,16 @@ def parse_single_page(single_page_hocr: dict, config: dict):
     page_columns_info = column_parser.determine_column_start_end(single_page_hocr, config)
     columns_hocr = column_parser.split_lines_on_columns(single_page_hocr, page_columns_info, config)
     # print(page_columns_info)
-    single_page_hocr["num_columns"] = len(page_columns_info)
-    single_page_hocr["is_parseable"] = True
-    if single_page_hocr["num_columns"] == 0:
-        single_page_hocr["num_lines"] = 0
-        single_page_hocr["num_words"] = 0
-        single_page_hocr["columns"] = []
+    metadata = single_page_hocr["metadata"]
+    metadata["num_columns"] = len(page_columns_info)
+    metadata["is_parseable"] = True
+    if metadata["num_columns"] == 0:
+        metadata["num_lines"] = 0
+        metadata["num_words"] = 0
+        metadata["columns"] = []
     else:
-        single_page_hocr["columns"] = columns_hocr["columns"]
-        single_page_hocr["num_lines"] = max([column["num_lines"] for column in single_page_hocr["columns"]])
-        single_page_hocr["num_words"] = sum([column["num_words"] for column in single_page_hocr["columns"]])
-    del single_page_hocr["lines"]
-    single_page_hocr["page_type"] = get_page_type(single_page_hocr, config)
-    single_page_hocr["is_title_page"] = True if "title_page" in single_page_hocr["page_type"] else False
+        single_page_hocr["textregions"] = columns_hocr["textregions"]
+        metadata["num_lines"] = max([column["num_lines"] for column in single_page_hocr["textregions"]])
+        metadata["num_words"] = sum([column["num_words"] for column in single_page_hocr["textregions"]])
+    metadata["page_type"] = get_page_type(single_page_hocr, config)
+    metadata["is_title_page"] = True if "title_page" in metadata["page_type"] else False

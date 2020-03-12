@@ -233,8 +233,12 @@ def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dic
     return retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
 
 
-def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int, inv_config: dict) -> List[dict]:
-    resolution_start, resolution_end = get_pagexml_resolution_page_range(es, inv_num, inv_config)
+def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int,
+                                      inv_config: dict) -> Union[None, List[dict]]:
+    try:
+        resolution_start, resolution_end = get_pagexml_resolution_page_range(es, inv_num, inv_config)
+    except TypeError:
+        return None
     return retrieve_page_by_page_number_range(es, resolution_start, resolution_end, inv_config)
 
 
@@ -250,6 +254,22 @@ def retrieve_paragraph_by_type_page_number(es: Elasticsearch, page_number: int, 
     query = make_bool_query(match_fields)
     response = es.search(index=config['paragraph_index'], doc_type=config['paragraph_doc_type'], body=query)
     if response['hits']['total'] == 0:
+        return []
+    else:
+        return [hit['_source'] for hit in response['hits']['hits']]
+
+
+def retrieve_pagexml_meetings(es: Elasticsearch, inv_num: int, config: dict) -> List[dict]:
+    query = {
+        "query": {
+            "match": {
+                "inventory_num": inv_num
+            }
+        },
+        "size": 1000
+    }
+    response = es.search(index=config['meeting_index'], doc_type=config['meeting_doc_type'], body=query)
+    if response['hits']['total']['value'] == 0:
         return []
     else:
         return [hit['_source'] for hit in response['hits']['hits']]
@@ -335,9 +355,7 @@ def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_co
                 pages_hocr = hocr_page_parser.parse_double_page_scan(scan_hocr, inventory_config)
                 for page_hocr in pages_hocr:
                     index_page(es, page_hocr, inventory_config)
-            else:
-                index_scan(es, scan_hocr, inventory_config)
-                continue
+            index_scan(es, scan_hocr, inventory_config)
 
 
 def parse_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
@@ -484,24 +502,31 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
                      id=paragraph['metadata']['paragraph_id'], body=paragraph)
 
 
-def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_config: dict) -> tuple:
+def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_config: dict) -> Union[None, tuple]:
     inv_metadata = retrieve_inventory_metadata(es, inv_num, inv_config)
-    offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
-    resolution_start = 0
-    for offset in inv_metadata['type_page_num_offsets']:
-        if offset['page_type'] == 'resolution_page':
-            resolution_start = offset['page_num_offset']
-    if resolution_start != offsets[-1]:
-        next_section_offset = offsets[offsets.index(resolution_start) + 1]
-        resolution_end = next_section_offset - 1
-    else:
-        resolution_end = inv_metadata['num_pages'] - 1
-    return resolution_start, resolution_end
+    try:
+        offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
+        resolution_start = 0
+        for offset in inv_metadata['type_page_num_offsets']:
+            if offset['page_type'] == 'resolution_page':
+                resolution_start = offset['page_num_offset']
+        if resolution_start != offsets[-1]:
+            next_section_offset = offsets[offsets.index(resolution_start) + 1]
+            resolution_end = next_section_offset - 1
+        else:
+            resolution_end = inv_metadata['num_pages'] - 1
+        return resolution_start, resolution_end
+    except IndexError:
+        return None
 
 
 def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
     pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
-    for meeting in meeting_parser.get_meeting_dates(pages, inv_num):
+    inv_metadata = retrieve_inventory_metadata(es, inv_num, inv_config)
+    if not pages:
+        print('No pages retrieved for inventory', inv_num)
+        return None
+    for meeting in meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata):
         if len(meeting['meeting_lines']) > 4000:
             print('Error: too many lines for meeting on date', meeting_parser.make_date_object(meeting['meeting_date']))
             continue

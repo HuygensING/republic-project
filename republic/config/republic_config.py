@@ -3,8 +3,8 @@ import os
 from republic.model.inventory_mapping import get_inventory_by_num
 
 
-def set_config_inventory_num(inventory_config: dict, inventory_num: int, base_dir: str, ocr_type: str) -> dict:
-    config = copy.deepcopy(inventory_config)
+def set_config_inventory_num(default_config: dict, inventory_num: int, base_dir: str, ocr_type: str) -> dict:
+    config = copy.deepcopy(default_config)
     assert(ocr_type == 'hocr' or ocr_type == 'pagexml')
     config['ocr_type'] = ocr_type
     config['base_dir'] = base_dir

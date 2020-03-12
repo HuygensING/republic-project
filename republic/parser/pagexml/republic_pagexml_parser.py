@@ -6,11 +6,11 @@ import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
 from republic.parser.pagexml.generic_pagexml_parser import parse_derived_coords
 
 
-def parse_republic_pagexml_file(pagexml_file: str, inventory_config: dict) -> dict:
+def parse_republic_pagexml_file(pagexml_file: str) -> dict:
     try:
         scan_json = file_parser.read_pagexml_file(pagexml_file)
         scan_doc = pagexml_parser.parse_pagexml(scan_json)
-        metadata = file_parser.get_republic_scan_metadata(pagexml_file, inventory_config)
+        metadata = file_parser.get_republic_scan_metadata(pagexml_file)
         for field in metadata:
             scan_doc['metadata'][field] = metadata[field]
         if 'coords' not in scan_doc:
@@ -21,7 +21,7 @@ def parse_republic_pagexml_file(pagexml_file: str, inventory_config: dict) -> di
         raise
 
 
-def get_scan_pagexml(pagexml_file: str, pagexml_data: Union[str, None] = None, config: dict = {}) -> dict:
+def get_scan_pagexml(pagexml_file: str, pagexml_data: Union[str, None] = None) -> dict:
     print('Parsing file', pagexml_file)
     scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
     try:
@@ -29,10 +29,11 @@ def get_scan_pagexml(pagexml_file: str, pagexml_data: Union[str, None] = None, c
     except (AssertionError, KeyError, TypeError):
         print('Error parsing file', pagexml_file)
         raise
-    if 'coords' not in scan_doc: # add scan coordinates if they're not in the XML
+    if 'coords' not in scan_doc:
+        # add scan coordinates if they're not in the XML
         textregions = scan_doc['textregions'] if 'textregions' in scan_doc else []
         scan_doc['coords'] = parse_derived_coords(textregions)
-    metadata = file_parser.get_republic_scan_metadata(pagexml_file, config)
+    metadata = file_parser.get_republic_scan_metadata(pagexml_file)
     for field in metadata:
         scan_doc['metadata'][field] = metadata[field]
     if scan_doc['coords']['right'] == 0:
@@ -113,7 +114,8 @@ def coords_overlap(item1: dict, item2: dict) -> int:
     coords1, coords2 = item1['coords'], item2['coords']
     left = coords1['left'] if coords1['left'] > coords2['left'] else coords2['left']
     right = coords1['right'] if coords1['right'] < coords2['right'] else coords2['right']
-    return right - left if right - left > 0 else 0 # overlap must be positive, else there is no overlap
+    # overlap must be positive, else there is no overlap
+    return right - left if right - left > 0 else 0
 
 
 def split_column_regions(page_doc: dict) -> dict:
@@ -123,7 +125,6 @@ def split_column_regions(page_doc: dict) -> dict:
     for textregion in page_doc['textregions']:
         textregions += [textregion] if 'lines' in textregion else textregion['textregions']
     textregions.sort(key=lambda x: x['coords']['top'])
-    #for textregion in page_doc['textregions']:
     for textregion in textregions:
         if 'lines' in textregion and textregion['coords']['width'] > 1200:
             header['textregions'] += [textregion]

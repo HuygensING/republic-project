@@ -3,7 +3,7 @@ import glob
 import xmltodict
 from typing import Union, List
 from collections import defaultdict
-from republic.model.inventory_mapping import inventory_mapping
+from republic.model.inventory_mapping import inventory_mapping, get_inventory_by_num
 from republic.parser.hocr.generic_hocr_parser import make_hocr_doc
 from republic.parser.hocr.republic_index_page_parser import count_page_ref_lines
 
@@ -31,21 +31,29 @@ def get_ocr_type(filename: str) -> str:
     raise ValueError('Unknown OCR type file extension')
 
 
-def get_republic_scan_metadata(scan_file: str, config: dict) -> dict:
+def get_republic_scan_metadata(scan_file: str) -> dict:
     _scan_dir, scan_fname = os.path.split(scan_file)
     _, inv_num, scan_num = [int(part) for part in scan_fname.split('.')[2].split('_')]
+    inv_info = get_inventory_by_num(inv_num)
     ocr_type = get_ocr_type(scan_file)
     inv_period = get_inventory_period(scan_file)
+    series_name = scan_fname.split('_')[0]
     return {
-        'series_name': scan_fname.split('_')[0],
+        'series_name': series_name,
         'inventory_num': inv_num,
-        'inventory_year': config['year'],
+        'inventory_year': inv_info['year'],
         'inventory_period_start': inv_period[0],
         'inventory_period_end': inv_period[1],
         'scan_file': scan_file,
         'scan_num': scan_num,
-        'scan_id': f'{ocr_type}-inventory-{inv_num}-year-{config["year"]}-scan-{scan_num}'
+        'ocr_type': ocr_type,
+        'scan_id': f'{series_name}_{inv_num}_{format_scan_number(scan_num)}'
     }
+
+
+def format_scan_number(scan_num: int) -> str:
+    add_zeroes = 4 - len(str(scan_num))
+    return "0" * add_zeroes + str(scan_num)
 
 
 #####################
@@ -88,7 +96,7 @@ def get_hocr_files(data_dir: str) -> list:
 
 
 def read_hocr_scan(scan_file: dict, config) -> Union[int, None]:
-    column_id = "{}-{}".format(scan_file["scan_num"], scan_file["scan_column"])
+    _column_id = "{}-{}".format(scan_file["scan_num"], scan_file["scan_column"])
     hocr_doc = make_hocr_doc(scan_file["filepath"], doc_id=scan_file["page_num"], config=config)
     if not hocr_doc:
         return None
@@ -174,7 +182,7 @@ def get_scan_info(fname: str, root_dir: str) -> dict:
     if has_single_column_file(fname):
         return get_scan_info_column(fname, root_dir)
     else:
-        return get_scan_info_double_page(fname, root_dir)
+        return get_republic_scan_metadata(fname)
 
 
 def get_scan_info_column(fname: str, root_dir: str) -> dict:
