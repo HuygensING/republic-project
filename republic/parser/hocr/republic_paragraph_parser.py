@@ -35,6 +35,8 @@ def track_meeting_date(paragraph: dict, matches: list, current_date: dict, confi
         try:
             current_date = extract_meeting_date(paragraph, config, current_date)
         except KeyError:
+            # failed to extract date, keep current date
+            return current_date
             print(matches)
             for match in matches:
                 print(match)
@@ -342,9 +344,14 @@ def extract_meeting_date(paragraph: dict, config: dict,
             break
     if not current_date:
         raise ValueError("Cannot locate meeting date in this paragaraph")
-    if current_date["month_day"] is None:
+    if not current_date["month_day"]:
         print("DERIVING MEETING DATE FROM PREVIOUS DATE")
-        current_date = derive_month_day_from_previous_date(previous_date, current_date)
+        if current_date["week_day_name"] and previous_date["week_day_name"]:
+            current_date = derive_month_day_from_previous_date(previous_date, current_date)
+        else:
+            # we just don't know, assume it's the next day
+            curr_date = shift_date(previous_date, 1)
+            current_date["month_day"] = curr_date.day
     return current_date
 
 
@@ -371,6 +378,10 @@ def derive_month_day_from_previous_date(previous_date: Dict[str, Union[int, str]
 
 
 def get_day_shift(curr_week_day: str, prev_week_day: str) -> int:
+    if not curr_week_day:
+        print("no curr_week_day")
+    if not prev_week_day:
+        print("no prev_week_day")
     day_shift = week_day_name_map[curr_week_day] - week_day_name_map[prev_week_day]
     if day_shift < 0:
         day_shift += 7
