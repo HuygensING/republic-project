@@ -534,8 +534,11 @@ def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
               '\tnum meeting lines:', len(meeting['meeting_lines']))
         date = meeting['meeting_metadata']['meeting_date']
         print(f'\tassumed date: {date["weekday"]} den {date["day_num"]} {date["month"]}')
-        print('\tfirst line:', meeting['meeting_lines'][0]['text'], '\tpage:', meeting['meeting_lines'][0]['page_num'])
+        if len(meeting['meeting_lines']) > 0:
+            print('\tfirst line:', meeting['meeting_lines'][0]['text'], '\tpage:', meeting['meeting_lines'][0]['page_num'])
         print()
+        meeting_pages = set([line['page_num'] for line in meeting['meeting_lines']])
+        meeting['meeting_metadata']['meeting_pages'] = sorted(list(meeting_pages))
         es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
                  id=meeting['id'], body=meeting)
     return None
