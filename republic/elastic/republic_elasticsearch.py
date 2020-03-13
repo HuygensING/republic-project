@@ -528,10 +528,14 @@ def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         return None
     for meeting in meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata):
         if len(meeting['meeting_lines']) > 4000:
-            print('Error: too many lines for meeting on date', meeting_parser.make_date_object(meeting['meeting_date']))
+            print('Error: too many lines for meeting on date', meeting['meeting_date'])
             continue
-        print('Indexing meeting on date', meeting_parser.make_date_object(meeting['meeting_date']),
+        print('Indexing meeting on date', meeting['meeting_date'],
               '\tnum meeting lines:', len(meeting['meeting_lines']))
+        date = meeting['meeting_metadata']['meeting_date']
+        print(f'\tassumed date: {date["weekday"]} den {date["day_num"]} {date["month"]}')
+        print('\tfirst line:', meeting['meeting_lines'][0]['text'], '\tpage:', meeting['meeting_lines'][0]['page_num'])
+        print()
         es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
                  id=meeting['id'], body=meeting)
     return None

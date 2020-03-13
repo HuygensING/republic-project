@@ -47,11 +47,17 @@ attendance_keywords = [
     'Den Heere',
     'PRAESENTIBUS,',
     'De Heeren',
+    'De Resolutien gisteren genomen',
     # 'Nihil aftum eft'
 ]
 attendance_variants = {
     'PRAESIDE,': ['P R AE S I D E,'],
-    'PRAESENTIBUS,': ['P R AE S E N T I B U S,']
+    'PRAESENTIBUS,': ['P R AE S E N T I B U S,'],
+    'De Resolutien gisteren genomen': [
+        'De Resolutien eergisteren genomen',
+        'De Resolutien voorleede Vry-',
+        'De Resolutien gisteren ge-',
+    ]
 }
 
 
@@ -263,6 +269,21 @@ def make_paragraph(page: dict, textregion: dict, current_date: Dict[str, Union[s
     }
 
 
+exception_dates = {
+    "1705-09-11": {"mistake": "next day has wrong week day name", "shift_days": 1},
+}
+
+
+def is_meeting_date_exception(current_date: Dict[str, Union[str, int]], match: dict) -> bool:
+    date = make_date_object(current_date).isoformat()
+    return date in exception_dates
+
+
+def get_date_exception_shift(current_date: Dict[str, Union[str, int]]) -> int:
+    date = make_date_object(current_date).isoformat()
+    return exception_dates[date]["shift_days"]
+
+
 def update_meeting_date(current_date: Dict[str, Union[str, int]], date_strings: List[str],
                         meeting_matches: List[dict]) -> Dict[str, Union[str, int]]:
     last_index = 0
@@ -270,6 +291,9 @@ def update_meeting_date(current_date: Dict[str, Union[str, int]], date_strings: 
         if match['match_keyword'] == str(current_date['year']):
             continue
         index = date_strings.index(match['match_keyword'])
+        if is_meeting_date_exception(current_date, match):
+            last_index = get_date_exception_shift(current_date)
+            break
         if index > last_index:
             last_index = index
     for i in range(0, last_index):
@@ -314,13 +338,24 @@ def merge_aligned_lines(lines: list) -> list:
 
 
 def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
+    """Iterate over list of pages and return a generator that yields individuals lines.
+    Iterator iterates over columns and textregions.
+    Assumption: lines are returned in reading order."""
     for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
         for ci, column in enumerate(page['columns']):
+            lines = []
             for ti, textregion in enumerate(column['textregions']):
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
                 for li, line in enumerate(textregion['lines']):
-                    yield {
+                    if not line['text']:
+                        # skip non-text lines
+                        continue
+                    if line['coords']['left'] > textregion['coords']['left'] + 600:
+                        # skip short lines that are bleed through from opposite side of page
+                        # they are right aligned
+                        continue
+                    line = {
                         'id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}-line-{li}',
                         'page_id': page['metadata']['page_id'],
                         'page_num': page['metadata']['page_num'],
@@ -331,6 +366,11 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
                         'coords': line['coords'],
                         'text': line['text']
                     }
+                    lines += [line]
+            # sort lines to make sure they are in reading order (assuming column has single text column)
+            # some columns split their text in sub columns, but for meeting date detection this is not an issue
+            for line in sorted(lines, key=lambda x: x['coords']['bottom']):
+                yield line
     return None
 
 
@@ -354,24 +394,46 @@ def get_meeting_elements(sliding_window: List[dict], year: int) -> Dict[str, int
         if line_info['meeting_matches']:
             match_offset = min([match['match_offset'] for match in line_info['meeting_matches']])
             if match_offset > 4:
+                # for match in line_info['meeting_matches']:
+                #     if len(match['match_keyword']) > 5:
+                #         print(line_info['page_num'], 'meeting_match:', line_info['text'])
                 continue
-            # print('meeting_matches:', line_info['meeting_matches'])
             for match in line_info['meeting_matches']:
                 if match['match_keyword'] == str(year):
+                    if 'meeting_year' in meeting_elements and meeting_elements['meeting_year'] < li:
+                        continue
                     meeting_elements['meeting_year'] = li
-            meeting_elements['meeting_date'] = li
+                elif len(match['match_keyword']) > 5:
+                    if 'meeting_date' in meeting_elements and meeting_elements['meeting_date'] < li:
+                        continue
+                    meeting_elements['meeting_date'] = li
         for match in line_info['attendance_matches']:
             if match['match_offset'] > 4:
+                # print(match['match_keyword'], '\toffset:', match['match_offset'])
                 continue
-            # print(match['match_keyword'], '\toffset:', match['match_offset'])
             if match['match_keyword'] in attendance_keywords:
+                if match['match_keyword'] == 'De Heeren':
+                    if 'meeting_date' in meeting_elements and li - meeting_elements['meeting_date'] < 3:
+                        continue
+                    if 'Den Heere' in meeting_elements and li - meeting_elements['Den Heere'] < 2:
+                        # Den Heere and De Heeren should be on separate lines
+                        # and with at least one line in between them
+                        continue
                 meeting_elements[match['match_keyword']] = li
     return meeting_elements
 
 
 def score_meeting_elements(meeting_elements: Dict[str, int]) -> float:
     elements = sorted(meeting_elements.items(), key=lambda x: x[1])
-    order = ['meeting_date', 'meeting_year', 'PRAESIDE,', 'Den Heere', 'PRAESENTIBUS,', 'De Heeren']
+    if len(meeting_elements.keys()) <= 3:
+        # we need at least 4 elements to determine this is a new meeting date
+        return 0
+    order = [
+        'meeting_date', 'meeting_year',
+        'PRAESIDE,', 'Den Heere',
+        'PRAESENTIBUS,', 'De Heeren',
+        'De Resolutien gisteren genomen',
+    ]
     numbered_elements = [order.index(element[0]) for element in elements]
     if len(set(elements)) <= 3:
         return 0
@@ -434,9 +496,10 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int, inv_metadata: dict
     meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
     sliding_window = []
     sliding_window_size = 20
-    meeting_metadata = None
+    meeting_metadata = parse_meeting_metadata({}, current_date, sliding_window)
     print('indexing start for current date:', current_date)
     meeting_lines = []
+    show_elements = False
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages)):
         # list all lines belonging to the same meeting date
         meeting_lines += [line_info]
@@ -448,23 +511,39 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int, inv_metadata: dict
         line_info['meeting_matches'] = meetingdate_searcher.find_candidates(line_info['text'],
                                                                             use_word_boundaries=False,
                                                                             include_variants=False)
-        if len(sliding_window) < sliding_window_size:
+        if len(line_info['meeting_matches']) > 0:
+            for match in line_info['meeting_matches']:
+                if len(match['match_keyword']) > 5:
+                    #print(line_info['page_num'], match['match_keyword'])
+                    if match['match_keyword'] == "Martis den 20 Januarii":
+                        show_elements = False
+                    else:
+                        show_elements = False
+        if not line_info['text'] or len(line_info['text']) < 3:
+            # skip none-text lines and really short lines
+            pass
+        elif len(sliding_window) < sliding_window_size:
             sliding_window += [line_info]
         else:
             sliding_window = sliding_window[1:] + [line_info]
         meeting_elements = get_meeting_elements(sliding_window, current_date['year'])
+        if show_elements:
+            print(meeting_elements)
+            for line in sliding_window:
+                print(line['text'])
         meeting_score = score_meeting_elements(meeting_elements)
         if meeting_score > 0.8 and min(meeting_elements.values()) == 0:
             first_new_meeting_line = sliding_window[0]
             new_meeting_index = meeting_lines.index(first_new_meeting_line)
-            if first_new_meeting_line in meeting_lines:
-                print('\tfirst_new_meeting_line:', meeting_lines.index(first_new_meeting_line))
+            # if first_new_meeting_line in meeting_lines:
+            #     print('\tfirst_new_meeting_line:', meeting_lines.index(first_new_meeting_line))
             meeting_date = make_date_object(current_date)
+            meeting_metadata['num_lines'] = new_meeting_index
             yield {
                 'id': f'meeting-{meeting_date.isoformat()}',
                 "inventory_num": inv_num,
                 "year": current_date["year"],
-                "meeting_date": current_date,
+                "meeting_date": meeting_date.isoformat(),
                 "meeting_metadata": meeting_metadata,
                 "meeting_lines": meeting_lines[:new_meeting_index]
             }
@@ -472,17 +551,11 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int, inv_metadata: dict
                 print('copying rest day to next work day')
                 next_work_date = get_next_work_day(meeting_date)
                 if next_work_date.year == current_date['year']:
-                    next_weekday = determine_week_day_name(next_work_date)
                     yield {
                         'id': f'meeting-{next_work_date.isoformat()}',
                         "inventory_num": inv_num,
                         "year": current_date["year"],
-                        "meeting_date": {
-                            'weekday': next_weekday,
-                            'day_num': next_work_date.day,
-                            'month': next_work_date.month,
-                            'year': next_work_date.year
-                        },
+                        "meeting_date": next_work_date.isoformat(),
                         "meeting_metadata": meeting_metadata,
                         "meeting_lines": meeting_lines[:new_meeting_index]
                     }
@@ -496,24 +569,27 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int, inv_metadata: dict
                                                                   date_strings,
                                                                   line_info['meeting_matches'])
                     date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
+                    # print('\tdate string:', date_strings)
                     meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
-                    print('\tcurrent_date:', current_date)
+                    # print('\tcurrent_date:', current_date)
             if not has_meeting_date_element:
                 # Dirty hack: no explicit meeting date string found, assume this is the next day, but string
                 # is missing or not recognised.
                 current_date = get_next_date(current_date)
                 date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
+                # print('\tdate string:', date_strings)
                 meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
             meeting_metadata = parse_meeting_metadata(meeting_elements, current_date, sliding_window)
             sliding_window = []
     meeting_date = datetime.date(current_date['year'],
                                  current_date['month'],
                                  current_date['day_num']).isoformat()
+    meeting_metadata['num_lines'] = len(meeting_lines)
     yield {
         'id': f'meeting-{meeting_date}',
         "inventory_num": inv_num,
         "year": current_date["year"],
-        "meeting_date": current_date,
+        "meeting_date": meeting_date,
         "meeting_metadata": meeting_metadata,
         "meeting_lines": meeting_lines
     }
