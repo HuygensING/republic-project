@@ -182,6 +182,12 @@ def split_column_regions(page_doc: dict) -> dict:
         column['metadata']['num_lines'] = col_stats['num_lines']
         column['metadata']['num_words'] = col_stats['num_words']
         column['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'], column['coords'])
+    header['metadata'] = {'doc_type': 'header'}
+    header['coords'] = parse_derived_coords(header['textregions'])
+    col_stats = get_pagexml_doc_num_words(header)
+    header['metadata']['num_lines'] = col_stats['num_lines']
+    header['metadata']['num_words'] = col_stats['num_words']
+    header['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'], header['coords'])
     column_doc = {
         'metadata': copy.copy(page_doc['metadata']),
         'header': header,
@@ -194,7 +200,8 @@ def split_column_regions(page_doc: dict) -> dict:
 def get_pagexml_doc_num_words(pagexml_doc: dict) -> Dict[str, int]:
     num_lines = 0
     num_words = 0
-    if pagexml_doc['metadata']['doc_type'] == 'column' and 'textregions' in pagexml_doc:
+    doc_type = pagexml_doc['metadata']['doc_type']
+    if doc_type in ['column', 'header'] and 'textregions' in pagexml_doc:
         for textregion in pagexml_doc['textregions']:
             if 'lines' in textregion:
                 text_lines = [line for line in textregion['lines'] if 'text' in line and line['text']]
@@ -205,6 +212,10 @@ def get_pagexml_doc_num_words(pagexml_doc: dict) -> Dict[str, int]:
             col_stats = get_pagexml_doc_num_words(column_doc)
             num_lines += col_stats['num_lines']
             num_words += col_stats['num_words']
+        if 'header' in pagexml_doc and 'textregitions' in pagexml_doc['header']:
+            header_stats = get_pagexml_doc_num_words(pagexml_doc['header'])
+            num_lines += header_stats['num_lines']
+            num_words += header_stats['num_words']
     return {'num_lines': num_lines, 'num_words': num_words}
 
 
