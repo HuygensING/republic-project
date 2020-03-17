@@ -16,6 +16,8 @@ def set_config_inventory_num(default_config: dict, inventory_num: int, base_dir:
     config['meeting_index'] = f'republic_{ocr_type}_meeting'
     config['meeting_doc_type'] = 'meeting'
     inv_map = get_inventory_by_num(inventory_num)
+    for field in inv_map:
+        config[field] = inv_map[field]
     config['year'] = inv_map['year']
     config['inventory_num'] = inventory_num
     return config

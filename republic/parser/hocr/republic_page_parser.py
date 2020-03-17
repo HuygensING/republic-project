@@ -65,7 +65,9 @@ def get_scan_hocr(scan_info: dict, hocr_data: str = None, config: dict = {}) -> 
     scan_hocr = {
         'coords': hocr_doc.carea,
         'metadata': scan_info,
-        'textregions': []
+        'textregions': [],
+        "doc_type": "scan",
+        "ocr_type": config["ocr_type"]
     }
     scan_hocr["metadata"]["scan_type"] = determine_scan_type(scan_hocr, config)
     if "double_page" in scan_hocr["metadata"]["scan_type"]:
@@ -191,7 +193,7 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
 
 
 def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
-    page_doc = {}
+    page_doc = {"doc_type": "page", "ocr_type": config["ocr_type"]}
     for prop in pages_info[page_id]:
         if prop is "columns":
             page_doc["columns"] = []
@@ -210,21 +212,33 @@ def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
     return page_doc
 
 
-def initialize_pages_hocr(dp_hocr: dict) -> tuple:
-    even_page_num = dp_hocr["metadata"]["scan_num"] * 2 - 2
-    odd_page_num = dp_hocr["metadata"]["scan_num"] * 2 - 1
-    even_page_hocr = {'metadata': dp_hocr['metadata']}
-    even_page_hocr["metadata"]["page_id"] = f"{dp_hocr['metadata']['scan_id']}-page-{even_page_num}"
-    even_page_hocr["metadata"]["page_num"] = even_page_num
-    even_page_hocr["metadata"]["page_side"] = "even"
-    even_page_hocr["coords"] = {}
-    even_page_hocr["textregions"] = [{"lines": []}]
-    odd_page_hocr = {'metadata': dp_hocr['metadata']}
-    odd_page_hocr["metadata"]["page_id"] = f"{dp_hocr['metadata']['scan_id']}-page-{odd_page_num}"
-    odd_page_hocr["metadata"]["page_num"] = odd_page_num
-    odd_page_hocr["metadata"]["page_side"] = "odd"
-    odd_page_hocr["coords"] = {}
-    odd_page_hocr["textregions"] = [{"lines": []}]
+def initialize_page_hocr(dp_hocr: dict, config: dict) -> dict:
+    return {
+        'metadata': dp_hocr['metadata'],
+        'doc_type': 'page',
+        'ocr_type': config['ocr_type'],
+        "coords": {},
+        "textregions": [{"lines": []}]
+    }
+
+
+def initialize_page_side_hocr(dp_hocr: dict, config: dict, side: str) -> dict:
+    if side not in ["even", "odd"]:
+        raise ValueError('side must be even or odd')
+    page_hocr = initialize_page_hocr(dp_hocr, config)
+    if side == "even":
+        page_num = dp_hocr["metadata"]["scan_num"] * 2 - 2
+    else:
+        page_num = dp_hocr["metadata"]["scan_num"] * 2 - 1
+    page_hocr["metadata"]["page_side"] = side
+    page_hocr["metadata"]["page_id"] = f"{dp_hocr['metadata']['scan_id']}-page-{page_num}"
+    page_hocr["metadata"]["page_num"] = page_num
+    return page_hocr
+
+
+def initialize_pages_hocr(dp_hocr: dict, config: dict) -> tuple:
+    even_page_hocr = initialize_page_side_hocr(dp_hocr, config, "even")
+    odd_page_hocr = initialize_page_side_hocr(dp_hocr, config, "even")
     box_items = ["width", "height", "left", "right", "top", "bottom"]
     for box_item in box_items:
         even_page_hocr["coords"][box_item] = dp_hocr["coords"][box_item]

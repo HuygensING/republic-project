@@ -2,14 +2,13 @@ from typing import Union, List
 from elasticsearch import Elasticsearch, RequestError
 import json
 import copy
-import os
-import zipfile
 
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
 import republic.parser.republic_file_parser as file_parser
+import republic.parser.republic_inventory_parser as inv_parser
 import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
@@ -314,51 +313,22 @@ def normalize_lemma(lemma):
     return lemma
 
 
-def parse_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_config: dict):
-    ocr_dir = os.path.join(inventory_config['base_dir'], inventory_config['ocr_type'])
-    inv_file = os.path.join(ocr_dir, f'{inventory_num}.zip')
-    z = zipfile.ZipFile(inv_file)
-    for scan_file in z.namelist():
-        with z.open(scan_file) as fh:
-            scan_data = fh.read()
-            if inventory_config['ocr_type'] == 'hocr':
-                scan_info = file_parser.get_scan_info(scan_file, inventory_config['data_dir'])
-                scan_doc = hocr_page_parser.get_scan_hocr(scan_info, hocr_data=scan_data, config=inventory_config)
-            else:
-                scan_doc = pagexml_parser.get_scan_pagexml(scan_file, pagexml_data=scan_data, config=inventory_config)
-            if not scan_doc:
-                continue
-            index_scan(es, scan_doc, inventory_config)
-            if 'double_page' not in scan_doc['metadata']['scan_type']:
-                continue
-            if inventory_config['ocr_type'] == 'hocr':
-                pages_doc = hocr_page_parser.parse_double_page_scan(scan_doc, inventory_config)
-            else:
-                pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
-            for page_doc in pages_doc:
-                index_page(es, page_doc, inventory_config)
+def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_config: dict):
+    for scan_doc in inv_parser.parse_inventory_from_zip(inventory_num, inventory_config):
+        if not scan_doc:
+            continue
+        index_scan(es, scan_doc, inventory_config)
+        if 'double_page' not in scan_doc['metadata']['scan_type']:
+            continue
+        if inventory_config['ocr_type'] == 'hocr':
+            pages_doc = hocr_page_parser.parse_double_page_scan(scan_doc, inventory_config)
+        else:
+            pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
+        for page_doc in pages_doc:
+            index_page(es, page_doc, inventory_config)
 
 
-def parse_hocr_inventory_from_zip(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
-    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir, ocr_type="hocr")
-    hocr_dir = os.path.join(base_dir, 'hocr')
-    inv_file = os.path.join(hocr_dir, f'{inventory_num}.zip')
-    z = zipfile.ZipFile(inv_file)
-    for scan_file in z.namelist():
-        scan_info = file_parser.get_scan_info(scan_file, inventory_config['hocr_dir'])
-        with z.open(scan_file) as fh:
-            scan_data = fh.read()
-            scan_hocr = hocr_page_parser.get_scan_hocr(scan_info, hocr_data=scan_data, config=inventory_config)
-            if not scan_hocr:
-                continue
-            if 'double_page' in scan_hocr['metadata']['scan_type']:
-                pages_hocr = hocr_page_parser.parse_double_page_scan(scan_hocr, inventory_config)
-                for page_hocr in pages_hocr:
-                    index_page(es, page_hocr, inventory_config)
-            index_scan(es, scan_hocr, inventory_config)
-
-
-def parse_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
+def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
     inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir, ocr_type="hocr")
     # print(inventory_config)
     scan_files = file_parser.get_hocr_files(inventory_config['hocr_dir'])
@@ -378,7 +348,7 @@ def parse_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dic
             continue
 
 
-def parse_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config: dict, delete_index: bool = False):
+def index_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config: dict, delete_index: bool = False):
     numbering = 0
     if delete_index:
         delete_es_index(es, config['page_index'])
@@ -422,27 +392,6 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
         if not scan_hocr:
             continue
         print('Indexing scan', scan_hocr['scan_id'])
-        scan_es_doc = create_es_scan_doc(scan_hocr)
-        es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
-                 id=scan_es_doc['scan_id'], body=scan_es_doc)
-
-
-def read_from_zip(inventory_num: int, config: dict) -> iter:
-    hocr_dir = os.path.join(config['base_dir'], 'hocr')
-    inv_file = os.path.join(hocr_dir, f'{inventory_num}.zip')
-    z = zipfile.ZipFile(inv_file)
-    for scan_file in z.namelist():
-        scan_info = file_parser.get_scan_info(scan_file, config['hocr_dir'])
-        with z.open(scan_file) as fh:
-            scan_data = fh.read()
-            yield scan_info, scan_data
-
-
-def index_inventory_hocr_scans_from_zip(es: Elasticsearch, inventory_num: int, config: dict):
-    for scan_info, scan_data in read_from_zip(inventory_num, config):
-        scan_hocr = hocr_page_parser.get_scan_hocr(scan_info, hocr_data=scan_data, config=config)
-        if not scan_hocr:
-            continue
         scan_es_doc = create_es_scan_doc(scan_hocr)
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
                  id=scan_es_doc['scan_id'], body=scan_es_doc)
@@ -535,7 +484,8 @@ def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         date = meeting['meeting_metadata']['meeting_date']
         print(f'\tassumed date: {date["weekday"]} den {date["day_num"]} {date["month"]}')
         if len(meeting['meeting_lines']) > 0:
-            print('\tfirst line:', meeting['meeting_lines'][0]['text'], '\tpage:', meeting['meeting_lines'][0]['page_num'])
+            print('\tfirst line:', meeting['meeting_lines'][0]['text'],
+                  '\tpage:', meeting['meeting_lines'][0]['page_num'])
         print()
         meeting_pages = set([line['page_num'] for line in meeting['meeting_lines']])
         meeting['meeting_metadata']['meeting_pages'] = sorted(list(meeting_pages))

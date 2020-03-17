@@ -1,6 +1,7 @@
 from typing import List, Union
 import copy
 
+from republic.helper.metadata_helper import make_iiif_region_url
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
 from republic.parser.pagexml.generic_pagexml_parser import parse_derived_coords
@@ -21,7 +22,7 @@ def parse_republic_pagexml_file(pagexml_file: str) -> dict:
         raise
 
 
-def get_scan_pagexml(pagexml_file: str, pagexml_data: Union[str, None] = None) -> dict:
+def get_scan_pagexml(pagexml_file: str, inventory_config: dict, pagexml_data: Union[str, None] = None) -> dict:
     print('Parsing file', pagexml_file)
     scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
     try:
@@ -59,21 +60,35 @@ def is_extra_side(item: dict) -> bool:
     return item['coords']['right'] > 4800 and item['coords']['left'] > 4700
 
 
+def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
+    """Initialize a pagexml page type document based on the scan metadata."""
+    page_doc = {
+        'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None
+    }
+    page_doc['metadata']['doc_type'] = 'page'
+    page_doc['metadata']['page_side'] = side
+    if side == 'odd':
+        page_num = scan_doc['metadata']['scan_num'] * 2 - 1
+        page_id = f"{scan_doc['metadata']['scan_id']}-page-{page_num}"
+    elif side == 'even':
+        page_num = scan_doc['metadata']['scan_num'] * 2 - 2
+        page_id = f"{scan_doc['metadata']['scan_id']}-page-{page_num}"
+    else:
+        page_num = None
+        page_id = f"{scan_doc['metadata']['scan_id']}-page-extra"
+        pass
+    page_doc['metadata']['page_num'] = page_num
+    page_doc['metadata']['page_id'] = page_id
+    return page_doc
+
+
 def split_scan_pages(scan_doc: dict) -> List[dict]:
     pages = []
-    page_odd = {'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None}
-    page_odd['metadata']['page_side'] = 'odd'
-    page_odd['metadata']['page_num'] = scan_doc['metadata']['scan_num'] * 2 - 1
-    page_odd['metadata']['page_id'] = '{}-page-{}'.format(scan_doc['metadata']['scan_id'],
-                                                          page_odd['metadata']['page_num'])
-    page_even = {'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None}
-    page_even['metadata']['page_side'] = 'even'
-    page_even['metadata']['page_num'] = scan_doc['metadata']['scan_num'] * 2 - 2
-    page_even['metadata']['page_id'] = '{}-page-{}'.format(scan_doc['metadata']['scan_id'],
-                                                           page_even['metadata']['page_num'])
-    page_extra = {'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None}
-    page_extra['metadata']['page_side'] = 'extra'
-    page_extra['metadata']['page_id'] = '{}-page-extra'.format(scan_doc['metadata']['scan_id'])
+    if not 'textregions' in scan_doc:
+        return pages
+    page_odd = initialize_pagexml_page(scan_doc, 'odd')
+    page_even = initialize_pagexml_page(scan_doc, 'even')
+    page_extra = initialize_pagexml_page(scan_doc, 'extra')
     for textregion in scan_doc['textregions']:
         if 'lines' in textregion:
             even_lines = [line for line in textregion['lines'] if is_even_side(line)]
@@ -98,16 +113,22 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
             if len(extra_textregions) > 0:
                 page_extra['textregions'] += [{'textregions': extra_textregions,
                                                'coords': parse_derived_coords(extra_textregions)}]
-    if len(page_even['textregions']) > 0:
-        page_even['coords'] = parse_derived_coords(page_even['textregions'])
-        pages += [page_even]
-    if len(page_odd['textregions']) > 0:
-        page_odd['coords'] = parse_derived_coords(page_odd['textregions'])
-        pages += [page_odd]
-    if len(page_extra['textregions']) > 0:
-        page_extra['coords'] = parse_derived_coords(page_extra['textregions'])
-        pages += [page_extra]
+    for page_doc in [page_even, page_odd, page_extra]:
+        if len(page_doc['textregions']) > 0:
+            page_doc['coords'] = parse_derived_coords(page_doc['textregions'])
+            page_doc['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc)
+            pages += [page_doc]
     return pages
+
+
+def derive_pagexml_page_iiif_url(page_doc: dict) -> str:
+    region = {
+        'left': page_doc['coords']['left'] - 100,
+        'top': page_doc['coords']['top'] - 100,
+        'width': page_doc['coords']['width'] + 200,
+        'height': page_doc['coords']['height'] + 200,
+    }
+    return make_iiif_region_url(page_doc['metadata']['jpg_url'], region)
 
 
 def coords_overlap(item1: dict, item2: dict) -> int:

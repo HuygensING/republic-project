@@ -1,9 +1,10 @@
 import os
 import glob
 import xmltodict
-from typing import Union, List
+from typing import Union, List, Dict
 from collections import defaultdict
 from republic.model.inventory_mapping import inventory_mapping, get_inventory_by_num
+from republic.helper.metadata_helper import format_scan_number, make_scan_urls
 from republic.parser.hocr.generic_hocr_parser import make_hocr_doc
 from republic.parser.hocr.republic_index_page_parser import count_page_ref_lines
 
@@ -38,8 +39,11 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
     ocr_type = get_ocr_type(scan_file)
     inv_period = get_inventory_period(scan_file)
     series_name = scan_fname.split('_')[0]
+    urls = make_scan_urls(inv_info, scan_num=scan_num)
     return {
-        'series_name': series_name,
+        'series_name': inv_info['series_name'],
+        'series_uuid': inv_info['series_uuid'],
+        'inventory_uuid': inv_info['inventory_uuid'],
         'inventory_num': inv_num,
         'inventory_year': inv_info['year'],
         'inventory_period_start': inv_period[0],
@@ -47,13 +51,12 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         'scan_file': scan_file,
         'scan_num': scan_num,
         'ocr_type': ocr_type,
-        'scan_id': f'{series_name}_{inv_num}_{format_scan_number(scan_num)}'
+        'doc_type': 'scan',
+        'scan_id': f'{series_name}_{inv_num}_{format_scan_number(scan_num)}',
+        'viewer_url': urls['viewer_url'],
+        'jpg_url': urls['jpg_url'],
+        'iiif_url': urls['iiif_url']
     }
-
-
-def format_scan_number(scan_num: int) -> str:
-    add_zeroes = 4 - len(str(scan_num))
-    return "0" * add_zeroes + str(scan_num)
 
 
 #####################
