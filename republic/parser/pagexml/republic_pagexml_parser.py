@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Dict
 import copy
 
 from republic.helper.metadata_helper import make_iiif_region_url
@@ -116,19 +116,20 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
     for page_doc in [page_even, page_odd, page_extra]:
         if len(page_doc['textregions']) > 0:
             page_doc['coords'] = parse_derived_coords(page_doc['textregions'])
-            page_doc['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc)
+            page_doc['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'],
+                                                                            page_doc['coords'])
             pages += [page_doc]
     return pages
 
 
-def derive_pagexml_page_iiif_url(page_doc: dict) -> str:
+def derive_pagexml_page_iiif_url(jpg_url: str, coords: dict) -> str:
     region = {
-        'left': page_doc['coords']['left'] - 100,
-        'top': page_doc['coords']['top'] - 100,
-        'width': page_doc['coords']['width'] + 200,
-        'height': page_doc['coords']['height'] + 200,
+        'left': coords['left'] - 100,
+        'top': coords['top'] - 100,
+        'width': coords['width'] + 200,
+        'height': coords['height'] + 200,
     }
-    return make_iiif_region_url(page_doc['metadata']['jpg_url'], region)
+    return make_iiif_region_url(jpg_url, region)
 
 
 def coords_overlap(item1: dict, item2: dict) -> int:
@@ -148,6 +149,7 @@ def split_column_regions(page_doc: dict) -> dict:
     textregions.sort(key=lambda x: x['coords']['top'])
     for textregion in textregions:
         if 'lines' in textregion and textregion['coords']['width'] > 1200:
+            # Wide textregions are part of the header
             header['textregions'] += [textregion]
             continue
         # check if this text region overlaps with an existing column
@@ -175,15 +177,43 @@ def split_column_regions(page_doc: dict) -> dict:
     columns.sort(key=lambda x: x['coords']['left'])
     for column in columns:
         column['textregions'].sort(key=lambda x: x['coords']['top'])
-    return {
-        'metadata': page_doc['metadata'],
+        column['metadata'] = {'doc_type': 'column'}
+        col_stats = get_pagexml_doc_num_words(column)
+        column['metadata']['num_lines'] = col_stats['num_lines']
+        column['metadata']['num_words'] = col_stats['num_words']
+        column['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'], column['coords'])
+    column_doc = {
+        'metadata': copy.copy(page_doc['metadata']),
         'header': header,
         'columns': columns,
         'coords': parse_derived_coords(header['textregions'] + columns),
     }
+    return column_doc
+
+
+def get_pagexml_doc_num_words(pagexml_doc: dict) -> Dict[str, int]:
+    num_lines = 0
+    num_words = 0
+    if pagexml_doc['metadata']['doc_type'] == 'column' and 'textregions' in pagexml_doc:
+        for textregion in pagexml_doc['textregions']:
+            if 'lines' in textregion:
+                text_lines = [line for line in textregion['lines'] if 'text' in line and line['text']]
+                num_lines += len(text_lines)
+                num_words += len([word for line in text_lines for word in line['text'].split(' ')])
+    if pagexml_doc['metadata']['doc_type'] == 'page' and 'columns' in pagexml_doc:
+        for column_doc in pagexml_doc['columns']:
+            col_stats = get_pagexml_doc_num_words(column_doc)
+            num_lines += col_stats['num_lines']
+            num_words += col_stats['num_words']
+    return {'num_lines': num_lines, 'num_words': num_words}
 
 
 def split_pagexml_scan(scan_doc: dict) -> List[dict]:
     pages = split_scan_pages(scan_doc)
     columnised_pages = [split_column_regions(page_doc) for page_doc in pages]
+    for page_doc in columnised_pages:
+        page_stats = get_pagexml_doc_num_words(page_doc)
+        page_doc['metadata']['num_columns'] = len(page_doc['columns']) if 'columns' in page_doc else 0
+        page_doc['metadata']['num_lines'] = page_stats['num_lines']
+        page_doc['metadata']['num_words'] = page_stats['num_words']
     return columnised_pages
