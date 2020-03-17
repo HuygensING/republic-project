@@ -212,7 +212,7 @@ def get_pagexml_doc_num_words(pagexml_doc: dict) -> Dict[str, int]:
             col_stats = get_pagexml_doc_num_words(column_doc)
             num_lines += col_stats['num_lines']
             num_words += col_stats['num_words']
-        if 'header' in pagexml_doc and 'textregitions' in pagexml_doc['header']:
+        if 'header' in pagexml_doc and 'textregions' in pagexml_doc['header']:
             header_stats = get_pagexml_doc_num_words(pagexml_doc['header'])
             num_lines += header_stats['num_lines']
             num_words += header_stats['num_words']
