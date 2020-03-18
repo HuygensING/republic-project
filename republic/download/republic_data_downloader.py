@@ -1,13 +1,10 @@
 import os
 import requests
-from elasticsearch import Elasticsearch
 from typing import Dict, Union
-from settings import set_elasticsearch_config
 
-from republic.analyser.republic_inventory_analyser import get_inventory_uuid
+from republic.model.inventory_mapping import get_inventory_by_num
 
-elasticsearch_config = set_elasticsearch_config()
-HOST_URL = elasticsearch_config["data_host"]["host_url"]
+HOST_URL = 'https://images.diginfra.net/'
 
 
 def get_download_urls(uuid: str) -> Dict[str, str]:
@@ -45,8 +42,9 @@ def get_output_filename(inventory_num: int, ocr_type: str, inventory_config: dic
         ValueError("Unknown data type. Must be either 'hocr' or 'pagexml'.")
 
 
-def download_inventory(es: Elasticsearch, inventory_num: int, ocr_type: str, inventory_config: dict):
-    uuid = get_inventory_uuid(es, inventory_num, inventory_config)
+def download_inventory(inventory_num: int, ocr_type: str, inventory_config: dict):
+    inventory_info = get_inventory_by_num(inventory_num)
+    uuid = inventory_info['uuid']
     try:
         urls = get_download_urls(uuid)
     except (TypeError, KeyError):
@@ -61,4 +59,3 @@ def download_inventory(es: Elasticsearch, inventory_num: int, ocr_type: str, inv
     inventory_data = get_inventory_data(url)
     if inventory_data:
         store_inventory_data(inventory_data, inventory_num, ocr_type, inventory_config)
-
