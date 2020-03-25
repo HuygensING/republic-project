@@ -150,28 +150,15 @@ def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
 
 
 def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_searcher: MeetingSearcher) -> iter:
-    # meeting_date = meeting_searcher.get_current_date()
-    meeting_metadata['num_lines'] = len(meeting_lines)
-    # print('meeting_date:', meeting_date.isoformat(), '\tis_work_day:', meeting_date.is_work_day())
     meeting = Meeting(meeting_searcher.current_date, meeting_metadata, meeting_lines)
-    meeting_doc = {
-        'metadata': meeting_metadata,
-        'lines': meeting_lines
-    }
     return meeting
-
-
-def get_meetings(sorted_pages: List[dict], inv_num: int, inv_metadata: dict) -> Meeting:
-    for meeting_doc in get_meeting_dates(sorted_pages, inv_num, inv_metadata):
-        # check if doc is single date or includes rest days
-        if meeting_doc['metadata']['is_workday']:
-            return Meeting(meeting_doc['metadata']['current_date'])
 
 
 class GatedWindow:
 
     def __init__(self, window_size: int = 10, open_threshold: int = 300, shut_threshold: int = 400):
         self.window_size = window_size
+        self.middle_line = int(window_size/2)
         # fill the sliding window with empty elements, so that first documents are appended at the end.
         self.sliding_window: List[Union[None, Dict[str, Union[str, int, Dict[str, int]]]]] = [None] * window_size
         self.open_threshold = open_threshold
@@ -184,6 +171,7 @@ class GatedWindow:
         the 'text' property containing the document text."""
         if len(self.sliding_window) >= self.window_size:
             self.sliding_window = self.sliding_window[-self.window_size+1:]
+        doc['let_through'] = False
         self.sliding_window += [doc]
         self.check_treshold()
 
@@ -194,6 +182,11 @@ class GatedWindow:
     def check_treshold(self) -> None:
         """Check whether the number of characters in the sliding window crosses
         the current threshold. If so, open/shut the gate."""
+        if self.sliding_window[self.middle_line] is None:
+            pass
+        elif self.num_chars_in_window() < self.shut_threshold:
+            self.sliding_window[self.middle_line]['num_chars'] = self.num_chars_in_window()
+            self.sliding_window[self.middle_line]['let_through'] = True
         if self.sliding_window[0] is None:
             # If the sliding window is not filled yet, the gate is closed
             return None
@@ -232,7 +225,10 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         gated_window.add_doc(line_info)
         if (li+1) % 1000 == 0:
             print(f'{li+1} lines processed, {lines_skipped} lines skipped in fuzzy search')
-        if not gated_window.gate_is_open():
+        #print(li, gated_window.num_chars, '\t', line_info['text'])
+        check_line = gated_window.get_first_doc()
+        if not check_line or not check_line['let_through']:
+        #if not gated_window.gate_is_open():
             lines_skipped += 1
             # add a None to the sliding window as a placeholder so the sliding window keeps sliding
             meeting_searcher.add_empty_document()
@@ -249,6 +245,13 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         if len(meeting_elements.items()) == 0 or min(meeting_elements.values()) != 0:
             # move to next line if first meeting element is not in the first line of the sliding window
             continue
+        # print('meeting elements:', meeting_elements)
+        # print(li, '\tsliding window line:', meeting_searcher.sliding_window[0]['text_string'])
+        #for line in meeting_searcher.sliding_window:
+        #    if not line:
+        #        print('\tsldinging window line:', None, '\tmatches:', 0)
+        #    else:
+        #        print('\tsldinging window line:', line['text_string'], '\tmatches:', line['matches'])
         # score the found meeting elements for how well they match the order in which they are expected to appear
         # Empirically established threshold:
         # - need to match at least four meeting elements
@@ -269,10 +272,12 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             if meeting_doc.metadata['num_lines'] == 0:
                 # A meeting with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
+                # print("updating date backwards")
                 meeting_searcher.update_meeting_date(day_shift=-1)
             else:
                 yield meeting_doc
             # update the current meeting date in the searcher
+            # print("get_meeting_dates updates date")
             meeting_searcher.update_meeting_date()
             # update the searcher with new date strings for the next seven days
             meeting_searcher.update_meeting_date_searcher()

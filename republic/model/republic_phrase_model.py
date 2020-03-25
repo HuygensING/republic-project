@@ -220,11 +220,11 @@ meeting_phrase_model = [
         'label': 'attendants'
     },
     {
-        'keyword': 'De Resolutien gisteren genomen',
+        'keyword': 'DE Resolutien gisteren genomen',
         'variants': [
-            'De Resolutien eergisteren genomen',
-            'De Resolutien voorleede ',
-            'De Resolutien gisteren ge-',
+            'DE Resolutien eergisteren genomen',
+            'DE Resolutien voorleede ',
+            'DE Resolutien gisteren ge-',
         ],
         'start_year': 1703, 'end_year': 1796,
         'label': 'reviewed'

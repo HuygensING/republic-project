@@ -93,6 +93,9 @@ class EventSearcher:
 
     def add_empty_document(self):
         """Append an empty placeholder document to the sliding window."""
+        # if the window is too long, remove earliest docs to make room for the new doc
+        if len(self.sliding_window) >= self.window_size:
+            self.sliding_window = self.sliding_window[-self.window_size:]
         self.sliding_window += [None]
 
     def add_document(self, text_id: Union[str, int], text_string: str):

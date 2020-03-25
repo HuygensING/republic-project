@@ -176,6 +176,7 @@ class FuzzyKeywordSearcher(object):
         self.distractor_terms = defaultdict(list)
         self.ngram_size = 2
         self.skip_size = 2
+        self.allow_overlapping_matches = True
         # non-default configuration
         self.configure(config)
         self.variant_map = defaultdict(dict)
@@ -401,6 +402,9 @@ class FuzzyKeywordSearcher(object):
         match_offset = self.get_match_offset(text, ngram_offset, keyword_ngram_offset)
         if self.already_found_match(keyword_string, match_offset):
             return None
+        # In case the first two characters were missed
+        if -2 <= match_offset < 0:
+            match_offset = 0
         if match_offset < 0:
             return None
         match_end = self.get_match_end(text, match_offset, keyword_string)
@@ -469,13 +473,14 @@ class FuzzyKeywordSearcher(object):
     # Candidate filtering functions #
     #################################
 
-    def filter_all_candidates(self, ngram_size):
+    def filter_all_candidates(self, ngram_size: int, allow_overlapping_matches: bool = True):
         if self.include_variants:
             self.filter_variant_candidates()
         self.filter_candidates(filter_type="char_match")
         self.filter_candidates(filter_type="ngram_match", ngram_size=ngram_size)
         self.filter_candidates(filter_type="levenshtein_distance")
-        self.filter_overlapping_matches()
+        if not allow_overlapping_matches:
+            self.filter_overlapping_matches()
         if self.filter_distractors:
             self.filter_distractor_candidates()
         else:
@@ -702,15 +707,19 @@ class FuzzyKeywordSearcher(object):
             candidates = self.find_ngram_candidates(text)
         self.candidates["filter"] = [candidate for candidate in candidates if not self.is_rejected_candidate(candidate)]
 
-    def find_candidates(self, text, keyword=None, ngram_size=2, use_word_boundaries=None, match_initial_char=False,
-                        include_variants=False, filter_distractors=False):
+    def find_candidates(self, text: str, keyword=None, ngram_size: int = 2,
+                        use_word_boundaries: Union[bool, None] = None, match_initial_char: bool = False,
+                        include_variants: bool = False, filter_distractors: bool = False,
+                        allow_overlapping_matches: Union[bool, None] = None):
+        if not allow_overlapping_matches:
+            allow_overlapping_matches = self.allow_overlapping_matches
         self.include_variants = include_variants
         self.filter_distractors = filter_distractors
         self.match_initial_char = match_initial_char
         if isinstance(use_word_boundaries, bool):
             self.use_word_boundaries = use_word_boundaries
         self.find_all_candidates(text, keyword)
-        self.filter_all_candidates(ngram_size)
+        self.filter_all_candidates(ngram_size, allow_overlapping_matches=allow_overlapping_matches)
         if self.track_candidates:
             self.set_known_candidate_status()
         return self.candidates["accept"]

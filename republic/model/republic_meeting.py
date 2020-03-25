@@ -243,10 +243,23 @@ class MeetingSearcher(EventSearcher):
                         # president should be no more than 5 lines from last meeting date
                         if distance < 0 or distance > 5:
                             continue
+                    if 'attendants' in self.meeting_elements and self.meeting_elements['attendants'] == line_index:
+                        # First match of attendants is on same line as president: same string matches both phrases
+                        # so remove the attendants phrase
+                        del self.meeting_elements['attendants']
                 if label == 'attendants':
-                    if 'meeting_date' in self.meeting_elements and line_index - self.meeting_elements['meeting_date'] < 3:
+                    if 'meeting_date' in self.meeting_elements:
                         # attendants should be at least 3 lines below the meeting date
-                        continue
+                        # but no more than 12
+                        distance = line_index - self.meeting_elements['meeting_date']
+                        if distance < 3 or distance > 12:
+                            continue
+                    if 'president' in self.meeting_elements:
+                        distance = line_index - self.meeting_elements['president']
+                        if distance < 1 or distance > 4:
+                            # if attendants and first occurrence of president found on the same line, skip attendants
+                            # if attendants appear much later than president, this is not an opening
+                            continue
                     if 'attendants' in self.meeting_elements and line_index - self.meeting_elements['president'] < 2:
                         # president and attendants should be on separate lines
                         # and with at least one line in between them
@@ -290,7 +303,8 @@ class MeetingSearcher(EventSearcher):
 
     def parse_meeting_metadata(self) -> dict:
         """Turn meeting elements and sliding window into proper metadata."""
-        current_date = self.current_date
+        # make sure local current_date is a copy and not a reference to the original object
+        current_date = copy.copy(self.current_date)
         includes_rest_day = False
         if current_date.is_rest_day():
             # If the current date is a rest day, the subsequent meeting is on the next work day
@@ -388,7 +402,9 @@ class MeetingSearcher(EventSearcher):
                 except KeyError:
                     pass
         for i in range(0, day_shift):
+            # print("updating date from:", self.current_date.isoformat())
             self.current_date = get_next_day(self.current_date)
+            # print("updating date to:", self.current_date.isoformat())
         return self.current_date
 
     def get_current_date(self) -> RepublicDate:
