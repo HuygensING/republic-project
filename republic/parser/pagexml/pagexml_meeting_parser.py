@@ -213,7 +213,7 @@ class GatedWindow:
 
 
 def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
-                      inv_metadata: dict) -> Iterator[Dict[str, Union[dict, list]]]:
+                      inv_metadata: dict) -> Iterator[Meeting]:
     # TO DO: IMPROVEMENTS
     # - add holidays: Easter, Christmas
     # - make model year-dependent

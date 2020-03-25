@@ -469,26 +469,25 @@ def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_confi
         return None
 
 
-def parse_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
     pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
     inv_metadata = retrieve_inventory_metadata(es, inv_num, inv_config)
     if not pages:
         print('No pages retrieved for inventory', inv_num)
         return None
     for meeting in meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata):
-        if len(meeting['meeting_lines']) > 4000:
-            print('Error: too many lines for meeting on date', meeting['meeting_date'])
+        if meeting.metadata['num_lines'] > 4000:
+            print('Error: too many lines for meeting on date', meeting.metadata['meeting_date'])
             continue
-        print('Indexing meeting on date', meeting['meeting_date'],
-              '\tnum meeting lines:', len(meeting['meeting_lines']))
-        date = meeting['meeting_metadata']['meeting_date']
-        print(f'\tassumed date: {date["weekday"]} den {date["day_num"]} {date["month"]}')
-        if len(meeting['meeting_lines']) > 0:
-            print('\tfirst line:', meeting['meeting_lines'][0]['text'],
-                  '\tpage:', meeting['meeting_lines'][0]['page_num'])
+        meeting_date_string = None
+        if meeting.metadata['has_meeting_date_element']:
+            for evidence in meeting.metadata['evidence']:
+                if evidence['metadata_field'] == 'meeting_date':
+                    meeting_date_string = evidence['matches'][-1]['match_string']
+        print('Indexing meeting on date', meeting.metadata['meeting_date'],
+              '\tdate_string:', meeting_date_string,
+              '\tnum meeting lines:', meeting.metadata['num_lines'])
         print()
-        meeting_pages = set([line['page_num'] for line in meeting['meeting_lines']])
-        meeting['meeting_metadata']['meeting_pages'] = sorted(list(meeting_pages))
         es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                 id=meeting['id'], body=meeting)
+                 id=meeting.id, body=meeting.to_json(with_columns=True))
     return None

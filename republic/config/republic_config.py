@@ -13,7 +13,7 @@ def set_config_inventory_num(default_config: dict, inventory_num: int, base_dir:
     config['page_index'] = f'republic_{ocr_type}_pages'
     config['scan_index'] = f'republic_{ocr_type}_scans'
     config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'
-    config['meeting_index'] = f'republic_{ocr_type}_meeting'
+    config['meeting_index'] = f'{ocr_type}_meeting'
     config['meeting_doc_type'] = 'meeting'
     inv_map = get_inventory_by_num(inventory_num)
     for field in inv_map:
