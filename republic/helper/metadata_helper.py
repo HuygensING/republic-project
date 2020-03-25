@@ -23,21 +23,24 @@ def make_scan_urls(inventory_metadata: dict,
     }
 
 
-def make_iiif_region_url(jpg_url: str, region: Union[None, List[int], Dict[str, int]] = None) -> str:
-    if None:
-        region = "full"
+def make_iiif_region_url(jpg_url: str,
+                         region: Union[None, List[int], Dict[str, int]] = None,
+                         add_margin: Union[None, int] = None) -> str:
+    if region is None:
+        return jpg_url + f"/full/full/0/default.jpg"
+    elif isinstance(region, dict):
+        region = [region['left'], region['top'], region['width'], region['height']]
     elif isinstance(region, list):
         if len(region) != 4:
             raise IndexError('Region as list of coordinates must have four integers [x, y, w, h]')
         for item in region:
             if not isinstance(item, int):
                 raise ValueError('Region as list of coordinates must be integers')
-        region = ','.join(region)
-    elif isinstance(region, dict):
-        keys = ['left', 'top', 'width', 'height']
-        region = ','.join([str(region[key]) for key in keys])
     else:
         raise ValueError('region must be None, list of 4 integers, of dict with keys "left", "top", "width", "height"')
+    if add_margin:
+        region = [region[0] - add_margin, region[1] - add_margin, region[2] + 2*add_margin, region[3] + 2*add_margin]
+    region = ','.join([str(coord) for coord in region])
     return jpg_url + f"/{region}/full/0/default.jpg"
 
 

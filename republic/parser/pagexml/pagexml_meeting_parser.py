@@ -1,305 +1,14 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Iterator
 import copy
-import datetime
 
-from republic.model.inventory_mapping import get_inventory_by_num
-from republic.model.republic_phrase_model import month_names_late, month_names_early
-from republic.model.republic_phrase_model import week_day_name_map, week_day_names
-from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
-from republic.parser.pagexml.pagexml_textregion_parser import get_textregion_text
+from republic.model.republic_phrase_model import meeting_phrase_model
+from republic.model.republic_date import RepublicDate, get_next_workday
+from republic.model.republic_meeting import MeetingSearcher, Meeting
 
 
-strict_config = {
-    "char_match_threshold": 0.6,
-    "ngram_threshold": 0.5,
-    "levenshtein_threshold": 0.6,
-    "max_length_variance": 3,
-    "use_word_boundaries": False,
-    "perform_strip_suffix": False,
-    "ignorecase": False,
-    "ngram_size": 2,
-    "skip_size": 2,
-}
-meetingdate_config = {
-    'char_match_threshold': 0.6,
-    'ngram_threshold': 0.5,
-    'levenshtein_threshold': 0.6,
-    'max_length_variance': 3,
-    'use_word_boundaries': False,
-    'perform_strip_suffix': False,
-    'ignorecase': False,
-    'ngram_size': 2,
-    'skip_size': 2
-}
-attendance_config = {
-    "char_match_threshold": 0.6,
-    "ngram_threshold": 0.5,
-    "levenshtein_threshold": 0.6,
-    "max_length_variance": 3,
-    "use_word_boundaries": False,
-    "perform_strip_suffix": False,
-    "ignorecase": False,
-    "ngram_size": 2,
-    "skip_size": 2,
-}
-attendance_keywords = [
-    'PRAESIDE,',
-    'Den Heere',
-    'PRAESENTIBUS,',
-    'De Heeren',
-    'De Resolutien gisteren genomen',
-    # 'Nihil aftum eft'
-]
-attendance_variants = {
-    'PRAESIDE,': ['P R AE S I D E,'],
-    'PRAESENTIBUS,': ['P R AE S E N T I B U S,'],
-    'De Resolutien gisteren genomen': [
-        'De Resolutien eergisteren genomen',
-        'De Resolutien voorleede Vry-',
-        'De Resolutien gisteren ge-',
-    ]
-}
-
-
-def initialize_attendance_searcher(config: Union[dict, None] = None,
-                                   keywords: Union[list, None] = None,
-                                   variants: Union[dict, None] = None) -> FuzzyKeywordSearcher:
-    """Initialize a FuzzyKeywordSearcher with phrases for attendence list formulas."""
-    if not config:
-        config = attendance_config
-    if not keywords:
-        keywords = attendance_keywords
-    if not variants:
-        variants = attendance_variants
-    attendance_searcher = FuzzyKeywordSearcher(config)
-    attendance_searcher.index_keywords(keywords)
-    attendance_searcher.index_spelling_variants(variants)
-    return attendance_searcher
-
-
-def get_next_month(current_date: dict) -> int:
-    assert(1 <= current_date['month'] <= 12)
-    next_month = current_date['month'] + 1
-    if next_month > 12:
-        next_month = 1
-    assert(1 <= next_month <= 12)
-    return next_month
-
-
-def get_next_weekday(current_date: dict) -> str:
-    next_index = week_day_names.index(current_date['weekday']) + 1
-    if next_index >= len(week_day_names):
-        next_index = 0
-    return week_day_names[next_index]
-
-
-def get_next_month_day(current_date: dict) -> tuple:
-    next_day_num = current_date['day_num'] + 1
-    # assume next date has same month
-    next_month = current_date['month']
-    turnover_month = False
-    if next_month == 2:
-        if next_day_num > 28 and current_date['year'] % 4 != 0 or next_day_num > 29 and current_date['year'] % 4 == 0:
-            turnover_month = True
-    elif next_month in [1, 3, 5, 7, 8, 10, 12]:
-        if next_day_num > 31:
-            turnover_month = True
-    else:
-        if next_day_num > 30:
-            turnover_month = True
-    if turnover_month:
-        next_day_num = 1
-        next_month = get_next_month(current_date)
-    return next_month, next_day_num
-
-
-def get_next_date(current_date: dict) -> dict:
-    next_month, next_day_num = get_next_month_day(current_date)
-    next_year = current_date['year']
-    if next_month == 1 and current_date['month'] == 12:
-        next_year = current_date['year'] + 1
-    return {
-        'weekday': get_next_weekday(current_date),
-        'day_num': next_day_num,
-        'month': next_month,
-        'year': next_year
-    }
-
-
-def is_work_day(current_date: datetime.date) -> bool:
-    sample_weekday = determine_week_day_name(current_date)
-    if sample_weekday == 'Dominica':
-        return False
-    elif sample_weekday == 'Sabbathi' and current_date.year >= 1754:
-        # From 1754, the States General stopped working on Saturdays
-        #
-        return False
-    else:
-        return True
-
-
-def get_next_work_day(current_date: datetime.date) -> datetime.date:
-    sample_weekday = determine_week_day_name(current_date)
-    if sample_weekday == 'Sabbathi':
-        # next day is Sunday, so next work day is 2 days from now
-        next_date = current_date + datetime.timedelta(days=2)
-    elif sample_weekday == 'Veneris' and current_date.year >= 1754:
-        # From 1754, the States General stopped working on Saturdays
-        # next day is Saturday, so next work day is 3 days from now
-        next_date = current_date + datetime.timedelta(days=3)
-    else:
-        next_date = current_date + datetime.timedelta(days=1)
-    return next_date
-
-
-def get_previous_work_day(current_date: datetime.date) -> datetime.date:
-    sample_weekday = determine_week_day_name(current_date)
-    if sample_weekday == 'Lunae' and current_date.year < 1754:
-        # previous day is Sunday, so previous work day is 2 days ago
-        prev_date = current_date - datetime.timedelta(days=2)
-    elif sample_weekday == 'Lunae' and current_date.year >= 1754:
-        # From 1754, the States General stopped working on Saturdays
-        # previous day is Saturday, so previous work day is 3 days ago
-        prev_date = current_date - datetime.timedelta(days=3)
-    else:
-        prev_date = current_date - datetime.timedelta(days=1)
-    return prev_date
-
-
-def get_date_text_string(current_date: dict, include_year: bool = True) -> str:
-    month_name = get_current_date_month(current_date)
-    if include_year:
-        return f'{current_date["weekday"]} den {current_date["day_num"]} {month_name} {current_date["year"]}.'
-    else:
-        return f'{current_date["weekday"]} den {current_date["day_num"]} {month_name}'
-
-
-def get_next_date_strings(current_date: dict, num_dates: int = 3, include_year: bool = True) -> List[str]:
-    date_strings = [get_date_text_string(current_date, include_year=include_year)]
-    next_date = get_next_date(current_date)
-    for i in range(1, num_dates):
-        if next_date['year'] != current_date['year']:
-            # avoid going beyond December 31 into the next year
-            continue
-        date_strings += [get_date_text_string(next_date, include_year=include_year)]
-        next_date = get_next_date(next_date)
-    return date_strings
-
-
-def update_meeting_date_searcher(date_strings: List[str], year: int) -> FuzzyKeywordSearcher:
-    meeting_date_searcher = FuzzyKeywordSearcher(meetingdate_config)
-    meeting_date_searcher.index_keywords(date_strings + [str(year)])
-    return meeting_date_searcher
-
-
-def get_current_date_month(current_date):
-    if current_date['year'] > 1750:
-        month_names = month_names_late
-    else:
-        month_names = month_names_early
-    return month_names[current_date['month'] - 1]
-
-
-def is_date_dict(date: any) -> False:
-    if not isinstance(date, dict):
-        return False
-    if 'year' in date and 'month' in date and 'day_num' in date:
-        return True
-    return False
-
-
-def determine_week_day_name(current_date: Union[datetime.date, dict]) -> str:
-    """
-    This function returns the name of the week day given a date,
-    using 1 January 1770 as reference date, which is a Monday.
-    """
-    if is_date_dict(current_date):
-        current_date = make_date_object(current_date)
-    reference_date = datetime.date(1770, 1, 1)
-    reference_week_day_name = 'Lunae'
-    date_diff = current_date - reference_date
-    current_week_day_num = (week_day_name_map[reference_week_day_name] + date_diff.days) % 7
-    current_week_day_name = week_day_names[current_week_day_num - 1]
-    return current_week_day_name
-
-
-def initialize_inventory_date(inventory_num: int, inv_metadata: dict) -> Dict[str, Union[str, int]]:
-    inventory_info = get_inventory_by_num(inventory_num)
-    year = inventory_info['year']
+def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
     year, month, day = [int(part) for part in inv_metadata['period_start'].split('-')]
-    start_day = datetime.date(year, month, day)
-    return {
-        'year': year,
-        'month': month,
-        'day_num': day,
-        'weekday': determine_week_day_name(start_day)
-    }
-
-
-def make_date_object(current_date: dict) -> datetime.date:
-    date = datetime.date(current_date['year'], current_date['month'], current_date['day_num'])
-    return date
-
-
-def make_meeting_date_string(current_date):
-    return datetime.date(current_date['year'], current_date['month'], current_date['day_num']).isoformat()
-
-
-def make_paragraph(page: dict, textregion: dict, current_date: Dict[str, Union[str, int]],
-                   ci: int, ti: int, meetingdate_start: bool) -> dict:
-    paragraph_id = page['metadata']['page_id'] + f'col-{ci}-tr-{ti}'
-    meetingdate = make_meeting_date_string(current_date)
-    text = get_textregion_text(textregion)
-    return {
-        'id': paragraph_id,
-        'text': text,
-        'meetingdate': meetingdate,
-        'meetingdate_year': current_date['year'],
-        'meetingdate_month': current_date['month'],
-        'meetingdate_day': current_date['day_num'],
-        'meetingdate_weekday': current_date['weekday'],
-        'meetingdate_string': get_date_text_string(current_date),
-        'meetingdate_start': meetingdate_start,
-        'inventory_num': page['metadata']['inventory_num'],
-        'scan_id': page['metadata']['scan_id'],
-        'page_id': page['metadata']['page_id'],
-        'column_num': ci+1,
-        'textregion': ti+1,
-        'coords': textregion['coords']
-    }
-
-
-exception_dates = {
-    "1705-09-11": {"mistake": "next day has wrong week day name", "shift_days": 1},
-}
-
-
-def is_meeting_date_exception(current_date: Dict[str, Union[str, int]], match: dict) -> bool:
-    date = make_date_object(current_date).isoformat()
-    return date in exception_dates
-
-
-def get_date_exception_shift(current_date: Dict[str, Union[str, int]]) -> int:
-    date = make_date_object(current_date).isoformat()
-    return exception_dates[date]["shift_days"]
-
-
-def update_meeting_date(current_date: Dict[str, Union[str, int]], date_strings: List[str],
-                        meeting_matches: List[dict]) -> Dict[str, Union[str, int]]:
-    last_index = 0
-    for match in meeting_matches:
-        if match['match_keyword'] == str(current_date['year']):
-            continue
-        index = date_strings.index(match['match_keyword'])
-        if is_meeting_date_exception(current_date, match):
-            last_index = get_date_exception_shift(current_date)
-            break
-        if index > last_index:
-            last_index = index
-    for i in range(0, last_index):
-        current_date = get_next_date(current_date)
-        # print('\tupdating current date:', current_date)
-    return current_date
+    return RepublicDate(year, month, day)
 
 
 def get_vertical_overlap(line1: dict, line2: dict) -> int:
@@ -344,6 +53,7 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
         for ci, column in enumerate(page['columns']):
             lines = []
+            # print('COLUMN COORDS LEFT RIGHT:', column['coords']['left'], column['coords']['right'])
             for ti, textregion in enumerate(column['textregions']):
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
@@ -357,9 +67,13 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
                         continue
                     line = {
                         'id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}-line-{li}',
+                        'inventory_num': page['metadata']['inventory_num'],
+                        'scan_id': page['metadata']['scan_id'],
+                        'scan_num': page['metadata']['scan_num'],
                         'page_id': page['metadata']['page_id'],
                         'page_num': page['metadata']['page_num'],
                         'column_index': ci,
+                        'column_id': page['metadata']['page_id'] + f'-col-{ci}',
                         'textregion_index': ti,
                         'textregion_id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}',
                         'line_index': li,
@@ -382,57 +96,26 @@ def print_line_info(line_info: dict) -> None:
           line_info['text'])
 
 
-def get_meeting_elements(sliding_window: List[dict], year: int) -> Dict[str, int]:
-    """
-    Check which lines in sliding window match meeting opening elements.
-    The elements should match at or near the start of the line.
-    """
-    # year can be on separate line, so should start at beginning of line, or
-    # on same line as rest of date, so at the end of the line.
-    meeting_elements = {}
-    for li, line_info in enumerate(sliding_window):
-        if line_info['meeting_matches']:
-            match_offset = min([match['match_offset'] for match in line_info['meeting_matches']])
-            if match_offset > 4:
-                # for match in line_info['meeting_matches']:
-                #     if len(match['match_keyword']) > 5:
-                #         print(line_info['page_num'], 'meeting_match:', line_info['text'])
-                continue
-            for match in line_info['meeting_matches']:
-                if match['match_keyword'] == str(year):
-                    if 'meeting_year' in meeting_elements and meeting_elements['meeting_year'] < li:
-                        continue
-                    meeting_elements['meeting_year'] = li
-                elif len(match['match_keyword']) > 5:
-                    if 'meeting_date' in meeting_elements and meeting_elements['meeting_date'] < li:
-                        continue
-                    meeting_elements['meeting_date'] = li
-        for match in line_info['attendance_matches']:
-            if match['match_offset'] > 4:
-                # print(match['match_keyword'], '\toffset:', match['match_offset'])
-                continue
-            if match['match_keyword'] in attendance_keywords:
-                if match['match_keyword'] == 'De Heeren':
-                    if 'meeting_date' in meeting_elements and li - meeting_elements['meeting_date'] < 3:
-                        continue
-                    if 'Den Heere' in meeting_elements and li - meeting_elements['Den Heere'] < 2:
-                        # Den Heere and De Heeren should be on separate lines
-                        # and with at least one line in between them
-                        continue
-                meeting_elements[match['match_keyword']] = li
-    return meeting_elements
-
-
-def score_meeting_elements(meeting_elements: Dict[str, int]) -> float:
+def score_meeting_elements(meeting_elements: Dict[str, int], num_elements_threshold: int) -> float:
+    """Order meeting elements by text order and check against expected order. If enough elements are
+    in expected order, the number of ordered elements is returned as the score, otherwise score is zero."""
     elements = sorted(meeting_elements.items(), key=lambda x: x[1])
-    if len(meeting_elements.keys()) <= 3:
-        # we need at least 4 elements to determine this is a new meeting date
+    if len(meeting_elements.keys()) < num_elements_threshold:
+        # we need at least num_elements_threshold elements to determine this is a new meeting date
         return 0
     order = [
         'meeting_date', 'meeting_year',
-        'PRAESIDE,', 'Den Heere',
-        'PRAESENTIBUS,', 'De Heeren',
-        'De Resolutien gisteren genomen',
+        # This is mainly for the period of the Bataafsche Repbulic (1795-1796)
+        'tagline',
+        # holidays like new years day, Easter, Christmas, ... are mentioned if they are on normal work days
+        'holiday',
+        # rest days are Sundays and holidays (and Saturdays after 1753)
+        'rest_day',
+        # Special attendance by the prince is rare
+        'special_attendance', 'prince',
+        'presiding', 'president',
+        'attending', 'attendants',
+        'reviewed',
     ]
     numbered_elements = [order.index(element[0]) for element in elements]
     if len(set(elements)) <= 3:
@@ -441,39 +124,8 @@ def score_meeting_elements(meeting_elements: Dict[str, int]) -> float:
     return order_score
 
 
-def parse_meeting_metadata(meeting_elements: Dict[str, int], current_date: Dict[str, Union[str, int]],
-                           sliding_window: List[dict]) -> dict:
-    # print('\tFOUND MEETING START')
-    # print('\t', meeting_elements)
-    meeting_date = datetime.date(current_date['year'], current_date['month'], current_date['day_num']).isoformat()
-    meeting_metadata = {
-        'id': f'meeting-{meeting_date}',
-        'meeting_date': copy.copy(current_date),
-        'lines': sliding_window,
-        'has_meeting_date_element': False
-    }
-    for meeting_element, line_index in sorted(meeting_elements.items(), key=lambda x: x[1]):
-        line_info = sliding_window[line_index]
-        # print_line_info(line_info)
-        if meeting_element == 'meeting_date':
-            meeting_metadata['has_meeting_date_element'] = True
-            meeting_metadata['meeting_date']['line_id'] = line_info['id']
-            meeting_metadata['meeting_date']['text_matches'] = line_info['meeting_matches']
-        if meeting_element == 'Den Heere':
-            president_name = None
-            for match in line_info['attendance_matches']:
-                if match['match_keyword'] == 'Den Heere':
-                    start_offset = line_info['text'].index(match['match_string'])
-                    end_offset = start_offset + len(match['match_string'])
-                    president_name = line_info['text'][end_offset:]
-            meeting_metadata['president'] = {
-                'line_id': line_info['id'],
-                'president_name': president_name
-            }
-    return meeting_metadata
-
-
 def score_element_order(element_list: List[any]) -> float:
+    """Score the found meeting elements on how well they match the expected order."""
     element_set = sorted(list(set(element_list)))
     count = 0
     dummy_list = copy.copy(element_list)
@@ -489,107 +141,145 @@ def score_element_order(element_list: List[any]) -> float:
     return order_score
 
 
-def get_meeting_dates(sorted_pages: List[dict], inv_num: int, inv_metadata: dict) -> iter:
-    current_date = initialize_inventory_date(inv_num, inv_metadata)
-    date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
-    attendance_searcher = initialize_attendance_searcher()
-    meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
-    sliding_window = []
-    sliding_window_size = 20
-    meeting_metadata = parse_meeting_metadata({}, current_date, sliding_window)
-    print('indexing start for current date:', current_date)
+def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
+    """Find a specific line by id in the list of lines belonging to a meeting."""
+    for line in meeting_lines:
+        if line['id'] == line_id:
+            return line
+    raise IndexError(f'Line with id {line_id} not in meeting lines.')
+
+
+def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_searcher: MeetingSearcher) -> iter:
+    # meeting_date = meeting_searcher.get_current_date()
+    meeting_metadata['num_lines'] = len(meeting_lines)
+    # print('meeting_date:', meeting_date.isoformat(), '\tis_work_day:', meeting_date.is_work_day())
+    meeting = Meeting(meeting_searcher.current_date, meeting_metadata, meeting_lines)
+    meeting_doc = {
+        'metadata': meeting_metadata,
+        'lines': meeting_lines
+    }
+    return meeting
+
+
+def get_meetings(sorted_pages: List[dict], inv_num: int, inv_metadata: dict) -> Meeting:
+    for meeting_doc in get_meeting_dates(sorted_pages, inv_num, inv_metadata):
+        # check if doc is single date or includes rest days
+        if meeting_doc['metadata']['is_workday']:
+            return Meeting(meeting_doc['metadata']['current_date'])
+
+
+class GatedWindow:
+
+    def __init__(self, window_size: int = 10, open_threshold: int = 300, shut_threshold: int = 400):
+        self.window_size = window_size
+        # fill the sliding window with empty elements, so that first documents are appended at the end.
+        self.sliding_window: List[Union[None, Dict[str, Union[str, int, Dict[str, int]]]]] = [None] * window_size
+        self.open_threshold = open_threshold
+        self.shut_threshold = shut_threshold
+        self.gate_open = False
+        self.num_chars = 0
+
+    def add_doc(self, doc: Dict[str, Union[str, int, Dict[str, int]]]):
+        """Add a document to the sliding window. doc should be a dictionary with
+        the 'text' property containing the document text."""
+        if len(self.sliding_window) >= self.window_size:
+            self.sliding_window = self.sliding_window[-self.window_size+1:]
+        self.sliding_window += [doc]
+        self.check_treshold()
+
+    def num_chars_in_window(self) -> int:
+        """Return the number of characters in the sliding window documents."""
+        return sum([len(doc['text']) for doc in self.sliding_window if doc])
+
+    def check_treshold(self) -> None:
+        """Check whether the number of characters in the sliding window crosses
+        the current threshold. If so, open/shut the gate."""
+        if self.sliding_window[0] is None:
+            # If the sliding window is not filled yet, the gate is closed
+            return None
+        self.num_chars = self.num_chars_in_window()
+        if self.gate_open and self.num_chars > self.shut_threshold:
+            self.gate_open = False
+        elif not self.gate_open and self.num_chars < self.open_threshold:
+            self.gate_open = True
+
+    def gate_is_open(self) -> bool:
+        """Check if the gate is currently open."""
+        return self.gate_open
+
+    def get_first_doc(self) -> Dict[str, Union[str, int, Dict[str, int]]]:
+        """Return the first sentence in the sliding window."""
+        return self.sliding_window[0]
+
+
+def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
+                      inv_metadata: dict) -> Iterator[Dict[str, Union[dict, list]]]:
+    # TO DO: IMPROVEMENTS
+    # - add holidays: Easter, Christmas
+    # - make model year-dependent
+    # - check for large date jumps and short meeting docs
+    current_date = initialize_inventory_date(inv_metadata)
+    meeting_searcher = MeetingSearcher(inv_num, current_date, meeting_phrase_model, window_size=30)
+    meeting_metadata = meeting_searcher.parse_meeting_metadata()
+    gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
+    lines_skipped = 0
+    print('indexing start for current date:', current_date.isoformat())
     meeting_lines = []
-    show_elements = False
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages)):
         # list all lines belonging to the same meeting date
         meeting_lines += [line_info]
-        if not line_info['text']:
-            continue
-        line_info['attendance_matches'] = attendance_searcher.find_candidates(line_info['text'],
-                                                                              use_word_boundaries=False,
-                                                                              include_variants=True)
-        line_info['meeting_matches'] = meetingdate_searcher.find_candidates(line_info['text'],
-                                                                            use_word_boundaries=False,
-                                                                            include_variants=False)
-        if len(line_info['meeting_matches']) > 0:
-            for match in line_info['meeting_matches']:
-                if len(match['match_keyword']) > 5:
-                    #print(line_info['page_num'], match['match_keyword'])
-                    if match['match_keyword'] == "Martis den 20 Januarii":
-                        show_elements = False
-                    else:
-                        show_elements = False
-        if not line_info['text'] or len(line_info['text']) < 3:
-            # skip none-text lines and really short lines
-            pass
-        elif len(sliding_window) < sliding_window_size:
-            sliding_window += [line_info]
+        # add the line to the gated_window
+        gated_window.add_doc(line_info)
+        if (li+1) % 1000 == 0:
+            print(f'{li+1} lines processed, {lines_skipped} lines skipped in fuzzy search')
+        if not gated_window.gate_is_open():
+            lines_skipped += 1
+            # add a None to the sliding window as a placeholder so the sliding window keeps sliding
+            meeting_searcher.add_empty_document()
         else:
-            sliding_window = sliding_window[1:] + [line_info]
-        meeting_elements = get_meeting_elements(sliding_window, current_date['year'])
-        if show_elements:
-            print(meeting_elements)
-            for line in sliding_window:
-                print(line['text'])
-        meeting_score = score_meeting_elements(meeting_elements)
-        if meeting_score > 0.8 and min(meeting_elements.values()) == 0:
-            first_new_meeting_line = sliding_window[0]
+            check_line = gated_window.get_first_doc()
+            # add the line as a new document to the meeting searcher and search for meeting elements
+            meeting_searcher.add_document(check_line['id'], check_line['text'])
+        # Keep sliding until the first line in the sliding window has matches
+        if meeting_searcher.sliding_window[0] and len(meeting_searcher.sliding_window[0]['matches']) == 0:
+            continue
+        # get the meeting elements found in the lines of the sliding window
+        meeting_elements = meeting_searcher.get_meeting_elements()
+        # check if first meeting element is in the first line of the sliding window
+        if len(meeting_elements.items()) == 0 or min(meeting_elements.values()) != 0:
+            # move to next line if first meeting element is not in the first line of the sliding window
+            continue
+        # score the found meeting elements for how well they match the order in which they are expected to appear
+        # Empirically established threshold:
+        # - need to match at least four meeting elements
+        # - number of elements in expected order must be 80% of found elements
+        # (so with four elements, all need to be in the right order, with five elements, one may be in wrong order)
+        if score_meeting_elements(meeting_elements, num_elements_threshold=4) > 0.95:
+            # get the first line of the new meeting day in the sliding window
+            first_new_meeting_line_id = meeting_searcher.sliding_window[0]['text_id']
+            # find that first line in the list of the collected meeting lines
+            first_new_meeting_line = find_meeting_line(first_new_meeting_line_id, meeting_lines)
+            # find the index of the first new meeting day line in the collected meeting lines
             new_meeting_index = meeting_lines.index(first_new_meeting_line)
-            # if first_new_meeting_line in meeting_lines:
-            #     print('\tfirst_new_meeting_line:', meeting_lines.index(first_new_meeting_line))
-            meeting_date = make_date_object(current_date)
-            meeting_metadata['num_lines'] = new_meeting_index
-            yield {
-                'id': f'meeting-{meeting_date.isoformat()}',
-                "inventory_num": inv_num,
-                "year": current_date["year"],
-                "meeting_date": meeting_date.isoformat(),
-                "meeting_metadata": meeting_metadata,
-                "meeting_lines": meeting_lines[:new_meeting_index]
-            }
-            if not is_work_day(meeting_date):
-                print('copying rest day to next work day')
-                next_work_date = get_next_work_day(meeting_date)
-                if next_work_date.year == current_date['year']:
-                    yield {
-                        'id': f'meeting-{next_work_date.isoformat()}',
-                        "inventory_num": inv_num,
-                        "year": current_date["year"],
-                        "meeting_date": next_work_date.isoformat(),
-                        "meeting_metadata": meeting_metadata,
-                        "meeting_lines": meeting_lines[:new_meeting_index]
-                    }
+            # everything before the first new meeting day line belongs to the previous day
+            finished_meeting_lines = meeting_lines[:new_meeting_index]
+            # everything after the first new meeting day line belongs to the new meeting day
             meeting_lines = meeting_lines[new_meeting_index:]
-            has_meeting_date_element = False
-            for meeting_element in meeting_elements:
-                line_info = sliding_window[meeting_elements[meeting_element]]
-                if meeting_element == 'meeting_date':
-                    has_meeting_date_element = True
-                    current_date = update_meeting_date(current_date,
-                                                                  date_strings,
-                                                                  line_info['meeting_matches'])
-                    date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
-                    # print('\tdate string:', date_strings)
-                    meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
-                    # print('\tcurrent_date:', current_date)
-            if not has_meeting_date_element:
-                # Dirty hack: no explicit meeting date string found, assume this is the next day, but string
-                # is missing or not recognised.
-                current_date = get_next_date(current_date)
-                date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
-                # print('\tdate string:', date_strings)
-                meetingdate_searcher = update_meeting_date_searcher(date_strings, current_date['year'])
-            meeting_metadata = parse_meeting_metadata(meeting_elements, current_date, sliding_window)
-            sliding_window = []
-    meeting_date = datetime.date(current_date['year'],
-                                 current_date['month'],
-                                 current_date['day_num']).isoformat()
+            meeting_doc = generate_meeting_doc(meeting_metadata, finished_meeting_lines, meeting_searcher)
+            if meeting_doc.metadata['num_lines'] == 0:
+                # A meeting with no lines only happens at the beginning
+                # Don't generate a doc and sets the already shifted date back by 1 day
+                meeting_searcher.update_meeting_date(day_shift=-1)
+            else:
+                yield meeting_doc
+            # update the current meeting date in the searcher
+            meeting_searcher.update_meeting_date()
+            # update the searcher with new date strings for the next seven days
+            meeting_searcher.update_meeting_date_searcher()
+            # get the meeting metadata for the new meeting date
+            meeting_metadata = meeting_searcher.parse_meeting_metadata()
+            # reset the sliding window to search the next meeting opening
+            meeting_searcher.reset_sliding_window()
     meeting_metadata['num_lines'] = len(meeting_lines)
-    yield {
-        'id': f'meeting-{meeting_date}',
-        "inventory_num": inv_num,
-        "year": current_date["year"],
-        "meeting_date": meeting_date,
-        "meeting_metadata": meeting_metadata,
-        "meeting_lines": meeting_lines
-    }
+    # after processing all lines in the inventory, create a meeting doc from the remaining lines
+    yield generate_meeting_doc(meeting_metadata, meeting_lines, meeting_searcher)

@@ -1,8 +1,8 @@
 resolution_categories = {
     "resolution_accepted": [
-        "is goedgevonden ende verftaan",
+        "is goedgevonden ende verstaan",
         "IS naar voorgaande deliberatie goedgevonden ende verstaan",
-        "de voorfchreve Miffive copielijck overgenomen",
+        "de voorfchreve Missive copielijck overgenomen",
     ],
     "resolution_decision": [
         "gehouden voor gecommiteert",
@@ -10,14 +10,14 @@ resolution_categories = {
         "voor de genomen moeyte bedanckt", # should probably move somewhere else
     ],
     "resolution_not_accepted": [
-        "WAAR op geen refolutie is gevallen",
+        "WAAR op geen resolutie is gevallen",
     ],
     "resolution_opening": [
         "hebben ter Vergaderinge ingebraght",
-        "Is ter Vergaderinge gelefen",
+        "Is ter Vergaderinge gelesen",
         "IS gehoort het rapport van",
-        "Ontvangen een Miffive van",
-        "Op de Requefte van",
+        "Ontvangen een Missive van",
+        "Op de Requeste van",
         "Zynde ter Vergaderinge getoont",
     ],
     "resolution_considered": [
@@ -29,11 +29,11 @@ resolution_categories = {
         "BY refumptie gedelibereert zynde",
     ],
     "resolution_summarized": [
-        "DE Refolutien, gifteren genomen",
-        "zyn gelefen en gerefumeert",
+        "DE Resolutien, gisteren genomen",
+        "zyn gelesen en gerefumeert",
     ],
     "non_meeting_date": [
-        "Nihil actum eft.",
+        "Nihil actum est.",
     ],
     "resolution_first_entry": [
         "Zynde Nieuwejaarsdagh",
@@ -139,12 +139,12 @@ spelling_variants = {
     "WAAR op gedelibereert zijnde": [
         "Waer op gedelibereert zynde"
     ],
-    "DE Refolutien, gifteren genomen": [
-        "DE Refolutien, eergifteren genomen",
+    "DE Resolutien, gisteren genomen": [
+        "DE Resolutien, eergisteren genomen",
     ],
-    "Ontvangen een Miffive van": [
-        "ON een Miffive van",
-        "Ontfangen een Miffive van",
+    "Ontvangen een Missive van": [
+        "ON een Missive van",
+        "Ontfangen een Missive van",
         "Ontfangen twee Missiven van"
     ],
     "PRAESENTIBUS": [
@@ -159,14 +159,151 @@ spelling_variants = {
         "P R A S I D E",
         "P R E S I D E"
     ],
-    "is goedgevonden ende verftaan": [
-        "IS goedgevonden ende verftaan",
-        "Is goedgevonden en verftaan",
+    "is goedgevonden ende verstaan": [
+        "IS goedgevonden ende verstaan",
+        "Is goedgevonden en verstaan",
     ],
-    "WAAR op geen refolutie is gevallen": [
-        "Waer op geen refolutie is gevallen",
-        "WAAR op geen refolutie voor alsnoch is gevallen",
-        "Waer op geen refolutie voor alsnoch is gevallen",
+    "WAAR op geen resolutie is gevallen": [
+        "Waer op geen resolutie is gevallen",
+        "WAAR op geen resolutie voor alsnoch is gevallen",
+        "Waer op geen resolutie voor alsnoch is gevallen",
     ]
 }
+
+meeting_phrase_model = [
+    {
+        'keyword': 'Het eerste jaar der Bataafsche Vryheid',
+        'start_year': 1795, 'end_year': 1796,
+        'label': 'tagline'
+    },
+    {
+        'keyword': 'Nihil actum est',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'rest_day'
+    },
+    {
+        'keyword': 'GECOMPAREERT,',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'special_attendance'
+    },
+    {
+        'keyword': 'PRAESIDE,',
+        'variants': ['P R AE S I D E,'],
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'presiding'
+    },
+    {
+        'keyword': 'PRAESENTIBUS,',
+        'variants': ['P R AE S E N T I B U S,'],
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'attending'
+    },
+    {
+        'keyword': 'Den Heere',
+        'variants': ['De Heer'],
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'president'
+    },
+    {
+        'keyword': 'De Heeren',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'attendants'
+    },
+    {
+        'keyword': 'Den Burger',
+        'start_year': 1795, 'end_year': 1796,
+        'label': 'president'
+    },
+    {
+        'keyword': 'De Burgers',
+        'start_year': 1795, 'end_year': 1796,
+        'label': 'attendants'
+    },
+    {
+        'keyword': 'De Resolutien gisteren genomen',
+        'variants': [
+            'De Resolutien eergisteren genomen',
+            'De Resolutien voorleede ',
+            'De Resolutien gisteren ge-',
+        ],
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'reviewed'
+    },
+]
+
+extra_phrases = [
+    {
+        'keyword': 'Zyne Hoogheid den Heere Prince van Orange en Nassau',
+        'label': 'prince',
+        'start_year': 1703, 'end_year': 1796,
+        'line_type': 'multi_line',
+        'max_offset': 4
+    }
+]
+
+holiday_phrases = [
+    {
+        'keyword': 'Zynde Nieuwjaarsdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': True
+    },
+    {
+        'keyword': 'Zynde eerste Paasdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': True
+    },
+    {
+        'keyword': 'Zynde tweede Paasdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': True
+    },
+    {
+        'keyword': 'Zynde Hemelvaartsdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': True
+    },
+    {
+        'keyword': 'Zynde eerste Kerstdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': True
+    },
+    {
+        'keyword': 'Zynde tweede Kerstdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': True
+    },
+]
+
+resolution_phrase_model = [
+    {
+        'keyword': 'Is ter Vergaderinge gelesen',
+        'label': 'resolution_opening',
+    },
+    {
+        'keyword': 'Ontfangen een Missive van',
+        'label': 'resolution_opening',
+        'resolution_source': 'missive',
+    },
+    {
+        'keyword': 'Is gehoort het rapport van',
+        'label': 'resolution_opening',
+        'resolution_source': 'rapport',
+    },
+    {
+        'keyword': 'Op de Requeste van',
+        'label': 'resolution_opening',
+        'resolution_source': 'request',
+    },
+    {
+        'keyword': 'Op de Memorie van',
+        'label': 'resolution_opening',
+        'resolution_source': 'memorie',
+    },
+]
 

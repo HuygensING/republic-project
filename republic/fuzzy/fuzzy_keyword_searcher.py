@@ -1,6 +1,6 @@
 from typing import List, Dict, Union
 import re
-from collections import defaultdict
+from collections import defaultdict, Counter
 from republic.fuzzy.fuzzy_keyword import Keyword, text2skipgrams
 
 
@@ -60,13 +60,15 @@ def score_levenshtein_distance_ratio(term1, term2):
     return 1 - distance / max_distance
 
 
-def score_levenshtein_distance(s1, s2, use_confuse=False):
+def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[None, int] = None):
     """Calculate Levenshtein distance between two string. Beyond the
     normal algorithm, a confusion matrix can be used to get non-binary
     scores for common confusion pairs.
     To use the confusion matrix, config the searcher with use_confuse=True"""
     if len(s1) > len(s2):
         s1, s2 = s2, s1
+    if not max_distance:
+        max_distance = len(s1)
     distances = range(len(s1) + 1)
     for i2, c2 in enumerate(s2):
         distances_ = [i2 + 1]
@@ -80,7 +82,8 @@ def score_levenshtein_distance(s1, s2, use_confuse=False):
     return distances[-1]
 
 
-def score_char_overlap(term1, term2):
+def score_char_overlap(term1: int, term2: str) -> int:
+    """Count the number of overlapping character tokens in two strings."""
     num_char_matches = 0
     for char in term2:
         if char in term1:
@@ -94,8 +97,10 @@ def score_char_overlap(term1, term2):
 #################################
 
 
-def get_match_terms(match_term, candidate):
-    if isinstance(candidate, str):
+def get_match_terms(match_term: Union[None, str], candidate: Union[str, Dict[str, Union[str, int]]]) -> tuple:
+    """Given a match term and a candidate match, return the match term string and candidate match string.
+    If match_term is None, the candidate must be a match object with 'match_term' and 'match_string' properties."""
+    if match_term and isinstance(match_term) and isinstance(candidate, str):
         return match_term, candidate
     else:
         return candidate["match_term"], candidate["match_string"]
@@ -176,6 +181,11 @@ class FuzzyKeywordSearcher(object):
         self.variant_map = defaultdict(dict)
         self.has_variant = defaultdict(dict)
         self.variant_ngram_index = defaultdict(dict)
+        self.keyword_index = {}
+        self.ngram_index = {}
+        self.early_ngram_index = {}
+        self.late_ngram_index = {}
+        self.keyword_char_index = {}
 
     def configure(self, config):
         if "char_match_threshold" in config:
@@ -226,6 +236,7 @@ class FuzzyKeywordSearcher(object):
         self.ngram_index = index_keyword_ngrams(self.keyword_index)
         self.early_ngram_index = index_early_keyword_ngrams(self.keyword_index)
         self.late_ngram_index = index_late_keyword_ngrams(self.keyword_index)
+        self.keyword_char_index = index_keyword_chars(keywords)
         # print("set late_ngram_index:", self.late_ngram_index)
 
     def index_spelling_variants(self, keyword_variants):
@@ -305,14 +316,28 @@ class FuzzyKeywordSearcher(object):
         }
         add_candidate_scores(self.known_candidates[match_string][match_term], candidate)
 
+    def score_char_overlap(self, keyword: str, candidate: str) -> int:
+        candidate_index = Counter(candidate)
+        overlap = 0
+        for candidate_char, candidate_freq in candidate_index.most_common():
+            if candidate_char in self.keyword_char_index[keyword]:
+                overlap += min(candidate_freq, self.keyword_char_index[keyword][candidate_char])
+        return overlap
+
+    def score_char_overlap_ratio(self, keyword: str, candidate: str):
+        char_overlap = self.score_char_overlap(keyword, candidate)
+        max_overlap = len(keyword)
+        return char_overlap / max_overlap
+
     def get_candidate_score(self, match_term, candidate, filter_type, ngram_size):
-        term1, term2 = get_match_terms(match_term, candidate)
+        match_term_string, candidate_string = get_match_terms(match_term, candidate)
         if filter_type == "char_match":
-            return score_char_overlap_ratio(term1, term2)
+            # return self.score_char_overlap_ratio(match_term_string, candidate_string)
+            return score_char_overlap_ratio(match_term_string, candidate_string)
         if filter_type == "ngram_match":
-            return score_ngram_overlap_ratio(term1, term2, ngram_size)
+            return score_ngram_overlap_ratio(match_term_string, candidate_string, ngram_size)
         if filter_type == "levenshtein_distance":
-            return score_levenshtein_distance_ratio(term1, term2)
+            return score_levenshtein_distance_ratio(match_term_string, candidate_string)
 
     def above_threshold(self, score, filter_type):
         if filter_type == "char_match":
@@ -458,7 +483,6 @@ class FuzzyKeywordSearcher(object):
             self.candidates["filter"] = []
 
     def filter_candidates(self, filter_type, match_term=None, ngram_size=2):
-        candidates = self.candidates["filter"]
         filtered = []
         for candidate in self.candidates["filter"]:
             if filter_type not in candidate:
@@ -587,8 +611,7 @@ class FuzzyKeywordSearcher(object):
             # the keyword string
             if keyword_ngram_offsets[0] < 3:
                 # add ngram as start of new open candidate
-                self.open_candidates[keyword_string][ngram_offset] = [
-                    (ngram_string, ngram_offset, keyword_ngram_offsets[0])]
+                self.open_candidates[keyword_string][ngram_offset] = [(ngram_string, ngram_offset, keyword_ngram_offsets[0])]
                 # print("starting candidate:", self.open_candidates[keyword_string][ngram_offset], ngram_string, ngram_offset)
             else:
                 pass
@@ -640,8 +663,8 @@ class FuzzyKeywordSearcher(object):
 
     def find_ngram_candidates(self, text, ignorecase=None):
         candidates = []
-        self.found = defaultdict(dict)
-        if ignorecase or (ignorecase == None and self.ignorecase):
+        self.found = defaultdict(lambda: defaultdict(int))
+        if ignorecase or (ignorecase is None and self.ignorecase):
             text = text.lower()
         for ngram_string, ngram_offset in text2skipgrams(text, ngram_size=self.ngram_size, skip_size=self.skip_size):
             for match in self.find_ngram_matches(ngram_string, ngram_offset, text):
@@ -649,8 +672,8 @@ class FuzzyKeywordSearcher(object):
                 candidates += [match]
         return candidates
 
-    def find_ngram_matches(self, ngram_string, ngram_offset, text):
-        matches = []
+    def find_ngram_matches(self, ngram_string: str, ngram_offset: int, text: str) -> iter:
+        """Return all candidate strings in text that contain ngram_string at offset ngram_offset."""
         for keyword_string, keyword_ngram_offset in self.get_ngram_entries(ngram_string):
             try:
                 match = self.get_match_details(text, keyword_string, keyword_ngram_offset, ngram_offset)
@@ -659,6 +682,9 @@ class FuzzyKeywordSearcher(object):
                 print(keyword_string, keyword_ngram_offset, ngram_string, ngram_offset)
                 raise
             if not match:
+                continue
+            if abs(len(match['match_term']) - len(match['match_string'])) > self.max_length_variance:
+                # Check if candidate is within maximum length variance of match term
                 continue
             if self.is_known_candidate(match):
                 known_candidate = self.get_known_candidate(match)
@@ -830,12 +856,22 @@ def make_keyword_index(keywords, ngram_size=2, skip_size=2, ignorecase=True):
     }
 
 
-def index_keyword_ngrams(keyword_index):
-    ngram_index = defaultdict(dict)
+def index_keyword_chars(keywords: List[str]) -> Dict[str, Counter]:
+    """Turn a list of keywords into an index with keywords as keys and a count of their characters as values."""
+    keyword_char_index = defaultdict(Counter)
+    for keyword in keywords:
+        keyword_char_index[keyword] = Counter(keyword)
+    return keyword_char_index
+
+
+def index_keyword_ngrams(keyword_index: Dict[str, Keyword]) -> Dict[str, Dict[str, List[int]]]:
+    """Turn a list of keywords into an index with ngrams as keys, and per ngram an index of keywords as keys and the
+    offset(s) of the ngram in the keyword as values."""
+    ngram_index = defaultdict(lambda: defaultdict(list))
     for keyword_string in keyword_index:
         for ngram, offset in keyword_index[keyword_string].ngrams:
-            if keyword_string not in ngram_index[ngram]:
-                ngram_index[ngram][keyword_string] = []
+            # if keyword_string not in ngram_index[ngram]:
+            #     ngram_index[ngram][keyword_string] = []
             ngram_index[ngram][keyword_string] += [offset]
     return ngram_index
 

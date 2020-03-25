@@ -1,6 +1,8 @@
 from typing import List, Dict
 from datetime import datetime
 
+from republic.model.republic_pagexml_model import parse_derived_coords
+
 
 def check_textline_textequiv_assertions(text_equiv: dict) -> None:
     text_equiv_children = ['Unicode', 'PlainText']
@@ -105,33 +107,6 @@ def parse_coords(coords: dict) -> Dict[str, int]:
     assert(right == test_right)
     assert(top == test_top)
     assert(bottom == test_bottom)
-    return {
-        'left': left,
-        'right': right,
-        'top': top,
-        'bottom': bottom,
-        'height': bottom - top,
-        'width': right - left
-    }
-
-
-def parse_derived_coords(item_list: list) -> Dict[str, int]:
-    if len(item_list) == 0:
-        left, right, top, bottom = 0, 0, 0, 0
-    else:
-        left = item_list[0]['coords']['left']
-        right = item_list[0]['coords']['right']
-        top = item_list[0]['coords']['top']
-        bottom = item_list[0]['coords']['bottom']
-    for item in item_list:
-        if item['coords']['left'] < left:
-            left = item['coords']['left']
-        if item['coords']['right'] > right:
-            right = item['coords']['right']
-        if item['coords']['top'] < top:
-            top = item['coords']['top']
-        if item['coords']['bottom'] > bottom:
-            bottom = item['coords']['bottom']
     return {
         'left': left,
         'right': right,
