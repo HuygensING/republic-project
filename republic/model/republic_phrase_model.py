@@ -172,6 +172,16 @@ spelling_variants = {
 
 meeting_phrase_model = [
     {
+        'keyword': 'Extract uyt de Resolutien',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'extract',
+        'variants': [
+            'Extract uyt het Resolutie-',
+            'Extract uyt het Register',
+            'Extraheert uyt het Re-'
+        ]
+    },
+    {
         'keyword': 'Het eerste jaar der Bataafsche Vryheid',
         'start_year': 1795, 'end_year': 1796,
         'label': 'tagline'
@@ -180,6 +190,11 @@ meeting_phrase_model = [
         'keyword': 'Nihil actum est',
         'start_year': 1703, 'end_year': 1796,
         'label': 'rest_day'
+    },
+    {
+        'keyword': 'Zynde Vast- en Bede-dag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
     },
     {
         'keyword': 'GECOMPAREERT,',
@@ -249,22 +264,34 @@ holiday_phrases = [
         'date_specifc': True
     },
     {
+        'keyword': 'Zynde Vast- en Bede-dag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': False
+    },
+    {
         'keyword': 'Zynde eerste Paasdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
-        'date_specifc': True
+        'date_specifc': False
     },
     {
         'keyword': 'Zynde tweede Paasdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
-        'date_specifc': True
+        'date_specifc': False
     },
     {
         'keyword': 'Zynde Hemelvaartsdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
-        'date_specifc': True
+        'date_specifc': False
+    },
+    {
+        'keyword': 'Zynde tweede Pinksterdag',
+        'start_year': 1703, 'end_year': 1796,
+        'label': 'holiday',
+        'date_specifc': False
     },
     {
         'keyword': 'Zynde eerste Kerstdag',

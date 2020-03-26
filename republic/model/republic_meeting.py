@@ -8,7 +8,7 @@ from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.inventory_mapping import get_inventory_by_num
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
 from republic.model.republic_date import get_next_day, get_date_exception_shift, is_meeting_date_exception
-from republic.model.republic_date import get_next_workday
+from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
 from republic.model.republic_pagexml_model import parse_derived_coords
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 
@@ -108,7 +108,7 @@ class Meeting(LogicalStructureDoc):
          lines or possibly as Resolution objects."""
         super(self.__class__, self).__init__()
         self.date = meeting_date
-        self.id = f"meeting-{meeting_date.isoformat()}"
+        self.id = f"meeting-{meeting_date.isoformat()}-session-1"
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.resolutions = []
@@ -156,6 +156,7 @@ class MeetingSearcher(EventSearcher):
         self.add_meeting_date_searcher()
         self.meeting_elements: Dict[str, int] = {}
         self.label_order: List[Dict[str, Union[str,int]]] = []
+        self.sessions: Dict[str, int] = defaultdict(int)
 
     def add_attendance_searcher(self, phrase_model_list: List[Dict[str, Union[str, int, List[str]]]]):
         """Add a fuzzy searcher configured with the attendance phrase model"""
@@ -180,13 +181,14 @@ class MeetingSearcher(EventSearcher):
         date_phrases += [{'keyword': str(self.year), 'label': 'meeting_year'}]
         self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases)
         self.add_searcher(meetingdate_config, 'date_searcher', self.phrase_models['date_searcher'])
+        # when multiple date string match, only use the best matching one.
+        self.searchers['date_searcher'].allow_overlapping_matches = False
 
     def update_meeting_date_searcher(self,
                                      current_date: Union[None, RepublicDate] = None) -> None:
         """Update the meeting date searcher with a new set of date strings."""
         # update current date
         if current_date:
-            print('setting meeting date:', current_date.isoformat())
             self.current_date = current_date
         self.add_meeting_date_searcher()
 
@@ -208,8 +210,8 @@ class MeetingSearcher(EventSearcher):
                 continue
             for match in date_matches:
                 label = match['match_label']
-                # only add the match if there is no earlier match with the same label
                 if label in self.meeting_elements and self.meeting_elements[label] < line_index:
+                    # Always use the first meeting date line, even if it's a rest day.
                     continue
                 self.meeting_elements[label] = line_index
 
@@ -260,10 +262,10 @@ class MeetingSearcher(EventSearcher):
                             # if attendants and first occurrence of president found on the same line, skip attendants
                             # if attendants appear much later than president, this is not an opening
                             continue
-                    if 'attendants' in self.meeting_elements and line_index - self.meeting_elements['president'] < 2:
-                        # president and attendants should be on separate lines
-                        # and with at least one line in between them
-                        continue
+                        if 'attendants' in self.meeting_elements and line_index - self.meeting_elements['president'] < 2:
+                            # president and attendants should be on separate lines
+                            # and with at least one line in between them
+                            continue
                 label = self.labels[match['match_keyword']]
                 self.meeting_elements[label] = line_index
 
@@ -311,8 +313,9 @@ class MeetingSearcher(EventSearcher):
             includes_rest_day = True
             current_date = get_next_workday(self.current_date)
         meeting_date = current_date.isoformat()
+        self.sessions[meeting_date] += 1
         meeting_metadata = {
-            'id': f'meeting-{meeting_date}',
+            'id': f'meeting-{meeting_date}-session-{self.sessions[meeting_date]}',
             'inventory_num': self.inventory_num,
             # copy current date instead passing a reference, as current date gets updated
             'meeting_date': current_date.isoformat(),
@@ -320,8 +323,11 @@ class MeetingSearcher(EventSearcher):
             'meeting_month': current_date.month,
             'meeting_day': current_date.day,
             'meeting_weekday': current_date.day_name,
+            # in case there are more meeting sessions on the same day
+            'session': self.sessions[meeting_date],
             'president': None,
-            'attendants': None,
+            'attendants_list_id': None,
+            'resolution_ids': [],
             'is_workday': current_date.is_work_day(),
             # 'lines': [line['text_id'] for line in self.sliding_window if line and len(line['matches']) > 0],
             'has_meeting_date_element': False,
@@ -372,40 +378,47 @@ class MeetingSearcher(EventSearcher):
         """If the sliding window has a meeting date match, return it."""
         if 'meeting_date' not in self.meeting_elements:
             raise KeyError('Not meeting date in sliding window')
-        match_line_index = self.meeting_elements['meeting_date']
-        match_line = self.sliding_window[match_line_index]
-        for match in match_line['matches']:
-            if match['match_label'] == 'meeting_date':
-                return match
-        raise IndexError(f'meeting_date registered in line_index {match_line_index} but no meeting_date match found')
+        # Use the last meeting date match in the sliding window, as earlier matches are more likely to be rest days
+        match = None
+        for line in self.sliding_window:
+            if not line:
+                continue
+            date_matches = [match for match in line['matches'] if match['match_label'] == 'meeting_date']
+            if len(date_matches) > 0:
+                match = date_matches[0]
+        return match
 
     def update_meeting_date(self, day_shift: Union[None, int] = None) -> RepublicDate:
         """Shift current date by day_shift days. If not day_shift is passed as argument,
         determine the number of days to shift current date based on found meeting date.
         If no day_shift is passed and not meeting date was found, keep current date."""
-        if not day_shift:
-            # if no day_shift is passed, don't move the current date unless
-            # there is a meeting date match in the sliding window
-            day_shift = 1
+        if day_shift:
+            # if a day_shift is passed, don't move the current date unless
+            new_date = get_shifted_date(self.current_date, day_shift)
+            self.current_date = new_date
+            return self.current_date
         if self.has_meeting_date_match():
             # there is a meeting date match
             date_match = self.get_meeting_date_match()
-            # determine number of days to shift based on the index of that match in the list of date strings
-            found_day_shift = self.date_strings.index(date_match['match_keyword'])
-            if found_day_shift > day_shift:
-                day_shift = found_day_shift
+            # determine number of days to shift based on the match in the list of date strings
+            new_date = derive_date_from_string(date_match['match_keyword'], self.year)
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
             if is_meeting_date_exception(self.current_date):
                 try:
                     day_shift = get_date_exception_shift(self.current_date)
+                    new_date = get_shifted_date(self.current_date, day_shift)
                 except KeyError:
                     pass
-        for i in range(0, day_shift):
-            # print("updating date from:", self.current_date.isoformat())
-            self.current_date = get_next_day(self.current_date)
-            # print("updating date to:", self.current_date.isoformat())
-        return self.current_date
+            self.current_date = new_date
+            return self.current_date
+        else:
+            # No date string was found and none has been passed in the method call,
+            # so assume this is the next day
+            day_shift = 1
+            new_date = get_shifted_date(self.current_date, day_shift)
+            self.current_date = new_date
+            return self.current_date
 
     def get_current_date(self) -> RepublicDate:
         """Return the current date."""

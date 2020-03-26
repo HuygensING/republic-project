@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Union, List, Dict
 from elasticsearch import Elasticsearch, RequestError
 import json
 import copy
@@ -36,6 +36,7 @@ def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size:
     response = es.search(index=index, doc_type=doc_type, scroll='2m', size=size, body=query)
     sid = response['_scroll_id']
     scroll_size = response['hits']['total']
+    print('total hits:', scroll_size)
     if type(scroll_size) == dict:
         scroll_size = scroll_size['value']
     # Start scrolling
@@ -172,11 +173,21 @@ def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, No
         return None
 
 
-def retrieve_pages_with_query(es: Elasticsearch, query: dict, config: dict) -> list:
-    response = es.search(index=config['page_index'], body=query)
-    if response['hits']['total'] == 0:
-        return []
-    return parse_hits_as_pages(response['hits']['hits'])
+def retrieve_pages_with_query(es: Elasticsearch,
+                              query: dict, config: dict,
+                              use_scroll: bool = False) -> List[Dict[str, Union[str, int, List, Dict]]]:
+    hits = []
+    if use_scroll:
+        for hit in scroll_hits(es, query, config['page_index'], config['page_doc_type'], size=10):
+            hits += [hit]
+            if len(hits) % 100 == 0:
+                print(len(hits), 'hits scrolled')
+    else:
+        response = es.search(index=config['page_index'], body=query)
+        if response['hits']['total'] == 0:
+            return []
+        hits = response['hits']['hits']
+    return parse_hits_as_pages(hits)
 
 
 def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict) -> Union[dict, None]:
@@ -193,8 +204,9 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict)
         return pages[0]
 
 
-def retrieve_page_by_page_number_range(es: Elasticsearch, page_num_start: int,
-                                       page_num_end: int, config: dict) -> Union[List[dict], None]:
+def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
+                                        page_num_end: int, config: dict,
+                                        use_scroll: bool = False) -> Union[List[dict], None]:
     """Retrieve a range of Republic PageXML pages based on page number"""
     match_fields = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
     if 'inventory_num' in config:
@@ -202,7 +214,7 @@ def retrieve_page_by_page_number_range(es: Elasticsearch, page_num_start: int,
     elif 'year' in config:
         match_fields += [{'match': {'year': config['year']}}]
     query = make_bool_query(match_fields)
-    pages = retrieve_pages_with_query(es, query, config)
+    pages = retrieve_pages_with_query(es, query, config, use_scroll=use_scroll)
     if len(pages) == 0:
         return None
     else:
@@ -233,12 +245,12 @@ def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dic
 
 
 def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int,
-                                      inv_config: dict) -> Union[None, List[dict]]:
+                                      inv_config: dict, use_scroll=False) -> Union[None, List[dict]]:
     try:
         resolution_start, resolution_end = get_pagexml_resolution_page_range(es, inv_num, inv_config)
     except TypeError:
         return None
-    return retrieve_page_by_page_number_range(es, resolution_start, resolution_end, inv_config)
+    return retrieve_pages_by_page_number_range(es, resolution_start, resolution_end, inv_config, use_scroll=use_scroll)
 
 
 def retrieve_respect_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:

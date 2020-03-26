@@ -2,7 +2,7 @@ from typing import List, Dict, Union, Iterator
 import copy
 
 from republic.model.republic_phrase_model import meeting_phrase_model
-from republic.model.republic_date import RepublicDate, get_next_workday
+from republic.model.republic_date import RepublicDate
 from republic.model.republic_meeting import MeetingSearcher, Meeting
 
 
@@ -53,7 +53,6 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
         for ci, column in enumerate(page['columns']):
             lines = []
-            # print('COLUMN COORDS LEFT RIGHT:', column['coords']['left'], column['coords']['right'])
             for ti, textregion in enumerate(column['textregions']):
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
@@ -117,7 +116,11 @@ def score_meeting_elements(meeting_elements: Dict[str, int], num_elements_thresh
         'attending', 'attendants',
         'reviewed',
     ]
-    numbered_elements = [order.index(element[0]) for element in elements]
+    try:
+        numbered_elements = [order.index(element[0]) for element in elements]
+    except ValueError:
+        print(meeting_elements)
+        raise
     if len(set(elements)) <= 3:
         return 0
     order_score = score_element_order(numbered_elements)
@@ -225,10 +228,8 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         gated_window.add_doc(line_info)
         if (li+1) % 1000 == 0:
             print(f'{li+1} lines processed, {lines_skipped} lines skipped in fuzzy search')
-        #print(li, gated_window.num_chars, '\t', line_info['text'])
         check_line = gated_window.get_first_doc()
         if not check_line or not check_line['let_through']:
-        #if not gated_window.gate_is_open():
             lines_skipped += 1
             # add a None to the sliding window as a placeholder so the sliding window keeps sliding
             meeting_searcher.add_empty_document()
@@ -245,13 +246,16 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         if len(meeting_elements.items()) == 0 or min(meeting_elements.values()) != 0:
             # move to next line if first meeting element is not in the first line of the sliding window
             continue
-        # print('meeting elements:', meeting_elements)
-        # print(li, '\tsliding window line:', meeting_searcher.sliding_window[0]['text_string'])
-        #for line in meeting_searcher.sliding_window:
-        #    if not line:
-        #        print('\tsldinging window line:', None, '\tmatches:', 0)
-        #    else:
-        #        print('\tsldinging window line:', line['text_string'], '\tmatches:', line['matches'])
+        if 'extract' in meeting_elements: # and meeting_elements['extract'] == 0:
+            # what follows in the sliding window is an extract from earlier days, which looks
+            # like a meeting opening but isn't. Reset the sliding window
+            meeting_searcher.reset_sliding_window()
+            continue
+        if 'extract' in meeting_elements:
+            for line in meeting_searcher.sliding_window:
+                if not line:
+                    continue
+                print(line['text_id'], line['text_string'])
         # score the found meeting elements for how well they match the order in which they are expected to appear
         # Empirically established threshold:
         # - need to match at least four meeting elements
@@ -272,12 +276,12 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             if meeting_doc.metadata['num_lines'] == 0:
                 # A meeting with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
-                # print("updating date backwards")
+                # Also, reset the session counter
+                meeting_searcher.sessions[meeting_doc.metadata['meeting_date']] = 0
                 meeting_searcher.update_meeting_date(day_shift=-1)
             else:
                 yield meeting_doc
             # update the current meeting date in the searcher
-            # print("get_meeting_dates updates date")
             meeting_searcher.update_meeting_date()
             # update the searcher with new date strings for the next seven days
             meeting_searcher.update_meeting_date_searcher()

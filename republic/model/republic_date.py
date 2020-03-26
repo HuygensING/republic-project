@@ -12,6 +12,8 @@ exception_dates = {
     # it needs to override the computed day shift
     # "1705-03-31": {"mistake": "next day has wrong month name", "shift_days": 1, "month name": "Maert"},
     "1705-09-11": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1706-02-01": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1706-05-21": {"mistake": "next day has wrong week day name", "shift_days": 1},
 }
 
 
@@ -160,3 +162,18 @@ def get_next_date_strings(current_date: RepublicDate, num_dates: int = 3, includ
             # avoid going beyond December 31 into the next year
             continue
     return date_strings
+
+
+def derive_date_from_string(date_string: str, year: int) -> RepublicDate:
+    """Return a RepublicDate object derived from a meeting date string."""
+    weekday, _, day_num, month_name = date_string.split(' ')
+    day_num = int(day_num)
+    month_names = month_names_early if year <= 1750 else month_names_late
+    month = month_names.index(month_name) + 1
+    date = RepublicDate(year, month, day_num)
+    return date
+
+
+def get_shifted_date(current_date: RepublicDate, day_shift: int) -> RepublicDate:
+    new_date = current_date.date + datetime.timedelta(days=day_shift)
+    return RepublicDate(new_date.year, new_date.month, new_date.day)
