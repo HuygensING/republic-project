@@ -320,7 +320,7 @@ class MeetingSearcher(EventSearcher):
         if prev_date and self.current_date - prev_date > datetime.timedelta(days=4):
             # If the new date is more than 4 days ahead of the previous date,
             # it is likely mis-recognized. This date will be quarantined.
-            status = 'quarantine'
+            status = 'quarantined'
             print('DATE IS QUARANTINED')
         if prev_prev_date and self.current_date - prev_prev_date > datetime.timedelta(days=7):
             # If the date is more than 7 days ahead if the penultimate date,

@@ -499,7 +499,15 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         print('Indexing meeting on date', meeting.metadata['meeting_date'],
               '\tdate_string:', meeting_date_string,
               '\tnum meeting lines:', meeting.metadata['num_lines'])
-        print()
-        es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                 id=meeting.id, body=meeting.to_json(with_columns=True))
+        try:
+            if meeting.metadata['date_shift_status'] == 'quarantined':
+                quarantine_index = inv_config['meeting_index'] + '_quarantine'
+                es.index(index=quarantine_index, doc_type=inv_config['meeting_doc_type'],
+                         id=meeting.id, body=meeting.to_json(with_columns=True))
+            else:
+                es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
+                         id=meeting.id, body=meeting.to_json(with_columns=True))
+        except RequestError:
+            print('skipping doc')
+            continue
     return None
