@@ -168,13 +168,15 @@ class GatedWindow:
         self.shut_threshold = shut_threshold
         self.gate_open = False
         self.num_chars = 0
+        self.let_through: List[bool] = [False] * window_size
 
     def add_doc(self, doc: Dict[str, Union[str, int, Dict[str, int]]]):
         """Add a document to the sliding window. doc should be a dictionary with
         the 'text' property containing the document text."""
         if len(self.sliding_window) >= self.window_size:
             self.sliding_window = self.sliding_window[-self.window_size+1:]
-        doc['let_through'] = False
+            self.let_through = self.let_through[-self.window_size+1:]
+        self.let_through += [False]
         self.sliding_window += [doc]
         self.check_treshold()
 
@@ -184,28 +186,22 @@ class GatedWindow:
 
     def check_treshold(self) -> None:
         """Check whether the number of characters in the sliding window crosses
-        the current threshold. If so, open/shut the gate."""
+        the current threshold and set let_through accordingly."""
         if self.sliding_window[self.middle_line] is None:
             pass
         elif self.num_chars_in_window() < self.shut_threshold:
-            self.sliding_window[self.middle_line]['num_chars'] = self.num_chars_in_window()
-            self.sliding_window[self.middle_line]['let_through'] = True
+            self.let_through[self.middle_line] = True
         if self.sliding_window[0] is None:
             # If the sliding window is not filled yet, the gate is closed
             return None
-        self.num_chars = self.num_chars_in_window()
-        if self.gate_open and self.num_chars > self.shut_threshold:
-            self.gate_open = False
-        elif not self.gate_open and self.num_chars < self.open_threshold:
-            self.gate_open = True
 
     def gate_is_open(self) -> bool:
         """Check if the gate is currently open."""
         return self.gate_open
 
     def get_first_doc(self) -> Dict[str, Union[str, int, Dict[str, int]]]:
-        """Return the first sentence in the sliding window."""
-        return self.sliding_window[0]
+        """Return the first sentence in the sliding window if it is set to be let through, otherwise return None."""
+        return self.sliding_window[0] if self.let_through[0] else None
 
 
 def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
@@ -229,12 +225,11 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         if (li+1) % 1000 == 0:
             print(f'{li+1} lines processed, {lines_skipped} lines skipped in fuzzy search')
         check_line = gated_window.get_first_doc()
-        if not check_line or not check_line['let_through']:
+        if not check_line:
             lines_skipped += 1
             # add a None to the sliding window as a placeholder so the sliding window keeps sliding
             meeting_searcher.add_empty_document()
         else:
-            check_line = gated_window.get_first_doc()
             # add the line as a new document to the meeting searcher and search for meeting elements
             meeting_searcher.add_document(check_line['id'], check_line['text'])
         # Keep sliding until the first line in the sliding window has matches
