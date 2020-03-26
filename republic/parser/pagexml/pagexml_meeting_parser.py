@@ -161,7 +161,7 @@ class GatedWindow:
 
     def __init__(self, window_size: int = 10, open_threshold: int = 300, shut_threshold: int = 400):
         self.window_size = window_size
-        self.middle_line = int(window_size/2)
+        self.middle_doc = int(window_size/2)
         # fill the sliding window with empty elements, so that first documents are appended at the end.
         self.sliding_window: List[Union[None, Dict[str, Union[str, int, Dict[str, int]]]]] = [None] * window_size
         self.open_threshold = open_threshold
@@ -187,17 +187,11 @@ class GatedWindow:
     def check_treshold(self) -> None:
         """Check whether the number of characters in the sliding window crosses
         the current threshold and set let_through accordingly."""
-        if self.sliding_window[self.middle_line] is None:
+        if self.sliding_window[self.middle_doc] is None:
+            # If the sliding window is not filled yet, the middle doc is not let through
             pass
         elif self.num_chars_in_window() < self.shut_threshold:
-            self.let_through[self.middle_line] = True
-        if self.sliding_window[0] is None:
-            # If the sliding window is not filled yet, the gate is closed
-            return None
-
-    def gate_is_open(self) -> bool:
-        """Check if the gate is currently open."""
-        return self.gate_open
+            self.let_through[self.middle_doc] = True
 
     def get_first_doc(self) -> Dict[str, Union[str, int, Dict[str, int]]]:
         """Return the first sentence in the sliding window if it is set to be let through, otherwise return None."""
