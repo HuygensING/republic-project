@@ -311,7 +311,9 @@ class MeetingSearcher(EventSearcher):
         if current_date.is_rest_day():
             # If the current date is a rest day, the subsequent meeting is on the next work day
             includes_rest_day = True
-            current_date = get_next_workday(self.current_date)
+            next_work_day = get_next_workday(self.current_date)
+            if next_work_day:
+                current_date = next_work_day
         meeting_date = current_date.isoformat()
         self.sessions[meeting_date] += 1
         meeting_metadata = {
