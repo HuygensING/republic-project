@@ -14,6 +14,8 @@ exception_dates = {
     "1705-09-11": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1706-02-01": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1706-05-21": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1713-03-13": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1716-02-27": {"mistake": "next day has wrong week day name", "shift_days": 1},
 }
 
 

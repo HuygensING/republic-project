@@ -303,9 +303,40 @@ class MeetingSearcher(EventSearcher):
             attendance_matches += [match for match in line['matches'] if match['searcher'] == 'attendance_searcher']
         return attendance_matches
 
+    def get_prev_dates(self):
+        found_dates = sorted(self.sessions.keys())
+        prev_date, prev_prev_date = None, None
+        if len(found_dates) > 0:
+            year, month, day = [int(part) for part in found_dates[-1].split('-')]
+            prev_date = RepublicDate(year, month, day)
+        if len(found_dates) > 1:
+            year, month, day = [int(part) for part in found_dates[-2].split('-')]
+            prev_prev_date = RepublicDate(year, month, day)
+        return prev_date, prev_prev_date
+
+    def check_date_shift_validity(self) -> str:
+        status = 'normal'
+        prev_date, prev_prev_date = self.get_prev_dates()
+        if prev_date and self.current_date - prev_date > datetime.timedelta(days=4):
+            # If the new date is more than 4 days ahead of the previous date,
+            # it is likely mis-recognized. This date will be quarantined.
+            status = 'quarantine'
+            print('DATE IS QUARANTINED')
+        if prev_prev_date and self.current_date - prev_prev_date > datetime.timedelta(days=7):
+            # If the date is more than 7 days ahead if the penultimate date,
+            # something went wrong and the date should be pushed back by a week.
+            status = 'set_back'
+            print('DATE IS SET BACK')
+            # update the current meeting date in the searcher
+            self.update_meeting_date(day_shift=-7)
+            # update the searcher with new date strings for the next seven days
+            self.update_meeting_date_searcher()
+        return status
+
     def parse_meeting_metadata(self) -> dict:
         """Turn meeting elements and sliding window into proper metadata."""
         # make sure local current_date is a copy and not a reference to the original object
+        date_shift_status = self.check_date_shift_validity()
         current_date = copy.copy(self.current_date)
         includes_rest_day = False
         if current_date.is_rest_day():
@@ -325,6 +356,7 @@ class MeetingSearcher(EventSearcher):
             'meeting_month': current_date.month,
             'meeting_day': current_date.day,
             'meeting_weekday': current_date.day_name,
+            'date_shift_status': date_shift_status,
             # in case there are more meeting sessions on the same day
             'session': self.sessions[meeting_date],
             'president': None,
@@ -395,7 +427,8 @@ class MeetingSearcher(EventSearcher):
         determine the number of days to shift current date based on found meeting date.
         If no day_shift is passed and not meeting date was found, keep current date."""
         if day_shift:
-            # if a day_shift is passed, don't move the current date unless
+            # if a day_shift is passed, this is an override, probably because of too large
+            # date shifts (see parse_meeting_metadata method above)
             new_date = get_shifted_date(self.current_date, day_shift)
             self.current_date = new_date
             return self.current_date
