@@ -253,7 +253,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         # - need to match at least four meeting elements
         # - number of elements in expected order must be 80% of found elements
         # (so with four elements, all need to be in the right order, with five elements, one may be in wrong order)
-        if score_meeting_elements(meeting_elements, num_elements_threshold=4) > 0.95:
+        if score_meeting_elements(meeting_elements, num_elements_threshold=4) > 0.99:
             # get the first line of the new meeting day in the sliding window
             first_new_meeting_line_id = meeting_searcher.sliding_window[0]['text_id']
             # find that first line in the list of the collected meeting lines
