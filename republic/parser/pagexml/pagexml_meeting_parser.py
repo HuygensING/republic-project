@@ -208,7 +208,9 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
     # - make model year-dependent
     # - check for large date jumps and short meeting docs
     current_date = initialize_inventory_date(inv_metadata)
+    print('init:', current_date.isoformat())
     meeting_searcher = MeetingSearcher(inv_num, current_date, meeting_phrase_model, window_size=30)
+    print('searcher:', meeting_searcher.current_date.isoformat())
     meeting_metadata = meeting_searcher.parse_meeting_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
     lines_skipped = 0
@@ -254,6 +256,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         # - number of elements in expected order must be 80% of found elements
         # (so with four elements, all need to be in the right order, with five elements, one may be in wrong order)
         if score_meeting_elements(meeting_elements, num_elements_threshold=4) > 0.95:
+            print('scored:', meeting_searcher.current_date.isoformat())
             # get the first line of the new meeting day in the sliding window
             first_new_meeting_line_id = meeting_searcher.sliding_window[0]['text_id']
             # find that first line in the list of the collected meeting lines
@@ -265,18 +268,23 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             # everything after the first new meeting day line belongs to the new meeting day
             meeting_lines = meeting_lines[new_meeting_index:]
             meeting_doc = generate_meeting_doc(meeting_metadata, finished_meeting_lines, meeting_searcher)
+            print('doc generated:', meeting_searcher.current_date.isoformat())
             if meeting_doc.metadata['num_lines'] == 0:
                 # A meeting with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
                 # Also, reset the session counter
                 meeting_searcher.sessions[meeting_doc.metadata['meeting_date']] = []
-                meeting_searcher.update_meeting_date(day_shift=-1)
+                date = meeting_searcher.current_date
+                if date.month == 1 and 1 < date.day <= 4:
+                    reset_date = RepublicDate(date.year, 1, 1)
+                    meeting_searcher.update_meeting_date(reset_date)
             else:
                 yield meeting_doc
             # update the current meeting date in the searcher
+            print('updating:', meeting_searcher.current_date.isoformat())
             meeting_searcher.update_meeting_date()
             # update the searcher with new date strings for the next seven days
-            meeting_searcher.update_meeting_date_searcher(num_dates=8)
+            meeting_searcher.update_meeting_date_searcher(num_dates=7)
             # get the meeting metadata for the new meeting date
             meeting_metadata = meeting_searcher.parse_meeting_metadata(meeting_doc.metadata)
             # reset the sliding window to search the next meeting opening
