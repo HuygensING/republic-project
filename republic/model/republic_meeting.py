@@ -633,6 +633,9 @@ class MeetingSearcher(EventSearcher):
                     new_date = get_shifted_date(self.current_date, day_shift)
                 except KeyError:
                     pass
+        if not new_date and self.current_date.month == 12 and self.current_date.day > 28:
+            # if at the end of the year there is no new date, keep using the current date
+            return self.current_date
         # print('old current_date:', self.current_date.isoformat())
         self.current_date = new_date
         # print('new current_date:', self.current_date.isoformat())
