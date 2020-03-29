@@ -159,10 +159,15 @@ def get_previous_day(current_date: RepublicDate) -> RepublicDate:
 
 def get_next_date_strings(current_date: RepublicDate, num_dates: int = 3, include_year: bool = True) -> List[str]:
     date_strings = []
+    if not current_date:
+        # if for some reason current_date is None, return an empty list
+        return date_strings
     loop_date = current_date
     for i in range(0, num_dates):
         date_strings.append(loop_date.date_year_string if include_year else loop_date.date_string)
         loop_date = get_next_day(loop_date)
+        if not loop_date:
+            break
         if loop_date.year != current_date.year:
             # avoid going beyond December 31 into the next year
             continue
