@@ -489,8 +489,11 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         return None
     for meeting in meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata):
         if meeting.metadata['num_lines'] > 4000:
-            print('Error: too many lines for meeting on date', meeting.metadata['meeting_date'])
-            continue
+            # exceptionally long meeting docs probably contain multiple meetings
+            # so quarantine these
+            meeting.metadata['date_shift_status'] = 'quarantined'
+            # print('Error: too many lines for meeting on date', meeting.metadata['meeting_date'])
+            # continue
         meeting_date_string = None
         if meeting.metadata['has_meeting_date_element']:
             for evidence in meeting.metadata['evidence']:

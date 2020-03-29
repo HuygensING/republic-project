@@ -16,6 +16,9 @@ exception_dates = {
     "1706-05-21": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1713-03-13": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1716-02-27": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1777-05-07": {"mistake": "OCR output is missing columns", "shift_days": 27},
+    "1777-06-23": {"mistake": "OCR output is missing columns", "shift_days": 3},
+    "1777-10-09": {"mistake": "OCR output is missing columns", "shift_days": 4},
 }
 
 
@@ -138,7 +141,7 @@ def get_next_workday(current_date: RepublicDate) -> Union[RepublicDate, None]:
 def get_previous_workday(current_date: RepublicDate) -> Union[RepublicDate, None]:
     previous_day = get_previous_day(current_date)
     while previous_day.is_rest_day():
-        previous_day = get_previous_day(current_date)
+        previous_day = get_previous_day(previous_day)
         if previous_day.year != current_date.year:
             return None
     return previous_day

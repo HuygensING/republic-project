@@ -2,8 +2,9 @@ from typing import List, Dict, Union, Iterator
 import copy
 
 from republic.model.republic_phrase_model import meeting_phrase_model
-from republic.model.republic_date import RepublicDate
-from republic.model.republic_meeting import MeetingSearcher, Meeting
+from republic.model.republic_date import RepublicDate, derive_date_from_string
+from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
+from republic.model.republic_meeting import meeting_element_order
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
@@ -102,22 +103,8 @@ def score_meeting_elements(meeting_elements: Dict[str, int], num_elements_thresh
     if len(meeting_elements.keys()) < num_elements_threshold:
         # we need at least num_elements_threshold elements to determine this is a new meeting date
         return 0
-    order = [
-        'meeting_date', 'meeting_year',
-        # This is mainly for the period of the Bataafsche Repbulic (1795-1796)
-        'tagline',
-        # holidays like new years day, Easter, Christmas, ... are mentioned if they are on normal work days
-        'holiday',
-        # rest days are Sundays and holidays (and Saturdays after 1753)
-        'rest_day',
-        # Special attendance by the prince is rare
-        'special_attendance', 'prince',
-        'presiding', 'president',
-        'attending', 'attendants',
-        'reviewed',
-    ]
     try:
-        numbered_elements = [order.index(element[0]) for element in elements]
+        numbered_elements = [meeting_element_order.index(element[0]) for element in elements]
     except ValueError:
         print(meeting_elements)
         raise
@@ -153,7 +140,23 @@ def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
 
 
 def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_searcher: MeetingSearcher) -> iter:
-    meeting = Meeting(meeting_searcher.current_date, meeting_metadata, meeting_lines)
+    meeting = Meeting(meeting_searcher.current_date, meeting_metadata, lines=meeting_lines)
+    # add number of lines to session info in meeting searcher
+    session_info = meeting_searcher.sessions[meeting_metadata['meeting_date']][-1]
+    session_info['num_lines'] = len(meeting_lines)
+    if meeting.date.is_rest_day() or not meeting_searcher.has_meeting_date_match():
+        return meeting
+    # Check if the next meeting date is more than 1 workday ahead
+    date_match = meeting_searcher.get_meeting_date_match()
+    new_date = derive_date_from_string(date_match['match_keyword'], meeting_searcher.year)
+    if meeting.date.isoformat() == new_date.isoformat():
+        # print('SAME DAY:', meeting_searcher.current_date.isoformat(), '\t', meeting.date.isoformat())
+        return meeting
+    workday_shift = calculate_work_day_shift(new_date, meeting.date)
+    # print('workday_shift:', workday_shift)
+    if workday_shift > 1:
+        print('MEETING DOC IS MULTI DAY')
+        meeting.metadata['status'] = 'multi_day'
     return meeting
 
 
@@ -206,7 +209,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
     # - check for large date jumps and short meeting docs
     current_date = initialize_inventory_date(inv_metadata)
     meeting_searcher = MeetingSearcher(inv_num, current_date, meeting_phrase_model, window_size=30)
-    meeting_metadata = meeting_searcher.parse_meeting_metadata()
+    meeting_metadata = meeting_searcher.parse_meeting_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
@@ -266,18 +269,18 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
                 # A meeting with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
                 # Also, reset the session counter
-                meeting_searcher.sessions[meeting_doc.metadata['meeting_date']] = 0
+                meeting_searcher.sessions[meeting_doc.metadata['meeting_date']] = []
                 meeting_searcher.update_meeting_date(day_shift=-1)
             else:
                 yield meeting_doc
             # update the current meeting date in the searcher
             meeting_searcher.update_meeting_date()
             # update the searcher with new date strings for the next seven days
-            meeting_searcher.update_meeting_date_searcher()
+            meeting_searcher.update_meeting_date_searcher(num_dates=8)
             # get the meeting metadata for the new meeting date
-            meeting_metadata = meeting_searcher.parse_meeting_metadata()
+            meeting_metadata = meeting_searcher.parse_meeting_metadata(meeting_doc.metadata)
             # reset the sliding window to search the next meeting opening
-            meeting_searcher.reset_sliding_window()
+            meeting_searcher.shift_sliding_window()
     meeting_metadata['num_lines'] = len(meeting_lines)
     # after processing all lines in the inventory, create a meeting doc from the remaining lines
     yield generate_meeting_doc(meeting_metadata, meeting_lines, meeting_searcher)

@@ -22,9 +22,13 @@ class EventSearcher:
     def __repr__(self):
         return f"EventSearcher({self.searchers})"
 
-    def reset_sliding_window(self) -> None:
+    def reset_sliding_window(self, first_lines: Union[None, int] = None) -> None:
         """Reset the sliding window to an empty list."""
-        self.sliding_window: List[Union[None, Dict[str, Union[str, int, list]]]] = [None] * self.window_size
+        if first_lines:
+            for line_index in range(0, first_lines):
+                self.sliding_window[line_index] = None
+        else:
+            self.sliding_window: List[Union[None, Dict[str, Union[str, int, list]]]] = [None] * self.window_size
 
     def add_searcher(self, searcher_config: dict, searcher_name: str,
                      phrase_model: PhraseModel):
