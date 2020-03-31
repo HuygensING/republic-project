@@ -202,6 +202,15 @@ meeting_phrase_model = [
         'label': 'special_attendance'
     },
     {
+        'keyword': 'Zyne Hoogheid den Heere Prince van ',
+        'label': 'prince_attending',
+        'start_year': 1703, 'end_year': 1796,
+        'line_type': 'multi_line',
+        'variants': [
+            'Syne Hoogheyd den Heere Prince van ',
+        ],
+    },
+    {
         'keyword': 'PRAESIDE,',
         'variants': ['P R AE S I D E,'],
         'start_year': 1703, 'end_year': 1796,
@@ -248,10 +257,13 @@ meeting_phrase_model = [
 
 extra_phrases = [
     {
-        'keyword': 'Zyne Hoogheid den Heere Prince van Orange en Nassau',
-        'label': 'prince',
+        'keyword': 'Zyne Hoogheid den Heere Prince van ',
+        'label': 'prince_attending',
         'start_year': 1703, 'end_year': 1796,
         'line_type': 'multi_line',
+        'variants': [
+            'Syne Hoogheyd den Heere Prince van ',
+        ],
         'max_offset': 4
     }
 ]

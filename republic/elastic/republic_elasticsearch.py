@@ -487,7 +487,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
     if not pages:
         print('No pages retrieved for inventory', inv_num)
         return None
-    for meeting in meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata):
+    for mi, meeting in enumerate(meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata)):
         if meeting.metadata['num_lines'] > 4000:
             # exceptionally long meeting docs probably contain multiple meetings
             # so quarantine these
@@ -499,9 +499,15 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
             for evidence in meeting.metadata['evidence']:
                 if evidence['metadata_field'] == 'meeting_date':
                     meeting_date_string = evidence['matches'][-1]['match_string']
-        print('Indexing meeting on date', meeting.metadata['meeting_date'],
-              '\tdate_string:', meeting_date_string,
-              '\tnum meeting lines:', meeting.metadata['num_lines'])
+        page_num = meeting.columns[0]['metadata']['page_num']
+        num_lines = meeting.metadata['num_lines']
+        meeting_id = meeting.metadata['id']
+        print(
+            f"{mi}\t{meeting_id}\t{meeting_date_string: <30}\tnum_lines: {num_lines}\tpage: {page_num}")
+
+        #print('Indexing meeting on date', meeting.metadata['meeting_date'],
+        #      '\tdate_string:', meeting_date_string,
+        #      '\tnum meeting lines:', meeting.metadata['num_lines'])
         try:
             if meeting.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['meeting_index'] + '_quarantine'

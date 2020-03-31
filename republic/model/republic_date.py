@@ -16,9 +16,14 @@ exception_dates = {
     "1706-05-21": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1713-03-13": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1716-02-27": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1747-11-13": {"mistake": "next day is misrecognized (Jovis instead of Martis)", "shift_days": 1},
+    "1762-11-11": {"mistake": "heavy bleed through on many pages", "shift_days": 11},
+    "1767-11-04": {"mistake": "bad OCR causes week of meetings missed", "shift_days": 7},
     "1777-05-07": {"mistake": "OCR output is missing columns", "shift_days": 27},
     "1777-06-23": {"mistake": "OCR output is missing columns", "shift_days": 3},
     "1777-10-09": {"mistake": "OCR output is missing columns", "shift_days": 4},
+    "1787-05-10": {"mistake": "next Saturday is a work day", "shift_days": 2},
+    "1787-05-12": {"mistake": "next Sunday is a work day", "shift_days": 1},
 }
 
 
@@ -60,6 +65,11 @@ class RepublicDate:
         Before 1754, that only includes Sundays, from 1754, it also includes Saturdays"""
         if self.is_holiday():
             return True
+        elif self.year >= 1754 and self.month == 12 and self.day in [23, 27] and self.day_name == 'Sabbathi':
+            # this is an exception: after two holidays that are normally work days (Christmas)
+            # the SG meets on the Saturday after Christmas if christmas starts on Thursday
+            # or if christmas starts on Monday.
+            return False
         elif self.year >= 1754 and self.day_name == 'Sabbathi':
             return True
         elif self.day_name == 'Dominica':

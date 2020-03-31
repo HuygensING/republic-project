@@ -7,7 +7,7 @@ from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.inventory_mapping import get_inventory_by_num
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
-from republic.model.republic_date import get_next_day, get_date_exception_shift, is_meeting_date_exception
+from republic.model.republic_date import get_date_exception_shift, is_meeting_date_exception, exception_dates
 from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
 from republic.model.republic_pagexml_model import parse_derived_coords
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
@@ -45,7 +45,7 @@ meeting_element_order = [
     # rest days are Sundays and holidays (and Saturdays after 1753)
     'rest_day',
     # Special attendance by the prince is rare
-    'special_attendance', 'prince',
+    'special_attendance', 'prince_attending',
     'presiding', 'president',
     'attending', 'attendants',
     'reviewed',
@@ -293,6 +293,7 @@ class MeetingSearcher(EventSearcher):
             if not line or len(line['matches']) == 0:
                 continue
             attendance_matches = [match for match in line['matches'] if match['searcher'] == 'attendance_searcher']
+            attendance_labels = [match['match_label'] for match in attendance_matches]
             for match in attendance_matches:
                 # attendants keywords should match at or near the start of the line
                 if match['match_offset'] > 4:
@@ -302,6 +303,10 @@ class MeetingSearcher(EventSearcher):
                 label = match['match_label']
                 # only add the match if there is no earlier match with the same label
                 if label in self.meeting_elements and self.meeting_elements[label] < line_index:
+                    continue
+                # PRAESIDE andn PRAESIDING cannot be on the same line, but the shorter one might match the later
+                # one. In that case, ignore the shorter match
+                if label == 'presiding' and 'attending' in attendance_labels:
                     continue
                 if label == 'president':
                     if 'meeting_date' in self.meeting_elements:
@@ -314,8 +319,19 @@ class MeetingSearcher(EventSearcher):
                             continue
                         distance = line_index - meeting_date_labels[-1]
                         # president should be no more than 5 lines from last meeting date
-                        if distance < 0 or distance > 5:
+                        if distance < 0:
                             continue
+                        if distance > 5:
+                            # there should be other meeting elements in between meeting_date and president
+                            president_index = meeting_element_order.index('president')
+                            earlier_element_indexes = []
+                            for earlier_element in meeting_element_order[:president_index]:
+                                if earlier_element in self.meeting_elements \
+                                        and self.meeting_elements[earlier_element] < line_index:
+                                    earlier_element_indexes += [self.meeting_elements[earlier_element]]
+                                max_index = max(earlier_element_indexes)
+                                if line_index - max_index > 4:
+                                    continue
                     if 'attendants' in self.meeting_elements and self.meeting_elements['attendants'] == line_index:
                         # First match of attendants is on same line as president: same string matches both phrases
                         # so remove the attendants phrase
@@ -386,8 +402,8 @@ class MeetingSearcher(EventSearcher):
 
     def shift_sliding_window(self):
         """Remove all lines up to the line with the last meeting element."""
-        last_meeting_element_line = self.get_last_meeting_element_line()
-        last_meeting_element_line_index = self.sliding_window.index(last_meeting_element_line)
+        last_element = self.get_last_meeting_element()
+        last_meeting_element_line_index = self.meeting_elements[last_element]
         self.reset_sliding_window(first_lines=last_meeting_element_line_index+1)
 
     def get_attendance_matches(self) -> List[Dict[str, Union[str, int, float]]]:
@@ -427,6 +443,11 @@ class MeetingSearcher(EventSearcher):
         # - if num lines exceeds 4000, add extra date string and make exception for large shift
         prev_date, prev_prev_date = self.get_prev_dates()
         prev_date_num_lines = 0
+        if prev_date.isoformat() in exception_dates:
+            # if previous date or the date before that is an exception, don't shift back
+            return status
+        if prev_prev_date and prev_prev_date.isoformat() in exception_dates:
+            return status
         if prev_date:
             prev_date_num_lines = sum([session['num_lines'] for session in self.sessions[prev_date.isoformat()]])
         if prev_prev_date:
@@ -456,16 +477,16 @@ class MeetingSearcher(EventSearcher):
                 status = 'quarantined'
                 print('DATE IS QUARANTINED')
             long_day_lines = 1000
-            if workday_shift < 7 and prev_date_num_lines > 7 * long_day_lines:
+            # if workday_shift < 7 and prev_date_num_lines > 7 * long_day_lines:
                 # If the date is less than 7 days ahead of the previous meeting,
                 # and the number of lines for the previous meeting is extremely high,
                 # something went wrong and the date should be moved forward by a week.
-                status = 'set_forward'
-                print('DATE IS SET FORWARD')
+            #    status = 'set_forward'
+            #    print('DATE IS SET FORWARD')
                 # update the current meeting date in the searcher
-                self.update_meeting_date(day_shift=7)
+            #    self.update_meeting_date(day_shift=7)
                 # update the searcher with new date strings for the next seven days
-                self.update_meeting_date_searcher()
+            #    self.update_meeting_date_searcher()
         return status
 
     def parse_meeting_metadata(self, prev_meeting_metadata: Union[None, dict]) -> dict:
@@ -481,12 +502,15 @@ class MeetingSearcher(EventSearcher):
             raise
         current_date = copy.copy(self.current_date)
         includes_rest_day = False
-        if current_date.is_rest_day():
+        prev_date, prev_prev_date = self.get_prev_dates()
+        if current_date.is_rest_day() and not is_meeting_date_exception(prev_date):
+            print('current date is rest, shifting')
             # If the current date is a rest day, the subsequent meeting is on the next work day
             includes_rest_day = True
             next_work_day = get_next_workday(self.current_date)
             if next_work_day:
                 current_date = next_work_day
+            print('shifting to:', current_date.isoformat())
         meeting_date = current_date.isoformat()
         session_num = len(self.sessions[meeting_date]) + 1
         self.sessions[meeting_date].append({'session_num': session_num, 'num_lines': 0})
@@ -581,7 +605,10 @@ class MeetingSearcher(EventSearcher):
         """Shift current date by day_shift days. If not day_shift is passed as argument,
         determine the number of days to shift current date based on found meeting date.
         If no day_shift is passed and not meeting date was found, keep current date."""
-        if day_shift:
+        if is_meeting_date_exception(self.current_date):
+            day_shift = get_date_exception_shift(self.current_date)
+            new_date = get_shifted_date(self.current_date, day_shift)
+        elif day_shift:
             # print('shifting by passing a day shift:', day_shift)
             # if a day_shift is passed, this is an override, probably because of too large
             # date shifts (see parse_meeting_metadata method above)
@@ -603,11 +630,8 @@ class MeetingSearcher(EventSearcher):
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
             if is_meeting_date_exception(self.current_date):
-                try:
-                    day_shift = get_date_exception_shift(self.current_date)
-                    new_date = get_shifted_date(self.current_date, day_shift)
-                except KeyError:
-                    pass
+                day_shift = get_date_exception_shift(self.current_date)
+                new_date = get_shifted_date(self.current_date, day_shift)
             #self.current_date = new_date
             #return self.current_date
         else:
@@ -618,9 +642,9 @@ class MeetingSearcher(EventSearcher):
             # however, if the number of lines for the previous meeting is high,
             # this is a signal that some days have been missed, so shift and extra day
             prev_session = self.sessions[self.current_date.isoformat()][-1]
-            if prev_session['num_lines'] > 1000:
-                print("SHIFTING BY TWO DAYS BECAUSE OF HIGH NUMBER OF MEETING LINES")
-                day_shift = 2
+            # if prev_session['num_lines'] > 1000:
+            #     print("SHIFTING BY TWO DAYS BECAUSE OF HIGH NUMBER OF MEETING LINES")
+            #     day_shift = 2
             new_date = get_shifted_date(self.current_date, day_shift)
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday

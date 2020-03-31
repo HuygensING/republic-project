@@ -2,7 +2,7 @@ from typing import List, Dict, Union, Iterator
 import copy
 
 from republic.model.republic_phrase_model import meeting_phrase_model
-from republic.model.republic_date import RepublicDate, derive_date_from_string
+from republic.model.republic_date import RepublicDate, derive_date_from_string, exception_dates
 from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
 from republic.model.republic_meeting import meeting_element_order
 
@@ -230,7 +230,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             # add the line as a new document to the meeting searcher and search for meeting elements
             meeting_searcher.add_document(check_line['id'], check_line['text'])
         # Keep sliding until the first line in the sliding window has matches
-        if meeting_searcher.sliding_window[0] and len(meeting_searcher.sliding_window[0]['matches']) == 0:
+        if not meeting_searcher.sliding_window[0] or len(meeting_searcher.sliding_window[0]['matches']) == 0:
             continue
         # get the meeting elements found in the lines of the sliding window
         meeting_elements = meeting_searcher.get_meeting_elements()
@@ -272,8 +272,9 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
                 meeting_searcher.sessions[meeting_doc.metadata['meeting_date']] = []
                 date = meeting_searcher.current_date
                 if date.month == 1 and 1 < date.day <= 4:
-                    reset_date = RepublicDate(date.year, 1, 1)
-                    meeting_searcher.update_meeting_date(reset_date)
+                    # reset_date = RepublicDate(date.year, 1, 1)
+                    day_shift = date.day - 1
+                    meeting_searcher.update_meeting_date(day_shift)
             else:
                 yield meeting_doc
             # update the current meeting date in the searcher
