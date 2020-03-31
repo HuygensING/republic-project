@@ -575,9 +575,10 @@ class MeetingSearcher(EventSearcher):
 
     def has_meeting_date_match(self) -> bool:
         """Check if the sliding window has a meeting date match."""
-        if 'meeting_date' not in self.meeting_elements:
+        meeting_elements = self.get_meeting_elements()
+        if 'meeting_date' not in meeting_elements:
             return False
-        match_line_index = self.meeting_elements['meeting_date']
+        match_line_index = meeting_elements['meeting_date']
         match_line = self.sliding_window[match_line_index]
         for match in match_line['matches']:
             if match['match_label'] == 'meeting_date':
