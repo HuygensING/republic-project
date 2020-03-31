@@ -52,9 +52,26 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
+        columns = page['columns']
+        merge = {}
+        for ci1, column1 in enumerate(page['columns']):
+            for ci2, column2 in enumerate(page['columns']):
+                if ci1 == ci2:
+                    continue
+                if column1['coords']['left'] >= column2['coords']['left'] and column1['coords']['right'] <= column2['coords']['right']:
+                    print(f'MERGE COLUMN {ci1} INTO COLUMN {ci2}')
+                    merge[ci1] = ci2
+        for merge_column in merge:
+            # merge contained column in container column
+            page['columns'][merge[merge_column]]['textregions'] += page['columns'][merge_column]['textregions']
         for ci, column in enumerate(page['columns']):
+            if ci in merge:
+                # skip contained column
+                continue
+            # print('column coords:', column['coords'])
             lines = []
             for ti, textregion in enumerate(column['textregions']):
+                # print('textregion coords:', textregion['coords'])
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
                 for li, line in enumerate(textregion['lines']):
@@ -80,6 +97,10 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
                         'coords': line['coords'],
                         'text': line['text']
                     }
+                    # page_num = page['metadata']['page_num']
+                    # left_right = f"{line['coords']['left']} <-> {line['coords']['right']}"
+                    # top_bottom = f"{line['coords']['top']} <-> {line['coords']['bottom']}"
+                    # print(page_num, ci, ti, '\t', left_right, '\t', top_bottom, '\t', line['text'])
                     lines += [line]
             # sort lines to make sure they are in reading order (assuming column has single text column)
             # some columns split their text in sub columns, but for meeting date detection this is not an issue
@@ -226,14 +247,22 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             lines_skipped += 1
             # add a None to the sliding window as a placeholder so the sliding window keeps sliding
             meeting_searcher.add_empty_document()
+            # print(li, None)
         else:
             # add the line as a new document to the meeting searcher and search for meeting elements
             meeting_searcher.add_document(check_line['id'], check_line['text'])
+            # print(li, check_line['text'])
         # Keep sliding until the first line in the sliding window has matches
+        # last_line = meeting_searcher.sliding_window[-1]
+        # if not last_line:
+        #     print(None)
+        # else:
+        #     print(li - 40, last_line['text_string'], [match['match_string'] for match in last_line['matches']])
         if not meeting_searcher.sliding_window[0] or len(meeting_searcher.sliding_window[0]['matches']) == 0:
             continue
         # get the meeting elements found in the lines of the sliding window
         meeting_elements = meeting_searcher.get_meeting_elements()
+        # print(meeting_elements)
         # check if first meeting element is in the first line of the sliding window
         if len(meeting_elements.items()) == 0 or min(meeting_elements.values()) != 0:
             # move to next line if first meeting element is not in the first line of the sliding window
