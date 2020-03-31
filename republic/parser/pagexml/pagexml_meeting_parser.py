@@ -52,14 +52,13 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
-        columns = page['columns']
         merge = {}
         for ci1, column1 in enumerate(page['columns']):
             for ci2, column2 in enumerate(page['columns']):
                 if ci1 == ci2:
                     continue
                 if column1['coords']['left'] >= column2['coords']['left'] and column1['coords']['right'] <= column2['coords']['right']:
-                    print(f'MERGE COLUMN {ci1} INTO COLUMN {ci2}')
+                    # print(f'MERGE COLUMN {ci1} INTO COLUMN {ci2}')
                     merge[ci1] = ci2
         for merge_column in merge:
             # merge contained column in container column
