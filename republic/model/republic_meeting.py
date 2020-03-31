@@ -503,7 +503,7 @@ class MeetingSearcher(EventSearcher):
         current_date = copy.copy(self.current_date)
         includes_rest_day = False
         prev_date, prev_prev_date = self.get_prev_dates()
-        if current_date.is_rest_day() and not is_meeting_date_exception(prev_date):
+        if current_date.is_rest_day() and prev_date and not is_meeting_date_exception(prev_date):
             print('current date is rest, shifting')
             # If the current date is a rest day, the subsequent meeting is on the next work day
             includes_rest_day = True

@@ -494,7 +494,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
             meeting.metadata['date_shift_status'] = 'quarantined'
             # print('Error: too many lines for meeting on date', meeting.metadata['meeting_date'])
             # continue
-        meeting_date_string = None
+        meeting_date_string = 'None'
         if meeting.metadata['has_meeting_date_element']:
             for evidence in meeting.metadata['evidence']:
                 if evidence['metadata_field'] == 'meeting_date':
