@@ -53,6 +53,16 @@ exception_dates = {
     "1792-03-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1792-03-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1794-03-24": {"mistake": "OCR problems, skip whole week", "shift_days": 7},
+    "1794-06-27": {"mistake": "next Sunday is a work day", "shift_days": 2},
+    "1794-09-27": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-10-31": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-11-01": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1794-11-07": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-11-21": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-11-28": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-12-05": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-12-12": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1794-12-19": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-09": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-10": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-01-16": {"mistake": "next Saturday is a work day", "shift_days": 1},
@@ -63,6 +73,18 @@ exception_dates = {
     "1795-03-07": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-05-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-05-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-05-29": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-05-30": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-06-27": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-07-03": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-07-10": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-07-31": {"mistake": "next Sunday is a work day", "shift_days": 2},
+    "1795-08-07": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-09-04": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-10-30": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-11-06": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-12-04": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-12-11": {"mistake": "next Sunday is a work day", "shift_days": 2},
 }
 
 
@@ -88,6 +110,16 @@ class RepublicDate:
 
     def __sub__(self, other):
         return self.date - other.date
+
+    def __cmp__(self, other):
+        """Override comparison operations to use the date properties for comparison."""
+        assert(isinstance(other, RepublicDate))
+        if self.date < other.date:
+            return -1
+        elif self.date == other.date:
+            return 0
+        else:
+            return 1
 
     def isoformat(self):
         return self.date.isoformat()
