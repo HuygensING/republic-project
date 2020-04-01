@@ -3,6 +3,7 @@ import copy
 
 from republic.model.republic_phrase_model import meeting_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string, exception_dates
+# print(exception_dates)
 from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
 from republic.model.republic_meeting import meeting_element_order
 
@@ -53,8 +54,9 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     Assumption: lines are returned in reading order."""
     for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
         merge = {}
-        for ci1, column1 in enumerate(page['columns']):
-            for ci2, column2 in enumerate(page['columns']):
+        columns = copy.copy(page['columns'])
+        for ci1, column1 in enumerate(columns):
+            for ci2, column2 in enumerate(columns):
                 if ci1 == ci2:
                     continue
                 if column1['coords']['left'] >= column2['coords']['left'] and column1['coords']['right'] <= column2['coords']['right']:
@@ -62,8 +64,8 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
                     merge[ci1] = ci2
         for merge_column in merge:
             # merge contained column in container column
-            page['columns'][merge[merge_column]]['textregions'] += page['columns'][merge_column]['textregions']
-        for ci, column in enumerate(page['columns']):
+            columns[merge[merge_column]]['textregions'] += columns[merge_column]['textregions']
+        for ci, column in enumerate(columns):
             if ci in merge:
                 # skip contained column
                 continue
@@ -282,6 +284,11 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
         # - number of elements in expected order must be 80% of found elements
         # (so with four elements, all need to be in the right order, with five elements, one may be in wrong order)
         if score_meeting_elements(meeting_elements, num_elements_threshold=4) > 0.99:
+            # for line in meeting_searcher.sliding_window:
+            #     if not line:
+            #         print(None)
+            #     else:
+            #         print(line['text_string'], [match['match_keyword'] for match in line['matches']])
             # get the first line of the new meeting day in the sliding window
             first_new_meeting_line_id = meeting_searcher.sliding_window[0]['text_id']
             # find that first line in the list of the collected meeting lines

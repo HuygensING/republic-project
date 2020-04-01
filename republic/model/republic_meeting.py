@@ -266,6 +266,8 @@ class MeetingSearcher(EventSearcher):
         for line_index, line in enumerate(self.sliding_window):
             if not line:
                 continue
+            if self.has_attendance_match(line):
+                break
             if line_index > 10:
                 # date matches should be early in the sliding window
                 break
@@ -395,6 +397,8 @@ class MeetingSearcher(EventSearcher):
         for line in self.sliding_window:
             if not line:
                 continue
+            if self.has_attendance_match(line):
+                break
             if line == last_meeting_element_line:
                 break
             date_matches += [match for match in line['matches'] if match['searcher'] == 'date_searcher']
@@ -585,6 +589,17 @@ class MeetingSearcher(EventSearcher):
                 return True
         return False
 
+    def has_attendance_match(self, line: Dict[str, Union[str, int, dict]]) -> bool:
+        """Return boolean checking if one of the matches is an attendance match."""
+        attendance_labels = [
+            'special_attendance', 'prince_attending', 'presiding', 'president', 'attending', 'attendants'
+        ]
+        has_match = False
+        for match in line['matches']:
+            if match['match_label'] in attendance_labels:
+                has_match = True
+        return has_match
+
     def get_meeting_date_match(self) -> Dict[str, Union[str, int, float]]:
         """If the sliding window has a meeting date match, return it."""
         if 'meeting_date' not in self.meeting_elements:
@@ -595,6 +610,8 @@ class MeetingSearcher(EventSearcher):
         for line in self.sliding_window:
             if not line:
                 continue
+            if self.has_attendance_match(line):
+                break
             if line == last_meeting_element_line:
                 break
             date_matches = [match for match in line['matches'] if match['match_label'] == 'meeting_date']
@@ -617,8 +634,6 @@ class MeetingSearcher(EventSearcher):
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
                 new_date = get_next_workday(new_date)
-            #self.current_date = new_date
-            #return self.current_date
         elif self.has_meeting_date_match():
             # there is a meeting date match
             date_match = self.get_meeting_date_match()
@@ -633,8 +648,6 @@ class MeetingSearcher(EventSearcher):
             if is_meeting_date_exception(self.current_date):
                 day_shift = get_date_exception_shift(self.current_date)
                 new_date = get_shifted_date(self.current_date, day_shift)
-            #self.current_date = new_date
-            #return self.current_date
         else:
             # No date string was found and none has been passed in the method call,
             # so assume this is the next day
@@ -642,7 +655,7 @@ class MeetingSearcher(EventSearcher):
             # print('shifting by default day_shift:', day_shift)
             # however, if the number of lines for the previous meeting is high,
             # this is a signal that some days have been missed, so shift and extra day
-            prev_session = self.sessions[self.current_date.isoformat()][-1]
+            # prev_session = self.sessions[self.current_date.isoformat()][-1]
             # if prev_session['num_lines'] > 1000:
             #     print("SHIFTING BY TWO DAYS BECAUSE OF HIGH NUMBER OF MEETING LINES")
             #     day_shift = 2
