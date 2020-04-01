@@ -291,9 +291,23 @@ class MeetingSearcher(EventSearcher):
     def extract_attendance_matches(self):
         """Extract matches with meeting attendance labels and add the corresponding
         line_index to the meeting elements in the current sliding window."""
+        first_date = None
+        if 'meeting_date' in self.meeting_elements:
+            date_match = self.get_meeting_date_match()
+            first_date = derive_date_from_string(date_match['match_keyword'], self.year)
         for line_index, line in enumerate(self.sliding_window):
             if not line or len(line['matches']) == 0:
                 continue
+            # check if after the first date in line order, any later dates are found that are temporally
+            # out of order (i.e. before the first date). If so, we're not in a meeting opening
+            date_matches = [match for match in line['matches'] if match['match_label'] == 'meeting_date']
+            dates_ordered = True
+            for date_match in date_matches:
+                date = derive_date_from_string(date_match['match_keyword'], self.year)
+                if first_date and date.date < first_date.date:
+                    dates_ordered = False
+            if not dates_ordered:
+                break
             attendance_matches = [match for match in line['matches'] if match['searcher'] == 'attendance_searcher']
             attendance_labels = [match['match_label'] for match in attendance_matches]
             for match in attendance_matches:
@@ -306,7 +320,7 @@ class MeetingSearcher(EventSearcher):
                 # only add the match if there is no earlier match with the same label
                 if label in self.meeting_elements and self.meeting_elements[label] < line_index:
                     continue
-                # PRAESIDE andn PRAESIDING cannot be on the same line, but the shorter one might match the later
+                # PRAESIDE and PRAESIDING cannot be on the same line, but the shorter one might match the later
                 # one. In that case, ignore the shorter match
                 if label == 'presiding' and 'attending' in attendance_labels:
                     continue
@@ -603,21 +617,25 @@ class MeetingSearcher(EventSearcher):
     def get_meeting_date_match(self) -> Dict[str, Union[str, int, float]]:
         """If the sliding window has a meeting date match, return it."""
         if 'meeting_date' not in self.meeting_elements:
-            raise KeyError('Not meeting date in sliding window')
+            raise KeyError('No meeting date in sliding window')
         # Use the last meeting date match in the sliding window, as earlier matches are more likely to be rest days
-        match = None
+        first_date_line = self.sliding_window[self.meeting_elements['meeting_date']]
+        date_match = None
+        for match in first_date_line['matches']:
+            if match['match_label'] == 'meeting_date':
+                date_match = match
         last_meeting_element_line = self.get_last_meeting_element_line()
         for line in self.sliding_window:
             if not line:
                 continue
             if self.has_attendance_match(line):
                 break
-            if line == last_meeting_element_line:
-                break
             date_matches = [match for match in line['matches'] if match['match_label'] == 'meeting_date']
             if len(date_matches) > 0:
-                match = date_matches[0]
-        return match
+                date_match = date_matches[0]
+            if line == last_meeting_element_line:
+                break
+        return date_match
 
     def update_meeting_date(self, day_shift: Union[None, int] = None) -> RepublicDate:
         """Shift current date by day_shift days. If not day_shift is passed as argument,
