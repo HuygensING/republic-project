@@ -55,6 +55,27 @@ def extract_id(uri):
 	file = parts[num - 1]
 	return os.path.splitext(file)[0]
 
+def external_id_exists(session, externalId):
+	url = TXT_REPO + '/documents'
+	params = {'externalId': externalId}
+	req = requests.Request('GET', url=url, params=params).prepare()
+	resp = session.send(req)
+	resp.raise_for_status()
+	if resp.status_code != 200:
+		return False
+	json = resp.json()
+	if json['total'] == 0:
+		return False
+	return json['items'][0]['externalId'] == externalId
+
+def register_external_id(session, externalId):
+	url = TXT_REPO + '/documents'
+	payload = {'externalId': externalId}
+	req = requests.Request('POST', url=url, json=payload).prepare()
+	resp = session.send(req)
+	resp.raise_for_status()
+	return resp.json()
+
 def main():
 	print("PIM_DOCS: " + PIM_DOCS)
 	print("PIM_IMGS: " + PIM_IMGS)
@@ -67,7 +88,12 @@ def main():
 			img_set = fetch_image_set(session, doc['uuid'])
 			for img in img_set:
 				externalId = extract_id(img['remoteuri'])
-				print("externalId: " + externalId)
+				if external_id_exists(session, externalId):
+					print("externalId: " + externalId + " already exists")
+				else:
+					print("registering externalId: " + externalId)
+					res = register_external_id(session, externalId)
+					print(res)
 			sys.exit(0) # early exit during development
 
 if __name__ == "__main__":
