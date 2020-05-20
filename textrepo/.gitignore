@@ -1,0 +1,2 @@
+#ignore configs that may contain private settings
+config.yml
