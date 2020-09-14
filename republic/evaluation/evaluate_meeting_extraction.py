@@ -136,12 +136,15 @@ def check_sample_date(es: Elasticsearch, sample_date: RepublicDate):
                     date_info['match_string'] = evidence['matches'][0]['match_string']
         first_column = meeting.columns[0]
         first_line = first_column['textregions'][0]['lines'][0]
-        #print('first line:', first_line)
         for field in ['id', 'inventory_num', 'scan_num', 'page_num', 'column_index', 'textregion_index', 'line_index']:
             date_info[field] = first_line[field]
         urls = get_scan_urls(es, first_column['metadata']['scan_num'], first_column['metadata']['inventory_num'])
         date_info['viewer_url'] = urls['viewer_url']
         date_info['iiif_url'] = first_column['metadata']['iiif_url']
+        if 'status' in meeting.metadata:
+            date_info['meeting_status'] = meeting.metadata['status']
+        else:
+            date_info['meeting_status'] = meeting.metadata['date_shift_status']
     print(date_info['weekday'], sample_date.isoformat(),
           date_info['match_string'])
     next_meeting = get_next_meeting(es, sample_date)
@@ -156,6 +159,10 @@ def check_sample_date(es: Elasticsearch, sample_date: RepublicDate):
         urls = get_scan_urls(es, first_column['metadata']['scan_num'], first_column['metadata']['inventory_num'])
         date_info['next_meeting_viewer_url'] = urls['viewer_url']
         date_info['next_meeting_iiif_url'] = first_column['metadata']['iiif_url']
+        if 'status' in next_meeting.metadata:
+            date_info['next_meeting_status'] = next_meeting.metadata['status']
+        else:
+            date_info['next_meeting_status'] = next_meeting.metadata['date_shift_status']
     prev_meeting = get_previous_meeting(es, sample_date)
     if prev_meeting:
         #print('\tthere is a previous meeting')
@@ -168,4 +175,21 @@ def check_sample_date(es: Elasticsearch, sample_date: RepublicDate):
         urls = get_scan_urls(es, first_column['metadata']['scan_num'], first_column['metadata']['inventory_num'])
         date_info['prev_meeting_viewer_url'] = urls['viewer_url']
         date_info['prev_meeting_iiif_url'] = first_column['metadata']['iiif_url']
+        if 'status' in prev_meeting.metadata:
+            date_info['prev_meeting_status'] = prev_meeting.metadata['status']
+        else:
+            date_info['prev_meeting_status'] = prev_meeting.metadata['date_shift_status']
+    if sample_date.is_rest_day() and not meeting and next_meeting:
+        date_info['inventory_num'] = next_meeting.metadata['inventory_num']
+        if 'status' in next_meeting.metadata:
+            date_info['meeting_status'] = next_meeting.metadata['status']
+        else:
+            date_info['meeting_status'] = next_meeting.metadata['date_shift_status']
+        first_column = next_meeting.columns[0]
+        first_line = first_column['textregions'][0]['lines'][0]
+        for field in ['id', 'inventory_num', 'scan_num', 'page_num', 'column_index', 'textregion_index', 'line_index']:
+            date_info[field] = first_line[field]
+        urls = get_scan_urls(es, first_column['metadata']['scan_num'], first_column['metadata']['inventory_num'])
+        date_info['viewer_url'] = urls['viewer_url']
+        date_info['iiif_url'] = first_column['metadata']['iiif_url']
     return date_info

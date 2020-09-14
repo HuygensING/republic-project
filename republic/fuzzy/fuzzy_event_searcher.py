@@ -110,11 +110,11 @@ class EventSearcher:
         for searcher_name in self.searchers:
             # add the matches to the document
             doc['matches'] += self.search_document(doc, searcher_name)
+        # add the document to the sliding window,
+        self.sliding_window += [doc]
         # if the window is too long, remove earliest docs to make room for the new doc
         if len(self.sliding_window) >= self.window_size:
             self.sliding_window = self.sliding_window[-self.window_size:]
-        # add the document to the sliding window,
-        self.sliding_window += [doc]
 
     def set_keyword_match_offsets(self, keyword_offsets: List[Dict[str, Union[str, int]]]):
         """Add a minimum and/or maximum document text offset threshold for a list keywords.
@@ -140,3 +140,12 @@ class EventSearcher:
                 else:
                     counts[match['match_keyword']] += 1
         return counts
+
+    def get_window_matches(self) -> List[Dict[str, Union[str, int]]]:
+        matches = []
+        for text_index, text in enumerate(self.sliding_window):
+            if text or len(text['matches']) == 0:
+                continue
+            for match in text['matches']:
+                matches.append({'text_index': text_index, 'text_id': text['text_id'], 'match': match})
+        return matches

@@ -178,7 +178,7 @@ def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_se
     # print('workday_shift:', workday_shift)
     if workday_shift > 1:
         print('MEETING DOC IS MULTI DAY')
-        meeting.metadata['status'] = 'multi_day'
+        meeting.metadata['date_shift_status'] = 'multi_day'
     return meeting
 
 
