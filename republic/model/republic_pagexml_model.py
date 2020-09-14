@@ -1,6 +1,18 @@
 from typing import Dict
 
 
+# 1724 (from 22 Sep, scan 334, page 666, cause: internal numbered pages 593-596 are misplaced, after 576)
+# 1785 pages out of order
+# typed page nums (scan_page_nums):
+# 1215/1216 (571/572) -
+# 1219/1220 (573/574) -
+# 1217/1218 (575/576) -
+# 1221/1222 (577/578))
+
+def fix_page_order():
+    return None
+
+
 def parse_derived_coords(item_list: list) -> Dict[str, int]:
     """Return the coordinates of a box around a given list of items that each have their own coordinates."""
     for item in item_list:

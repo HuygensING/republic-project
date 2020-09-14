@@ -152,9 +152,13 @@ class PhraseModel:
         ]
         """
         for keyword_label in keyword_labels:
+            if 'label' not in keyword_label:
+                continue
             if not isinstance(keyword_label['label'], str):
                 raise TypeError('keyword labels must be of type string')
         for keyword_label in keyword_labels:
+            if 'label' not in keyword_label:
+                continue
             keyword = keyword_label['keyword']
             label = keyword_label['label']
             if keyword not in self.keywords:

@@ -195,6 +195,9 @@ meeting_phrase_model = [
         'keyword': 'Zynde Vast- en Bede-dag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
+        'variants': [
+            'Zynde Danck-, Vast- en Bededagh'
+        ]
     },
     {
         'keyword': 'GECOMPAREERT,',
@@ -321,6 +324,14 @@ holiday_phrases = [
 
 resolution_phrase_model = [
     {
+        'keyword': 'hebben ter Vergaderinge ingebraght',
+        'label': 'resolution_opening',
+    },
+    {
+        'keyword': 'Zynde ter Vergaderinge getoont',
+        'label': 'resolution_opening',
+    },
+    {
         'keyword': 'Is ter Vergaderinge gelesen',
         'label': 'resolution_opening',
     },
@@ -328,6 +339,10 @@ resolution_phrase_model = [
         'keyword': 'Ontfangen een Missive van',
         'label': 'resolution_opening',
         'resolution_source': 'missive',
+        'variants': [
+            'ON een Missive van',
+            'ONtfangen een Miffive van'
+        ]
     },
     {
         'keyword': 'Is gehoort het rapport van',
@@ -343,6 +358,57 @@ resolution_phrase_model = [
         'keyword': 'Op de Memorie van',
         'label': 'resolution_opening',
         'resolution_source': 'memorie',
+    },
+    {
+        'keyword': 'is goedgevonden ende verstaan',
+        'label': 'resolution_decision',
+        'variants': [
+            "IS naar voorgaande deliberatie goedgevonden ende verstaan",
+        ]
+    },
+    {
+        'keyword': 'de voorfchreve Missive copielijck overgenomen',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'waar by goedgevonden is',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'gehouden voor gecommiteert',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'WAAR op gedelibereert en in achtinge genomen zynde',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'WAAR op gedelibereert zijnde',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'WAAR op gedelibereert',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'voor de genomen moeyte bedanckt',  # should probably move somewhere else
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'WAAR op geen resolutie is gevallen',
+        'label': 'resolution_decision',
+    },
+    {
+        'keyword': 'BY refumptie gedelibereert zynde',
+        'label': 'resolution_resumed',
+    },
+    {
+        'keyword': 'DE Resolutien, gisteren genomen',
+        'label': 'resolution_summarized',
+    },
+    {
+        'keyword': 'zyn gelesen en gerefumeert',
+        'label': 'resolution_summarized',
     },
 ]
 

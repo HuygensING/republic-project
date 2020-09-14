@@ -107,7 +107,7 @@ def make_bool_query(match_fields, size: int = 10000) -> dict:
 
 def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num: int) -> dict:
     match_fields = [
-        {'match': {'inventory_num': inventory_num}},
+        {'match': {'metadata.inventory_num': inventory_num}},
         {
             'range': {
                 'num_columns': {
@@ -136,11 +136,11 @@ def make_range_query(field: str, start: int, end: int):
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
-    match_fields = [{'match': {'page_type': page_type}}]
+    match_fields = [{'match': {'metadata.page_type': page_type}}]
     if inventory_num:
-        match_fields += [{'match': {'inventory_num': inventory_num}}]
+        match_fields += [{'match': {'metadata.inventory_num': inventory_num}}]
     if year:
-        match_fields += [{'match': {'year': year}}]
+        match_fields += [{'match': {'metadata.year': year}}]
     return make_bool_query(match_fields, size)
 
 
@@ -263,6 +263,18 @@ def retrieve_paragraph_by_type_page_number(es: Elasticsearch, page_number: int, 
     match_fields = [
         {'match': {'metadata.type_page_num': page_number}},
         {'match': {'metadata.inventory_year': config['year']}}
+    ]
+    query = make_bool_query(match_fields)
+    response = es.search(index=config['paragraph_index'], doc_type=config['paragraph_doc_type'], body=query)
+    if response['hits']['total'] == 0:
+        return []
+    else:
+        return [hit['_source'] for hit in response['hits']['hits']]
+
+
+def retrieve_paragraphs_by_inventory(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+    match_fields = [
+        {'match': {'metadata.inventory_num': inventory_num}}
     ]
     query = make_bool_query(match_fields)
     response = es.search(index=config['paragraph_index'], doc_type=config['paragraph_doc_type'], body=query)

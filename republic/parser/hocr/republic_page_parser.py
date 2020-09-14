@@ -195,7 +195,7 @@ def get_page_type(page_hocr: dict, config: dict, debug: bool = False) -> list:
 def make_page_doc(page_id: str, pages_info: dict, config: dict) -> dict:
     page_doc = {"doc_type": "page", "ocr_type": config["ocr_type"]}
     for prop in pages_info[page_id]:
-        if prop is "columns":
+        if prop == "columns":
             page_doc["columns"] = []
             for column_info in pages_info[page_id]["columns"]:
                 try:
