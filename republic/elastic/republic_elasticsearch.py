@@ -150,7 +150,7 @@ def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
 
 
 def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    query = {'query': {'match': {'inventory_num': inventory_num}}, 'size': 10000}
+    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
     response = es.search(index=config['scan_index'], body=query)
     if response['hits']['total'] == 0:
         return []
@@ -158,7 +158,7 @@ def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config:
 
 
 def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    query = {'query': {'match': {'inventory_num': inventory_num}}, 'size': 10000}
+    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
     return retrieve_pages_with_query(es, query, config)
 
 
