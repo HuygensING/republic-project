@@ -1,0 +1,6 @@
+repo: https://textrepo.example.org
+
+types:
+  hocr: application/xml
+  page: application/xml
+  text: text/plain
