@@ -142,7 +142,22 @@ class PhraseModel:
                     raise ValueError('Unknown keyword')
             return [{'keyword': keyword, 'variants': self.variants[keyword]} for keyword in keywords]
         else:
+            # return variants of all registered keywords
             return list(self.variants)
+
+    def get_labels(self, keywords: List[str] = None) -> List[Dict[str, str]]:
+        """Return a list of keywords and their labels, either for a given list of keywords or
+        for all registered keywords."""
+        if keywords:
+            for keyword in keywords:
+                if not isinstance(keyword, str):
+                    raise ValueError('Keywords must be of type string')
+                if keyword not in self.keywords:
+                    raise ValueError('Unknown keyword')
+            return [{'keyword': keyword, 'label': self.labels[keyword]} for keyword in keywords]
+        else:
+            # return variants of all registered keywords
+            return [{'keyword': keyword, 'label': self.labels[keyword]} for keyword in self.keywords]
 
     def add_labels(self, keyword_labels: List[Dict[str, Union[str, list]]]):
         """Add a label to a keyword. This can be used to group keywords under the same label.
