@@ -260,12 +260,22 @@ class FuzzyKeywordSearcher(object):
         closer in spelling to a known variant than to the keyword itself.
         Input is a list of dictionaries, with each dictionary containing two keys:
         - keyword: a string representation of the keyword
-        - variants: an array of strings that are variants of the keyword"""
+        - variants: an array of strings that are variants of the keyword
+        Alternatively, input is a dictionary with keywords as keys
+        and a list of variant strings as value"""
         for keyword in keyword_variants:
-            if keyword["keyword"] not in self.keyword_index:
-                raise KeyError("Unknown keyword:", keyword["keyword"])
-            for variant in keyword["variants"]:
-                self.index_spelling_variant(keyword["keyword"], variant)
+            variants = []
+            # keyword_variants as dictionary with keywords as keys, variants as values
+            if isinstance(keyword, str) and isinstance(keyword_variants[keyword], list):
+                variants = keyword_variants[keyword]
+            # keyword_variants as list of dictionaries with keyword and variant keys
+            elif isinstance(keyword, dict) and 'variants' in keyword:
+                variants = keyword['variants']
+                keyword = keyword['keyword']
+            if keyword not in self.keyword_index:
+                raise KeyError("Unknown keyword:", keyword)
+            for variant in variants:
+                self.index_spelling_variant(keyword, variant)
 
     def index_spelling_variant(self, keyword, variant):
         variant_keyword = Keyword(variant, ngram_size=self.ngram_size, skip_size=self.skip_size,
