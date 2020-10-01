@@ -1,3 +1,4 @@
+import datetime
 from typing import Union, List, Dict
 from elasticsearch import Elasticsearch, RequestError
 import json
@@ -307,18 +308,21 @@ def delete_es_index(es: Elasticsearch, index: str):
 
 
 def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config: dict):
+    inventory_metadata['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['inventory_index'], doc_type=config['inventory_doc_type'],
              id=inventory_metadata['inventory_num'], body=inventory_metadata)
 
 
 def index_scan(es: Elasticsearch, scan_hocr: dict, config: dict):
     doc = create_es_scan_doc(scan_hocr)
+    doc['metadata']['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
              id=scan_hocr['metadata']['scan_id'], body=doc)
 
 
 def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     doc = create_es_page_doc(page_hocr)
+    doc['metadata']['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['page_index'], doc_type=config['page_doc_type'],
              id=page_hocr['metadata']['page_id'], body=doc)
 
@@ -407,6 +411,7 @@ def index_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         ##################################
         page_es_doc = create_es_page_doc(page_doc)
         print(config['inventory_num'], page_doc['page_num'], page_doc['page_type'])
+        page_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id, body=page_es_doc)
         # print(page_id, page_type, numbering)
 
@@ -419,6 +424,7 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
             continue
         print('Indexing scan', scan_hocr['scan_id'])
         scan_es_doc = create_es_scan_doc(scan_hocr)
+        scan_es_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
                  id=scan_es_doc['scan_id'], body=scan_es_doc)
 
@@ -473,6 +479,7 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
                     paragraph['metadata']['categories'].add(category)
             paragraph['metadata']['categories'] = list(paragraph['metadata']['categories'])
             del paragraph['lines']
+            paragraph['metadata']['index_timestamp'] = datetime.datetime.now()
             es.index(index=inventory_config['paragraph_index'], doc_type=inventory_config['paragraph_doc_type'],
                      id=paragraph['metadata']['paragraph_id'], body=paragraph)
 
@@ -523,6 +530,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         #      '\tdate_string:', meeting_date_string,
         #      '\tnum meeting lines:', meeting.metadata['num_lines'])
         try:
+            meeting.metadata['index_timestamp'] = datetime.datetime.now()
             if meeting.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['meeting_index'] + '_quarantine'
                 es.index(index=quarantine_index, doc_type=inv_config['meeting_doc_type'],

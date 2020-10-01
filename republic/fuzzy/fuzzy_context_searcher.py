@@ -1,3 +1,4 @@
+from typing import Union
 import re
 import republic.fuzzy.fuzzy_patterns as fuzzy_patterns
 from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
@@ -6,6 +7,33 @@ from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
 #######################################
 # Functions for person name searching #
 #######################################
+
+
+def add_context_text(context, text):
+    if context["end_offset"] > len(text):
+        context["end_offset"] = len(text)
+    context_text = text[context["start_offset"]:context["end_offset"]]
+    context["match_term_in_context"] = context_text
+
+
+def make_base_context(term_match):
+    return {
+        "match_keyword": term_match["match_keyword"],
+        "match_term": term_match["match_term"],
+        "match_string": term_match["match_string"],
+        "match_offset": term_match["match_offset"],
+        "start_offset": term_match["match_offset"],
+        "end_offset": term_match["match_offset"] + len(term_match["match_string"]),
+    }
+
+
+def adjust_context_offset(context, context_size, before_context, after_context):
+    if before_context:
+        context["start_offset"] = context["match_offset"] - context_size
+    if after_context:
+        context["end_offset"] = context["match_offset"] + len(context["match_string"]) + context_size + 1
+    if context["match_offset"] < context_size:
+        context["start_offset"] = 0
 
 
 def make_search_context_patterns(context_string, person_name_patterns, context_patterns):
@@ -59,6 +87,20 @@ class FuzzyContextSearcher(FuzzyKeywordSearcher):
                 raise KeyError("Context pattern type does not exist")
         self.context_pattern_types = context_pattern_types
 
+    def find_candidates_with_context(self, text, keyword=None, ngram_size=2, context_size=20,
+                                     use_word_boundaries=None, match_initial_char=False,
+                                     include_variants=False, filter_distractors=False,
+                                     allow_overlapping_matches: Union[bool, None] = None):
+        """Find candidates in text and add context around the match candidates."""
+        self.find_candidates(text, keyword=keyword, ngram_size=ngram_size,
+                             use_word_boundaries=use_word_boundaries,
+                             match_initial_char=match_initial_char,
+                             include_variants=include_variants,
+                             filter_distractors=filter_distractors,
+                             allow_overlapping_matches=allow_overlapping_matches)
+        self.add_candidate_contexts(text, context_size=context_size)
+        return self.candidates["accept"]
+
     def find_candidates_in_context(self, context_match, keyword=None, ngram_size=2,
                                    use_word_boundaries=None, match_initial_char=False,
                                    include_variants=False, filter_distractors=False):
@@ -71,36 +113,22 @@ class FuzzyContextSearcher(FuzzyKeywordSearcher):
         self.update_candidate_offsets(context_match)
         return self.candidates["accept"]
 
+    def add_candidate_contexts(self, text: str, context_size: int = 20) -> None:
+        """Add context to each candidate match to allow context"""
+        context_matches = []
+        for candidate in self.candidates["accept"]:
+            context_match = get_term_context(text, candidate, context_size=context_size)
+            if 'match_label' in candidate:
+                context_match['match_label'] = candidate['match_label']
+            context_match['char_match'] = candidate['char_match']
+            context_match['ngram_match'] = candidate['ngram_match']
+            context_match['levenshtein_distance'] = candidate['levenshtein_distance']
+            context_matches.append(context_match)
+        self.candidates["accept"] = context_matches
+
     def update_candidate_offsets(self, context_match):
         for candidate in self.candidates["accept"]:
             candidate["match_offset"] += context_match["start_offset"]
-
-
-def add_context_text(context, text):
-    if context["end_offset"] > len(text):
-        context["end_offset"] = len(text)
-    context_text = text[context["start_offset"]:context["end_offset"]]
-    context["match_term_in_context"] = context_text
-
-
-def make_base_context(term_match):
-    return {
-        "match_keyword": term_match["match_keyword"],
-        "match_term": term_match["match_term"],
-        "match_string": term_match["match_string"],
-        "match_offset": term_match["match_offset"],
-        "start_offset": term_match["match_offset"],
-        "end_offset": term_match["match_offset"] + len(term_match["match_string"]),
-    }
-
-
-def adjust_context_offset(context, context_size, before_context, after_context):
-    if before_context:
-        context["start_offset"] = context["match_offset"] - context_size
-    if after_context:
-        context["end_offset"] = context["match_offset"] + len(context["match_string"]) + context_size + 1
-    if context["match_offset"] < context_size:
-        context["start_offset"] = 0
 
 
 if __name__ == "__main__":

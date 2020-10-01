@@ -2,6 +2,7 @@ from typing import List, Dict, Union
 import re
 from collections import defaultdict, Counter
 from republic.fuzzy.fuzzy_keyword import Keyword, text2skipgrams
+from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 
 
 #################################
@@ -182,11 +183,17 @@ class FuzzyKeywordSearcher(object):
         self.variant_map = defaultdict(dict)
         self.has_variant = defaultdict(dict)
         self.variant_ngram_index = defaultdict(dict)
+        self.label: Dict[str, str] = {}
         self.keyword_index = {}
         self.ngram_index = {}
         self.early_ngram_index = {}
         self.late_ngram_index = {}
         self.keyword_char_index = {}
+        self.candidates = {}
+        self.include_variants: bool = False
+        self.filter_distractors: bool = False
+        self.match_initial_char: bool = False
+        self.found: defaultdict = defaultdict(lambda: defaultdict(int))
 
     def configure(self, config):
         if "char_match_threshold" in config:
@@ -222,6 +229,14 @@ class FuzzyKeywordSearcher(object):
     # Keyword indexing functions #
     ##############################
 
+    def index_phrase_model(self, model: PhraseModel):
+        """Index keywords, variants and distractors from a phrase model. If labels are included,
+        these are also indexed such that fuzzy candidate matches include the label(s) of the
+        matching keyword."""
+        self.index_keywords(model.get_keywords())
+        self.index_spelling_variants(model.get_variants())
+        self.index_labels(model.get_labels())
+
     def index_keywords(self, keywords, ignorecase=None):
         """Index keywords as ngrams for quick lookup of keywords that match an ngram.
         The early_ngram_index only indexes the ngrams starting with one of the first
@@ -242,12 +257,15 @@ class FuzzyKeywordSearcher(object):
 
     def index_spelling_variants(self, keyword_variants):
         """Index spelling variants of an indexed keyword, to see if a keyword mention is
-        closer in spelling to a known variant than to the keyword itself."""
+        closer in spelling to a known variant than to the keyword itself.
+        Input is a list of dictionaries, with each dictionary containing two keys:
+        - keyword: a string representation of the keyword
+        - variants: an array of strings that are variants of the keyword"""
         for keyword in keyword_variants:
-            if keyword not in self.keyword_index:
-                raise KeyError("Unknown keyword:", keyword)
-            for variant in keyword_variants[keyword]:
-                self.index_spelling_variant(keyword, variant)
+            if keyword["keyword"] not in self.keyword_index:
+                raise KeyError("Unknown keyword:", keyword["keyword"])
+            for variant in keyword["variants"]:
+                self.index_spelling_variant(keyword["keyword"], variant)
 
     def index_spelling_variant(self, keyword, variant):
         variant_keyword = Keyword(variant, ngram_size=self.ngram_size, skip_size=self.skip_size,
@@ -262,6 +280,20 @@ class FuzzyKeywordSearcher(object):
         for keyword in keyword_distractor_terms:
             self.distractor_terms[keyword] = keyword_distractor_terms[keyword]
         self.update_known_candidates(keyword_distractor_terms)
+
+    def index_labels(self, keyword_labels: List[Union[str, Dict[str, str]]]):
+        """Index the label of an indexed keyword, which is added to candidate matches
+        of that keyword, for easy categorizing of candidates.
+        Input is a list of dictionaries, with each dictionary containing two keys:
+        - keyword: a string representation of the keyword
+        - label: a string representation of the label."""
+        for keyword in keyword_labels:
+            if keyword["keyword"] not in self.keyword_index:
+                raise KeyError("Unknown keyword:", keyword["keyword"])
+            self.label[keyword["keyword"]] = keyword["label"]
+
+    def has_label(self, keyword: str):
+        return keyword in self.label
 
     def update_known_candidates(self, distractor_terms):
         for match_string in self.known_candidates:
@@ -421,12 +453,15 @@ class FuzzyKeywordSearcher(object):
             match_keyword = list(self.variant_map[keyword_string].keys())
         if len(match_keyword) == 1:
             match_keyword = match_keyword[0]
-        return {
+        match = {
             "match_keyword": match_keyword,
             "match_term": keyword_string,
             "match_string": match_string,
             "match_offset": match_offset
         }
+        if self.has_label(match_keyword):
+            match["match_label"] = self.label[match_keyword]
+        return match
 
     def get_known_candidate(self, candidate):
         if self.is_known_candidate(candidate):
@@ -673,6 +708,8 @@ class FuzzyKeywordSearcher(object):
             text = text.lower()
         for ngram_string, ngram_offset in text2skipgrams(text, ngram_size=self.ngram_size, skip_size=self.skip_size):
             for match in self.find_ngram_matches(ngram_string, ngram_offset, text):
+                if match["match_term"] in self.found and match["match_offset"] in self.found[match["match_term"]]:
+                    continue
                 self.found[match["match_term"]][match["match_offset"]] = 1
                 candidates += [match]
         return candidates
@@ -711,7 +748,7 @@ class FuzzyKeywordSearcher(object):
                         use_word_boundaries: Union[bool, None] = None, match_initial_char: bool = False,
                         include_variants: bool = False, filter_distractors: bool = False,
                         allow_overlapping_matches: Union[bool, None] = None):
-        if not allow_overlapping_matches:
+        if allow_overlapping_matches is None:
             allow_overlapping_matches = self.allow_overlapping_matches
         self.include_variants = include_variants
         self.filter_distractors = filter_distractors
@@ -719,6 +756,7 @@ class FuzzyKeywordSearcher(object):
         if isinstance(use_word_boundaries, bool):
             self.use_word_boundaries = use_word_boundaries
         self.find_all_candidates(text, keyword)
+        #print(self.candidates['filter'])
         self.filter_all_candidates(ngram_size, allow_overlapping_matches=allow_overlapping_matches)
         if self.track_candidates:
             self.set_known_candidate_status()
@@ -804,6 +842,9 @@ def adjust_match_offset(match_offset, text):
         return match_offset + 1
     # if match is preceded by a non alpha-numeric character, keep match offset
     elif re.match(r"\W", text[match_offset - 1]):
+        return match_offset
+    # if match starts with a non alpha-numeric character, keep match offset
+    elif re.match(r"\W", text[match_offset]):
         return match_offset
     # if word boundary is one char before offset, adjust offset to preceding char
     elif re.match(r"\W", text[match_offset - 2]) or match_offset == 1:
