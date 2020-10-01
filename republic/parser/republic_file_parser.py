@@ -38,7 +38,6 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
     inv_info = get_inventory_by_num(inv_num)
     ocr_type = get_ocr_type(scan_file)
     inv_period = get_inventory_period(scan_file)
-    series_name = scan_fname.split('_')[0]
     urls = make_scan_urls(inv_info, scan_num=scan_num)
     return {
         'series_name': inv_info['series_name'],
@@ -52,7 +51,7 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         'scan_num': scan_num,
         'ocr_type': ocr_type,
         'doc_type': 'scan',
-        'scan_id': f'{series_name}_{inv_num}_{format_scan_number(scan_num)}',
+        'scan_id': f'{inv_info["series_name"]}_{inv_num}_{format_scan_number(scan_num)}',
         'viewer_url': urls['viewer_url'],
         'jpg_url': urls['jpg_url'],
         'iiif_url': urls['iiif_url']
