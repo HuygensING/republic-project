@@ -1,6 +1,7 @@
 import os
 import requests
 from typing import Dict, Union
+from elasticsearch import Elasticsearch
 
 from republic.model.inventory_mapping import get_inventory_by_num
 
@@ -42,9 +43,9 @@ def get_output_filename(inventory_num: int, ocr_type: str, inventory_config: dic
         ValueError("Unknown data type. Must be either 'hocr' or 'pagexml'.")
 
 
-def download_inventory(inventory_num: int, ocr_type: str, inventory_config: dict):
+def download_inventory(es: Elasticsearch, inventory_num: int, ocr_type: str, inventory_config: dict):
     inventory_info = get_inventory_by_num(inventory_num)
-    uuid = inventory_info['uuid']
+    uuid = inventory_info['inventory_uuid']
     try:
         urls = get_download_urls(uuid)
     except (TypeError, KeyError):

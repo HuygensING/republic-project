@@ -15,6 +15,8 @@ import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
+from settings import text_repo_url
+from republic.download.text_repo import TextRepo
 from settings import set_elasticsearch_config
 
 
@@ -356,6 +358,38 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
             pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
         for page_doc in pages_doc:
             index_page(es, page_doc, inventory_config)
+
+
+def parse_latest_version(text_repo, scan_num, inventory_metadata, inventory_config):
+    scan_id = get_scan_id(inventory_metadata, scan_num)
+    pagexml = text_repo.get_last_version_content(scan_id, inventory_config['ocr_type'])
+    file_extension = '.hocr' if inventory_config['ocr_type'] == 'hocr' else '.page.xml'
+    scan_doc = pagexml_parser.get_scan_pagexml(scan_id + file_extension, inventory_config, pagexml_data=pagexml)
+    scan_doc["version"] = text_repo.get_last_version_info(scan_id, file_type=inventory_config['ocr_type'])
+    return scan_doc
+
+
+def get_scan_id(inventory_metadata, scan_num):
+    scan_num_str = (4 - len(str(scan_num))) * "0" + str(scan_num)
+    return f'{inventory_metadata["series_name"]}_{inventory_metadata["inventory_num"]}_{scan_num_str}'
+
+
+def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]):
+    text_repo = TextRepo(text_repo_url)
+    inventory_metadata = retrieve_inventory_metadata(es, inv_num, inventory_config)
+    for scan_num in range(1, inventory_metadata["num_scans"]+1):
+        scan_doc = parse_latest_version(text_repo, scan_num, inventory_metadata, inventory_config)
+        index_scan(es, scan_doc, inventory_config)
+        if 'double_page' not in scan_doc['metadata']['scan_type']:
+            continue
+        if inventory_config['ocr_type'] == 'hocr':
+            pages_doc = hocr_page_parser.parse_double_page_scan(scan_doc, inventory_config)
+        else:
+            pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
+        for page_doc in pages_doc:
+            page_doc["version"] = scan_doc["version"]
+            index_page(es, page_doc, inventory_config)
+        break
 
 
 def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
