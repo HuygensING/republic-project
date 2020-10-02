@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import List, Union
 
 
 def get_inventory_by_num(inventory_num: int) -> dict:
@@ -1375,7 +1375,12 @@ inventory_mapping = [{'inventory_num': 3174,
                 'series_name': 'NL-HaNA_1.01.02',
                 'series_uuid': '6e8998f6-cc66-43b9-92ae-85423ed66958',
                 'year': 1724},
-               {'inventory_num': 3780, 'period': ['1725-01-01', '1725-12-31'], 'year': 1725},
+               {'inventory_num': 3780,
+                'inventory_uuid': 'ff2b431b-8294-450d-9d59-adc1dc76b33e',
+                'period': ['1725-01-01', '1725-12-31'],
+                'series_name': 'NL-HaNA_1.01.02',
+                'series_uuid': '6e8998f6-cc66-43b9-92ae-85423ed66958',
+                'year': 1725},
                {'inventory_num': 3781,
                 'inventory_uuid': '7806433b-7f26-4d4e-8e76-37d108a188de',
                 'period': ['1726-01-01', '1726-12-31'],
@@ -1460,7 +1465,12 @@ inventory_mapping = [{'inventory_num': 3174,
                 'series_name': 'NL-HaNA_1.01.02',
                 'series_uuid': '6e8998f6-cc66-43b9-92ae-85423ed66958',
                 'year': 1739},
-               {'inventory_num': 3795, 'period': ['1740-01-01', '1740-12-31'], 'year': 1740},
+               {'inventory_num': 3795,
+                'inventory_uuid': '876caca4-193a-4d38-89e4-c0be056f3568',
+                'period': ['1740-01-01', '1740-12-31'],
+                'series_name': 'NL-HaNA_1.01.02',
+                'series_uuid': '6e8998f6-cc66-43b9-92ae-85423ed66958',
+                'year': 1740},
                {'inventory_num': 3796,
                 'inventory_uuid': 'ece8f80b-0549-4e73-82ff-af47ed8525ac',
                 'period': ['1741-01-01', '1741-12-31'],
