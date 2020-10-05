@@ -360,13 +360,24 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
             index_page(es, page_doc, inventory_config)
 
 
-def parse_latest_version(text_repo, scan_num, inventory_metadata, inventory_config):
+def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config):
     scan_id = get_scan_id(inventory_metadata, scan_num)
-    pagexml = text_repo.get_last_version_content(scan_id, inventory_config['ocr_type'])
-    file_extension = '.hocr' if inventory_config['ocr_type'] == 'hocr' else '.page.xml'
-    scan_doc = pagexml_parser.get_scan_pagexml(scan_id + file_extension, inventory_config, pagexml_data=pagexml)
-    scan_doc["version"] = text_repo.get_last_version_info(scan_id, file_type=inventory_config['ocr_type'])
-    return scan_doc
+    try:
+        version_info = text_repo.get_last_version_info(scan_id, file_type=inventory_config['ocr_type'])
+        if es.exists(index=inventory_config["scan_index"], id=scan_id):
+            response = es.get(index=inventory_config["scan_index"], id=scan_id)
+            indexed_scan = response["_source"]
+            if indexed_scan["version"]["id"] == version_info["id"]:
+                # this version is already indexed
+                return None
+        pagexml = text_repo.get_last_version_content(scan_id, inventory_config['ocr_type'])
+        file_extension = '.hocr' if inventory_config['ocr_type'] == 'hocr' else '.page.xml'
+        scan_doc = pagexml_parser.get_scan_pagexml(scan_id + file_extension, inventory_config, pagexml_data=pagexml)
+        scan_doc["version"] = version_info
+        return scan_doc
+    except ValueError:
+        print('missing scan:', scan_id)
+        return None
 
 
 def get_scan_id(inventory_metadata, scan_num):
@@ -377,8 +388,12 @@ def get_scan_id(inventory_metadata, scan_num):
 def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]):
     text_repo = TextRepo(text_repo_url)
     inventory_metadata = retrieve_inventory_metadata(es, inv_num, inventory_config)
+    if "num_scans" not in inventory_metadata:
+        return None
     for scan_num in range(1, inventory_metadata["num_scans"]+1):
-        scan_doc = parse_latest_version(text_repo, scan_num, inventory_metadata, inventory_config)
+        scan_doc = parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config)
+        if not scan_doc:
+            continue
         index_scan(es, scan_doc, inventory_config)
         if 'double_page' not in scan_doc['metadata']['scan_type']:
             continue
@@ -389,7 +404,6 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
         for page_doc in pages_doc:
             page_doc["version"] = scan_doc["version"]
             index_page(es, page_doc, inventory_config)
-        break
 
 
 def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
