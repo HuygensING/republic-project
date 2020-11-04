@@ -143,7 +143,7 @@ class PhraseModel:
             return [{'keyword': keyword, 'variants': self.variants[keyword]} for keyword in keywords]
         else:
             # return variants of all registered keywords
-            return list(self.variants)
+            return [{'keyword': keyword, 'variants': self.variants[keyword]} for keyword in self.variants]
 
     def get_labels(self, keywords: List[str] = None) -> List[Dict[str, str]]:
         """Return a list of keywords and their labels, either for a given list of keywords or

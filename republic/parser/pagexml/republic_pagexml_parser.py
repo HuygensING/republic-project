@@ -23,7 +23,7 @@ def parse_republic_pagexml_file(pagexml_file: str) -> dict:
 
 
 def get_scan_pagexml(pagexml_file: str, inventory_config: dict, pagexml_data: Union[str, None] = None) -> dict:
-    print('Parsing file', pagexml_file)
+    #print('Parsing file', pagexml_file)
     scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
     try:
         scan_doc = pagexml_parser.parse_pagexml(scan_json)

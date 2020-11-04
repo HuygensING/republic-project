@@ -117,7 +117,7 @@ def add_candidate_scores(info, candidate):
 
 
 def matches_overlap(match1, match2):
-    """Determines wether two match strings overlap in the text"""
+    """Determines whether two match strings overlap in the text"""
     if match1["match_offset"] <= match2["match_offset"]:
         return match1["match_offset"] + len(match1["match_string"]) > match2["match_offset"]
     elif match1["match_offset"] > match2["match_offset"]:

@@ -1,6 +1,6 @@
-# REPUBLIC hOCR Parser
+# REPUBLIC Project
 
-Pyhton code for parsing and extraction information from hOCR files of the Resolutions of the Dutch States General.
+Code for Huygens ING project REPUBLIC (REsolutions PUBlished In a Compuational Environment). The project creates an online computational platform to access the Resolutions of the Dutch States General.
 
 ## Parsing REPBULIC hOCR Files
 

@@ -34,7 +34,12 @@ def get_ocr_type(filename: str) -> str:
 
 def get_republic_scan_metadata(scan_file: str) -> dict:
     _scan_dir, scan_fname = os.path.split(scan_file)
-    _, inv_num, scan_num = [int(part) for part in scan_fname.split('.')[2].split('_')]
+    try:
+        _, inv_num, scan_num = [int(part) for part in scan_fname.split('.')[2].split('_')]
+    except ValueError:
+        print(scan_fname)
+        print(scan_fname.split('.'))
+        raise
     inv_info = get_inventory_by_num(inv_num)
     ocr_type = get_ocr_type(scan_file)
     inv_period = get_inventory_period(scan_file)

@@ -1,12 +1,24 @@
 from typing import Dict, List, Union
+import gzip
 import requests
 
 
-def make_request(url: str, response_type: str = 'json') -> Union[List[dict], dict, str]:
-    response = requests.get(url)
+def make_request(url: str, accept_encoding: str = 'gzip') -> Union[List[dict], dict, str]:
+    headers = {'Accept-encoding': accept_encoding}
+    raise ValueError('TODO: accept encoding header')
+    response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        if response_type == 'json':
+        if 'Content-Encoding' not in response.headers:
+            print('missing encoding property for url', url)
+            try:
+                return gzip.decompress(response.content).decode(encoding='utf-8')
+            except TypeError:
+                pass
+            return response.text
+        if response.headers['Content-Encoding'] == 'json':
             return response.json()
+        if response.headers['Content-Encoding'] == 'gzip':
+            return gzip.decompress(response.content).decode(encoding='utf-8')
         else:
             return response.text
     else:
@@ -64,7 +76,10 @@ class TextRepo:
         """
         endpoint = f'/task/find/{external_id}/file/contents?type={file_type}'
         url = self.api_url + endpoint
-        return make_request(url, response_type='xml')
+        try:
+            return make_request(url)
+        except ConnectionError:
+            return None
 
     def get_file_info(self, external_id: str) -> Dict[str, Union[str, List[Dict[str, str]]]]:
         """Return information on the available files for a given external ID."""
@@ -92,7 +107,7 @@ class TextRepo:
     def get_content_by_version_id(self, version_id: str) -> str:
         """Return content of a version of a file given a version ID."""
         url = self.api_url + f'/rest/versions/{version_id}/contents'
-        return make_request(url, response_type='text')
+        return make_request(url)
 
     def get_last_version_info(self, scan_id, file_type: str) -> Dict[str, str]:
         """Return information on the the latest available file version

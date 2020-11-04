@@ -1,3 +1,4 @@
+from typing import Dict, List, Union
 import uuid
 from itertools import combinations
 from collections import defaultdict
@@ -5,19 +6,24 @@ from collections import defaultdict
 
 class Keyword(object):
 
-    def __init__(self, keyword, ngram_size=2, skip_size=2, early_threshold=3, late_threshold=3, within_range_threshold=3, ignorecase=False):
+    def __init__(self, keyword: Union[str, Dict[str, str]], ngram_size: int = 2, skip_size: int = 2,
+                 early_threshold: int = 3, late_threshold: int = 3, within_range_threshold: int = 3,
+                 ignore_case: bool = False):
         if isinstance(keyword, str):
             keyword = {"keyword_string": keyword}
+        self.keyword_string = keyword["keyword_string"]
         self.name = keyword["keyword_string"]
         self.properties = keyword
+        self.ngram_size = ngram_size
+        self.skip_size = skip_size
         self.early_threshold = early_threshold
         self.late_threshold = len(self.name) - late_threshold - ngram_size
         self.within_range_threshold = within_range_threshold
-        keyword_string = self.name
-        self.ignorecase = ignorecase
-        if ignorecase:
-            keyword_string = keyword_string.lower()
-        self.ngrams = [(ngram, offset) for ngram, offset in text2skipgrams(keyword_string, ngram_size=ngram_size, skip_size=skip_size)]
+        self.ignore_case = ignore_case
+        if ignore_case:
+            self.keyword_string = self.keyword_string.lower()
+        self.ngrams = [ngram for ngram in text2skipgrams(self.keyword_string,
+                                                         ngram_size=ngram_size, skip_size=skip_size)]
         self.ngram_index = defaultdict(list)
         for ngram, offset in self.ngrams:
             self.ngram_index[ngram] += [offset]
@@ -25,16 +31,42 @@ class Keyword(object):
         self.early_ngrams = {ngram: offset for ngram, offset in self.ngrams if offset < early_threshold}
         self.late_ngrams = {ngram: offset for ngram, offset in self.ngrams if offset > self.late_threshold}
         self.set_within_range()
+        self.ngram_distance = {}
+        self.metadata = {}
 
-    def index_ngrams(self):
+    def add_metadata(self, metadata_dict: Dict[str, any]) -> None:
+        """Add key/value pairs as metadata for this keyword.
+
+        :param metadata_dict: a dictionary of key/value pairs as metadata
+        :type metadata_dict: Dict[str, any]
+        :return: None
+        :rtype: None
+        """
+        for key in metadata_dict:
+            self.metadata[key] = metadata_dict[key]
+
+    def index_ngrams(self) -> None:
+        """Turn the keyword into a list of ngrams and index them with their offset(s) as values."""
         self.ngram_index = defaultdict(list)
         for ngram, offset in self.ngrams:
             self.ngram_index[ngram] += [offset]
 
-    def has_ngram(self, ngram):
+    def has_ngram(self, ngram: str) -> bool:
+        """For a given ngram, return boolean whether it is in the index
+
+        :param ngram: an ngram string
+        :type ngram: str
+        :return: A boolean whether ngram is in the index
+        :rtype: bool"""
         return ngram in self.ngram_index.keys()
 
-    def ngram_offsets(self, ngram):
+    def ngram_offsets(self, ngram: str) -> Union[None, List[int]]:
+        """For a given ngram return the list of offsets at which it appears.
+
+        :param ngram: an ngram string
+        :type ngram: str
+        :return: A list of string offsets at which the ngram appears
+        :rtype: Union[None, List[int]]"""
         if not self.has_ngram(ngram):
             return None
         return self.ngram_index[ngram]
@@ -62,10 +94,18 @@ class Keyword(object):
         else:
             return True
 
-    def early_ngram(self, ngram):
+    def is_early_ngram(self, ngram: str) -> bool:
+        """For a given ngram, return boolean whether it appears early in the keyword.
+
+        :param ngram: an ngram string
+        :type ngram: str
+        :return: A boolean whether ngram appears early in the keyword
+        :rtype: bool"""
         return ngram in self.early_ngrams
 
-def insert_skips(window, ngram_combinations):
+
+def insert_skips(window: str, ngram_combinations: List[List[int]]):
+    """For a given skip gram window, return all skip gram for a given configuration."""
     for combination in ngram_combinations:
         prev_index = 0
         skip_gram = window[0]
@@ -74,18 +114,35 @@ def insert_skips(window, ngram_combinations):
                 if index - prev_index > 1:
                     skip_gram += "_"
                 skip_gram += window[index]
+                print("skip_gram:", skip_gram, "index:", index)
                 prev_index = index
             yield skip_gram
         except IndexError:
             pass
 
-def text2skipgrams(text, ngram_size=2, skip_size=2):
-    indexes = [i for i in range(0,ngram_size+skip_size)]
+
+def text2skipgrams(text: str, ngram_size: int = 2, skip_size: int = 2) -> iter(str, int):
+    """Turn a text string into a list of skipgrams.
+
+    :param text: an text string
+    :type text: str
+    :param ngram_size: an integer indicating the number of characters in the ngram
+    :type ngram_size: int
+    :param skip_size: an integer indicating how many skip characters in the ngrams
+    :type skip_size: int
+    :return: An iterator returning tuples of skip_gram and offset
+    :rtype: iter(str, int)"""
+    indexes = [i for i in range(0, ngram_size+skip_size)]
+    print("indexes:", indexes)
     ngram_combinations = [combination for combination in combinations(indexes[1:], ngram_size-1)]
+    print(ngram_combinations)
     for offset in range(0, len(text)-1):
         window = text[offset:offset+ngram_size+skip_size]
+        print(offset, window)
         for skip_gram in insert_skips(window, ngram_combinations):
-            yield (skip_gram, offset)
+            print(skip_gram)
+            yield skip_gram, offset
+
 
 class PersonName(object):
 
@@ -117,12 +174,10 @@ class PersonName(object):
             if distractor_term not in self.distractor_terms:
                 self.distractor_terms += [distractor_term]
 
+
 def normalize_person_name(person_name_string):
     normalized = person_name_string.title()
     infixes = [" van ", " de ", " der ", " du ", " le ", " la "]
     for infix in infixes:
         normalized = normalized.replace(infix.title(), infix.lower())
     return normalized
-
-
-
