@@ -59,7 +59,8 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
             for ci2, column2 in enumerate(columns):
                 if ci1 == ci2:
                     continue
-                if column1['coords']['left'] >= column2['coords']['left'] and column1['coords']['right'] <= column2['coords']['right']:
+                if column1['coords']['left'] >= column2['coords']['left'] and \
+                        column1['coords']['right'] <= column2['coords']['right']:
                     # print(f'MERGE COLUMN {ci1} INTO COLUMN {ci2}')
                     merge[ci1] = ci2
         for merge_column in merge:
@@ -76,28 +77,35 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
                 for li, line in enumerate(textregion['lines']):
-                    if not line['text']:
-                        # skip non-text lines
-                        continue
-                    if line['coords']['left'] > textregion['coords']['left'] + 600:
-                        # skip short lines that are bleed through from opposite side of page
-                        # they are right aligned
-                        continue
                     line = {
                         'id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}-line-{li}',
-                        'inventory_num': page['metadata']['inventory_num'],
-                        'scan_id': page['metadata']['scan_id'],
+                        #'inventory_num': page['metadata']['inventory_num'],
+                        #'scan_id': page['metadata']['scan_id'],
                         'scan_num': page['metadata']['scan_num'],
                         'page_id': page['metadata']['page_id'],
-                        'page_num': page['metadata']['page_num'],
-                        'column_index': ci,
+                        #'page_num': page['metadata']['page_num'],
+                        #'column_index': ci,
                         'column_id': page['metadata']['page_id'] + f'-col-{ci}',
-                        'textregion_index': ti,
+                        #'textregion_index': ti,
                         'textregion_id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}',
                         'line_index': li,
+                        'page_version': page["version"],
                         'coords': line['coords'],
                         'text': line['text']
                     }
+                    if not line['text']:
+                        # skip non-text lines
+                        line["type"] = "empty"
+                    elif line['coords']['left'] > textregion['coords']['left'] + 600:
+                        # skip short lines that are bleed through from opposite side of page
+                        # they are right aligned
+                        line["type"] = "right_aligned_text"
+                    elif line['coords']['left'] > textregion['coords']['left'] + 150:
+                        # skip short lines that are bleed through from opposite side of page
+                        # they are right aligned
+                        line["type"] = "indented_text"
+                    else:
+                        line["type"] = "left_aligned_text"
                     # page_num = page['metadata']['page_num']
                     # left_right = f"{line['coords']['left']} <-> {line['coords']['right']}"
                     # top_bottom = f"{line['coords']['top']} <-> {line['coords']['bottom']}"
@@ -182,6 +190,26 @@ def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_se
     return meeting
 
 
+def get_meeting_pages_version(meeting: Meeting) -> List:
+    pages_version = {}
+    for line in meeting.lines:
+        pages_version[line["page_id"]] = copy.copy(line["page_version"])
+        pages_version[line["page_id"]]["page_id"] = line["page_id"]
+    return list(pages_version.values())
+
+
+def clean_lines(lines: List) -> List:
+    lines = copy.deepcopy(lines)
+    for line in lines:
+        del line["scan_num"]
+        del line["page_id"]
+        del line["column_id"]
+        del line["textregion_id"]
+        del line["line_index"]
+        del line["page_version"]
+    return lines
+
+
 class GatedWindow:
 
     def __init__(self, window_size: int = 10, open_threshold: int = 300, shut_threshold: int = 400):
@@ -239,6 +267,8 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages)):
         # list all lines belonging to the same meeting date
         meeting_lines += [line_info]
+        if line_info["type"] == "empty":
+            continue
         # add the line to the gated_window
         gated_window.add_doc(line_info)
         if (li+1) % 1000 == 0:

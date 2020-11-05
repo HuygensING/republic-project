@@ -8,7 +8,7 @@ class Keyword(object):
 
     def __init__(self, keyword: Union[str, Dict[str, str]], ngram_size: int = 2, skip_size: int = 2,
                  early_threshold: int = 3, late_threshold: int = 3, within_range_threshold: int = 3,
-                 ignore_case: bool = False):
+                 ignorecase: bool = False):
         if isinstance(keyword, str):
             keyword = {"keyword_string": keyword}
         self.keyword_string = keyword["keyword_string"]
@@ -19,8 +19,8 @@ class Keyword(object):
         self.early_threshold = early_threshold
         self.late_threshold = len(self.name) - late_threshold - ngram_size
         self.within_range_threshold = within_range_threshold
-        self.ignore_case = ignore_case
-        if ignore_case:
+        self.ignorecase = ignorecase
+        if ignorecase:
             self.keyword_string = self.keyword_string.lower()
         self.ngrams = [ngram for ngram in text2skipgrams(self.keyword_string,
                                                          ngram_size=ngram_size, skip_size=skip_size)]
@@ -114,7 +114,6 @@ def insert_skips(window: str, ngram_combinations: List[List[int]]):
                 if index - prev_index > 1:
                     skip_gram += "_"
                 skip_gram += window[index]
-                print("skip_gram:", skip_gram, "index:", index)
                 prev_index = index
             yield skip_gram
         except IndexError:
@@ -133,14 +132,10 @@ def text2skipgrams(text: str, ngram_size: int = 2, skip_size: int = 2) -> iter(s
     :return: An iterator returning tuples of skip_gram and offset
     :rtype: iter(str, int)"""
     indexes = [i for i in range(0, ngram_size+skip_size)]
-    print("indexes:", indexes)
     ngram_combinations = [combination for combination in combinations(indexes[1:], ngram_size-1)]
-    print(ngram_combinations)
     for offset in range(0, len(text)-1):
         window = text[offset:offset+ngram_size+skip_size]
-        print(offset, window)
         for skip_gram in insert_skips(window, ngram_combinations):
-            print(skip_gram)
             yield skip_gram, offset
 
 

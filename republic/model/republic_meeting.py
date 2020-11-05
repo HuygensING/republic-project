@@ -55,13 +55,16 @@ meeting_element_order = [
 class LogicalStructureDoc:
 
     def __init__(self,
+                 metadata: Union[None, Dict] = None,
                  lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
                  columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
         """This is a generic class for gathering lines that belong to the same logical structural element,
         even though they appear across different columns and pages."""
+        self.metadata = copy.deepcopy(metadata) if metadata is not None else {}
         self.lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = lines if lines else []
         self.column_ids = defaultdict(list)
         self.columns: List[Dict[str, Union[dict, list]]] = columns if columns else []
+        self.page_versions = []
         if lines:
             self.add_lines_as_columns()
         elif columns:
@@ -101,21 +104,21 @@ class LogicalStructureDoc:
             textregion_lines = defaultdict(list)
             for line in self.column_ids[column_id]:
                 textregion_lines[line['textregion_id']] += [line]
+            inv_metadata = get_inventory_by_num(self.metadata['inventory_num'])
+            urls = make_scan_urls(inv_metadata, scan_num=line['scan_num'])
             column = {
                 'metadata': {
                     'column_id': column_id,
-                    'inventory_num': line['inventory_num'],
-                    'scan_id': line['scan_id'],
+                    #'inventory_num': line['inventory_num'],
+                    #'scan_id': line['scan_id'],
                     'scan_num': line['scan_num'],
-                    'page_id': line['page_id'],
-                    'page_num': line['page_num'],
-                    'column_index': line['column_index'],
+                    #'page_id': line['page_id'],
+                    #'page_num': line['page_num'],
+                    #'column_index': line['column_index'],
                 },
                 'coords': parse_derived_coords(self.column_ids[column_id]),
                 'textregions': []
             }
-            inv_metadata = get_inventory_by_num(line['inventory_num'])
-            urls = make_scan_urls(inv_metadata, scan_num=line['scan_num'])
             column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
             for textregion_id in textregion_lines:
                 textregion = {
@@ -149,20 +152,20 @@ class Meeting(LogicalStructureDoc):
     def __init__(self, meeting_date: RepublicDate, metadata: Dict, **kwargs):
         """A meeting occurs on a specific day, with a president and attendants, and has textual content in the form of
          lines or possibly as Resolution objects."""
-        super().__init__(**kwargs)
+        super().__init__(metadata=metadata, **kwargs)
         self.date = meeting_date
         self.id = f"meeting-{meeting_date.isoformat()}-session-1"
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.resolutions = []
-        self.metadata = copy.copy(metadata)
         self.metadata['num_lines'] = len(self.lines)
 
     def get_metadata(self) -> Dict[str, Union[str, List[str]]]:
         """Return the metadata of the meeting, including date, president and attendants."""
         return self.metadata
 
-    def to_json(self, with_resolutions: bool = False, with_columns: bool = False, with_lines: bool = False):
+    def to_json(self, with_resolutions: bool = False, with_columns: bool = False,
+                with_lines: bool = False, with_page_versions: bool = False):
         """Return a JSON presentation of the meeting."""
         json_doc = {
             'metadata': self.metadata,
@@ -173,6 +176,8 @@ class Meeting(LogicalStructureDoc):
             json_doc['columns'] = self.get_columns()
         if with_lines:
             json_doc['lines'] = self.get_lines()
+        if with_page_versions:
+            json_doc["page_versions"] = self.page_versions
         return json_doc
 
 

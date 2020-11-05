@@ -32,7 +32,7 @@ def strip_suffix(match):
 #####################################
 
 
-def score_ngram_overlap(term1, term2, ngram_size):
+def score_ngram_overlap(term1: str, term2: str, ngram_size: int) -> int:
     term1_ngrams = make_ngrams(term1, ngram_size)
     term2_ngrams = make_ngrams(term2, ngram_size)
     overlap = 0
@@ -43,7 +43,7 @@ def score_ngram_overlap(term1, term2, ngram_size):
     return overlap
 
 
-def score_char_overlap_ratio(term1, term2):
+def score_char_overlap_ratio(term1: str, term2: str) -> float:
     max_overlap = len(term1)
     overlap = score_char_overlap(term1, term2)
     return overlap / max_overlap
@@ -83,7 +83,7 @@ def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[No
     return distances[-1]
 
 
-def score_char_overlap(term1: int, term2: str) -> int:
+def score_char_overlap(term1: str, term2: str) -> int:
     """Count the number of overlapping character tokens in two strings."""
     num_char_matches = 0
     for char in term2:
@@ -124,13 +124,13 @@ def matches_overlap(match1, match2):
         return match2["match_offset"] + len(match2["match_string"]) > match1["match_offset"]
 
 
-def rank_candidates(candidates, keyword, ngram_size=2):
+def rank_candidates(candidates: Union[str, dict], keyword, ngram_size=2):
     total_scores = []
     for candidate in candidates:
-        if isinstance(candidate, str):
-            match_string = candidate
-        elif isinstance(candidate, dict):
+        if isinstance(candidate, dict):
             match_string = candidate["match_string"]
+        else:
+            match_string = candidate
         score = {
             "candidate": candidate,
             "char": score_char_overlap_ratio(match_string, keyword),
@@ -638,7 +638,7 @@ class FuzzyKeywordSearcher(object):
         self.found = defaultdict(dict)
         self.open_candidates = defaultdict(dict)
         self.closed_candidates = []
-        if ignorecase or (ignorecase == None and self.ignorecase):
+        if ignorecase or (ignorecase is None and self.ignorecase):
             text = text.lower()
         for ngram_string, ngram_offset in text2skipgrams(text, ngram_size=self.ngram_size, skip_size=self.skip_size):
             self.find_ngram_matches_new(ngram_string, ngram_offset, text)
@@ -661,8 +661,8 @@ class FuzzyKeywordSearcher(object):
             # the keyword string
             if keyword_ngram_offsets[0] < 3:
                 # add ngram as start of new open candidate
-                self.open_candidates[keyword_string][ngram_offset] = [(ngram_string, ngram_offset, keyword_ngram_offsets[0])]
-                # print("starting candidate:", self.open_candidates[keyword_string][ngram_offset], ngram_string, ngram_offset)
+                open_candidate = [(ngram_string, ngram_offset, keyword_ngram_offsets[0])]
+                self.open_candidates[keyword_string][ngram_offset] = open_candidate
             else:
                 pass
 
@@ -675,13 +675,12 @@ class FuzzyKeywordSearcher(object):
                 remove_offsets += [start_offset]
             else:
                 best_keyword_offset = get_best_keyword_offset(keyword_string, keyword_ngram_offsets, matches)
-                if best_keyword_offset != None and best_keyword_offset >= matches[-1][2]:
+                if best_keyword_offset is not None and best_keyword_offset >= matches[-1][2]:
                     # if best offset closely follows last match, add current
                     # as next match
                     matches += [(ngram_string, ngram_offset, best_keyword_offset)]
                     matches_open_candidate = True
                 # print(keyword_string, keyword_ngram_offsets, ngram_string, ngram_offset)
-                # print("continuing candidate:", keyword_string, self.open_candidates[keyword_string], ngram_string, ngram_offset)
         for start_offset in remove_offsets:
             self.remove_candidate(keyword_string, start_offset)
         return matches_open_candidate
