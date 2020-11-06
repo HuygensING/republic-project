@@ -130,6 +130,17 @@ class LogicalStructureDoc:
             columns += [column]
         return columns
 
+    def clean_lines(self) -> None:
+        for line in self.lines:
+            del line["scan_num"]
+            del line["page_id"]
+            del line["column_id"]
+            del line["textregion_id"]
+            del line["line_index"]
+            del line["page_version"]
+
+
+
 
 class Resolution(LogicalStructureDoc):
 
