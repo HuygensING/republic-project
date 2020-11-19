@@ -17,7 +17,6 @@ def make_request(url: str, accept_encoding: Union[None, str] = None) -> Union[Li
             #    return gzip.decompress(response.content).decode(encoding='utf-8')
             #except (OSError, TypeError):
             #    pass
-            print(response.headers)
             return response.text
         if response.headers['Content-Encoding'] == 'gzip':
             return gzip.decompress(response.content).decode(encoding='utf-8')
