@@ -10,11 +10,11 @@ def make_request(url: str, accept_encoding: Union[None, str] = None) -> Union[Li
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         if 'Content-Encoding' not in response.headers:
-            print('missing encoding property for url', url)
-            try:
-                return gzip.decompress(response.content).decode(encoding='utf-8')
-            except TypeError:
-                pass
+            #print('missing encoding property for url', url)
+            #try:
+            #    return gzip.decompress(response.content).decode(encoding='utf-8')
+            #except (OSError, TypeError):
+            #    pass
             return response.text
         if response.headers['Content-Encoding'] == 'json':
             return response.json()
