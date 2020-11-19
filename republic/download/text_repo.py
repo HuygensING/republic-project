@@ -9,15 +9,16 @@ def make_request(url: str, accept_encoding: Union[None, str] = None) -> Union[Li
         headers = {'Accept-encoding': accept_encoding}
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
+        if response.headers['Content-Type'] == 'application/json':
+            return response.json()
         if 'Content-Encoding' not in response.headers:
             #print('missing encoding property for url', url)
             #try:
             #    return gzip.decompress(response.content).decode(encoding='utf-8')
             #except (OSError, TypeError):
             #    pass
+            print(response.headers)
             return response.text
-        if response.headers['Content-Encoding'] == 'json':
-            return response.json()
         if response.headers['Content-Encoding'] == 'gzip':
             return gzip.decompress(response.content).decode(encoding='utf-8')
         else:
@@ -38,7 +39,9 @@ class TextRepo:
     def get_types(self) -> None:
         """Check TextRepo for the available file types and their IDs."""
         data: List[Dict[str, str]] = make_request(self.api_url + '/rest/types')
+        print(data)
         for type_info in data:
+            print(type_info)
             self.type_id[type_info['name']] = type_info['id']
             self.type_name[type_info['id']] = type_info['name']
 
