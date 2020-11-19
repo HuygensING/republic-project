@@ -1,4 +1,5 @@
 from typing import Dict, List, Union
+import re
 import datetime
 from dateutil.easter import easter
 import copy
@@ -110,6 +111,24 @@ class RepublicDate:
 
     def __sub__(self, other):
         return self.date - other.date
+
+    def __lt__(self, other):
+        return self.date < other.date
+
+    def __le__(self, other):
+        return self.date <= other.date
+
+    def __gt__(self, other):
+        return self.date > other.date
+
+    def __ge__(self, other):
+        return self.date >= other.date
+
+    def __eq__(self, other):
+        return self.date == other.date
+
+    def __ne__(self, other):
+        return self.date != other.date
 
     def __cmp__(self, other):
         """Override comparison operations to use the date properties for comparison."""
@@ -253,6 +272,17 @@ def get_next_date_strings(current_date: RepublicDate, num_dates: int = 3, includ
             # avoid going beyond December 31 into the next year
             continue
     return date_strings
+
+
+def is_date_string(date_string: str) -> bool:
+    return re.match(r"^\d{4}-\d{2}-\d{2}$", date_string) is not None
+
+
+def make_republic_date(date_string: str) -> RepublicDate:
+    if not is_date_string(date_string):
+        raise ValueError("Valid date string is yyyy-mm-dd")
+    year, month, day = [int(part) for part in date_string.split("-")]
+    return RepublicDate(year=year, month=month, day=day)
 
 
 def derive_date_from_string(date_string: str, year: int) -> RepublicDate:

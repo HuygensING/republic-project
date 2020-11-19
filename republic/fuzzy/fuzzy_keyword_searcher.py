@@ -218,6 +218,8 @@ class FuzzyKeywordSearcher(object):
             self.ngram_size = config["ngram_size"]
         if "skip_size" in config:
             self.skip_size = config["skip_size"]
+        if "include_variants" in config:
+            self.include_variants = config["include_variants"]
 
     def enable_strip_suffix(self):
         self.perform_strip_suffix = True

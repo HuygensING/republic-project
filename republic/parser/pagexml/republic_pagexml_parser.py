@@ -69,16 +69,16 @@ def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
     page_doc['metadata']['page_side'] = side
     if side == 'odd':
         page_num = scan_doc['metadata']['scan_num'] * 2 - 1
-        page_id = f"{scan_doc['metadata']['scan_id']}-page-{page_num}"
+        doc_id = f"{scan_doc['metadata']['doc_id']}-page-{page_num}"
     elif side == 'even':
         page_num = scan_doc['metadata']['scan_num'] * 2 - 2
-        page_id = f"{scan_doc['metadata']['scan_id']}-page-{page_num}"
+        doc_id = f"{scan_doc['metadata']['doc_id']}-page-{page_num}"
     else:
         page_num = None
-        page_id = f"{scan_doc['metadata']['scan_id']}-page-extra"
+        doc_id = f"{scan_doc['metadata']['doc_id']}-page-extra"
         pass
     page_doc['metadata']['page_num'] = page_num
-    page_doc['metadata']['page_id'] = page_id
+    page_doc['metadata']['doc_id'] = doc_id
     return page_doc
 
 

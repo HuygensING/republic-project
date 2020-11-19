@@ -73,8 +73,8 @@ class LogicalStructureDoc:
     def add_columns_as_lines(self):
         """Add the lines from the columns as list, keeping track which column each line belongs to."""
         self.lines = self.generate_lines_from_columns()
-        for line in self.lines:
-            self.column_ids[line['column_id']].append(line)
+        # for line in self.lines:
+        #     self.column_ids[line['column_id']].append(line)
 
     def add_lines_as_columns(self):
         """Generate columns from the lines, keeping track which column each line belongs to."""

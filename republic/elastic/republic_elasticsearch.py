@@ -8,7 +8,7 @@ from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
-from republic.model.republic_meeting import Meeting
+from republic.model.republic_meeting import Meeting, meeting_from_json
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_pagexml_model import parse_derived_coords
 import republic.parser.republic_file_parser as file_parser
@@ -26,8 +26,6 @@ from settings import set_elasticsearch_config
 def initialize_es(host_type: str = 'internal', timeout: int = 10) -> Elasticsearch:
     republic_config = set_elasticsearch_config(host_type)
     es_config = republic_config['elastic_config']
-    print('es_config:')
-    print(es_config)
     if es_config['url_prefix']:
         es_republic = Elasticsearch([{'host': es_config['host'],
                                       'port': es_config['port'],
@@ -201,12 +199,13 @@ def retrieve_pages_with_query(es: Elasticsearch,
 
 
 def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict) -> Union[dict, None]:
-    match_fields = [{'match': {'page_num': page_num}}]
+    match_fields = [{'match': {'metadata.page_num': page_num}}]
     if 'inventory_num' in config:
-        match_fields += [{'match': {'inventory_num': config['inventory_num']}}]
+        match_fields += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
     elif 'year' in config:
-        match_fields += [{'match': {'year': config['year']}}]
+        match_fields += [{'match': {'metadata.year': config['year']}}]
     query = make_bool_query(match_fields)
+    print(query)
     pages = retrieve_pages_with_query(es, query, config)
     if len(pages) == 0:
         return None
@@ -308,6 +307,18 @@ def retrieve_pagexml_meetings(es: Elasticsearch, inv_num: int, config: dict) -> 
         return [hit['_source'] for hit in response['hits']['hits']]
 
 
+def get_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, dict]:
+    if isinstance(date, RepublicDate):
+        doc_id = f'meeting-{date.isoformat()}-session-1'
+    else:
+        doc_id = f'meeting-{date}-session-1'
+    if es.exists(index=config["meeting_index"], doc_type=config["meeting_doc_type"], id=doc_id):
+        response = es.get(index=config["meeting_index"], doc_type=config["meeting_doc_type"], id=doc_id)
+        return meeting_from_json(response['_source'])
+    else:
+        return None
+
+
 def delete_es_index(es: Elasticsearch, index: str):
     if es.indices.exists(index=index):
         print('exists, deleting')
@@ -324,14 +335,14 @@ def index_scan(es: Elasticsearch, scan_hocr: dict, config: dict):
     doc = create_es_scan_doc(scan_hocr)
     doc['metadata']['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
-             id=scan_hocr['metadata']['scan_id'], body=doc)
+             id=scan_hocr['metadata']['doc_id'], body=doc)
 
 
 def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     doc = create_es_page_doc(page_hocr)
     doc['metadata']['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['page_index'], doc_type=config['page_doc_type'],
-             id=page_hocr['metadata']['page_id'], body=doc)
+             id=page_hocr['metadata']['doc_id'], body=doc)
 
 
 def index_lemmata(es: Elasticsearch, lemma_index: dict, config: dict):
@@ -366,22 +377,22 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
 
 
 def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config):
-    scan_id = get_scan_id(inventory_metadata, scan_num)
+    doc_id = get_scan_id(inventory_metadata, scan_num)
     try:
-        version_info = text_repo.get_last_version_info(scan_id, file_type=inventory_config['ocr_type'])
-        if es.exists(index=inventory_config["scan_index"], id=scan_id):
-            response = es.get(index=inventory_config["scan_index"], id=scan_id)
+        version_info = text_repo.get_last_version_info(doc_id, file_type=inventory_config['ocr_type'])
+        if es.exists(index=inventory_config["scan_index"], id=doc_id):
+            response = es.get(index=inventory_config["scan_index"], id=doc_id)
             indexed_scan = response["_source"]
             if indexed_scan["version"]["id"] == version_info["id"]:
                 # this version is already indexed
                 return None
-        pagexml = text_repo.get_last_version_content(scan_id, inventory_config['ocr_type'])
+        pagexml = text_repo.get_last_version_content(doc_id, inventory_config['ocr_type'])
         file_extension = '.hocr' if inventory_config['ocr_type'] == 'hocr' else '.page.xml'
-        scan_doc = pagexml_parser.get_scan_pagexml(scan_id + file_extension, inventory_config, pagexml_data=pagexml)
+        scan_doc = pagexml_parser.get_scan_pagexml(doc_id + file_extension, inventory_config, pagexml_data=pagexml)
         scan_doc["version"] = version_info
         return scan_doc
     except ValueError:
-        print('missing scan:', scan_id)
+        print('missing scan:', doc_id)
         return None
 
 
@@ -435,9 +446,9 @@ def index_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
     numbering = 0
     if delete_index:
         delete_es_index(es, config['page_index'])
-    for page_id in pages_info:
+    for doc_id in pages_info:
         numbering += 1
-        page_doc = hocr_page_parser.make_page_doc(page_id, pages_info, config)
+        page_doc = hocr_page_parser.make_page_doc(doc_id, pages_info, config)
         page_doc['num_columns'] = len(page_doc['columns'])
         try:
             page_type = hocr_page_parser.get_page_type(page_doc, config, debug=False)
@@ -465,8 +476,8 @@ def index_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config
         page_es_doc = create_es_page_doc(page_doc)
         print(config['inventory_num'], page_doc['page_num'], page_doc['page_type'])
         page_doc['metadata']['index_timestamp'] = datetime.datetime.now()
-        es.index(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id, body=page_es_doc)
-        # print(page_id, page_type, numbering)
+        es.index(index=config['page_index'], doc_type=config['page_doc_type'], id=doc_id, body=page_es_doc)
+        # print(doc_id, page_type, numbering)
 
 
 def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
@@ -475,11 +486,11 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
         scan_hocr = hocr_page_parser.get_scan_hocr(scan_file, config=config)
         if not scan_hocr:
             continue
-        print('Indexing scan', scan_hocr['scan_id'])
+        print('Indexing scan', scan_hocr['doc_id'])
         scan_es_doc = create_es_scan_doc(scan_hocr)
         scan_es_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
-                 id=scan_es_doc['scan_id'], body=scan_es_doc)
+                 id=scan_es_doc['doc_id'], body=scan_es_doc)
 
 
 def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict):
@@ -489,15 +500,15 @@ def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: di
         if 'double_page' in scan_hocr['scan_type']:
             pages_hocr = hocr_page_parser.parse_double_page_scan(scan_hocr, config)
             for page_hocr in pages_hocr:
-                print('Indexing page', page_hocr['page_id'])
+                print('Indexing page', page_hocr['doc_id'])
                 index_page(es, page_hocr, config)
         elif 'small' in scan_hocr['scan_type']:
             scan_hocr['page_type'] = ['empty_page', 'book_cover']
             scan_hocr['columns'] = []
             if scan_hocr['scan_num'] == 1:
-                scan_hocr['page_id'] = '{}-page-1'.format(scan_hocr['scan_num'])
+                scan_hocr['doc_id'] = '{}-page-1'.format(scan_hocr['scan_num'])
             else:
-                scan_hocr['page_id'] = '{}-page-{}'.format(scan_hocr['scan_num'], scan_hocr['scan_num'] * 2 - 2)
+                scan_hocr['doc_id'] = '{}-page-{}'.format(scan_hocr['scan_num'], scan_hocr['scan_num'] * 2 - 2)
             index_page(es, scan_hocr, config)
         else:
             print('Non-double page:', scan_hocr['scan_num'], scan_hocr['scan_type'])
@@ -514,7 +525,7 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
         try:
             hocr_page = HOCRPage(page_doc, inventory_config)
         except KeyError:
-            print('Error parsing page', page_doc['page_id'])
+            print('Error parsing page', page_doc['doc_id'])
             continue
             # print(json.dumps(page_doc, indent=2))
             # raise

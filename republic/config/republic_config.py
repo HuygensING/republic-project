@@ -1,15 +1,18 @@
 import copy
 import os
+from typing import Union
 from republic.model.inventory_mapping import get_inventory_by_num
 
 
-def set_config_inventory_num(default_config: dict, inventory_num: int, base_dir: str, ocr_type: str) -> dict:
+def set_config_inventory_num(inventory_num: int, ocr_type: str, default_config: Union[None, dict] = None) -> dict:
+    if default_config is None:
+        default_config = base_config
     config = copy.deepcopy(default_config)
     assert(ocr_type == 'hocr' or ocr_type == 'pagexml')
     config['ocr_type'] = ocr_type
-    config['base_dir'] = base_dir
-    config['data_dir'] = os.path.join(config['base_dir'], f'{ocr_type}/{inventory_num}/')
-    config['csv_dir'] = os.path.join(config['base_dir'], 'csv')
+    # config['base_dir'] = base_dir
+    # config['data_dir'] = os.path.join(config['base_dir'], f'{ocr_type}/{inventory_num}/')
+    # config['csv_dir'] = os.path.join(config['base_dir'], 'csv')
     config['page_index'] = f'republic_{ocr_type}_pages'
     config['scan_index'] = f'republic_{ocr_type}_scans'
     config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'

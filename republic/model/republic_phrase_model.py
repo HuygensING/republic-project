@@ -326,14 +326,19 @@ resolution_phrase_model = [
     {
         'keyword': 'hebben ter Vergaderinge ingebraght',
         'label': 'resolution_opening',
+        'variants': [
+            'heeft ter Vergaderinge ingebraght',
+        ]
     },
     {
         'keyword': 'Zynde ter Vergaderinge getoont',
         'label': 'resolution_opening',
+        'max_offset': 4
     },
     {
         'keyword': 'Is ter Vergaderinge gelesen',
         'label': 'resolution_opening',
+        'max_offset': 4
     },
     {
         'keyword': 'Ontfangen een Missive van',
@@ -341,23 +346,34 @@ resolution_phrase_model = [
         'resolution_source': 'missive',
         'variants': [
             'ON een Missive van',
-            'ONtfangen een Miffive van'
-        ]
+            'ONtfangen een Miffive van',
+            'Nogh ontfangen een Missive van'
+        ],
+        'max_offset': 4
     },
     {
         'keyword': 'Is gehoort het rapport van',
         'label': 'resolution_opening',
         'resolution_source': 'rapport',
+        'max_offset': 4
     },
     {
         'keyword': 'Op de Requeste van',
         'label': 'resolution_opening',
         'resolution_source': 'request',
+        'max_offset': 4
     },
     {
         'keyword': 'Op de Memorie van',
         'label': 'resolution_opening',
         'resolution_source': 'memorie',
+        'max_offset': 4
+    },
+    {
+        'keyword': 'Op het gerapporteerde van de Heeren van',
+        'label': 'resolution_opening',
+        'resolution_source': 'rapport',
+        'max_offset': 4
     },
     {
         'keyword': 'is goedgevonden ende verstaan',
@@ -400,11 +416,16 @@ resolution_phrase_model = [
     },
     {
         'keyword': 'BY refumptie gedelibereert zynde',
-        'label': 'resolution_resumed',
+        'label': 'resolution_opening',
+        'max_offset': 4
     },
     {
         'keyword': 'DE Resolutien, gisteren genomen',
         'label': 'resolution_summarized',
+        'max_offset': 4,
+        'variants': [
+            'DE Resolutien, eergisteren genomen',
+        ]
     },
     {
         'keyword': 'zyn gelesen en gerefumeert',

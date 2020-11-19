@@ -48,13 +48,57 @@ def merge_aligned_lines(lines: list) -> list:
     return aligned_lines
 
 
+def swap_lines(line1: dict, line2: dict):
+    if line2 is None:
+        # line2 is not a line, so no swap
+        return False
+    if line1["coords"]["right"] < line2["coords"]["left"]:
+        # line2 is to the right of line1, so no swap
+        return False
+    if line1["coords"]["bottom"] < line2["coords"]["top"] + 10:
+        # line2 is below line1, so no swap
+        return False
+    if line2["coords"]["bottom"] < line1["coords"]["top"] + 10:
+        # line2 is entirely above line1, so swap
+        return True
+    if line1["type"] == "left_aligned_text":
+        # lines have horizontal overlap, but line 1 is left aligned
+        return False
+    if line1["coords"]["left"] < line2["coords"]["right"] - 10:
+        # line 1 has too much overlap with line 2
+        return False
+    else:
+        return True
+
+
+def order_document_lines(document: dict):
+    lines = [line for line in stream_resolution_document_lines([document])
+             if line is not None and line["type"] != "empty"]
+    ordered_lines = []
+    for li, line in enumerate(lines):
+        if line in ordered_lines:
+            continue
+        next_line = lines[li + 1] if li < len(lines) - 1 else None
+        if swap_lines(line, next_line):
+            ordered_lines.append(next_line)
+        ordered_lines.append(line)
+
+
 def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
-    for page in sorted(pages, key=lambda x: x['metadata']['page_num']):
+    pages = [page for page in sorted(pages, key=lambda x: x['metadata']['page_num'])]
+    return stream_resolution_document_lines(pages)
+
+
+def stream_resolution_document_lines(documents: list) -> Union[None, iter]:
+    """Iterate over list of documents and return a generator that yields individuals lines.
+    Iterator iterates over columns and textregions.
+    Assumption: lines are returned in reading order."""
+    for document in documents:
         merge = {}
-        columns = copy.copy(page['columns'])
+        columns = copy.copy(document['columns'])
         for ci1, column1 in enumerate(columns):
             for ci2, column2 in enumerate(columns):
                 if ci1 == ci2:
@@ -77,30 +121,32 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
                 for li, line in enumerate(textregion['lines']):
+                    line_id = line["id"] if "id" in line \
+                                  else document['metadata']['doc_id'] + f'-col-{ci}-tr-{ti}-line-{li}'
                     line = {
-                        'id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}-line-{li}',
-                        #'inventory_num': page['metadata']['inventory_num'],
-                        #'scan_id': page['metadata']['scan_id'],
-                        'scan_num': page['metadata']['scan_num'],
-                        'page_id': page['metadata']['page_id'],
-                        #'page_num': page['metadata']['page_num'],
+                        'id': line_id,
+                        #'inventory_num': document['metadata']['inventory_num'],
+                        #'scan_id': document['metadata']['scan_id'],
+                        'scan_num': document['metadata']['scan_num'],
+                        'doc_id': document['metadata']['doc_id'],
+                        #'page_num': document['metadata']['page_num'],
                         #'column_index': ci,
-                        'column_id': page['metadata']['page_id'] + f'-col-{ci}',
+                        'column_id': document['metadata']['doc_id'] + f'-col-{ci}',
                         #'textregion_index': ti,
-                        'textregion_id': page['metadata']['page_id'] + f'-col-{ci}-tr-{ti}',
+                        'textregion_id': document['metadata']['doc_id'] + f'-col-{ci}-tr-{ti}',
                         'line_index': li,
-                        'page_version': page["version"],
+                        'page_version': document["version"],
                         'coords': line['coords'],
                         'text': line['text']
                     }
                     if not line['text']:
                         # skip non-text lines
                         line["type"] = "empty"
-                    elif line['coords']['left'] > textregion['coords']['left'] + 600:
+                    elif line['coords']['left'] > column['coords']['left'] + 600:
                         # skip short lines that are bleed through from opposite side of page
                         # they are right aligned
                         line["type"] = "right_aligned_text"
-                    elif line['coords']['left'] > textregion['coords']['left'] + 150:
+                    elif line['coords']['left'] > column['coords']['left'] + 150:
                         # skip short lines that are bleed through from opposite side of page
                         # they are right aligned
                         line["type"] = "indented_text"

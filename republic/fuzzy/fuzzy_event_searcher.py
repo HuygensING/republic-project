@@ -40,7 +40,7 @@ class EventSearcher:
         self.add_keywords(phrase_model)
         self.add_labels(phrase_model)
         searcher.index_spelling_variants(phrase_model.variants)
-        # if the keyword searcher is created without errors, add it to the EventSearcher
+        # add the keyword searcher to the EventSearcher
         self.searchers[searcher_name] = searcher
         self.phrase_models[searcher_name] = phrase_model
 

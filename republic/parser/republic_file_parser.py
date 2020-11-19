@@ -56,7 +56,7 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         'scan_num': scan_num,
         'ocr_type': ocr_type,
         'doc_type': 'scan',
-        'scan_id': f'{inv_info["series_name"]}_{inv_num}_{format_scan_number(scan_num)}',
+        'doc_id': f'{inv_info["series_name"]}_{inv_num}_{format_scan_number(scan_num)}',
         'viewer_url': urls['viewer_url'],
         'jpg_url': urls['jpg_url'],
         'iiif_url': urls['iiif_url']
