@@ -108,7 +108,7 @@ class TextRepo:
     def get_content_by_version_id(self, version_id: str) -> str:
         """Return content of a version of a file given a version ID."""
         url = self.api_url + f'/rest/versions/{version_id}/contents'
-        return make_request(url)
+        return make_request(url, accept_encoding="gzip")
 
     def get_last_version_info(self, scan_id, file_type: str) -> Dict[str, str]:
         """Return information on the the latest available file version
