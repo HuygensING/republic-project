@@ -3,9 +3,10 @@ import gzip
 import requests
 
 
-def make_request(url: str, accept_encoding: str = 'gzip') -> Union[List[dict], dict, str]:
-    headers = {'Accept-encoding': accept_encoding}
-    raise ValueError('TODO: accept encoding header')
+def make_request(url: str, accept_encoding: Union[None, str] = None) -> Union[List[dict], dict, str]:
+    headers = {}
+    if accept_encoding:
+        headers = {'Accept-encoding': accept_encoding}
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         if 'Content-Encoding' not in response.headers:
@@ -77,7 +78,7 @@ class TextRepo:
         endpoint = f'/task/find/{external_id}/file/contents?type={file_type}'
         url = self.api_url + endpoint
         try:
-            return make_request(url)
+            return make_request(url, accept_encoding="gzip")
         except ConnectionError:
             return None
 
