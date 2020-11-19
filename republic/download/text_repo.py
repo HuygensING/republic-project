@@ -38,9 +38,7 @@ class TextRepo:
     def get_types(self) -> None:
         """Check TextRepo for the available file types and their IDs."""
         data: List[Dict[str, str]] = make_request(self.api_url + '/rest/types')
-        print(data)
         for type_info in data:
-            print(type_info)
             self.type_id[type_info['name']] = type_info['id']
             self.type_name[type_info['id']] = type_info['name']
 
