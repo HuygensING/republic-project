@@ -487,7 +487,7 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
         scan_hocr = hocr_page_parser.get_scan_hocr(scan_file, config=config)
         if not scan_hocr:
             continue
-        print('Indexing scan', scan_hocr['doc_id'])
+        print("Indexing scan", scan_hocr["id"])
         scan_es_doc = create_es_scan_doc(scan_hocr)
         scan_es_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
