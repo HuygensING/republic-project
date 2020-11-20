@@ -376,11 +376,11 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
             index_page(es, page_doc, inventory_config)
 
 
-def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config):
+def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config, ignore_version: bool = False):
     doc_id = get_scan_id(inventory_metadata, scan_num)
     try:
         version_info = text_repo.get_last_version_info(doc_id, file_type=inventory_config['ocr_type'])
-        if es.exists(index=inventory_config["scan_index"], id=doc_id):
+        if not ignore_version and es.exists(index=inventory_config["scan_index"], id=doc_id):
             response = es.get(index=inventory_config["scan_index"], id=doc_id)
             indexed_scan = response["_source"]
             if indexed_scan["version"]["id"] == version_info["id"]:
@@ -401,13 +401,14 @@ def get_scan_id(inventory_metadata, scan_num):
     return f'{inventory_metadata["series_name"]}_{inventory_metadata["inventory_num"]}_{scan_num_str}'
 
 
-def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]):
+def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any], ignore_version: bool = False):
     text_repo = TextRepo(text_repo_url)
     inventory_metadata = retrieve_inventory_metadata(es, inv_num, inventory_config)
     if "num_scans" not in inventory_metadata:
         return None
     for scan_num in range(1, inventory_metadata["num_scans"]+1):
-        scan_doc = parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config)
+        scan_doc = parse_latest_version(es, text_repo, scan_num, inventory_metadata,
+                                        inventory_config, ignore_version=ignore_version)
         if not scan_doc:
             continue
         index_scan(es, scan_doc, inventory_config)
