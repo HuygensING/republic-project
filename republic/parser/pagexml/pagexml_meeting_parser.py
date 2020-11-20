@@ -122,18 +122,18 @@ def stream_resolution_document_lines(documents: list) -> Union[None, iter]:
                     continue
                 for li, line in enumerate(textregion['lines']):
                     line_id = line["id"] if "id" in line \
-                                  else document['metadata']['doc_id'] + f'-col-{ci}-tr-{ti}-line-{li}'
+                                  else document['metadata']['id'] + f'-col-{ci}-tr-{ti}-line-{li}'
                     line = {
                         'id': line_id,
                         #'inventory_num': document['metadata']['inventory_num'],
                         #'scan_id': document['metadata']['scan_id'],
                         'scan_num': document['metadata']['scan_num'],
-                        'doc_id': document['metadata']['doc_id'],
+                        'doc_id': document['metadata']['id'],
                         #'page_num': document['metadata']['page_num'],
                         #'column_index': ci,
-                        'column_id': document['metadata']['doc_id'] + f'-col-{ci}',
+                        'column_id': document['metadata']['id'] + f'-col-{ci}',
                         #'textregion_index': ti,
-                        'textregion_id': document['metadata']['doc_id'] + f'-col-{ci}-tr-{ti}',
+                        'textregion_id': document['metadata']['id'] + f'-col-{ci}-tr-{ti}',
                         'line_index': li,
                         'page_version': document["version"],
                         'coords': line['coords'],
