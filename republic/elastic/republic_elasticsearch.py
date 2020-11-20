@@ -335,14 +335,14 @@ def index_scan(es: Elasticsearch, scan_hocr: dict, config: dict):
     doc = create_es_scan_doc(scan_hocr)
     doc['metadata']['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
-             id=scan_hocr['metadata']['doc_id'], body=doc)
+             id=scan_hocr['metadata']['id'], body=doc)
 
 
 def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     doc = create_es_page_doc(page_hocr)
     doc['metadata']['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['page_index'], doc_type=config['page_doc_type'],
-             id=page_hocr['metadata']['doc_id'], body=doc)
+             id=page_hocr['metadata']['id'], body=doc)
 
 
 def index_lemmata(es: Elasticsearch, lemma_index: dict, config: dict):
@@ -491,7 +491,7 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
         scan_es_doc = create_es_scan_doc(scan_hocr)
         scan_es_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
-                 id=scan_es_doc['doc_id'], body=scan_es_doc)
+                 id=scan_es_doc['id'], body=scan_es_doc)
 
 
 def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict):
@@ -501,15 +501,15 @@ def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: di
         if 'double_page' in scan_hocr['scan_type']:
             pages_hocr = hocr_page_parser.parse_double_page_scan(scan_hocr, config)
             for page_hocr in pages_hocr:
-                print('Indexing page', page_hocr['doc_id'])
+                print('Indexing page', page_hocr['id'])
                 index_page(es, page_hocr, config)
         elif 'small' in scan_hocr['scan_type']:
             scan_hocr['page_type'] = ['empty_page', 'book_cover']
             scan_hocr['columns'] = []
             if scan_hocr['scan_num'] == 1:
-                scan_hocr['doc_id'] = '{}-page-1'.format(scan_hocr['scan_num'])
+                scan_hocr['id'] = '{}-page-1'.format(scan_hocr['scan_num'])
             else:
-                scan_hocr['doc_id'] = '{}-page-{}'.format(scan_hocr['scan_num'], scan_hocr['scan_num'] * 2 - 2)
+                scan_hocr['id'] = '{}-page-{}'.format(scan_hocr['scan_num'], scan_hocr['scan_num'] * 2 - 2)
             index_page(es, scan_hocr, config)
         else:
             print('Non-double page:', scan_hocr['scan_num'], scan_hocr['scan_type'])
@@ -526,7 +526,7 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
         try:
             hocr_page = HOCRPage(page_doc, inventory_config)
         except KeyError:
-            print('Error parsing page', page_doc['doc_id'])
+            print('Error parsing page', page_doc['id'])
             continue
             # print(json.dumps(page_doc, indent=2))
             # raise
