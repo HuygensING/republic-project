@@ -1,47 +1,19 @@
 # REPUBLIC Project
 
-Code for Huygens ING project REPUBLIC (REsolutions PUBlished In a Compuational Environment). The project creates an online computational platform to access the Resolutions of the Dutch States General.
+Code for Huygens ING project REPUBLIC (REsolutions PUBlished In a  
+Compuational Environment). The project creates an online computational  
+platform to access the Resolutions of the Dutch States General.
 
-## Parsing REPBULIC hOCR Files
+The Resolutions of the Dutch States General (1576-1796) constitute an archival series that covers more than two centuries of continuous decision making and consists of more than 500,000 pages, handwritten and printed resolutions, in separate, chronologically ordered series.
 
-The scans of the printed RSG volumes have the following characteristics
+The Resolutions of the States General in the Dutch Republic are a key resource to the political history of this period as they contain all decisions made by the States General (SG), the central ruling body in the Republic. It was designated as a key resource when in 1905 the work of publishing the resolutions started (Japikse et al. 1915). The manual editing resulted in two series of analogue publications of (a selection of) the resolutions, divided in an old series (14 volumes running from 1576 – 1609), a new series (7 volumes, 1610 – 1625), and a [digital edition (1626-1630)](http://resources.huygens.knaw.nl/retroboeken/statengeneraal).
+%
+The resolutions reveal the decision making process and are relevant for both high and low politics. They allow researchers to answer many different research questions about politics - but not only politics - in the Dutch Republic and its position in the world. The resolutions are also key to all the other records of the SG (about 1 mile) and form a backbone with which these other records can be connected and contextualised.
 
-- all scans:
-  - have two pages per scan
-  - have up to 4 columns per scan, 2 per page
-  - full scan is around 4800 pixels wide, left page is up to pixel 2400, right page is from pixel 2400 (roughly)
-- scans of index pages
-  - have no page numbers
-- scans of resolution pages
-  - have page numbers (left-side page is even, right-side page is odd)
+Project website: [https://republic.huygens.knaw.nl](https://republic.huygens.knaw.nl)
 
-### Columns
+### Documentation
 
-The scans are normalized such that the columns are straight. The text width should be around 1000 pixels. Some columns are not cut out properly, resulting in columns that are either to small (some of the column text is missing), or too wide (the hOCR output contains partial texts from two columns)
-
-### Index pages
-
-- start of entry:
-  - start left alignment
-- end of entry:
-  - end of line possibly before end of text column.
-  - One or more page numbers
-
-
-### Resolution pages
-
-- header:
-  - next top of page (less than 350 pixels from the top)
-  - page has header with:
-    - even numbered pages: date page_number year
-    - odd numbered pages: year page_number date
-  - columns have half of page header, e.g.:
-    - even numbered pages:
-      - first column: date left aligned and part of page_number right aligned
-      - second column: part of page_number left aligned and year right aligned
-    - odd numbered pages:
-      - first column: year left aligned and part of page_number right aligned
-      - second column: part of page_number left aligned and date right aligned
-
-
+- [Parsing HTR/OCR output files](./docs/pagexml_scans.md)
+- [Using phrase models and fuzzy search](./docs/phrase_models.md)
 
