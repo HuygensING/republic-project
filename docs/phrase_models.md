@@ -36,17 +36,17 @@ Below is an example phrase model in JSON format:
 ```json
 [
   {
-    'phrase': 'Nihil actum est',
-    'label': 'no_meeting',
-    'max_offset': 4
+    "phrase": "Nihil actum est",
+    "label": "no_meeting",
+    "max_offset": 4
   },
   {
-    'phrase': 'PRAESIDE',
-    'variants': [
-      'P R A E S I D E'
+    "phrase": "PRAESIDE",
+    "variants": [
+      "P R A E S I D E"
     ],
-    'label': 'presiding',
-    'max_offset': 4
+    "label": "presiding",
+    "max_offset": 4
   }
 ]
 ```
