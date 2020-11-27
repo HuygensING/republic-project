@@ -2,6 +2,7 @@ import datetime
 from typing import Union, List, Dict
 from elasticsearch import Elasticsearch, RequestError
 import json
+import numpy as np
 import copy
 
 from republic.config.republic_config import set_config_inventory_num
@@ -319,6 +320,38 @@ def get_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], confi
         return None
 
 
+def correct_section_types(inv_metadata):
+    section_starts = {offsets['page_num_offset']: offsets['page_type'] for offsets in
+                      inv_metadata['type_page_num_offsets']}
+    for offsets in inv_metadata['type_page_num_offsets']:
+        for section in inv_metadata['sections']:
+            if section['start'] in section_starts:
+                section['page_type'] = section_starts[section['start']]
+    return None
+
+
+def get_per_page_type_index(inv_metadata):
+    page_type = {page_num: 'empty_page' for page_num in np.arange(inv_metadata['num_pages'])}
+    for page_num in inv_metadata['title_page_nums']:
+        page_type[page_num] = 'title_page'
+    for section in inv_metadata['sections']:
+        for page_num in np.arange(section['start'], section['end'] + 1):
+            page_type[page_num] = section['page_type']
+            if page_num in inv_metadata['title_page_nums']:
+                page_type[page_num] = [section['page_type'], 'title_page']
+    return page_type
+
+
+def add_pagexml_page_types(es, inv_config):
+    inv_metadata = retrieve_inventory_metadata(es, inv_config["inventory_num"], inv_config)
+    page_type_index = get_per_page_type_index(inv_metadata)
+    pages = retrieve_inventory_pages(es, inv_config["inventory_num"], inv_config)
+    for pi, page in enumerate(sorted(pages, key=lambda x: x['metadata']['page_num'])):
+        page['metadata']['page_type'] = page_type_index[page['metadata']['page_num']]
+        es.index(index=inv_config["page_index"], id=page['metadata']['id'], body=page)
+        print(page['metadata']['id'], page["metadata"]["page_type"])
+
+
 def delete_es_index(es: Elasticsearch, index: str):
     if es.indices.exists(index=index):
         print('exists, deleting')
@@ -411,6 +444,7 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
                                         inventory_config, ignore_version=ignore_version)
         if not scan_doc:
             continue
+        print("Indexing scan", scan_doc["metadata"]["id"])
         index_scan(es, scan_doc, inventory_config)
         if 'double_page' not in scan_doc['metadata']['scan_type']:
             continue
