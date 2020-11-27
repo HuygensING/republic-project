@@ -308,7 +308,7 @@ def retrieve_pagexml_meetings(es: Elasticsearch, inv_num: int, config: dict) -> 
         return [hit['_source'] for hit in response['hits']['hits']]
 
 
-def get_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, dict]:
+def get_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Meeting]:
     if isinstance(date, RepublicDate):
         doc_id = f'meeting-{date.isoformat()}-session-1'
     else:
@@ -323,10 +323,9 @@ def get_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], confi
 def correct_section_types(inv_metadata):
     section_starts = {offsets['page_num_offset']: offsets['page_type'] for offsets in
                       inv_metadata['type_page_num_offsets']}
-    for offsets in inv_metadata['type_page_num_offsets']:
-        for section in inv_metadata['sections']:
-            if section['start'] in section_starts:
-                section['page_type'] = section_starts[section['start']]
+    for section in inv_metadata['sections']:
+        if section['start'] in section_starts:
+            section['page_type'] = section_starts[section['start']]
     return None
 
 
@@ -347,7 +346,10 @@ def add_pagexml_page_types(es, inv_config):
     page_type_index = get_per_page_type_index(inv_metadata)
     pages = retrieve_inventory_pages(es, inv_config["inventory_num"], inv_config)
     for pi, page in enumerate(sorted(pages, key=lambda x: x['metadata']['page_num'])):
-        page['metadata']['page_type'] = page_type_index[page['metadata']['page_num']]
+        if page["metadata"]["page_num"] not in page_type_index:
+            page['metadata']['page_type'] = "empty_page"
+        else:
+            page['metadata']['page_type'] = page_type_index[page['metadata']['page_num']]
         es.index(index=inv_config["page_index"], id=page['metadata']['id'], body=page)
         print(page['metadata']['id'], page["metadata"]["page_type"])
 
