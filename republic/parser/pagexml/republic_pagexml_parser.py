@@ -53,7 +53,8 @@ def is_even_side(item: dict) -> bool:
 
 
 def is_odd_side(item: dict) -> bool:
-    return item['coords']['right'] < 4800 and item['coords']['left'] > 2400
+    return item['coords']['left'] > 2400
+    # return item['coords']['right'] < 4800 and item['coords']['left'] > 2400
 
 
 def is_extra_side(item: dict) -> bool:
@@ -74,9 +75,8 @@ def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
         page_num = scan_doc['metadata']['scan_num'] * 2 - 2
         doc_id = f"{scan_doc['metadata']['id']}-page-{page_num}"
     else:
-        page_num = None
-        doc_id = f"{scan_doc['metadata']['id']}-page-extra"
-        pass
+        page_num = scan_doc['metadata']['scan_num'] * 2 - 2
+        doc_id = f"{scan_doc['metadata']['id']}-page-{page_num}-extra"
     page_doc['metadata']['page_num'] = page_num
     page_doc['metadata']['id'] = doc_id
     return page_doc
@@ -88,18 +88,18 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
         return pages
     page_odd = initialize_pagexml_page(scan_doc, 'odd')
     page_even = initialize_pagexml_page(scan_doc, 'even')
-    page_extra = initialize_pagexml_page(scan_doc, 'extra')
+    # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     for textregion in scan_doc['textregions']:
         if 'lines' in textregion:
             even_lines = [line for line in textregion['lines'] if is_even_side(line)]
             odd_lines = [line for line in textregion['lines'] if is_odd_side(line)]
-            extra_lines = [line for line in textregion['lines'] if is_extra_side(line)]
+            # extra_lines = [line for line in textregion['lines'] if is_extra_side(line)]
             if len(even_lines) > 0:
                 page_even['textregions'] += [{'lines': even_lines, 'coords': parse_derived_coords(even_lines)}]
             if len(odd_lines) > 0:
                 page_odd['textregions'] += [{'lines': odd_lines, 'coords': parse_derived_coords(odd_lines)}]
-            if len(extra_lines) > 0:
-                page_extra['textregions'] += [{'lines': extra_lines, 'coords': parse_derived_coords(extra_lines)}]
+            # if len(extra_lines) > 0:
+            #    page_extra['textregions'] += [{'lines': extra_lines, 'coords': parse_derived_coords(extra_lines)}]
         if 'textregions' in textregion:
             even_textregions = [textregion for textregion in textregion['textregions'] if is_even_side(textregion)]
             odd_textregions = [textregion for textregion in textregion['textregions'] if is_odd_side(textregion)]
@@ -110,10 +110,10 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
             if len(odd_textregions) > 0:
                 page_odd['textregions'] += [{'textregions': odd_textregions,
                                              'coords': parse_derived_coords(odd_textregions)}]
-            if len(extra_textregions) > 0:
-                page_extra['textregions'] += [{'textregions': extra_textregions,
-                                               'coords': parse_derived_coords(extra_textregions)}]
-    for page_doc in [page_even, page_odd, page_extra]:
+            # if len(extra_textregions) > 0:
+            #     page_extra['textregions'] += [{'textregions': extra_textregions,
+            #                                    'coords': parse_derived_coords(extra_textregions)}]
+    for page_doc in [page_even, page_odd]: # , page_extra]:
         if len(page_doc['textregions']) > 0:
             page_doc['coords'] = parse_derived_coords(page_doc['textregions'])
             page_doc['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'],
