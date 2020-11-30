@@ -101,10 +101,10 @@ def parse_textline_metadata(textline: dict) -> dict:
         "start_y": int(points[0][1]),
         "end_x": int(points[-1][0]),
         "end_y": int(points[-1][1]),
-        "min": np.min(baselines),
-        "max": np.max(baselines),
-        "mean": np.mean(baselines),
-        "median": np.median(baselines),
+        "min": int(np.min(baselines)),
+        "max": int(np.max(baselines)),
+        "mean": int(np.mean(baselines)),
+        "median": int(np.median(baselines)),
     }
     return line
 
