@@ -1,5 +1,6 @@
 from typing import List, Dict
 from datetime import datetime
+import numpy as np
 
 from republic.model.republic_pagexml_model import parse_derived_coords
 
@@ -92,7 +93,19 @@ def check_page_assertions(page_json: dict) -> None:
 
 
 def parse_textline_metadata(textline: dict) -> dict:
-    line = {'coords': parse_coords(textline['Coords']), 'xheight': int(textline['@xheight'])}
+    line = {"coords": parse_coords(textline["Coords"]), "xheight": int(textline["@xheight"])}
+    points = [point.split(",") for point in textline["Baseline"]["@points"].split(" ")]
+    baselines = [int(y) for x, y in points]
+    line["baseline"] = {
+        "start_x": int(points[0][0]),
+        "start_y": int(points[0][1]),
+        "end_x": int(points[-1][0]),
+        "end_y": int(points[-1][1]),
+        "min": np.min(baselines),
+        "max": np.max(baselines),
+        "mean": np.mean(baselines),
+        "median": np.median(baselines),
+    }
     return line
 
 
@@ -176,10 +189,10 @@ def parse_page_image_size(page_json: dict) -> dict:
         'width': 0,
         'height': 0
     }
-    if page_json['@imageWidth'] is not '0':
+    if page_json['@imageWidth'] != '0':
         coords['width'] = int(page_json['@imageWidth'])
         coords['right'] = coords['width']
-    if page_json['@imageHeight'] is not '0':
+    if page_json['@imageHeight'] != '0':
         coords['height'] = int(page_json['@imageHeight'])
         coords['bottom'] = coords['height']
     return coords
@@ -191,7 +204,7 @@ def parse_pagexml(scan_json: dict) -> dict:
     if 'Metadata' in scan_json['PcGts'] and scan_json['PcGts']['Metadata']:
         scan_doc['metadata'] = parse_page_metadata(scan_json['PcGts']['Metadata'])
     scan_json = scan_json['PcGts']['Page']
-    if scan_json['@imageWidth'] is not '0' and scan_json['@imageHeight'] is not '0':
+    if scan_json['@imageWidth'] != '0' and scan_json['@imageHeight'] != '0':
         scan_doc['coords'] = parse_page_image_size(scan_json)
     if 'TextRegion' in scan_json:
         if isinstance(scan_json['TextRegion'], list):
