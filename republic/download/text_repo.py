@@ -63,7 +63,7 @@ class TextRepo:
         endpoint = f'/task/find/{external_id}/document/metadata?type={content_type}'
         return make_request(self.api_url + endpoint)
 
-    def get_last_version_content(self, external_id: str, file_type: str) -> str:
+    def get_last_version_content(self, external_id: str, file_type: str) -> Union[str, None]:
         """Return the content of the latest version of a given external ID and file type.
 
         :param external_id: an external document ID
@@ -108,9 +108,11 @@ class TextRepo:
         url = self.api_url + f'/rest/versions/{version_id}/contents'
         return make_request(url, accept_encoding="gzip")
 
-    def get_last_version_info(self, scan_id, file_type: str) -> Dict[str, str]:
+    def get_last_version_info(self, scan_id, file_type: str) -> Union[None, Dict[str, str]]:
         """Return information on the the latest available file version
         for a given external document ID and a given file type."""
         versions = self.get_file_type_versions(scan_id, file_type)
-        return sorted(versions['items'], key=lambda x: x['createdAt'], reverse=True)[0]
+        if not versions or "items" not in versions or len(versions["items"]) == 0:
+            return None
+        return sorted(versions["items"], key=lambda x: x["createdAt"], reverse=True)[0]
 

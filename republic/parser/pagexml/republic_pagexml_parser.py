@@ -1,4 +1,5 @@
 from typing import List, Union, Dict
+import numpy as np
 import copy
 
 from republic.helper.metadata_helper import make_iiif_region_url
@@ -140,6 +141,35 @@ def coords_overlap(item1: dict, item2: dict) -> int:
     return right - left if right - left > 0 else 0
 
 
+def get_median_normal_line_score(scores):
+    median_score = np.median(scores)
+    normal_scores = [score for score in scores if abs(score - median_score) < 50]
+    return np.median(normal_scores)
+
+
+def set_line_alignment(column: dict):
+    lines = [line for textregion in column["textregions"] for line in textregion["lines"]]
+    lefts = [line["coords"]["left"] for line in lines]
+    rights = [line["coords"]["right"] for line in lines]
+    widths = [line["coords"]["width"] for line in lines]
+    lengths = [len(line["text"]) for line in lines]
+    column["metadata"]["median_normal_left"] = get_median_normal_line_score(lefts)
+    column["metadata"]["median_normal_right"] = get_median_normal_line_score(rights)
+    column["metadata"]["median_normal_width"] = get_median_normal_line_score(widths)
+    column["metadata"]["median_normal_length"] = get_median_normal_line_score(lengths)
+    for ti, tr in enumerate(column["textregions"]):
+        for li, line in enumerate(tr["lines"]):
+            line["metadata"] = {"id": column["metadata"]["id"] + f"-tr-{ti}-line-{li}"}
+            if line["coords"]["left"] > column["metadata"]["median_normal_left"] + 50:
+                line["metadata"]["left_alignment"] = "indent"
+            else:
+                line["metadata"]["left_alignment"] = "column"
+            if line["coords"]["right"] < column["metadata"]["median_normal_right"] - 50:
+                line["metadata"]["right_alignment"] = "indent"
+            else:
+                line["metadata"]["right_alignment"] = "column"
+
+
 def split_column_regions(page_doc: dict) -> dict:
     header = {'textregions': []}
     columns = []
@@ -175,14 +205,15 @@ def split_column_regions(page_doc: dict) -> dict:
             print('COLUMN NO COORDS:', column)
             raise KeyError('Column has no "coords" property.')
     columns.sort(key=lambda x: x['coords']['left'])
-    for column in columns:
+    for ci, column in enumerate(columns):
         column['textregions'].sort(key=lambda x: x['coords']['top'])
-        column['metadata'] = {'doc_type': 'column'}
+        column["metadata"] = {"type": "column", "id": page_doc["metadata"]["id"] + f"-column-{ci}"}
         col_stats = get_pagexml_doc_num_words(column)
+        set_line_alignment(column)
         column['metadata']['num_lines'] = col_stats['num_lines']
         column['metadata']['num_words'] = col_stats['num_words']
         column['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'], column['coords'])
-    header['metadata'] = {'doc_type': 'header'}
+    header['metadata'] = {'type': 'header'}
     header['coords'] = parse_derived_coords(header['textregions'])
     col_stats = get_pagexml_doc_num_words(header)
     header['metadata']['num_lines'] = col_stats['num_lines']
@@ -200,14 +231,14 @@ def split_column_regions(page_doc: dict) -> dict:
 def get_pagexml_doc_num_words(pagexml_doc: dict) -> Dict[str, int]:
     num_lines = 0
     num_words = 0
-    doc_type = pagexml_doc['metadata']['doc_type']
+    doc_type = pagexml_doc['metadata']['type']
     if doc_type in ['column', 'header'] and 'textregions' in pagexml_doc:
         for textregion in pagexml_doc['textregions']:
             if 'lines' in textregion:
                 text_lines = [line for line in textregion['lines'] if 'text' in line and line['text']]
                 num_lines += len(text_lines)
                 num_words += len([word for line in text_lines for word in line['text'].split(' ')])
-    if pagexml_doc['metadata']['doc_type'] == 'page' and 'columns' in pagexml_doc:
+    if pagexml_doc['metadata']['type'] == 'page' and 'columns' in pagexml_doc:
         for column_doc in pagexml_doc['columns']:
             col_stats = get_pagexml_doc_num_words(column_doc)
             num_lines += col_stats['num_lines']

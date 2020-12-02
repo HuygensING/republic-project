@@ -308,7 +308,7 @@ def retrieve_pagexml_meetings(es: Elasticsearch, inv_num: int, config: dict) -> 
         return [hit['_source'] for hit in response['hits']['hits']]
 
 
-def get_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Meeting]:
+def retrieve_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Meeting]:
     if isinstance(date, RepublicDate):
         doc_id = f'meeting-{date.isoformat()}-session-1'
     else:
@@ -400,6 +400,7 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
     for scan_doc in inv_parser.parse_inventory_from_zip(inventory_num, inventory_config):
         if not scan_doc:
             continue
+        print("Indexing scan", scan_doc["metadata"]["id"])
         index_scan(es, scan_doc, inventory_config)
         if 'double_page' not in scan_doc['metadata']['scan_type']:
             continue
@@ -415,6 +416,8 @@ def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_
     doc_id = get_scan_id(inventory_metadata, scan_num)
     try:
         version_info = text_repo.get_last_version_info(doc_id, file_type=inventory_config['ocr_type'])
+        if not version_info:
+            return None
         if not ignore_version and es.exists(index=inventory_config["scan_index"], id=doc_id):
             response = es.get(index=inventory_config["scan_index"], id=doc_id)
             indexed_scan = response["_source"]
@@ -460,7 +463,8 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
 
 
 def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
-    inventory_config = set_config_inventory_num(base_config, inventory_num, base_dir, ocr_type="hocr")
+    inventory_config = set_config_inventory_num(inventory_num, ocr_type="hocr",
+                                                default_config=base_config, base_dir=base_dir)
     # print(inventory_config)
     scan_files = file_parser.get_hocr_files(inventory_config['hocr_dir'])
     for scan_file in scan_files:
