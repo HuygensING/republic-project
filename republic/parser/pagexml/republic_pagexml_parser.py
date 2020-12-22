@@ -67,7 +67,7 @@ def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
     page_doc = {
         'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None
     }
-    page_doc['metadata']['doc_type'] = 'page'
+    page_doc['metadata']['type'] = 'page'
     page_doc['metadata']['page_side'] = side
     if side == 'odd':
         page_num = scan_doc['metadata']['scan_num'] * 2 - 1
@@ -104,7 +104,7 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
         if 'textregions' in textregion:
             even_textregions = [textregion for textregion in textregion['textregions'] if is_even_side(textregion)]
             odd_textregions = [textregion for textregion in textregion['textregions'] if is_odd_side(textregion)]
-            extra_textregions = [textregion for textregion in textregion['textregions'] if is_extra_side(textregion)]
+            # extra_textregions = [textregion for textregion in textregion['textregions'] if is_extra_side(textregion)]
             if len(even_textregions) > 0:
                 page_even['textregions'] += [{'textregions': even_textregions,
                                               'coords': parse_derived_coords(even_textregions)}]
@@ -141,10 +141,21 @@ def coords_overlap(item1: dict, item2: dict) -> int:
     return right - left if right - left > 0 else 0
 
 
-def get_median_normal_line_score(scores):
+def get_median_normal_line_score(scores, default):
     median_score = np.median(scores)
     normal_scores = [score for score in scores if abs(score - median_score) < 50]
-    return np.median(normal_scores)
+    if len(normal_scores) == 0:
+        if default == "min":
+            return min(scores)
+        else:
+            return max(scores)
+    try:
+        return int(np.median(normal_scores))
+    except ValueError:
+        print(scores)
+        print(median_score)
+        print(normal_scores)
+        raise
 
 
 def set_line_alignment(column: dict):
@@ -152,11 +163,11 @@ def set_line_alignment(column: dict):
     lefts = [line["coords"]["left"] for line in lines]
     rights = [line["coords"]["right"] for line in lines]
     widths = [line["coords"]["width"] for line in lines]
-    lengths = [len(line["text"]) for line in lines]
-    column["metadata"]["median_normal_left"] = get_median_normal_line_score(lefts)
-    column["metadata"]["median_normal_right"] = get_median_normal_line_score(rights)
-    column["metadata"]["median_normal_width"] = get_median_normal_line_score(widths)
-    column["metadata"]["median_normal_length"] = get_median_normal_line_score(lengths)
+    lengths = [len(line["text"]) if line["text"] else 0 for line in lines]
+    column["metadata"]["median_normal_left"] = get_median_normal_line_score(lefts, "min")
+    column["metadata"]["median_normal_right"] = get_median_normal_line_score(rights, "max")
+    column["metadata"]["median_normal_width"] = get_median_normal_line_score(widths, "max")
+    column["metadata"]["median_normal_length"] = get_median_normal_line_score(lengths, "max")
     for ti, tr in enumerate(column["textregions"]):
         for li, line in enumerate(tr["lines"]):
             line["metadata"] = {"id": column["metadata"]["id"] + f"-tr-{ti}-line-{li}"}
