@@ -633,7 +633,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
             es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
                      id=missing_meeting.id, body=missing_meeting.to_json(with_columns=True, with_scan_versions=True))
 
-        meeting.page_versions = meeting_parser.get_meeting_pages_version(meeting)
+        meeting.scan_versions = meeting_parser.get_meeting_scans_version(meeting)
         meeting_parser.clean_lines(meeting.lines, clean_copy=False)
         if meeting.metadata['has_meeting_date_element']:
             for evidence in meeting.metadata['evidence']:
@@ -720,7 +720,7 @@ def add_missing_dates(prev_date: Union[RepublicDate, None], meeting: Meeting):
         missing_meeting.metadata['num_columns'] = len(missing_meeting.columns)
         missing_meeting.metadata['num_lines'] = num_lines
         missing_meeting.metadata['num_words'] = num_words
-        missing_meeting.page_versions = meeting_parser.get_meeting_pages_version(missing_meeting)
+        missing_meeting.scan_versions = meeting_parser.get_meeting_scans_version(missing_meeting)
         meeting_parser.clean_lines(missing_meeting.lines, clean_copy=False)
         print('missing meeting:', missing_meeting.id)
         yield missing_meeting

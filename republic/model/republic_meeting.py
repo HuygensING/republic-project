@@ -66,7 +66,7 @@ class LogicalStructureDoc_OLD:
         self.lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = lines if lines else []
         self.column_ids = defaultdict(list)
         self.columns: List[Dict[str, Union[dict, list]]] = columns if columns else []
-        self.page_versions = []
+        self.scan_versions = []
         if lines:
             self.add_lines_as_columns()
         elif columns:
@@ -139,7 +139,7 @@ class LogicalStructureDoc_OLD:
             del line["column_id"]
             del line["textregion_id"]
             del line["line_index"]
-            del line["page_version"]
+            del line["scan_version"]
 
 
 class Resolution(LogicalStructureDoc):
@@ -199,7 +199,7 @@ class Meeting(LogicalStructureDoc):
         if with_lines:
             json_doc['lines'] = self.get_lines()
         if with_scan_versions:
-            json_doc["page_versions"] = self.scan_versions
+            json_doc["scan_versions"] = self.scan_versions
         return json_doc
 
     def get_paragraphs(self, use_indent=False, use_vertical_space=True):

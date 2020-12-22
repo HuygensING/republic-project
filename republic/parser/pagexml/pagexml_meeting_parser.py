@@ -245,12 +245,13 @@ def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_se
     return meeting
 
 
-def get_meeting_pages_version(meeting: Meeting) -> List:
-    pages_version = {}
+def get_meeting_scans_version(meeting: Meeting) -> List:
+    scans_version = {}
     for line in meeting.lines:
-        pages_version[line['metadata']['doc_id']] = copy.copy(line['metadata']['scan_version'])
-        pages_version[line['metadata']['doc_id']]['doc_id'] = line['metadata']['doc_id']
-    return list(pages_version.values())
+        scans_version[line['metadata']['doc_id']] = copy.copy(line['metadata']['scan_version'])
+        scans_version[line['metadata']['doc_id']]['doc_id'] = line['metadata']['doc_id']
+    # print("meeting scans versions:", scans_version)
+    return list(scans_version.values())
 
 
 def clean_lines(lines: List, clean_copy=True) -> List:
