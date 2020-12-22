@@ -89,6 +89,9 @@ def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     pages = [page for page in sorted(pages, key=lambda x: x['metadata']['page_num'])]
+    for page in pages:
+        if 'scan_id' not in page['metadata']:
+            page['metadata']['scan_id'] = page['metadata']['id'].split('-page')[0]
     return stream_resolution_document_lines(pages)
 
 
@@ -124,34 +127,40 @@ def stream_resolution_document_lines(documents: list) -> Union[None, iter]:
                     line_id = line["id"] if "id" in line \
                                   else document['metadata']['id'] + f'-col-{ci}-tr-{ti}-line-{li}'
                     line = {
-                        'id': line_id,
-                        #'inventory_num': document['metadata']['inventory_num'],
-                        #'scan_id': document['metadata']['scan_id'],
-                        'scan_num': document['metadata']['scan_num'],
-                        'doc_id': document['metadata']['id'],
-                        #'page_num': document['metadata']['page_num'],
-                        #'column_index': ci,
-                        'column_id': document['metadata']['id'] + f'-col-{ci}',
-                        #'textregion_index': ti,
-                        'textregion_id': document['metadata']['id'] + f'-col-{ci}-tr-{ti}',
-                        'line_index': li,
-                        'page_version': document["version"],
+                        'metadata': {
+                            'id': line_id,
+                            'left_alignment': line['metadata']['left_alignment'],
+                            'right_alignment': line['metadata']['right_alignment'],
+                            # 'inventory_num': document['metadata']['inventory_num'],
+                            'scan_id': document['metadata']['scan_id'],
+                            'scan_num': document['metadata']['scan_num'],
+                            'doc_id': document['metadata']['id'],
+                            # 'page_num': document['metadata']['page_num'],
+                            # 'column_index': ci,
+                            'column_id': document['metadata']['id'] + f'-col-{ci}',
+                            # 'textregion_index': ti,
+                            'textregion_id': document['metadata']['id'] + f'-col-{ci}-tr-{ti}',
+                            'line_index': li,
+                            'scan_version': document["version"],
+                        },
+                        'baseline': line['baseline'],
+                        'xheight': line['xheight'],
                         'coords': line['coords'],
                         'text': line['text']
                     }
                     if not line['text']:
                         # skip non-text lines
-                        line["type"] = "empty"
+                        line["metadata"]["type"] = "empty"
                     elif line['coords']['left'] > column['coords']['left'] + 600:
                         # skip short lines that are bleed through from opposite side of page
                         # they are right aligned
-                        line["type"] = "right_aligned_text"
+                        line["metadata"]["type"] = "right_aligned_text"
                     elif line['coords']['left'] > column['coords']['left'] + 150:
                         # skip short lines that are bleed through from opposite side of page
                         # they are right aligned
-                        line["type"] = "indented_text"
+                        line["metadata"]["type"] = "indented_text"
                     else:
-                        line["type"] = "left_aligned_text"
+                        line["metadata"]["type"] = "left_aligned_text"
                     # page_num = page['metadata']['page_num']
                     # left_right = f"{line['coords']['left']} <-> {line['coords']['right']}"
                     # top_bottom = f"{line['coords']['top']} <-> {line['coords']['bottom']}"
@@ -166,7 +175,7 @@ def stream_resolution_document_lines(documents: list) -> Union[None, iter]:
 
 def print_line_info(line_info: dict) -> None:
     print('\t', line_info['page_num'], line_info['column_index'],
-          line_info['textregion_index'], line_info['line_index'],
+          line_info['metadata']['textregion_index'], line_info['line_index'],
           line_info['coords']['top'], line_info['coords']['bottom'],
           line_info['coords']['left'], line_info['coords']['right'],
           line_info['text'])
@@ -210,7 +219,7 @@ def score_element_order(element_list: List[any]) -> float:
 def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
     """Find a specific line by id in the list of lines belonging to a meeting."""
     for line in meeting_lines:
-        if line['id'] == line_id:
+        if line['metadata']['id'] == line_id:
             return line
     raise IndexError(f'Line with id {line_id} not in meeting lines.')
 
@@ -239,20 +248,21 @@ def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_se
 def get_meeting_pages_version(meeting: Meeting) -> List:
     pages_version = {}
     for line in meeting.lines:
-        pages_version[line["page_id"]] = copy.copy(line["page_version"])
-        pages_version[line["page_id"]]["page_id"] = line["page_id"]
+        pages_version[line['metadata']['doc_id']] = copy.copy(line['metadata']['scan_version'])
+        pages_version[line['metadata']['doc_id']]['doc_id'] = line['metadata']['doc_id']
     return list(pages_version.values())
 
 
-def clean_lines(lines: List) -> List:
-    lines = copy.deepcopy(lines)
+def clean_lines(lines: List, clean_copy=True) -> List:
+    if clean_copy:
+        lines = copy.deepcopy(lines)
     for line in lines:
-        del line["scan_num"]
-        del line["page_id"]
-        del line["column_id"]
-        del line["textregion_id"]
-        del line["line_index"]
-        del line["page_version"]
+        del line['metadata']['scan_num']
+        del line['metadata']['doc_id']
+        del line['metadata']['column_id']
+        del line['metadata']['textregion_id']
+        del line['metadata']['line_index']
+        del line['metadata']['scan_version']
     return lines
 
 
@@ -313,7 +323,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages)):
         # list all lines belonging to the same meeting date
         meeting_lines += [line_info]
-        if line_info["type"] == "empty":
+        if line_info['metadata']['type'] == 'empty':
             continue
         # add the line to the gated_window
         gated_window.add_doc(line_info)
@@ -327,7 +337,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             # print(li, None)
         else:
             # add the line as a new document to the meeting searcher and search for meeting elements
-            meeting_searcher.add_document(check_line['id'], check_line['text'])
+            meeting_searcher.add_document(check_line['metadata']['id'], check_line['text'])
             # print(li, check_line['text'])
         # Keep sliding until the first line in the sliding window has matches
         # last_line = meeting_searcher.sliding_window[-1]
@@ -353,7 +363,7 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             for line in meeting_searcher.sliding_window:
                 if not line:
                     continue
-                print(line['text_id'], line['text_string'])
+                print(line['metadata']['text_id'], line['text_string'])
         # score the found meeting elements for how well they match the order in which they are expected to appear
         # Empirically established threshold:
         # - need to match at least four meeting elements

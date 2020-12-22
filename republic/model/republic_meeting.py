@@ -2,6 +2,7 @@ from typing import Dict, List, Union
 from collections import defaultdict
 import copy
 import datetime
+import re
 
 from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
@@ -10,6 +11,7 @@ from republic.model.republic_date import RepublicDate, get_next_date_strings, ge
 from republic.model.republic_date import get_date_exception_shift, is_meeting_date_exception, exception_dates
 from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
 from republic.model.republic_pagexml_model import parse_derived_coords
+from republic.model.generic_document_model import LogicalStructureDoc, get_paragraphs
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 
 
@@ -52,7 +54,7 @@ meeting_element_order = [
 ]
 
 
-class LogicalStructureDoc:
+class LogicalStructureDoc_OLD:
 
     def __init__(self,
                  metadata: Union[None, Dict] = None,
@@ -140,14 +142,12 @@ class LogicalStructureDoc:
             del line["page_version"]
 
 
-
-
 class Resolution(LogicalStructureDoc):
 
     def __init__(self,
                  **kwargs):
-                 #lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 #columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
+                 # lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
+                 # columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
         """A resolution has textual content of the resolution, as well as an opening formula, decision information,
         and type information on the source document that instigated the discussion and resolution. Source documents
         can be missives, requests, reports, ..."""
@@ -169,14 +169,25 @@ class Meeting(LogicalStructureDoc):
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.resolutions = []
+        self.metadata['num_columns'] = len(self.columns)
         self.metadata['num_lines'] = len(self.lines)
+        words = []
+        for line in self.lines:
+            if line["text"]:
+                words += [word for word in re.split(r'\W+', line['text']) if word != '']
+        #words = [word for line in self.lines for word in re.split(r"\W+", line["text"]) if line["text"]]
+        self.metadata['num_words'] = len(words)
+        for ci, column in enumerate(self.columns):
+            column['metadata']['page_id'] = column['metadata']['doc_id']
+            column['metadata']['doc_id'] = self.id
+            column['metadata']['column_id'] = self.id + f'-col-{ci}'
 
     def get_metadata(self) -> Dict[str, Union[str, List[str]]]:
         """Return the metadata of the meeting, including date, president and attendants."""
         return self.metadata
 
     def to_json(self, with_resolutions: bool = False, with_columns: bool = False,
-                with_lines: bool = False, with_page_versions: bool = False):
+                with_lines: bool = False, with_scan_versions: bool = False):
         """Return a JSON presentation of the meeting."""
         json_doc = {
             'metadata': self.metadata,
@@ -187,9 +198,14 @@ class Meeting(LogicalStructureDoc):
             json_doc['columns'] = self.get_columns()
         if with_lines:
             json_doc['lines'] = self.get_lines()
-        if with_page_versions:
-            json_doc["page_versions"] = self.page_versions
+        if with_scan_versions:
+            json_doc["page_versions"] = self.scan_versions
         return json_doc
+
+    def get_paragraphs(self, use_indent=False, use_vertical_space=True):
+        if 1705 <= self.date.date.year < 1711:
+            use_indent = True
+        return get_paragraphs(self, use_indent=use_indent, use_vertical_space=use_vertical_space)
 
 
 def meeting_from_json(json_doc: dict) -> Meeting:

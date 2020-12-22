@@ -79,6 +79,7 @@ def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
         page_num = scan_doc['metadata']['scan_num'] * 2 - 2
         doc_id = f"{scan_doc['metadata']['id']}-page-{page_num}-extra"
     page_doc['metadata']['page_num'] = page_num
+    page_doc['metadata']['scan_id'] = scan_doc['metadata']['id']
     page_doc['metadata']['id'] = doc_id
     return page_doc
 
@@ -171,11 +172,18 @@ def set_line_alignment(column: dict):
     for ti, tr in enumerate(column["textregions"]):
         for li, line in enumerate(tr["lines"]):
             line["metadata"] = {"id": column["metadata"]["id"] + f"-tr-{ti}-line-{li}"}
-            if line["coords"]["left"] > column["metadata"]["median_normal_left"] + 50:
+            if line["coords"]["width"] < column["metadata"]["median_normal_width"] - 40:
+                line["metadata"]["line_width"] = "short"
+            else:
+                line["metadata"]["line_width"] = "full"
+            if line["coords"]["left"] > column["metadata"]["median_normal_left"] + 40:
+                line["metadata"]["left_alignment"] = "indent"
+            elif line["coords"]["left"] > column["metadata"]["median_normal_left"] + 20 \
+                    and line["metadata"]["line_width"] == "short":
                 line["metadata"]["left_alignment"] = "indent"
             else:
                 line["metadata"]["left_alignment"] = "column"
-            if line["coords"]["right"] < column["metadata"]["median_normal_right"] - 50:
+            if line["coords"]["right"] < column["metadata"]["median_normal_right"] - 40:
                 line["metadata"]["right_alignment"] = "indent"
             else:
                 line["metadata"]["right_alignment"] = "column"

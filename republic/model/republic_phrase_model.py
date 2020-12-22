@@ -376,6 +376,14 @@ resolution_phrase_model = [
         'max_offset': 4
     },
     {
+        'keyword': 'heeft aan haar Hoogh Mogende voorgedraagen en bekend gemaackt',
+        'variants': [
+            'hebben aan haar Hoogh Mogende voorgedraagen en bekend gemaackt'
+        ],
+        'label': 'resolution_opening',
+        'max_offset': 100
+    },
+    {
         'keyword': 'is goedgevonden ende verstaan',
         'label': 'resolution_decision',
         'variants': [
@@ -412,6 +420,11 @@ resolution_phrase_model = [
     },
     {
         'keyword': 'WAAR op geen resolutie is gevallen',
+        'variants': [
+            "Waer op geen resolutie is gevallen",
+            "WAAR op geen resolutie voor alsnoch is gevallen",
+            "Waer op geen resolutie voor alsnoch is gevallen",
+        ],
         'label': 'resolution_decision',
     },
     {
@@ -425,6 +438,7 @@ resolution_phrase_model = [
         'max_offset': 4,
         'variants': [
             'DE Resolutien, eergisteren genomen',
+            'DE Resolutien voorleede ',
         ]
     },
     {
