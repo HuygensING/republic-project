@@ -4,6 +4,7 @@ from elasticsearch import Elasticsearch, RequestError
 import json
 import numpy as np
 import copy
+import re
 
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
@@ -397,7 +398,11 @@ def normalize_lemma(lemma):
 
 
 def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_config: dict):
+    text_repo = TextRepo(text_repo_url)
     for scan_doc in inv_parser.parse_inventory_from_zip(inventory_num, inventory_config):
+        version_info = text_repo.get_last_version_info(scan_doc["metadata"]["id"],
+                                                       file_type=inventory_config['ocr_type'])
+        scan_doc["version"] = version_info
         if not scan_doc:
             continue
         print("Indexing scan", scan_doc["metadata"]["id"])
@@ -409,6 +414,7 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
         else:
             pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
         for page_doc in pages_doc:
+            page_doc["version"] = version_info
             index_page(es, page_doc, inventory_config)
 
 
@@ -625,15 +631,15 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         for missing_meeting in add_missing_dates(prev_date, meeting):
             missing_meeting.metadata['index_timestamp'] = datetime.datetime.now()
             es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                     id=missing_meeting.id, body=missing_meeting.to_json(with_columns=True, with_page_versions=True))
+                     id=missing_meeting.id, body=missing_meeting.to_json(with_columns=True, with_scan_versions=True))
 
         meeting.page_versions = meeting_parser.get_meeting_pages_version(meeting)
-        meeting.clean_lines()
+        meeting_parser.clean_lines(meeting.lines, clean_copy=False)
         if meeting.metadata['has_meeting_date_element']:
             for evidence in meeting.metadata['evidence']:
                 if evidence['metadata_field'] == 'meeting_date':
                     meeting_date_string = evidence['matches'][-1]['match_string']
-        page_num = int(meeting.columns[0]['metadata']['column_id'].split('page-')[1].split('-')[0])
+        page_num = int(meeting.columns[0]['metadata']['page_id'].split('page-')[1])
         num_lines = meeting.metadata['num_lines']
         meeting_id = meeting.metadata['id']
         print(
@@ -648,10 +654,10 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
             if meeting.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['meeting_index'] + '_quarantine'
                 es.index(index=quarantine_index, doc_type=inv_config['meeting_doc_type'],
-                         id=meeting.id, body=meeting.to_json(with_columns=True, with_page_versions=True))
+                         id=meeting.id, body=meeting.to_json(with_columns=True, with_scan_versions=True))
             else:
                 es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                         id=meeting.id, body=meeting.to_json(with_columns=True, with_page_versions=True))
+                         id=meeting.id, body=meeting.to_json(with_columns=True, with_scan_versions=True))
         except RequestError:
             print('skipping doc')
             continue
@@ -661,55 +667,60 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
 def add_missing_dates(prev_date: Union[RepublicDate, None], meeting: Meeting):
     if prev_date is None:
         prev_date = RepublicDate(meeting.date.year - 1, 12, 31)
-        print("prev_date:", prev_date.isoformat(), "\tcurr_date:", meeting.date.isoformat())
+        print('prev_date:', prev_date.isoformat(), '\tcurr_date:', meeting.date.isoformat())
     missing = (meeting.date - prev_date).days - 1
     if missing > 0:
-        print("missing days:", missing)
+        print('missing days:', missing)
     for diff in range(1, missing+1):
         # create a new meeting doc for the missing date, with data copied from the current meeting
         # as most likely the missing date is a non-meeting date with 'nihil actum est'
         missing_date = prev_date.date + datetime.timedelta(days=diff)
         missing_date = RepublicDate(missing_date.year, missing_date.month, missing_date.day)
         missing_meeting = copy.deepcopy(meeting)
-        missing_meeting.metadata["id"] = f"meeting-{missing_date.isoformat()}-session-1"
-        missing_meeting.id = missing_meeting.metadata["id"]
-        missing_meeting.metadata["meeting_date"] = missing_date.isoformat()
-        missing_meeting.metadata["year"] = missing_date.year
-        missing_meeting.metadata["meeting_month"] = missing_date.month
-        missing_meeting.metadata["meeting_day"] = missing_date.day
-        missing_meeting.metadata["meeting_weekday"] = missing_date.day_name
-        missing_meeting.metadata["is_workday"] = missing_date.is_work_day()
-        missing_meeting.metadata["session"] = None
-        missing_meeting.metadata["president"] = None
-        missing_meeting.metadata["attendants_list_id"] = None
-        evidence_lines = set([evidence["line_id"] for evidence in missing_meeting.metadata["evidence"]])
+        missing_meeting.metadata['id'] = f'meeting-{missing_date.isoformat()}-session-1'
+        missing_meeting.id = missing_meeting.metadata['id']
+        missing_meeting.metadata['meeting_date'] = missing_date.isoformat()
+        missing_meeting.metadata['year'] = missing_date.year
+        missing_meeting.metadata['meeting_month'] = missing_date.month
+        missing_meeting.metadata['meeting_day'] = missing_date.day
+        missing_meeting.metadata['meeting_weekday'] = missing_date.day_name
+        missing_meeting.metadata['is_workday'] = missing_date.is_work_day()
+        missing_meeting.metadata['session'] = None
+        missing_meeting.metadata['president'] = None
+        missing_meeting.metadata['attendants_list_id'] = None
+        evidence_lines = set([evidence['line_id'] for evidence in missing_meeting.metadata['evidence']])
         keep_columns = []
         num_lines = 0
+        num_words = 0
         missing_meeting.lines = []
         for column in missing_meeting.columns:
             keep_textregions = []
-            for textregion in column["textregions"]:
+            for textregion in column['textregions']:
                 keep_lines = []
-                for line in textregion["lines"]:
+                for line in textregion['lines']:
                     if len(evidence_lines) > 0:
                         keep_lines += [line]
                         missing_meeting.lines += [line]
                         num_lines += 1
+                        if line['text']:
+                            num_words += len([word for word in re.split(r'\W+', line['text']) if word != ''])
                     else:
                         break
-                    if line["id"] in evidence_lines:
-                        evidence_lines.remove(line["id"])
-                textregion["lines"] = keep_lines
-                if len(textregion["lines"]) > 0:
-                    textregion["coords"] = parse_derived_coords(textregion["lines"])
+                    if line['metadata']['id'] in evidence_lines:
+                        evidence_lines.remove(line['metadata']['id'])
+                textregion['lines'] = keep_lines
+                if len(textregion['lines']) > 0:
+                    textregion['coords'] = parse_derived_coords(textregion['lines'])
                     keep_textregions += [textregion]
-            column["textregions"] = keep_textregions
-            if len(column["textregions"]) > 0:
-                column["coords"] = parse_derived_coords(column["textregions"])
+            column['textregions'] = keep_textregions
+            if len(column['textregions']) > 0:
+                column['coords'] = parse_derived_coords(column['textregions'])
                 keep_columns += [column]
         missing_meeting.columns = keep_columns
-        missing_meeting.metadata["num_lines"] = num_lines
+        missing_meeting.metadata['num_columns'] = len(missing_meeting.columns)
+        missing_meeting.metadata['num_lines'] = num_lines
+        missing_meeting.metadata['num_words'] = num_words
         missing_meeting.page_versions = meeting_parser.get_meeting_pages_version(missing_meeting)
-        missing_meeting.clean_lines()
-        print("missing meeting:", missing_meeting.id)
+        meeting_parser.clean_lines(missing_meeting.lines, clean_copy=False)
+        print('missing meeting:', missing_meeting.id)
         yield missing_meeting

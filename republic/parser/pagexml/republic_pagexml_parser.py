@@ -67,7 +67,7 @@ def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
     page_doc = {
         'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None
     }
-    page_doc['metadata']['doc_type'] = 'page'
+    page_doc['metadata']['type'] = 'page'
     page_doc['metadata']['page_side'] = side
     if side == 'odd':
         page_num = scan_doc['metadata']['scan_num'] * 2 - 1
@@ -79,6 +79,7 @@ def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
         page_num = scan_doc['metadata']['scan_num'] * 2 - 2
         doc_id = f"{scan_doc['metadata']['id']}-page-{page_num}-extra"
     page_doc['metadata']['page_num'] = page_num
+    page_doc['metadata']['scan_id'] = scan_doc['metadata']['id']
     page_doc['metadata']['id'] = doc_id
     return page_doc
 
@@ -141,10 +142,13 @@ def coords_overlap(item1: dict, item2: dict) -> int:
     return right - left if right - left > 0 else 0
 
 
-def get_median_normal_line_score(scores):
+def get_median_normal_line_score(scores, max_deviance: int = 50, debug: bool = False):
     median_score = np.median(scores)
-    normal_scores = [score for score in scores if abs(score - median_score) < 50]
-    return np.median(normal_scores)
+    normal_scores = [score for score in scores if abs(score - median_score) < max_deviance]
+    if debug:
+        print("median_score:", median_score)
+        print("normal_scores:", normal_scores)
+    return int(np.median(normal_scores))
 
 
 def set_line_alignment(column: dict):
@@ -152,19 +156,29 @@ def set_line_alignment(column: dict):
     lefts = [line["coords"]["left"] for line in lines]
     rights = [line["coords"]["right"] for line in lines]
     widths = [line["coords"]["width"] for line in lines]
-    lengths = [len(line["text"]) for line in lines]
-    column["metadata"]["median_normal_left"] = get_median_normal_line_score(lefts)
-    column["metadata"]["median_normal_right"] = get_median_normal_line_score(rights)
-    column["metadata"]["median_normal_width"] = get_median_normal_line_score(widths)
-    column["metadata"]["median_normal_length"] = get_median_normal_line_score(lengths)
+    lengths = [len(line["text"]) if line["text"] else 0 for line in lines]
+    print("scores:", lengths)
+    column["metadata"]["median_normal_left"] = get_median_normal_line_score(lefts, max_deviance=40)
+    column["metadata"]["median_normal_right"] = get_median_normal_line_score(rights, max_deviance=40)
+    column["metadata"]["median_normal_width"] = get_median_normal_line_score(widths, max_deviance=50)
+    print("median_normal_score:", get_median_normal_line_score(lengths, max_deviance=10, debug=True))
+    print()
+    column["metadata"]["median_normal_length"] = get_median_normal_line_score(lengths, max_deviance=5)
     for ti, tr in enumerate(column["textregions"]):
         for li, line in enumerate(tr["lines"]):
             line["metadata"] = {"id": column["metadata"]["id"] + f"-tr-{ti}-line-{li}"}
-            if line["coords"]["left"] > column["metadata"]["median_normal_left"] + 50:
+            if line["coords"]["width"] < column["metadata"]["median_normal_width"] - 40:
+                line["metadata"]["line_width"] = "short"
+            else:
+                line["metadata"]["line_width"] = "full"
+            if line["coords"]["left"] > column["metadata"]["median_normal_left"] + 40:
+                line["metadata"]["left_alignment"] = "indent"
+            elif line["coords"]["left"] > column["metadata"]["median_normal_left"] + 20 \
+                    and line["metadata"]["line_width"] == "short":
                 line["metadata"]["left_alignment"] = "indent"
             else:
                 line["metadata"]["left_alignment"] = "column"
-            if line["coords"]["right"] < column["metadata"]["median_normal_right"] - 50:
+            if line["coords"]["right"] < column["metadata"]["median_normal_right"] - 40:
                 line["metadata"]["right_alignment"] = "indent"
             else:
                 line["metadata"]["right_alignment"] = "column"
