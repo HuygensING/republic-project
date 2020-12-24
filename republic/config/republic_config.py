@@ -10,23 +10,152 @@ def set_config_inventory_num(inventory_num: int, ocr_type: str,
     if default_config is None:
         default_config = base_config
     config = copy.deepcopy(default_config)
+    set_inventory_base_dir(inventory_num, ocr_type, base_dir, config)
+    set_inventory_metadata(inventory_num, config)
+    set_inventory_indexes(ocr_type, config)
+    set_inventory_period_elements(inventory_num, config)
+    return config
+
+
+def set_inventory_base_dir(inventory_num: int, ocr_type: str, base_dir: str, config: dict) -> None:
     assert(ocr_type == 'hocr' or ocr_type == 'pagexml')
     config['ocr_type'] = ocr_type
     if base_dir:
         config['base_dir'] = base_dir
-        config['data_dir'] = os.path.join(config['base_dir'], f'{ocr_type}/{inventory_num}/')
+        config['data_dir'] = os.path.join(config['base_dir'], 'data')
         config['csv_dir'] = os.path.join(config['base_dir'], 'csv')
-    config['page_index'] = f'republic_{ocr_type}_pages'
-    config['scan_index'] = f'republic_{ocr_type}_scans'
-    config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'
-    config['meeting_index'] = f'{ocr_type}_meeting'
-    config['meeting_doc_type'] = 'meeting'
+
+
+def set_inventory_metadata(inventory_num: int, config: dict) -> None:
     inv_map = get_inventory_by_num(inventory_num)
     for field in inv_map:
         config[field] = inv_map[field]
     config['year'] = inv_map['year']
     config['inventory_num'] = inventory_num
-    return config
+
+
+def set_inventory_indexes(ocr_type: str, config: dict) -> None:
+    config['page_index'] = f'republic_{ocr_type}_pages'
+    config['scan_index'] = f'republic_{ocr_type}_scans'
+    config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'
+    config['meeting_index'] = f'{ocr_type}_meeting'
+    config['meeting_doc_type'] = 'meeting'
+
+
+def set_inventory_period_elements(inventory_num: int, config: dict):
+    layout_elements = ['resolution_layout', 'index_layout', 'respecten_layout']
+    for layout_element in layout_elements:
+        for period in layout_periods[layout_element]:
+            if period['inventory_start'] <= inventory_num <= period['inventory_end']:
+                config[layout_element] = period['layout_type']
+    for period in spelling_periods:
+        if period['inventory_start'] <= inventory_num <= period['inventory_end']:
+            config['spelling_period'] = period
+
+
+layout_periods = {
+    'resolution_layout': [
+        {
+            'layout_type': 'use_indent',
+            "inventory_start": 3760,
+            "inventory_end": 3765,
+            "year_start": 1705,
+            "year_end": 1710
+        },
+        {
+            'layout_type': 'use_vertical_space',
+            "inventory_start": 3766,
+            "inventory_end": 3864,
+            "year_start": 1711,
+            "year_end": 1796
+        },
+    ],
+    'index_layout': [
+        {
+            'layout_type': 'single_column_no_repeat',
+            "inventory_start": 3760,
+            "inventory_end": 3762,
+            "year_start": 1705,
+            "year_end": 1707
+        },
+        {
+            'layout_type': 'single_column_repeat_symbol',
+            "inventory_start": 3763,
+            "inventory_end": 3804,
+            "year_start": 1708,
+            "year_end": 1749
+        },
+        {
+            'layout_type': 'three_column',
+            "inventory_start": 3805,
+            "inventory_end": 3809,
+            "year_start": 1750,
+            "year_end": 1754
+        },
+        {
+            'layout_type': 'four_column',
+            "inventory_start": 3810,
+            "inventory_end": 3864,
+            "year_start": 1755,
+            "year_end": 1796
+        },
+    ],
+    'respecten_layout': [
+        {
+            'layout_type': 'no_respecten',
+            "inventory_start": 3760,
+            "inventory_end": 3795,
+            "year_start": 1705,
+            "year_end": 1740
+        },
+        {
+            'layout_type': 'four_column_respecten',
+            "inventory_start": 3796,
+            "inventory_end": 3798,
+            "year_start": 1741,
+            "year_end": 1743
+        },
+        {
+            'layout_type': 'three_column_respecten',
+            "inventory_start": 3799,
+            "inventory_end": 3864,
+            "year_start": 1744,
+            "year_end": 1796
+        },
+    ],
+}
+
+
+spelling_periods = [
+    {
+        'period_start': 1705,
+        'period_end': 1716,
+        'inventory_start': 3760,
+        'inventory_end': 3771,
+        'spelling': 'ae_ck_ey_gh'
+    },
+    {
+        'period_start': 1717,
+        'period_end': 1749,
+        'inventory_start': 3772,
+        'inventory_end': 3804,
+        'spelling': 'aa_ck_ey_gh'
+    },
+    {
+        'period_start': 1750,
+        'period_end': 1764,
+        'inventory_start': 3805,
+        'inventory_end': 3819,
+        'spelling': 'aa_ck_ei_gh'
+    },
+    {
+        'period_start': 1765,
+        'period_end': 1796,
+        'inventory_start': 3820,
+        'inventory_end': 3864,
+        'spelling': 'aa_k_ei_g'
+    },
+]
 
 
 base_config = {

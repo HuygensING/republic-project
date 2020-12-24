@@ -1,4 +1,5 @@
 from typing import List, Dict, Union, Iterator
+from collections import Counter
 import copy
 
 from republic.model.republic_phrase_model import meeting_phrase_model
@@ -6,6 +7,8 @@ from republic.model.republic_date import RepublicDate, derive_date_from_string, 
 # print(exception_dates)
 from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
 from republic.model.republic_meeting import meeting_element_order
+from republic.model.republic_document_model import check_special_column_for_bleed_through, sort_resolution_columns
+from republic.helper.text_helper import read_word_freq_counter
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
@@ -61,7 +64,7 @@ def swap_lines(line1: dict, line2: dict):
     if line2["coords"]["bottom"] < line1["coords"]["top"] + 10:
         # line2 is entirely above line1, so swap
         return True
-    if line1["type"] == "left_aligned_text":
+    if line1["left_alignment"] == "column":
         # lines have horizontal overlap, but line 1 is left aligned
         return False
     if line1["coords"]["left"] < line2["coords"]["right"] - 10:
@@ -73,7 +76,7 @@ def swap_lines(line1: dict, line2: dict):
 
 def order_document_lines(document: dict):
     lines = [line for line in stream_resolution_document_lines([document])
-             if line is not None and line["type"] != "empty"]
+             if line is not None and line["text"] is not None]
     ordered_lines = []
     for li, line in enumerate(lines):
         if line in ordered_lines:
@@ -84,39 +87,48 @@ def order_document_lines(document: dict):
         ordered_lines.append(line)
 
 
-def stream_resolution_page_lines(pages: list) -> Union[None, iter]:
+def stream_resolution_page_lines(pages: list, word_freq_counter: Counter = None) -> Union[None, iter]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
-    pages = [page for page in sorted(pages, key=lambda x: x['metadata']['page_num'])]
+    pages = sorted(pages, key=lambda x: x['metadata']['page_num'])
     for page in pages:
         if 'scan_id' not in page['metadata']:
             page['metadata']['scan_id'] = page['metadata']['id'].split('-page')[0]
-    return stream_resolution_document_lines(pages)
+    return stream_resolution_document_lines(pages, word_freq_counter=word_freq_counter)
 
 
-def stream_resolution_document_lines(documents: list) -> Union[None, iter]:
+def line_add_document_metadata(line: dict, document: Dict[str, any]):
+    # line['inventory_num'] = document['metadata']['inventory_num']
+    line['metadata']['scan_id'] = document['metadata']['scan_id']
+    line['metadata']['scan_num'] = document['metadata']['scan_num']
+    line['metadata']['doc_id'] = document['metadata']['id']
+    # line['page_num'] = document['metadata']['page_num']
+    # line['column_index'] = ci
+    line['metadata']['column_id'] = line['metadata']['id'].split('-tr-')[0]
+    # line['textregion_index'] = ti
+    line['metadata']['textregion_id'] = line['metadata']['id'].split('-line-')[0]
+    line['metadata']['line_index'] = int(line['metadata']['id'].split('-line-')[1])
+    line['metadata']['scan_version'] = document["version"]
+    return line
+
+
+def stream_resolution_document_lines(documents: List[dict],
+                                     word_freq_counter: Counter = None) -> Union[None, iter]:
     """Iterate over list of documents and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     for document in documents:
-        merge = {}
-        columns = copy.copy(document['columns'])
-        for ci1, column1 in enumerate(columns):
-            for ci2, column2 in enumerate(columns):
-                if ci1 == ci2:
-                    continue
-                if column1['coords']['left'] >= column2['coords']['left'] and \
-                        column1['coords']['right'] <= column2['coords']['right']:
-                    # print(f'MERGE COLUMN {ci1} INTO COLUMN {ci2}')
-                    merge[ci1] = ci2
-        for merge_column in merge:
-            # merge contained column in container column
-            columns[merge[merge_column]]['textregions'] += columns[merge_column]['textregions']
-        for ci, column in enumerate(columns):
-            if ci in merge:
-                # skip contained column
-                continue
+        if word_freq_counter:
+            for column in document['columns']:
+                check_special_column_for_bleed_through(column, word_freq_counter)
+        try:
+            columns = sort_resolution_columns(document['columns'])
+        except KeyError:
+            print(document['metadata']['id'])
+            raise
+        for ci, column in columns:
+            # print('column id:', column['metadata']['id'])
             # print('column coords:', column['coords'])
             lines = []
             for ti, textregion in enumerate(column['textregions']):
@@ -124,47 +136,9 @@ def stream_resolution_document_lines(documents: list) -> Union[None, iter]:
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
                 for li, line in enumerate(textregion['lines']):
-                    line_id = line["id"] if "id" in line \
-                                  else document['metadata']['id'] + f'-col-{ci}-tr-{ti}-line-{li}'
-                    line = {
-                        'metadata': {
-                            'id': line_id,
-                            'left_alignment': line['metadata']['left_alignment'],
-                            'right_alignment': line['metadata']['right_alignment'],
-                            # 'inventory_num': document['metadata']['inventory_num'],
-                            'scan_id': document['metadata']['scan_id'],
-                            'scan_num': document['metadata']['scan_num'],
-                            'doc_id': document['metadata']['id'],
-                            # 'page_num': document['metadata']['page_num'],
-                            # 'column_index': ci,
-                            'column_id': document['metadata']['id'] + f'-col-{ci}',
-                            # 'textregion_index': ti,
-                            'textregion_id': document['metadata']['id'] + f'-col-{ci}-tr-{ti}',
-                            'line_index': li,
-                            'scan_version': document["version"],
-                        },
-                        'baseline': line['baseline'],
-                        'xheight': line['xheight'],
-                        'coords': line['coords'],
-                        'text': line['text']
-                    }
-                    if not line['text']:
-                        # skip non-text lines
-                        line["metadata"]["type"] = "empty"
-                    elif line['coords']['left'] > column['coords']['left'] + 600:
-                        # skip short lines that are bleed through from opposite side of page
-                        # they are right aligned
-                        line["metadata"]["type"] = "right_aligned_text"
-                    elif line['coords']['left'] > column['coords']['left'] + 150:
-                        # skip short lines that are bleed through from opposite side of page
-                        # they are right aligned
-                        line["metadata"]["type"] = "indented_text"
-                    else:
-                        line["metadata"]["type"] = "left_aligned_text"
-                    # page_num = page['metadata']['page_num']
-                    # left_right = f"{line['coords']['left']} <-> {line['coords']['right']}"
-                    # top_bottom = f"{line['coords']['top']} <-> {line['coords']['bottom']}"
-                    # print(page_num, ci, ti, '\t', left_right, '\t', top_bottom, '\t', line['text'])
+                    if 'is_bleed_through' in line['metadata']:
+                        print('BLEED THROUGH IN LINE')
+                    line = line_add_document_metadata(line, document)
                     lines += [line]
             # sort lines to make sure they are in reading order (assuming column has single text column)
             # some columns split their text in sub columns, but for meeting date detection this is not an issue
@@ -224,8 +198,9 @@ def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
     raise IndexError(f'Line with id {line_id} not in meeting lines.')
 
 
-def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list, meeting_searcher: MeetingSearcher) -> iter:
-    meeting = Meeting(meeting_searcher.current_date, meeting_metadata, lines=meeting_lines)
+def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list,
+                         meeting_searcher: MeetingSearcher, column_metadata: Dict[str, dict]) -> iter:
+    meeting = Meeting(meeting_searcher.current_date, meeting_metadata, column_metadata, lines=meeting_lines)
     # add number of lines to session info in meeting searcher
     session_info = meeting_searcher.sessions[meeting_metadata['meeting_date']][-1]
     session_info['num_lines'] = len(meeting_lines)
@@ -308,23 +283,36 @@ class GatedWindow:
         return self.sliding_window[0] if self.let_through[0] else None
 
 
-def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
+def get_columns_metadata(sorted_pages: List[dict]) -> Dict[str, dict]:
+    column_metadata = {}
+    for page in sorted_pages:
+        for column in page['columns']:
+            column_id = column['metadata']['id']
+            column_metadata[column_id] = column['metadata']
+    return column_metadata
+
+
+def get_meeting_dates(sorted_pages: List[dict], inv_config: dict,
                       inv_metadata: dict) -> Iterator[Meeting]:
     # TO DO: IMPROVEMENTS
     # - add holidays: Easter, Christmas
     # - make model year-dependent
     # - check for large date jumps and short meeting docs
+    column_metadata = get_columns_metadata(sorted_pages)
     current_date = initialize_inventory_date(inv_metadata)
-    meeting_searcher = MeetingSearcher(inv_num, current_date, meeting_phrase_model, window_size=30)
+    meeting_searcher = MeetingSearcher(inv_config['inventory_num'], current_date,
+                                       meeting_phrase_model, window_size=30)
     meeting_metadata = meeting_searcher.parse_meeting_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
     meeting_lines = []
-    for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages)):
+    word_freq_counter = read_word_freq_counter(inv_config, 'line')
+    for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages,
+                                                                word_freq_counter=word_freq_counter)):
         # list all lines belonging to the same meeting date
         meeting_lines += [line_info]
-        if line_info['metadata']['type'] == 'empty':
+        if line_info['text'] is None or line_info['text'] == '':
             continue
         # add the line to the gated_window
         gated_window.add_doc(line_info)
@@ -386,7 +374,8 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             finished_meeting_lines = meeting_lines[:new_meeting_index]
             # everything after the first new meeting day line belongs to the new meeting day
             meeting_lines = meeting_lines[new_meeting_index:]
-            meeting_doc = generate_meeting_doc(meeting_metadata, finished_meeting_lines, meeting_searcher)
+            meeting_doc = generate_meeting_doc(meeting_metadata, finished_meeting_lines,
+                                               meeting_searcher, column_metadata)
             if meeting_doc.metadata['num_lines'] == 0:
                 # A meeting with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
@@ -409,4 +398,4 @@ def get_meeting_dates(sorted_pages: List[dict], inv_num: int,
             meeting_searcher.shift_sliding_window()
     meeting_metadata['num_lines'] = len(meeting_lines)
     # after processing all lines in the inventory, create a meeting doc from the remaining lines
-    yield generate_meeting_doc(meeting_metadata, meeting_lines, meeting_searcher)
+    yield generate_meeting_doc(meeting_metadata, meeting_lines, meeting_searcher, column_metadata)

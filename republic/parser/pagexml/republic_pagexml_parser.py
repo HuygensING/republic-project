@@ -65,7 +65,7 @@ def is_extra_side(item: dict) -> bool:
 def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
     """Initialize a pagexml page type document based on the scan metadata."""
     page_doc = {
-        'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None
+        'metadata': copy.copy(scan_doc['metadata']), 'textregions': [], 'coords': None,
     }
     page_doc['metadata']['type'] = 'page'
     page_doc['metadata']['page_side'] = side
@@ -226,7 +226,11 @@ def split_column_regions(page_doc: dict) -> dict:
     columns.sort(key=lambda x: x['coords']['left'])
     for ci, column in enumerate(columns):
         column['textregions'].sort(key=lambda x: x['coords']['top'])
-        column["metadata"] = {"type": "column", "id": page_doc["metadata"]["id"] + f"-column-{ci}"}
+        column["metadata"] = {
+            "type": "column",
+            "id": page_doc["metadata"]["id"] + f"-column-{ci}",
+            "scan_id": page_doc["metadata"]["scan_id"]
+        }
         col_stats = get_pagexml_doc_num_words(column)
         set_line_alignment(column)
         column['metadata']['num_lines'] = col_stats['num_lines']

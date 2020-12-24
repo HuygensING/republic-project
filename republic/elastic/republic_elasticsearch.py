@@ -248,11 +248,13 @@ def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) ->
 
 
 def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    return retrieve_pages_by_type(es, 'index_page', inventory_num, config)
+    pages = retrieve_pages_by_type(es, 'index_page', inventory_num, config)
+    return sorted(pages, key=lambda page: page['metadata']['page_num'])
 
 
 def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    return retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
+    pages = retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
+    return sorted(pages, key=lambda page: page['metadata']['page_num'])
 
 
 def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int,
@@ -614,13 +616,15 @@ def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_confi
 
 
 def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
-    pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
+    # pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
+    pages = retrieve_resolution_pages(es, inv_num, inv_config)
+    pages.sort(key=lambda page: page['metadata']['page_num'])
     inv_metadata = retrieve_inventory_metadata(es, inv_num, inv_config)
     prev_date: Union[None, RepublicDate] = None
     if not pages:
         print('No pages retrieved for inventory', inv_num)
         return None
-    for mi, meeting in enumerate(meeting_parser.get_meeting_dates(pages, inv_num, inv_metadata)):
+    for mi, meeting in enumerate(meeting_parser.get_meeting_dates(pages, inv_config, inv_metadata)):
         if meeting.metadata['num_lines'] > 4000:
             # exceptionally long meeting docs probably contain multiple meetings
             # so quarantine these

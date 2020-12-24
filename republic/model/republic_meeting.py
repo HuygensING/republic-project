@@ -11,7 +11,8 @@ from republic.model.republic_date import RepublicDate, get_next_date_strings, ge
 from republic.model.republic_date import get_date_exception_shift, is_meeting_date_exception, exception_dates
 from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
 from republic.model.republic_pagexml_model import parse_derived_coords
-from republic.model.generic_document_model import LogicalStructureDoc, get_paragraphs
+from republic.model.generic_document_model import LogicalStructureDoc
+from republic.model.republic_document_model import get_paragraphs
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 
 
@@ -54,7 +55,7 @@ meeting_element_order = [
 ]
 
 
-class LogicalStructureDoc_OLD:
+class LogicalStructureDocOLD:
 
     def __init__(self,
                  metadata: Union[None, Dict] = None,
@@ -107,20 +108,15 @@ class LogicalStructureDoc_OLD:
             for line in self.column_ids[column_id]:
                 textregion_lines[line['textregion_id']] += [line]
             inv_metadata = get_inventory_by_num(self.metadata['inventory_num'])
-            urls = make_scan_urls(inv_metadata, scan_num=line['scan_num'])
             column = {
                 'metadata': {
                     'column_id': column_id,
-                    #'inventory_num': line['inventory_num'],
-                    #'scan_id': line['scan_id'],
                     'scan_num': line['scan_num'],
-                    #'page_id': line['page_id'],
-                    #'page_num': line['page_num'],
-                    #'column_index': line['column_index'],
                 },
                 'coords': parse_derived_coords(self.column_ids[column_id]),
                 'textregions': []
             }
+            urls = make_scan_urls(inv_metadata, scan_num=line['scan_num'])
             column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
             for textregion_id in textregion_lines:
                 textregion = {
@@ -160,7 +156,8 @@ class Resolution(LogicalStructureDoc):
 
 class Meeting(LogicalStructureDoc):
 
-    def __init__(self, meeting_date: RepublicDate, metadata: Dict, **kwargs):
+    def __init__(self, meeting_date: RepublicDate, metadata: Dict,
+                 page_column_metadata: Dict[str, dict], **kwargs):
         """A meeting occurs on a specific day, with a president and attendants, and has textual content in the form of
          lines or possibly as Resolution objects."""
         super().__init__(metadata=metadata, **kwargs)
@@ -171,16 +168,33 @@ class Meeting(LogicalStructureDoc):
         self.resolutions = []
         self.metadata['num_columns'] = len(self.columns)
         self.metadata['num_lines'] = len(self.lines)
-        words = []
-        for line in self.lines:
-            if line["text"]:
-                words += [word for word in re.split(r'\W+', line['text']) if word != '']
-        #words = [word for line in self.lines for word in re.split(r"\W+", line["text"]) if line["text"]]
-        self.metadata['num_words'] = len(words)
+        self.metadata['num_words'] = 0
         for ci, column in enumerate(self.columns):
+            page_col_metadata = page_column_metadata[column['metadata']['id']]
+            for key in page_col_metadata:
+                if key == 'id':
+                    column['metadata']['page_column_id'] = page_col_metadata[key]
+                elif key in ['num_words', 'num_lines', 'iiif_url']:
+                    continue
+                else:
+                    column['metadata'][key] = page_col_metadata[key]
             column['metadata']['page_id'] = column['metadata']['doc_id']
             column['metadata']['doc_id'] = self.id
-            column['metadata']['column_id'] = self.id + f'-col-{ci}'
+            column['metadata']['id'] = self.id + f'-col-{ci}'
+            inv_metadata = get_inventory_by_num(self.metadata['inventory_num'])
+            scan_num = int(column['metadata']['scan_id'].split('_')[-1])
+            urls = make_scan_urls(inv_metadata, scan_num=scan_num)
+            column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
+            words = []
+            column['metadata']['num_lines'] = 0
+            for tr in column['textregions']:
+                for line in tr['lines']:
+                    column['metadata']['num_lines'] += 1
+                    if line["text"]:
+                        words += [word for word in re.split(r'\W+', line['text']) if word != '']
+                # words = [word for line in self.lines for word in re.split(r"\W+", line["text"]) if line["text"]]
+            column['metadata']['num_words'] = len(words)
+            self.metadata['num_words'] += len(words)
 
     def get_metadata(self) -> Dict[str, Union[str, List[str]]]:
         """Return the metadata of the meeting, including date, president and attendants."""

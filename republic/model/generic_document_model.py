@@ -1,6 +1,9 @@
 from typing import Dict, List, Union
 from collections import defaultdict
+from collections import Counter
 import copy
+import string
+import re
 
 from republic.helper.metadata_helper import make_iiif_region_url
 
@@ -110,7 +113,7 @@ class StructureDoc:
                 textregion_lines[line['metadata']['textregion_id']] += [line]
             column = {
                 'metadata': {
-                    'column_id': column_id,
+                    'id': column_id,
                     'scan_id': line['metadata']['scan_id'],
                     'doc_id': line['metadata']['doc_id'],
                 },
@@ -219,10 +222,10 @@ class PhysicalStructureDoc(StructureDoc):
 class LogicalStructureDoc(StructureDoc):
 
     def __init__(self, metadata: Union[None, Dict] = None,
-                 coords: Union[None, Dict] = None,
-                 versions: Union[None, List[dict]] = None,
-                 lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
+                 coords: Dict = None,
+                 versions: List[dict] = None,
+                 lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = None,
+                 columns: List[Dict[str, Union[dict, list]]] = None):
         """A logical structure document is an element from the logical hierarchy of a digitised
         resource, where a resource can be any coherent object, like a book, newspaper or letter.
         A logical structure document has a correspondence to a physical structure document, e.g.
@@ -231,7 +234,7 @@ class LogicalStructureDoc(StructureDoc):
         Logical structure documents can have text regions and lines (the basic elements
         of the text recognition process), as well as columns as post-interpreted elements."""
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
-        self.scan_versions = versions
+        self.scan_versions: List[dict] = versions
         self.type = "logical_structure_doc"
 
 
@@ -240,38 +243,52 @@ class PageDoc(PhysicalStructureDoc):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.type = "page"
+        # make sure page has scan id in metadata
+        if "scan_id" not in self.metadata:
+            self.metadata["scan_id"] = self.metadata["id"].split("-page")[0]
+        # make sure each column has a scan_id
+        for column in self.columns:
+            if "scan_id" not in column["metadata"]:
+                column["metadata"]["scan_id"] = self.metadata["scan_id"]
 
 
 class Paragraph:
 
-    def __init__(self, para_lines: list):
+    def __init__(self, para_lines: list, word_freq: Counter = None):
         self.lines = copy.deepcopy(para_lines)
         self.metadata = {
             "inventory_num": para_lines[0]["metadata"]["inventory_num"]
         }
         self.text = ""
         self.line_ranges = []
-        self.set_text()
+        self.set_text(word_freq)
 
     def __repr__(self):
         return f"Paragraph(lines={[line['metadata']['id'] for line in self.lines]}, text={self.text})"
 
     def json(self):
         return {
-            "inventory_num": self.metadata["inventory_num"],
+            "metadata": self.metadata,
             "lines": [line['metadata']['id'] for line in self.lines],
             "text": self.text,
             "line_ranges": self.line_ranges
         }
 
-    def set_text(self):
+    def set_text(self, word_freq: Counter = None):
         for li, line in enumerate(self.lines):
             if line["text"] is None:
                 continue
+            elif 'is_bleed_through' in line['metadata'] and line['metadata']['is_bleed_through']:
+                continue
+            elif len(line['text']) == 1:
+                continue
+            next_line = self.lines[li+1] if len(self.lines) > li+1 else {'text': None}
             if len(line["text"]) > 2 and line["text"][-2] == "-" and not line["text"][-1].isalpha():
                 line_text = line["text"][:-2]
             elif line["text"][-1] == "-":
                 line_text = line["text"][:-1]
+            elif line_ends_with_word_break(line, next_line, word_freq):
+                line_text = re.split(r'\W+$', line["text"])[0]
             elif (li + 1) == len(self.lines):
                 line_text = line["text"]
             else:
@@ -308,6 +325,53 @@ class PageLine:
         assert 'text' in line
         self.xheight = line['xheight']
         self.text = line['text']
+        self.metadata = line['metadata']
+
+
+def line_ends_with_word_break(curr_line: Dict[str, any], next_line: Dict[str, any],
+                              word_freq: Counter = None) -> bool:
+    if not next_line['text']:
+        # if the next line has no text, it has no first word to join with the last word of the current line
+        return False
+    if not curr_line['text'][-1] in string.punctuation:
+        # if the current line does not end with punctuation, we assume, the last word is not hyphenated
+        return False
+    match = re.search(r'(\w+)\W+$', curr_line['text'])
+    if not match:
+        # if the current line has no word immediately before the punctuation, we assume there is no word break
+        return False
+    last_word = match.group(1)
+    match = re.search(r'^(\w+)', next_line['text'])
+    if not match:
+        # if the next line does not start with a word, we assume it should not be joined to the last word
+        # on the current line
+        return False
+    next_word = match.group(1)
+    if curr_line['text'][-1] == '-':
+        # if the current line ends in a proper hyphen, we assume it should be joined to the first
+        # word on the next line
+        return True
+    if not word_freq:
+        # if no word_freq counter is given, we cannot compare frequencies, so assume the words should
+        # not be joined
+        return False
+    joint_word = last_word + next_word
+    if word_freq[joint_word] == 0:
+        return False
+    if word_freq[joint_word] > 0 and word_freq[last_word] * word_freq[next_word] == 0:
+        return True
+    pmi = word_freq[joint_word] * sum(word_freq.values()) / (word_freq[last_word] * word_freq[next_word])
+    if pmi > 1:
+        return True
+    if word_freq[joint_word] > word_freq[last_word] and word_freq[joint_word] > word_freq[next_word]:
+        return True
+    elif word_freq[next_word] < word_freq[joint_word] <= word_freq[last_word]:
+        print('last word:', last_word, word_freq[last_word])
+        print('next word:', next_word, word_freq[next_word])
+        print('joint word:', joint_word, word_freq[joint_word])
+        return True
+    else:
+        return False
 
 
 def doc_from_json(self, doc_json):
@@ -323,40 +387,23 @@ def doc_from_json(self, doc_json):
                                    versions=doc_json["version"])
 
 
+def same_height(line1: Dict[str, any], line2: Dict[str, any]) -> bool:
+    max_top = max(line1['coords']['top'], line2['coords']['top'])
+    min_bottom = min(line1['coords']['bottom'], line2['coords']['bottom'])
+    min_height = min(line1['coords']['height'], line2['coords']['height'])
+    overlap = min_bottom - max_top
+    return overlap > (min_height/2)
+
+
 def same_column(line1, line2):
-    if line1["metadata"]["page_id"] != line2["metadata"]["page_id"]:
+    if line1["metadata"]["scan_id"] != line2["metadata"]["scan_id"]:
         return False
     return line1["metadata"]["column_index"] == line2["metadata"]["column_index"]
 
 
-def get_paragraphs(doc: StructureDoc, prev_line: Union[None, dict] = None,
-                   use_indent=False, use_vertical_space=True):
-    para_lines = []
-    paragraphs = []
-    lines = [line for line in doc.stream_ordered_lines()]
-    for li, line in enumerate(lines):
-        next_line = lines[li+1] if len(lines) > (li+1) else None
-        if use_indent:
-            if prev_line and same_column(line, prev_line):
-                if line["coords"]["left"] > prev_line["coords"]["left"] + 20:
-                    if len(para_lines) > 0:
-                        paragraph = Paragraph(para_lines)
-                        paragraphs.append(paragraph)
-                    para_lines = []
-            elif next_line and same_column(line, next_line):
-                if line["coords"]["left"] > next_line["coords"]["left"] + 20:
-                    if len(para_lines) > 0:
-                        paragraph = Paragraph(para_lines)
-                        paragraphs.append(paragraph)
-                    para_lines = []
-        if use_vertical_space and prev_line and line["coords"]["top"] - prev_line["coords"]["top"] > 65:
-            if len(para_lines) > 0:
-                paragraph = Paragraph(para_lines)
-                paragraphs.append(paragraph)
-            para_lines = []
-        para_lines.append(line)
-        prev_line = line
-    if len(para_lines) > 0:
-        paragraph = Paragraph(para_lines)
-        paragraphs.append(paragraph)
-    return paragraphs
+def stream_ordered_lines_multi_doc(docs: List[StructureDoc]):
+    for doc in docs:
+        for line in doc.stream_ordered_lines():
+            yield line
+
+
