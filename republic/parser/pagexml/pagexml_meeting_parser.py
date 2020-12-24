@@ -136,8 +136,6 @@ def stream_resolution_document_lines(documents: List[dict],
                 if 'lines' not in textregion or not textregion['lines']:
                     continue
                 for li, line in enumerate(textregion['lines']):
-                    if 'is_bleed_through' in line['metadata']:
-                        print('BLEED THROUGH IN LINE')
                     line = line_add_document_metadata(line, document)
                     lines += [line]
             # sort lines to make sure they are in reading order (assuming column has single text column)
