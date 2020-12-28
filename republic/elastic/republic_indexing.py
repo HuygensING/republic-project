@@ -424,6 +424,7 @@ def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searc
         if len(opening_matches) > 0:
             resolution_number += 1
             if resolution:
+                resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
                 es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
             resolution = Resolution(resolution_number, meeting=meeting, evidence=opening_matches + verb_matches)
             print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
@@ -431,4 +432,5 @@ def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searc
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
 
     if resolution:
+        resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
         es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
