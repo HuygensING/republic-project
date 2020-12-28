@@ -206,7 +206,7 @@ class PhysicalStructureDoc(StructureDoc):
 
     def __init__(self, metadata: Union[None, Dict] = None,
                  coords: Union[None, Dict] = None,
-                 version: Union[None, dict] = None,
+                 scan_version: Union[None, dict] = None,
                  lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
                  columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
         """A physical structure doc is an element from the scan hierarchy, where the scan
@@ -215,7 +215,7 @@ class PhysicalStructureDoc(StructureDoc):
         and lines. A physical structure doc can have a single version, based on the version
         of the scan."""
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
-        self.version = version
+        self.scan_version = scan_version
         self.type = "physical_structure_doc"
 
 

@@ -1,9 +1,17 @@
 from typing import Dict, List, Union
 
+import numpy as np
+from republic.model.inventory_mapping import get_inventory_by_num
 
-def make_scan_urls(inventory_metadata: dict,
-                   page_num: Union[None, int] = None,
-                   scan_num: Union[None, int] = None) -> Dict[str, str]:
+
+def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
+                   page_num: int = None,
+                   scan_num: int = None,
+                   scan_id: str = None) -> Dict[str, str]:
+    if inventory_num:
+        inventory_metadata = get_inventory_by_num(inventory_num)
+    if scan_id:
+        scan_num = int(scan_id.split('_')[-1])
     if page_num:
         scan_num = int(page_num / 2) + 1
     if not scan_num:
@@ -47,3 +55,29 @@ def make_iiif_region_url(jpg_url: str,
 def format_scan_number(scan_num: int) -> str:
     add_zeroes = 4 - len(str(scan_num))
     return "0" * add_zeroes + str(scan_num)
+
+
+def correct_section_types(inv_metadata):
+    section_starts = {offsets['page_num_offset']: offsets['page_type'] for offsets in
+                      inv_metadata['type_page_num_offsets']}
+    for section in inv_metadata['sections']:
+        if section['start'] in section_starts:
+            section['page_type'] = section_starts[section['start']]
+    return None
+
+
+def get_per_page_type_index(inv_metadata):
+    page_type = {page_num: 'empty_page' for page_num in np.arange(inv_metadata['num_pages'])}
+    for page_num in inv_metadata['title_page_nums']:
+        page_type[page_num] = 'title_page'
+    for section in inv_metadata['sections']:
+        for page_num in np.arange(section['start'], section['end'] + 1):
+            page_type[page_num] = section['page_type']
+            if page_num in inv_metadata['title_page_nums']:
+                page_type[page_num] = [section['page_type'], 'title_page']
+    return page_type
+
+
+def get_scan_id(inventory_metadata, scan_num):
+    scan_num_str = (4 - len(str(scan_num))) * "0" + str(scan_num)
+    return f'{inventory_metadata["series_name"]}_{inventory_metadata["inventory_num"]}_{scan_num_str}'

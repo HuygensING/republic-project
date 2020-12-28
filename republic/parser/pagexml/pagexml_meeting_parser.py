@@ -198,7 +198,8 @@ def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
 
 def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list,
                          meeting_searcher: MeetingSearcher, column_metadata: Dict[str, dict]) -> iter:
-    meeting = Meeting(meeting_searcher.current_date, meeting_metadata, column_metadata, lines=meeting_lines)
+    meeting = Meeting(meeting_metadata, lines=meeting_lines)
+    meeting.add_page_column_metadata(column_metadata)
     # add number of lines to session info in meeting searcher
     session_info = meeting_searcher.sessions[meeting_metadata['meeting_date']][-1]
     session_info['num_lines'] = len(meeting_lines)

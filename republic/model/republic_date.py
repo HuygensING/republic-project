@@ -2,6 +2,7 @@ from typing import Dict, List, Union
 import re
 import datetime
 from dateutil.easter import easter
+from dateutil.parser import parse
 import copy
 
 from republic.model.republic_phrase_model import month_names_late, month_names_early
@@ -91,20 +92,37 @@ exception_dates = {
 
 class RepublicDate:
 
-    def __init__(self, year: int, month: int, day: int):
+    def __init__(self, year: int = None, month: int = None, day: int = None, date_string: str = None):
         """A Republic date extends the regular datetime.date object with names
         for weekday and month, a date string as used in the meeting openings,
         and methods for checking whether the current date is a work day, a rest
-        day or a holiday."""
-        date = datetime.date(year, month, day)
+        day or a holiday.
+
+        :param year: year
+        :type year: int
+        :param month: month
+        :type month: int
+        :param day: day
+        :type day: int
+        :param date_string: date_string
+        :type date_string: str
+        """
+        if date_string:
+            date = parse(date_string)
+        else:
+            date = datetime.date(year, month, day)
         self.date = date
-        self.year = year
-        self.month = month
-        self.day = day
+        self.year = date.year
+        self.month = date.month
+        self.day = date.day
         self.day_name = week_day_names[self.date.weekday()]
         self.month_name = month_names_early[self.month - 1] if self.year <= 1750 else month_names_late[self.month - 1]
         self.date_string = f"{self.day_name} den {self.day} {self.month_name}"
         self.date_year_string = f"{self.date_string} {self.year}."
+
+    def __repr__(self):
+        return f'RepublicDate({self.date.strftime("%Y-%m-%d")})'
+        # return f'RepublicDate({self.isoformat()})'
 
     def __add__(self, other):
         return self.date - other.date

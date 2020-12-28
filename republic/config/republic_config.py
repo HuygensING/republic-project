@@ -10,14 +10,14 @@ def set_config_inventory_num(inventory_num: int, ocr_type: str,
     if default_config is None:
         default_config = base_config
     config = copy.deepcopy(default_config)
-    set_inventory_base_dir(inventory_num, ocr_type, base_dir, config)
+    set_inventory_base_dir(ocr_type, base_dir, config)
     set_inventory_metadata(inventory_num, config)
     set_inventory_indexes(ocr_type, config)
     set_inventory_period_elements(inventory_num, config)
     return config
 
 
-def set_inventory_base_dir(inventory_num: int, ocr_type: str, base_dir: str, config: dict) -> None:
+def set_inventory_base_dir(ocr_type: str, base_dir: str, config: dict) -> None:
     assert(ocr_type == 'hocr' or ocr_type == 'pagexml')
     config['ocr_type'] = ocr_type
     if base_dir:
@@ -39,6 +39,7 @@ def set_inventory_indexes(ocr_type: str, config: dict) -> None:
     config['scan_index'] = f'republic_{ocr_type}_scans'
     config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'
     config['meeting_index'] = f'{ocr_type}_meeting'
+    config['resolution_index'] = f'{ocr_type}_resolutions'
     config['meeting_doc_type'] = 'meeting'
 
 

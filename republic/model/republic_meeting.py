@@ -6,13 +6,11 @@ import re
 
 from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
-from republic.model.inventory_mapping import get_inventory_by_num
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
 from republic.model.republic_date import get_date_exception_shift, is_meeting_date_exception, exception_dates
 from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
-from republic.model.republic_pagexml_model import parse_derived_coords
 from republic.model.generic_document_model import LogicalStructureDoc
-from republic.model.republic_document_model import get_paragraphs
+from republic.model.republic_document_model import ResolutionDoc, get_paragraphs
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 
 
@@ -55,135 +53,30 @@ meeting_element_order = [
 ]
 
 
-class LogicalStructureDocOLD:
+class Meeting(ResolutionDoc):
 
-    def __init__(self,
-                 metadata: Union[None, Dict] = None,
-                 lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
-        """This is a generic class for gathering lines that belong to the same logical structural element,
-        even though they appear across different columns and pages."""
-        self.metadata = copy.deepcopy(metadata) if metadata is not None else {}
-        self.lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = lines if lines else []
-        self.column_ids = defaultdict(list)
-        self.columns: List[Dict[str, Union[dict, list]]] = columns if columns else []
-        self.scan_versions = []
-        if lines:
-            self.add_lines_as_columns()
-        elif columns:
-            self.add_columns_as_lines()
-
-    def add_columns_as_lines(self):
-        """Add the lines from the columns as list, keeping track which column each line belongs to."""
-        self.lines = self.generate_lines_from_columns()
-        # for line in self.lines:
-        #     self.column_ids[line['column_id']].append(line)
-
-    def add_lines_as_columns(self):
-        """Generate columns from the lines, keeping track which column each line belongs to."""
-        for line in self.lines:
-            self.column_ids[line['column_id']].append(line)
-        self.columns = self.generate_columns_from_lines()
-
-    def get_lines(self) -> List[Dict[str, Union[str, int, dict]]]:
-        """Return all the lines of the document."""
-        return self.lines
-
-    def get_columns(self) -> List[Dict[str, Union[list, dict]]]:
-        """Return all the columns of the document."""
-        return self.columns
-
-    def generate_lines_from_columns(self):
-        """Generate a list of lines from the columns."""
-        textregions = [textregion for column in self.columns for textregion in column['textregions']]
-        return [line for textregion in textregions for line in textregion['lines']]
-
-    def generate_columns_from_lines(self) -> List[Dict[str, Union[dict, list]]]:
-        """Return all the columns and lines belonging to this document.
-        The coordinates of the columns are derived from the coordinates of the lines they contain."""
-        columns = []
-        for column_id in self.column_ids:
-            line = self.column_ids[column_id][0]
-            textregion_lines = defaultdict(list)
-            for line in self.column_ids[column_id]:
-                textregion_lines[line['textregion_id']] += [line]
-            inv_metadata = get_inventory_by_num(self.metadata['inventory_num'])
-            column = {
-                'metadata': {
-                    'column_id': column_id,
-                    'scan_num': line['scan_num'],
-                },
-                'coords': parse_derived_coords(self.column_ids[column_id]),
-                'textregions': []
-            }
-            urls = make_scan_urls(inv_metadata, scan_num=line['scan_num'])
-            column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
-            for textregion_id in textregion_lines:
-                textregion = {
-                    'metadata': {'textregion_id': textregion_id},
-                    'coords': parse_derived_coords(textregion_lines[textregion_id]),
-                    'lines': textregion_lines[textregion_id]
-                }
-                column['textregions'] += [textregion]
-            columns += [column]
-        return columns
-
-    def clean_lines(self) -> None:
-        for line in self.lines:
-            del line["scan_num"]
-            del line["page_id"]
-            del line["column_id"]
-            del line["textregion_id"]
-            del line["line_index"]
-            del line["scan_version"]
-
-
-class Resolution(LogicalStructureDoc):
-
-    def __init__(self,
-                 **kwargs):
-                 # lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 # columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
-        """A resolution has textual content of the resolution, as well as an opening formula, decision information,
-        and type information on the source document that instigated the discussion and resolution. Source documents
-        can be missives, requests, reports, ..."""
-        super().__init__(**kwargs)
-        self.opening = None
-        self.decision = None
-        # source type is one of missive, requeste, rapport, ...
-        self.source_type = None
-
-
-class Meeting(LogicalStructureDoc):
-
-    def __init__(self, meeting_date: RepublicDate, metadata: Dict,
-                 page_column_metadata: Dict[str, dict], **kwargs):
+    def __init__(self, metadata: Dict, scan_versions: List[dict] = None, **kwargs):
         """A meeting occurs on a specific day, with a president and attendants, and has textual content in the form of
          lines or possibly as Resolution objects."""
         super().__init__(metadata=metadata, **kwargs)
-        self.date = meeting_date
-        self.id = f"meeting-{meeting_date.isoformat()}-session-1"
+        self.meeting_date = RepublicDate(date_string=metadata['meeting_date'])
+        self.type = "meeting"
+        self.date = self.meeting_date
+        self.id = f"meeting-{self.meeting_date.isoformat()}-session-1"
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
+        self.scan_versions: Union[None, List[dict]] = scan_versions
         self.resolutions = []
         self.metadata['num_columns'] = len(self.columns)
         self.metadata['num_lines'] = len(self.lines)
         self.metadata['num_words'] = 0
         for ci, column in enumerate(self.columns):
-            page_col_metadata = page_column_metadata[column['metadata']['id']]
-            for key in page_col_metadata:
-                if key == 'id':
-                    column['metadata']['page_column_id'] = page_col_metadata[key]
-                elif key in ['num_words', 'num_lines', 'iiif_url']:
-                    continue
-                else:
-                    column['metadata'][key] = page_col_metadata[key]
+            column['metadata']['page_column_id'] = column['metadata']['id']
             column['metadata']['page_id'] = column['metadata']['doc_id']
             column['metadata']['doc_id'] = self.id
             column['metadata']['id'] = self.id + f'-col-{ci}'
-            inv_metadata = get_inventory_by_num(self.metadata['inventory_num'])
-            scan_num = int(column['metadata']['scan_id'].split('_')[-1])
-            urls = make_scan_urls(inv_metadata, scan_num=scan_num)
+            urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],
+                                  scan_id=column['metadata']['scan_id'])
             column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
             words = []
             column['metadata']['num_lines'] = 0
@@ -195,6 +88,17 @@ class Meeting(LogicalStructureDoc):
                 # words = [word for line in self.lines for word in re.split(r"\W+", line["text"]) if line["text"]]
             column['metadata']['num_words'] = len(words)
             self.metadata['num_words'] += len(words)
+
+    def add_page_column_metadata(self, page_column_metadata: Dict[str, dict]) -> None:
+        for ci, column in enumerate(self.columns):
+            page_col_metadata = page_column_metadata[column['metadata']['id']]
+            for key in page_col_metadata:
+                if key == 'id':
+                    column['metadata']['page_column_id'] = page_col_metadata[key]
+                elif key in ['num_words', 'num_lines', 'iiif_url']:
+                    continue
+                else:
+                    column['metadata'][key] = page_col_metadata[key]
 
     def get_metadata(self) -> Dict[str, Union[str, List[str]]]:
         """Return the metadata of the meeting, including date, president and attendants."""
@@ -226,7 +130,7 @@ def meeting_from_json(json_doc: dict) -> Meeting:
     """Turn a meeting JSON representation into a Meeting object."""
     metadata = json_doc['metadata']
     meeting_date = RepublicDate(metadata['meeting_year'], metadata['meeting_month'], metadata['meeting_day'])
-    return Meeting(meeting_date, json_doc['metadata'], columns=json_doc['columns'])
+    return Meeting(json_doc['metadata'], columns=json_doc['columns'])
 
 
 def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate) -> int:
