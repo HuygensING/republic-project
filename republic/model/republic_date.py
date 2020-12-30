@@ -108,7 +108,7 @@ class RepublicDate:
         :type date_string: str
         """
         if date_string:
-            date = parse(date_string)
+            date = parse(date_string).date()
         else:
             date = datetime.date(year, month, day)
         self.date = date

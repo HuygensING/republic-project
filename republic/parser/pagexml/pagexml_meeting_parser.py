@@ -7,6 +7,7 @@ from republic.model.republic_date import RepublicDate, derive_date_from_string, 
 # print(exception_dates)
 from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
 from republic.model.republic_meeting import meeting_element_order
+from republic.model.republic_document_model import Meeting
 from republic.model.republic_document_model import check_special_column_for_bleed_through, sort_resolution_columns
 from republic.helper.text_helper import read_word_freq_counter
 

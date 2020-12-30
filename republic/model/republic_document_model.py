@@ -160,7 +160,7 @@ class Meeting(ResolutionDoc):
 
     def add_page_column_metadata(self, page_column_metadata: Dict[str, dict]) -> None:
         for ci, column in enumerate(self.columns):
-            page_col_metadata = page_column_metadata[column['metadata']['id']]
+            page_col_metadata = page_column_metadata[column['metadata']['page_column_id']]
             for key in page_col_metadata:
                 if key == 'id':
                     column['metadata']['page_column_id'] = page_col_metadata[key]
