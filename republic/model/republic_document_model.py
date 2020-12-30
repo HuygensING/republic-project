@@ -1,10 +1,12 @@
 from collections import Counter
 from typing import Dict, Generator, List, Set, Union
+import datetime
 import copy
 import re
 import json
 
 from fuzzy_search.fuzzy_match import PhraseMatch
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from republic.model.generic_document_model import PhysicalStructureDoc, StructureDoc
 from republic.model.generic_document_model import same_height, same_column, order_lines
 from republic.model.generic_document_model import parse_derived_coords, line_ends_with_word_break
@@ -59,15 +61,16 @@ class ResolutionPageDoc(ResolutionDoc):
 
 class ResolutionParagraph(ResolutionDoc):
 
-    def __init__(self, source_doc: ResolutionDoc, lines: List[Dict[str, any]],
+    def __init__(self, source_doc: ResolutionDoc, lines: List[Dict[str, any]], paragraph_id: str = None,
                  word_freq_counter: Counter = None):
         super().__init__(lines=lines)
+        self.id = paragraph_id
         self.lines = copy.deepcopy(lines)
         self.text = ""
         self.line_ranges = []
         self.set_text(word_freq_counter)
         self.metadata = {
-            "id": None,
+            "id": paragraph_id,
             "doc_id": source_doc.metadata["id"],
             "inventory_num": source_doc.metadata["inventory_num"],
             "type": "resolution_paragraph",
@@ -231,7 +234,8 @@ def has_proposition_type_label(phrase_match: PhraseMatch) -> bool:
 
 class Resolution(ResolutionDoc):
 
-    def __init__(self, resolution_number: int, meeting: Union[None, Meeting] = None,
+    def __init__(self, meeting: Union[None, Meeting] = None,
+                 resolution_id: str = None,
                  coords: Union[None, Dict] = None, scan_versions: dict = None,
                  lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
                  columns: Union[None, List[Dict[str, Union[dict, list]]]] = None,
@@ -240,8 +244,7 @@ class Resolution(ResolutionDoc):
         and type information on the source document that instigated the discussion and resolution. Source documents
         can be missives, requests, reports, ..."""
         metadata = {
-            'id': resolution_number,
-            'resolution_number': resolution_number,
+            'id': resolution_id,
             'doc_type': 'resolution',
             'proposition_type': None,
             'proposer': None,
@@ -252,14 +255,11 @@ class Resolution(ResolutionDoc):
             'num_words': 0,
         }
         if meeting:
-            metadata['id'] = meeting.metadata['id'] + f'-resolution-{resolution_number}'
             metadata['meeting_date'] = meeting.metadata['meeting_date']
             metadata['inventory_num'] = meeting.metadata['inventory_num']
             metadata['president'] = meeting.metadata['president']
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
         self.type = "resolution"
-        self.metadata['resolution_number'] = resolution_number
-        self.resolution_number = resolution_number
         self.scan_versions = scan_versions if scan_versions else []
         self.opening = None
         self.decision = None
@@ -398,6 +398,34 @@ def sort_resolution_columns(columns):
     return [(ci, column) for ci, column in enumerate(columns) if ci not in merge]
 
 
+def get_meeting_resolutions(meeting: Meeting, opening_searcher: FuzzyPhraseSearcher,
+                            verb_searcher: FuzzyPhraseSearcher) -> Generator[Resolution, None, None]:
+    resolution = None
+    resolution_number = 0
+    generate_id = running_id_generator(meeting.metadata['id'], '-resolution-')
+    for paragraph in meeting.get_paragraphs():
+        # print(paragraph.metadata['id'])
+        # print(paragraph.text, '\n')
+        opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
+        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
+        for match in opening_matches + verb_matches:
+            match.text_id = paragraph.metadata['id']
+            # print('\t', match.offset, '\t', match.string)
+        if len(opening_matches) > 0:
+            resolution_number += 1
+            if resolution:
+                resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+                yield resolution
+            resolution = Resolution(resolution_id=generate_id(), meeting=meeting,
+                                    evidence=opening_matches + verb_matches)
+            print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
+        if resolution:
+            resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
+    if resolution:
+        resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+        yield resolution
+
+
 def get_paragraphs(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
                    use_indent: bool = False, use_vertical_space: bool = True,
                    word_freq_counter: Counter = None) -> List[ResolutionParagraph]:
@@ -407,12 +435,21 @@ def get_paragraphs(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
         return get_paragraphs_with_vertical_space(doc, prev_line=prev_line, word_freq_counter=word_freq_counter)
 
 
+def running_id_generator(base_id: str, suffix: str, count: int = 0):
+
+    def generate_id():
+        nonlocal count
+        count += 1
+        return f'{base_id}{suffix}{count}'
+
+    return generate_id
+
+
 def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
                                word_freq_counter: Counter = None) -> List[ResolutionParagraph]:
     paragraphs: List[ResolutionParagraph] = []
 
-    def generate_paragraph_id():
-        return doc.metadata['id'] + f'-para-{len(paragraphs)}'
+    generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
     para_lines = []
     lines = [line for line in doc.stream_ordered_lines(word_freq_counter=word_freq_counter)]
     for li, line in enumerate(lines):
@@ -425,8 +462,9 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] 
                 # this line is left indented w.r.t. the previous line
                 # so is the start of a new paragraph
                 if len(para_lines) > 0:
-                    paragraph = ResolutionParagraph(doc, para_lines, word_freq_counter=word_freq_counter)
-                    paragraph.metadata['id'] = generate_paragraph_id()
+                    paragraph = ResolutionParagraph(doc, lines=para_lines,
+                                                    paragraph_id=generate_paragraph_id(),
+                                                    word_freq_counter=word_freq_counter)
                     paragraphs.append(paragraph)
                 para_lines = []
             elif line['coords']['left'] - prev_line['coords']['left'] < 20:
@@ -434,15 +472,17 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] 
                     # this line starts at the same horizontal level as the previous line
                     # but the previous line ends early, so is the end of a paragraph.
                     if len(para_lines) > 0:
-                        paragraph = ResolutionParagraph(doc, para_lines, word_freq_counter=word_freq_counter)
-                        paragraph.metadata['id'] = generate_paragraph_id()
+                        paragraph = ResolutionParagraph(doc, lines=para_lines,
+                                                        paragraph_id=generate_paragraph_id(),
+                                                        word_freq_counter=word_freq_counter)
                         paragraphs.append(paragraph)
                     para_lines = []
         elif next_line and same_column(line, next_line):
             if line["coords"]["left"] > next_line["coords"]["left"] + 20:
                 if len(para_lines) > 0:
-                    paragraph = ResolutionParagraph(doc, para_lines, word_freq_counter=word_freq_counter)
-                    paragraph.metadata['id'] = generate_paragraph_id()
+                    paragraph = ResolutionParagraph(doc, lines=para_lines,
+                                                    paragraph_id=generate_paragraph_id(),
+                                                    word_freq_counter=word_freq_counter)
                     paragraphs.append(paragraph)
                 para_lines = []
         para_lines.append(line)
@@ -457,8 +497,9 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] 
                 line['metadata']['is_blood_through'] = True
         prev_line = line
     if len(para_lines) > 0:
-        paragraph = ResolutionParagraph(doc, para_lines, word_freq_counter=word_freq_counter)
-        paragraph.metadata['id'] = generate_paragraph_id()
+        paragraph = ResolutionParagraph(doc, lines=para_lines,
+                                        paragraph_id=generate_paragraph_id(),
+                                        word_freq_counter=word_freq_counter)
         paragraphs.append(paragraph)
     return paragraphs
 
@@ -468,14 +509,14 @@ def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None
     para_lines = []
     paragraphs = []
 
-    def generate_paragraph_id():
-        return doc.metadata['id'] + f'-para-{len(paragraphs)+1}'
+    generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
     lines = [line for line in doc.stream_ordered_lines(word_freq_counter=word_freq_counter)]
     for li, line in enumerate(lines):
         if prev_line and line["coords"]["top"] - prev_line["coords"]["top"] > 65:
             if len(para_lines) > 0:
-                paragraph = ResolutionParagraph(doc, para_lines, word_freq_counter=word_freq_counter)
-                paragraph.metadata['id'] = generate_paragraph_id()
+                paragraph = ResolutionParagraph(doc, lines=para_lines,
+                                                paragraph_id=generate_paragraph_id(),
+                                                word_freq_counter=word_freq_counter)
                 paragraphs.append(paragraph)
             para_lines = []
         para_lines.append(line)
@@ -485,7 +526,8 @@ def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None
             continue
         prev_line = line
     if len(para_lines) > 0:
-        paragraph = ResolutionParagraph(doc, para_lines, word_freq_counter=word_freq_counter)
-        paragraph.metadata['id'] = generate_paragraph_id()
+        paragraph = ResolutionParagraph(doc, lines=para_lines,
+                                        paragraph_id=generate_paragraph_id(),
+                                        word_freq_counter=word_freq_counter)
         paragraphs.append(paragraph)
     return paragraphs

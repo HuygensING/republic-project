@@ -2,7 +2,7 @@ import datetime
 import json
 import copy
 import re
-from typing import Union, Dict
+from typing import Union, Dict, Generator
 from elasticsearch import Elasticsearch, RequestError
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
@@ -16,12 +16,12 @@ import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.model.resolution_phrase_model as rpm
-from republic.model.republic_meeting import Meeting
+# from republic.model.republic_meeting import Meeting
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
 from republic.model.republic_pagexml_model import parse_derived_coords
-from republic.model.republic_document_model import Resolution
+from republic.model.republic_document_model import Meeting, get_meeting_resolutions
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.elastic.republic_elasticsearch import create_es_scan_doc, create_es_page_doc
@@ -405,32 +405,11 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
         meeting_json = hit['_source']
         meeting = Meeting(meeting_json['metadata'], columns=meeting_json['columns'],
                           scan_versions=meeting_json['scan_versions'])
-        index_meeting_resolutions(es, meeting, opening_searcher, verb_searcher, inv_config)
+        for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
+            es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
 
 
 def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searcher: FuzzyPhraseSearcher,
                               verb_searcher: FuzzyPhraseSearcher, inv_config: dict) -> None:
-    resolution = None
-    resolution_number = 0
-    resolution_paragraphs = []
-    for paragraph in meeting.get_paragraphs():
-        # print(paragraph.metadata['id'])
-        # print(paragraph.text, '\n')
-        opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
-        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
-        for match in opening_matches + verb_matches:
-            match.text_id = paragraph.metadata['id']
-            # print('\t', match.offset, '\t', match.string)
-        if len(opening_matches) > 0:
-            resolution_number += 1
-            if resolution:
-                resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
-                es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
-            resolution = Resolution(resolution_number, meeting=meeting, evidence=opening_matches + verb_matches)
-            print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
-        if resolution:
-            resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
-
-    if resolution:
-        resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+    for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
         es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
