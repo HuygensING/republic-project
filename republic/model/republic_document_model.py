@@ -5,7 +5,7 @@ import copy
 import re
 import json
 
-from fuzzy_search.fuzzy_match import PhraseMatch
+from fuzzy_search.fuzzy_match import PhraseMatch, Phrase, phrase_match_from_json
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from republic.model.generic_document_model import PhysicalStructureDoc, StructureDoc
 from republic.model.generic_document_model import same_height, same_column, order_lines
@@ -61,23 +61,19 @@ class ResolutionPageDoc(ResolutionDoc):
 
 class ResolutionParagraph(ResolutionDoc):
 
-    def __init__(self, source_doc: ResolutionDoc, lines: List[Dict[str, any]], paragraph_id: str = None,
+    def __init__(self, lines: List[dict] = None, columns: List[dict] = None, metadata: dict = None,
+                 scan_versions: List[Dict[str, any]] = None,
                  word_freq_counter: Counter = None):
-        super().__init__(lines=lines)
-        self.id = paragraph_id
-        self.lines = copy.deepcopy(lines)
+        super().__init__(lines=lines, columns=columns, metadata=metadata)
+        self.id = self.metadata['id']
         self.text = ""
         self.line_ranges = []
         self.set_text(word_freq_counter)
-        self.metadata = {
-            "id": paragraph_id,
-            "doc_id": source_doc.metadata["id"],
-            "inventory_num": source_doc.metadata["inventory_num"],
-            "type": "resolution_paragraph",
-            "num_columns": len(self.columns),
-            "num_lines": len(self.lines),
-            "num_words": len([word for word in re.split(r'\W+', self.text) if word != ''])
-        }
+        self.metadata['num_columns'] = len(self.columns)
+        self.metadata['num_lines'] = len(self.lines)
+        self.metadata["type"] = "resolution_paragraph"
+        self.metadata["num_words"] = len([word for word in re.split(r'\W+', self.text) if word != ''])
+        self.scan_versions = scan_versions
 
     def __repr__(self):
         return f"ResolutionParagraph(lines={[line['metadata']['id'] for line in self.lines]}, text={self.text})"
@@ -87,7 +83,8 @@ class ResolutionParagraph(ResolutionDoc):
             "metadata": self.metadata,
             "columns": self.columns,
             "text": self.text,
-            "line_ranges": self.line_ranges
+            "line_ranges": self.line_ranges,
+            "scan_versions": self.scan_versions
         }
 
     def set_text(self, word_freq_counter: Counter = None):
@@ -140,8 +137,8 @@ class Meeting(ResolutionDoc):
         self.metadata['num_lines'] = len(self.lines)
         self.metadata['num_words'] = 0
         for ci, column in enumerate(self.columns):
-            column['metadata']['page_column_id'] = column['metadata']['id']
-            column['metadata']['page_id'] = column['metadata']['doc_id']
+            # column['metadata']['page_column_id'] = column['metadata']['id']
+            # column['metadata']['page_id'] = column['metadata']['doc_id']
             column['metadata']['doc_id'] = self.id
             column['metadata']['id'] = self.id + f'-col-{ci}'
             urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],
@@ -232,28 +229,47 @@ def has_proposition_type_label(phrase_match: PhraseMatch) -> bool:
     return False
 
 
+def parse_phrase_matches(phrase_matches: Union[List[PhraseMatch], List[dict]]):
+    match_objects: List[PhraseMatch] = []
+    for match in phrase_matches:
+        if isinstance(match, PhraseMatch):
+            match_objects.append(match)
+        elif isinstance(match, dict):
+            match_phrase = Phrase(match['phrase'])
+            match_variant = Phrase(match['variant'])
+            if 'text_id' not in match:
+                match['text_id'] = None
+            match_object = PhraseMatch(match_phrase, match_variant, match['string'], match_offset=match['offset'],
+                                       text_id=match['text_id'], match_scores=match['match_scores'])
+            if 'label' in match:
+                match_object.label = match['label']
+            match_objects.append(match_object)
+    return match_objects
+
+
 class Resolution(ResolutionDoc):
 
-    def __init__(self, meeting: Union[None, Meeting] = None,
-                 resolution_id: str = None,
+    def __init__(self,
+                 metadata: dict = None,
                  coords: Union[None, Dict] = None, scan_versions: dict = None,
                  lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
+                 meeting: Union[None, Meeting] = None,
                  columns: Union[None, List[Dict[str, Union[dict, list]]]] = None,
+                 paragraphs: List[ResolutionParagraph] = None,
+                 phrase_matches: Union[List[dict], List[PhraseMatch]] = None,
                  evidence: List[PhraseMatch] = None):
         """A resolution has textual content of the resolution, as well as an opening formula, decision information,
         and type information on the source document that instigated the discussion and resolution. Source documents
         can be missives, requests, reports, ..."""
-        metadata = {
-            'id': resolution_id,
-            'doc_type': 'resolution',
-            'proposition_type': None,
-            'proposer': None,
-            'decision': None,
-            'num_paragraphs': 0,
-            'num_columns': 0,
-            'num_lines': 0,
-            'num_words': 0,
-        }
+        if not metadata:
+            metadata = {}
+        if 'proposition_type' not in metadata:
+            metadata['proposition_type'] = None
+        if 'proposer' not in metadata:
+            metadata['proposer'] = None
+        if 'decision' not in metadata:
+            metadata['decision'] = None
+        metadata['doc_type'] = 'resolution'
         if meeting:
             metadata['meeting_date'] = meeting.metadata['meeting_date']
             metadata['inventory_num'] = meeting.metadata['inventory_num']
@@ -268,9 +284,18 @@ class Resolution(ResolutionDoc):
         self.proposer: Union[None, str, List[str]] = None
         self.meeting_date: Union[RepublicDate, None] = None
         self.evidence: List[PhraseMatch] = evidence if evidence else []
-        self.paragraphs: List[ResolutionParagraph] = []
+        self.paragraphs: List[ResolutionParagraph] = paragraphs if paragraphs else []
         self.column_ids: Set[str] = set()
+        if len(self.paragraphs) == 0:
+            metadata['num_paragraphs'] = 0
+            metadata['num_columns'] = 0
+            metadata['num_lines'] = 0
+            metadata['num_words'] = 0
         self.phrase_matches: List[PhraseMatch] = []
+        if 'evidence' in self.metadata and self.metadata['evidence']:
+            self.evidence = parse_phrase_matches(metadata['evidence'])
+        if phrase_matches:
+            self.phrase_matches = parse_phrase_matches(phrase_matches)
         if evidence:
             self.proposition_type = get_proposition_type_from_evidence(evidence)
             self.metadata['proposition_type'] = self.proposition_type
@@ -296,6 +321,15 @@ class Resolution(ResolutionDoc):
         }
         json_data['metadata']['evidence'] = [match.json() for match in self.evidence]
         return json_data
+
+
+def resolution_from_json(resolution_json: dict) -> Resolution:
+    paragraphs = []
+    for paragraph_json in resolution_json['paragraphs']:
+        paragraph = ResolutionParagraph(metadata=paragraph_json['metadata'], columns=paragraph_json['columns'])
+        paragraphs.append(paragraph)
+    return Resolution(metadata=resolution_json['metadata'], paragraphs=paragraphs,
+                      phrase_matches=resolution_json['phrase_matches'])
 
 
 def stream_ordered_lines(resolution_doc: ResolutionDoc, word_freq_counter: Counter = None):
@@ -416,7 +450,8 @@ def get_meeting_resolutions(meeting: Meeting, opening_searcher: FuzzyPhraseSearc
             if resolution:
                 resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
                 yield resolution
-            resolution = Resolution(resolution_id=generate_id(), meeting=meeting,
+            metadata = get_base_metadata(meeting, generate_id(), 'resolution')
+            resolution = Resolution(metadata=metadata, meeting=meeting,
                                     evidence=opening_matches + verb_matches)
             print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
         if resolution:
@@ -445,10 +480,18 @@ def running_id_generator(base_id: str, suffix: str, count: int = 0):
     return generate_id
 
 
+def get_base_metadata(source_doc: ResolutionDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int]]:
+    return {
+        'inventory_num': source_doc.metadata['inventory_num'],
+        'doc_id': source_doc.metadata['id'],
+        'doc_type': doc_type,
+        'id': doc_id
+    }
+
+
 def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
                                word_freq_counter: Counter = None) -> List[ResolutionParagraph]:
     paragraphs: List[ResolutionParagraph] = []
-
     generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
     para_lines = []
     lines = [line for line in doc.stream_ordered_lines(word_freq_counter=word_freq_counter)]
@@ -462,8 +505,8 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] 
                 # this line is left indented w.r.t. the previous line
                 # so is the start of a new paragraph
                 if len(para_lines) > 0:
-                    paragraph = ResolutionParagraph(doc, lines=para_lines,
-                                                    paragraph_id=generate_paragraph_id(),
+                    metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+                    paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
                                                     word_freq_counter=word_freq_counter)
                     paragraphs.append(paragraph)
                 para_lines = []
@@ -472,16 +515,16 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] 
                     # this line starts at the same horizontal level as the previous line
                     # but the previous line ends early, so is the end of a paragraph.
                     if len(para_lines) > 0:
-                        paragraph = ResolutionParagraph(doc, lines=para_lines,
-                                                        paragraph_id=generate_paragraph_id(),
+                        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+                        paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
                                                         word_freq_counter=word_freq_counter)
                         paragraphs.append(paragraph)
                     para_lines = []
         elif next_line and same_column(line, next_line):
             if line["coords"]["left"] > next_line["coords"]["left"] + 20:
                 if len(para_lines) > 0:
-                    paragraph = ResolutionParagraph(doc, lines=para_lines,
-                                                    paragraph_id=generate_paragraph_id(),
+                    metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+                    paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
                                                     word_freq_counter=word_freq_counter)
                     paragraphs.append(paragraph)
                 para_lines = []
@@ -497,8 +540,8 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, dict] 
                 line['metadata']['is_blood_through'] = True
         prev_line = line
     if len(para_lines) > 0:
-        paragraph = ResolutionParagraph(doc, lines=para_lines,
-                                        paragraph_id=generate_paragraph_id(),
+        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+        paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
                                         word_freq_counter=word_freq_counter)
         paragraphs.append(paragraph)
     return paragraphs
@@ -514,8 +557,8 @@ def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None
     for li, line in enumerate(lines):
         if prev_line and line["coords"]["top"] - prev_line["coords"]["top"] > 65:
             if len(para_lines) > 0:
-                paragraph = ResolutionParagraph(doc, lines=para_lines,
-                                                paragraph_id=generate_paragraph_id(),
+                metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+                paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
                                                 word_freq_counter=word_freq_counter)
                 paragraphs.append(paragraph)
             para_lines = []
@@ -526,8 +569,8 @@ def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None
             continue
         prev_line = line
     if len(para_lines) > 0:
-        paragraph = ResolutionParagraph(doc, lines=para_lines,
-                                        paragraph_id=generate_paragraph_id(),
+        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+        paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
                                         word_freq_counter=word_freq_counter)
         paragraphs.append(paragraph)
     return paragraphs

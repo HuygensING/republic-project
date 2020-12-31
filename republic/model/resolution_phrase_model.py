@@ -13,22 +13,6 @@ keyword_dicts = [
     },
 ]
 
-phrases = [
-    'in handen van de Heeren',
-    'een Missive van de Heeren',
-    'het rapport van de Heeren',
-    'het Verbaal van de Heeren'
-]
-
-pattern = {
-    'type': 'suffix',
-    'start': 'Heeren',
-    'end_distractors': [
-        'Gedeputeerde',
-        'Gecommitteerde',
-        'Staaten'
-    ]
-}
 
 proposition_opening_phrases = [
     {
@@ -40,12 +24,20 @@ proposition_opening_phrases = [
     {
         'phrase': 'heeft ter Vergadering gecommuniceert ',
         'label': 'proposition_opening',
+        'variants': [
+            'heeft ter Vergaderinge ingebraght',
+            'heeft ter Vergaderinge voorgedragen',
+        ],
         'proposition_type': None,
         'max_offset': 250
     },
     {
         'phrase': 'heeft aan haar Hoog Mog. voorgedragen',
         'label': 'proposition_opening',
+        'variants': [
+            'heeft aan haar Hoog Mog. ingebraght',
+            'heeft aan haar Hoog Mog. gecommuniceert',
+        ],
         'proposition_type': None,
         'max_offset': 250
     },
@@ -175,6 +167,24 @@ proposition_opening_phrases = [
         'proposition_type': None,
         'max_offset': 5
     },
+    {
+        'phrase': 'DE Conclusie van Eisch op de Requeste',
+        'label': ['proposition_opening', 'proposition_type:requeste'],
+        'proposition_type': None,
+        'max_offset': 5
+    },
+    {
+        'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
+        'label': 'proposition_opening',
+        'proposition_type': None,
+        'max_offset': 5
+    },
+    {
+        'phrase': 'OP het gerepresenteerde ter Vergaderinge gedaan',
+        'label': 'proposition_opening',
+        'proposition_type': None,
+        'max_offset': 5
+    },
 ]
 
 proposition_verbs = [
@@ -237,7 +247,7 @@ proposition_verbs = [
 
 ]
 
-proposition_reason = [
+proposition_reason_phrases = [
     {
         'phrase': 'weegens Arbeidsloon en Leeverantie',
         'label': ['proposition_reason', 'salary', 'delivery'],
@@ -299,17 +309,12 @@ prefix_phrases = [
     {
         'phrase': 'den Heere',
         'label': 'person_name_prefix',
-        'cardinality': 'single',
-        'proposer_type': 'person',
-        'variable_type': 'suffix',
-    },
-    {
-        'phrase': 'de Heeren',
-        'label': 'person_name_prefix',
-        'cardinality': 'multi',
-        'proposer_type': 'person',
-    },
-
+        'variants': [
+            'de Heer',
+            'den Heeren',
+            'de Heeren'
+        ]
+    }
 ]
 
 organisation_phrases = [
@@ -317,7 +322,6 @@ organisation_phrases = [
         'phrase': 'de Heeren Staaten van de Provincie',
         'label': ['organisation', 'states', 'province'],
         'cardinality': 'multi',
-        'proposer_type': 'organisation',
     },
     {
         'phrase': 'Staaten van de Provincie',
@@ -327,13 +331,11 @@ organisation_phrases = [
         'phrase': 'den Raad van Staate',
         'label': ['organisation', 'council_of_states'],
         'cardinality': 'single',
-        'proposer_type': 'organisation',
     },
     {
         'phrase': 'de Generaliteits Reekenkamer',
         'label': ['organisation', 'proposer_title'],
         'cardinality': 'single',
-        'proposer_type': 'organisation',
     },
     {
         'phrase': 'by den Ryksdag',
@@ -358,6 +360,10 @@ organisation_phrases = [
     {
         'phrase': 'Hoofdbanke',
         'label': ['organisation', 'domain:church']
+    },
+    {
+        'phrase': 'de Meyerye',
+        'label': ['organisation', 'domain:politics']
     },
 ]
 
@@ -391,6 +397,10 @@ location_phrases = [
         'label': ['location_relation']
     },
     {
+        'phrase': 'den Colonie van ',
+        'label': ['location_relation']
+    },
+    {
         'phrase': 'de Kamers Griffie',
         'label': ['location', 'office', 'registrars_office'],
     },
@@ -400,7 +410,7 @@ location_phrases = [
 esteem_titles = [
     {
         'phrase': 'haar Hoog Mogende',
-        'label': ['esteem_title', 'title'],
+        'label': ['esteem_title', 'organisation_title'],
         'variants': [
             'haar Hoog Mog.',
             'haar Ho. Mo.'
@@ -420,12 +430,12 @@ esteem_titles = [
         'label': ['topic_prefix']
     },
     {
-        'phrase': 'de Meyerye',
+        'phrase': 'tot de saaken van de Finantie',
         'label': ['topic', 'topic:finance']
     },
     {
-        'phrase': 'tot de saaken van de Finantie',
-        'label': ['topic', 'topic:finance']
+        'phrase': 'tot de buitenlandse saaken',
+        'label': ['topic', 'topic:foreign_affairs', 'domain:politics', 'department']
     },
 ]
 
@@ -471,6 +481,10 @@ person_role_phrases = [
         'label': ['person_role', 'representative', 'representation_relation']
     },
     {
+        'phrase': 'den Grave van',
+        'label': ['person_role', 'sovereign', 'representation_relation']
+    },
+    {
         'phrase': 'den Koning van',
         'label': ['person_role', 'sovereign', 'representation_relation']
     },
@@ -493,6 +507,14 @@ person_role_phrases = [
     {
         'phrase': 'Generaal Major',
         'label': ['person_role', 'general_major', 'domain:military'],
+    },
+    {
+        'phrase': 'de Kinderen van ',
+        'label': ['person_role', 'children', 'domain:family', 'representative_relation'],
+    },
+    {
+        'phrase': 'de Erfgenaamen van ',
+        'label': ['person_role', 'heir', 'domain:law', 'representative_relation'],
     },
     {
         'phrase': 'Advocaaten van ',
@@ -647,6 +669,18 @@ military_phrases = [
 ]
 
 misc = [
+    {
+        'phrase': 'Missive',
+        'label': ['document', 'document_type:missive'],
+    },
+    {
+        'phrase': 'Bylaage',
+        'label': ['document', 'document_type:attachment'],
+    },
+    {
+        'phrase': 'Copie van',
+        'label': ['document', 'document_type:copy', 'document_relation'],
+    },
     {
         'phrase': 'geschreeven te',
         'label': 'correspondence_from',

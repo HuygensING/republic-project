@@ -2,6 +2,7 @@ import datetime
 import json
 import copy
 import re
+import hashlib
 from typing import Union, Dict, Generator
 from elasticsearch import Elasticsearch, RequestError
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
@@ -16,7 +17,6 @@ import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.model.resolution_phrase_model as rpm
-# from republic.model.republic_meeting import Meeting
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
@@ -28,6 +28,7 @@ from republic.elastic.republic_elasticsearch import create_es_scan_doc, create_e
 from republic.helper.metadata_helper import get_per_page_type_index
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.elastic.republic_elasticsearch as rep_es
+from republic.helper.annotation_helper import make_swao_anno, make_hash_id
 
 
 def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
@@ -413,3 +414,21 @@ def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searc
                               verb_searcher: FuzzyPhraseSearcher, inv_config: dict) -> None:
     for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
         es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
+
+
+def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict, searcher: FuzzyPhraseSearcher):
+    for resolution in rep_es.retrieve_inventory_resolutions(es, inv_config):
+        print(resolution.metadata['id'], len(resolution.paragraphs))
+        for paragraph in resolution.paragraphs:
+            # print(resolution.metadata)
+            doc = {'id': paragraph.metadata['id'], 'text': paragraph.text}
+            for match in searcher.find_matches(doc):
+                match_json = match.json()
+                match_json['id'] = make_hash_id(match)
+                es.index(index=inv_config['phrase_match_index'], id=match_json['id'], body=match_json)
+                print('\t\t', match_json['id'], match.string, match.phrase.phrase_string, match.character_overlap,
+                      match.levenshtein_similarity)
+                match_anno = make_swao_anno(match, resolution)
+                # print(json.dumps(match_anno, indent=4))
+            print('\n\n')
+            # break

@@ -69,9 +69,9 @@ class StructureDoc:
         self.metadata = copy.deepcopy(metadata) if metadata is not None else {}
         self.coords = coords
         self.type = "structure_doc"
-        self.lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = lines if lines else []
+        self.lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = copy.deepcopy(lines) if lines else []
         self.column_ids = defaultdict(list)
-        self.columns: List[Dict[str, Union[dict, list]]] = columns if columns else []
+        self.columns: List[Dict[str, Union[dict, list]]] = copy.deepcopy(columns) if columns else []
         if lines:
             self.add_lines_as_columns()
         elif columns:

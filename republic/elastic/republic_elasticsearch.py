@@ -6,6 +6,7 @@ import copy
 from republic.helper.metadata_helper import get_scan_id
 from republic.model.republic_meeting import Meeting, meeting_from_json
 from republic.model.republic_date import RepublicDate
+from republic.model.republic_document_model import resolution_from_json
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from settings import set_elasticsearch_config
 
@@ -27,8 +28,9 @@ def initialize_es(host_type: str = 'internal', timeout: int = 10) -> Elasticsear
     return es_republic
 
 
-def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size: int = 100) -> iter:
-    response = es.search(index=index, doc_type=doc_type, scroll='2m', size=size, body=query)
+def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size: int = 100,
+                scroll: str = '2m') -> iter:
+    response = es.search(index=index, doc_type=doc_type, scroll=scroll, size=size, body=query)
     sid = response['_scroll_id']
     scroll_size = response['hits']['total']
     print('total hits:', scroll_size)
@@ -306,6 +308,21 @@ def retrieve_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], 
         return meeting_from_json(response['_source'])
     else:
         return None
+
+
+def retrieve_inventory_resolutions(es: Elasticsearch, inv_config: dict):
+    query = {'query': {'match': {'metadata.inventory_num': inv_config['inventory_num']}}}
+    for hit in scroll_hits(es, query, index=inv_config['resolution_index'],
+                           doc_type="_doc", size=2, scroll='60m'):
+        resolution_json = hit['_source']
+        resolution = resolution_from_json(resolution_json)
+        for match in resolution.phrase_matches:
+            if match.text_id is None:
+                for paragraph in resolution.paragraphs:
+                    if match.string == paragraph.text[match.offset:match.end]:
+                        match.text_id = paragraph.id
+                    break
+        yield resolution
 
 
 def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config, ignore_version: bool = False):
