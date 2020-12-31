@@ -416,7 +416,8 @@ def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searc
         es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
 
 
-def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict, searcher: FuzzyPhraseSearcher):
+def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
+    searcher = make_resolution_phrase_model_searcher()
     for resolution in rep_es.retrieve_inventory_resolutions(es, inv_config):
         print(resolution.metadata['id'], len(resolution.paragraphs))
         for paragraph in resolution.paragraphs:
@@ -432,3 +433,27 @@ def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict, searche
                 # print(json.dumps(match_anno, indent=4))
             print('\n\n')
             # break
+
+
+def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
+    resolution_phrase_searcher_config = {
+        'filter_distractors': True,
+        'include_variants': True,
+        'max_length_variance': 3,
+        'levenshtein_threshold': 0.7,
+        'char_match_threshold': 0.7
+    }
+    resolution_phrase_searcher = FuzzyPhraseSearcher(resolution_phrase_searcher_config)
+
+    phrases = rpm.proposition_reason_phrases + rpm.proposition_closing_phrases + rpm.decision_phrases + \
+              rpm.resolution_link_phrases + rpm.prefix_phrases + rpm.organisation_phrases + \
+              rpm.location_phrases + rpm.esteem_titles + rpm.person_role_phrases + rpm.military_phrases + \
+              rpm.misc + rpm.provinces + rpm.proposition_opening_phrases
+
+    for phrase in phrases:
+        if 'max_offset' in phrase:
+            del phrase['max_offset']
+
+    resolution_phrase_phrase_model = PhraseModel(model=phrases)
+    resolution_phrase_searcher.index_phrase_model(resolution_phrase_phrase_model)
+    return resolution_phrase_searcher
