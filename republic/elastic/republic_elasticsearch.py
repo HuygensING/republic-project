@@ -40,7 +40,7 @@ def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size:
     while scroll_size > 0:
         for hit in response['hits']['hits']:
             yield hit
-        response = es.scroll(scroll_id=sid, scroll='2m')
+        response = es.scroll(scroll_id=sid, scroll=scroll)
         # Update the scroll ID
         sid = response['_scroll_id']
         # Get the number of results that we returned in the last scroll
