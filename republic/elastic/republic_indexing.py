@@ -419,20 +419,12 @@ def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searc
 def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
     searcher = make_resolution_phrase_model_searcher()
     for resolution in rep_es.retrieve_inventory_resolutions(es, inv_config):
-        print(resolution.metadata['id'], len(resolution.paragraphs))
         for paragraph in resolution.paragraphs:
-            # print(resolution.metadata)
             doc = {'id': paragraph.metadata['id'], 'text': paragraph.text}
             for match in searcher.find_matches(doc):
                 match_json = match.json()
                 match_json['id'] = make_hash_id(match)
                 es.index(index=inv_config['phrase_match_index'], id=match_json['id'], body=match_json)
-                print('\t\t', match_json['id'], match.string, match.phrase.phrase_string, match.character_overlap,
-                      match.levenshtein_similarity)
-                match_anno = make_swao_anno(match, resolution)
-                # print(json.dumps(match_anno, indent=4))
-            print('\n\n')
-            # break
 
 
 def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
