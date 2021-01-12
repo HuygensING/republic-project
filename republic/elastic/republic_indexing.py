@@ -4,6 +4,7 @@ import copy
 import re
 from typing import Union, Dict
 from elasticsearch import Elasticsearch, RequestError
+from fuzzy_search.fuzzy_match import PhraseMatch
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
@@ -20,14 +21,14 @@ from republic.model.republic_date import RepublicDate
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
 from republic.model.republic_pagexml_model import parse_derived_coords
-from republic.model.republic_document_model import Meeting, get_meeting_resolutions
+from republic.model.republic_document_model import Meeting, get_meeting_resolutions, Resolution
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
-from republic.elastic.republic_elasticsearch import create_es_scan_doc, create_es_page_doc
+from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
 from republic.helper.metadata_helper import get_per_page_type_index
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
-import republic.elastic.republic_elasticsearch as rep_es
 from republic.helper.annotation_helper import make_hash_id
+import republic.elastic.republic_retrieving as rep_es
 
 
 def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
@@ -412,7 +413,21 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
 def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searcher: FuzzyPhraseSearcher,
                               verb_searcher: FuzzyPhraseSearcher, inv_config: dict) -> None:
     for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
-        es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
+        index_resolution(es, resolution, inv_config)
+
+
+def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], config: dict):
+    """Index an individual resolution.
+
+    :param es: the elasticsearch instance to use for indexing
+    :type es: Elasticsearch
+    :param resolution: the resolution to index, either Resolution class instance or a dictionary
+    :type resolution: Union[Resolution, dict]
+    :param config: a configuration dictionary containing index names
+    :type config: dict
+    """
+    resolution_json = resolution.json() if isinstance(resolution, Resolution) else resolution
+    es.index(index=config['resolution_index'], id=resolution_json['metadata']['id'], body=resolution_json)
 
 
 def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
@@ -421,9 +436,15 @@ def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
         for paragraph in resolution.paragraphs:
             doc = {'id': paragraph.metadata['id'], 'text': paragraph.text}
             for match in searcher.find_matches(doc):
-                match_json = match.json()
-                match_json['id'] = make_hash_id(match)
-                es.index(index=inv_config['phrase_match_index'], id=match_json['id'], body=match_json)
+                index_resolution_phrase_match(es, match, inv_config)
+
+
+def index_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, PhraseMatch], config: dict):
+    # make sure match object is json dictionary
+    match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
+    # generate stable id based on match offset, end and text_id
+    match_json['id'] = make_hash_id(match_json)
+    es.index(index=config['phrase_match_index'], id=match_json['id'], body=match_json)
 
 
 def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:

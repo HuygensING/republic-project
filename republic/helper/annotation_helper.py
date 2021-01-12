@@ -1,11 +1,15 @@
+from typing import Union
 import hashlib
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 from republic.model.republic_document_model import Resolution
 
 
-def make_hash_id(match: PhraseMatch):
-    return hashlib.md5(f"{match.text_id}-{match.offset}-{match.end}".encode()).hexdigest()
+def make_hash_id(match: Union[dict, PhraseMatch]):
+    if isinstance(match, PhraseMatch):
+        return hashlib.md5(f"{match.text_id}-{match.offset}-{match.end}".encode()).hexdigest()
+    else:
+        return hashlib.md5(f"{match['text_id']}-{match['offset']}-{match['end']}".encode()).hexdigest()
 
 
 def make_swao_anno(match: PhraseMatch, resolution: Resolution) -> dict:
