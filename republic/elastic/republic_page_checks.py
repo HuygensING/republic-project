@@ -1,5 +1,5 @@
 from typing import List
-import republic.elastic.republic_elasticsearch as rep_es
+import republic.elastic.republic_retrieving as rep_es
 import republic.analyser.republic_inventory_analyser as inv_analyser
 from elasticsearch import Elasticsearch
 
