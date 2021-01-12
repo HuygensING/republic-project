@@ -2,8 +2,7 @@ import datetime
 import json
 import copy
 import re
-import hashlib
-from typing import Union, Dict, Generator
+from typing import Union, Dict
 from elasticsearch import Elasticsearch, RequestError
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
@@ -28,7 +27,7 @@ from republic.elastic.republic_elasticsearch import create_es_scan_doc, create_e
 from republic.helper.metadata_helper import get_per_page_type_index
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.elastic.republic_elasticsearch as rep_es
-from republic.helper.annotation_helper import make_swao_anno, make_hash_id
+from republic.helper.annotation_helper import make_hash_id
 
 
 def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
