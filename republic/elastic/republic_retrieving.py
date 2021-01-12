@@ -327,7 +327,6 @@ def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
     if response['hits']['total']['value'] == 0:
         return []
     else:
-        print('turning resolution json in class instance')
         return [resolution_from_json(hit['_source']) for hit in response['hits']['hits']]
 
 

@@ -13,11 +13,10 @@ keyword_dicts = [
     },
 ]
 
-
 proposition_opening_phrases = [
     {
         'phrase': 'ONtfangen een Missive van',
-        'label': ['proposition_opening', 'proposition_type:missive'],
+        'label': ['proposition_opening', 'proposition_from_correspondence', 'proposition_type:missive'],
         'proposition_type': 'missive',
         'max_offset': 5
     },
@@ -126,6 +125,12 @@ proposition_opening_phrases = [
         'max_offset': 5
     },
     {
+        'phrase': 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
+        'label': ['proposition_opening', 'proposition_type:pasport'],
+        'proposition_type': "pasport",
+        'max_offset': 5
+    },
+    {
         'phrase': 'OP den differente gereezen voor de',
         'label': 'proposition_opening',
         'proposition_type': None,
@@ -211,6 +216,9 @@ proposition_verbs = [
     {
         'phrase': "presenteerende",
         'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
+        'distractors': [
+            'presideerende'
+        ]
     },
     {
         'phrase': "appuyeerende",
@@ -239,6 +247,10 @@ proposition_verbs = [
     {
         'phrase': 'op ordre en ten dienste van',
         'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
+    },
+    {
+        'phrase': 'aanneemende',
+        'label': ['proposition_verb', 'claim', 'proposition_body'],
     },
     {
         'phrase': 'sustineeren',
@@ -319,9 +331,16 @@ prefix_phrases = [
 
 organisation_phrases = [
     {
+        'phrase': 'haar Hoog Mogende',
+        'label': ['title', 'organisation_title'],
+        'variants': [
+            'haar Hoog Mog.',
+            'haar Ho. Mo.'
+        ]
+    },
+    {
         'phrase': 'de Heeren Staaten van de Provincie',
         'label': ['organisation', 'states', 'province'],
-        'cardinality': 'multi',
     },
     {
         'phrase': 'Staaten van de Provincie',
@@ -330,12 +349,22 @@ organisation_phrases = [
     {
         'phrase': 'den Raad van Staate',
         'label': ['organisation', 'council_of_states'],
-        'cardinality': 'single',
+    },
+    {
+        'phrase': 'den Eerste Raad',
+        'label': ['organisation', 'council'],
+    },
+    {
+        'phrase': 'den Eerst-presideerende Raad',
+        'label': ['organisation', 'council'],
+    },
+    {
+        'phrase': 'en andere Raaden',
+        'label': ['organisation', 'council'],
     },
     {
         'phrase': 'de Generaliteits Reekenkamer',
         'label': ['organisation', 'proposer_title'],
-        'cardinality': 'single',
     },
     {
         'phrase': 'by den Ryksdag',
@@ -365,6 +394,14 @@ organisation_phrases = [
         'phrase': 'de Meyerye',
         'label': ['organisation', 'domain:politics']
     },
+    {
+        'phrase': 'aan het Hof van ',
+        'label': ['representation_relation', 'organisation_relation']
+    },
+    {
+        'phrase': 'van den Hove',
+        'label': ['organisation']
+    },
 ]
 
 location_phrases = [
@@ -381,6 +418,10 @@ location_phrases = [
         'label': 'location_type'
     },
     {
+        'phrase': 'het Overquartier van',
+        'label': ['location_type', 'location_relation']
+    },
+    {
         'phrase': 'Majorie ',
         'label': 'location_type'
     },
@@ -394,7 +435,10 @@ location_phrases = [
     },
     {
         'phrase': 'den Lande van ',
-        'label': ['location_relation']
+        'label': ['location_relation'],
+        'distractors': [
+            'den Handel in'
+        ]
     },
     {
         'phrase': 'den Colonie van ',
@@ -404,43 +448,35 @@ location_phrases = [
         'phrase': 'de Kamers Griffie',
         'label': ['location', 'office', 'registrars_office'],
     },
+    {
+        'phrase': 'de Oostentycksche Nederlanden',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Groot Britannien',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Vranckrijk',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Pruissen',
+        'label': ['location', 'region'],
+    },
 
 ]
 
 esteem_titles = [
-    {
-        'phrase': 'haar Hoog Mogende',
-        'label': ['esteem_title', 'organisation_title'],
-        'variants': [
-            'haar Hoog Mog.',
-            'haar Ho. Mo.'
-        ]
-    },
-    {
-        'phrase': 'aan het Hof van ',
-        'label': ['representation_relation']
-    },
 
-    {
-        'phrase': 'de Vaart en Handel op de West-indien',
-        'label': ['topic', 'topic:trade', 'domain:maritime']
-    },
-    {
-        'phrase': 'tot de saaken van',
-        'label': ['topic_prefix']
-    },
-    {
-        'phrase': 'tot de saaken van de Finantie',
-        'label': ['topic', 'topic:finance']
-    },
-    {
-        'phrase': 'tot de buitenlandse saaken',
-        'label': ['topic', 'topic:foreign_affairs', 'domain:politics', 'department']
-    },
 ]
 
 
 person_role_phrases = [
+    {
+        'phrase': 'Hooghschout ',
+        'label': ['person_role', 'representative']
+    },
     {
         'phrase': 'Quartierschout ',
         'label': ['person_role', 'representative']
@@ -668,19 +704,7 @@ military_phrases = [
     },
 ]
 
-misc = [
-    {
-        'phrase': 'Missive',
-        'label': ['document', 'document_type:missive'],
-    },
-    {
-        'phrase': 'Bylaage',
-        'label': ['document', 'document_type:attachment'],
-    },
-    {
-        'phrase': 'Copie van',
-        'label': ['document', 'document_type:copy', 'document_relation'],
-    },
+proposition_from_phrases = [
     {
         'phrase': 'geschreeven te',
         'label': 'correspondence_from',
@@ -699,7 +723,8 @@ misc = [
             'resideerende te'
         ],
         'distractors': [
-            'wordende met'
+            'wordende met',
+            'houdende te',
         ]
     },
     {
@@ -714,6 +739,12 @@ misc = [
         'label': ['currently_in_republic', 'person_location', 'location:dutch_republic'],
         'variants': [
             'resideerende alhier in den Hage'
+        ],
+    },
+    {
+        'phrase': 'alhier te den Hage',
+        'label': ['active_in_location', 'person_location', 'location:the_hague'],
+        'variants': [
         ],
     },
     {
@@ -746,6 +777,22 @@ misc = [
         'phrase': 'geaddreffeert aan ',
         'label': 'addressed_to'
     },
+
+]
+
+misc = [
+    {
+        'phrase': 'Missive',
+        'label': ['document', 'document_type:missive'],
+    },
+    {
+        'phrase': 'Bylaage',
+        'label': ['document', 'document_type:attachment'],
+    },
+    {
+        'phrase': 'Copie van',
+        'label': ['document', 'document_type:copy', 'document_relation'],
+    },
     {
         'phrase': "'s Lands Oorlogschip",
         'label': ['ship', 'ship_type', 'domain:maritime']
@@ -758,6 +805,29 @@ misc = [
         ]
     },
 
+    {
+        'phrase': 'den Handel in',
+        'label': ['trade', 'trade_relation'],
+        'distractors': [
+            'den Lande van'
+        ]
+    },
+    {
+        'phrase': 'de Vaart en Handel op de West-indien',
+        'label': ['topic', 'topic:trade', 'domain:maritime']
+    },
+    {
+        'phrase': 'tot de saaken van',
+        'label': ['topic_prefix']
+    },
+    {
+        'phrase': 'tot de saaken van de Finantie',
+        'label': ['topic', 'topic:finance']
+    },
+    {
+        'phrase': 'tot de buitenlandse saaken',
+        'label': ['topic', 'topic:foreign_affairs', 'domain:politics', 'department']
+    },
 ]
 
 provinces = [
@@ -811,49 +881,21 @@ opening_formulas = [
 
 ]
 
-opening_templates = [
-    {
-        "label": "proposition_opening",
-        "ordered": True,
-        "type": "group",
-        "elements": [
-            {
-                "label": "formula",
-                "type": "group",
-                "elements": [
-                    {"label": "proposition_opening", "required": True},
-                ]
-            },
-            {
-                "label": "proposer",
-                "type": "group",
-                "ordered": False,
-                "elements": [
-                    {"label": "title", "required": False, "cardinality": "multi"},
-                    {"label": "proposer_name", "required": False, "variable": True},
-                    {"label": "person_role", "required": False, "cardinality": "multi"},
-                    {"label": "representation_relation", "required": False},
-                    {"label": "organisation", "required": False},
-                ]
-            },
-            {
-                "label": "proposition_origin",
-                "type": "group",
-                "ordered": True,
-                "elements": [
-                    {"label": "correspondence_from", "required": False},
-                    {"label": "residence_relation", "required": False},
-                    {"label": "location", "required": False, "variable": True},
-                    {"label": "temporal_reference", "required": False},
-                ]
-            },
-            {
-                "label": "proposition_verb",
-                "type": "group",
-                "elements": [
-                    {"label": "proposition_verb", "required": False},
-                ]
-            }
-        ]
-    }
-]
+resolution_phrase_sets = {
+    'proposition_opening_phrases': proposition_opening_phrases,
+    'proposition_reason_phrases': proposition_reason_phrases,
+    'proposition_closing_phrases': proposition_closing_phrases,
+    'proposition_from_phrases': proposition_from_phrases,
+    'proposition_verbs': proposition_verbs,
+    'decision_phrases': decision_phrases,
+    'resolution_link_phrases': resolution_link_phrases,
+    'prefix_phrases': prefix_phrases,
+    'organisation_phrases': organisation_phrases,
+    'location_phrases': location_phrases,
+    'esteem_titles': esteem_titles,
+    'person_role_phrases': person_role_phrases,
+    'military_phrases': military_phrases,
+    'misc': misc,
+    'provinces': provinces
+}
+

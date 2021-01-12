@@ -3,7 +3,7 @@ import random
 import datetime
 from elasticsearch import Elasticsearch
 
-import republic.elastic.republic_elasticsearch as rep_es
+import republic.elastic.republic_retrieving as rep_es
 import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
 import republic.analyser.republic_inventory_analyser as inv_analyser
 from republic.helper.metadata_helper import make_scan_urls

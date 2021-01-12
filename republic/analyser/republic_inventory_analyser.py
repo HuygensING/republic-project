@@ -1,7 +1,7 @@
 from typing import Union, Dict, List
 from elasticsearch import Elasticsearch
 
-import republic.elastic.republic_elasticsearch as rep_es
+import republic.elastic.republic_retrieving as rep_es
 
 
 def find_index_page_sequence(es: Elasticsearch, inventory_num: int, config: dict) -> Dict[str, int]:

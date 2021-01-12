@@ -229,21 +229,26 @@ def has_proposition_type_label(phrase_match: PhraseMatch) -> bool:
     return False
 
 
+def parse_phrase_match(match: Union[PhraseMatch, dict]) -> PhraseMatch:
+    if isinstance(match, PhraseMatch):
+        return match
+    match_phrase = Phrase(match['phrase'])
+    match_variant = Phrase(match['variant'])
+    if 'text_id' not in match:
+        match['text_id'] = None
+    if 'match_scores' not in match:
+        match['match_scores'] = None
+    match_object = PhraseMatch(match_phrase, match_variant, match['string'], match_offset=match['offset'],
+                               text_id=match['text_id'], match_scores=match['match_scores'])
+    if 'label' in match:
+        match_object.label = match['label']
+    return match_object
+
+
 def parse_phrase_matches(phrase_matches: Union[List[PhraseMatch], List[dict]]):
     match_objects: List[PhraseMatch] = []
     for match in phrase_matches:
-        if isinstance(match, PhraseMatch):
-            match_objects.append(match)
-        elif isinstance(match, dict):
-            match_phrase = Phrase(match['phrase'])
-            match_variant = Phrase(match['variant'])
-            if 'text_id' not in match:
-                match['text_id'] = None
-            match_object = PhraseMatch(match_phrase, match_variant, match['string'], match_offset=match['offset'],
-                                       text_id=match['text_id'], match_scores=match['match_scores'])
-            if 'label' in match:
-                match_object.label = match['label']
-            match_objects.append(match_object)
+        match_objects.append(parse_phrase_match(match))
     return match_objects
 
 
@@ -285,6 +290,8 @@ class Resolution(ResolutionDoc):
         self.meeting_date: Union[RepublicDate, None] = None
         self.evidence: List[PhraseMatch] = evidence if evidence else []
         self.paragraphs: List[ResolutionParagraph] = paragraphs if paragraphs else []
+        if paragraphs and not columns:
+            self.add_columns_from_paragraphs()
         self.column_ids: Set[str] = set()
         if len(self.paragraphs) == 0:
             metadata['num_paragraphs'] = 0
@@ -294,6 +301,7 @@ class Resolution(ResolutionDoc):
         self.phrase_matches: List[PhraseMatch] = []
         if 'evidence' in self.metadata and self.metadata['evidence']:
             self.evidence = parse_phrase_matches(metadata['evidence'])
+            self.metadata['evidence'] = self.evidence
         if phrase_matches:
             self.phrase_matches = parse_phrase_matches(phrase_matches)
         if evidence:
@@ -302,6 +310,11 @@ class Resolution(ResolutionDoc):
 
     def __repr__(self):
         return f"Resolution({json.dumps(self.json(), indent=4)}"
+
+    def add_columns_from_paragraphs(self):
+        for paragraph in self.paragraphs:
+            for column in paragraph.columns:
+                self.columns.append(column)
 
     def add_paragraph(self, paragraph: ResolutionParagraph, matches: List[PhraseMatch] = None):
         self.paragraphs.append(paragraph)
@@ -317,7 +330,9 @@ class Resolution(ResolutionDoc):
         json_data = {
             'metadata': metadata,
             'paragraphs': [paragraph.json() for paragraph in self.paragraphs],
-            'phrase_matches': [match.json() for match in self.phrase_matches]
+            'phrase_matches': [match.json() for match in self.phrase_matches],
+            'evidence': [match.json() for match in self.evidence],
+            'columns': self.columns
         }
         json_data['metadata']['evidence'] = [match.json() for match in self.evidence]
         return json_data
