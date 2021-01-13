@@ -329,7 +329,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
 
 def add_missing_dates(prev_date: Union[RepublicDate, None], meeting: Meeting):
     if prev_date is None:
-        prev_date = RepublicDate(meeting.date.year - 1, 12, 31)
+        prev_date = meeting.date - datetime.timedelta(days=1)
         print('prev_date:', prev_date.isoformat(), '\tcurr_date:', meeting.date.isoformat())
     missing = (meeting.date - prev_date).days - 1
     if missing > 0:
