@@ -5,9 +5,9 @@ import copy
 import re
 import json
 
-from fuzzy_search.fuzzy_match import PhraseMatch, Phrase, phrase_match_from_json
+from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from republic.model.generic_document_model import PhysicalStructureDoc, StructureDoc
+from republic.model.generic_document_model import StructureDoc
 from republic.model.generic_document_model import same_height, same_column, order_lines
 from republic.model.generic_document_model import parse_derived_coords, line_ends_with_word_break
 from republic.model.republic_date import RepublicDate
@@ -128,7 +128,7 @@ class Meeting(ResolutionDoc):
         self.meeting_date = RepublicDate(date_string=metadata['meeting_date'])
         self.type = "meeting"
         self.date = self.meeting_date
-        self.id = f"meeting-{self.meeting_date.isoformat()}-session-1"
+        self.id = f"meeting-{self.meeting_date.as_date_string()}-session-1"
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions
@@ -140,7 +140,7 @@ class Meeting(ResolutionDoc):
             # column['metadata']['page_column_id'] = column['metadata']['id']
             # column['metadata']['page_id'] = column['metadata']['doc_id']
             column['metadata']['doc_id'] = self.id
-            column['metadata']['id'] = self.id + f'-col-{ci}'
+            column['metadata']['id'] = self.id + f'-column-{ci}'
             urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],
                                   scan_id=column['metadata']['scan_id'])
             column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)

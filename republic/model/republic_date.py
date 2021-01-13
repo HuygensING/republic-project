@@ -158,6 +158,9 @@ class RepublicDate:
         else:
             return 1
 
+    def as_date_string(self):
+        return self.date.strftime("%Y-%m-%m")
+
     def isoformat(self):
         return self.date.isoformat()
 
