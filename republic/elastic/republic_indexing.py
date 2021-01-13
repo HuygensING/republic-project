@@ -50,6 +50,23 @@ def delete_es_index(es: Elasticsearch, index: str):
         es.indices.delete(index=index)
 
 
+def clone_index(es:Elasticsearch, original_index: str, new_index: str):
+    # 1. make sure the clone index doesn't exist
+    if es.indices.exists(index=new_index):
+        #raise ValueError("index already exists")
+        print("deleting clone index:", new_index)
+        print(es.indices.delete(index=new_index))
+    # 2. set original index to read-only
+    print(f"setting original index {original_index} to read-only")
+    print(es.indices.put_settings(index=original_index, body={"index.blocks.write": True}))
+    # 3. clone the index
+    print(f"cloning original index {original_index} to {new_index}")
+    print(es.indices.clone(index=original_index, target=new_index))
+    # 4. set original index to read-write
+    print(f"setting original index {original_index} to read-write")
+    print(es.indices.put_settings(index=original_index, body={"index.blocks.write": False}))
+
+
 def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config: dict):
     inventory_metadata['index_timestamp'] = datetime.datetime.now()
     es.index(index=config['inventory_index'], doc_type=config['inventory_doc_type'],

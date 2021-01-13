@@ -43,6 +43,8 @@ class ResolutionDoc(StructureDoc):
                     line["metadata"]["textregion_id"] = text_region['metadata']['textregion_id']
                     if 'is_bleed_through' not in line['metadata']:
                         line['metadata']['is_bleed_through'] = False
+                    if 'page_column_id' in column['metadata']:
+                        line['metadata']['page_column_id'] = column['metadata']['page_column_id']
                     yield line
 
 
@@ -62,13 +64,19 @@ class ResolutionPageDoc(ResolutionDoc):
 class ResolutionParagraph(ResolutionDoc):
 
     def __init__(self, lines: List[dict] = None, columns: List[dict] = None, metadata: dict = None,
-                 scan_versions: List[Dict[str, any]] = None,
-                 word_freq_counter: Counter = None):
+                 scan_versions: List[Dict[str, any]] = None, text: str = None, column_ids: List[str] = None,
+                 line_ranges: List[Dict[str, any]] = None, word_freq_counter: Counter = None):
         super().__init__(lines=lines, columns=columns, metadata=metadata)
         self.id = self.metadata['id']
-        self.text = ""
-        self.line_ranges = []
-        self.set_text(word_freq_counter)
+        self.line_ranges = line_ranges if line_ranges else []
+        self.text = text if text else ""
+        self.column_ids: Set[str] = set()
+        if column_ids:
+            self.column_ids = set(column_ids)
+        else:
+            self.column_ids = {column['metadata']['id'] for column in self.columns}
+        if not text:
+            self.set_text(word_freq_counter)
         self.metadata['num_columns'] = len(self.columns)
         self.metadata['num_lines'] = len(self.lines)
         self.metadata["type"] = "resolution_paragraph"
@@ -78,16 +86,20 @@ class ResolutionParagraph(ResolutionDoc):
     def __repr__(self):
         return f"ResolutionParagraph(lines={[line['metadata']['id'] for line in self.lines]}, text={self.text})"
 
-    def json(self):
-        return {
+    def json(self, include_columns: bool = True):
+        json_data = {
             "metadata": self.metadata,
-            "columns": self.columns,
+            "column_ids": list(self.column_ids),
             "text": self.text,
             "line_ranges": self.line_ranges,
             "scan_versions": self.scan_versions
         }
+        if include_columns:
+            json_data["columns"] = self.columns
+        return json_data
 
     def set_text(self, word_freq_counter: Counter = None):
+        self.line_ranges = []
         for li, line in enumerate(self.lines):
             if line["text"] is None:
                 continue
@@ -106,7 +118,11 @@ class ResolutionParagraph(ResolutionDoc):
                 line_text = line["text"]
             else:
                 line_text = line["text"] + " "
-            line_range = {"start": len(self.text), "end": len(self.text + line_text), "line_index": li}
+            line_range = {
+                "start": len(self.text), "end": len(self.text + line_text),
+                #"line_index": li,
+                'line_id': line['metadata']['id']
+            }
             self.text += line_text
             self.line_ranges.append(line_range)
 
@@ -262,8 +278,7 @@ class Resolution(ResolutionDoc):
                  meeting: Union[None, Meeting] = None,
                  columns: Union[None, List[Dict[str, Union[dict, list]]]] = None,
                  paragraphs: List[ResolutionParagraph] = None,
-                 phrase_matches: Union[List[dict], List[PhraseMatch]] = None,
-                 evidence: List[PhraseMatch] = None):
+                 evidence: Union[List[dict], List[PhraseMatch]] = None):
         """A resolution has textual content of the resolution, as well as an opening formula, decision information,
         and type information on the source document that instigated the discussion and resolution. Source documents
         can be missives, requests, reports, ..."""
@@ -278,6 +293,8 @@ class Resolution(ResolutionDoc):
         metadata['doc_type'] = 'resolution'
         if meeting:
             metadata['meeting_date'] = meeting.metadata['meeting_date']
+            metadata['session_id'] = meeting.metadata['id']
+            metadata['session'] = meeting.metadata['session']
             metadata['inventory_num'] = meeting.metadata['inventory_num']
             metadata['president'] = meeting.metadata['president']
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
@@ -289,23 +306,23 @@ class Resolution(ResolutionDoc):
         self.proposition_type: Union[None, str] = None
         self.proposer: Union[None, str, List[str]] = None
         self.meeting_date: Union[RepublicDate, None] = None
-        self.evidence: List[PhraseMatch] = evidence if evidence else []
         self.paragraphs: List[ResolutionParagraph] = paragraphs if paragraphs else []
         if paragraphs and not columns:
             self.add_columns_from_paragraphs()
         self.column_ids: Set[str] = set()
         if len(self.paragraphs) == 0:
-            metadata['num_paragraphs'] = 0
-            metadata['num_columns'] = 0
-            metadata['num_lines'] = 0
-            metadata['num_words'] = 0
-        self.phrase_matches: List[PhraseMatch] = []
-        if 'evidence' in self.metadata and self.metadata['evidence']:
-            self.evidence = parse_phrase_matches(metadata['evidence'])
-            self.metadata['evidence'] = self.evidence
-        if phrase_matches:
-            self.phrase_matches = parse_phrase_matches(phrase_matches)
+            self.metadata['num_paragraphs'] = 0
+            self.metadata['num_columns'] = 0
+            self.metadata['num_lines'] = 0
+            self.metadata['num_words'] = 0
+        # if 'evidence' in self.metadata and self.metadata['evidence']:
+        #     self.evidence = parse_phrase_matches(metadata['evidence'])
+        #     self.metadata['evidence'] = self.evidence
+        self.evidence: List[PhraseMatch] = []
         if evidence:
+            print('setting evidence:')
+            print(evidence)
+            self.evidence = parse_phrase_matches(evidence)
             self.proposition_type = get_proposition_type_from_evidence(evidence)
             self.metadata['proposition_type'] = self.proposition_type
 
@@ -318,34 +335,42 @@ class Resolution(ResolutionDoc):
                 self.columns.append(column)
 
     def add_paragraph(self, paragraph: ResolutionParagraph, matches: List[PhraseMatch] = None):
+        paragraph.metadata['paragraph_index'] = len(self.paragraphs)
         self.paragraphs.append(paragraph)
         self.column_ids = self.column_ids.union([column['metadata']['id'] for column in paragraph.columns])
+        self.columns += paragraph.columns
         self.metadata['num_paragraphs'] = len(self.paragraphs)
         self.metadata['num_columns'] = len(self.column_ids)
         self.metadata['num_lines'] += paragraph.metadata['num_lines']
         self.metadata['num_words'] += paragraph.metadata['num_words']
-        self.phrase_matches += matches
+        self.evidence += matches
 
     def json(self):
         metadata = copy.deepcopy(self.metadata)
         json_data = {
             'metadata': metadata,
-            'paragraphs': [paragraph.json() for paragraph in self.paragraphs],
-            'phrase_matches': [match.json() for match in self.phrase_matches],
+            'paragraphs': [paragraph.json(include_columns=False) for paragraph in self.paragraphs],
             'evidence': [match.json() for match in self.evidence],
             'columns': self.columns
         }
-        json_data['metadata']['evidence'] = [match.json() for match in self.evidence]
         return json_data
 
 
 def resolution_from_json(resolution_json: dict) -> Resolution:
     paragraphs = []
     for paragraph_json in resolution_json['paragraphs']:
-        paragraph = ResolutionParagraph(metadata=paragraph_json['metadata'], columns=paragraph_json['columns'])
+        if 'columns' not in paragraph_json:
+            paragraph_json['columns'] = []
+        if 'column_ids' not in paragraph_json:
+            paragraph_json['column_ids'] = []
+        paragraph = ResolutionParagraph(metadata=paragraph_json['metadata'], columns=paragraph_json['columns'],
+                                        column_ids=paragraph_json['column_ids'],
+                                        scan_versions=paragraph_json['scan_versions'],
+                                        text=paragraph_json['text'],
+                                        line_ranges=paragraph_json['line_ranges'])
         paragraphs.append(paragraph)
     return Resolution(metadata=resolution_json['metadata'], paragraphs=paragraphs,
-                      phrase_matches=resolution_json['phrase_matches'])
+                      evidence=resolution_json['evidence'])
 
 
 def stream_ordered_lines(resolution_doc: ResolutionDoc, word_freq_counter: Counter = None):
@@ -367,6 +392,8 @@ def stream_ordered_lines(resolution_doc: ResolutionDoc, word_freq_counter: Count
                 line["metadata"]["textregion_index"] = ti
                 if 'is_bleed_through' not in line['metadata']:
                     line['metadata']['is_bleed_through'] = False
+                if 'page_column_id' in column['metadata']:
+                    line['metadata']['page_column_id'] = column['metadata']['page_column_id']
                 yield line
 
 
@@ -454,7 +481,6 @@ def get_meeting_resolutions(meeting: Meeting, opening_searcher: FuzzyPhraseSearc
     resolution_number = 0
     generate_id = running_id_generator(meeting.metadata['id'], '-resolution-')
     for paragraph in meeting.get_paragraphs():
-        # print(paragraph.metadata['id'])
         # print(paragraph.text, '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
@@ -467,8 +493,7 @@ def get_meeting_resolutions(meeting: Meeting, opening_searcher: FuzzyPhraseSearc
                 resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
                 yield resolution
             metadata = get_base_metadata(meeting, generate_id(), 'resolution')
-            resolution = Resolution(metadata=metadata, meeting=meeting,
-                                    evidence=opening_matches + verb_matches)
+            resolution = Resolution(metadata=metadata, meeting=meeting)
             print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)

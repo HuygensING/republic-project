@@ -120,6 +120,8 @@ class StructureDoc:
                 'coords': parse_derived_coords(self.column_ids[column_id]),
                 'textregions': []
             }
+            if 'page_column_id' in line['metadata']:
+                column['metadata']['page_column_id'] = line['metadata']['page_column_id']
             for textregion_id in textregion_lines:
                 textregion = {
                     'metadata': {'textregion_id': textregion_id},
