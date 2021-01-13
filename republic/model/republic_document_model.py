@@ -137,8 +137,9 @@ class Meeting(ResolutionDoc):
         self.metadata['num_lines'] = len(self.lines)
         self.metadata['num_words'] = 0
         for ci, column in enumerate(self.columns):
-            # column['metadata']['page_column_id'] = column['metadata']['id']
-            # column['metadata']['page_id'] = column['metadata']['doc_id']
+            if '-page-' in column['metadata']['id']:
+                column['metadata']['page_column_id'] = column['metadata']['id']
+                column['metadata']['page_id'] = column['metadata']['doc_id']
             column['metadata']['doc_id'] = self.id
             column['metadata']['id'] = self.id + f'-column-{ci}'
             urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],

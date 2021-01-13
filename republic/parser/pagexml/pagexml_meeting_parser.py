@@ -288,7 +288,7 @@ def get_columns_metadata(sorted_pages: List[dict]) -> Dict[str, dict]:
     for page in sorted_pages:
         for column in page['columns']:
             column_id = column['metadata']['id']
-            column_metadata[column_id] = column['metadata']
+            column_metadata[column_id] = copy.deepcopy(column['metadata'])
     return column_metadata
 
 
