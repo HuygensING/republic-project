@@ -9,7 +9,8 @@ def make_hash_id(match: Union[dict, PhraseMatch]):
     if isinstance(match, PhraseMatch):
         return hashlib.md5(f"{match.text_id}-{match.offset}-{match.end}".encode()).hexdigest()
     else:
-        return hashlib.md5(f"{match['text_id']}-{match['offset']}-{match['end']}".encode()).hexdigest()
+        match_end = match['offset'] + len(match['string'])
+        return hashlib.md5(f"{match['text_id']}-{match['offset']}-{match_end}".encode()).hexdigest()
 
 
 def make_swao_anno(match: PhraseMatch, resolution: Resolution) -> dict:

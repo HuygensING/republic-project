@@ -320,10 +320,8 @@ class Resolution(ResolutionDoc):
         #     self.metadata['evidence'] = self.evidence
         self.evidence: List[PhraseMatch] = []
         if evidence:
-            print('setting evidence:')
-            print(evidence)
             self.evidence = parse_phrase_matches(evidence)
-            self.proposition_type = get_proposition_type_from_evidence(evidence)
+            self.proposition_type = get_proposition_type_from_evidence(self.evidence)
             self.metadata['proposition_type'] = self.proposition_type
 
     def __repr__(self):

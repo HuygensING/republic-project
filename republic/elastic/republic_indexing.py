@@ -329,7 +329,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
 
 def add_missing_dates(prev_date: Union[RepublicDate, None], meeting: Meeting):
     if prev_date is None:
-        prev_date = meeting.date - datetime.timedelta(days=1)
+        prev_date = meeting.meeting_date - datetime.timedelta(days=1)
         print('prev_date:', prev_date.isoformat(), '\tcurr_date:', meeting.date.isoformat())
     missing = (meeting.date - prev_date).days - 1
     if missing > 0:
@@ -449,7 +449,8 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
 
 def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
     searcher = make_resolution_phrase_model_searcher()
-    for resolution in rep_es.retrieve_inventory_resolutions(es, inv_config):
+    for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
+        print('indexing phrase matches for resolution', resolution.metadata['id'])
         for paragraph in resolution.paragraphs:
             doc = {'id': paragraph.metadata['id'], 'text': paragraph.text}
             for match in searcher.find_matches(doc):
