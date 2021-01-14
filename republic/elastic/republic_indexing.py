@@ -446,7 +446,8 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
 
 def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
     searcher = make_resolution_phrase_model_searcher()
-    for resolution in rep_es.retrieve_inventory_resolutions(es, inv_config):
+    for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
+        print('indexing phrase matches for resolution', resolution.metadata['id'])
         for paragraph in resolution.paragraphs:
             doc = {'id': paragraph.metadata['id'], 'text': paragraph.text}
             for match in searcher.find_matches(doc):

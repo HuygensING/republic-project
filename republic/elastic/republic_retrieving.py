@@ -330,9 +330,9 @@ def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
         return [resolution_from_json(hit['_source']) for hit in response['hits']['hits']]
 
 
-def retrieve_inventory_resolutions(es: Elasticsearch, inv_config: dict):
+def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):
     query = {'query': {'match': {'metadata.inventory_num': inv_config['inventory_num']}}}
-    for resolution in retrieve_resolutions_by_query(es, query, inv_config):
+    for resolution in scroll_resolutions_by_query(es, query, inv_config, scroll='20m'):
         yield resolution
 
 
