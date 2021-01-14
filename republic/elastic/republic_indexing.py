@@ -17,7 +17,7 @@ import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.model.resolution_phrase_model as rpm
-from republic.model.republic_date import RepublicDate
+from republic.model.republic_date import RepublicDate, make_republic_date
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
 from republic.model.republic_pagexml_model import parse_derived_coords
@@ -279,7 +279,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
     pages = rep_es.retrieve_resolution_pages(es, inv_num, inv_config)
     pages.sort(key=lambda page: page['metadata']['page_num'])
     inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_num, inv_config)
-    prev_date: Union[None, RepublicDate] = None
+    prev_date: RepublicDate = make_republic_date(inv_metadata['period_start'])
     if not pages:
         print('No pages retrieved for inventory', inv_num)
         return None
@@ -327,10 +327,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
     return None
 
 
-def add_missing_dates(prev_date: Union[RepublicDate, None], meeting: Meeting):
-    if prev_date is None:
-        prev_date = meeting.date - datetime.timedelta(days=1)
-        print('prev_date:', prev_date.isoformat(), '\tcurr_date:', meeting.date.isoformat())
+def add_missing_dates(prev_date: RepublicDate, meeting: Meeting):
     missing = (meeting.date - prev_date).days - 1
     if missing > 0:
         print('missing days:', missing)
