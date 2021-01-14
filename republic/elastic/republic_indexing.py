@@ -294,7 +294,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         for missing_meeting in add_missing_dates(prev_date, meeting):
             missing_meeting.metadata['index_timestamp'] = datetime.datetime.now()
             es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                     id=missing_meeting.id, body=missing_meeting.json(with_columns=True, with_scan_versions=True))
+                     id=missing_meeting.metadata['id'], body=missing_meeting.json(with_columns=True, with_scan_versions=True))
 
         meeting.scan_versions = meeting_parser.get_meeting_scans_version(meeting)
         meeting_parser.clean_lines(meeting.lines, clean_copy=False)
@@ -317,10 +317,10 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
             if meeting.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['meeting_index'] + '_quarantine'
                 es.index(index=quarantine_index, doc_type=inv_config['meeting_doc_type'],
-                         id=meeting.id, body=meeting.json(with_columns=True, with_scan_versions=True))
+                         id=meeting.metadata['id'], body=meeting.json(with_columns=True, with_scan_versions=True))
             else:
                 es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                         id=meeting.id, body=meeting.json(with_columns=True, with_scan_versions=True))
+                         id=meeting.metadata['id'], body=meeting.json(with_columns=True, with_scan_versions=True))
         except RequestError:
             print('skipping doc')
             continue
