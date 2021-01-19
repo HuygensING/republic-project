@@ -1,4 +1,4 @@
-from collections import Counter
+from collections import Counter, defaultdict
 from typing import Dict, Generator, List, Set, Union
 import datetime
 import copy
@@ -82,6 +82,7 @@ class ResolutionParagraph(ResolutionDoc):
         self.metadata["type"] = "resolution_paragraph"
         self.metadata["num_words"] = len([word for word in re.split(r'\W+', self.text) if word != ''])
         self.scan_versions = scan_versions
+        self.evidence: List[PhraseMatch] = []
 
     def __repr__(self):
         return f"ResolutionParagraph(lines={[line['metadata']['id'] for line in self.lines]}, text={self.text})"
@@ -255,8 +256,12 @@ def parse_phrase_match(match: Union[PhraseMatch, dict]) -> PhraseMatch:
         match['text_id'] = None
     if 'match_scores' not in match:
         match['match_scores'] = None
-    match_object = PhraseMatch(match_phrase, match_variant, match['string'], match_offset=match['offset'],
-                               text_id=match['text_id'], match_scores=match['match_scores'])
+    try:
+        match_object = PhraseMatch(match_phrase, match_variant, match['string'], match_offset=match['offset'],
+                                   text_id=match['text_id'], match_scores=match['match_scores'])
+    except ValueError:
+        print(match)
+        raise
     if 'label' in match:
         match_object.label = match['label']
     return match_object
@@ -367,8 +372,13 @@ def resolution_from_json(resolution_json: dict) -> Resolution:
                                         text=paragraph_json['text'],
                                         line_ranges=paragraph_json['line_ranges'])
         paragraphs.append(paragraph)
+    if 'columns' not in resolution_json:
+        resolution_json['columns'] = []
+    column_map = defaultdict(list)
+    for column in resolution_json['columns']:
+        column_map[column['metadata']['id']].append(column)
     return Resolution(metadata=resolution_json['metadata'], paragraphs=paragraphs,
-                      evidence=resolution_json['evidence'])
+                      evidence=resolution_json['evidence'], columns=resolution_json['columns'])
 
 
 def stream_ordered_lines(resolution_doc: ResolutionDoc, word_freq_counter: Counter = None):

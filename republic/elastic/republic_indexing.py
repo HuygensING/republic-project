@@ -50,10 +50,10 @@ def delete_es_index(es: Elasticsearch, index: str):
         es.indices.delete(index=index)
 
 
-def clone_index(es:Elasticsearch, original_index: str, new_index: str):
+def clone_index(es: Elasticsearch, original_index: str, new_index: str):
     # 1. make sure the clone index doesn't exist
     if es.indices.exists(index=new_index):
-        #raise ValueError("index already exists")
+        # raise ValueError("index already exists")
         print("deleting clone index:", new_index)
         print(es.indices.delete(index=new_index))
     # 2. set original index to read-only
@@ -129,7 +129,7 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
     inventory_metadata = rep_es.retrieve_inventory_metadata(es, inv_num, inventory_config)
     if "num_scans" not in inventory_metadata:
         return None
-    for scan_num in range(1, inventory_metadata["num_scans"]+1):
+    for scan_num in range(1, inventory_metadata["num_scans"] + 1):
         scan_doc = rep_es.parse_latest_version(es, text_repo, scan_num, inventory_metadata,
                                                inventory_config, ignore_version=ignore_version)
         if not scan_doc:
@@ -294,7 +294,8 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         for missing_meeting in add_missing_dates(prev_date, meeting):
             missing_meeting.metadata['index_timestamp'] = datetime.datetime.now()
             es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                     id=missing_meeting.metadata['id'], body=missing_meeting.json(with_columns=True, with_scan_versions=True))
+                     id=missing_meeting.metadata['id'],
+                     body=missing_meeting.json(with_columns=True, with_scan_versions=True))
 
         meeting.scan_versions = meeting_parser.get_meeting_scans_version(meeting)
         meeting_parser.clean_lines(meeting.lines, clean_copy=False)
@@ -331,7 +332,7 @@ def add_missing_dates(prev_date: RepublicDate, meeting: Meeting):
     missing = (meeting.date - prev_date).days - 1
     if missing > 0:
         print('missing days:', missing)
-    for diff in range(1, missing+1):
+    for diff in range(1, missing + 1):
         # create a new meeting doc for the missing date, with data copied from the current meeting
         # as most likely the missing date is a non-meeting date with 'nihil actum est'
         missing_date = prev_date.date + datetime.timedelta(days=diff)
@@ -462,6 +463,17 @@ def index_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, P
     es.index(index=config['phrase_match_index'], id=match_json['id'], body=match_json)
 
 
+def delete_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, PhraseMatch], config: dict):
+    # make sure match object is json dictionary
+    match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
+    # generate stable id based on match offset, end and text_id
+    match_json['id'] = make_hash_id(match_json)
+    if es.exists(index=config['phrase_match_index'], id=match_json['id']):
+        es.delete(index=config['phrase_match_index'], id=match_json['id'])
+    else:
+        raise ValueError(f'unknown phrase match id {match_json["id"]}, phrase match cannot be removed')
+
+
 def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     resolution_phrase_searcher_config = {
         'filter_distractors': True,
@@ -484,3 +496,16 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     resolution_phrase_phrase_model = PhraseModel(model=phrases)
     resolution_phrase_searcher.index_phrase_model(resolution_phrase_phrase_model)
     return resolution_phrase_searcher
+
+
+def index_split_resolutions(es: Elasticsearch, split_resolutions: Dict[str, any], config: dict):
+    for remove_match in split_resolutions['remove_matches']:
+        try:
+            delete_resolution_phrase_match(es, remove_match, config)
+        except ValueError:
+            continue
+    for add_match in split_resolutions['add_matches']:
+        index_resolution_phrase_match(es, add_match, config)
+    for resolution in split_resolutions['resolutions']:
+        resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+        index_resolution(es, resolution, config)
