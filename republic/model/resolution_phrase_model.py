@@ -18,7 +18,7 @@ proposition_opening_phrases = [
         'phrase': 'ONtfangen een Missive van',
         'label': ['proposition_opening', 'proposition_from_correspondence', 'proposition_type:missive'],
         'proposition_type': 'missive',
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'heeft ter Vergadering gecommuniceert ',
@@ -60,7 +60,7 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen het Advies van ',
         ],
         'proposition_type': 'requeste',
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'IS ter Vergaderinge gelesen de Memorie van ',
@@ -70,7 +70,7 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen het Advies van ',
         ],
         'proposition_type': 'memorie',
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'IS ter Vergaderinge gelesen het Advies van ',
@@ -80,19 +80,19 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen de Requeste van ',
         ],
         'proposition_type': 'advies',
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'IS gehoort het rapport van ',
         'label': ['proposition_opening', 'proposition_type:rapport'],
         'proposition_type': 'rapport',
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'OP de Requeste van ',
         'label': ['proposition_opening', 'proposition_type:requeste'],
         'proposition_type': 'requeste',
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'ZYnde ter Vergaderinge getoont en geëxhibeert de Declaratie van ',
@@ -102,7 +102,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
         'proposition_type': "declaratie",
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'ZYnde ter Vergaderinge getoont en geëxhibeert de Instructie van ',
@@ -112,7 +112,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
         'proposition_type': "instructie",
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
@@ -122,73 +122,79 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Instructie van ',
         ],
         'proposition_type': "rekening",
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
         'label': ['proposition_opening', 'proposition_type:pasport'],
         'proposition_type': "pasport",
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'OP den differente gereezen voor de',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'BY Resumtie gedelibereert zynde',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van versoek van',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van versoek om',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Duplicq van',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van Replicq op',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Eisch in Revisie van',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Eisch op de Requeste',
         'label': ['proposition_opening', 'proposition_type:requeste'],
-        'proposition_type': None,
-        'max_offset': 5
+        'proposition_type': 'requeste',
+        'max_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde ter Vergaderinge gedaan',
         'label': 'proposition_opening',
         'proposition_type': None,
-        'max_offset': 5
+        'max_offset': 10
+    },
+    {
+        'phrase': 'OP het gerapporteerde van',
+        'label': 'proposition_opening',
+        'proposition_type': 'rapport',
+        'max_offset': 10
     },
 ]
 

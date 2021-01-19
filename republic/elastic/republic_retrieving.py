@@ -2,6 +2,7 @@ from typing import Union, List, Dict, Generator
 from elasticsearch import Elasticsearch
 import json
 import copy
+from collections import defaultdict
 
 from fuzzy_search.fuzzy_match import PhraseMatch
 
@@ -345,8 +346,8 @@ def scroll_phrase_matches_by_query(es: Elasticsearch, query: dict,
         yield parse_phrase_matches([match_json])[0]
 
 
-def retrieve_phrase_matches_by_query(es: Elasticsearch, query: dict, config: dict,
-                                     size: int = 100) -> List[PhraseMatch]:
+def retrieve_phrase_matches_by_query(es: Elasticsearch, query: dict,
+                                     config: dict) -> List[PhraseMatch]:
     response = es.search(index=config['phrase_match_index'], doc_type="_doc", body=query)
     if response['hits']['total']['value'] == 0:
         return []
@@ -354,7 +355,8 @@ def retrieve_phrase_matches_by_query(es: Elasticsearch, query: dict, config: dic
         return parse_phrase_matches([hit['_source'] for hit in response['hits']['hits']])
 
 
-def retrieve_phrase_matches_by_paragraph_id(es: Elasticsearch, paragraph_id: str, config: dict) -> List[PhraseMatch]:
+def retrieve_phrase_matches_by_paragraph_id(es: Elasticsearch, paragraph_id: str,
+                                            config: dict) -> List[PhraseMatch]:
     query = {'query': {'match': {'text_id.keyword': paragraph_id}}, 'size': 1000}
     phrase_matches = retrieve_phrase_matches_by_query(es, query, config)
     # sort matches by order of occurrence in the text
@@ -401,3 +403,32 @@ def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_confi
         return None
 
 
+def retrieve_date_num_sessions(es, meeting_date, config):
+    query = {'query': {'match': {'metadata.meeting_date': str(meeting_date)}}, 'size': 0}
+    response = es.search(index=config['meeting_index'], body=query)
+    return response['hits']['total']['value']
+
+
+def retrieve_meeting_resolutions(es, meeting_date, config):
+    query = {'query': {'match': {'metadata.meeting_date': str(meeting_date)}}, 'size': 1000}
+    resolutions = retrieve_resolutions_by_query(es, query, config)
+    session_resolutions = defaultdict(list)
+    for resolution in resolutions:
+        session_id = resolution.metadata['id'].split('-resolution-')[0]
+        session_resolutions[session_id].append(resolution)
+    return session_resolutions
+
+
+def retrieve_session_resolutions(es, session_id, config):
+    query = {'query': {'match': {'metadata.session_id.keyword': session_id}}, 'size': 1000}
+    return retrieve_resolutions_by_query(es, query, config)
+
+
+def retrieve_meeting_phrase_matches(es, meeting_resolutions, config):
+    paragraph_ids = [paragraph.metadata['id'] for resolution in meeting_resolutions
+                     for paragraph in resolution.paragraphs]
+    phrase_matches = []
+    for para_id in paragraph_ids:
+        query = {'query': {'match': {'text_id.keyword': para_id}}, 'size': 1000}
+        phrase_matches += retrieve_phrase_matches_by_query(es, query, config)
+    return phrase_matches
