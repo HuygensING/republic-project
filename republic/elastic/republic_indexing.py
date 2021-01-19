@@ -477,6 +477,7 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
               rpm.location_phrases + rpm.esteem_titles + rpm.person_role_phrases + rpm.military_phrases + \
               rpm.misc + rpm.provinces + rpm.proposition_opening_phrases
 
+    phrases = rpm.proposition_opening_phrases
     for phrase in phrases:
         if 'max_offset' in phrase:
             del phrase['max_offset']
