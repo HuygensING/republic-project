@@ -88,7 +88,7 @@ def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matche
             continue
         resolution = paragraph_resolution_map[phrase_match.text_id]
         if should_split(phrase_match, paragraph, max_offset):
-            # print('split resolution:', resolution.metadata['id'], len(resolution.columns))
+            # print('should split resolution:', resolution.metadata['id'], len(resolution.columns))
             if phrase_match.phrase.phrase_string in variable_start_formulas:
                 # skip for now
                 # TO DO: figure out how to deal with variable start formulas
@@ -99,7 +99,8 @@ def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matche
                 # raise ValueError('formula is not the start of the resolution')
             else:
                 split = {'phrase_match': phrase_match, 'paragraph': paragraph, 'resolution': resolution}
-                # print('adding split at offset', phrase_match.offset)
+                # print('adding split at offset', phrase_match.offset,
+                #       '\tparagraph index:', paragraph.metadata['paragraph_index'])
                 splits.append(split)
     overlap = True
     while overlap:
@@ -409,6 +410,9 @@ def do_paragraph_splitting(es: Elasticsearch, session_id: str, config: dict):
         res.metadata['id'] = update_running_id(res.metadata['id'], resolution_increment)
         paragraphs = res.paragraphs
         res.paragraphs = []
+        # hack to correct paragraph index that I forgot to update earlier
+        for pi, para in enumerate(paragraphs):
+            para.metadata['paragraph_index'] = pi
         # print([p.metadata['id'] for p in paragraphs])
         para_groups, split_matches = process_paragraphs(paragraphs, para_matches, para_res_map,
                                                         max_offset, variable_start_formulas,
