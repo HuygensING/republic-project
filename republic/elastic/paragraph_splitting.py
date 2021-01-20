@@ -103,7 +103,7 @@ def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matche
                 splits.append(split)
     overlap = True
     while overlap:
-        if len(splits) == 1:
+        if len(splits) <= 1:
             overlap = False
             break
         keep_splits = [splits[0]]
