@@ -101,6 +101,19 @@ def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matche
                 split = {'phrase_match': phrase_match, 'paragraph': paragraph, 'resolution': resolution}
                 # print('adding split at offset', phrase_match.offset)
                 splits.append(split)
+    overlap = True
+    while overlap:
+        if len(splits) == 1:
+            overlap = False
+            break
+        keep_splits = [splits[0]]
+        for ci, curr_split in enumerate(splits[1:]):
+            if keep_splits[0]['phrase_match'].end < curr_split['phrase_match'].offset:
+                keep_splits.append(curr_split)
+        if len(keep_splits) == len(splits):
+            overlap = False
+            break
+        splits = keep_splits
     return splits
 
 

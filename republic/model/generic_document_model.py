@@ -110,7 +110,7 @@ class StructureDoc:
             line = self.column_ids[column_id][0]
             textregion_lines = defaultdict(list)
             for line in self.column_ids[column_id]:
-                textregion_lines[line['metadata']['textregion_id']] += [line]
+                textregion_lines[line['metadata']['id']] += [line]
             column = {
                 'metadata': {
                     'id': column_id,
@@ -124,7 +124,7 @@ class StructureDoc:
                 column['metadata']['page_column_id'] = line['metadata']['page_column_id']
             for textregion_id in textregion_lines:
                 textregion = {
-                    'metadata': {'textregion_id': textregion_id},
+                    'metadata': {'id': textregion_id},
                     'coords': parse_derived_coords(textregion_lines[textregion_id]),
                     'lines': textregion_lines[textregion_id]
                 }

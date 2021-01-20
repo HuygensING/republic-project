@@ -62,7 +62,7 @@ def find_pages_with_little_text(es: Elasticsearch, word_num_threshold: int, inve
         {"match": {"inventory_num": inventory_num}}
     ]
     query = rep_es.make_bool_query(match_fields)
-    return rep_es.retrieve_pages_with_query(es, query, config)
+    return rep_es.retrieve_pages_by_query(es, query, config)
 
 
 def find_page_type_order(es: Elasticsearch, inventory_num: int,
@@ -92,7 +92,7 @@ def find_page_type_order(es: Elasticsearch, inventory_num: int,
 
 def get_inventory_num_pages(es: Elasticsearch, inventory_num: int, config: dict) -> int:
     query = {"query": {"match": {"inventory_num": inventory_num}}, "size": 10000}
-    pages = rep_es.retrieve_pages_with_query(es, query, config)
+    pages = rep_es.retrieve_pages_by_query(es, query, config)
     return len(pages)
 
 

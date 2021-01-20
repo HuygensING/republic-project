@@ -190,7 +190,15 @@ def set_line_alignment(column: dict):
 
 
 def split_column_regions(page_doc: dict) -> dict:
-    header = {'textregions': []}
+    header = {
+        'textregions': [],
+        'metadata': {
+            'id': page_doc['metadata']['id'] + '-header',
+            'doc_id': page_doc['metadata']['id'],
+            'scan_id': page_doc['metadata']['scan_id'],
+            'type': 'header'
+        }
+    }
     columns = []
     textregions = []
     for textregion in page_doc['textregions']:
@@ -236,7 +244,6 @@ def split_column_regions(page_doc: dict) -> dict:
         column['metadata']['num_lines'] = col_stats['num_lines']
         column['metadata']['num_words'] = col_stats['num_words']
         column['metadata']['iiif_url'] = derive_pagexml_page_iiif_url(page_doc['metadata']['jpg_url'], column['coords'])
-    header['metadata'] = {'type': 'header'}
     header['coords'] = parse_derived_coords(header['textregions'])
     col_stats = get_pagexml_doc_num_words(header)
     header['metadata']['num_lines'] = col_stats['num_lines']

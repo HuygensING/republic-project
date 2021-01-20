@@ -24,7 +24,8 @@ class ResolutionDoc(StructureDoc):
         self.type = "resolution_doc"
         self.check_bleed_through: bool = False
 
-    def stream_ordered_lines(self, word_freq_counter: Counter = None, check_bleed_through: bool = None):
+    def stream_ordered_lines(self, word_freq_counter: Counter = None,
+                             check_bleed_through: bool = None) -> Generator[Dict[str, any], None, None]:
         if check_bleed_through is None:
             check_bleed_through = self.check_bleed_through
         if check_bleed_through:
@@ -34,13 +35,18 @@ class ResolutionDoc(StructureDoc):
         for column_index, column in columns:
             sorted_text_regions = sort_resolution_text_regions(column['textregions'])
             for ti, text_region in enumerate(sorted_text_regions):
-                for line in order_lines(text_region["lines"]):
+                if 'metadata' not in  text_region:
+                    text_region['metadata'] = {}
+                if 'id' not in text_region['metadata']:
+                    text_region['metadata']['id'] = column['metadata']['id'] + f'-tr-{ti}'
+                for li, line in enumerate(order_lines(text_region["lines"])):
                     line["metadata"]["inventory_num"] = self.metadata["inventory_num"]
                     line["metadata"]["doc_id"] = self.metadata["id"]
                     line["metadata"]["column_index"] = column_index
                     line["metadata"]["column_id"] = column['metadata']['id']
                     line["metadata"]["textregion_index"] = ti
-                    line["metadata"]["textregion_id"] = text_region['metadata']['textregion_id']
+                    if 'id' not in line['metadata']:
+                        line["metadata"]["id"] = text_region['metadata']['id'] + f'-line-{li}'
                     if 'is_bleed_through' not in line['metadata']:
                         line['metadata']['is_bleed_through'] = False
                     if 'page_column_id' in column['metadata']:
@@ -50,15 +56,53 @@ class ResolutionDoc(StructureDoc):
 
 class ResolutionPageDoc(ResolutionDoc):
 
-    def __init__(self, metadata: Union[None, Dict] = None,
-                 coords: Union[None, Dict] = None,
-                 scan_version: Union[None, dict] = None,
-                 lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 columns: Union[None, List[Dict[str, Union[dict, list]]]] = None):
+    def __init__(self, metadata: Dict[str, any] = None, coords: Dict = None, scan_version: dict = None,
+                 lines: List[Dict[str, Union[str, int, Dict[str, int]]]] = None,
+                 columns: List[Dict[str, Union[dict, list]]] = None,
+                 header: Dict[str, any] = None):
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
         self.check_bleed_through: bool = True
         self.type = ["page", "resolution_page"]
         self.scan_version = scan_version
+        self.header = header
+
+    def json(self, include_header: bool = True) -> Dict[str, any]:
+        """Return a JSON/dictionary representation."""
+        page_json = {
+            'metadata': self.metadata,
+            'coords': self.coords,
+            'columns': self.columns
+        }
+        if include_header:
+            page_json['header'] = self.header
+        return page_json
+
+    def stream_ordered_lines(self, word_freq_counter: Counter = None,
+                             check_bleed_through: bool = None,
+                             include_header: bool = False) -> Generator[Dict[str, any], None, None]:
+        if include_header:
+            for ti, tr in enumerate(self.header['textregions']):
+                if 'metadata' not in tr:
+                    tr['metadata'] = {}
+                if 'id' not in tr['metadata']:
+                    tr['metadata']['id'] = self.metadata['id'] + f'-header-tr-{ti}'
+                for line in tr['lines']:
+                    if 'metadata' not in line:
+                        line['metadata'] = {}
+                    if 'id' not in line['metadata']:
+                        line['metadata']['id'] = tr['metadata']['id'] + f'-line-{ti}'
+                    line['metadata']['column_id'] = self.metadata['id'] + f'-header'
+                    line['metadata']['doc_id'] = self.metadata['id']
+                    line['metadata']['scan_id'] = self.metadata['scan_id']
+                    yield line
+        for line in super().stream_ordered_lines(word_freq_counter=word_freq_counter,
+                                                 check_bleed_through=check_bleed_through):
+            yield line
+
+
+def page_json_to_resolution_page(page_json: Dict[str, any]) -> ResolutionPageDoc:
+    return ResolutionPageDoc(metadata=page_json['metadata'], coords=page_json['coords'],
+                             columns=page_json['columns'], header=page_json['header'])
 
 
 class ResolutionParagraph(ResolutionDoc):

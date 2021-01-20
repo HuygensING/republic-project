@@ -10,6 +10,7 @@ from republic.helper.metadata_helper import get_scan_id
 from republic.model.republic_meeting import Meeting, meeting_from_json
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_document_model import resolution_from_json, Resolution, parse_phrase_matches
+from republic.model.republic_document_model import page_json_to_resolution_page, ResolutionPageDoc
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -72,8 +73,8 @@ def create_es_index_lemma_doc(lemma: str, lemma_index: dict, config: dict):
     }
 
 
-def parse_hits_as_pages(hits: dict) -> List[dict]:
-    return [parse_es_page_doc(hit['_source']) for hit in hits]
+def parse_hits_as_pages(hits: dict) -> List[ResolutionPageDoc]:
+    return [page_json_to_resolution_page(hit['_source']) for hit in hits]
 
 
 def make_bool_query(match_fields, size: int = 10000) -> dict:
@@ -143,23 +144,34 @@ def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config:
 
 def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
-    return retrieve_pages_with_query(es, query, config)
+    return retrieve_pages_by_query(es, query, config)
 
 
-def retrieve_page_doc(es: Elasticsearch, page_id: str, config) -> Union[dict, None]:
+def retrieve_scan_by_id(es: Elasticsearch, scan_id: str, config) -> Union[dict, None]:
+    if not es.exists(index=config['scan_index'], doc_type=config['scan_doc_type'], id=scan_id):
+        return None
+    response = es.get(index=config['scan_index'], doc_type=config['scan_doc_type'], id=scan_id)
+    if '_source' in response:
+        scan_doc = parse_es_scan_doc(response['_source'])
+        return scan_doc
+    else:
+        return None
+
+
+def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[ResolutionPageDoc, None]:
     if not es.exists(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id):
         return None
     response = es.get(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id)
     if '_source' in response:
-        page_doc = parse_es_page_doc(response['_source'])
+        page_doc = page_json_to_resolution_page(response['_source'])
         return page_doc
     else:
         return None
 
 
-def retrieve_pages_with_query(es: Elasticsearch,
-                              query: dict, config: dict,
-                              use_scroll: bool = False) -> List[Dict[str, Union[str, int, List, Dict]]]:
+def retrieve_pages_by_query(es: Elasticsearch,
+                            query: dict, config: dict,
+                            use_scroll: bool = False) -> List[ResolutionPageDoc]:
     hits = []
     if use_scroll:
         for hit in scroll_hits(es, query, config['page_index'], config['page_doc_type'], size=10):
@@ -174,7 +186,8 @@ def retrieve_pages_with_query(es: Elasticsearch,
     return parse_hits_as_pages(hits)
 
 
-def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict) -> Union[dict, None]:
+def retrieve_page_by_page_number(es: Elasticsearch, page_num: int,
+                                 config: dict) -> Union[ResolutionPageDoc, None]:
     match_fields = [{'match': {'metadata.page_num': page_num}}]
     if 'inventory_num' in config:
         match_fields += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
@@ -182,7 +195,7 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict)
         match_fields += [{'match': {'metadata.year': config['year']}}]
     query = make_bool_query(match_fields)
     print(query)
-    pages = retrieve_pages_with_query(es, query, config)
+    pages = retrieve_pages_by_query(es, query, config)
     if len(pages) == 0:
         return None
     else:
@@ -191,7 +204,7 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int, config: dict)
 
 def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
                                         page_num_end: int, config: dict,
-                                        use_scroll: bool = False) -> Union[List[dict], None]:
+                                        use_scroll: bool = False) -> Union[List[ResolutionPageDoc], None]:
     """Retrieve a range of Republic PageXML pages based on page number"""
     match_fields = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
     if 'inventory_num' in config:
@@ -199,22 +212,23 @@ def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
     elif 'year' in config:
         match_fields += [{'match': {'year': config['year']}}]
     query = make_bool_query(match_fields)
-    pages = retrieve_pages_with_query(es, query, config, use_scroll=use_scroll)
+    pages = retrieve_pages_by_query(es, query, config, use_scroll=use_scroll)
     if len(pages) == 0:
         return None
     else:
         return sorted(pages, key=lambda x: x['metadata']['page_num'])
 
 
-def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int, config: dict) -> List[dict]:
+def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int,
+                           config: dict) -> List[ResolutionPageDoc]:
     query = make_page_type_query(page_type, inventory_num=inventory_num)
-    return retrieve_pages_with_query(es, query, config)
+    return retrieve_pages_by_query(es, query, config)
 
 
 def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
                                         num_columns_max: int, inventory_config: dict) -> list:
     query = make_column_query(num_columns_min, num_columns_max, inventory_config['inventory_num'])
-    return retrieve_pages_with_query(es, query, inventory_config)
+    return retrieve_pages_by_query(es, query, inventory_config)
 
 
 def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:

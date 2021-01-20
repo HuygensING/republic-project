@@ -166,7 +166,7 @@ def correct_page_types_old(es: Elasticsearch, config: dict):
     prev_is_title_page = None
     current_part = None
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_doc(es, page_id, config)
+        page_doc = rep_es.retrieve_page_by_id(es, page_id, config)
         if not page_doc:
             continue  # skip unindexed pages
         if page_doc["is_title_page"] and not prev_is_title_page:
@@ -268,9 +268,9 @@ def get_page_pairs(es: Elasticsearch, ordered_page_ids: list, es_config: dict) -
     for curr_page_index, curr_page_id in enumerate(ordered_page_ids):
         if curr_page_index == 0:  # skip
             continue
-        curr_page_doc = rep_es.retrieve_page_doc(es, curr_page_id, es_config)
+        curr_page_doc = rep_es.retrieve_page_by_id(es, curr_page_id, es_config)
         prev_page_id = ordered_page_ids[curr_page_index - 2]
-        prev_page_doc = rep_es.retrieve_page_doc(es, prev_page_id, es_config)
+        prev_page_doc = rep_es.retrieve_page_by_id(es, prev_page_id, es_config)
         yield curr_page_doc, prev_page_doc
 
 
@@ -315,7 +315,7 @@ def correct_page_numbers(es: Elasticsearch, config: dict):
     ordered_page_ids = get_ordered_page_ids(es, config)
     prev_numbered_page_number = 0
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_doc(es, page_id, config)
+        page_doc = rep_es.retrieve_page_by_id(es, page_id, config)
         year = page_doc["inventory_year"]
         if not page_doc:  # skip unindexed pages
             continue
@@ -328,7 +328,7 @@ def correct_page_numbers(es: Elasticsearch, config: dict):
             print("No is_duplicate field for page", page_doc["page_id"], ", inventory", page_doc["inventory_num"])
             print(page_doc["page_type"])
         if page_doc["is_duplicate"]:
-            duplicated_page_doc = rep_es.retrieve_page_doc(es, page_doc["is_duplicate_of"], config)
+            duplicated_page_doc = rep_es.retrieve_page_by_id(es, page_doc["is_duplicate_of"], config)
             print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"],
                   duplicated_page_doc["type_page_num"])
             page_doc["type_page_num"] = duplicated_page_doc["type_page_num"]
