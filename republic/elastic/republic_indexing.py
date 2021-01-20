@@ -470,6 +470,8 @@ def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
             continue
         new_resolution = add_resolution_metadata(resolution, proposition_searcher,
                                                  template_searcher, variable_matcher)
+        if not new_resolution:
+            continue
         print('indexing metadata for resolution', resolution.metadata['id'])
         # print(new_resolution.metadata)
         index_resolution_metadata(es, new_resolution, inv_config)

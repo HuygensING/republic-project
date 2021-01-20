@@ -123,7 +123,7 @@ def correct_single_page_type(es: Elasticsearch, page_num: int, section: dict, in
             else:
                 page_doc["page_type"] += ["index_page_late_print"]
         return True
-    if correct_page_type is not "index_page" and "index_page" in page_doc["page_type"]:
+    if correct_page_type != "index_page" and "index_page" in page_doc["page_type"]:
         page_doc["page_type"] = [page_type for page_type in page_doc["page_type"] if
                                  "index_page" not in page_doc["page_type"]]
     if correct_page_type not in page_doc["page_type"]:
