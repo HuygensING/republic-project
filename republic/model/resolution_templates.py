@@ -22,6 +22,10 @@ opening_templates = [
                     {"label": "proposer_name", "required": False, "variable": True},
                     {"label": "person_role", "required": False, "cardinality": "multi"},
                     {"label": "representation_relation", "required": False},
+                    {"label": "affairs_relation", "required": False},
+                    {"label": "resolution_relation", "required": False},
+                    {"label": "location_relation", "required": False},
+                    {"label": "location", "required": False, "variable": True},
                     {"label": "organisation", "required": False},
                 ]
             },
@@ -32,6 +36,8 @@ opening_templates = [
                 "elements": [
                     {"label": "correspondence_from", "required": False},
                     {"label": "residence_relation", "required": False},
+                    {"label": "person_location", "required": False},
+                    {"label": "location_relation", "required": False},
                     {"label": "location", "required": False, "variable": True},
                     {"label": "temporal_reference", "required": False},
                     {"label": "addressed_to", "required": False},
@@ -71,6 +77,9 @@ opening_templates = [
                     {"label": "proposer_name", "required": False, "variable": True},
                     {"label": "person_role", "required": False, "cardinality": "multi"},
                     {"label": "representation_relation", "required": False},
+                    {"label": "affairs_relation", "required": False},
+                    {"label": "resolution_relation", "required": False},
+                    {"label": "location_relation", "required": False},
                     {"label": "organisation", "required": False},
                 ]
             },

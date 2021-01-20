@@ -42,6 +42,7 @@ def set_inventory_indexes(ocr_type: str, config: dict) -> None:
     config['resolution_index'] = f'{ocr_type}_resolutions'
     config['meeting_doc_type'] = 'meeting'
     config['phrase_match_index'] = 'republic_phrase_matches'
+    config['resolution_metadata_index'] = 'republic_resolution_metadata'
 
 
 def set_inventory_period_elements(inventory_num: int, config: dict):

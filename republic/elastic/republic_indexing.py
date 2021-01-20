@@ -8,6 +8,7 @@ from fuzzy_search.fuzzy_match import PhraseMatch
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
+from republic.extraction.extract_resolution_metadata import generate_proposition_searchers, add_resolution_metadata
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
 import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
@@ -455,6 +456,25 @@ def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
                 index_resolution_phrase_match(es, match, inv_config)
 
 
+def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
+    proposition_searcher, template_searcher, variable_matcher = generate_proposition_searchers()
+    skip_formulas = {
+        'heeft aan haar Hoog Mog. voorgedragen',
+        'heeft ter Vergadering gecommuniceert ',
+        'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
+        'hebben ter Vergaderinge ingebraght',
+        'hebben ter Vergaderinge voorgedragen'
+    }
+    for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
+        if resolution.evidence[0].phrase.phrase_string in skip_formulas:
+            continue
+        new_resolution = add_resolution_metadata(resolution, proposition_searcher,
+                                                 template_searcher, variable_matcher)
+        print('indexing metadata for resolution', resolution.metadata['id'])
+        # print(new_resolution.metadata)
+        index_resolution_metadata(es, new_resolution, inv_config)
+
+
 def index_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, PhraseMatch], config: dict):
     # make sure match object is json dictionary
     match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
@@ -510,3 +530,11 @@ def index_split_resolutions(es: Elasticsearch, split_resolutions: Dict[str, any]
     for resolution in split_resolutions['resolutions']:
         resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
         index_resolution(es, resolution, config)
+
+
+def index_resolution_metadata(es: Elasticsearch, resolution: Resolution, config: dict):
+    metadata_doc = {
+        'metadata': resolution.metadata,
+        'evidence': [pm.json() for pm in resolution.evidence]
+    }
+    es.index(index=config['resolution_metadata_index'], id=resolution.metadata['id'], body=metadata_doc)

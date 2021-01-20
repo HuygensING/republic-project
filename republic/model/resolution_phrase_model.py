@@ -216,6 +216,10 @@ proposition_verbs = [
         'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
     },
     {
+        'phrase': "hebbende",
+        'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
+    },
+    {
         'phrase': "reclameerende",
         'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
     },
@@ -377,6 +381,10 @@ organisation_phrases = [
         'label': ['organisation', 'german', 'political']
     },
     {
+        'phrase': 'de Booden en Posten van',
+        'label': ['organisation_relation', 'person_role'],
+    },
+    {
         'phrase': 'de Generaliteit',
         'label': ['organisation', 'generality'],
     },
@@ -414,6 +422,10 @@ location_phrases = [
     {
         'phrase': 'Weftvriesland en den Noorder Quartiere',
         'label': 'location'
+    },
+    {
+        'phrase': 'het Binnenhof ',
+        'label': ['location']
     },
     {
         'phrase': 'Heerlijkheid ',
@@ -535,6 +547,10 @@ person_role_phrases = [
         'label': ['person_role', 'laborer', 'servant', 'representation_relation']
     },
     {
+        'phrase': 'de gesaamenlijke Leydeckers Knegts van',
+        'label': ['person_role', 'laborer', 'representation_relation']
+    },
+    {
         'phrase': 'Comptoir Generaal van',
         'label': ['person_role', 'comptoir', 'representation_relation']
     },
@@ -585,6 +601,10 @@ person_role_phrases = [
     {
         'phrase': 'Commissaris van',
         'label': ['person_role', 'commissary', 'representative', 'political', 'representative_relation'],
+    },
+    {
+        'phrase': 'Contrarolleur van',
+        'label': ['person_role', 'controller'],
     },
     {
         'phrase': 'Consul van',
@@ -757,14 +777,28 @@ proposition_from_phrases = [
         'phrase': 'den 1 deeser loopende maand',
         'label': ['current_month', 'temporal_reference'],
         'variants': [
-            'den 1 en 2 deeser loopende maand'
+            'den 1 en 2 deeser loopende maand',
+            'den tienden deeser loopende maand',
+            'den elfden deeser loopende maand',
+            'den twaalfden deeser loopende maand',
+            'den dertienden deeser loopende maand',
+            'den zestienden deeser loopende maand',
+            'den negentienden deeser loopende maand',
+            'den seeven en twintighsten deeser loopende maand',
         ]
     },
     {
         'phrase': 'den .. der voorleeden maand',
         'label': ['previous_month', 'temporal_reference'],
         'variants': [
-            'den 1 en 2 der voorleeden maand'
+            'den 1 en 2 der voorleeden maand',
+            'den tienden der voorleeden maand',
+            'den elfden der voorleeden maand',
+            'den twaalfden der voorleeden maand',
+            'den dertienden der voorleeden maand',
+            'den zestienden der voorleeden maand',
+            'den negentienden der voorleeden maand',
+            'den seeven en twintighsten der voorleeden maand',
         ]
     },
     {
@@ -824,15 +858,15 @@ misc = [
     },
     {
         'phrase': 'tot de saaken van',
-        'label': ['topic_prefix']
+        'label': ['topic_prefix', 'affairs_relation']
     },
     {
         'phrase': 'tot de saaken van de Finantie',
-        'label': ['topic', 'topic:finance']
+        'label': ['topic', 'topic:finance', 'affairs_relation']
     },
     {
         'phrase': 'tot de buitenlandse saaken',
-        'label': ['topic', 'topic:foreign_affairs', 'domain:politics', 'department']
+        'label': ['topic', 'topic:foreign_affairs', 'domain:politics', 'department', 'affairs_relation']
     },
 ]
 
