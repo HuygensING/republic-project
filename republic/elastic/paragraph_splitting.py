@@ -104,15 +104,17 @@ def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matche
     overlap = True
     while overlap:
         if len(splits) <= 1:
-            overlap = False
             break
         keep_splits = [splits[0]]
+        # print('keep_splits:', keep_splits[0]['phrase_match'])
         for ci, curr_split in enumerate(splits[1:]):
-            if keep_splits[0]['phrase_match'].end < curr_split['phrase_match'].offset:
+            if keep_splits[-1]['phrase_match'].end < curr_split['phrase_match'].offset:
+                # print('adding split:', curr_split['phrase_match'])
                 keep_splits.append(curr_split)
         if len(keep_splits) == len(splits):
+            # print('overlap removed')
+            # print([split['phrase_match'] for split in keep_splits])
             overlap = False
-            break
         splits = keep_splits
     return splits
 
@@ -400,10 +402,10 @@ def do_paragraph_splitting(es: Elasticsearch, session_id: str, config: dict):
     for ri, resolution in enumerate(sorted_resolutions):
         res = copy.deepcopy(resolution)
         # shift this resolution's ID by the increment caused by preceding splits
-        # print('checking paragraphs for resolution', res.metadata['id'], '\tparagraphs:', len(res.paragraphs),
-        #       '\tphrase matches:', len(resolution_matches[res.metadata['id']]))
-        # for pm in resolution_matches[resolution.metadata['id']]:
-        #     print('\t', pm.text_id, pm.offset, pm.string, pm.levenshtein_similarity)
+        print('checking paragraphs for resolution', res.metadata['id'], '\tparagraphs:', len(res.paragraphs),
+              '\tphrase matches:', len(resolution_matches[res.metadata['id']]))
+        for pm in resolution_matches[resolution.metadata['id']]:
+            print('\t', pm.text_id, pm.offset, pm.string, pm.levenshtein_similarity)
         res.metadata['id'] = update_running_id(res.metadata['id'], resolution_increment)
         paragraphs = res.paragraphs
         res.paragraphs = []
