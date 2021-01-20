@@ -473,6 +473,7 @@ def validate_split(es: Elasticsearch, resolution_updates: Dict[str, any], config
     for match in resolution_updates['remove_matches']:
         match_id = make_hash_id(match)
         if not es.exists(index=config['phrase_match_index'], id=match_id):
-            raise ValueError(f'unknown phrase match id {match_id}, phrase match cannot be removed')
+            message = f'unknown phrase match id {match_id} (text id: {match.text_id}, phrase match cannot be removed'
+            raise ValueError(message)
     return None
 
