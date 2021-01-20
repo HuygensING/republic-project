@@ -539,4 +539,5 @@ def index_resolution_metadata(es: Elasticsearch, resolution: Resolution, config:
         'metadata': resolution.metadata,
         'evidence': [pm.json() for pm in resolution.evidence]
     }
+    metadata_doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
     es.index(index=config['resolution_metadata_index'], id=resolution.metadata['id'], body=metadata_doc)
