@@ -402,10 +402,10 @@ def do_paragraph_splitting(es: Elasticsearch, session_id: str, config: dict):
     for ri, resolution in enumerate(sorted_resolutions):
         res = copy.deepcopy(resolution)
         # shift this resolution's ID by the increment caused by preceding splits
-        print('checking paragraphs for resolution', res.metadata['id'], '\tparagraphs:', len(res.paragraphs),
-              '\tphrase matches:', len(resolution_matches[res.metadata['id']]))
-        for pm in resolution_matches[resolution.metadata['id']]:
-            print('\t', pm.text_id, pm.offset, pm.string, pm.levenshtein_similarity)
+        # print('checking paragraphs for resolution', res.metadata['id'], '\tparagraphs:', len(res.paragraphs),
+        #       '\tphrase matches:', len(resolution_matches[res.metadata['id']]))
+        # for pm in resolution_matches[resolution.metadata['id']]:
+        #     print('\t', pm.text_id, pm.offset, pm.string, pm.levenshtein_similarity)
         res.metadata['id'] = update_running_id(res.metadata['id'], resolution_increment)
         paragraphs = res.paragraphs
         res.paragraphs = []
