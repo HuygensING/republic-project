@@ -54,12 +54,12 @@ def is_even_side(item: dict) -> bool:
 
 
 def is_odd_side(item: dict) -> bool:
-    return item['coords']['left'] > 2400
+    return item['coords']['left'] > 2200 and item['coords']['right'] > 2500
     # return item['coords']['right'] < 4800 and item['coords']['left'] > 2400
 
 
 def is_extra_side(item: dict) -> bool:
-    return item['coords']['right'] > 4800 and item['coords']['left'] > 4700
+    return item['coords']['right'] > 4900 and item['coords']['left'] > 4700
 
 
 def initialize_pagexml_page(scan_doc: dict, side: str) -> dict:
@@ -103,8 +103,10 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
             # if len(extra_lines) > 0:
             #    page_extra['textregions'] += [{'lines': extra_lines, 'coords': parse_derived_coords(extra_lines)}]
         if 'textregions' in textregion:
+            print('inner text regions:')
             even_textregions = [textregion for textregion in textregion['textregions'] if is_even_side(textregion)]
             odd_textregions = [textregion for textregion in textregion['textregions'] if is_odd_side(textregion)]
+            print('num regions left:', len(even_textregions), '\tright:', len(odd_textregions))
             # extra_textregions = [textregion for textregion in textregion['textregions'] if is_extra_side(textregion)]
             if len(even_textregions) > 0:
                 page_even['textregions'] += [{'textregions': even_textregions,

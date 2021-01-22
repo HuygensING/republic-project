@@ -158,6 +158,14 @@ def retrieve_scan_by_id(es: Elasticsearch, scan_id: str, config) -> Union[dict, 
         return None
 
 
+def retrieve_scans_by_query(es: Elasticsearch, query: dict, config) -> List[dict]:
+    response = es.search(index=config['scan_index'], body=query)
+    if response['hits']['total']['value'] == 0:
+        return []
+    else:
+        return [hit['_source'] for hit in response['hits']['hits']]
+
+
 def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[ResolutionPageDoc, None]:
     if not es.exists(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id):
         return None
