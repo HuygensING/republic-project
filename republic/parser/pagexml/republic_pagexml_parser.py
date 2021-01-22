@@ -103,10 +103,8 @@ def split_scan_pages(scan_doc: dict) -> List[dict]:
             # if len(extra_lines) > 0:
             #    page_extra['textregions'] += [{'lines': extra_lines, 'coords': parse_derived_coords(extra_lines)}]
         if 'textregions' in textregion:
-            print('inner text regions:')
             even_textregions = [textregion for textregion in textregion['textregions'] if is_even_side(textregion)]
             odd_textregions = [textregion for textregion in textregion['textregions'] if is_odd_side(textregion)]
-            print('num regions left:', len(even_textregions), '\tright:', len(odd_textregions))
             # extra_textregions = [textregion for textregion in textregion['textregions'] if is_extra_side(textregion)]
             if len(even_textregions) > 0:
                 page_even['textregions'] += [{'textregions': even_textregions,
