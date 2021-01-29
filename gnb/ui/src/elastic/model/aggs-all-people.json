@@ -1,0 +1,26 @@
+{
+  "nest_people": {
+    "nested": {
+      "path": "people"
+    },
+    "aggs": {
+      "filter_people": {
+        "filter": {
+          "bool": {
+            "must": [
+              {"match": {"people.type": "attendant"}}
+            ]
+          }
+        },
+        "aggs": {
+          "count_people": {
+            "terms": {
+              "field": "people.id",
+              "size": 10
+            }
+          }
+        }
+      }
+    }
+  }
+}

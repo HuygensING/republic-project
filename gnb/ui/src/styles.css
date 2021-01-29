@@ -1,0 +1,53 @@
+/* Default */
+body {
+  margin: 0;
+  font-family: -guile-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+/* Gui */
+.gui {
+  text-align: center;
+}
+
+/* Align multiple inline calendars: https://github.com/Hacker0x01/react-datepicker/issues/1955 */
+.react-datepicker__tab-loop {
+  display: inline-block
+}
+
+.disabled-input {
+  background: #fff !important;
+  color: darkgrey !important;
+}
+
+/* Put date-picker and modal on top of autocomplete */
+.react-datepicker-popper, .ReactModal__Overlay--after-open {
+  z-index: 2 !important;
+}
+
+.search-help-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.modal {
+  overflow-y:auto;
+}
+
+/* BarChart */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable-bar:hover{
+  fill: #5996c8;
+}

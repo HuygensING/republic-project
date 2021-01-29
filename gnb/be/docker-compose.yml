@@ -1,0 +1,12 @@
+# Development elasticsearch setup
+version: '3.1'
+
+services:
+  es:
+    image: gnb-elastic:20210111
+    environment:
+      - "http.cors.allow-origin=/https?:\/\/localhost(:[0-9]+)?/"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+    ports:
+      - "9200:9200"
