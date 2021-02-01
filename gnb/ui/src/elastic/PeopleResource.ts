@@ -56,10 +56,10 @@ export default class PeopleResource {
       return [];
     }
     const params = {index: this.index, body: {ids}};
-    let response : MGetResponse<Person> | any = null;
-      response = await this.esClient
+    let response : MGetResponse<Person> = await this.esClient
         .mget<Person>(params)
         .catch(e => handleEsError(e, ERR_ES_GET_MULTI_PEOPLE));
+
       if (response.docs) {
         return response.docs.map((d: any) => d._source) as Person[];
       } else {
