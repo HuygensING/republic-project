@@ -24,7 +24,11 @@ export default function Texts(props: TextsProps) {
   }
 
   async function createResolutions() {
-    const newResolutions = await props.client.resolutionResource.getMulti(props.resolutions);
+    let newResolutions = await props.client.resolutionResource.getMulti(props.resolutions);
+    newResolutions = newResolutions.sort((a: any, b: any) => {
+      const getResolutionIndex = (id: any) => parseInt(id.split('-').pop());
+      return getResolutionIndex(a.id) - getResolutionIndex(b.id);
+    });
     setResolutions(newResolutions);
   }
 
