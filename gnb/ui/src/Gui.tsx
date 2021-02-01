@@ -1,9 +1,8 @@
-import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {Search} from "./search/Search";
 import {defaultSearchContext, SearchContext} from './search/SearchContext';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionsViewer from "./resolution/ResolutionsViewer";
-import {D3Canvas} from "./resolution/D3Canvas";
 
 type GuiProps = {
   client: GnbElasticClient

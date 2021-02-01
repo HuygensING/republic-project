@@ -1,4 +1,4 @@
-import {Client, MGetResponse} from "elasticsearch";
+import {Client} from "elasticsearch";
 import AggsQuery from "./model/AggsQuery";
 import aggsWithFilters from './model/aggs-with-filters.json';
 import AggsFilterRange from "./model/AggsFilterRange";
@@ -7,6 +7,9 @@ import {PersonType} from "./model/PersonType";
 import AggsFilterFullText from "./model/AggsFilterFullText";
 import AggsFilterPeople from "./model/AggsFilterPeople";
 import Resolution from "./model/Resolution";
+
+import {ERR_ES_AGGREGATE_RESOLUTIONS, ERR_ES_GET_MULTI_RESOLUTIONS} from "../Placeholder";
+import {handleEsError} from "./EsErrorHandler";
 
 /**
  * ElasticSearch Resolution Resource
@@ -40,21 +43,28 @@ export default class ResolutionResource {
 
     filters.push(new AggsFilterRange(begin, end));
 
-    if(fullText) {
+    if (fullText) {
       filters.push(new AggsFilterFullText(fullText));
     }
 
-    for(const a of attendants) {
+    for (const a of attendants) {
       filters.push(new AggsFilterPeople(a, PersonType.ATTENDANT));
     }
 
-    for(const m of mentioned) {
+    for (const m of mentioned) {
       filters.push(new AggsFilterPeople(m, PersonType.MENTIONED));
     }
 
     aggs.aggs = new AggsResolutionHistogram(begin, end, 1);
-    const response = await this.esClient.search(new AggsQuery(query));
-    return response.aggregations.filtered_aggs.resolution_histogram.buckets;
+
+    const response = await this.esClient
+      .search(new AggsQuery(query))
+      .catch(e => handleEsError(e, ERR_ES_AGGREGATE_RESOLUTIONS));
+
+    return response.aggregations
+      .filtered_aggs
+      .resolution_histogram
+      .buckets;
   }
 
   /**
@@ -67,12 +77,15 @@ export default class ResolutionResource {
       return [];
     }
     const params = {index: this.index, body: {ids}};
-    const response: MGetResponse<Resolution> = await this.esClient.mget<Resolution>(params);
-    if (response.docs) {
-      return response.docs.map(d => d._source) as Resolution[];
-    } else {
-      return [];
-    }
+      const response = await this.esClient
+        .mget<Resolution>(params)
+        .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
+
+      if (response.docs) {
+        return response.docs.map(d => d._source) as Resolution[];
+      } else {
+        return [];
+      }
   }
 
 }

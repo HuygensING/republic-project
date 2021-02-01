@@ -1,11 +1,12 @@
 import {Client, MGetResponse} from "elasticsearch";
 import AggsQuery from "./model/AggsQuery";
-import aggsAllPeople from './model/aggs-all-people.json';
 import aggsPeopleWithName from './model/aggs-people-with-filters.json';
 import AggsFilterPersonName from "./model/AggsFilterPersonName";
 import {Person} from "./model/Person";
 import {PersonType} from "./model/PersonType";
 import AggsFilterPersonType from "./model/AggsFilterPersonType";
+import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../Placeholder";
+import {handleEsError} from "./EsErrorHandler";
 
 /**
  * ElasticSearch Resolution Resource
@@ -18,11 +19,6 @@ export default class PeopleResource {
   constructor(esClient: Client) {
     this.esClient = esClient;
     this.index = 'gnb-people';
-  }
-
-  public async aggregateAllAttendants(): Promise<any> {
-    const query = new AggsQuery(aggsAllPeople);
-    return await this.esClient.search(query);
   }
 
   /**
@@ -44,7 +40,9 @@ export default class PeopleResource {
       query.people.aggs.filter_people.filter.bool.must.push(new AggsFilterPersonName(np));
     });
 
-    const response = await this.esClient.search(new AggsQuery(query));
+    const response = await this.esClient
+      .search(new AggsQuery(query))
+      .catch(e => handleEsError(e, ERR_ES_AGGREGATE_PEOPLE));
     return response.aggregations.people.filter_people.sum_people_id.buckets;
   }
 
@@ -58,12 +56,16 @@ export default class PeopleResource {
       return [];
     }
     const params = {index: this.index, body: {ids}};
-    const response: MGetResponse<Person> = await this.esClient.mget<Person>(params);
-    if (response.docs) {
-      return response.docs.map(d => d._source) as Person[];
-    } else {
-      return [];
-    }
+    let response : MGetResponse<Person> | any = null;
+      response = await this.esClient
+        .mget<Person>(params)
+        .catch(e => handleEsError(e, ERR_ES_GET_MULTI_PEOPLE));
+      if (response.docs) {
+        return response.docs.map((d: any) => d._source) as Person[];
+      } else {
+        return [];
+      }
+
   }
 
 }

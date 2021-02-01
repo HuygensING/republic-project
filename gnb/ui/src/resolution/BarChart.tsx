@@ -7,6 +7,7 @@ import {useSearchContext} from "../search/SearchContext";
 import GnbElasticClient from "../elastic/GnbElasticClient";
 import moment from "moment";
 import 'moment/locale/nl'
+import {useAsyncError} from "../useAsyncHook";
 
 moment.locale('nl');
 
@@ -34,11 +35,14 @@ export default function BarChart(props: BarChartProps) {
     !equal(prevStart, state.start) ||
     !equal(prevFullText, state.fullText);
 
+  const throwError = useAsyncError();
+
   if (stateChanged) {
     createChart();
   }
 
   function createChart() {
+    console.log('createChart');
     return props.client.resolutionResource.aggregateBy(
       state.attendants.map(p => p.id),
       state.mentioned.map(p => p.id),
@@ -52,7 +56,7 @@ export default function BarChart(props: BarChartProps) {
         resolution_ids: b.resolution_ids.buckets.map((b: any) => b.key)
       }));
       renderChart(props.svgRef, data);
-    });
+    }).catch(throwError);
   }
 
   function renderChart(ref: MutableRefObject<any>, chartData: ResolutionDateEntry[]) {

@@ -4,16 +4,17 @@ import React, {useState} from "react";
 import {Person, toName} from "../../elastic/model/Person";
 import {PersonOption} from "../PersonOption";
 import {PersonType} from "../../elastic/model/PersonType";
+import {useAsyncError} from "../../useAsyncHook";
 
 type PeopleTypeaheadProps = {
   id: string;
   client: GnbElasticClient,
-  placeholder:string,
+  placeholder: string,
   personType: PersonType,
   handleSubmit: (selected: PersonOption[]) => Promise<void>
 }
 
-export default function PeopleTypeahead (props: PeopleTypeaheadProps) {
+export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
 
   const [fieldState, setFieldState] = useState({
     inputField: '',
@@ -22,6 +23,8 @@ export default function PeopleTypeahead (props: PeopleTypeaheadProps) {
   });
 
   const ref = React.createRef<Typeahead<any>>();
+
+  const throwError = useAsyncError();
 
   if (fieldState.loading) {
     handleLoading();
@@ -37,11 +40,18 @@ export default function PeopleTypeahead (props: PeopleTypeaheadProps) {
   }
 
   async function createOptions() {
-    const found = await props.client.peopleResource.aggregateBy(fieldState.inputField, props.personType);
+    const found = await props.client.peopleResource
+      .aggregateBy(fieldState.inputField, props.personType)
+      .catch(throwError);
+
     if (found.length === 0) {
       return [];
     }
-    const people = await props.client.peopleResource.getMulti(found.map((f: any) => f.key));
+
+    const people = await props.client.peopleResource
+      .getMulti(found.map((f: any) => f.key))
+      .catch(throwError);
+
     return found.map((f: any) => {
       const person = people.find(p => p.id === f.key) || {id: found.key} as Person;
       const name = person ? toName(person) : f.name
