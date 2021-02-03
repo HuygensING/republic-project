@@ -1,10 +1,11 @@
 import GnbElasticClient from "../elastic/GnbElasticClient";
 import React, {useState} from "react";
-import {equal, usePrevious} from "../Util";
 import Resolution from "../elastic/model/Resolution";
-import Modal from "../Modal";
+import Modal from "../common/Modal";
 import {RESOLUTIONS_TITLE} from "../Placeholder";
-import {useAsyncError} from "../useAsyncHook";
+import {useAsyncError} from "../hook/useAsyncError";
+import {usePrevious} from "../hook/usePrevious";
+import {equal} from "../util/equal";
 
 type TextsProps = {
   client: GnbElasticClient,

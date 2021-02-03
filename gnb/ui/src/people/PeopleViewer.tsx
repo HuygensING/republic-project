@@ -1,14 +1,14 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
-import ResolutionHistogram from "./ResolutionHistogram";
+import ResolutionHistogram from "../resolution/ResolutionHistogram";
 import GnbElasticClient from "../elastic/GnbElasticClient";
-import TextsModal from "./Texts";
+import TextsModal from "../resolution/Texts";
 import {D3Canvas} from "../common/D3Canvas";
 
-type ResolutionsViewerProps = {
+type PeopleViewerProps = {
   client: GnbElasticClient
 }
 
-export default function ResolutionsViewer(props: ResolutionsViewerProps) {
+export default function PeopleViewer(props: PeopleViewerProps) {
 
   const svgRef: MutableRefObject<any> = useRef(null);
   const [hasSvg, setHasSvg] = useState(svgRef.current);

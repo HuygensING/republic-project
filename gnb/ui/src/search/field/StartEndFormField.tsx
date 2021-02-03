@@ -1,6 +1,6 @@
 import React, {createElement, forwardRef, Ref} from "react";
 import moment from "moment";
-import useEvent from "../../useEvent";
+import useEvent from "../../hook/useEvent";
 import {useSearchContext} from "../SearchContext";
 import DatePicker from "react-datepicker";
 

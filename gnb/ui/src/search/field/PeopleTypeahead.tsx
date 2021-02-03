@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import {Person, toName} from "../../elastic/model/Person";
 import {PersonOption} from "../PersonOption";
 import {PersonType} from "../../elastic/model/PersonType";
-import {useAsyncError} from "../../useAsyncHook";
+import {useAsyncError} from "../../hook/useAsyncError";
 
 type PeopleTypeaheadProps = {
   id: string;
