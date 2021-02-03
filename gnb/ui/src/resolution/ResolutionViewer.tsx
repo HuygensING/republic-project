@@ -8,9 +8,10 @@ type ResolutionsViewerProps = {
   client: GnbElasticClient
 }
 
-export default function ResolutionsViewer(props: ResolutionsViewerProps) {
+export default function ResolutionViewer(props: ResolutionsViewerProps) {
 
   const svgRef: MutableRefObject<any> = useRef(null);
+
   const [hasSvg, setHasSvg] = useState(svgRef.current);
 
   useEffect(() => {

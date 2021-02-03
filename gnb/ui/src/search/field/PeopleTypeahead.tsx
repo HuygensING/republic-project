@@ -16,7 +16,7 @@ type PeopleTypeaheadProps = {
 
 export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
 
-  const [fieldState, setFieldState] = useState({
+  const [state, setState] = useState({
     inputField: '',
     loading: true,
     options: []
@@ -26,14 +26,14 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
 
   const throwError = useAsyncError();
 
-  if (fieldState.loading) {
+  if (state.loading) {
     handleLoading();
   }
 
   async function handleLoading() {
     const options = await createOptions();
-    setFieldState({
-      ...fieldState,
+    setState({
+      ...state,
       options,
       loading: false
     });
@@ -41,7 +41,7 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
 
   async function createOptions() {
     const found = await props.client.peopleResource
-      .aggregateBy(fieldState.inputField, props.personType)
+      .aggregateBy(state.inputField, props.personType)
       .catch(throwError);
 
     if (found.length === 0) {
@@ -61,8 +61,8 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
   }
 
   function handleInputChange() {
-    setFieldState({
-      ...fieldState,
+    setState({
+      ...state,
       loading: true,
       inputField: ref.current?.getInput().value ? ref.current?.getInput().value.toLowerCase() : ''
     });
@@ -72,7 +72,7 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
     ref={ref}
     multiple
     onChange={props.handleSubmit}
-    options={fieldState.loading ? [] : fieldState.options}
+    options={state.loading ? [] : state.options}
     labelKey={option => `${option.name} (${option.total})`}
     onInputChange={handleInputChange}
     placeholder={props.placeholder}

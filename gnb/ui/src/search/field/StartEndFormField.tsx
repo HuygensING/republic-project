@@ -9,18 +9,18 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function StartEndFormField() {
 
   const stepSize = 3;
-  const {state, setState} = useSearchContext();
-  const start = state.start;
-  const end = state.end;
+  const {searchState, setSearchState} = useSearchContext();
+  const start = searchState.start;
+  const end = searchState.end;
 
   const handlePrevious = () => {
     const previous = (date: Date) => moment(date).subtract(stepSize, 'days').toDate();
-    updateStartEnd(previous(state.start), previous(state.end));
+    updateStartEnd(previous(searchState.start), previous(searchState.end));
   };
 
   const handleNext = () => {
     const next = (date: Date) => moment(date).add(stepSize, 'days').toDate();
-    updateStartEnd(next(state.start), next(state.end));
+    updateStartEnd(next(searchState.start), next(searchState.end));
   };
 
   const handlePickedDate = (newStart: Date) => {
@@ -30,7 +30,7 @@ export default function StartEndFormField() {
   };
 
   function updateStartEnd(start: Date, end: Date) {
-    setState({...state, start, end});
+    setSearchState({...searchState, start, end});
   }
 
   useEvent('keyup', handleArrowKeys);

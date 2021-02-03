@@ -5,23 +5,23 @@ import {onEnter} from "../FormUtil";
 
 export default function FullTextFormField() {
 
-  const {state, setState} = useSearchContext();
+  const {searchState, setSearchState} = useSearchContext();
 
-  const [searchState, setSearchState] = useState({
-    fullText: state.fullText
+  const [state, setState] = useState({
+    fullText: searchState.fullText
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchState({...searchState, fullText: e.target.value});
+    setState({...state, fullText: e.target.value});
   };
 
   const handleSubmit = () => {
-    setState({...state, fullText: searchState.fullText});
+    setSearchState({...searchState, fullText: searchState.fullText});
   };
 
   return <input
       className="form-control"
-      value={searchState.fullText}
+      value={state.fullText}
       onChange={handleChange}
       type="text"
       placeholder={WITH_FULL_TEXT}
