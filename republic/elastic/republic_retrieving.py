@@ -224,7 +224,7 @@ def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
     if len(pages) == 0:
         return None
     else:
-        return sorted(pages, key=lambda x: x['metadata']['page_num'])
+        return sorted(pages, key=lambda x: x.metadata['page_num'])
 
 
 def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int,
@@ -245,12 +245,12 @@ def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) ->
 
 def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     pages = retrieve_pages_by_type(es, 'index_page', inventory_num, config)
-    return sorted(pages, key=lambda page: page['metadata']['page_num'])
+    return sorted(pages, key=lambda page: page.metadata['page_num'])
 
 
 def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     pages = retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
-    return sorted(pages, key=lambda page: page['metadata']['page_num'])
+    return sorted(pages, key=lambda page: page.metadata['page_num'])
 
 
 def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int,
