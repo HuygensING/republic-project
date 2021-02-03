@@ -41,7 +41,7 @@ def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
             page.metadata['page_type'] = "empty_page"
         else:
             page.metadata['page_type'] = page_type_index[page.metadata['page_num']]
-        es.index(index=inv_config["page_index"], id=page.metadata['id'], body=page)
+        es.index(index=inv_config["page_index"], id=page.metadata['id'], body=page.json())
         print(page.metadata['id'], page.metadata["page_type"])
 
 
