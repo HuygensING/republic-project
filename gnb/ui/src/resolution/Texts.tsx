@@ -39,7 +39,7 @@ export default function Texts(props: TextsProps) {
 
   return (
     <Modal
-      title={RESOLUTIONS_TITLE}
+      title={`${RESOLUTIONS_TITLE} (n=${resolutions.length})`}
       isOpen={props.isOpen}
       handleClose={props.handleClose}
     >

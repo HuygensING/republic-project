@@ -62,8 +62,9 @@ export default function BarChart(props: BarChartProps) {
   function renderChart(ref: MutableRefObject<any>, chartData: ResolutionDateEntry[]) {
     let svg = d3.select(ref.current);
 
-    const height = 500;
-    const width = 500;
+    const svgSize = props.svgRef.current.getBoundingClientRect();
+    const height = svgSize.height;
+    const width = svgSize.width;
     const margin = {top: 20, right: 30, bottom: 30, left: 40};
 
     const x: ScaleBand<string> = d3
@@ -86,7 +87,7 @@ export default function BarChart(props: BarChartProps) {
         .attr("transform", `translate(0,${height - margin.bottom})`)
         .call(d3.axisBottom(x)
           .tickSizeOuter(0)
-          .tickValues(x.domain().filter((d, i) => !(i % 10)))
+          .tickValues(x.domain().filter((d, i) => !(i % 5)))
         );
 
     const yAxisTicks = y1.ticks()

@@ -32,7 +32,7 @@ export default class PeopleResource {
   ): Promise<any> {
     const query = JSON.parse(JSON.stringify(aggsPeopleWithName));
 
-    if(type) {
+    if (type) {
       query.people.aggs.filter_people.filter.bool.must.push(new AggsFilterPersonType(type));
     }
 
@@ -56,15 +56,15 @@ export default class PeopleResource {
       return [];
     }
     const params = {index: this.index, body: {ids}};
-    let response : MGetResponse<Person> = await this.esClient
-        .mget<Person>(params)
-        .catch(e => handleEsError(e, ERR_ES_GET_MULTI_PEOPLE));
+    let response: MGetResponse<Person> = await this.esClient
+      .mget<Person>(params)
+      .catch(e => handleEsError(e, ERR_ES_GET_MULTI_PEOPLE));
 
-      if (response.docs) {
-        return response.docs.map((d: any) => d._source) as Person[];
-      } else {
-        return [];
-      }
+    if (response.docs) {
+      return response.docs.map((d: any) => d._source) as Person[];
+    } else {
+      return [];
+    }
 
   }
 

@@ -5,7 +5,7 @@ import React from "react";
  * See: https://medium.com/trabe/catching-asynchronous-errors-in-react-using-error-boundaries-5e8a5fd7b971
  */
 export const useAsyncError = () => {
-  const [_, setError] = React.useState();
+  const [, setError] = React.useState();
   return React.useCallback(
     e => {
       setError(() => {
