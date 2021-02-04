@@ -1,6 +1,6 @@
-import {AggsFilter} from "./AggsFilter";
+import {Filter} from "./Filter";
 
-export default class AggsFilterFullText implements AggsFilter {
+export default class FilterFullText implements Filter {
   public simple_query_string: any;
 
   constructor(simpleQuery: string) {

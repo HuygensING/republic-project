@@ -7,17 +7,9 @@ export default class AggWithIdFilter implements Agg {
 
   constructor(ids: string[]) {
     this._agg = {
-      "filter": {
-        "bool": {
-          "should": [
-            {
-              "terms": {
-                "_id": ids
-              }
-            }
-          ]
-        }
-      },
+      "filter": { "bool": { "should": [
+        {"terms": {"_id": ids}}
+      ]}},
       "aggs": {}
     }
   }

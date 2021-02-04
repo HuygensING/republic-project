@@ -1,5 +1,5 @@
 import {Agg} from "./Agg";
-import {AggsFilter} from "./AggsFilter";
+import {Filter} from "./Filter";
 
 export default class AggWithFilters implements Agg {
 
@@ -8,9 +8,7 @@ export default class AggWithFilters implements Agg {
 
   constructor() {
     this._agg = {
-      "filter": {
-        "bool": { "filter": []}
-      },
+      "filter": { "bool": { "filter": [] }},
       "aggs": {}
     }
   }
@@ -27,7 +25,7 @@ export default class AggWithFilters implements Agg {
     this._agg.aggs[agg.name()] = agg.agg();
   }
 
-  addFilter(filter: AggsFilter) {
+  addFilter(filter: Filter) {
     this._agg.filter.bool.filter.push(filter);
   }
 

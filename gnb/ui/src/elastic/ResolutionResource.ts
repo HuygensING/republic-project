@@ -1,10 +1,10 @@
 import {Client} from "elasticsearch";
 import AggsQuery from "./model/AggsQuery";
-import AggsFilterRange from "./model/AggsFilterRange";
+import FilterRange from "./model/FilterRange";
 import AggsResolutionHistogram from "./model/AggsResolutionHistogram";
 import {PersonType} from "./model/PersonType";
-import AggsFilterFullText from "./model/AggsFilterFullText";
-import AggsFilterPeople from "./model/AggsFilterPeople";
+import FilterFullText from "./model/FilterFullText";
+import FilterPeople from "./model/FilterPeople";
 import Resolution from "./model/Resolution";
 
 import {
@@ -13,7 +13,6 @@ import {
   ERR_ES_GET_MULTI_RESOLUTIONS
 } from "../Placeholder";
 import {handleEsError} from "./EsErrorHandler";
-import {id2date} from "../util/id2date";
 import AggWithIdFilter from "./model/AggWithIdFilter";
 import AggWithFilters from "./model/AggWithFilters";
 
@@ -45,18 +44,18 @@ export default class ResolutionResource {
   ): Promise<any> {
     const query = new AggWithFilters();
 
-    query.addFilter(new AggsFilterRange(begin, end));
+    query.addFilter(new FilterRange(begin, end));
 
     if (fullText) {
-      query.addFilter(new AggsFilterFullText(fullText));
+      query.addFilter(new FilterFullText(fullText));
     }
 
     for (const a of attendants) {
-      query.addFilter(new AggsFilterPeople(a, PersonType.ATTENDANT));
+      query.addFilter(new FilterPeople(a, PersonType.ATTENDANT));
     }
 
     for (const m of mentioned) {
-      query.addFilter(new AggsFilterPeople(m, PersonType.MENTIONED));
+      query.addFilter(new FilterPeople(m, PersonType.MENTIONED));
     }
 
     const hist = new AggsResolutionHistogram(begin, end, 1);
@@ -114,7 +113,7 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new AggsFilterPeople(id, type));
+    filteredQuery.addFilter(new FilterPeople(id, type));
 
     const sortedResolutions = resolutions.sort();
     filteredQuery.addAgg(new AggsResolutionHistogram(begin, end, 1));

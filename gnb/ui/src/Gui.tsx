@@ -3,8 +3,10 @@ import {Search} from "./search/Search";
 import {defaultSearchContext, SearchContext} from './search/SearchContext';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
-import PeopleViewer from "./people/PeopleViewer";
+import PersonViewer from "./person/PersonViewer";
 import {defaultResolutionContext, ResolutionContext} from './resolution/ResolutionContext';
+import {PersonContext} from './person/PersonContext';
+import {defaultPersonContext} from "./person/PersonContext";
 
 type GuiProps = {
   client: GnbElasticClient
@@ -16,17 +18,10 @@ type GuiProps = {
 export default function Gui(props: GuiProps) {
 
   const [searchState, setSearchState] = React.useState(defaultSearchContext.searchState);
-  const searchContext = {
-    searchState, setSearchState
-  };
-
   const [resolutionState, setResolutionState] = React.useState(defaultResolutionContext.resolutionState);
-  const resolutionContext = {
-    resolutionState, setResolutionState
-  };
-
+  const [personState, setPersonState] = React.useState(defaultPersonContext.personState);
   return (
-    <SearchContext.Provider value={searchContext}>
+    <SearchContext.Provider value={{searchState, setSearchState}}>
       <div className="container-fluid">
         <div className="row mt-3 mb-3">
           <div className="col">
@@ -36,9 +31,11 @@ export default function Gui(props: GuiProps) {
 
         <Search client={props.client}/>
 
-        <ResolutionContext.Provider value={resolutionContext}>
+        <ResolutionContext.Provider value={{resolutionState, setResolutionState}}>
           <ResolutionViewer client={props.client} />
-          <PeopleViewer client={props.client} />
+          <PersonContext.Provider value={{personState, setPersonState}}>
+            <PersonViewer client={props.client} />
+          </PersonContext.Provider>
         </ResolutionContext.Provider>
 
       </div>

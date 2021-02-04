@@ -3,13 +3,13 @@ import ResolutionHistogram from "../resolution/ResolutionHistogram";
 import GnbElasticClient from "../elastic/GnbElasticClient";
 import TextsModal from "../common/Texts";
 import {D3Canvas} from "../common/D3Canvas";
-import AttendantHistogram from "./AttendantHistogram";
+import PersonHistogram from "./PersonHistogram";
 
-type PeopleViewerProps = {
+type PersonViewerProps = {
   client: GnbElasticClient
 }
 
-export default function PeopleViewer(props: PeopleViewerProps) {
+export default function PersonViewer(props: PersonViewerProps) {
 
   const svgRef: MutableRefObject<any> = useRef(null);
   const [hasSvg, setHasSvg] = useState(svgRef.current);
@@ -24,7 +24,7 @@ export default function PeopleViewer(props: PeopleViewerProps) {
   });
 
   function renderBarchart() {
-    return <AttendantHistogram
+    return <PersonHistogram
       handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
       client={props.client}
       svgRef={svgRef}

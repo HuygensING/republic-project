@@ -1,6 +1,6 @@
-import {AggsFilter} from "./AggsFilter";
+import {Filter} from "./Filter";
 
-export default class AggsFilterPersonName implements AggsFilter {
+export default class FilterPersonName implements Filter {
   public prefix: any;
 
   constructor(prefix: string) {

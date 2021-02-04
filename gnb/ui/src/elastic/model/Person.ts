@@ -5,7 +5,7 @@ export interface Person {
   firstNames: string;
   interpositions: string;
   familyName: string;
-  nameType: string;
+  nameType?: string;
   functions: any[];
 }
 

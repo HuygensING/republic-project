@@ -1,10 +1,10 @@
 import {Client, MGetResponse} from "elasticsearch";
 import AggsQuery from "./model/AggsQuery";
 import aggsPeopleWithName from './model/aggs-people-with-filters.json';
-import AggsFilterPersonName from "./model/AggsFilterPersonName";
+import FilterPersonName from "./model/FilterPersonName";
 import {Person} from "./model/Person";
 import {PersonType} from "./model/PersonType";
-import AggsFilterPersonType from "./model/AggsFilterPersonType";
+import FilterPersonType from "./model/FilterPersonType";
 import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../Placeholder";
 import {handleEsError} from "./EsErrorHandler";
 
@@ -33,11 +33,11 @@ export default class PeopleResource {
     const query = JSON.parse(JSON.stringify(aggsPeopleWithName));
 
     if (type) {
-      query.people.aggs.filter_people.filter.bool.must.push(new AggsFilterPersonType(type));
+      query.people.aggs.filter_people.filter.bool.must.push(new FilterPersonType(type));
     }
 
     namePrefix.split(' ').forEach(np => {
-      query.people.aggs.filter_people.filter.bool.must.push(new AggsFilterPersonName(np));
+      query.people.aggs.filter_people.filter.bool.must.push(new FilterPersonName(np));
     });
 
     const response = await this.esClient
