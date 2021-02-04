@@ -82,15 +82,15 @@ export default class ResolutionResource {
       return [];
     }
     const params = {index: this.index, body: {ids}};
-      const response = await this.esClient
-        .mget<Resolution>(params)
-        .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
+    const response = await this.esClient
+      .mget<Resolution>(params)
+      .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
 
-      if (response.docs) {
-        return response.docs.map(d => d._source) as Resolution[];
-      } else {
-        return [];
-      }
+    if (response.docs) {
+      return response.docs.map(d => d._source) as Resolution[];
+    } else {
+      return [];
+    }
   }
 
   /**
@@ -98,14 +98,18 @@ export default class ResolutionResource {
    * @param resolutions
    * @param id
    * @param type
+   * @param begin
+   * @param end
    */
   public async aggregateByPerson(
     resolutions: string[],
     id: number,
-    type: PersonType
-  ) : Promise<Resolution[]> {
+    type: PersonType,
+    begin: Date,
+    end: Date
+  ): Promise<Resolution[]> {
 
-    if(resolutions.length === 0) {
+    if (resolutions.length === 0) {
       return [];
     }
 
@@ -113,8 +117,6 @@ export default class ResolutionResource {
     filteredQuery.addFilter(new AggsFilterPeople(id, type));
 
     const sortedResolutions = resolutions.sort();
-    const begin = id2date(sortedResolutions[0]);
-    const end = id2date(sortedResolutions[sortedResolutions.length - 1]);
     filteredQuery.addAgg(new AggsResolutionHistogram(begin, end, 1));
 
     const aggWithIdFilter = new AggWithIdFilter(sortedResolutions);

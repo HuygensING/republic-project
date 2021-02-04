@@ -8,6 +8,7 @@ import {equal} from "../util/equal";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 import {PersonType} from "../elastic/model/PersonType";
 import {useAsyncError} from "../hook/useAsyncError";
+import {fromEsFormat} from "../util/fromEsFormat";
 
 moment.locale('nl');
 
@@ -36,11 +37,18 @@ export default function AttendantHistogram(props: AttendantHistogramProps) {
   }
 
   function updateHistogram() {
+    const bars = resolutionState.resolutions;
+
+    if(!bars.length) {
+      return;
+    }
 
     props.client.resolutionResource.aggregateByPerson(
-      resolutionState.resolutions.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
+      bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
       attendant,
-      PersonType.ATTENDANT
+      PersonType.ATTENDANT,
+      fromEsFormat(bars[0].date),
+      fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
       const bars = buckets.map((b: any) => ({
         date: b.key_as_string,
