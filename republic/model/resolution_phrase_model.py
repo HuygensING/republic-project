@@ -131,6 +131,12 @@ proposition_opening_phrases = [
         'max_offset': 10
     },
     {
+        'phrase': 'OP het geproponeerde door',
+        'label': 'proposition_opening',
+        'proposition_type': None,
+        'max_offset': 10
+    },
+    {
         'phrase': 'OP den differente gereezen voor de',
         'label': 'proposition_opening',
         'proposition_type': None,
@@ -144,6 +150,12 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'DE Conclusie van versoek van',
+        'label': 'proposition_opening',
+        'proposition_type': None,
+        'max_offset': 10
+    },
+    {
+        'phrase': 'DE Conclusie van Antwoord van',
         'label': 'proposition_opening',
         'proposition_type': None,
         'max_offset': 10

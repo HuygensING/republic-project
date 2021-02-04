@@ -36,13 +36,13 @@ def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
     inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_config["inventory_num"], inv_config)
     page_type_index = get_per_page_type_index(inv_metadata)
     pages = rep_es.retrieve_inventory_pages(es, inv_config["inventory_num"], inv_config)
-    for pi, page in enumerate(sorted(pages, key=lambda x: x['metadata']['page_num'])):
-        if page["metadata"]["page_num"] not in page_type_index:
-            page['metadata']['page_type'] = "empty_page"
+    for pi, page in enumerate(sorted(pages, key=lambda x: x.metadata['page_num'])):
+        if page.metadata["page_num"] not in page_type_index:
+            page.metadata['page_type'] = "empty_page"
         else:
-            page['metadata']['page_type'] = page_type_index[page['metadata']['page_num']]
-        es.index(index=inv_config["page_index"], id=page['metadata']['id'], body=page)
-        print(page['metadata']['id'], page["metadata"]["page_type"])
+            page.metadata['page_type'] = page_type_index[page.metadata['page_num']]
+        es.index(index=inv_config["page_index"], id=page.metadata['id'], body=page.json())
+        print(page.metadata['id'], page.metadata["page_type"])
 
 
 def delete_es_index(es: Elasticsearch, index: str):

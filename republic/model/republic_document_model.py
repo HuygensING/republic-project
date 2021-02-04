@@ -370,8 +370,11 @@ class Resolution(ResolutionDoc):
         self.evidence: List[PhraseMatch] = []
         if evidence:
             self.evidence = parse_phrase_matches(evidence)
-            self.proposition_type = get_proposition_type_from_evidence(self.evidence)
-            self.metadata['proposition_type'] = self.proposition_type
+            if self.metadata['proposition_type']:
+                self.proposition_type = self.metadata['proposition_type']
+            else:
+                self.proposition_type = get_proposition_type_from_evidence(self.evidence)
+                self.metadata['proposition_type'] = self.proposition_type
 
     def __repr__(self):
         return f"Resolution({json.dumps(self.json(), indent=4)}"
@@ -393,9 +396,8 @@ class Resolution(ResolutionDoc):
         self.evidence += matches
 
     def json(self):
-        metadata = copy.deepcopy(self.metadata)
         json_data = {
-            'metadata': metadata,
+            'metadata': self.metadata,
             'paragraphs': [paragraph.json(include_columns=False) for paragraph in self.paragraphs],
             'evidence': [match.json() for match in self.evidence],
             'columns': self.columns
