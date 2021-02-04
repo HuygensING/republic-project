@@ -22,4 +22,5 @@ export const ERR_ES_NOT_AVAILABLE = 'De Elasticsearch database is niet beschikba
 export const ERR_ES_AGGREGATE_PEOPLE = 'Mensen konden niet geaggregeerd worden';
 export const ERR_ES_GET_MULTI_PEOPLE = 'Details van mensen konden niet opgehaald worden';
 export const ERR_ES_AGGREGATE_RESOLUTIONS = 'Resoluties konden niet geaggregeerd worden';
+export const ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON = 'Resoluties konden niet geaggregeerd worden op basis van persoon';
 export const ERR_ES_GET_MULTI_RESOLUTIONS = 'Resoluties konden niet opgehaald worden';

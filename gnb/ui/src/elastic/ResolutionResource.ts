@@ -8,8 +8,15 @@ import AggsFilterFullText from "./model/AggsFilterFullText";
 import AggsFilterPeople from "./model/AggsFilterPeople";
 import Resolution from "./model/Resolution";
 
-import {ERR_ES_AGGREGATE_RESOLUTIONS, ERR_ES_GET_MULTI_RESOLUTIONS} from "../Placeholder";
+import {
+  ERR_ES_AGGREGATE_RESOLUTIONS,
+  ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON,
+  ERR_ES_GET_MULTI_RESOLUTIONS
+} from "../Placeholder";
 import {handleEsError} from "./EsErrorHandler";
+import {id2date} from "../util/id2date";
+import AggWithIdFilter from "./model/AggWithIdFilter";
+import AggWithFilters from "./model/AggWithFilters";
 
 /**
  * ElasticSearch Resolution Resource
@@ -55,7 +62,8 @@ export default class ResolutionResource {
       filters.push(new AggsFilterPeople(m, PersonType.MENTIONED));
     }
 
-    aggs.aggs = new AggsResolutionHistogram(begin, end, 1);
+    const hist = new AggsResolutionHistogram(begin, end, 1);
+    aggs.aggs[hist.name()] = hist.agg();
 
     const response = await this.esClient
       .search(new AggsQuery(query))
@@ -88,4 +96,44 @@ export default class ResolutionResource {
       }
   }
 
+  /**
+   * TODO: cleanup
+   * @param resolutions
+   * @param id
+   * @param type
+   */
+  public async aggregateByPerson(
+    resolutions: string[],
+    id: number,
+    type: PersonType
+  ) : Promise<Resolution[]> {
+
+    if(resolutions.length === 0) {
+      return [];
+    }
+
+    const filteredQuery = new AggWithFilters();
+    filteredQuery.addFilter(new AggsFilterPeople(id, type));
+
+    const sortedResolutions = resolutions.sort();
+    const begin = id2date(sortedResolutions[0]);
+    const end = id2date(sortedResolutions[sortedResolutions.length - 1]);
+    filteredQuery.addAgg(new AggsResolutionHistogram(begin, end, 1));
+
+    const aggWithIdFilter = new AggWithIdFilter(sortedResolutions);
+    aggWithIdFilter.addAgg(filteredQuery);
+
+    const aggsQuery = new AggsQuery(aggWithIdFilter);
+
+    const response = await this.esClient
+      .search(aggsQuery)
+      .catch(e => handleEsError(e, ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON));
+
+    return response.aggregations
+      .id_filtered_aggs
+      .filtered_aggs
+      .resolution_histogram
+      .buckets;
+
+  }
 }

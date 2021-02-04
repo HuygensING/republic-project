@@ -60,8 +60,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
       searchState.start,
       searchState.end,
       searchState.fullText
-    ).then(function (buckets: any) {
-
+    ).then((buckets: any) => {
       const bars = buckets.map((b: any) => ({
         date: b.key_as_string,
         count: b.doc_count,
