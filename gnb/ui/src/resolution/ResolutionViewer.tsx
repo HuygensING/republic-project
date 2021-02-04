@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import ResolutionHistogram from "./ResolutionHistogram";
 import GnbElasticClient from "../elastic/GnbElasticClient";
-import TextsModal from "./Texts";
+import TextsModal from "../common/Texts";
 import {D3Canvas} from "../common/D3Canvas";
 
 type ResolutionsViewerProps = {

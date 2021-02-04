@@ -1,3 +1,5 @@
+import {PersonType} from "./PersonType";
+
 export interface Person {
   id: number;
   firstNames: string;
@@ -5,6 +7,13 @@ export interface Person {
   familyName: string;
   nameType: string;
   functions: any[];
+}
+
+export type PersonAnn = {
+  id: number;
+  type: PersonType;
+  province?: string;
+  name: string;
 }
 
 export function toName(person: Person) {

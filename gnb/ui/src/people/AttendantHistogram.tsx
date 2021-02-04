@@ -51,6 +51,7 @@ export default function AttendantHistogram(props: AttendantHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
+        {bar: {color: "orange"}, y: {title: `With attendant ${attendant}`}},
         props.handleResolutions
       );
 

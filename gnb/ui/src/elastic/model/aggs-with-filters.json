@@ -1,9 +1,0 @@
-{
-  "filtered_aggs": {
-    "filter": {
-      "bool": { "filter": []}
-    },
-    "aggs": {}
-  }
-}
-

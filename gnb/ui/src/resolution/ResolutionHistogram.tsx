@@ -76,6 +76,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
     renderHistogram(
       props.svgRef,
       resolutionState.resolutions,
+      {bar: {color: "steelblue"}, y: {title: `# Resolutions`}},
       props.handleResolutions
     );
   }

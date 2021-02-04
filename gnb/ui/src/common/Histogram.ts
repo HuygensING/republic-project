@@ -6,12 +6,23 @@ import {MutableRefObject} from "react";
 export type HistogramBar = {
   date: string;
   count: number,
-  ids: string[]
+  ids: string[],
+}
+
+export type HistogramConfig = {
+    y: {
+      title: string
+    },
+    bar: {
+      color: string
+    }
+
 }
 
 export function renderHistogram(
   svgRef: MutableRefObject<any>,
   bars: HistogramBar[],
+  config: HistogramConfig,
   handleBarClick: (ids: string[]) => void
 ) {
   let svg = d3.select(svgRef.current);
@@ -47,8 +58,8 @@ export function renderHistogram(
   const yAxisTicks = y1.ticks()
     .filter(tick => Number.isInteger(tick));
 
-  const y1Axis = (graph: any) =>
-    graph
+  const y1Axis = (graph: any) => {
+    return graph
       .attr("transform", `translate(${margin.left},0)`)
       .style("color", "black")
       .call(d3
@@ -63,14 +74,15 @@ export function renderHistogram(
           .attr("y", 10)
           .attr("fill", "currentColor")
           .attr("text-anchor", "start")
-          .text('# resoluties')
+          .text(config.y.title)
       );
+  };
 
   svg.select(".x-axis").call(xAxis);
   svg.select(".y-axis").call(y1Axis);
   svg
     .select(".plot-area")
-    .attr("fill", "steelblue")
+    .attr("fill", config.bar.color)
     .selectAll(".bar")
     .data(bars)
     .join("rect")
