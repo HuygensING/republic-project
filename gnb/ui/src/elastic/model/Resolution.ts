@@ -1,4 +1,4 @@
-import {Person} from "./Person";
+import {Person, PersonAnn} from "./Person";
 
 export default interface Resolution {
   id: string;
@@ -7,7 +7,7 @@ export default interface Resolution {
   };
   source: string;
   indexedOn: string;
-  people: Person[];
+  people: PersonAnn[];
   resolution: {
     postprandum: boolean;
     plainText: string;

@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import ResolutionHistogram from "../resolution/ResolutionHistogram";
 import GnbElasticClient from "../elastic/GnbElasticClient";
-import TextsModal from "../resolution/Texts";
+import TextsModal from "../common/Texts";
 import {D3Canvas} from "../common/D3Canvas";
 import AttendantHistogram from "./AttendantHistogram";
 

@@ -1,6 +1,5 @@
 import {Client} from "elasticsearch";
 import AggsQuery from "./model/AggsQuery";
-import aggsWithFilters from './model/aggs-with-filters.json';
 import AggsFilterRange from "./model/AggsFilterRange";
 import AggsResolutionHistogram from "./model/AggsResolutionHistogram";
 import {PersonType} from "./model/PersonType";
@@ -44,26 +43,24 @@ export default class ResolutionResource {
     end: Date,
     fullText: string
   ): Promise<any> {
-    const query = JSON.parse(JSON.stringify(aggsWithFilters));
-    const aggs = query.filtered_aggs;
-    const filters: any[] = aggs.filter.bool.filter;
+    const query = new AggWithFilters();
 
-    filters.push(new AggsFilterRange(begin, end));
+    query.addFilter(new AggsFilterRange(begin, end));
 
     if (fullText) {
-      filters.push(new AggsFilterFullText(fullText));
+      query.addFilter(new AggsFilterFullText(fullText));
     }
 
     for (const a of attendants) {
-      filters.push(new AggsFilterPeople(a, PersonType.ATTENDANT));
+      query.addFilter(new AggsFilterPeople(a, PersonType.ATTENDANT));
     }
 
     for (const m of mentioned) {
-      filters.push(new AggsFilterPeople(m, PersonType.MENTIONED));
+      query.addFilter(new AggsFilterPeople(m, PersonType.MENTIONED));
     }
 
     const hist = new AggsResolutionHistogram(begin, end, 1);
-    aggs.aggs[hist.name()] = hist.agg();
+    query.addAgg(hist);
 
     const response = await this.esClient
       .search(new AggsQuery(query))

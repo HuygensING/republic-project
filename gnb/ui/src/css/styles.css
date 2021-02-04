@@ -54,5 +54,5 @@ code {
 }
 
 .clickable-bar:hover{
-  fill: #5996c8;
+  fill-opacity: 0.8;
 }
