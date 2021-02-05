@@ -23,10 +23,18 @@ export default function StartEndFormField() {
     updateStartEnd(next(searchState.start), next(searchState.end));
   };
 
-  const handlePickedDate = (newStart: Date) => {
+  const handlePickedStartDate = (newStart: Date) => {
     const diff = moment(newStart).diff(moment(start), 'days');
     const newEnd = moment(end).add(diff, 'days').toDate();
     updateStartEnd(newStart, newEnd);
+  };
+
+  const handlePickedEndDate = (newEnd: Date) => {
+    if(newEnd < start) {
+      console.log('Please pick an end date after the start date');
+      return;
+    }
+    updateStartEnd(start, newEnd);
   };
 
   function updateStartEnd(start: Date, end: Date) {
@@ -60,16 +68,15 @@ export default function StartEndFormField() {
       <DatePicker
         customInput={createElement(forwardRef(DatePickerCustomInput))}
         selected={start}
-        onChange={handlePickedDate}
+        onChange={handlePickedStartDate}
       />
       <div className="input-group-append">
         <span className="input-group-text">t/m</span>
       </div>
       <DatePicker
-        customInput={createElement(forwardRef(DatePickerDisabledInput))}
-        disabled
+        customInput={createElement(forwardRef(DatePickerCustomInput))}
         selected={end}
-        onChange={() => {}}
+        onChange={handlePickedEndDate}
       />
       <div className="input-group-append">
         <button
@@ -90,9 +97,3 @@ const DatePickerCustomInput = (
   <button type="button" className="form-control text-center stretched-link text-monospace" onClick={onClick} ref={ref}>{value} 📅</button>
 );
 
-const DatePickerDisabledInput = (
-  {value, onClick}: { value: string; onClick: (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => void },
-  ref: Ref<HTMLInputElement>
-) => (
-  <span className="form-control disabled-input text-center text-monospace" ref={ref}>{value}</span>
-);

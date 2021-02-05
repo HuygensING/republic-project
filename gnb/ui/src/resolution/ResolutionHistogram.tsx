@@ -27,12 +27,14 @@ export default function ResolutionHistogram(props: BarChartProps) {
 
   const prevMentioned = usePrevious(searchState.mentioned)
   const prevStart = usePrevious(searchState.start)
+  const prevEnd = usePrevious(searchState.end)
   const prevFullText = usePrevious(searchState.fullText)
 
   const searchStateChanged =
     !equal(prevAttendants, searchState.attendants) ||
     !equal(prevMentioned, searchState.mentioned) ||
     !equal(prevStart, searchState.start) ||
+    !equal(prevEnd, searchState.end) ||
     !equal(prevFullText, searchState.fullText);
 
   const {resolutionState, setResolutionState} = useResolutionContext();
