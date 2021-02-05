@@ -93,7 +93,9 @@ export default class ResolutionResource {
     if (response.hits) {
       return response.hits.hits.map(d => {
         const result = d._source;
-        result.resolution.originalXml = d.highlight['resolution.originalXml'][0];
+        if(d.highlight) {
+          result.resolution.originalXml = d.highlight['resolution.originalXml'][0];
+        }
         return result;
       }) as Resolution[];
     } else {

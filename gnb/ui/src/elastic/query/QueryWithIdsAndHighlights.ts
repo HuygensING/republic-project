@@ -7,7 +7,7 @@ export class QueryWithIdsAndHighlights extends QueryWithSize {
   private highlight: any;
 
   /**
-   * Find resolutions, and mark with .highlight class
+   * Find resolutions, and highlight terms with .highlight
    *
    * @param ids resolution IDs
    * @param highlight using simple query format
