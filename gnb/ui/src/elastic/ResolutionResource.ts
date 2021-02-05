@@ -75,20 +75,27 @@ export default class ResolutionResource {
 
   /**
    * Get multiple resolutions from gnb-resolutions
+   * @param ids resolution IDs
+   * @param highlight using simple query format
    */
   public async getMulti(
-    ids: string[]
+    ids: string[],
+    highlight: string
   ): Promise<Resolution[]> {
     if (ids.length === 0) {
       return [];
     }
-    const request = new Request(this.index, new QueryWithIdsAndHighlights(ids));
+    const request = new Request(this.index, new QueryWithIdsAndHighlights(ids, highlight));
     const response = await this.esClient
       .search<Resolution>(request)
       .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
 
     if (response.hits) {
-      return response.hits.hits.map(d => d._source) as Resolution[];
+      return response.hits.hits.map(d => {
+        const result = d._source;
+        result.resolution.originalXml = d.highlight['resolution.originalXml'][0];
+        return result;
+      }) as Resolution[];
     } else {
       return [];
     }

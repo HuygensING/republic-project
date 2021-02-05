@@ -8,6 +8,7 @@ import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {PersonType} from "../elastic/model/PersonType";
 import {PersonAnn} from "../elastic/model/PersonAnn";
+import {useSearchContext} from "../search/SearchContext";
 
 type TextsProps = {
   client: GnbElasticClient,
@@ -20,8 +21,9 @@ export default function Texts(props: TextsProps) {
 
   const prevResolutions = usePrevious(props.resolutions);
   const [resolutions, setResolutions] = useState([] as Resolution[]);
-
+  const {searchState} = useSearchContext();
   const stateChanged = !equal(prevResolutions, props.resolutions);
+
   const throwError = useAsyncError();
 
   if (stateChanged) {
@@ -30,7 +32,7 @@ export default function Texts(props: TextsProps) {
 
   async function createResolutions() {
     let newResolutions = await props.client.resolutionResource
-      .getMulti(props.resolutions)
+      .getMulti(props.resolutions, searchState.fullText)
       .catch(throwError);
 
     newResolutions = newResolutions.sort((a: any, b: any) => {

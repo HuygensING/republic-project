@@ -5,7 +5,14 @@ export class QueryWithIdsAndHighlights extends QueryWithSize {
   public aggs: any;
   private query: any;
   private highlight: any;
-  constructor(ids: string[]) {
+
+  /**
+   * Find resolutions, and mark with .highlight class
+   *
+   * @param ids resolution IDs
+   * @param highlight using simple query format
+   */
+  constructor(ids: string[], highlight: string) {
     super();
     this.size = 10000;
 
@@ -13,11 +20,23 @@ export class QueryWithIdsAndHighlights extends QueryWithSize {
       "ids": { "values": ids }
     };
     // TODO: add full-text highlighting
-    this.highlight = {
+
+    this.highlight = highlight ? {
+      "number_of_fragments": 0,
+      "pre_tags" : ['<span class="highlight">'],
+      "post_tags" : ['</span>'],
       "fields": {
-        "resolution.originalXml": {}
+        "resolution.originalXml": {
+          "highlight_query": {
+            "simple_query_string" : {
+              "query": highlight,
+              "fields": ["resolution.originalXml"],
+              "default_operator": "and"
+            }
+          }
+        }
       }
-    };
+    } : undefined;
 
   }
 
