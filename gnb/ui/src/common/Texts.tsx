@@ -64,7 +64,7 @@ export default function Texts(props: TextsProps) {
             .filter((p: PersonAnn) => p.type === PersonType.ATTENDANT)
             .map((p: PersonAnn, i: number) => {
               const isAttendant = attendantIds.includes(p.id);
-              return <span key={i} className={isAttendant ? 'highlight' : ''}>{p.name} ({p.id})</span>
+              return <span key={i} className={isAttendant ? 'highlight' : ''}>{p.name} (ID {p.id})</span>
             })
             .reduce(joinJsx)
           }</small>
@@ -82,7 +82,7 @@ function highlightMentioned(originalXml: string, mentioned: Person[]) {
     return originalXml;
   }
 
-  const dom = domParser.parseFromString(originalXml, "text/xml");
+  const dom = domParser.parseFromString(originalXml, 'text/xml');
 
   for (const m of mentioned) {
     const found = dom.querySelectorAll(`[idnr="${m.id}"]`)?.item(0);
