@@ -8,10 +8,15 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export default function StartEndFormField() {
 
-  const stepSize = 3;
   const {searchState, setSearchState} = useSearchContext();
+
+  function calcStepSize(start: Date, end: Date) {
+    return Math.round(moment(start).diff(moment(end), 'days') / 10);
+  }
+
   const start = searchState.start;
   const end = searchState.end;
+  const stepSize = calcStepSize(start, end);
 
   const handlePrevious = () => {
     const previous = (date: Date) => moment(date).subtract(stepSize, 'days').toDate();
