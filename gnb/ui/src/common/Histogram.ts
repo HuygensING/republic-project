@@ -47,13 +47,15 @@ export function renderHistogram(
     .domain([0, d3.max(bars, (d) => d.count)] as Iterable<number>)
     .rangeRound([height - margin.bottom, margin.top]);
 
-  const xAxis = (graph: any) =>
-    graph
+  const xAxis = (graph: any) => {
+    const tickInterval = Math.round(bars.length / 10);
+    return graph
       .attr("transform", `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x)
         .tickSizeOuter(0)
-        .tickValues(x.domain().filter((d, i) => !(i % 5)))
+        .tickValues(x.domain().filter((d, i) => !(i % tickInterval)))
       );
+  };
 
   const yAxisTicks = y1.ticks()
     .filter(tick => Number.isInteger(tick));
