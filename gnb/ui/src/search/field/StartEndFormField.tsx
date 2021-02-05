@@ -16,7 +16,7 @@ export default function StartEndFormField() {
   });
 
   function calcStepSize(start: Date, end: Date) {
-    return Math.round(moment(start).diff(moment(end), 'days') / 10);
+    return Math.round(moment(end).diff(moment(start), 'days') / 10);
   }
 
   const start = searchState.start;
