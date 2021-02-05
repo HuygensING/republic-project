@@ -35,7 +35,7 @@ export function renderHistogram(
   const x: ScaleBand<string> = d3
     .scaleBand()
     .domain(bars.map(dataToBucket) as Iterable<string>)
-    .rangeRound([margin.left, width - margin.right])
+    .range([margin.left, width - margin.right])
     .padding(0.1);
 
   function dataToBucket(d: HistogramBar) {
