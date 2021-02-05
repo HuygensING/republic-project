@@ -1,5 +1,5 @@
 import moment from "moment";
-import Config from "../../Config";
+import Config from "../../../Config";
 import {Filter} from "./Filter";
 
 export default class FilterRange implements Filter {

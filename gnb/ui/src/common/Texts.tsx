@@ -7,7 +7,7 @@ import {useAsyncError} from "../hook/useAsyncError";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {PersonType} from "../elastic/model/PersonType";
-import {PersonAnn} from "../elastic/model/Person";
+import {PersonAnn} from "../elastic/model/PersonAnn";
 
 type TextsProps = {
   client: GnbElasticClient,

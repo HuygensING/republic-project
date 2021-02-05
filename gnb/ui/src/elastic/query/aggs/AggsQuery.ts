@@ -1,7 +1,7 @@
-import {EsBody} from "./EsBody";
+import {QueryWithSize} from "../QueryWithSize";
 import {isAgg} from "./Agg";
 
-export class AggsBody extends EsBody {
+export class AggsQuery extends QueryWithSize {
 
   public aggs: any;
 

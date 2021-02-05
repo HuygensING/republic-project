@@ -1,3 +1,6 @@
+/**
+ * Building block of Elasticsearch Aggs
+ */
 export interface Agg {
 
   name(): string;

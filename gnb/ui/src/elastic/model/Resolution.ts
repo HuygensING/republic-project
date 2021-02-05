@@ -1,4 +1,4 @@
-import {PersonAnn} from "./Person";
+import {PersonAnn} from "./PersonAnn";
 
 export default interface Resolution {
   id: string;

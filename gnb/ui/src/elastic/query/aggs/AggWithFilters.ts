@@ -1,5 +1,5 @@
 import {Agg} from "./Agg";
-import {Filter} from "./Filter";
+import {Filter} from "../filter/Filter";
 
 export default class AggWithFilters implements Agg {
 

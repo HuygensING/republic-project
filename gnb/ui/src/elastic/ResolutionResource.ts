@@ -1,10 +1,10 @@
 import {Client} from "elasticsearch";
-import AggsQuery from "./model/AggsQuery";
-import FilterRange from "./model/FilterRange";
-import AggsResolutionHistogram from "./model/AggsResolutionHistogram";
+import AggsRequest from "./query/aggs/AggsRequest";
+import FilterRange from "./query/filter/FilterRange";
+import AggsResolutionHistogram from "./query/aggs/AggsResolutionHistogram";
 import {PersonType} from "./model/PersonType";
-import FilterFullText from "./model/FilterFullText";
-import FilterPeople from "./model/FilterPeople";
+import FilterFullText from "./query/filter/FilterFullText";
+import FilterPeople from "./query/filter/FilterPeople";
 import Resolution from "./model/Resolution";
 
 import {
@@ -13,8 +13,10 @@ import {
   ERR_ES_GET_MULTI_RESOLUTIONS
 } from "../Placeholder";
 import {handleEsError} from "./EsErrorHandler";
-import AggWithIdFilter from "./model/AggWithIdFilter";
-import AggWithFilters from "./model/AggWithFilters";
+import AggWithIdFilter from "./query/aggs/AggWithIdFilter";
+import AggWithFilters from "./query/aggs/AggWithFilters";
+import Request from "./query/Request";
+import {QueryWithIdsAndHighlights} from "./query/QueryWithIdsAndHighlights";
 
 /**
  * ElasticSearch Resolution Resource
@@ -62,7 +64,7 @@ export default class ResolutionResource {
     query.addAgg(hist);
 
     const response = await this.esClient
-      .search(new AggsQuery(query))
+      .search(new AggsRequest(query))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_RESOLUTIONS));
 
     return response.aggregations
@@ -80,13 +82,13 @@ export default class ResolutionResource {
     if (ids.length === 0) {
       return [];
     }
-    const params = {index: this.index, body: {ids}};
+    const request = new Request(this.index, new QueryWithIdsAndHighlights(ids));
     const response = await this.esClient
-      .mget<Resolution>(params)
+      .search<Resolution>(request)
       .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
 
-    if (response.docs) {
-      return response.docs.map(d => d._source) as Resolution[];
+    if (response.hits) {
+      return response.hits.hits.map(d => d._source) as Resolution[];
     } else {
       return [];
     }
@@ -121,7 +123,7 @@ export default class ResolutionResource {
     const aggWithIdFilter = new AggWithIdFilter(sortedResolutions);
     aggWithIdFilter.addAgg(filteredQuery);
 
-    const aggsQuery = new AggsQuery(aggWithIdFilter);
+    const aggsQuery = new AggsRequest(aggWithIdFilter);
 
     const response = await this.esClient
       .search(aggsQuery)

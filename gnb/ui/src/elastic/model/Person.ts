@@ -1,19 +1,10 @@
-import {PersonType} from "./PersonType";
-
-export interface Person {
+export type Person = {
   id: number;
   firstNames: string;
   interpositions: string;
   familyName: string;
   nameType?: string;
   functions: any[];
-}
-
-export type PersonAnn = {
-  id: number;
-  type: PersonType;
-  province?: string;
-  name: string;
 }
 
 export function toName(person: Person) {

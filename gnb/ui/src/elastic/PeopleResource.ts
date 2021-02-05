@@ -1,10 +1,10 @@
 import {Client, MGetResponse} from "elasticsearch";
-import AggsQuery from "./model/AggsQuery";
-import aggsPeopleWithName from './model/aggs-people-with-filters.json';
-import FilterPersonName from "./model/FilterPersonName";
+import AggsRequest from "./query/aggs/AggsRequest";
+import aggsPeopleWithName from './query/aggs/aggs-people-with-filters.json';
+import FilterPersonName from "./query/filter/FilterPersonName";
 import {Person} from "./model/Person";
 import {PersonType} from "./model/PersonType";
-import FilterPersonType from "./model/FilterPersonType";
+import FilterPersonType from "./query/filter/FilterPersonType";
 import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../Placeholder";
 import {handleEsError} from "./EsErrorHandler";
 
@@ -41,7 +41,7 @@ export default class PeopleResource {
     });
 
     const response = await this.esClient
-      .search(new AggsQuery(query))
+      .search(new AggsRequest(query))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_PEOPLE));
     return response.aggregations.people.filter_people.sum_people_id.buckets;
   }

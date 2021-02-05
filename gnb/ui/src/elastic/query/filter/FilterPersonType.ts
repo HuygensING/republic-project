@@ -1,4 +1,4 @@
-import {PersonType} from "./PersonType";
+import {PersonType} from "../../model/PersonType";
 import {Filter} from "./Filter";
 
 export default class FilterPersonType implements Filter {
