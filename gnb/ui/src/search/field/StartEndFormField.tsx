@@ -1,14 +1,19 @@
-import React, {createElement, forwardRef, Ref} from "react";
+import React, {createElement, forwardRef, Ref, useState} from "react";
 import moment from "moment";
 import useEvent from "../../hook/useEvent";
 import {useSearchContext} from "../SearchContext";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+import {WARN_DATEPICKER_END_BEFORE_START} from "../../Placeholder";
+import Warning from "../../common/Warning";
 
 export default function StartEndFormField() {
 
   const {searchState, setSearchState} = useSearchContext();
+  const [state, setState] = useState({
+    warning: false
+  });
 
   function calcStepSize(start: Date, end: Date) {
     return Math.round(moment(start).diff(moment(end), 'days') / 10);
@@ -35,8 +40,8 @@ export default function StartEndFormField() {
   };
 
   const handlePickedEndDate = (newEnd: Date) => {
-    if(newEnd < start) {
-      console.log('Please pick an end date after the start date');
+    if (newEnd < start) {
+      setState({...state, warning : true});
       return;
     }
     updateStartEnd(start, newEnd);
@@ -49,7 +54,7 @@ export default function StartEndFormField() {
   useEvent('keyup', handleArrowKeys);
 
   function handleArrowKeys(e: React.KeyboardEvent<HTMLElement>) {
-    if((e.target as any).tagName === "INPUT") {
+    if ((e.target as any).tagName === "INPUT") {
       return;
     }
     if (e.key === 'ArrowLeft') {
@@ -60,7 +65,13 @@ export default function StartEndFormField() {
     }
   }
 
-  return <div className="input-group">
+  function closeWarning() {
+    setState({...state, warning : false});
+  }
+
+  return <>
+    {state.warning ? <Warning msg={WARN_DATEPICKER_END_BEFORE_START} onClose={closeWarning}/> : null}
+    <div className="input-group">
       <div className="input-group-prepend">
         <button
           type="button"
@@ -92,13 +103,15 @@ export default function StartEndFormField() {
           &gt;&gt;
         </button>
       </div>
-    </div>;
+    </div>
+  </>;
 }
 
 const DatePickerCustomInput = (
   {value, onClick}: { value: string; onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void },
   ref: Ref<HTMLButtonElement>
 ) => (
-  <button type="button" className="form-control text-center stretched-link text-monospace" onClick={onClick} ref={ref}>{value} 📅</button>
+  <button type="button" className="form-control text-center stretched-link text-monospace" onClick={onClick}
+          ref={ref}>{value} 📅</button>
 );
 
