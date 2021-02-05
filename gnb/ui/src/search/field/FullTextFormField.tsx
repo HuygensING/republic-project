@@ -16,7 +16,7 @@ export default function FullTextFormField() {
   };
 
   const handleSubmit = () => {
-    setSearchState({...searchState, fullText: searchState.fullText});
+    setSearchState({...searchState, fullText: state.fullText});
   };
 
   return <input
