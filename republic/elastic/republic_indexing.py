@@ -9,6 +9,7 @@ from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
 from republic.extraction.extract_resolution_metadata import generate_proposition_searchers, add_resolution_metadata
+from republic.model.generic_document_model import StructureDoc
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
 import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
@@ -32,6 +33,13 @@ from republic.helper.annotation_helper import make_hash_id
 import republic.elastic.republic_retrieving as rep_es
 
 
+def add_timestamp(doc: Union[Dict[str, any], StructureDoc]) -> None:
+    if isinstance(doc, StructureDoc):
+        doc.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+    else:
+        doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
+
+
 def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
     inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_config["inventory_num"], inv_config)
     page_type_index = get_per_page_type_index(inv_metadata)
@@ -41,6 +49,7 @@ def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
             page.metadata['page_type'] = "empty_page"
         else:
             page.metadata['page_type'] = page_type_index[page.metadata['page_num']]
+        add_timestamp(page)
         es.index(index=inv_config["page_index"], id=page.metadata['id'], body=page.json())
         print(page.metadata['id'], page.metadata["page_type"])
 
@@ -76,14 +85,14 @@ def index_inventory_metadata(es: Elasticsearch, inventory_metadata: dict, config
 
 def index_scan(es: Elasticsearch, scan_hocr: dict, config: dict):
     doc = create_es_scan_doc(scan_hocr)
-    doc['metadata']['index_timestamp'] = datetime.datetime.now()
+    add_timestamp(doc)
     es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
              id=scan_hocr['metadata']['id'], body=doc)
 
 
 def index_page(es: Elasticsearch, page_hocr: dict, config: dict):
     doc = create_es_page_doc(page_hocr)
-    doc['metadata']['index_timestamp'] = datetime.datetime.now()
+    add_timestamp(doc)
     es.index(index=config['page_index'], doc_type=config['page_doc_type'],
              id=page_hocr['metadata']['id'], body=doc)
 
@@ -278,7 +287,7 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
 def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
     # pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
     pages = rep_es.retrieve_resolution_pages(es, inv_num, inv_config)
-    pages.sort(key=lambda page: page['metadata']['page_num'])
+    pages.sort(key=lambda page: page.metadata['page_num'])
     inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_num, inv_config)
     prev_date: RepublicDate = make_republic_date(inv_metadata['period_start'])
     if not pages:
@@ -293,7 +302,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
             # continue
         meeting_date_string = 'None'
         for missing_meeting in add_missing_dates(prev_date, meeting):
-            missing_meeting.metadata['index_timestamp'] = datetime.datetime.now()
+            add_timestamp(missing_meeting)
             es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
                      id=missing_meeting.metadata['id'],
                      body=missing_meeting.json(with_columns=True, with_scan_versions=True))
@@ -315,7 +324,7 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         #      '\tnum meeting lines:', meeting.metadata['num_lines'])
         prev_date = meeting.date
         try:
-            meeting.metadata['index_timestamp'] = datetime.datetime.now()
+            add_timestamp(meeting)
             if meeting.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['meeting_index'] + '_quarantine'
                 es.index(index=quarantine_index, doc_type=inv_config['meeting_doc_type'],
@@ -423,6 +432,7 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
         meeting = Meeting(meeting_json['metadata'], columns=meeting_json['columns'],
                           scan_versions=meeting_json['scan_versions'])
         for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
+            add_timestamp(resolution)
             es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
 
 
@@ -442,6 +452,7 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
     :param config: a configuration dictionary containing index names
     :type config: dict
     """
+    add_timestamp(resolution)
     resolution_json = resolution.json() if isinstance(resolution, Resolution) else resolution
     es.index(index=config['resolution_index'], id=resolution_json['metadata']['id'], body=resolution_json)
 
@@ -482,6 +493,7 @@ def index_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, P
     match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
     # generate stable id based on match offset, end and text_id
     match_json['id'] = make_hash_id(match_json)
+    add_timestamp(match_json)
     es.index(index=config['phrase_match_index'], id=match_json['id'], body=match_json)
 
 
@@ -530,7 +542,7 @@ def index_split_resolutions(es: Elasticsearch, split_resolutions: Dict[str, any]
     for add_match in split_resolutions['add_matches']:
         index_resolution_phrase_match(es, add_match, config)
     for resolution in split_resolutions['resolutions']:
-        resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+        add_timestamp(resolution)
         index_resolution(es, resolution, config)
 
 
@@ -539,5 +551,5 @@ def index_resolution_metadata(es: Elasticsearch, resolution: Resolution, config:
         'metadata': resolution.metadata,
         'evidence': [pm.json() for pm in resolution.evidence]
     }
-    metadata_doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
+    add_timestamp(metadata_doc)
     es.index(index=config['resolution_metadata_index'], id=resolution.metadata['id'], body=metadata_doc)
