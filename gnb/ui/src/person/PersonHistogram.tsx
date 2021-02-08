@@ -3,21 +3,20 @@ import GnbElasticClient from "../elastic/GnbElasticClient";
 import moment from "moment";
 import 'moment/locale/nl'
 import {HistogramBar, renderHistogram} from "../common/Histogram";
-import {usePrevious} from "../hook/usePrevious";
-import {equal} from "../util/equal";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 import {PersonType} from "../elastic/model/PersonType";
 import {useAsyncError} from "../hook/useAsyncError";
 import {fromEsFormat} from "../util/fromEsFormat";
-import {usePersonContext} from "./PersonContext";
-import {toName} from "../elastic/model/Person";
+import {Person, toName} from "../elastic/model/Person";
 
 moment.locale('nl');
 
 type AttendantHistogramProps = {
   client: GnbElasticClient,
   svgRef: MutableRefObject<any>,
-  handleResolutions: (r: string[]) => void
+  handleResolutions: (r: string[]) => void,
+  person: Person
+  type: PersonType,
 }
 
 /**
@@ -26,34 +25,21 @@ type AttendantHistogramProps = {
 export default function PersonHistogram(props: AttendantHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
-  const prevResolutions = usePrevious(resolutionState.resolutions);
-  const resolutionStateChanged = !equal(prevResolutions, resolutionState.resolutions);
-
-  const {personState} = usePersonContext();
-  // const prevPerson = usePrevious(personState.person);
-  // const personStateChanged = !equal(prevPerson, personState.person);
-
   const throwError = useAsyncError();
 
-  if(resolutionStateChanged) {
-    // TODO:
-    //  - pick person: how?
-    //  - retrieve person data and set as personState
-    //  - updateHistogram
-    updateHistogram();
-  }
+  updateHistogram();
 
   function updateHistogram() {
     const bars = resolutionState.resolutions;
 
-    if(!bars.length) {
+    if (!bars.length) {
       return;
     }
 
     props.client.resolutionResource.aggregateByPerson(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
-      personState.person.id,
-      PersonType.ATTENDANT,
+      props.person.id,
+      props.type,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -66,7 +52,7 @@ export default function PersonHistogram(props: AttendantHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        {bar: {color: "orange"}, y: {title: `With ${personState.type} ${toName(personState.person)}`}},
+        {bar: {color: "orange"}, y: {title: `With ${props.type} ${toName(props.person)}`}},
         props.handleResolutions
       );
 

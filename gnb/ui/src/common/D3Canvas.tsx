@@ -9,7 +9,7 @@ function areEqual(): boolean {
 }
 
 export const D3Canvas = React.memo<D3CanvasProps>((props) => {
-  console.log('create canvas');
+
   const ref = props.svgRef;
 
   return (
