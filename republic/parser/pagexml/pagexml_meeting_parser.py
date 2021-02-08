@@ -2,6 +2,7 @@ from typing import List, Dict, Union, Iterator
 from collections import Counter
 import copy
 
+from republic.model.generic_document_model import StructureDoc
 from republic.model.republic_phrase_model import meeting_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string, exception_dates
 # print(exception_dates)
@@ -283,10 +284,11 @@ class GatedWindow:
         return self.sliding_window[0] if self.let_through[0] else None
 
 
-def get_columns_metadata(sorted_pages: List[dict]) -> Dict[str, dict]:
+def get_columns_metadata(sorted_pages: List[Union[StructureDoc, dict]]) -> Dict[str, dict]:
     column_metadata = {}
     for page in sorted_pages:
-        for column in page['columns']:
+        columns = page.columns if isinstance(page, StructureDoc) else page['columns']
+        for column in columns:
             column_id = column['metadata']['id']
             column_metadata[column_id] = copy.deepcopy(column['metadata'])
     return column_metadata
