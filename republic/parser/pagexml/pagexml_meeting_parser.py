@@ -8,7 +8,7 @@ from republic.model.republic_date import RepublicDate, derive_date_from_string, 
 # print(exception_dates)
 from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
 from republic.model.republic_meeting import meeting_element_order
-from republic.model.republic_document_model import Meeting
+from republic.model.republic_document_model import Meeting, Resolution, ResolutionPageDoc
 from republic.model.republic_document_model import check_special_column_for_bleed_through, sort_resolution_columns
 from republic.helper.text_helper import read_word_freq_counter
 
@@ -76,7 +76,7 @@ def swap_lines(line1: dict, line2: dict):
         return True
 
 
-def order_document_lines(document: dict):
+def order_document_lines(document: ResolutionPageDoc):
     lines = [line for line in stream_resolution_document_lines([document])
              if line is not None and line["text"] is not None]
     ordered_lines = []
@@ -89,45 +89,45 @@ def order_document_lines(document: dict):
         ordered_lines.append(line)
 
 
-def stream_resolution_page_lines(pages: list, word_freq_counter: Counter = None) -> Union[None, iter]:
+def stream_resolution_page_lines(pages: List[ResolutionPageDoc], word_freq_counter: Counter = None) -> Union[None, iter]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
-    pages = sorted(pages, key=lambda x: x['metadata']['page_num'])
+    pages = sorted(pages, key=lambda x: x.metadata['page_num'])
     for page in pages:
-        if 'scan_id' not in page['metadata']:
-            page['metadata']['scan_id'] = page['metadata']['id'].split('-page')[0]
+        if 'scan_id' not in page.metadata:
+            page.metadata['scan_id'] = page.metadata['id'].split('-page')[0]
     return stream_resolution_document_lines(pages, word_freq_counter=word_freq_counter)
 
 
-def line_add_document_metadata(line: dict, document: Dict[str, any]):
-    # line['inventory_num'] = document['metadata']['inventory_num']
-    line['metadata']['scan_id'] = document['metadata']['scan_id']
-    line['metadata']['scan_num'] = document['metadata']['scan_num']
-    line['metadata']['doc_id'] = document['metadata']['id']
-    # line['page_num'] = document['metadata']['page_num']
+def line_add_document_metadata(line: dict, document: ResolutionPageDoc):
+    # line['inventory_num'] = document.metadata['inventory_num']
+    line['metadata']['scan_id'] = document.metadata['scan_id']
+    line['metadata']['scan_num'] = document.metadata['scan_num']
+    line['metadata']['doc_id'] = document.metadata['id']
+    # line['page_num'] = document.metadata['page_num']
     # line['column_index'] = ci
     line['metadata']['column_id'] = line['metadata']['id'].split('-tr-')[0]
     # line['textregion_index'] = ti
     line['metadata']['textregion_id'] = line['metadata']['id'].split('-line-')[0]
     line['metadata']['line_index'] = int(line['metadata']['id'].split('-line-')[1])
-    line['metadata']['scan_version'] = document["version"]
+    line['metadata']['scan_version'] = document.scan_version
     return line
 
 
-def stream_resolution_document_lines(documents: List[dict],
+def stream_resolution_document_lines(documents: List[ResolutionPageDoc],
                                      word_freq_counter: Counter = None) -> Union[None, iter]:
     """Iterate over list of documents and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     for document in documents:
         if word_freq_counter:
-            for column in document['columns']:
+            for column in document.columns:
                 check_special_column_for_bleed_through(column, word_freq_counter)
         try:
-            columns = sort_resolution_columns(document['columns'])
+            columns = sort_resolution_columns(document.columns)
         except KeyError:
-            print(document['metadata']['id'])
+            print(document.metadata['id'])
             raise
         for ci, column in columns:
             # print('column id:', column['metadata']['id'])
@@ -294,7 +294,7 @@ def get_columns_metadata(sorted_pages: List[Union[StructureDoc, dict]]) -> Dict[
     return column_metadata
 
 
-def get_meeting_dates(sorted_pages: List[dict], inv_config: dict,
+def get_meeting_dates(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
                       inv_metadata: dict) -> Iterator[Meeting]:
     # TO DO: IMPROVEMENTS
     # - add holidays: Easter, Christmas
