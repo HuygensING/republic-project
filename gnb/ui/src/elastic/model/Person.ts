@@ -1,9 +1,9 @@
-export interface Person {
+export type Person = {
   id: number;
   firstNames: string;
   interpositions: string;
   familyName: string;
-  nameType: string;
+  nameType?: string;
   functions: any[];
 }
 

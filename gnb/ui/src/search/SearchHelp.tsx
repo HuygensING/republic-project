@@ -6,7 +6,7 @@ import {
   HELP_PEOPLE_TITLE, HELP_START_END_BODY, HELP_START_END_TITLE,
   HELP_TITLE
 } from "../Placeholder";
-import Modal from "../Modal";
+import Modal from "../common/Modal";
 
 export default function SearchHelp() {
 

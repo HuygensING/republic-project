@@ -1,8 +1,11 @@
 import moment from "moment";
-import Config from "../../Config";
+import Config from "../../../Config";
+import {Agg} from "./Agg";
 
-export default class AggsResolutionHistogram {
-  public resolution_histogram: any;
+export default class AggsResolutionHistogram implements Agg {
+
+  private _name = 'resolution_histogram';
+  private _agg: any;
 
   /**
    * @param begin date of first bucket
@@ -10,7 +13,7 @@ export default class AggsResolutionHistogram {
    * @param interval in days
    */
   constructor(begin: Date, end: Date, interval: number) {
-    this.resolution_histogram = {
+    this._agg = {
       "date_histogram": {
         "min_doc_count": 0,
         "field": "metadata.meeting.date",
@@ -22,9 +25,24 @@ export default class AggsResolutionHistogram {
       },
       "aggs": {
         "resolution_ids": {
-          "terms": { "field": "id" }
+          "terms": {
+            "field": "id",
+            "size": 10000
+          }
         }
       }
     };
+  }
+
+  addAgg(agg: Agg): void {
+    this._agg.aggs[agg.name()] = agg.agg()
+  }
+
+  agg(): any {
+    return this._agg;
+  }
+
+  name(): string {
+    return this._name;
   }
 }

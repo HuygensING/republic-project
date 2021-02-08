@@ -1,7 +1,8 @@
 import moment from "moment";
-import Config from "../../Config";
+import Config from "../../../Config";
+import {Filter} from "./Filter";
 
-export default class AggsFilterRange {
+export default class FilterRange implements Filter {
   public range: any;
 
   constructor(begin: Date, end: Date) {

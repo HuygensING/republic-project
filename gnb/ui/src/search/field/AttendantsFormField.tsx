@@ -14,10 +14,10 @@ type AttendantsFormFieldProps = {
 
 export default function AttendantsFormField(props: AttendantsFormFieldProps) {
 
-  const {state, setState} = useSearchContext();
+  const {searchState, setSearchState} = useSearchContext();
 
   const handleSubmit = async (selected: PersonOption[]) => {
-    setState({...state, attendants: selected.map(s => s.person)});
+    setSearchState({...searchState, attendants: selected.map(s => s.person)});
   };
 
   return <div className="form-group">

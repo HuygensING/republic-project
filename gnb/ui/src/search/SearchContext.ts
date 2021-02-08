@@ -10,19 +10,19 @@ export type SearchStateType = {
 }
 
 export type SearchContextType = {
-  state: SearchStateType;
-  setState: (s: SearchStateType) => void
+  searchState: SearchStateType;
+  setSearchState: (s: SearchStateType) => void
 }
 
 export const defaultSearchContext = {
-  state: {
+  searchState: {
     attendants: [],
     mentioned: [],
     fullText: '',
     start: new Date('1630-01-01'),
     end: new Date('1630-01-30'),
   },
-  setState: dummy
+  setSearchState: dummy
 } as SearchContextType;
 
 export const SearchContext = createContext<SearchContextType>(defaultSearchContext);

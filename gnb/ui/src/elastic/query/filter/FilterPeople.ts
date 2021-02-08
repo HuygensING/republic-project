@@ -1,6 +1,7 @@
-import {PersonType} from "./PersonType";
+import {PersonType} from "../../model/PersonType";
+import {Filter} from "./Filter";
 
-export default class AggsFilterPeople {
+export default class FilterPeople implements Filter {
   public nested: any;
 
   constructor(id: number, type: PersonType) {

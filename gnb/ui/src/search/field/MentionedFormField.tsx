@@ -12,10 +12,10 @@ type MentionedFormFieldProps = {
 
 export default function MentionedFormField(props: MentionedFormFieldProps) {
 
-  const {state, setState} = useSearchContext();
+  const {searchState, setSearchState} = useSearchContext();
 
   const handleSubmit = async (selected: PersonOption[]) => {
-    setState({...state, mentioned: selected.map(s => s.person)});
+    setSearchState({...searchState, mentioned: selected.map(s => s.person)});
   };
 
   return <div>

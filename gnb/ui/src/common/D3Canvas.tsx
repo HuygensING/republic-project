@@ -16,7 +16,7 @@ export const D3Canvas = React.memo<D3CanvasProps>((props) => {
     <svg
       ref={ref}
       style={{
-        height: 500,
+        height: "15em",
         width: "100%",
         marginRight: "0px",
         marginLeft: "0px",
