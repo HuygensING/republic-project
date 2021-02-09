@@ -1,4 +1,5 @@
 from typing import Dict, List, Union
+import time
 import gzip
 import requests
 
@@ -14,10 +15,7 @@ def make_request(url: str, accept_encoding: Union[None, str] = None) -> Union[Li
         if 'Content-Encoding' not in response.headers:
             return response.text
         if response.headers['Content-Encoding'] == 'gzip':
-            #try:
-            #    return gzip.decompress(response.content).decode(encoding='utf-8')
-            #except (OSError, TypeError):
-            return response.text
+            return response.content.decode()
         else:
             return response.text
     else:

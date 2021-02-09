@@ -23,7 +23,7 @@ from republic.model.republic_date import RepublicDate, make_republic_date
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
 from republic.model.republic_pagexml_model import parse_derived_coords
-from republic.model.republic_document_model import Meeting, get_meeting_resolutions, Resolution
+from republic.model.republic_document_model import Meeting, get_meeting_resolutions, Resolution, ResolutionPageDoc
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
@@ -40,15 +40,21 @@ def add_timestamp(doc: Union[Dict[str, any], StructureDoc]) -> None:
         doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
 
 
+def get_pagexml_page_type(page: Union[ResolutionPageDoc, Dict[str, any]],
+                          page_type_index: Dict[str, str]) -> str:
+    page_num = page.metadata['page_num'] if isinstance(page, ResolutionPageDoc) else page['metadata']['page_num']
+    if page_num not in page_type_index:
+        return "empty_page"
+    else:
+        return page_type_index[page_num]
+
+
 def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
     inv_metadata = rep_es.retrieve_inventory_metadata(es, inv_config["inventory_num"], inv_config)
     page_type_index = get_per_page_type_index(inv_metadata)
     pages = rep_es.retrieve_inventory_pages(es, inv_config["inventory_num"], inv_config)
     for pi, page in enumerate(sorted(pages, key=lambda x: x.metadata['page_num'])):
-        if page.metadata["page_num"] not in page_type_index:
-            page.metadata['page_type'] = "empty_page"
-        else:
-            page.metadata['page_type'] = page_type_index[page.metadata['page_num']]
+        page.metadata['page_type'] = get_pagexml_page_type(page, page_type_index)
         add_timestamp(page)
         es.index(index=inv_config["page_index"], id=page.metadata['id'], body=page.json())
         print(page.metadata['id'], page.metadata["page_type"])
@@ -137,6 +143,7 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
 def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any], ignore_version: bool = False):
     text_repo = TextRepo(text_repo_url)
     inventory_metadata = rep_es.retrieve_inventory_metadata(es, inv_num, inventory_config)
+    page_type_index = get_per_page_type_index(inventory_metadata)
     if "num_scans" not in inventory_metadata:
         return None
     for scan_num in range(1, inventory_metadata["num_scans"] + 1):
@@ -153,8 +160,23 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
         else:
             pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
         for page_doc in pages_doc:
+            page_doc['metadata']['page_type'] = get_pagexml_page_type(page_doc, page_type_index)
             page_doc["version"] = scan_doc["version"]
             index_page(es, page_doc, inventory_config)
+
+
+def index_inventory_pages_from_scans(es: Elasticsearch, inventory_num: int, config: Dict[str, any]) -> None:
+    inventory_metadata = rep_es.retrieve_inventory_metadata(es, inventory_num, config)
+    print(inventory_metadata)
+    page_type_index = get_per_page_type_index(inventory_metadata)
+    for scan_doc in rep_es.retrieve_inventory_scans(es, inventory_num, config):
+        pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
+        for page_doc in pages_doc:
+            add_timestamp(page_doc)
+            page_doc['metadata']['page_type'] = get_pagexml_page_type(page_doc, page_type_index)
+            page_doc["version"] = scan_doc["version"]
+            print(page_doc['metadata']['id'])
+            index_page(es, page_doc, config)
 
 
 def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):

@@ -142,6 +142,11 @@ def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config:
     return [parse_es_scan_doc(hit['_source']) for hit in response['hits']['hits']]
 
 
+def retrieve_inventory_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
+    return retrieve_scans_by_query(es, query, config)
+
+
 def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
     return retrieve_pages_by_query(es, query, config)
@@ -202,7 +207,6 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int,
     elif 'year' in config:
         match_fields += [{'match': {'metadata.year': config['year']}}]
     query = make_bool_query(match_fields)
-    print(query)
     pages = retrieve_pages_by_query(es, query, config)
     if len(pages) == 0:
         return None
@@ -387,6 +391,7 @@ def retrieve_phrase_matches_by_paragraph_id(es: Elasticsearch, paragraph_id: str
 
 def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config, ignore_version: bool = False):
     doc_id = get_scan_id(inventory_metadata, scan_num)
+    import time
     try:
         version_info = text_repo.get_last_version_info(doc_id, file_type=inventory_config['ocr_type'])
         if not version_info:

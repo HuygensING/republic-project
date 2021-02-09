@@ -189,7 +189,7 @@ def skip_resolution(resolution: Resolution, phrase_matches: List[PhraseMatch],
 
 
 def add_resolutions_metadata(es: Elasticsearch, resolutions: List[Resolution], config: dict,
-                               opening_searcher: FuzzyTemplateSearcher):
+                             opening_searcher: FuzzyTemplateSearcher):
     variable_matcher = VariableMatcher(6, 100, opening_searcher.template)
     skip_formulas = {
         'heeft aan haar Hoog Mog. voorgedragen',
@@ -229,7 +229,7 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
         print(f'Resolution paragraph {opening_paragraph.metadata["id"]}:\n\t', opening_paragraph.text, '\n')
         for match in phrase_matches:
             print(match.phrase.phrase_string, '\t', match.string, '\t', match.label, '\t', match.levenshtein_similarity)
-        return None
+        return resolution
     # print(json.dumps(metadata, indent=4))
     if metadata:
         # evidence = [element['evidence'] for group in metadata for element in metadata[group] if 'evidence' in element]
