@@ -71,7 +71,8 @@ class ResolutionPageDoc(ResolutionDoc):
         page_json = {
             'metadata': self.metadata,
             'coords': self.coords,
-            'columns': self.columns
+            'columns': self.columns,
+            'version': self.scan_version
         }
         if include_header:
             page_json['header'] = self.header
@@ -103,7 +104,7 @@ class ResolutionPageDoc(ResolutionDoc):
 def page_json_to_resolution_page(page_json: Dict[str, any]) -> ResolutionPageDoc:
     return ResolutionPageDoc(metadata=page_json['metadata'], coords=page_json['coords'],
                              columns=page_json['columns'], header=page_json['header'],
-                             scan_version=page_json['scan_version'])
+                             scan_version=page_json['version'])
 
 
 class ResolutionParagraph(ResolutionDoc):

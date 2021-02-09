@@ -167,7 +167,6 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
 
 def index_inventory_pages_from_scans(es: Elasticsearch, inventory_num: int, config: Dict[str, any]) -> None:
     inventory_metadata = rep_es.retrieve_inventory_metadata(es, inventory_num, config)
-    print(inventory_metadata)
     page_type_index = get_per_page_type_index(inventory_metadata)
     for scan_doc in rep_es.retrieve_inventory_scans(es, inventory_num, config):
         pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
@@ -175,7 +174,7 @@ def index_inventory_pages_from_scans(es: Elasticsearch, inventory_num: int, conf
             add_timestamp(page_doc)
             page_doc['metadata']['page_type'] = get_pagexml_page_type(page_doc, page_type_index)
             page_doc["version"] = scan_doc["version"]
-            print(page_doc['metadata']['id'])
+            print('Indexing page from scan, page id:', page_doc['metadata']['id'])
             index_page(es, page_doc, config)
 
 
