@@ -1,4 +1,3 @@
-import GnbElasticClient from "../elastic/GnbElasticClient";
 import React, {useState} from "react";
 import Resolution from "../elastic/model/Resolution";
 import Modal from "./Modal";
@@ -11,9 +10,9 @@ import {PersonAnn} from "../elastic/model/PersonAnn";
 import {useSearchContext} from "../search/SearchContext";
 import {joinJsx} from "../util/joinJsx";
 import {Person} from "../elastic/model/Person";
+import {useClientContext} from "../search/ClientContext";
 
 type TextsProps = {
-  client: GnbElasticClient,
   resolutions: string[],
   isOpen: boolean,
   handleClose: () => void
@@ -23,19 +22,21 @@ const domParser = new DOMParser();
 
 export default function Texts(props: TextsProps) {
 
+  const client = useClientContext().clientState.client;
+
   const prevResolutions = usePrevious(props.resolutions);
   const [resolutions, setResolutions] = useState([] as Resolution[]);
   const {searchState} = useSearchContext();
+
   const stateChanged = !equal(prevResolutions, props.resolutions);
 
   const throwError = useAsyncError();
-
   if (stateChanged) {
     createResolutions();
   }
 
   async function createResolutions() {
-    let newResolutions = await props.client.resolutionResource
+    let newResolutions = await client.resolutionResource
       .getMulti(props.resolutions, searchState.fullText)
       .catch(throwError);
 

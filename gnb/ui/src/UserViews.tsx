@@ -3,11 +3,7 @@ import UserView from "./user/UserView";
 import React from "react";
 import GnbElasticClient from "./elastic/GnbElasticClient";
 
-type UserViewersProps = {
-  client: GnbElasticClient;
-}
-
-export default function UserViews (props: UserViewersProps) {
+export default function UserViews () {
 
   const {peopleState, setPeopleState} = usePeopleContext();
 
@@ -21,7 +17,6 @@ export default function UserViews (props: UserViewersProps) {
     {peopleState.people.map((p, i) => {
       return <UserView
         key={i}
-        client={props.client}
         person={p.person}
         type={p.type}
         onDelete={() => deleteView(i)}

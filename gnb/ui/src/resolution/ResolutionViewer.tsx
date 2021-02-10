@@ -1,14 +1,9 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import ResolutionHistogram from "./ResolutionHistogram";
-import GnbElasticClient from "../elastic/GnbElasticClient";
 import TextsModal from "../common/Texts";
 import {D3Canvas} from "../common/D3Canvas";
 
-type ResolutionsViewerProps = {
-  client: GnbElasticClient
-}
-
-export default function ResolutionViewer(props: ResolutionsViewerProps) {
+export default function ResolutionViewer() {
 
   const svgRef: MutableRefObject<any> = useRef(null);
 
@@ -26,7 +21,6 @@ export default function ResolutionViewer(props: ResolutionsViewerProps) {
   function renderBarchart() {
     return <ResolutionHistogram
       handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
-      client={props.client}
       svgRef={svgRef}
     />;
   }
@@ -36,7 +30,6 @@ export default function ResolutionViewer(props: ResolutionsViewerProps) {
       <D3Canvas svgRef={svgRef}/>
       {hasSvg ? renderBarchart() : null}
       <TextsModal
-        client={props.client}
         resolutions={resolutions.ids}
         isOpen={resolutions.showTexts}
         handleClose={() => setResolutions({...resolutions, showTexts: false})}

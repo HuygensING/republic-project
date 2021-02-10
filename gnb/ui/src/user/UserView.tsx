@@ -6,10 +6,8 @@ import DeleteButton from "./DeleteButton";
 import useHover from "../hook/useHover";
 import PersonViewer from "../person/PersonViewer";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {usePeopleContext} from "../person/PeopleContext";
 
 type UserViewerProps = {
-  client: GnbElasticClient,
   person: Person,
   type: PersonType
   onDelete: () => void;
@@ -31,7 +29,6 @@ export default function UserView(props: UserViewerProps) {
         />
 
         <PersonViewer
-          client={props.client}
           person={props.person}
           type={props.type}
           memoOn={[resolutionState.updatedOn, props.type, props.person.id]}

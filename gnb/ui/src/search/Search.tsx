@@ -4,13 +4,8 @@ import FullTextFormField from "./field/FullTextFormField";
 import MentionedFormField from "./field/MentionedFormField";
 import AttendantsFormField from "./field/AttendantsFormField";
 import SearchHelp from "./SearchHelp";
-import GnbElasticClient from "../elastic/GnbElasticClient";
 
-type SearchProps = {
-  client: GnbElasticClient
-};
-
-export function Search(props: SearchProps) {
+export function Search() {
 
   return (
     <div className="row">
@@ -18,10 +13,10 @@ export function Search(props: SearchProps) {
         <form>
           <div className="form-row">
             <div className="col">
-              <AttendantsFormField client={props.client}/>
+              <AttendantsFormField />
             </div>
             <div className="col">
-              <MentionedFormField client={props.client}/>
+              <MentionedFormField />
             </div>
           </div>
           <div className="form-row">

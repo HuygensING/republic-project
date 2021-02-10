@@ -1,42 +1,44 @@
-import {MutableRefObject} from "react";
-import GnbElasticClient from "../elastic/GnbElasticClient";
+import React, {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {HistogramBar, renderHistogram} from "../common/Histogram";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {PersonType} from "../elastic/model/PersonType";
 import {useAsyncError} from "../hook/useAsyncError";
 import {fromEsFormat} from "../util/fromEsFormat";
 import {Person, toName} from "../elastic/model/Person";
+import {useClientContext} from "../search/ClientContext";
+import {equal} from "../util/equal";
+import {PersonType} from "../elastic/model/PersonType";
 
 moment.locale('nl');
 
 type AttendantHistogramProps = {
-  client: GnbElasticClient,
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  person: Person
+  person: Person,
   type: PersonType,
+  memoOn: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export default function PersonHistogram(props: AttendantHistogramProps) {
+export default React.memo(function PersonHistogram(props: AttendantHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
+  const client = useClientContext().clientState.client;
 
   updateHistogram();
-
   function updateHistogram() {
+
     const bars = resolutionState.resolutions;
 
     if (!bars.length) {
       return;
     }
 
-    props.client.resolutionResource.aggregateByPerson(
+    client.resolutionResource.aggregateByPerson(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
       props.person.id,
       props.type,
@@ -57,9 +59,8 @@ export default function PersonHistogram(props: AttendantHistogramProps) {
       );
 
     }).catch(throwError);
-
   }
 
   return null;
 
-};
+}, (prev, next) => equal(prev.memoOn, next.memoOn));

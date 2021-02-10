@@ -8,11 +8,7 @@ import {PersonType} from "../../elastic/model/PersonType";
 import {PersonOption} from "../PersonOption";
 import {useSearchContext} from "../SearchContext";
 
-type AttendantsFormFieldProps = {
-  client: GnbElasticClient
-};
-
-export default function AttendantsFormField(props: AttendantsFormFieldProps) {
+export default function AttendantsFormField() {
 
   const {searchState, setSearchState} = useSearchContext();
 
@@ -22,7 +18,6 @@ export default function AttendantsFormField(props: AttendantsFormFieldProps) {
 
   return <div className="form-group">
     <PeopleTypeahead
-      client={props.client}
       placeholder={WITH_ATTENDANTS}
       personType={PersonType.ATTENDANT}
       handleSubmit={handleSubmit}

@@ -1,6 +1,5 @@
 import {MutableRefObject} from "react";
 import {useSearchContext} from "../search/SearchContext";
-import GnbElasticClient from "../elastic/GnbElasticClient";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
@@ -8,11 +7,11 @@ import {HistogramBar, renderHistogram} from "../common/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
+import {useClientContext} from "../search/ClientContext";
 
 moment.locale('nl');
 
 type BarChartProps = {
-  client: GnbElasticClient,
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void
 }
@@ -56,7 +55,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
     const attendants = searchState.attendants.map(p => p.id);
     const mentioned = searchState.mentioned.map(p => p.id);
 
-    props.client.resolutionResource.aggregateBy(
+    useClientContext().clientState.client.resolutionResource.aggregateBy(
       attendants,
       mentioned,
       searchState.start,

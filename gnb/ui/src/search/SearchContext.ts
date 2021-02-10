@@ -1,7 +1,6 @@
 import {createContext, useContext} from 'react';
 import {Person} from "../elastic/model/Person";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
-import {ResolutionStateType} from "../resolution/ResolutionContext";
 
 export type SearchStateType = BaseStateType & {
   attendants: Person[];

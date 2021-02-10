@@ -1,20 +1,21 @@
-import GnbElasticClient from "../../elastic/GnbElasticClient";
 import {Typeahead} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
 import {Person, toName} from "../../elastic/model/Person";
 import {PersonOption} from "../PersonOption";
 import {PersonType} from "../../elastic/model/PersonType";
 import {useAsyncError} from "../../hook/useAsyncError";
+import {useClientContext} from "../ClientContext";
 
 type PeopleTypeaheadProps = {
   id: string;
-  client: GnbElasticClient,
   placeholder: string,
   personType: PersonType,
   handleSubmit: (selected: PersonOption[]) => Promise<void>
 }
 
 export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
+
+  const client = useClientContext().clientState.client;
 
   const [state, setState] = useState({
     inputField: '',
@@ -25,11 +26,10 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
   const ref = React.createRef<Typeahead<any>>();
 
   const throwError = useAsyncError();
-
   if (state.loading) {
     handleLoading();
-  }
 
+  }
   async function handleLoading() {
     const options = await createOptions();
     setState({
@@ -37,10 +37,10 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
       options,
       loading: false
     });
-  }
 
+  }
   async function createOptions() {
-    const found = await props.client.peopleResource
+    const found = await client.peopleResource
       .aggregateBy(state.inputField, props.personType)
       .catch(throwError);
 
@@ -48,7 +48,7 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
       return [];
     }
 
-    const people = await props.client.peopleResource
+    const people = await client.peopleResource
       .getMulti(found.map((f: any) => f.key))
       .catch(throwError);
 
