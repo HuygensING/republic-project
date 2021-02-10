@@ -3,7 +3,7 @@ import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
 import DeleteButton from "./DeleteButton";
 import useHover from "../hook/useHover";
-import PersonViewer from "../person/PersonViewer";
+import {PersonViewer} from "../person/PersonViewer";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 
 type UserViewerProps = {
@@ -30,7 +30,7 @@ export default function UserView(props: UserViewerProps) {
         <PersonViewer
           person={props.person}
           type={props.type}
-          memoOn={[resolutionState.updatedOn, props.type, props.person.id]}
+          memoKey={[resolutionState.updatedOn, props.type, props.person.id]}
         />
 
       </div>

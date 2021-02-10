@@ -1,9 +1,8 @@
-import React, {useState} from "react";
+import React, {memo, useState} from "react";
 import Resolution from "../elastic/model/Resolution";
 import Modal from "./Modal";
 import {RESOLUTIONS_TITLE} from "../Placeholder";
 import {useAsyncError} from "../hook/useAsyncError";
-import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {PersonType} from "../elastic/model/PersonType";
 import {PersonAnn} from "../elastic/model/PersonAnn";
@@ -11,51 +10,48 @@ import {useSearchContext} from "../search/SearchContext";
 import {joinJsx} from "../util/joinJsx";
 import {Person} from "../elastic/model/Person";
 import {useClientContext} from "../search/ClientContext";
+import {usePrevious} from "../hook/usePrevious";
 
 type TextsProps = {
   resolutions: string[],
-  isOpen: boolean,
-  handleClose: () => void
+  handleClose: () => void,
+  memoKey: any
 }
 
 const domParser = new DOMParser();
 
-export default function Texts(props: TextsProps) {
+export const Texts = memo(function (props: TextsProps) {
 
   const client = useClientContext().clientState.client;
 
-  const prevResolutions = usePrevious(props.resolutions);
-  const [resolutions, setResolutions] = useState([] as Resolution[]);
+  const [state, setResolutions] = useState({
+    resolutions: [] as Resolution[],
+    hasLoaded: false
+  });
+
   const {searchState} = useSearchContext();
 
-  const stateChanged = !equal(prevResolutions, props.resolutions);
-
   const throwError = useAsyncError();
-  if (stateChanged) {
-    createResolutions();
-  }
 
-  async function createResolutions() {
-    let newResolutions = await client.resolutionResource
+  if(!state.hasLoaded) {
+    client.resolutionResource
       .getMulti(props.resolutions, searchState.fullText)
+      .then((results) => {
+        results = sortResolutions(results);
+        setResolutions({resolutions: results, hasLoaded: true});
+      })
       .catch(throwError);
-
-    newResolutions = newResolutions.sort((a: any, b: any) => {
-      const getResolutionIndex = (id: any) => parseInt(id.split('-').pop());
-      return getResolutionIndex(a.id) - getResolutionIndex(b.id);
-    });
-    setResolutions(newResolutions);
   }
 
   const attendantIds = searchState.attendants.map(a => a.id);
 
   return (
     <Modal
-      title={`${RESOLUTIONS_TITLE} (n=${resolutions.length})`}
-      isOpen={props.isOpen}
+      title={`${RESOLUTIONS_TITLE} (n=${state.resolutions.length})`}
+      isOpen={true}
       handleClose={props.handleClose}
     >
-      {resolutions.map((r: any, i: number) => {
+      {state.hasLoaded ? state.resolutions.map((r: any, i: number) => {
 
         r.resolution.originalXml = highlightMentioned(r.resolution.originalXml, searchState.mentioned);
 
@@ -72,25 +68,31 @@ export default function Texts(props: TextsProps) {
           <div dangerouslySetInnerHTML={{__html: r.resolution.originalXml}}/>
         </div>;
 
-      })}
+      }) : 'Loading...'}
     </Modal>
   );
 
+}, (prev, next) => equal(prev.memoKey, next.memoKey))
+
+
+function sortResolutions(newResolutions: Resolution[]) {
+  newResolutions = newResolutions.sort((a: any, b: any) => {
+    const getResolutionIndex = (id: any) => parseInt(id.split('-').pop());
+    return getResolutionIndex(a.id) - getResolutionIndex(b.id);
+  });
+  return newResolutions;
 }
 
 function highlightMentioned(originalXml: string, mentioned: Person[]) {
   if (mentioned.length === 0) {
     return originalXml;
   }
-
   const dom = domParser.parseFromString(originalXml, 'text/xml');
-
   for (const m of mentioned) {
     const found = dom.querySelectorAll(`[idnr="${m.id}"]`)?.item(0);
     if (found) {
       found.setAttribute('class', 'highlight');
     }
   }
-
   return dom.documentElement.outerHTML;
 }

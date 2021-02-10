@@ -25,7 +25,7 @@ export default function Gui(props: GuiProps) {
         </div>
 
         <Search/>
-        <ResolutionViewer/>
+        <ResolutionViewer />
         <UserViews/>
       </div>
     </ContextProvider>

@@ -1,4 +1,4 @@
-import React, {MutableRefObject} from "react";
+import React, {memo, MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {HistogramBar, renderHistogram} from "../common/Histogram";
@@ -17,13 +17,13 @@ type AttendantHistogramProps = {
   handleResolutions: (r: string[]) => void,
   person: Person,
   type: PersonType,
-  memoOn: any
+  memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export default React.memo(function PersonHistogram(props: AttendantHistogramProps) {
+export const PersonHistogram = memo(function(props: AttendantHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -63,4 +63,4 @@ export default React.memo(function PersonHistogram(props: AttendantHistogramProp
 
   return null;
 
-}, (prev, next) => equal(prev.memoOn, next.memoOn));
+}, (prev, next) => equal(prev.memoKey, next.memoKey));

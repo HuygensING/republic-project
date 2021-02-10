@@ -1,12 +1,14 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import ResolutionHistogram from "./ResolutionHistogram";
-import TextsModal from "../common/Texts";
 import {D3Canvas} from "../common/D3Canvas";
+import {Texts} from "../common/Texts";
+import {useResolutionContext} from "./ResolutionContext";
 
 export default function ResolutionViewer() {
 
-  const svgRef: MutableRefObject<any> = useRef(null);
+  const {resolutionState} = useResolutionContext();
 
+  const svgRef: MutableRefObject<any> = useRef(null);
   const [hasSvg, setHasSvg] = useState(svgRef.current);
 
   useEffect(() => {
@@ -18,22 +20,20 @@ export default function ResolutionViewer() {
     showTexts: false
   });
 
-  function renderBarchart() {
-    return <ResolutionHistogram
-      handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
-      svgRef={svgRef}
-    />;
-  }
-
   return <div className="row mt-3">
     <div className="col">
       <D3Canvas svgRef={svgRef}/>
-      {hasSvg ? renderBarchart() : null}
-      <TextsModal
+
+      {hasSvg ? <ResolutionHistogram
+        handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
+        svgRef={svgRef}
+      /> : null}
+
+      {resolutions.showTexts ? <Texts
         resolutions={resolutions.ids}
-        isOpen={resolutions.showTexts}
         handleClose={() => setResolutions({...resolutions, showTexts: false})}
-      />
+        memoKey={resolutionState.updatedOn}
+      /> : null}
     </div>
   </div>;
 
