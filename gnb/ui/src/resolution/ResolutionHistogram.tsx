@@ -8,6 +8,7 @@ import {HistogramBar, renderHistogram} from "../common/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
+import {ActionType} from "../BaseStateType";
 
 moment.locale('nl');
 
@@ -69,7 +70,10 @@ export default function ResolutionHistogram(props: BarChartProps) {
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
       } as HistogramBar));
 
-      setResolutionState({...resolutionState, resolutions: bars});
+      const newResolutionState = {type: ActionType.UPDATE, payload: {...resolutionState, resolutions: bars}};
+
+      console.log('setResolutionState', newResolutionState);
+      setResolutionState(newResolutionState);
 
     }).catch(throwError);
   }

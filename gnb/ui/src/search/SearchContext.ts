@@ -1,5 +1,6 @@
 import {createContext, useContext} from 'react';
 import {Person} from "../elastic/model/Person";
+import {dummy} from "../BaseStateType";
 
 export type SearchStateType = {
   attendants: Person[];
@@ -29,6 +30,3 @@ export const SearchContext = createContext<SearchContextType>(defaultSearchConte
 
 export const useSearchContext = () => useContext(SearchContext);
 
-function dummy() {
-  console.warn('no context provider');
-}

@@ -1,14 +1,27 @@
-import React from 'react';
+import React, {useReducer} from 'react';
 import {Search} from "./search/Search";
 import {defaultSearchContext, SearchContext} from './search/SearchContext';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
-import {defaultResolutionContext, ResolutionContext} from './resolution/ResolutionContext';
+import {defaultResolutionContext, ResolutionContext, ResolutionStateType} from './resolution/ResolutionContext';
 import UserViews from "./UserViews";
 import {defaultPeopleContext, PeopleContext} from "./person/PeopleContext";
+import {Action, ActionType} from "./BaseStateType";
 
 type GuiProps = {
   client: GnbElasticClient
+}
+
+function reducer(state: ResolutionStateType, action: Action<ResolutionStateType>) : ResolutionStateType {
+  console.log('reduce?', state, action);
+
+  switch (action.type) {
+    case ActionType.UPDATE:
+      action.payload.updatedOn = new Date().getTime();
+      return action.payload;
+    default:
+      return action.payload;
+  }
 }
 
 /**
@@ -17,7 +30,7 @@ type GuiProps = {
 export default function Gui(props: GuiProps) {
 
   const [searchState, setSearchState] = React.useState(defaultSearchContext.searchState);
-  const [resolutionState, setResolutionState] = React.useState(defaultResolutionContext.resolutionState);
+  const [resolutionState, setResolutionState] = useReducer(reducer, defaultResolutionContext.resolutionState);
   const [peopleState, setPeopleState] = React.useState(defaultPeopleContext.peopleState);
 
   return (
