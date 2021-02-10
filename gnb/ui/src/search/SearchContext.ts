@@ -1,8 +1,9 @@
 import {createContext, useContext} from 'react';
 import {Person} from "../elastic/model/Person";
-import {dummy} from "../BaseStateType";
+import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
+import {ResolutionStateType} from "../resolution/ResolutionContext";
 
-export type SearchStateType = {
+export type SearchStateType = BaseStateType & {
   attendants: Person[];
   mentioned: Person[];
   fullText: string;
@@ -17,6 +18,7 @@ export type SearchContextType = {
 
 export const defaultSearchContext = {
   searchState: {
+    ...defaultBaseContext,
     attendants: [],
     mentioned: [],
     fullText: '',
@@ -30,3 +32,4 @@ export const SearchContext = createContext<SearchContextType>(defaultSearchConte
 
 export const useSearchContext = () => useContext(SearchContext);
 
+export const searchReducer : (<T extends SearchStateType>(s: T, a: T) => T) = reducer;

@@ -1,12 +1,13 @@
 import {createContext, useContext} from 'react';
 import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
+import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
 
 type PersonWithType = {
   person: Person;
   type: PersonType
 };
-export type PeopleStateType = {
+export type PeopleStateType = BaseStateType & {
   people: PersonWithType[];
 }
 
@@ -20,6 +21,7 @@ export type PeopleContextType = {
  */
 export const defaultPeopleContext = {
   peopleState: {
+    ...defaultBaseContext,
     people: [{
       person: {
         id: 360496,
@@ -63,6 +65,4 @@ export const PeopleContext = createContext<PeopleContextType>(defaultPeopleConte
 
 export const usePeopleContext = () => useContext(PeopleContext);
 
-function dummy() {
-  console.warn('no context provider');
-}
+export const peopleReducer : (<T extends PeopleStateType>(s: T, a: T) => T) = reducer;

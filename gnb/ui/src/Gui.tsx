@@ -1,19 +1,14 @@
 import React, {useReducer} from 'react';
 import {Search} from "./search/Search";
-import {defaultSearchContext, SearchContext} from './search/SearchContext';
+import {defaultSearchContext, SearchContext, searchReducer} from './search/SearchContext';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
-import {defaultResolutionContext, ResolutionContext, ResolutionStateType} from './resolution/ResolutionContext';
+import {defaultResolutionContext, ResolutionContext, resolutionReducer} from './resolution/ResolutionContext';
 import UserViews from "./UserViews";
-import {defaultPeopleContext, PeopleContext} from "./person/PeopleContext";
+import {defaultPeopleContext, PeopleContext, peopleReducer} from "./person/PeopleContext";
 
 type GuiProps = {
   client: GnbElasticClient
-}
-
-function reducer(state: ResolutionStateType, action: ResolutionStateType): ResolutionStateType {
-  action.updatedOn = new Date().getTime();
-  return action;
 }
 
 /**
@@ -21,9 +16,9 @@ function reducer(state: ResolutionStateType, action: ResolutionStateType): Resol
  */
 export default function Gui(props: GuiProps) {
 
-  const [searchState, setSearchState] = React.useState(defaultSearchContext.searchState);
-  const [resolutionState, setResolutionState] = useReducer(reducer, defaultResolutionContext.resolutionState);
-  const [peopleState, setPeopleState] = React.useState(defaultPeopleContext.peopleState);
+  const [searchState, setSearchState] = useReducer(searchReducer, defaultSearchContext.searchState);
+  const [resolutionState, setResolutionState] = useReducer(resolutionReducer, defaultResolutionContext.resolutionState);
+  const [peopleState, setPeopleState] = useReducer(peopleReducer, defaultPeopleContext.peopleState);
 
   return (
     <SearchContext.Provider value={{searchState, setSearchState}}>
@@ -37,7 +32,6 @@ export default function Gui(props: GuiProps) {
             </div>
 
             <Search client={props.client}/>
-
             <ResolutionViewer client={props.client}/>
             <UserViews client={props.client}/>
 
