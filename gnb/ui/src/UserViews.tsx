@@ -1,7 +1,6 @@
 import {PeopleStateType, usePeopleContext} from "./person/PeopleContext";
 import UserView from "./user/UserView";
 import React from "react";
-import GnbElasticClient from "./elastic/GnbElasticClient";
 
 export default function UserViews () {
 

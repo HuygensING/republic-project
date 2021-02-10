@@ -1,5 +1,4 @@
 import React, {useRef} from "react";
-import GnbElasticClient from "../elastic/GnbElasticClient";
 import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
 import DeleteButton from "./DeleteButton";
