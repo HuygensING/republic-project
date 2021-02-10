@@ -34,7 +34,7 @@ export default function UserView(props: UserViewerProps) {
           person={props.person}
           client={props.client}
           type={props.type}
-          memoOn={resolutionState.updatedOn}
+          memoBy={resolutionState.updatedOn}
         />
 
       </div>

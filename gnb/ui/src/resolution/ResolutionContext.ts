@@ -1,6 +1,6 @@
 import {createContext, useContext} from 'react';
 import {HistogramBar} from "../common/Histogram";
-import {Action, BaseStateType, defaultBaseContext, dummy} from "../BaseStateType";
+import {BaseStateType, defaultBaseContext, dummy} from "../BaseStateType";
 
 export type ResolutionStateType = BaseStateType & {
   resolutions: HistogramBar[];
@@ -8,12 +8,12 @@ export type ResolutionStateType = BaseStateType & {
 
 export type ResolutionContextType = {
   resolutionState: ResolutionStateType;
-  setResolutionState: (a: Action<ResolutionStateType>) => void
+  setResolutionState: (a: ResolutionStateType) => void
 }
 
 export const defaultResolutionContext = {
   resolutionState: {
-    ... defaultBaseContext,
+    ...defaultBaseContext,
     resolutions: []
   },
   setResolutionState: dummy

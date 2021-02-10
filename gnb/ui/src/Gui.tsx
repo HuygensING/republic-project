@@ -6,22 +6,14 @@ import ResolutionViewer from "./resolution/ResolutionViewer";
 import {defaultResolutionContext, ResolutionContext, ResolutionStateType} from './resolution/ResolutionContext';
 import UserViews from "./UserViews";
 import {defaultPeopleContext, PeopleContext} from "./person/PeopleContext";
-import {Action, ActionType} from "./BaseStateType";
 
 type GuiProps = {
   client: GnbElasticClient
 }
 
-function reducer(state: ResolutionStateType, action: Action<ResolutionStateType>) : ResolutionStateType {
-  console.log('reduce?', state, action);
-
-  switch (action.type) {
-    case ActionType.UPDATE:
-      action.payload.updatedOn = new Date().getTime();
-      return action.payload;
-    default:
-      return action.payload;
-  }
+function reducer(state: ResolutionStateType, action: ResolutionStateType): ResolutionStateType {
+  action.updatedOn = new Date().getTime();
+  return action;
 }
 
 /**

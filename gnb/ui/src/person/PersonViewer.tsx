@@ -11,7 +11,7 @@ type PersonViewerProps = {
   client: GnbElasticClient,
   person: Person,
   type: PersonType
-  memoOn: any
+  memoBy: any
 }
 
 export default memo(function PersonViewer(props: PersonViewerProps) {
@@ -47,4 +47,4 @@ export default memo(function PersonViewer(props: PersonViewerProps) {
   />
   </>
 
-}, ((prev, next) => equal(prev.memoOn, next.memoOn)));
+}, ((prev, next) => equal(prev.memoBy, next.memoBy)));
