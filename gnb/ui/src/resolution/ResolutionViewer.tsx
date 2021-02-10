@@ -20,20 +20,28 @@ export default function ResolutionViewer() {
     showTexts: false
   });
 
+  function showResolutionsHistogram() {
+    return <ResolutionHistogram
+      handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
+      svgRef={svgRef}
+    />;
+  }
+
+  function showTexts() {
+    return <Texts
+      resolutions={resolutions.ids}
+      handleClose={() => setResolutions({...resolutions, showTexts: false})}
+      memoKey={resolutionState.updatedOn}
+    />;
+  }
+
   return <div className="row mt-3">
     <div className="col">
+
       <D3Canvas svgRef={svgRef}/>
+      {hasSvg ? showResolutionsHistogram() : null}
+      {resolutions.showTexts ? showTexts() : null}
 
-      {hasSvg ? <ResolutionHistogram
-        handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
-        svgRef={svgRef}
-      /> : null}
-
-      {resolutions.showTexts ? <Texts
-        resolutions={resolutions.ids}
-        handleClose={() => setResolutions({...resolutions, showTexts: false})}
-        memoKey={resolutionState.updatedOn}
-      /> : null}
     </div>
   </div>;
 
