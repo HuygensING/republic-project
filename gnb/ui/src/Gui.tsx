@@ -4,7 +4,7 @@ import {defaultSearchContext, SearchContext} from './search/SearchContext';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
 import {defaultResolutionContext, ResolutionContext} from './resolution/ResolutionContext';
-import UserViewers from "./UserViewers";
+import UserViews from "./UserViews";
 import {defaultPeopleContext, PeopleContext} from "./person/PeopleContext";
 
 type GuiProps = {
@@ -34,7 +34,7 @@ export default function Gui(props: GuiProps) {
             <Search client={props.client}/>
 
             <ResolutionViewer client={props.client}/>
-            <UserViewers client={props.client}/>
+            <UserViews client={props.client}/>
 
           </div>
         </PeopleContext.Provider>
