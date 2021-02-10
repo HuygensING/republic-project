@@ -5,6 +5,7 @@ import {PersonType} from "../elastic/model/PersonType";
 import DeleteButton from "./DeleteButton";
 import useHover from "../hook/useHover";
 import PersonViewer from "../person/PersonViewer";
+import {useResolutionContext} from "../resolution/ResolutionContext";
 
 type UserViewerProps = {
   client: GnbElasticClient,
@@ -17,6 +18,8 @@ export default function UserView(props: UserViewerProps) {
 
   const deleteRef = useRef(null)
   const isHovering = useHover(deleteRef);
+  const {resolutionState} = useResolutionContext();
+
 
   return <div className="row mt-3">
     <div className="col">
@@ -27,7 +30,12 @@ export default function UserView(props: UserViewerProps) {
           onClose={props.onDelete}
         />
 
-        <PersonViewer person={props.person} client={props.client} type={props.type} />
+        <PersonViewer
+          person={props.person}
+          client={props.client}
+          type={props.type}
+          memoOn={resolutionState.updatedOn}
+        />
 
       </div>
     </div>

@@ -1,18 +1,20 @@
 import {D3Canvas} from "../common/D3Canvas";
 import PersonHistogram from "./PersonHistogram";
 import TextsModal from "../common/Texts";
-import React, {useEffect, useRef, useState} from "react";
+import React, {memo, useEffect, useRef, useState} from "react";
 import GnbElasticClient from "../elastic/GnbElasticClient";
 import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
+import {equal} from "../util/equal";
 
 type PersonViewerProps = {
   client: GnbElasticClient,
   person: Person,
   type: PersonType
+  memoOn: any
 }
 
-export default function PersonViewer(props: PersonViewerProps) {
+export default memo(function PersonViewer(props: PersonViewerProps) {
 
   const svgRef = useRef(null);
   const [hasSvg, setHasSvg] = useState(svgRef.current);
@@ -45,4 +47,4 @@ export default function PersonViewer(props: PersonViewerProps) {
   />
   </>
 
-}
+}, ((prev, next) => equal(prev.memoOn, next.memoOn)));
