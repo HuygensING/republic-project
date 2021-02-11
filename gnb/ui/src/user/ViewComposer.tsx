@@ -6,6 +6,7 @@ import {
   NEW_VIEW_MODAL_TITLE,
   PICK_USER_VIEW,
   PLOT_ATTENDANT,
+  PLOT_MENTIONED,
   SEARCH_TERM
 } from "../Placeholder";
 import {usePeopleContext} from "../person/PeopleContext";
@@ -22,18 +23,17 @@ export type PlotType = {
 
 const plotTypes: PlotType[] = [
   {
-    type: 'mentioned',
-    personType: PersonType.MENTIONED,
-    placeholder: MENTIONED
-  },
-  {
     type: 'attendant',
     personType: PersonType.ATTENDANT,
     placeholder: ATTENDANT
   },
   {
-    type: 'term',
+    type: 'mentioned',
     personType: PersonType.MENTIONED,
+    placeholder: MENTIONED
+  },
+  {
+    type: 'term',
     placeholder: SEARCH_TERM
   }
 ];
@@ -53,9 +53,9 @@ export default function ViewComposer() {
     })
   }, [peopleState]);
 
-  const handleSubmit = async (selected: PersonOption[]) => {
+  const handleSubmit = async (selected: PersonOption[], type: PersonType) => {
     const newPeople = peopleState.people;
-    newPeople.push({person: selected[0].person, type: PersonType.ATTENDANT});
+    newPeople.push({person: selected[0].person, type});
     setPeopleState({...peopleState, people: newPeople});
   };
 
@@ -99,11 +99,23 @@ export default function ViewComposer() {
             ? <PeopleTypeahead
               placeholder={PLOT_ATTENDANT}
               personType={PersonType.ATTENDANT}
-              handleSubmit={handleSubmit}
+              handleSubmit={(o) => handleSubmit(o, PersonType.ATTENDANT)}
               id="attendants-typeahead"
             />
             : null
         }
+
+        {
+          state.isOpen && state.plotType.personType === PersonType.MENTIONED
+            ? <PeopleTypeahead
+              placeholder={PLOT_MENTIONED}
+              personType={PersonType.MENTIONED}
+              handleSubmit={(o) => handleSubmit(o, PersonType.MENTIONED)}
+              id="attendants-typeahead"
+            />
+            : null
+        }
+
       </div>
     </Modal>
 
