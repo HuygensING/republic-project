@@ -3,7 +3,7 @@ import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
 
-type PersonWithType = {
+export type PersonWithType = {
   person: Person;
   type: PersonType
 };

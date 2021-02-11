@@ -1,13 +1,14 @@
 import {PeopleStateType, usePeopleContext} from "./person/PeopleContext";
 import UserView from "./user/UserView";
 import React from "react";
+import clone from "./util/clone";
 
 export default function UserViews () {
 
   const {peopleState, setPeopleState} = usePeopleContext();
 
   function deleteView(index: number) {
-    const newPeopleState = JSON.parse(JSON.stringify(peopleState)) as PeopleStateType;
+    const newPeopleState = clone<PeopleStateType>(peopleState);
     newPeopleState.people.splice(index, 1);
     setPeopleState(newPeopleState);
   }

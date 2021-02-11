@@ -2,7 +2,7 @@
  * Adds timestamp when updated
  */
 export type BaseStateType = {
-  updatedOn: number
+  updatedOn?: number
 };
 
 export const defaultBaseContext = {

@@ -7,6 +7,7 @@ import {PersonType} from "./model/PersonType";
 import FilterPersonType from "./query/filter/FilterPersonType";
 import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../Placeholder";
 import {handleEsError} from "./EsErrorHandler";
+import clone from "../util/clone";
 
 /**
  * ElasticSearch Resolution Resource
@@ -30,7 +31,7 @@ export default class PeopleResource {
     namePrefix: string,
     type?: PersonType
   ): Promise<any> {
-    const query = JSON.parse(JSON.stringify(aggsPeopleWithName));
+    const query = clone<any>(aggsPeopleWithName);
 
     if (type) {
       query.people.aggs.filter_people.filter.bool.must.push(new FilterPersonType(type));
