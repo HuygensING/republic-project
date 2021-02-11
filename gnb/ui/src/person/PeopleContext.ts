@@ -22,41 +22,7 @@ export type PeopleContextType = {
 export const defaultPeopleContext = {
   peopleState: {
     ...defaultBaseContext,
-    people: [{
-      person: {
-        id: 360496,
-        familyName: "Rode",
-        firstNames: "Anthonis",
-        interpositions: "de",
-        quality: "schepen en vroedschap van Utrecht",
-        functions: [
-          {
-            "id": 86401,
-            "name": "gedeputeerde ter Staten-Generaal",
-            "start": "1626-01-01",
-            "end": "1630-01-01"
-          }
-        ]
-      } as Person,
-      type: PersonType.ATTENDANT
-    }, {
-      person: {
-        id: 360496,
-        familyName: "Rode",
-        firstNames: "Anthonis",
-        interpositions: "de",
-        quality: "schepen en vroedschap van Utrecht",
-        functions: [
-          {
-            "id": 86401,
-            "name": "gedeputeerde ter Staten-Generaal",
-            "start": "1626-01-01",
-            "end": "1630-01-01"
-          }
-        ]
-      } as Person,
-      type: PersonType.ATTENDANT
-    }]
+    people: []
   },
   setPeopleState: dummy
 } as PeopleContextType;
