@@ -20,14 +20,14 @@ export default function ResolutionViewer() {
     showTexts: false
   });
 
-  function showResolutionsHistogram() {
+  function renderHistogram() {
     return <ResolutionHistogram
       handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
       svgRef={svgRef}
     />;
   }
 
-  function showTexts() {
+  function renderTexts() {
     return <Texts
       resolutions={resolutions.ids}
       handleClose={() => setResolutions({...resolutions, showTexts: false})}
@@ -36,11 +36,18 @@ export default function ResolutionViewer() {
   }
 
   return <div className="row mt-3">
-    <div className="col">
+    <div className="col row-view">
 
       <D3Canvas svgRef={svgRef}/>
-      {hasSvg ? showResolutionsHistogram() : null}
-      {resolutions.showTexts ? showTexts() : null}
+      {
+        hasSvg
+          ? renderHistogram()
+          : null
+      }
+      {resolutions.showTexts
+        ? renderTexts()
+        : null
+      }
 
     </div>
   </div>;

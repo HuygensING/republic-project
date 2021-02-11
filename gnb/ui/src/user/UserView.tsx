@@ -20,12 +20,7 @@ export default function UserView(props: UserViewerProps) {
 
   return <div className="row mt-3">
     <div className="col">
-      <div className={`border border-white ${isHovering ? 'bg-light' : ''}`}>
-
-        <DeleteButton
-          hoverRef={deleteRef}
-          onClose={props.onDelete}
-        />
+      <div className={`row-view border border-white ${isHovering ? 'bg-light' : ''}`}>
 
         <PersonViewer
           person={props.person}
@@ -33,8 +28,13 @@ export default function UserView(props: UserViewerProps) {
           memoKey={[resolutionState.updatedOn, props.type, props.person.id]}
         />
 
+        <DeleteButton
+          hoverRef={deleteRef}
+          onClose={props.onDelete}
+        />
+
       </div>
     </div>
-  </div>;
+  </div>
 
 }

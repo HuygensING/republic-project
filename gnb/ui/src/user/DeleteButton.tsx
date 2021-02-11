@@ -7,7 +7,7 @@ type DeleteButtonProps = {
 
 export default function DeleteButton(props: DeleteButtonProps) {
 
-  return <button ref={props.hoverRef} onClick={props.onClose} type="button" className="close pr-3 pt-2" aria-label="Close">
+  return <button ref={props.hoverRef} onClick={props.onClose} type="button" className="delete-btn close pr-3 pt-2" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>;
 

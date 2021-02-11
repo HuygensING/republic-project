@@ -27,3 +27,6 @@ export const ERR_ES_GET_MULTI_RESOLUTIONS = 'Resoluties konden niet opgehaald wo
 
 // Warnings:
 export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begindatum te liggen.';
+
+// View compoer:
+export const ADD_NEW_VIEW_BTN = '+ Voeg toe'

@@ -28,6 +28,6 @@ export default function ContextProvider(props: ContextProviderProps) {
           </PeopleContext.Provider>
         </ResolutionContext.Provider>
       </SearchContext.Provider>
-    </ClientContext.Provider>;
+    </ClientContext.Provider>
   </>
 }

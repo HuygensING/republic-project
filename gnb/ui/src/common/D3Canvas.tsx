@@ -14,13 +14,8 @@ export const D3Canvas = React.memo<D3CanvasProps>((props) => {
 
   return (
     <svg
+      className="d3-canvas"
       ref={ref}
-      style={{
-        height: "15em",
-        width: "100%",
-        marginRight: "0px",
-        marginLeft: "0px",
-      }}
     >
       <g className="plot-area"/>
       <g className="x-axis"/>

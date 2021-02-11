@@ -4,6 +4,7 @@ import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
 import UserViews from "./UserViews";
 import ContextProvider from "./ContextProvider";
+import ViewComposer from "./user/ViewComposer";
 
 type GuiProps = {
   client: GnbElasticClient
@@ -15,8 +16,8 @@ type GuiProps = {
 export default function Gui(props: GuiProps) {
 
   return (
-    <ContextProvider client={props.client}>
-      <div className="container-fluid">
+    <div className="gui container-fluid">
+      <ContextProvider client={props.client}>
 
         <div className="row mt-3 mb-3">
           <div className="col">
@@ -25,10 +26,11 @@ export default function Gui(props: GuiProps) {
         </div>
 
         <Search/>
-        <ResolutionViewer />
+        <ResolutionViewer/>
         <UserViews/>
-      </div>
-    </ContextProvider>
+        <ViewComposer/>
+      </ContextProvider>
+    </div>
   );
 
 

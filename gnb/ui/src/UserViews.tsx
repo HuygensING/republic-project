@@ -21,5 +21,5 @@ export default function UserViews () {
         onDelete={() => deleteView(i)}
       />
     })}
-  </>;
+  </>
 }
