@@ -1,17 +1,50 @@
-import React, {useEffect, useState} from "react";
-import {ADD_NEW_VIEW_BTN, NEW_VIEW_MODAL_TITLE, PLOT_ATTENDANT} from "../Placeholder";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {
+  ADD_NEW_VIEW_BTN,
+  ATTENDANT,
+  MENTIONED,
+  NEW_VIEW_MODAL_TITLE,
+  PICK_USER_VIEW,
+  PLOT_ATTENDANT,
+  SEARCH_TERM
+} from "../Placeholder";
 import {usePeopleContext} from "../person/PeopleContext";
 import Modal from "../common/Modal";
 import {PersonOption} from "../search/PersonOption";
 import PeopleTypeahead from "../search/field/PeopleTypeahead";
 import {PersonType} from "../elastic/model/PersonType";
 
+export type PlotType = {
+  type: string,
+  personType?: PersonType,
+  placeholder: string
+};
+
+const plotTypes: PlotType[] = [
+  {
+    type: 'mentioned',
+    personType: PersonType.MENTIONED,
+    placeholder: MENTIONED
+  },
+  {
+    type: 'attendant',
+    personType: PersonType.ATTENDANT,
+    placeholder: ATTENDANT
+  },
+  {
+    type: 'term',
+    personType: PersonType.MENTIONED,
+    placeholder: SEARCH_TERM
+  }
+];
+
 export default function ViewComposer() {
 
   const {peopleState, setPeopleState} = usePeopleContext();
 
   const [state, setState] = useState({
-    isOpen: false
+    isOpen: false,
+    plotType: plotTypes[0]
   });
 
   useEffect(() => {
@@ -26,6 +59,21 @@ export default function ViewComposer() {
     setPeopleState({...peopleState, people: newPeople});
   };
 
+  function selectOption(e: ChangeEvent<HTMLSelectElement>) {
+    setState({...state, plotType: plotTypes.find(t => t.type === e.target.value) || plotTypes[0]});
+  }
+
+  function createOptions() {
+    return plotTypes.map((type, index) => {
+      return <option
+        key={index}
+        value={type.type}
+      >
+        {type.placeholder}
+      </option>
+    });
+  }
+
   return <div className="row mt-3">
     <Modal
       title={NEW_VIEW_MODAL_TITLE}
@@ -33,8 +81,21 @@ export default function ViewComposer() {
       handleClose={() => setState({...state, isOpen: false})}
     >
       <div className="form-group">
+
+        <div className="form-group">
+          <label htmlFor="formControlSelect">{PICK_USER_VIEW}</label>
+          <select
+            className="form-control"
+            id="formControlSelect"
+            onChange={selectOption}
+            value={state.plotType.type}
+          >
+            {createOptions()}
+          </select>
+        </div>
+
         {
-          state.isOpen
+          state.isOpen && state.plotType.personType === PersonType.ATTENDANT
             ? <PeopleTypeahead
               placeholder={PLOT_ATTENDANT}
               personType={PersonType.ATTENDANT}

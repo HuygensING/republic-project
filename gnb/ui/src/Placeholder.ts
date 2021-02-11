@@ -2,6 +2,7 @@
 export const MODAL_CLOSE = 'Sluit';
 export const MENTIONED = 'genoemde';
 export const ATTENDANT = 'aanwezige';
+export const SEARCH_TERM = 'zoekterm';
 
 // Search:
 export const WITH_ATTENDANTS = 'met aanwezigen...';
@@ -34,7 +35,8 @@ export const ERR_PERSON_TYPE_NOT_FOUND = 'PersonType is onbekend'
 // Warnings:
 export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begindatum te liggen.';
 
-// View compoer:
+// View composer:
 export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
 export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
 export const PLOT_ATTENDANT = 'Plot aanwezige';
+export const PICK_USER_VIEW = 'Kies type plot...'

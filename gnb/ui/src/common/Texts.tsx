@@ -10,7 +10,6 @@ import {useSearchContext} from "../search/SearchContext";
 import {joinJsx} from "../util/joinJsx";
 import {Person} from "../elastic/model/Person";
 import {useClientContext} from "../search/ClientContext";
-import {usePrevious} from "../hook/usePrevious";
 
 type TextsProps = {
   resolutions: string[],

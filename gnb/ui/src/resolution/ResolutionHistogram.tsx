@@ -8,7 +8,7 @@ import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../search/ClientContext";
-import {RESOLUTIONS_HISTOGRAM_TITLE, RESOLUTIONS_TEXTS_TITLE} from "../Placeholder";
+import {RESOLUTIONS_HISTOGRAM_TITLE} from "../Placeholder";
 
 moment.locale('nl');
 
