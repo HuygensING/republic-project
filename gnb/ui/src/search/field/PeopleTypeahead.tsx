@@ -28,7 +28,6 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
   const throwError = useAsyncError();
   if (state.loading) {
     handleLoading();
-
   }
   async function handleLoading() {
     const options = await createOptions();

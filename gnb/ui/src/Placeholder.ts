@@ -30,3 +30,5 @@ export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begin
 
 // View compoer:
 export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
+export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
+export const PLOT_ATTENDANT = 'Plot aanwezige';
