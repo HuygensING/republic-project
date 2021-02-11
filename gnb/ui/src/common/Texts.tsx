@@ -1,7 +1,7 @@
 import React, {memo, useState} from "react";
 import Resolution from "../elastic/model/Resolution";
 import Modal from "./Modal";
-import {RESOLUTIONS_TITLE} from "../Placeholder";
+import {RESOLUTIONS_TEXTS_TITLE} from "../Placeholder";
 import {useAsyncError} from "../hook/useAsyncError";
 import {equal} from "../util/equal";
 import {PersonType} from "../elastic/model/PersonType";
@@ -47,7 +47,7 @@ export const Texts = memo(function (props: TextsProps) {
 
   return (
     <Modal
-      title={`${RESOLUTIONS_TITLE} (n=${state.resolutions.length})`}
+      title={`${RESOLUTIONS_TEXTS_TITLE} (n=${state.resolutions.length})`}
       isOpen={true}
       handleClose={props.handleClose}
     >

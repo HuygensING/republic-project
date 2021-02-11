@@ -1,5 +1,7 @@
 // Common:
 export const MODAL_CLOSE = 'Sluit';
+export const MENTIONED = 'genoemde';
+export const ATTENDANT = 'aanwezige';
 
 // Search:
 export const WITH_ATTENDANTS = 'met aanwezigen...';
@@ -15,7 +17,10 @@ export const HELP_FULL_TEXT_BODY = 'Zoek \'full-text\' in de resoluties met behu
 export const HELP_START_END_TITLE = 'Zoeken in de tijd';
 export const HELP_START_END_BODY = 'Gebruik de linker en rechter pijltjestoets of de kalender-\'widget\' om door de tijd (1626-1630) te lopen. De lengte van de periode kan veranderd worden met de einddatum.';
 
-export const RESOLUTIONS_TITLE = "Resolutions";
+// Histograms:
+export const RESOLUTIONS_TEXTS_TITLE = "Resoluties";
+export const RESOLUTIONS_HISTOGRAM_TITLE = "# Resoluties";
+export const PERSON_HISTOGRAM_PREFIX = "Met ";
 
 // Errors:
 export const ERR_ES_NOT_AVAILABLE = 'De Elasticsearch database is niet beschikbaar'
@@ -24,6 +29,7 @@ export const ERR_ES_GET_MULTI_PEOPLE = 'Details van mensen konden niet opgehaald
 export const ERR_ES_AGGREGATE_RESOLUTIONS = 'Resoluties konden niet geaggregeerd worden';
 export const ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON = 'Resoluties konden niet geaggregeerd worden op basis van persoon';
 export const ERR_ES_GET_MULTI_RESOLUTIONS = 'Resoluties konden niet opgehaald worden';
+export const ERR_PERSON_TYPE_NOT_FOUND = 'PersonType is onbekend'
 
 // Warnings:
 export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begindatum te liggen.';

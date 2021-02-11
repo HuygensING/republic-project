@@ -8,7 +8,8 @@ import {fromEsFormat} from "../util/fromEsFormat";
 import {Person, toName} from "../elastic/model/Person";
 import {useClientContext} from "../search/ClientContext";
 import {equal} from "../util/equal";
-import {PersonType} from "../elastic/model/PersonType";
+import {PersonType, toPlaceholder} from "../elastic/model/PersonType";
+import {PERSON_HISTOGRAM_PREFIX} from "../Placeholder";
 
 moment.locale('nl');
 
@@ -54,7 +55,7 @@ export const PersonHistogram = memo(function(props: AttendantHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        {bar: {color: "orange"}, y: {title: `With ${props.type} ${toName(props.person)}`}},
+        {bar: {color: "orange"}, y: {title: `${PERSON_HISTOGRAM_PREFIX} ${toPlaceholder(props.type)} ${toName(props.person)}`}},
         props.handleResolutions
       );
 
