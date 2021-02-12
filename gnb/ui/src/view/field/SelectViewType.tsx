@@ -3,7 +3,7 @@ import React, {ChangeEvent} from "react";
 import {ViewType, ViewTypes} from "../ViewTypes";
 
 type SelectViewTypeProps = {
-  selected: ViewType | null
+  selected: ViewType | undefined
   selectOption: (e: ChangeEvent<HTMLSelectElement>) => void
 }
 

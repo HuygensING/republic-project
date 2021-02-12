@@ -2,11 +2,10 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import {NEW_VIEW_MODAL_TITLE} from "../Placeholder";
 import Modal from "../common/Modal";
 import {PersonOption} from "../search/PersonOption";
-import {PersonType} from "../elastic/model/PersonType";
 import AddViewBtn from "./field/AddViewBtn";
 import AddMentionedViewTypeahead from "./field/AddMentionedViewTypeahead";
 import AddAttendantViewTypeahead from "./field/AddAttendantViewTypeahead";
-import {ViewType, ViewTypes} from "./ViewTypes";
+import {fromValue, ViewType} from "./ViewTypes";
 import SelectViewType from "./field/SelectViewType";
 import {useViewContext} from "./ViewContext";
 
@@ -14,9 +13,9 @@ export default function ViewComposer() {
 
   const {viewState, setViewState} = useViewContext();
 
-  const [state, setState] = useState<{ isOpen: boolean, viewType: ViewType | null }>({
+  const [state, setState] = useState<{ isOpen: boolean, viewType: ViewType | undefined }>({
     isOpen: false,
-    viewType: null
+    viewType: undefined
   });
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export default function ViewComposer() {
   };
 
   function selectOption(e: ChangeEvent<HTMLSelectElement>) {
-    setState({...state, viewType: ViewType.ATTENDANT});
+    setState({...state, viewType: fromValue(e.target.value)});
   }
 
   return <div className="row mt-3">

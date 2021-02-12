@@ -1,5 +1,5 @@
 import {PersonType} from "../elastic/model/PersonType";
-import {ATTENDANT, ERR_NOT_A_PERSON, MENTIONED, SEARCH_TERM} from "../Placeholder";
+import {ATTENDANT, ERR_NOT_A_PERSON, ERR_NOT_A_VIEW_TYPE_VALUE, MENTIONED, SEARCH_TERM} from "../Placeholder";
 import {Term} from "./Term";
 import {Person} from "../elastic/model/Person";
 
@@ -50,4 +50,15 @@ export function toString(entity: Person | Term) {
   if((entity as Term).val !== undefined) {
     return (entity as Term).val;
   }
+}
+
+export function fromValue(value: string) : ViewType {
+  const found = Object
+    .entries(ViewType)
+    .find(([, t]) => t === value)
+    ?.[1];
+  if(!found) {
+    throw Error(`${ERR_NOT_A_VIEW_TYPE_VALUE}: ${value}`);
+  }
+  return found;
 }

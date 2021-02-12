@@ -32,6 +32,7 @@ export const ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON = 'Resoluties konden niet ge
 export const ERR_ES_GET_MULTI_RESOLUTIONS = 'Resoluties konden niet opgehaald worden';
 export const ERR_VIEW_TYPE_NOT_FOUND = 'Type is onbekend'
 export const ERR_NOT_A_PERSON = 'Ingevoerde ViewType is geen persoon'
+export const ERR_NOT_A_VIEW_TYPE_VALUE = 'Ingevoerde waarde bestaat niet voor ViewType'
 
 // Warnings:
 export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begindatum te liggen.';
