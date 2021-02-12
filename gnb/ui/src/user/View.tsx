@@ -3,8 +3,8 @@ import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
 import DeleteViewButton from "./DeleteViewButton";
 import useHover from "../hook/useHover";
-import {PersonViewer} from "../person/PersonViewer";
 import {useResolutionContext} from "../resolution/ResolutionContext";
+import {PersonViewer} from "../view/PersonViewer";
 
 type UserViewerProps = {
   person: Person,
@@ -12,7 +12,7 @@ type UserViewerProps = {
   onDelete: () => void;
 }
 
-export default function UserView(props: UserViewerProps) {
+export default function View(props: UserViewerProps) {
 
   const deleteRef = useRef(null)
   const isHovering = useHover(deleteRef);

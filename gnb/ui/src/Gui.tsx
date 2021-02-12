@@ -2,7 +2,7 @@ import React from 'react';
 import {Search} from "./search/Search";
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
-import UserViews from "./UserViews";
+import Views from "./user/Views";
 import ContextProvider from "./ContextProvider";
 import ViewComposer from "./user/ViewComposer";
 import Version from "./Version";
@@ -27,7 +27,7 @@ export default function Gui(props: GuiProps) {
           </div>
           <Search/>
           <ResolutionViewer/>
-          <UserViews/>
+          <Views/>
           <ViewComposer/>
         </ContextProvider>
       </div>

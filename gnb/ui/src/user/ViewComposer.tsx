@@ -1,6 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {NEW_VIEW_MODAL_TITLE} from "../Placeholder";
-import {usePeopleContext} from "../person/PeopleContext";
 import Modal from "../common/Modal";
 import {PersonOption} from "../search/PersonOption";
 import {PersonType} from "../elastic/model/PersonType";
@@ -9,10 +8,11 @@ import AddMentionedViewTypeahead from "./AddMentionedViewTypeahead";
 import AddAttendantViewTypeahead from "./AddAttendantViewTypeahead";
 import {ViewType, ViewTypes} from "./ViewTypes";
 import SelectViewType from "./SelectViewType";
+import {useViewContext} from "../view/ViewContext";
 
 export default function ViewComposer() {
 
-  const {peopleState, setPeopleState} = usePeopleContext();
+  const {viewState, setViewState} = useViewContext();
 
   const [state, setState] = useState<{ isOpen: boolean, viewType: ViewType | null }>({
     isOpen: false,
@@ -23,12 +23,12 @@ export default function ViewComposer() {
     setState(s => {
       return {...s, isOpen: false}
     })
-  }, [peopleState]);
+  }, [viewState]);
 
   const handleSubmit = async (selected: PersonOption, type: PersonType) => {
-    const newPeople = peopleState.people;
-    newPeople.push({person: selected.person, type});
-    setPeopleState({...peopleState, people: newPeople});
+    const newViews = viewState.views;
+    newViews.push({person: selected.person, type});
+    setViewState({...viewState, views: newViews});
   };
 
   function selectOption(e: ChangeEvent<HTMLSelectElement>) {
