@@ -38,8 +38,8 @@ export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begin
 // View composer:
 export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
 export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
-export const PLOT_ATTENDANT = 'Plot aanwezige';
-export const PLOT_MENTIONED = 'Plot genoemde';
+export const PICK_ATTENDANT = 'Kies aanwezige';
+export const PICK_MENTIONED = 'Kies genoemde';
 export const PICK_USER_VIEW = 'Kies type plot...'
 
 // Version:

@@ -1,7 +1,7 @@
 import React, {useRef} from "react";
 import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
-import DeleteButton from "./DeleteButton";
+import DeleteViewButton from "./DeleteViewButton";
 import useHover from "../hook/useHover";
 import {PersonViewer} from "../person/PersonViewer";
 import {useResolutionContext} from "../resolution/ResolutionContext";
@@ -28,7 +28,7 @@ export default function UserView(props: UserViewerProps) {
           memoKey={[resolutionState.updatedOn, props.type, props.person.id]}
         />
 
-        <DeleteButton
+        <DeleteViewButton
           hoverRef={deleteRef}
           onClose={props.onDelete}
         />

@@ -20,18 +20,15 @@ export default function Gui(props: GuiProps) {
     <>
       <div className="gui container-fluid">
         <ContextProvider client={props.client}>
-
           <div className="row mt-3 mb-3">
             <div className="col">
               <h1>GNB UI</h1>
             </div>
           </div>
-
           <Search/>
           <ResolutionViewer/>
           <UserViews/>
           <ViewComposer/>
-
         </ContextProvider>
       </div>
       <Version />
