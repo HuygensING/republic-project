@@ -1,7 +1,6 @@
 import React from "react";
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import GnbElasticClient from "../../elastic/GnbElasticClient";
 import PeopleTypeahead from "./PeopleTypeahead";
 import {WITH_ATTENDANTS} from "../../Placeholder";
 import {PersonType} from "../../elastic/model/PersonType";

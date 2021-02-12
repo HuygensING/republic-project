@@ -5,6 +5,7 @@
 Run:
 ```
 npm install
+source .env
 npm start
 ```
 

@@ -13,7 +13,6 @@ export default async function App() {
   await init(strict);
 
   function init(strict: boolean) {
-
     const normalJsx = <Gui client={client}/>;
 
     const strictJsx = <React.StrictMode>

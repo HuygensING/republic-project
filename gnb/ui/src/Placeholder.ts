@@ -41,3 +41,6 @@ export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
 export const PLOT_ATTENDANT = 'Plot aanwezige';
 export const PLOT_MENTIONED = 'Plot genoemde';
 export const PICK_USER_VIEW = 'Kies type plot...'
+
+// Version:
+export const VERSION = 'Versie'
