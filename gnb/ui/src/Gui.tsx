@@ -5,7 +5,6 @@ import ResolutionViewer from "./resolution/ResolutionViewer";
 import UserViews from "./UserViews";
 import ContextProvider from "./ContextProvider";
 import ViewComposer from "./user/ViewComposer";
-import Config from "./Config";
 import Version from "./Version";
 
 type GuiProps = {
