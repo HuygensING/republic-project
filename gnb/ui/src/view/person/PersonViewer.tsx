@@ -1,10 +1,10 @@
-import {D3Canvas} from "../common/D3Canvas";
+import {D3Canvas} from "../../common/D3Canvas";
 import {PersonHistogram} from "./PersonHistogram";
 import React, {memo, useEffect, useRef, useState} from "react";
-import {Person} from "../elastic/model/Person";
-import {PersonType} from "../elastic/model/PersonType";
-import {equal} from "../util/equal";
-import {Texts} from "../common/Texts";
+import {Person} from "../../elastic/model/Person";
+import {PersonType} from "../../elastic/model/PersonType";
+import {equal} from "../../util/equal";
+import {Texts} from "../../common/Texts";
 
 type PersonViewerProps = {
   person: Person,

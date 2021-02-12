@@ -1,10 +1,10 @@
 import React, {useRef} from "react";
 import {Person} from "../elastic/model/Person";
 import {PersonType} from "../elastic/model/PersonType";
-import DeleteViewButton from "./DeleteViewButton";
+import DeleteViewButton from "./field/DeleteViewButton";
 import useHover from "../hook/useHover";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {PersonViewer} from "../view/PersonViewer";
+import {PersonViewer} from "./person/PersonViewer";
 
 type UserViewerProps = {
   person: Person,

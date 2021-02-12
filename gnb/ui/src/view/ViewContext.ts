@@ -16,9 +16,6 @@ export type ViewContextType = {
   setViewState: (s: ViewStateType) => void
 }
 
-/**
- * TODO: Make configurable
- */
 export const defaultViewContext = {
   viewState: {
     ...defaultBaseContext,

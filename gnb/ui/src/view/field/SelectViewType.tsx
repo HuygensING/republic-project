@@ -1,6 +1,6 @@
-import {PICK_USER_VIEW} from "../Placeholder";
+import {PICK_USER_VIEW} from "../../Placeholder";
 import React, {ChangeEvent} from "react";
-import {ViewType, ViewTypes} from "./ViewTypes";
+import {ViewType, ViewTypes} from "../ViewTypes";
 
 type SelectViewTypeProps = {
   selected: ViewType | null
@@ -13,7 +13,7 @@ export default function SelectViewType(props: SelectViewTypeProps) {
       className="form-control"
       id="formControlSelect"
       onChange={props.selectOption}
-      value={props.selected ? props.selected.type : ""}
+      value={props.selected ? props.selected.name : ""}
     >
       <option value="">{PICK_USER_VIEW}</option>
       {createOptions()}
@@ -22,12 +22,12 @@ export default function SelectViewType(props: SelectViewTypeProps) {
 }
 
 function createOptions() {
-  return ViewTypes.map((type, index) => {
+  return Object.entries(ViewTypes).map(([name, value]) => {
     return <option
-      key={index}
-      value={type.type}
+      key={name}
+      value={value.name}
     >
-      {type.placeholder}
+      {value.placeholder}
     </option>
   });
 }

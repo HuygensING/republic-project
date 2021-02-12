@@ -3,12 +3,12 @@ import {NEW_VIEW_MODAL_TITLE} from "../Placeholder";
 import Modal from "../common/Modal";
 import {PersonOption} from "../search/PersonOption";
 import {PersonType} from "../elastic/model/PersonType";
-import AddViewBtn from "./AddViewBtn";
-import AddMentionedViewTypeahead from "./AddMentionedViewTypeahead";
-import AddAttendantViewTypeahead from "./AddAttendantViewTypeahead";
+import AddViewBtn from "./field/AddViewBtn";
+import AddMentionedViewTypeahead from "./field/AddMentionedViewTypeahead";
+import AddAttendantViewTypeahead from "./field/AddAttendantViewTypeahead";
 import {ViewType, ViewTypes} from "./ViewTypes";
-import SelectViewType from "./SelectViewType";
-import {useViewContext} from "../view/ViewContext";
+import SelectViewType from "./field/SelectViewType";
+import {useViewContext} from "./ViewContext";
 
 export default function ViewComposer() {
 
@@ -32,7 +32,7 @@ export default function ViewComposer() {
   };
 
   function selectOption(e: ChangeEvent<HTMLSelectElement>) {
-    setState({...state, viewType: ViewTypes.find(t => t.type === e.target.value) || ViewTypes[0]});
+    setState({...state, viewType: ViewTypes.ATTENDANT});
   }
 
   return <div className="row mt-3">

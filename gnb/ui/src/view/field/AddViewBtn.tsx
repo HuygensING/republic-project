@@ -1,4 +1,4 @@
-import {ADD_NEW_VIEW_BTN} from "../Placeholder";
+import {ADD_NEW_VIEW_BTN} from "../../Placeholder";
 import React from "react";
 
 type AddViewBtnProps = {

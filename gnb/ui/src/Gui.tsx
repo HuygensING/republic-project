@@ -2,9 +2,9 @@ import React from 'react';
 import {Search} from "./search/Search";
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ResolutionViewer from "./resolution/ResolutionViewer";
-import Views from "./user/Views";
+import Views from "./view/Views";
 import ContextProvider from "./ContextProvider";
-import ViewComposer from "./user/ViewComposer";
+import ViewComposer from "./view/ViewComposer";
 import Version from "./Version";
 
 type GuiProps = {

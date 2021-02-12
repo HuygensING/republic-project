@@ -2,24 +2,24 @@ import {PersonType} from "../elastic/model/PersonType";
 import {ATTENDANT, MENTIONED, SEARCH_TERM} from "../Placeholder";
 
 export type ViewType = {
-  type: string,
+  name: string,
   personType?: PersonType,
   placeholder: string
 };
 
-export const ViewTypes: ViewType[] = [
-  {
-    type: 'attendant',
+export const ViewTypes = {
+  ATTENDANT: {
+    name: PersonType.ATTENDANT,
     personType: PersonType.ATTENDANT,
     placeholder: ATTENDANT
   },
-  {
-    type: 'mentioned',
+  MENTIONED: {
+    name: PersonType.MENTIONED,
     personType: PersonType.MENTIONED,
     placeholder: MENTIONED
   },
-  {
-    type: 'term',
+  TERM: {
+    name: 'term',
     placeholder: SEARCH_TERM
   }
-];
+};
