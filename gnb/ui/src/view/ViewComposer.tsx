@@ -25,14 +25,14 @@ export default function ViewComposer() {
     })
   }, [viewState]);
 
-  const handleSubmit = async (selected: PersonOption, type: PersonType) => {
+  const handleSubmit = async (selected: PersonOption, type: ViewType) => {
     const newViews = viewState.views;
-    newViews.push({person: selected.person, type});
+    newViews.push({entity: selected.person, type});
     setViewState({...viewState, views: newViews});
   };
 
   function selectOption(e: ChangeEvent<HTMLSelectElement>) {
-    setState({...state, viewType: ViewTypes.ATTENDANT});
+    setState({...state, viewType: ViewType.ATTENDANT});
   }
 
   return <div className="row mt-3">
@@ -46,11 +46,11 @@ export default function ViewComposer() {
         <SelectViewType selected={state.viewType} selectOption={selectOption}/>
 
         {
-          state.isOpen && state.viewType?.personType === PersonType.MENTIONED
+          state.isOpen && state.viewType === ViewType.MENTIONED
             ? <AddMentionedViewTypeahead handleSubmit={handleSubmit}/> : null
         }
         {
-          state.isOpen && state.viewType?.personType === PersonType.ATTENDANT
+          state.isOpen && state.viewType === ViewType.ATTENDANT
             ? <AddAttendantViewTypeahead handleSubmit={handleSubmit}/> : null
         }
 

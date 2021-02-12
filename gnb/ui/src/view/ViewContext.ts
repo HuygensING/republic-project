@@ -1,14 +1,14 @@
 import {createContext, useContext} from 'react';
 import {Person} from "../elastic/model/Person";
-import {PersonType} from "../elastic/model/PersonType";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
+import {ViewType} from "./ViewTypes";
+import {Term} from "./Term";
 
-export type PersonWithType = {
-  person: Person;
-  type: PersonType
-};
 export type ViewStateType = BaseStateType & {
-  views: PersonWithType[];
+  views: {
+    type: ViewType,
+    entity: Person | Term
+  }[];
 }
 
 export type ViewContextType = {

@@ -5,11 +5,11 @@ import {HistogramBar, renderHistogram} from "../../common/Histogram";
 import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
-import {Person, toName} from "../../elastic/model/Person";
 import {useClientContext} from "../../search/ClientContext";
 import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
+import {Person, toName} from "../../elastic/model/Person";
 
 moment.locale('nl');
 
@@ -24,13 +24,14 @@ type AttendantHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const PersonHistogram = memo(function(props: AttendantHistogramProps) {
+export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
 
   updateHistogram();
+
   function updateHistogram() {
 
     const bars = resolutionState.resolutions;
@@ -39,10 +40,12 @@ export const PersonHistogram = memo(function(props: AttendantHistogramProps) {
       return;
     }
 
+    const type = props.type;
+
     client.resolutionResource.aggregateByPerson(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
       props.person.id,
-      props.type,
+      type,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -55,7 +58,14 @@ export const PersonHistogram = memo(function(props: AttendantHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        {bar: {color: "orange"}, y: {title: `${PERSON_HISTOGRAM_PREFIX} ${toPlaceholder(props.type)} ${toName(props.person)}`}},
+        {
+          bar: {
+            color: "orange"
+          },
+          y: {
+            title: `${PERSON_HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${toName(props.person)}`
+          }
+        },
         props.handleResolutions
       );
 

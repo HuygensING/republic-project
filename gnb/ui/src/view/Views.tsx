@@ -14,13 +14,14 @@ export default function Views () {
   }
 
   return <>
-    {viewState.views.map((p, i) => {
-      return <View
-        key={i}
-        person={p.person}
-        type={p.type}
-        onDelete={() => deleteView(i)}
-      />
+    {viewState.views.map((v, i) => {
+        return <View
+          key={i}
+          entity={v.entity}
+          type={v.type}
+          onDelete={() => deleteView(i)}
+        />
+
     })}
   </>
 }

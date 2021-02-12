@@ -13,7 +13,7 @@ export default function SelectViewType(props: SelectViewTypeProps) {
       className="form-control"
       id="formControlSelect"
       onChange={props.selectOption}
-      value={props.selected ? props.selected.name : ""}
+      value={props.selected ? props.selected : ""}
     >
       <option value="">{PICK_USER_VIEW}</option>
       {createOptions()}

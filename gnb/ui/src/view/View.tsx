@@ -1,18 +1,19 @@
 import React, {useRef} from "react";
 import {Person} from "../elastic/model/Person";
-import {PersonType} from "../elastic/model/PersonType";
 import DeleteViewButton from "./field/DeleteViewButton";
 import useHover from "../hook/useHover";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {PersonViewer} from "./person/PersonViewer";
+import {EntityViewer} from "./entity/EntityViewer";
+import {toString, ViewType} from "./ViewTypes";
+import {Term} from "./Term";
 
-type UserViewerProps = {
-  person: Person,
-  type: PersonType
+type ViewProps = {
+  entity: Person | Term,
+  type: ViewType
   onDelete: () => void;
 }
 
-export default function View(props: UserViewerProps) {
+export default function View(props: ViewProps) {
 
   const deleteRef = useRef(null)
   const isHovering = useHover(deleteRef);
@@ -22,10 +23,10 @@ export default function View(props: UserViewerProps) {
     <div className="col">
       <div className={`row-view border border-white ${isHovering ? 'bg-light' : ''}`}>
 
-        <PersonViewer
-          person={props.person}
+        <EntityViewer
+          entity={props.entity}
           type={props.type}
-          memoKey={[resolutionState.updatedOn, props.type, props.person.id]}
+          memoKey={[resolutionState.updatedOn, props.type, toString(props.entity)]}
         />
 
         <DeleteViewButton

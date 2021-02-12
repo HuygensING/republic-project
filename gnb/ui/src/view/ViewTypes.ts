@@ -1,25 +1,53 @@
 import {PersonType} from "../elastic/model/PersonType";
-import {ATTENDANT, MENTIONED, SEARCH_TERM} from "../Placeholder";
+import {ATTENDANT, ERR_NOT_A_PERSON, MENTIONED, SEARCH_TERM} from "../Placeholder";
+import {Term} from "./Term";
+import {Person} from "../elastic/model/Person";
 
-export type ViewType = {
-  name: string,
-  personType?: PersonType,
-  placeholder: string
-};
+export enum ViewType {
+  ATTENDANT = 'attendant',
+  MENTIONED = 'mentioned',
+  TERM = 'term'
+}
 
-export const ViewTypes = {
-  ATTENDANT: {
+export const ViewTypes = [
+  {
     name: PersonType.ATTENDANT,
     personType: PersonType.ATTENDANT,
     placeholder: ATTENDANT
   },
-  MENTIONED: {
+  {
     name: PersonType.MENTIONED,
     personType: PersonType.MENTIONED,
     placeholder: MENTIONED
   },
-  TERM: {
+  {
     name: 'term',
     placeholder: SEARCH_TERM
   }
-};
+];
+
+export function isPerson(type: ViewType) : boolean {
+  return [ViewType.ATTENDANT, ViewType.MENTIONED].includes(type);
+}
+
+export function toPerson(type: ViewType) : PersonType {
+  if(!isPerson(type)) {
+    throw Error(`${ERR_NOT_A_PERSON}: ${type}`);
+  }
+  const found = ViewTypes
+    .find(t => t.personType?.valueOf() === type.valueOf())
+    ?.personType;
+  if(!found) {
+    throw Error(`${ERR_NOT_A_PERSON}: ${type}`);
+  }
+  return found;
+}
+
+export function toString(entity: Person | Term) {
+  if((entity as Person).id !== undefined) {
+    return (entity as Person).id;
+  }
+  if((entity as Term).val !== undefined) {
+    return (entity as Term).val;
+  }
+}

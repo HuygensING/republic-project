@@ -30,7 +30,8 @@ export const ERR_ES_GET_MULTI_PEOPLE = 'Details van mensen konden niet opgehaald
 export const ERR_ES_AGGREGATE_RESOLUTIONS = 'Resoluties konden niet geaggregeerd worden';
 export const ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON = 'Resoluties konden niet geaggregeerd worden op basis van persoon';
 export const ERR_ES_GET_MULTI_RESOLUTIONS = 'Resoluties konden niet opgehaald worden';
-export const ERR_PERSON_TYPE_NOT_FOUND = 'PersonType is onbekend'
+export const ERR_VIEW_TYPE_NOT_FOUND = 'Type is onbekend'
+export const ERR_NOT_A_PERSON = 'Ingevoerde ViewType is geen persoon'
 
 // Warnings:
 export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begindatum te liggen.';
