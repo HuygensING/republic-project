@@ -22,6 +22,8 @@ type BarChartProps = {
  */
 export default function ResolutionHistogram(props: BarChartProps) {
 
+  const client = useClientContext().clientState.client;
+
   const {searchState} = useSearchContext();
   const prevAttendants = usePrevious(searchState.attendants)
 
@@ -56,7 +58,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
     const attendants = searchState.attendants.map(p => p.id);
     const mentioned = searchState.mentioned.map(p => p.id);
 
-    useClientContext().clientState.client.resolutionResource.aggregateBy(
+    client.resolutionResource.aggregateBy(
       attendants,
       mentioned,
       searchState.start,
