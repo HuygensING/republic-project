@@ -8,6 +8,9 @@ import AddAttendantViewTypeahead from "./field/AddAttendantViewTypeahead";
 import {fromValue, ViewType} from "./ViewTypes";
 import SelectViewType from "./field/SelectViewType";
 import {useViewContext} from "./ViewContext";
+import AddTermFormField from "./field/AddTermFormField";
+import {Term} from "./Term";
+import {Person} from "../elastic/model/Person";
 
 export default function ViewComposer() {
 
@@ -24,15 +27,15 @@ export default function ViewComposer() {
     })
   }, [viewState]);
 
-  const handleSubmit = async (selected: PersonOption, type: ViewType) => {
-    const newViews = viewState.views;
-    newViews.push({entity: selected.person, type});
-    setViewState({...viewState, views: newViews});
-  };
-
   function selectOption(e: ChangeEvent<HTMLSelectElement>) {
     setState({...state, viewType: fromValue(e.target.value)});
   }
+
+  const handleSubmit = async (selected: Person | Term, type: ViewType) => {
+    const newViews = viewState.views;
+    newViews.push({entity: selected, type});
+    setViewState({...viewState, views: newViews});
+  };
 
   return <div className="row mt-3">
     <Modal
@@ -51,6 +54,10 @@ export default function ViewComposer() {
         {
           state.isOpen && state.viewType === ViewType.ATTENDANT
             ? <AddAttendantViewTypeahead handleSubmit={handleSubmit}/> : null
+        }
+        {
+          state.isOpen && state.viewType === ViewType.TERM
+            ? <AddTermFormField handleSubmit={handleSubmit}/> : null
         }
 
       </div>

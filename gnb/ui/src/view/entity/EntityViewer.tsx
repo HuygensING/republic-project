@@ -1,12 +1,12 @@
 import {D3Canvas} from "../../common/D3Canvas";
 import {PersonHistogram} from "./PersonHistogram";
 import React, {memo, useEffect, useRef, useState} from "react";
-import {Person, toName} from "../../elastic/model/Person";
-import {PersonType} from "../../elastic/model/PersonType";
+import {Person} from "../../elastic/model/Person";
 import {equal} from "../../util/equal";
 import {Texts} from "../../common/Texts";
 import {Term} from "../Term";
 import {isPerson, toPerson, ViewType} from "../ViewTypes";
+import {TermHistogram} from "./TermHistogram";
 
 type EntityViewerProps = {
   entity: Person | Term,
@@ -28,16 +28,31 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     setHasSvg(svgRef.current)
   }, [svgRef]);
 
-  return <>
-    <D3Canvas svgRef={svgRef}/>
-
-    {hasSvg && isPerson(props.type) ? <PersonHistogram
+  function renderPersonHistogram() {
+    return <PersonHistogram
       handleResolutions={(ids: string[]) => setState({...state, ids, showTexts: true})}
       svgRef={svgRef}
       person={props.entity as Person}
       type={toPerson(props.type)}
       memoKey={props.memoKey}
-    /> : null}
+    />;
+  }
+
+  function renderTermHistogram() {
+    return <TermHistogram
+      handleResolutions={(ids: string[]) => setState({...state, ids, showTexts: true})}
+      svgRef={svgRef}
+      term={props.entity as Term}
+      memoKey={props.memoKey}
+    />;
+  }
+
+  return <>
+    <D3Canvas svgRef={svgRef}/>
+
+    {hasSvg && isPerson(props.type) ? renderPersonHistogram() : null}
+
+    {hasSvg && props.type === ViewType.TERM ? renderTermHistogram() : null}
 
     {state.showTexts ? <Texts
       resolutions={state.ids}

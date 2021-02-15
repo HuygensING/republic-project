@@ -104,7 +104,6 @@ export default class ResolutionResource {
   }
 
   /**
-   * TODO: cleanup
    * @param resolutions
    * @param id
    * @param type
@@ -126,6 +125,41 @@ export default class ResolutionResource {
     const filteredQuery = new AggWithFilters();
     filteredQuery.addFilter(new FilterPeople(id, type));
 
+    return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
+
+  }
+
+  /**
+   * @param resolutions
+   * @param elastic simple query string
+   * @param type
+   * @param begin
+   * @param end
+   */
+  public async aggregateByTerm(
+    resolutions: string[],
+    term: string,
+    begin: Date,
+    end: Date
+  ): Promise<Resolution[]> {
+
+    if (resolutions.length === 0) {
+      return [];
+    }
+
+    const filteredQuery = new AggWithFilters();
+    filteredQuery.addFilter(new FilterFullText(term));
+
+    return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
+
+  }
+
+  private async aggregateByResolutionsAndFilters(
+    resolutions: string[],
+    filteredQuery: AggWithFilters,
+    begin: Date,
+    end: Date
+  ) {
     const sortedResolutions = resolutions.sort();
     filteredQuery.addAgg(new AggsResolutionHistogram(begin, end, 1));
 
@@ -143,6 +177,5 @@ export default class ResolutionResource {
       .filtered_aggs
       .resolution_histogram
       .buckets;
-
   }
 }

@@ -19,7 +19,6 @@ export class QueryWithIdsAndHighlights extends QueryWithSize {
     this.query = {
       "ids": { "values": ids }
     };
-    // TODO: add full-text highlighting
 
     this.highlight = highlight ? {
       "number_of_fragments": 0,
