@@ -1,6 +1,6 @@
-import {ATTENDANT, MENTIONED, PICK_USER_VIEW, SEARCH_TERM} from "../../Placeholder";
+import {ATTENDANT, LOCATION, MENTIONED, PICK_USER_VIEW} from "../../Placeholder";
 import React, {ChangeEvent} from "react";
-import {ViewType} from "../ViewTypes";
+import {ViewType} from "../model/ViewType";
 import {PersonType} from "../../elastic/model/PersonType";
 
 type SelectViewTypeProps = {
@@ -22,7 +22,11 @@ export default function SelectViewType(props: SelectViewTypeProps) {
   </div>;
 }
 
-const ViewTypes = [
+export const ViewTypes = [
+  {
+    name: PersonType.ATTENDANT,
+    placeholder: ATTENDANT
+  },
   {
     name: PersonType.ATTENDANT,
     personType: PersonType.ATTENDANT,
@@ -34,8 +38,8 @@ const ViewTypes = [
     placeholder: MENTIONED
   },
   {
-    name: 'term',
-    placeholder: SEARCH_TERM
+    name: ViewType.LOCATION,
+    placeholder: LOCATION
   }
 ];
 

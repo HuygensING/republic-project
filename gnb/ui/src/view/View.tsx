@@ -4,11 +4,12 @@ import DeleteViewButton from "./field/DeleteViewButton";
 import useHover from "../hook/useHover";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 import {EntityViewer} from "./entity/EntityViewer";
-import {toString, ViewType} from "./ViewTypes";
-import {Term} from "./Term";
+import {toString, ViewType} from "./model/ViewType";
+import {Term} from "./model/Term";
+import Location from "./model/Location";
 
 type ViewProps = {
-  entity: Person | Term,
+  entity: Person | Term | Location,
   type: ViewType
   onDelete: () => void;
 }

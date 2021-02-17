@@ -36,7 +36,7 @@ export default class ResolutionResource {
       .search(new AggsRequest(query))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
 
-    return response.aggregations.people.filter_people.sum_people_id.buckets;
+    return response.aggregations.nested_annotations.filter_annotations.sum.buckets;
   }
 
 

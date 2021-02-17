@@ -2,6 +2,7 @@
 export const MODAL_CLOSE = 'Sluit';
 export const MENTIONED = 'genoemde';
 export const ATTENDANT = 'aanwezige';
+export const LOCATION = 'locatie';
 export const SEARCH_TERM = 'zoekterm';
 
 // Search:
@@ -42,6 +43,7 @@ export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
 export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
 export const PICK_ATTENDANT = 'Kies aanwezige';
 export const PICK_MENTIONED = 'Kies genoemde';
+export const PICK_LOCATIONS = 'Kies locaties';
 export const PICK_USER_VIEW = 'Kies type plot...'
 
 // Version:

@@ -4,13 +4,14 @@ import Modal from "../common/Modal";
 import AddViewBtn from "./field/AddViewBtn";
 import AddMentionedViewTypeahead from "./field/AddMentionedViewTypeahead";
 import AddAttendantViewTypeahead from "./field/AddAttendantViewTypeahead";
-import {fromValue, ViewType} from "./ViewTypes";
+import {fromValue, ViewType} from "./model/ViewType";
 import SelectViewType from "./field/SelectViewType";
 import {useViewContext} from "./ViewContext";
 import AddTermFormField from "./field/AddTermFormField";
-import {Term} from "./Term";
+import {Term} from "./model/Term";
 import {Person} from "../elastic/model/Person";
-
+import LocationTypeahead from "./field/LocationTypeahead";
+import Location from "./model/Location";
 export default function ViewComposer() {
 
   // TODO: add location as ViewType, option and 'AddLocationFormField'
@@ -32,7 +33,7 @@ export default function ViewComposer() {
     setState({...state, viewType: fromValue(e.target.value)});
   }
 
-  const handleSubmit = async (selected: Person | Term, type: ViewType) => {
+  const handleSubmit = async (selected: Person | Term | Location, type: ViewType) => {
     const newViews = viewState.views;
     newViews.push({entity: selected, type});
     setViewState({...viewState, views: newViews});
@@ -59,6 +60,10 @@ export default function ViewComposer() {
         {
           state.isOpen && state.viewType === ViewType.TERM
             ? <AddTermFormField handleSubmit={handleSubmit}/> : null
+        }
+        {
+          state.isOpen && state.viewType === ViewType.LOCATION
+            ? <LocationTypeahead handleSubmit={handleSubmit}/> : null
         }
 
       </div>

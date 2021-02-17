@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {WITH_FULL_TEXT} from "../../Placeholder";
-import {ViewType} from "../ViewTypes";
+import {ViewType} from "../model/ViewType";
 import {onEnter} from "../../search/FormUtil";
-import {Term} from "../Term";
+import {Term} from "../model/Term";
 
 type AddTermFormFieldProps = {
   handleSubmit: (o: Term, t: ViewType) => Promise<void>

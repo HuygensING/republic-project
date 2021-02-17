@@ -12,7 +12,7 @@ import {Term} from "../model/Term";
 
 moment.locale('nl');
 
-type TermHistogramProps = {
+type LocationHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
   term: Term,
@@ -22,7 +22,7 @@ type TermHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const TermHistogram = memo(function (props: TermHistogramProps) {
+export const LocationHistogram = memo(function (props: LocationHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -37,6 +37,8 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
     if (!bars.length) {
       return;
     }
+
+    // TODO: aggregate location:
 
     client.resolutionResource.aggregateByTerm(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),

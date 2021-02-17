@@ -2,7 +2,7 @@ import PeopleTypeahead from "../../search/field/PeopleTypeahead";
 import React from "react";
 import {PersonType} from "../../elastic/model/PersonType";
 import {PICK_ATTENDANT} from "../../Placeholder";
-import {ViewType} from "../ViewTypes";
+import {ViewType} from "../model/ViewType";
 import {Person} from "../../elastic/model/Person";
 
 type AddAttendantViewTypeaheadProps = {

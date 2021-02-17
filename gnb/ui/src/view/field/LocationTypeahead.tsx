@@ -3,11 +3,12 @@ import React, {useState} from "react";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {LocationOption} from "./LocationOption";
 import {useClientContext} from "../../search/ClientContext";
+import Location from "../model/Location";
+import {ViewType} from "../model/ViewType";
+import {PICK_LOCATIONS} from "../../Placeholder";
 
 type LocationTypeaheadProps = {
-  name: string;
-  placeholder: string,
-  handleSubmit: (selected: LocationOption[]) => Promise<void>
+  handleSubmit: (l: Location, t: ViewType) => Promise<void>
 }
 
 export default function LocationTypeahead(props: LocationTypeaheadProps) {
@@ -17,7 +18,7 @@ export default function LocationTypeahead(props: LocationTypeaheadProps) {
   const [state, setState] = useState({
     inputField: '',
     loading: true,
-    options: []
+    options: [] as LocationOption[],
   });
 
   const ref = React.createRef<Typeahead<any>>();
@@ -36,18 +37,16 @@ export default function LocationTypeahead(props: LocationTypeaheadProps) {
     });
 
   }
+
   async function createOptions() {
     const found = await client.locationResource
       .aggregateBy(state.inputField)
       .catch(throwError);
-
     if (found.length === 0) {
       return [];
     }
-
     return found.map((f: any) => {
-      const total = f.sum_annotation.buckets.reduce((a: number, bucket: any) => a += bucket.doc_count, 0);
-      return new LocationOption(f.key, total);
+      return new LocationOption(f.key, f.doc_count);
     });
   }
 
@@ -59,15 +58,19 @@ export default function LocationTypeahead(props: LocationTypeaheadProps) {
     });
   }
 
+  function handleSubmit(options: LocationOption[]) {
+    return props.handleSubmit(new Location(options[0].name), ViewType.LOCATION);
+  }
+
   return <Typeahead
     ref={ref}
     multiple
-    onChange={props.handleSubmit}
+    onChange={handleSubmit}
     options={state.loading ? [] : state.options}
     labelKey={option => `${option.name} (${option.total}x)`}
     onInputChange={handleInputChange}
-    placeholder={props.placeholder}
-    id={props.name}
+    placeholder={PICK_LOCATIONS}
+    id={"location-typeahead"}
   />
 }
 
