@@ -1,4 +1,3 @@
-import {PersonType} from "../../model/PersonType";
 import {Filter} from "./Filter";
 
 export default class FilterAnnotation implements Filter {
