@@ -10,7 +10,7 @@ import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
 import {Person, toName} from "../../elastic/model/Person";
-import {BURNT_SIENNA, SANDY_BROWN} from "../../css/Colors";
+import {BURNT_SIENNA, SANDY_BROWN} from "../../style/Colors";
 
 moment.locale('nl');
 

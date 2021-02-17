@@ -1,6 +1,6 @@
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import './css/styles.css';
+import './style/styles.css';
 
 App();
 

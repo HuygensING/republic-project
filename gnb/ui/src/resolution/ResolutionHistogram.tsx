@@ -9,7 +9,7 @@ import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../search/ClientContext";
 import {RESOLUTIONS_HISTOGRAM_TITLE} from "../Placeholder";
-import {CHARCOAL} from "../css/Colors";
+import {CHARCOAL} from "../style/Colors";
 
 moment.locale('nl');
 

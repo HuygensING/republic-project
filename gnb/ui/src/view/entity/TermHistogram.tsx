@@ -9,7 +9,7 @@ import {useClientContext} from "../../search/ClientContext";
 import {equal} from "../../util/equal";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
 import {Term} from "../model/Term";
-import {PERSIAN_GREEN} from "../../css/Colors";
+import {PERSIAN_GREEN} from "../../style/Colors";
 
 moment.locale('nl');
 
