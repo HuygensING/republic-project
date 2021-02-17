@@ -4,8 +4,7 @@ import {handleEsError} from "./EsErrorHandler";
 import clone from "../util/clone";
 import aggsAllAnnotations from "./query/aggs/aggs-all-annotations.json";
 import {ERR_ES_AGGREGATE_LOCATION} from "../Placeholder";
-import FilterAnnotationName from "./query/filter/FilterAnnotationName";
-import FilterAnnotationValue from "./query/filter/FilterAnnotationValue";
+import FilterAnnotationPrefix from "./query/filter/FilterAnnotationPrefix";
 
 /**
  * ElasticSearch Resolution Resource
@@ -21,7 +20,7 @@ export default class ResolutionResource {
   }
 
   /**
-   * Aggregate locations from gnb-resolutions by name prefix
+   * Aggregate places from gnb-resolutions by name prefix
    */
   public async aggregateBy(
     prefix: string
@@ -29,8 +28,7 @@ export default class ResolutionResource {
     const query = clone<any>(aggsAllAnnotations);
 
     const filters = query.nested_annotations.aggs.filter_annotations.filter.bool.must;
-    filters.push(new FilterAnnotationName('plaats'));
-    filters.push(new FilterAnnotationValue(prefix));
+    filters.push(new FilterAnnotationPrefix('plaats', prefix));
 
     const response = await this.esClient
       .search(new AggsRequest(query))

@@ -7,10 +7,11 @@ import {Texts} from "../../common/Texts";
 import {Term} from "../model/Term";
 import {isPerson, toPerson, ViewType} from "../model/ViewType";
 import {TermHistogram} from "./TermHistogram";
-import Location from "../model/Location";
+import Place from "../model/Place";
+import {PlaceHistogram} from "./PlaceHistogram";
 
 type EntityViewerProps = {
-  entity: Person | Term | Location,
+  entity: Person | Term | Place,
   type: ViewType
   memoKey: any
 }
@@ -48,14 +49,13 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     />;
   }
 
-  function renderLocationHistogram() {
-    return <p>renderLocationHistogram</p>;
-    // return <LocationHistogram
-    //   handleResolutions={handleResolutions}
-    //   svgRef={svgRef}
-    //   term={props.entity as Location}
-    //   memoKey={props.memoKey}
-    // />;
+  function renderPlaceHistogram() {
+    return <PlaceHistogram
+      handleResolutions={handleResolutions}
+      svgRef={svgRef}
+      place={props.entity as Place}
+      memoKey={props.memoKey}
+    />;
 
   }
 
@@ -70,7 +70,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
 
     {hasSvg && props.type === ViewType.TERM ? renderTermHistogram() : null}
 
-    {hasSvg && props.type === ViewType.LOCATION ? renderLocationHistogram() : null}
+    {hasSvg && props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
 
     {state.showTexts ? <Texts
       resolutions={state.ids}

@@ -1,5 +1,5 @@
 
-export class LocationOption {
+export class PlaceOption {
   public name: string;
   public total: number;
 

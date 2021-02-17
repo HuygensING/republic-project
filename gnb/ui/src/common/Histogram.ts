@@ -10,13 +10,10 @@ export type HistogramBar = {
 }
 
 export type HistogramConfig = {
-    y: {
-      title: string
-    },
-    bar: {
-      color: string
-    }
-
+  y: {
+    title: string
+  },
+  color: string
 }
 
 export function renderHistogram(
@@ -84,7 +81,7 @@ export function renderHistogram(
   svg.select(".y-axis").call(y1Axis);
   svg
     .select(".plot-area")
-    .attr("fill", config.bar.color)
+    .attr("fill", config.color)
     .selectAll(".bar")
     .data(bars)
     .join("rect")

@@ -22,6 +22,9 @@ code {
 .gui {
   margin-bottom: 5em;
 }
+.nonsense {
+  color: #ecf12c;
+}
 
 /* Align multiple inline calendars: https://github.com/Hacker0x01/react-datepicker/issues/1955 */
 .react-datepicker__tab-loop {
@@ -68,6 +71,12 @@ code {
 .clickable-bar:hover{
   fill-opacity: 0.8;
 }
+
+.d3-canvas .resolution { color: #264653;}
+.d3-canvas .term { color: #2A9D8F;}
+.d3-canvas .location { color: #E9C46A;}
+.d3-canvas .mentioned { color: #F4A261;}
+.d3-canvas .attendant { color: #E76F51;}
 
 /* Texts */
 .highlight {

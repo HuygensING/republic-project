@@ -9,6 +9,7 @@ import {useClientContext} from "../../search/ClientContext";
 import {equal} from "../../util/equal";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
 import {Term} from "../model/Term";
+import {PERSIAN_GREEN} from "../../css/Colors";
 
 moment.locale('nl');
 
@@ -40,7 +41,7 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
 
     client.resolutionResource.aggregateByTerm(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
-      props.term.val,
+      props.term,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -53,7 +54,7 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { bar: { color: "yellowgreen" }, y: { title: `${PERSON_HISTOGRAM_PREFIX} ${props.term.val}`}},
+        { color: PERSIAN_GREEN, y: { title: `${PERSON_HISTOGRAM_PREFIX} ${props.term.val}`}},
         props.handleResolutions
       );
 

@@ -17,6 +17,9 @@ import AggWithIdFilter from "./query/aggs/AggWithIdFilter";
 import AggWithFilters from "./query/aggs/AggWithFilters";
 import Request from "./query/Request";
 import {QueryWithIdsAndHighlights} from "./query/QueryWithIdsAndHighlights";
+import Place from "../view/model/Place";
+import {Term} from "../view/model/Term";
+import FilterAnnotation from "./query/filter/FilterAnnotation";
 
 /**
  * ElasticSearch Resolution Resource
@@ -131,14 +134,13 @@ export default class ResolutionResource {
 
   /**
    * @param resolutions
-   * @param elastic simple query string
-   * @param type
+   * @param term
    * @param begin
    * @param end
    */
   public async aggregateByTerm(
     resolutions: string[],
-    term: string,
+    term: Term,
     begin: Date,
     end: Date
   ): Promise<Resolution[]> {
@@ -148,7 +150,31 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new FilterFullText(term));
+    filteredQuery.addFilter(new FilterFullText(term.val));
+
+    return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
+
+  }
+
+  /**
+   * @param resolutions
+   * @param place
+   * @param begin
+   * @param end
+   */
+  public async aggregateByPlace(
+    resolutions: string[],
+    place: Place,
+    begin: Date,
+    end: Date
+  ): Promise<Resolution[]> {
+
+    if (resolutions.length === 0) {
+      return [];
+    }
+
+    const filteredQuery = new AggWithFilters();
+    filteredQuery.addFilter(new FilterAnnotation('plaats', place.val));
 
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
 

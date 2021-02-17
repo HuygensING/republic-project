@@ -1,4 +1,4 @@
-import React, {memo, MutableRefObject} from "react";
+import {memo, MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {HistogramBar, renderHistogram} from "../../common/Histogram";
@@ -10,6 +10,7 @@ import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
 import {Person, toName} from "../../elastic/model/Person";
+import {BURNT_SIENNA, SANDY_BROWN} from "../../css/Colors";
 
 moment.locale('nl');
 
@@ -59,12 +60,8 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
         props.svgRef,
         bars,
         {
-          bar: {
-            color: "orange"
-          },
-          y: {
-            title: `${PERSON_HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${toName(props.person)}`
-          }
+          color: props.type === PersonType.ATTENDANT ? BURNT_SIENNA : SANDY_BROWN,
+          y: { title: `${PERSON_HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${toName(props.person)}`}
         },
         props.handleResolutions
       );

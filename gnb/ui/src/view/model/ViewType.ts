@@ -2,13 +2,13 @@ import {PersonType} from "../../elastic/model/PersonType";
 import {ERR_NOT_A_PERSON, ERR_NOT_A_VIEW_TYPE_VALUE} from "../../Placeholder";
 import {Term} from "./Term";
 import {Person} from "../../elastic/model/Person";
-import Location from "./Location";
+import Place from "./Place";
 
 export enum ViewType {
   ATTENDANT = 'attendant',
   MENTIONED = 'mentioned',
   TERM = 'term',
-  LOCATION = 'location'
+  PLACE = 'place'
 }
 
 export function isPerson(type: ViewType) : boolean {
@@ -25,15 +25,15 @@ export function toPerson(type: ViewType) : PersonType {
   throw Error(`${ERR_NOT_A_PERSON}: ${type}`);
 }
 
-export function toString(entity: Person | Term | Location) {
+export function toString(entity: Person | Term | Place) {
   if((entity as Person).id !== undefined) {
     return (entity as Person).id;
   }
   if((entity as Term).val !== undefined) {
     return (entity as Term).val;
   }
-  if((entity as Location).val !== undefined) {
-    return (entity as Location).val;
+  if((entity as Place).val !== undefined) {
+    return (entity as Place).val;
   }
 }
 

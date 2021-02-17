@@ -10,11 +10,11 @@ import {useViewContext} from "./ViewContext";
 import AddTermFormField from "./field/AddTermFormField";
 import {Term} from "./model/Term";
 import {Person} from "../elastic/model/Person";
-import LocationTypeahead from "./field/LocationTypeahead";
-import Location from "./model/Location";
+import PlaceTypeahead from "./field/PlaceTypeahead";
+import Place from "./model/Place";
 export default function ViewComposer() {
 
-  // TODO: add location as ViewType, option and 'AddLocationFormField'
+  // TODO: add place as ViewType, option and 'AddPlaceFormField'
 
   const {viewState, setViewState} = useViewContext();
 
@@ -33,7 +33,7 @@ export default function ViewComposer() {
     setState({...state, viewType: fromValue(e.target.value)});
   }
 
-  const handleSubmit = async (selected: Person | Term | Location, type: ViewType) => {
+  const handleSubmit = async (selected: Person | Term | Place, type: ViewType) => {
     const newViews = viewState.views;
     newViews.push({entity: selected, type});
     setViewState({...viewState, views: newViews});
@@ -62,8 +62,8 @@ export default function ViewComposer() {
             ? <AddTermFormField handleSubmit={handleSubmit}/> : null
         }
         {
-          state.isOpen && state.viewType === ViewType.LOCATION
-            ? <LocationTypeahead handleSubmit={handleSubmit}/> : null
+          state.isOpen && state.viewType === ViewType.PLACE
+            ? <PlaceTypeahead handleSubmit={handleSubmit}/> : null
         }
 
       </div>

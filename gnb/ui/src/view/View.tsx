@@ -6,10 +6,10 @@ import {useResolutionContext} from "../resolution/ResolutionContext";
 import {EntityViewer} from "./entity/EntityViewer";
 import {toString, ViewType} from "./model/ViewType";
 import {Term} from "./model/Term";
-import Location from "./model/Location";
+import Place from "./model/Place";
 
 type ViewProps = {
-  entity: Person | Term | Location,
+  entity: Person | Term | Place,
   type: ViewType
   onDelete: () => void;
 }

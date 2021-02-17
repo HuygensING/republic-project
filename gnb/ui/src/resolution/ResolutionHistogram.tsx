@@ -9,6 +9,7 @@ import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../search/ClientContext";
 import {RESOLUTIONS_HISTOGRAM_TITLE} from "../Placeholder";
+import {CHARCOAL} from "../css/Colors";
 
 moment.locale('nl');
 
@@ -80,7 +81,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
     renderHistogram(
       props.svgRef,
       resolutionState.resolutions,
-      {bar: {color: "steelblue"}, y: {title: RESOLUTIONS_HISTOGRAM_TITLE}},
+      {color: CHARCOAL, y: {title: RESOLUTIONS_HISTOGRAM_TITLE}},
       props.handleResolutions
     );
   }

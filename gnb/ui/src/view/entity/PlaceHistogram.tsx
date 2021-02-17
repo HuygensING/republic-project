@@ -8,21 +8,22 @@ import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../search/ClientContext";
 import {equal} from "../../util/equal";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
-import {Term} from "../model/Term";
+import Place from "../model/Place";
+import {BURNT_SIENNA, ORANGE_YELLOW_CRAYOLA} from "../../css/Colors";
 
 moment.locale('nl');
 
-type LocationHistogramProps = {
+type PlaceHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  term: Term,
+  place: Place,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const LocationHistogram = memo(function (props: LocationHistogramProps) {
+export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -38,11 +39,9 @@ export const LocationHistogram = memo(function (props: LocationHistogramProps) {
       return;
     }
 
-    // TODO: aggregate location:
-
-    client.resolutionResource.aggregateByTerm(
+    client.resolutionResource.aggregateByPlace(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
-      props.term.val,
+      props.place,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -55,7 +54,7 @@ export const LocationHistogram = memo(function (props: LocationHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { bar: { color: "yellowgreen" }, y: { title: `${PERSON_HISTOGRAM_PREFIX} ${props.term.val}`}},
+        { color: ORANGE_YELLOW_CRAYOLA, y: { title: `${PERSON_HISTOGRAM_PREFIX} ${props.place.val}`}},
         props.handleResolutions
       );
 

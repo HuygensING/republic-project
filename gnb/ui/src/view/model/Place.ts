@@ -1,4 +1,4 @@
-export default class Location {
+export default class Place {
   public val: string;
 
   constructor(val: string) {

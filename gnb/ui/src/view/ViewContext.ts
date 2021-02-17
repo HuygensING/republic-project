@@ -3,12 +3,12 @@ import {Person} from "../elastic/model/Person";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
 import {ViewType} from "./model/ViewType";
 import {Term} from "./model/Term";
-import Location from "./model/Location";
+import Place from "./model/Place";
 
 export type ViewStateType = BaseStateType & {
   views: {
     type: ViewType,
-    entity: Person | Term | Location
+    entity: Person | Term | Place
   }[];
 }
 

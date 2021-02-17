@@ -1,14 +1,14 @@
 import {Client} from 'elasticsearch';
 import ResolutionResource from "./ResolutionResource";
 import PeopleResource from "./PeopleResource";
-import LocationResource from "./LocationResource";
+import PlaceResource from "./PlaceResource";
 
 export default class GnbElasticClient {
 
   private esClient: Client;
   private _resolutionResource: ResolutionResource;
   private _peopleResource: PeopleResource;
-  private _locationResource: LocationResource;
+  private _placeResource: PlaceResource;
 
   constructor(host: string) {
 
@@ -20,7 +20,7 @@ export default class GnbElasticClient {
 
     this._resolutionResource = new ResolutionResource(this.esClient);
     this._peopleResource = new PeopleResource(this.esClient);
-    this._locationResource = new LocationResource(this.esClient);
+    this._placeResource = new PlaceResource(this.esClient);
   }
 
   get resolutionResource(): ResolutionResource {
@@ -31,8 +31,8 @@ export default class GnbElasticClient {
     return this._peopleResource;
   }
 
-  get locationResource(): LocationResource {
-    return this._locationResource;
+  get placeResource(): PlaceResource {
+    return this._placeResource;
   }
 
 }
