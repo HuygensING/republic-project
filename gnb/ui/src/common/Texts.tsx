@@ -51,20 +51,11 @@ export const Texts = memo(function (props: TextsProps) {
       handleClose={props.handleClose}
     >
       {state.hasLoaded ? state.resolutions.map((r: any, i: number) => {
-
-        r.resolution.originalXml = highlightMentioned(r.resolution.originalXml, searchState.mentioned);
-
+        const highlightedXml = highlightMentioned(r.resolution.originalXml, searchState.mentioned);
         return <div key={i}>
           <h5>{r.id}</h5>
-          <small><strong>Aanwezigen</strong>: {r.people
-            .filter((p: PersonAnn) => p.type === PersonType.ATTENDANT)
-            .map((p: PersonAnn, i: number) => {
-              const isAttendant = attendantIds.includes(p.id);
-              return <span key={i} className={isAttendant ? 'highlight' : ''}>{p.name} (ID {p.id})</span>
-            })
-            .reduce(joinJsx)
-          }</small>
-          <div dangerouslySetInnerHTML={{__html: r.resolution.originalXml}}/>
+          <small><strong>Aanwezigen</strong>: {renderAttendants(r, attendantIds)}</small>
+          <div dangerouslySetInnerHTML={{__html: highlightedXml}}/>
         </div>;
 
       }) : 'Loading...'}
@@ -95,3 +86,15 @@ function highlightMentioned(originalXml: string, mentioned: Person[]) {
   }
   return dom.documentElement.outerHTML;
 }
+
+function renderAttendants(r: any, markedIds: number[]) {
+  const rendered = r.people
+    .filter((p: PersonAnn) => p.type === PersonType.ATTENDANT)
+    .map((p: PersonAnn, i: number) => {
+      const isAttendant = markedIds.includes(p.id);
+      return <span key={i} className={isAttendant ? 'highlight' : ''}>{p.name} (ID {p.id})</span>
+    })
+    .reduce(joinJsx, []);
+  return rendered.length ? rendered : '-';
+}
+

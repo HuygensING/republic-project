@@ -9,7 +9,7 @@ import {useClientContext} from "../../search/ClientContext";
 import {equal} from "../../util/equal";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
 import Place from "../model/Place";
-import {BURNT_SIENNA, ORANGE_YELLOW_CRAYOLA} from "../../style/Colors";
+import {ORANGE_YELLOW_CRAYOLA} from "../../style/Colors";
 
 moment.locale('nl');
 
