@@ -1,7 +1,6 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {NEW_VIEW_MODAL_TITLE} from "../Placeholder";
 import Modal from "../common/Modal";
-import {PersonOption} from "../search/PersonOption";
 import AddViewBtn from "./field/AddViewBtn";
 import AddMentionedViewTypeahead from "./field/AddMentionedViewTypeahead";
 import AddAttendantViewTypeahead from "./field/AddAttendantViewTypeahead";
@@ -13,6 +12,8 @@ import {Term} from "./Term";
 import {Person} from "../elastic/model/Person";
 
 export default function ViewComposer() {
+
+  // TODO: add location as ViewType, option and 'AddLocationFormField'
 
   const {viewState, setViewState} = useViewContext();
 

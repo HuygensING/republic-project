@@ -1,6 +1,7 @@
-import {PICK_USER_VIEW} from "../../Placeholder";
+import {ATTENDANT, MENTIONED, PICK_USER_VIEW, SEARCH_TERM} from "../../Placeholder";
 import React, {ChangeEvent} from "react";
-import {ViewType, ViewTypes} from "../ViewTypes";
+import {ViewType} from "../ViewTypes";
+import {PersonType} from "../../elastic/model/PersonType";
 
 type SelectViewTypeProps = {
   selected: ViewType | undefined
@@ -20,6 +21,23 @@ export default function SelectViewType(props: SelectViewTypeProps) {
     </select>
   </div>;
 }
+
+const ViewTypes = [
+  {
+    name: PersonType.ATTENDANT,
+    personType: PersonType.ATTENDANT,
+    placeholder: ATTENDANT
+  },
+  {
+    name: PersonType.MENTIONED,
+    personType: PersonType.MENTIONED,
+    placeholder: MENTIONED
+  },
+  {
+    name: 'term',
+    placeholder: SEARCH_TERM
+  }
+];
 
 function createOptions() {
   return Object.entries(ViewTypes).map(([name, value]) => {

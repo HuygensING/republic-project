@@ -1,5 +1,5 @@
 import {PersonType} from "../elastic/model/PersonType";
-import {ATTENDANT, ERR_NOT_A_PERSON, ERR_NOT_A_VIEW_TYPE_VALUE, MENTIONED, SEARCH_TERM} from "../Placeholder";
+import {ERR_NOT_A_PERSON, ERR_NOT_A_VIEW_TYPE_VALUE} from "../Placeholder";
 import {Term} from "./Term";
 import {Person} from "../elastic/model/Person";
 
@@ -9,38 +9,18 @@ export enum ViewType {
   TERM = 'term'
 }
 
-export const ViewTypes = [
-  {
-    name: PersonType.ATTENDANT,
-    personType: PersonType.ATTENDANT,
-    placeholder: ATTENDANT
-  },
-  {
-    name: PersonType.MENTIONED,
-    personType: PersonType.MENTIONED,
-    placeholder: MENTIONED
-  },
-  {
-    name: 'term',
-    placeholder: SEARCH_TERM
-  }
-];
-
 export function isPerson(type: ViewType) : boolean {
   return [ViewType.ATTENDANT, ViewType.MENTIONED].includes(type);
 }
 
 export function toPerson(type: ViewType) : PersonType {
-  if(!isPerson(type)) {
-    throw Error(`${ERR_NOT_A_PERSON}: ${type}`);
+  if(ViewType.MENTIONED === type) {
+    return PersonType.MENTIONED;
   }
-  const found = ViewTypes
-    .find(t => t.personType?.valueOf() === type.valueOf())
-    ?.personType;
-  if(!found) {
-    throw Error(`${ERR_NOT_A_PERSON}: ${type}`);
+  if(ViewType.ATTENDANT === type) {
+    return PersonType.ATTENDANT;
   }
-  return found;
+  throw Error(`${ERR_NOT_A_PERSON}: ${type}`);
 }
 
 export function toString(entity: Person | Term) {

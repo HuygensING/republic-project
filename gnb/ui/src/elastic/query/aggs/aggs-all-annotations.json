@@ -1,0 +1,27 @@
+{
+  "size": 0,
+  "aggs": {
+    "nested_annotations": {
+      "nested": {
+        "path": "annotations"
+      },
+      "aggs": {
+        "filter_annotations": {
+          "filter": {
+            "bool": {
+              "must": []
+            }
+          },
+          "aggs": {
+            "sum": {
+              "terms": {
+                "field": "annotations.value.keyword",
+                "size": 10
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

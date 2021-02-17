@@ -1,5 +1,3 @@
-import {Agg} from "../query/aggs/Agg";
-
 export type Person = {
   id: number;
   firstNames: string;
