@@ -13,13 +13,18 @@ export const D3Canvas = React.memo<D3CanvasProps>((props) => {
   const ref = props.svgRef;
 
   return (
-    <svg
-      className="d3-canvas"
+    <div
+      className="d3-canvas-wrapper"
       ref={ref}
     >
-      <g className="plot-area"/>
-      <g className="x-axis"/>
-      <g className="y-axis"/>
-    </svg>
+      <svg
+        className="d3-canvas"
+      >
+        <g className="plot-area"/>
+        <g className="x-axis"/>
+        <g className="y-axis"/>
+      </svg>
+      <div className="d3-tooltip"/>
+    </div>
   );
 }, areEqual);

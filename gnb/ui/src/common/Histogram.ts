@@ -17,14 +17,22 @@ export type HistogramConfig = {
 }
 
 export function renderHistogram(
-  svgRef: MutableRefObject<any>,
+  canvasRef: MutableRefObject<any>,
   bars: HistogramBar[],
   config: HistogramConfig,
   handleBarClick: (ids: string[]) => void
 ) {
-  let svg = d3.select(svgRef.current);
 
-  const svgSize = svgRef.current.getBoundingClientRect();
+  let svg = d3
+    .select(canvasRef.current)
+    .select('.d3-canvas');
+
+  const tooltip = d3
+    .select(canvasRef.current)
+    .select(".d3-tooltip");
+
+  const svgSize = canvasRef.current.getBoundingClientRect();
+  const tooltipSize = (tooltip.node() as any).getBoundingClientRect();
   const height = svgSize.height;
   const width = svgSize.width;
   const margin = {top: 20, right: 30, bottom: 30, left: 40};
@@ -79,6 +87,7 @@ export function renderHistogram(
 
   svg.select(".x-axis").call(xAxis);
   svg.select(".y-axis").call(y1Axis);
+
   svg
     .select(".plot-area")
     .attr("fill", config.color)
@@ -90,6 +99,25 @@ export function renderHistogram(
     .attr("width", x.bandwidth())
     .attr("y", (d: { count: d3.NumberValue; }) => y1(d.count))
     .attr("height", (d: { count: d3.NumberValue; }) => y1(0) - y1(d.count))
+    .on("mouseover", (e, d) => {
+      tooltip.transition()
+        .duration(200)
+        .style("display", "block");
+
+      let left = Math.round(e.target.getBoundingClientRect().left - ((tooltipSize.width - x.bandwidth()) / 2));
+      let top = Math.round(y1(d.count) - tooltipSize.height * 1.2);
+      let label = '<span class="tooltip-label" style="background: ' + config.color + '">'
+        + d.date + ' (' + d.count + ')'
+        + '</span>';
+
+      tooltip.html(label)
+        .style("left", left + "px")
+        .style("top", top + "px")
+    })
+    .on("mouseout", d => {
+      tooltip.transition()
+        .style("display", "none");
+    })
     .on("click", handleClick);
 
   function handleClick(e: any, d: any) {
