@@ -22,7 +22,7 @@ export default function Gui(props: GuiProps) {
         <ContextProvider client={props.client}>
           <div className="row mt-3 mb-3">
             <div className="col">
-              <h1>GNB UI</h1>
+              <h1>GNB <small className="text-muted">Governance, Netwerken en Besluitvorming in de Staten-Generaal </small></h1>
             </div>
           </div>
           <Search/>
