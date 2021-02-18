@@ -1,5 +1,5 @@
 import {PersonType} from "../../elastic/model/PersonType";
-import {ERR_NOT_A_PERSON, ERR_NOT_A_VIEW_TYPE_VALUE} from "../../Placeholder";
+import {ERR_NOT_A_PERSON, ERR_NOT_A_VIEW_TYPE_VALUE} from "../../content/Placeholder";
 import {Term} from "./Term";
 import {Person} from "../../elastic/model/Person";
 import Place from "./Place";

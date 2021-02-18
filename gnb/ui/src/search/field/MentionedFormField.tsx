@@ -1,6 +1,6 @@
 import React from "react";
 import {useSearchContext} from "../SearchContext";
-import {WITH_MENTIONED} from "../../Placeholder";
+import {WITH_MENTIONED} from "../../content/Placeholder";
 import PeopleTypeahead, {PersonOption} from "../../common/PeopleTypeahead";
 import {PersonType} from "../../elastic/model/PersonType";
 

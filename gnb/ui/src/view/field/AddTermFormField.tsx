@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {WITH_FULL_TEXT} from "../../Placeholder";
+import {WITH_FULL_TEXT} from "../../content/Placeholder";
 import {ViewType} from "../model/ViewType";
 import {onEnter} from "../../search/FormUtil";
 import {Term} from "../model/Term";

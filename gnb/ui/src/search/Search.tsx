@@ -3,7 +3,7 @@ import StartEndFormField from "./field/StartEndFormField";
 import FullTextFormField from "./field/FullTextFormField";
 import MentionedFormField from "./field/MentionedFormField";
 import AttendantsFormField from "./field/AttendantsFormField";
-import SearchHelp from "./SearchHelp";
+import Help from "../content/Help";
 import PlaceFormField from "./field/PlaceFormField";
 
 export function Search() {
@@ -35,7 +35,7 @@ export function Search() {
           </div>
         </form>
       </div>
-      <SearchHelp/>
+      <Help/>
     </div>
   );
 }

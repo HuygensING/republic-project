@@ -1,4 +1,4 @@
-import {ATTENDANT, MENTIONED, PICK_USER_VIEW, PLACE, TERM} from "../../Placeholder";
+import {ATTENDANT, MENTIONED, PICK_USER_VIEW, PLACE, TERM} from "../../content/Placeholder";
 import React, {ChangeEvent} from "react";
 import {ViewType} from "../model/ViewType";
 import {PersonType} from "../../elastic/model/PersonType";

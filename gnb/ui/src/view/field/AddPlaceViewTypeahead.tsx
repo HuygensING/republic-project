@@ -1,7 +1,7 @@
 import React from "react";
 import Place from "../model/Place";
 import {ViewType} from "../model/ViewType";
-import {PICK_PLACE} from "../../Placeholder";
+import {PICK_PLACE} from "../../content/Placeholder";
 import PlaceTypeahead from "../../common/PlaceTypeahead";
 
 type AddPlaceViewTypeaheadProps = {

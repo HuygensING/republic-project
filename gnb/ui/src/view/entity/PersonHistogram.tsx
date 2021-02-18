@@ -8,7 +8,7 @@ import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
-import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
+import {PERSON_HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Person, toName} from "../../elastic/model/Person";
 import {BURNT_SIENNA, SANDY_BROWN} from "../../style/Colors";
 

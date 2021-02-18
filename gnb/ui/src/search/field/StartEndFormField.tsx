@@ -5,7 +5,7 @@ import {useSearchContext} from "../SearchContext";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import {WARN_DATEPICKER_END_BEFORE_START} from "../../Placeholder";
+import {WARN_DATEPICKER_END_BEFORE_START} from "../../content/Placeholder";
 import Warning from "../../common/Warning";
 
 export default function StartEndFormField() {

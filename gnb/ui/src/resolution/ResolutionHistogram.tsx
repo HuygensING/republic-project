@@ -8,7 +8,7 @@ import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../elastic/ClientContext";
-import {RESOLUTIONS_HISTOGRAM_TITLE} from "../Placeholder";
+import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {CHARCOAL} from "../style/Colors";
 
 moment.locale('nl');

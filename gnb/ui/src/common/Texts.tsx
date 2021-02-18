@@ -1,7 +1,7 @@
 import React, {memo, useState} from "react";
 import Resolution from "../elastic/model/Resolution";
 import Modal from "./Modal";
-import {RESOLUTIONS_TEXTS_TITLE} from "../Placeholder";
+import {RESOLUTIONS_TEXTS_TITLE} from "../content/Placeholder";
 import {useAsyncError} from "../hook/useAsyncError";
 import {equal} from "../util/equal";
 import {PersonType} from "../elastic/model/PersonType";

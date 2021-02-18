@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useState} from "react";
 import {useSearchContext} from "../SearchContext";
-import {WITH_FULL_TEXT} from "../../Placeholder";
+import {WITH_FULL_TEXT} from "../../content/Placeholder";
 import {onEnter} from "../FormUtil";
 
 export default function FullTextFormField() {

@@ -7,7 +7,7 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
-import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
+import {PERSON_HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Term} from "../model/Term";
 import {PERSIAN_GREEN} from "../../style/Colors";
 

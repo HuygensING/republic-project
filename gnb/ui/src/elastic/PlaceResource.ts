@@ -3,7 +3,7 @@ import AggsRequest from "./query/aggs/AggsRequest";
 import {handleEsError} from "./EsErrorHandler";
 import clone from "../util/clone";
 import aggsAllAnnotations from "./query/aggs/aggs-all-annotations.json";
-import {ERR_ES_AGGREGATE_LOCATION} from "../Placeholder";
+import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
 import FilterAnnotationPrefix from "./query/filter/FilterAnnotationPrefix";
 
 /**

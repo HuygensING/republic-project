@@ -11,7 +11,7 @@ import {
   ERR_ES_AGGREGATE_RESOLUTIONS,
   ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON,
   ERR_ES_GET_MULTI_RESOLUTIONS
-} from "../Placeholder";
+} from "../content/Placeholder";
 import {handleEsError} from "./EsErrorHandler";
 import AggWithIdFilter from "./query/aggs/AggWithIdFilter";
 import AggWithFilters from "./query/aggs/AggWithFilters";

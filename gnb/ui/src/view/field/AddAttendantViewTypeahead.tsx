@@ -1,7 +1,7 @@
 import PeopleTypeahead from "../../common/PeopleTypeahead";
 import React from "react";
 import {PersonType} from "../../elastic/model/PersonType";
-import {PICK_ATTENDANT} from "../../Placeholder";
+import {PICK_ATTENDANT} from "../../content/Placeholder";
 import {ViewType} from "../model/ViewType";
 import {Person} from "../../elastic/model/Person";
 

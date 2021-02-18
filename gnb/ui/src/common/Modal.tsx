@@ -1,4 +1,4 @@
-import {MODAL_CLOSE} from "../Placeholder";
+import {MODAL_CLOSE} from "../content/Placeholder";
 import React, {ReactNode} from "react";
 
 type ModalProps = {

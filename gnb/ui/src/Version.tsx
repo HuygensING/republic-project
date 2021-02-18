@@ -1,6 +1,6 @@
 import Config from "./Config";
 import React from "react";
-import {VERSION} from "./Placeholder";
+import {VERSION} from "./content/Placeholder";
 
 export default function Version() {
   return <p className="text-center small p-3">

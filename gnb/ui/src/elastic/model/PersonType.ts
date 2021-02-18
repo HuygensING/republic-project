@@ -1,4 +1,4 @@
-import {ATTENDANT, ERR_VIEW_TYPE_NOT_FOUND, MENTIONED} from "../../Placeholder";
+import {ATTENDANT, ERR_VIEW_TYPE_NOT_FOUND, MENTIONED} from "../../content/Placeholder";
 
 export enum PersonType {
   ATTENDANT = 'attendant',

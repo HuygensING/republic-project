@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import {NEW_VIEW_MODAL_TITLE} from "../Placeholder";
+import {NEW_VIEW_MODAL_TITLE} from "../content/Placeholder";
 import Modal from "../common/Modal";
 import AddViewBtn from "./field/AddViewBtn";
 import AddMentionedViewTypeahead from "./field/AddMentionedViewTypeahead";

@@ -5,7 +5,7 @@ import FilterPersonName from "./query/filter/FilterPersonName";
 import {Person} from "./model/Person";
 import {PersonType} from "./model/PersonType";
 import FilterPersonType from "./query/filter/FilterPersonType";
-import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../Placeholder";
+import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../content/Placeholder";
 import {handleEsError} from "./EsErrorHandler";
 import clone from "../util/clone";
 
