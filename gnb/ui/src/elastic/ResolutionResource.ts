@@ -45,7 +45,8 @@ export default class ResolutionResource {
     mentioned: number[],
     begin: Date,
     end: Date,
-    fullText: string
+    fullText: string,
+    places: Place[]
   ): Promise<any> {
     const query = new AggWithFilters();
 
@@ -61,6 +62,10 @@ export default class ResolutionResource {
 
     for (const m of mentioned) {
       query.addFilter(new FilterPeople(m, PersonType.MENTIONED));
+    }
+
+    for (const p of places) {
+      query.addFilter(new FilterAnnotation('plaats', p.val));
     }
 
     const hist = new AggsResolutionHistogram(begin, end, 1);

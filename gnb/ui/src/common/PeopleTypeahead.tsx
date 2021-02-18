@@ -1,10 +1,9 @@
-import {Typeahead} from "react-bootstrap-typeahead";
+import {Typeahead, TypeaheadModel, TypeaheadProps} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
-import {Person, toName} from "../../elastic/model/Person";
-import {PersonOption} from "../PersonOption";
-import {PersonType} from "../../elastic/model/PersonType";
-import {useAsyncError} from "../../hook/useAsyncError";
-import {useClientContext} from "../ClientContext";
+import {Person, toName} from "../elastic/model/Person";
+import {PersonType} from "../elastic/model/PersonType";
+import {useAsyncError} from "../hook/useAsyncError";
+import {useClientContext} from "../elastic/ClientContext";
 
 type PeopleTypeaheadProps = {
   id: string;
@@ -77,6 +76,20 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
     placeholder={props.placeholder}
     id={props.id}
   />
+}
+
+export class PersonOption {
+  public id: number;
+  public name: string
+  public total: number;
+  public person: Person;
+
+  constructor(id: number, name: string, total: number, person: Person) {
+    this.id = id;
+    this.name = name;
+    this.total = total;
+    this.person = person;
+  }
 }
 
 // Update typescript definitions with public getInput-method: https://stackoverflow.com/a/64579324

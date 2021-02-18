@@ -10,11 +10,9 @@ import {useViewContext} from "./ViewContext";
 import AddTermFormField from "./field/AddTermFormField";
 import {Term} from "./model/Term";
 import {Person} from "../elastic/model/Person";
-import PlaceTypeahead from "./field/PlaceTypeahead";
+import AddPlaceViewTypeahead from "./field/AddPlaceViewTypeahead";
 import Place from "./model/Place";
 export default function ViewComposer() {
-
-  // TODO: add place as ViewType, option and 'AddPlaceFormField'
 
   const {viewState, setViewState} = useViewContext();
 
@@ -63,7 +61,7 @@ export default function ViewComposer() {
         }
         {
           state.isOpen && state.viewType === ViewType.PLACE
-            ? <PlaceTypeahead handleSubmit={handleSubmit}/> : null
+            ? <AddPlaceViewTypeahead handleSubmit={handleSubmit}/> : null
         }
 
       </div>

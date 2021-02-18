@@ -1,11 +1,13 @@
 import {createContext, useContext} from 'react';
 import {Person} from "../elastic/model/Person";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
+import Place from "../view/model/Place";
 
 export type SearchStateType = BaseStateType & {
   attendants: Person[];
   mentioned: Person[];
   fullText: string;
+  places: Place[];
   start: Date;
   end: Date;
 }
@@ -21,8 +23,9 @@ export const defaultSearchContext = {
     attendants: [],
     mentioned: [],
     fullText: '',
-    start: new Date('1630-01-01'),
-    end: new Date('1630-01-30'),
+    places: [],
+    start: new Date('1626-01-01'),
+    end: new Date('1626-01-31'),
   },
   setSearchState: dummy
 } as SearchContextType;

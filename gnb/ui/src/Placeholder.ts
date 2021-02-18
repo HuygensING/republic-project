@@ -9,6 +9,7 @@ export const TERM = 'zoekterm';
 export const WITH_ATTENDANTS = 'met aanwezigen...';
 export const WITH_MENTIONED = 'met genoemden...';
 export const WITH_FULL_TEXT = 'met zoektermen...';
+export const WITH_PLACES = 'met plaatsen...';
 
 // SearchHelp:
 export const HELP_TITLE = 'Zoekhulp';
@@ -43,7 +44,7 @@ export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
 export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
 export const PICK_ATTENDANT = 'Kies aanwezige';
 export const PICK_MENTIONED = 'Kies genoemde';
-export const PICK_PLACES = 'Kies plaatsen';
+export const PICK_PLACE = 'Kies plaats';
 export const PICK_USER_VIEW = 'Kies type plot...'
 
 // Version:

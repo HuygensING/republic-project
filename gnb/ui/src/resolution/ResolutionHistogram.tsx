@@ -7,7 +7,7 @@ import {HistogramBar, renderHistogram} from "../common/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
-import {useClientContext} from "../search/ClientContext";
+import {useClientContext} from "../elastic/ClientContext";
 import {RESOLUTIONS_HISTOGRAM_TITLE} from "../Placeholder";
 import {CHARCOAL} from "../style/Colors";
 
@@ -32,13 +32,15 @@ export default function ResolutionHistogram(props: BarChartProps) {
   const prevStart = usePrevious(searchState.start)
   const prevEnd = usePrevious(searchState.end)
   const prevFullText = usePrevious(searchState.fullText)
+  const prevPlaces = usePrevious(searchState.places)
 
   const searchStateChanged =
     !equal(prevAttendants, searchState.attendants) ||
     !equal(prevMentioned, searchState.mentioned) ||
     !equal(prevStart, searchState.start) ||
     !equal(prevEnd, searchState.end) ||
-    !equal(prevFullText, searchState.fullText);
+    !equal(prevFullText, searchState.fullText) ||
+    !equal(prevPlaces, searchState.places);
 
   const {resolutionState, setResolutionState} = useResolutionContext();
   const prevResolutions = usePrevious(resolutionState.resolutions);
@@ -64,7 +66,8 @@ export default function ResolutionHistogram(props: BarChartProps) {
       mentioned,
       searchState.start,
       searchState.end,
-      searchState.fullText
+      searchState.fullText,
+      searchState.places
     ).then((buckets: any) => {
       const bars = buckets.map((b: any) => ({
         date: b.key_as_string,

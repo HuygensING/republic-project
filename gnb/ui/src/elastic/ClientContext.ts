@@ -1,6 +1,6 @@
 import {createContext, useContext} from 'react';
 import {BaseStateType, reducer} from "../BaseStateType";
-import GnbElasticClient from "../elastic/GnbElasticClient";
+import GnbElasticClient from "./GnbElasticClient";
 
 export type ClientStateType = BaseStateType & {
   client: GnbElasticClient;

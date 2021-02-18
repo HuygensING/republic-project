@@ -5,7 +5,7 @@ import {HistogramBar, renderHistogram} from "../../common/Histogram";
 import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
-import {useClientContext} from "../../search/ClientContext";
+import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {PERSON_HISTOGRAM_PREFIX} from "../../Placeholder";
 import {Term} from "../model/Term";

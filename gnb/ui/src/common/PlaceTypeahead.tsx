@@ -1,14 +1,12 @@
 import {Typeahead} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
-import {useAsyncError} from "../../hook/useAsyncError";
-import {PlaceOption} from "./PlaceOption";
-import {useClientContext} from "../../search/ClientContext";
-import Place from "../model/Place";
-import {ViewType} from "../model/ViewType";
-import {PICK_PLACES} from "../../Placeholder";
+import {useAsyncError} from "../hook/useAsyncError";
+import {useClientContext} from "../elastic/ClientContext";
 
 type PlaceTypeaheadProps = {
-  handleSubmit: (l: Place, t: ViewType) => Promise<void>
+  id: string;
+  placeholder: string,
+  handleSubmit: (selected: PlaceOption[]) => Promise<void>
 }
 
 export default function PlaceTypeahead(props: PlaceTypeaheadProps) {
@@ -58,19 +56,24 @@ export default function PlaceTypeahead(props: PlaceTypeaheadProps) {
     });
   }
 
-  function handleSubmit(options: PlaceOption[]) {
-    return props.handleSubmit(new Place(options[0].name), ViewType.PLACE);
-  }
-
   return <Typeahead
     ref={ref}
     multiple
-    onChange={handleSubmit}
+    onChange={props.handleSubmit}
     options={state.loading ? [] : state.options}
     labelKey={option => `${option.name} (${option.total}x)`}
     onInputChange={handleInputChange}
-    placeholder={PICK_PLACES}
-    id={"place-typeahead"}
+    placeholder={props.placeholder}
+    id={props.id}
   />
 }
 
+export class PlaceOption {
+  public name: string;
+  public total: number;
+
+  constructor(name: string, total: number) {
+    this.name = name;
+    this.total = total;
+  }
+}

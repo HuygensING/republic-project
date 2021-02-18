@@ -1,4 +1,4 @@
-import {ClientContext, clientReducer, ClientStateType} from "./search/ClientContext";
+import {ClientContext, clientReducer, ClientStateType} from "./elastic/ClientContext";
 import {defaultSearchContext, SearchContext, searchReducer} from "./search/SearchContext";
 import {defaultResolutionContext, ResolutionContext, resolutionReducer} from "./resolution/ResolutionContext";
 import React, {useReducer} from "react";
