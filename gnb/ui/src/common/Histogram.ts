@@ -107,7 +107,7 @@ export function renderHistogram(
       let left = Math.round(e.target.getBoundingClientRect().left - ((tooltipSize.width - x.bandwidth()) / 2));
       let top = Math.round(y1(d.count) - tooltipSize.height * 1.2);
       let label = '<span class="tooltip-label" style="background: ' + config.color + '">'
-        + d.date + ' (' + d.count + ')'
+        + d.date + ' (' + d.count + 'x)'
         + '</span>';
 
       tooltip.html(label)

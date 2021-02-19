@@ -10,6 +10,7 @@ import {useSearchContext} from "../search/SearchContext";
 import {joinJsx} from "../util/joinJsx";
 import {Person} from "../elastic/model/Person";
 import {useClientContext} from "../elastic/ClientContext";
+import Place from "../view/model/Place";
 
 type TextsProps = {
   resolutions: string[],
@@ -51,7 +52,7 @@ export const Texts = memo(function (props: TextsProps) {
       handleClose={props.handleClose}
     >
       {state.hasLoaded ? state.resolutions.map((r: any, i: number) => {
-        const highlightedXml = highlightMentioned(r.resolution.originalXml, searchState.mentioned);
+        const highlightedXml = highlight(r.resolution.originalXml, searchState.mentioned, searchState.places);
         return <div key={i}>
           <h5>{r.id}</h5>
           <small><strong>Aanwezigen</strong>: {renderAttendants(r, attendantIds)}</small>
@@ -73,18 +74,39 @@ function sortResolutions(newResolutions: Resolution[]) {
   return newResolutions;
 }
 
-function highlightMentioned(originalXml: string, mentioned: Person[]) {
-  if (mentioned.length === 0) {
+function highlight(originalXml: string, mentioned: Person[], places: Place[]) : string {
+  console.log('highlight', mentioned, places);
+
+  if (mentioned.length === 0 && places.length === 0) {
     return originalXml;
   }
+
   const dom = domParser.parseFromString(originalXml, 'text/xml');
+
+  highlightMentioned(mentioned, dom);
+  highlightPlaces(dom, places);
+
+  return dom.documentElement.outerHTML;
+}
+
+function highlightMentioned(mentioned: Person[], dom: Document) {
   for (const m of mentioned) {
     const found = dom.querySelectorAll(`[idnr="${m.id}"]`)?.item(0);
     if (found) {
       found.setAttribute('class', 'highlight');
     }
   }
-  return dom.documentElement.outerHTML;
+}
+
+function highlightPlaces(dom: Document, places: Place[]) {
+  const found = dom.getElementsByTagName('plaats');
+  for (const p of places) {
+    for (const f of found) {
+      if (f.textContent?.toLowerCase() === p.val.toLowerCase()) {
+        f.setAttribute('class', 'highlight');
+      }
+    }
+  }
 }
 
 function renderAttendants(r: any, markedIds: number[]) {
