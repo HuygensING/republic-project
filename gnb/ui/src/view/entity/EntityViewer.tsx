@@ -9,6 +9,7 @@ import {isPerson, toPerson, ViewType} from "../model/ViewType";
 import {TermHistogram} from "./TermHistogram";
 import Place from "../model/Place";
 import {PlaceHistogram} from "./PlaceHistogram";
+import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
 
 type EntityViewerProps = {
   entity: Person | Term | Place,
@@ -63,6 +64,16 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     return setState({...state, ids, showTexts: true});
   }
 
+  function highlightEntity(toHighlight: string) {
+    const dom = toDom(toHighlight);
+    if(props.type === ViewType.MENTIONED) {
+      highlightMentioned(dom, [props.entity as Person])
+    } else if (props.type === ViewType.PLACE) {
+      highlightPlaces(dom, [props.entity as Place])
+    }
+    return toStr(dom);
+  }
+
   return <>
     <D3Canvas svgRef={svgRef}/>
 
@@ -75,6 +86,9 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     {state.showTexts ? <Texts
       resolutions={state.ids}
       handleClose={() => setState({...state, showTexts: false})}
+      highlightResolution={highlightEntity}
+      highlightAttendants={props.type === ViewType.ATTENDANT ? [(props.entity as Person).id] : []}
+      highlightFullText={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
       memoKey={props.memoKey}
     /> : null}
   </>
