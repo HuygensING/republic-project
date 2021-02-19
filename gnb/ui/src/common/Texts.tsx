@@ -16,9 +16,23 @@ import Place from "../view/model/Place";
 type TextsProps = {
   resolutions: string[],
   handleClose: () => void,
-  highlightResolution?: (originalXml: string) => string
+
+  /**
+   * Ids of attendants to highlight
+   */
   highlightAttendants?: number[]
-  highlightFullText?: string
+
+  /**
+   * Query_string query to highlight originalXml using elasticsearch highlighting
+   */
+  highlightQuery?: string
+
+  /**
+   * Function to highlight resolution.originalXml
+   * To highlight something: add the class name 'highlight'
+   */
+  highlightXml?: (originalXml: string) => string
+
   memoKey: any
 }
 
@@ -37,8 +51,8 @@ export const Texts = memo(function (props: TextsProps) {
 
   if(!state.hasLoaded) {
     let fullTextHighlight = searchState.fullText;
-    if(props.highlightFullText) {
-      fullTextHighlight += ' ' + props.highlightFullText;
+    if(props.highlightQuery) {
+      fullTextHighlight += ' ' + props.highlightQuery;
     }
     client.resolutionResource
       .getMulti(props.resolutions, fullTextHighlight)
@@ -62,8 +76,8 @@ export const Texts = memo(function (props: TextsProps) {
       {state.hasLoaded ? state.resolutions.map((r: any, i: number) => {
         let highlighted = highlight(r.resolution.originalXml, searchState.mentioned, searchState.places);
 
-        if(props.highlightResolution) {
-          highlighted = props.highlightResolution(highlighted);
+        if(props.highlightXml) {
+          highlighted = props.highlightXml(highlighted);
         }
 
         return <div key={i}>

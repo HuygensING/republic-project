@@ -64,8 +64,8 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     return setState({...state, ids, showTexts: true});
   }
 
-  function highlightEntity(toHighlight: string) {
-    const dom = toDom(toHighlight);
+  function highlightEntity(originalXml: string) {
+    const dom = toDom(originalXml);
     if(props.type === ViewType.MENTIONED) {
       highlightMentioned(dom, [props.entity as Person])
     } else if (props.type === ViewType.PLACE) {
@@ -86,9 +86,9 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     {state.showTexts ? <Texts
       resolutions={state.ids}
       handleClose={() => setState({...state, showTexts: false})}
-      highlightResolution={highlightEntity}
       highlightAttendants={props.type === ViewType.ATTENDANT ? [(props.entity as Person).id] : []}
-      highlightFullText={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
+      highlightQuery={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
+      highlightXml={highlightEntity}
       memoKey={props.memoKey}
     /> : null}
   </>

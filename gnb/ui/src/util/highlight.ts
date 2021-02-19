@@ -3,6 +3,7 @@ import Place from "../view/model/Place";
 
 /**
  * Util methods to highlight entities in xml using dom manipulation
+ * To highlight something: add the class name 'highlight'
  */
 const domParser = new DOMParser();
 
