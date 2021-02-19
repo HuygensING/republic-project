@@ -22,6 +22,12 @@ export default function View(props: ViewProps) {
 
   return <div className="row mt-3">
     <div className="col">
+
+      <DeleteViewButton
+        hoverRef={deleteRef}
+        onClose={props.onDelete}
+      />
+
       <div className={`row-view border border-white ${isHovering ? 'bg-light' : ''}`}>
 
         <EntityViewer
@@ -30,12 +36,8 @@ export default function View(props: ViewProps) {
           memoKey={[resolutionState.updatedOn, props.type, toString(props.entity)]}
         />
 
-        <DeleteViewButton
-          hoverRef={deleteRef}
-          onClose={props.onDelete}
-        />
-
       </div>
+
     </div>
   </div>
 
