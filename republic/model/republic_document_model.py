@@ -167,7 +167,6 @@ class ResolutionParagraph(ResolutionDoc):
                 line_text = line["text"] + " "
             line_range = {
                 "start": len(self.text), "end": len(self.text + line_text),
-                #"line_index": li,
                 'line_id': line['metadata']['id']
             }
             self.text += line_text
@@ -180,6 +179,24 @@ class ResolutionParagraph(ResolutionDoc):
             if line_range["start"] <= match.offset < line_range["end"]:
                 match_lines.append(self.lines[line_range["line_index"]])
         return match_lines
+
+
+def lines_to_paragraph_text(lines: List[dict], line_break_chars: str = '-',
+                            term_freq: Counter = None):
+    paragraph_text = ''
+    line_ranges = []
+    for line in lines:
+        if line['text'][-1] in line_break_chars:
+            line_text = line['text'][:-1]
+        else:
+            line_text = line['text'] + ' '
+        line_range = {
+            "start": len(paragraph_text), "end": len(paragraph_text + line_text),
+            'line_id': line['metadata']['id']
+        }
+        line_ranges.append(line_range)
+        paragraph_text += line_text
+    return {'paragraph_text': paragraph_text, 'line_ranges': line_ranges}
 
 
 class Meeting(ResolutionDoc):
