@@ -4,7 +4,8 @@ import {handleEsError} from "./EsErrorHandler";
 import clone from "../util/clone";
 import aggsAllAnnotations from "./query/aggs/aggs-all-annotations.json";
 import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
-import FilterAnnotationPrefix from "./query/filter/FilterAnnotationPrefix";
+import FilterAnnotationName from "./query/filter/FilterAnnotationName";
+import FilterAnnotationValuePrefix from "./query/filter/FilterAnnotationValuePrefix";
 
 /**
  * ElasticSearch Resolution Resource
@@ -28,7 +29,8 @@ export default class ResolutionResource {
     const query = clone<any>(aggsAllAnnotations);
 
     const filters = query.nested_annotations.aggs.filter_annotations.filter.bool.must;
-    filters.push(new FilterAnnotationPrefix('plaats', prefix));
+    filters.push(new FilterAnnotationName('plaats'));
+    filters.push(new FilterAnnotationValuePrefix(prefix));
 
     const response = await this.esClient
       .search(new AggsRequest(query))
@@ -36,7 +38,4 @@ export default class ResolutionResource {
 
     return response.aggregations.nested_annotations.filter_annotations.sum.buckets;
   }
-
-
-
 }
