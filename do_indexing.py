@@ -13,12 +13,14 @@ from republic.model.republic_phrase_model import resolution_phrases, spelling_va
 
 
 host_type = os.environ.get('REPUBLIC_HOST_TYPE')
-print(host_type)
+print('host type form environment:', host_type)
 if not host_type:
-    message = """REPUBLIC_HOST_TYPE is not set, assuming "external". 
+    message = """REPUBLIC_HOST_TYPE is not set, assuming "external".
                 To use internal, set environment variable REPUBLIC_HOST_TYPE='internal'."""
     print()
     host_type = "external"
+print('host_type:', host_type)
+
 es_republic = rep_es.initialize_es(host_type=host_type)
 
 data_type = "hocr"
@@ -198,8 +200,8 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
         do_page_type_indexing_pagexml(inv_num, inv_config, year)
     #if indexing_step == "page_numbers":
     #    do_typed_page_number_indexing_pagexml(inv_num, inv_config, year)
-    if indexing_step == "meetings":
-        do_meeting_indexing(inv_num, inv_config, year)
+    if indexing_step == "sessions":
+        do_session_indexing(inv_num, inv_config, year)
     if indexing_step == "resolutions":
         do_resolution_indexing(inv_num, inv_config, year)
     if indexing_step == "phrase_matches":

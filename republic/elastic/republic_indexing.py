@@ -315,6 +315,7 @@ def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         print('No pages retrieved for inventory', inv_num)
         return None
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
+        print(json.dumps(session.metadata, indent=4))
         if session.metadata['num_lines'] > 4000:
             # exceptionally long session docs probably contain multiple sessions
             # so quarantine these
@@ -331,7 +332,7 @@ def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
         session.scan_versions = session_parser.get_session_scans_version(session)
         session_parser.clean_lines(session.lines, clean_copy=False)
         if session.metadata['has_session_date_element']:
-            for evidence in session.metadata['evidence']:
+            for evidence in session.evidence:
                 if evidence['metadata_field'] == 'session_date':
                     session_date_string = evidence['matches'][-1]['match_string']
         page_num = int(session.columns[0]['metadata']['page_id'].split('page-')[1])
@@ -380,7 +381,7 @@ def add_missing_dates(prev_date: RepublicDate, session: Session):
         missing_session.metadata['session'] = None
         missing_session.metadata['president'] = None
         missing_session.metadata['attendants_list_id'] = None
-        evidence_lines = set([evidence['line_id'] for evidence in missing_session.metadata['evidence']])
+        evidence_lines = set([evidence['line_id'] for evidence in missing_session.evidence])
         keep_columns = []
         num_lines = 0
         num_words = 0

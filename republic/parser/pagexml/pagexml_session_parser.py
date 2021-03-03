@@ -3,7 +3,7 @@ from collections import Counter
 import copy
 
 from republic.model.generic_document_model import StructureDoc
-from republic.model.republic_phrase_model import meeting_phrase_model
+from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
@@ -200,7 +200,9 @@ def find_session_line(line_id: str, session_lines: List[dict]) -> dict:
 
 def generate_session_doc(session_metadata: dict, session_lines: list,
                          session_searcher: SessionSearcher, column_metadata: Dict[str, dict]) -> iter:
-    session = Session(session_metadata, lines=session_lines)
+    evidence = session_metadata['evidence']
+    del session_metadata['evidence']
+    session = Session(session_metadata, lines=session_lines, evidence=evidence)
     session.add_page_column_metadata(column_metadata)
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
@@ -299,11 +301,11 @@ def get_sessions(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
     # TO DO: IMPROVEMENTS
     # - add holidays: Easter, Christmas
     # - make model year-dependent
-    # - check for large date jumps and short meeting docs
+    # - check for large date jumps and short session docs
     column_metadata = get_columns_metadata(sorted_pages)
     current_date = initialize_inventory_date(inv_metadata)
     session_searcher = SessionSearcher(inv_config['inventory_num'], current_date,
-                                       meeting_phrase_model, window_size=30)
+                                       session_phrase_model, window_size=30)
     session_metadata = session_searcher.parse_session_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
     lines_skipped = 0
@@ -312,7 +314,7 @@ def get_sessions(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
     word_freq_counter = read_word_freq_counter(inv_config, 'line')
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages,
                                                                 word_freq_counter=word_freq_counter)):
-        # list all lines belonging to the same meeting date
+        # list all lines belonging to the same session date
         session_lines += [line_info]
         if line_info['text'] is None or line_info['text'] == '':
             continue
@@ -366,7 +368,7 @@ def get_sessions(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
             #         print(None)
             #     else:
             #         print(line['text_string'], [match['match_keyword'] for match in line['matches']])
-            # get the first line of the new meeting day in the sliding window
+            # get the first line of the new session day in the sliding window
             first_new_session_line_id = session_searcher.sliding_window[0]['text_id']
             # find that first line in the list of the collected session lines
             first_new_session_line = find_session_line(first_new_session_line_id, session_lines)

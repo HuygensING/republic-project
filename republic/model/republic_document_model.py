@@ -203,7 +203,8 @@ def lines_to_paragraph_text(lines: List[dict], line_break_chars: str = '-',
 
 class Session(ResolutionDoc):
 
-    def __init__(self, metadata: Dict, scan_versions: List[dict] = None, **kwargs):
+    def __init__(self, metadata: Dict, scan_versions: List[dict] = None,
+                 evidence: List[dict] = None, **kwargs):
         """A meeting session occurs on a specific day, with a president and attendants,
         and has textual content in the form of
          lines or possibly as Resolution objects."""
@@ -220,6 +221,7 @@ class Session(ResolutionDoc):
         self.metadata['num_lines'] = len(self.lines)
         self.metadata['num_words'] = 0
         self.add_column_metadata()
+        self.evidence: List[dict] = evidence
 
     def add_column_metadata(self):
         """Add page column id, iiif urls and stats on number of columns, lines, words."""
@@ -260,11 +262,13 @@ class Session(ResolutionDoc):
         """Return the metadata of the session, including date, president and attendants."""
         return self.metadata
 
-    def json(self, with_resolutions: bool = False, with_columns: bool = False,
-             with_lines: bool = False, with_scan_versions: bool = False) -> dict:
+    def json(self, with_resolutions: bool = False, with_columns: bool = True,
+             with_lines: bool = False, with_scan_versions: bool = True) -> dict:
         """Return a JSON presentation of the session."""
         json_doc = {
             'metadata': self.metadata,
+            'columns': self.columns,
+            'evidence': self.evidence
         }
         self.metadata['type'] = self.type
         if with_resolutions:
@@ -369,15 +373,16 @@ class Resolution(ResolutionDoc):
             metadata['proposer'] = None
         if 'decision' not in metadata:
             metadata['decision'] = None
-        metadata['doc_type'] = 'resolution'
+        metadata['type'] = 'resolution'
         if session:
             metadata['session_date'] = session.metadata['session_date']
             metadata['session_id'] = session.metadata['id']
-            metadata['session'] = session.metadata['session']
+            metadata['session_num'] = session.metadata['session_num']
             metadata['inventory_num'] = session.metadata['inventory_num']
             metadata['president'] = session.metadata['president']
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
         self.type = "resolution"
+        self.metadata['resolution_type'] = 'ordinaris'
         self.scan_versions = scan_versions if scan_versions else []
         self.opening = None
         self.decision = None

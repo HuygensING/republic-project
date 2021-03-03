@@ -170,7 +170,7 @@ spelling_variants = {
     ]
 }
 
-meeting_phrase_model = [
+session_phrase_model = [
     {
         'keyword': 'Extract uyt de Resolutien',
         'start_year': 1703, 'end_year': 1796,
