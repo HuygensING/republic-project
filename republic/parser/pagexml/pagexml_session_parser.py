@@ -4,11 +4,10 @@ import copy
 
 from republic.model.generic_document_model import StructureDoc
 from republic.model.republic_phrase_model import meeting_phrase_model
-from republic.model.republic_date import RepublicDate, derive_date_from_string, exception_dates
-# print(exception_dates)
-from republic.model.republic_meeting import MeetingSearcher, Meeting, calculate_work_day_shift
-from republic.model.republic_meeting import meeting_element_order
-from republic.model.republic_document_model import Meeting, Resolution, ResolutionPageDoc
+from republic.model.republic_date import RepublicDate, derive_date_from_string
+from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
+from republic.model.republic_session import session_opening_element_order
+from republic.model.republic_document_model import Session, ResolutionPageDoc
 from republic.model.republic_document_model import check_special_column_for_bleed_through, sort_resolution_columns
 from republic.helper.text_helper import read_word_freq_counter
 
@@ -89,7 +88,8 @@ def order_document_lines(document: ResolutionPageDoc):
         ordered_lines.append(line)
 
 
-def stream_resolution_page_lines(pages: List[ResolutionPageDoc], word_freq_counter: Counter = None) -> Union[None, iter]:
+def stream_resolution_page_lines(pages: List[ResolutionPageDoc],
+                                 word_freq_counter: Counter = None) -> Union[None, iter]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
@@ -141,7 +141,7 @@ def stream_resolution_document_lines(documents: List[ResolutionPageDoc],
                     line = line_add_document_metadata(line, document)
                     lines += [line]
             # sort lines to make sure they are in reading order (assuming column has single text column)
-            # some columns split their text in sub columns, but for meeting date detection this is not an issue
+            # some columns split their text in sub columns, but for session date detection this is not an issue
             for line in sorted(lines, key=lambda x: x['coords']['bottom']):
                 yield line
     return None
@@ -155,78 +155,78 @@ def print_line_info(line_info: dict) -> None:
           line_info['text'])
 
 
-def score_meeting_elements(meeting_elements: Dict[str, int], num_elements_threshold: int) -> float:
-    """Order meeting elements by text order and check against expected order. If enough elements are
+def score_session_opening_elements(session_opening_elements: Dict[str, int], num_elements_threshold: int) -> float:
+    """Order session elements by text order and check against expected order. If enough elements are
     in expected order, the number of ordered elements is returned as the score, otherwise score is zero."""
-    elements = sorted(meeting_elements.items(), key=lambda x: x[1])
-    if len(meeting_elements.keys()) < num_elements_threshold:
-        # we need at least num_elements_threshold elements to determine this is a new meeting date
+    opening_elements = sorted(session_opening_elements.items(), key=lambda x: x[1])
+    if len(session_opening_elements.keys()) < num_elements_threshold:
+        # we need at least num_elements_threshold elements to determine this is a new session date
         return 0
     try:
-        numbered_elements = [meeting_element_order.index(element[0]) for element in elements]
+        numbered_opening_elements = [session_opening_element_order.index(element[0]) for element in opening_elements]
     except ValueError:
-        print(meeting_elements)
+        print(session_opening_elements)
         raise
-    if len(set(elements)) <= 3:
+    if len(set(opening_elements)) <= 3:
         return 0
-    order_score = score_element_order(numbered_elements)
+    order_score = score_opening_element_order(numbered_opening_elements)
     return order_score
 
 
-def score_element_order(element_list: List[any]) -> float:
-    """Score the found meeting elements on how well they match the expected order."""
-    element_set = sorted(list(set(element_list)))
+def score_opening_element_order(opening_element_list: List[any]) -> float:
+    """Score the found session opening elements on how well they match the expected order."""
+    opening_element_set = sorted(list(set(opening_element_list)))
     count = 0
-    dummy_list = copy.copy(element_list)
+    dummy_list = copy.copy(opening_element_list)
     for i, e1 in enumerate(dummy_list):
-        first = element_list.index(e1)
-        rest = element_list[first+1:]
+        first = opening_element_list.index(e1)
+        rest = opening_element_list[first+1:]
         for e2 in rest:
             if e2 > e1:
                 count += 1
-    set_size = len(element_set)
+    set_size = len(opening_element_set)
     order_max = set_size * (set_size - 1) / 2
     order_score = count / order_max
     return order_score
 
 
-def find_meeting_line(line_id: str, meeting_lines: List[dict]) -> dict:
-    """Find a specific line by id in the list of lines belonging to a meeting."""
-    for line in meeting_lines:
+def find_session_line(line_id: str, session_lines: List[dict]) -> dict:
+    """Find a specific line by id in the list of lines belonging to a session."""
+    for line in session_lines:
         if line['metadata']['id'] == line_id:
             return line
-    raise IndexError(f'Line with id {line_id} not in meeting lines.')
+    raise IndexError(f'Line with id {line_id} not in session lines.')
 
 
-def generate_meeting_doc(meeting_metadata: dict, meeting_lines: list,
-                         meeting_searcher: MeetingSearcher, column_metadata: Dict[str, dict]) -> iter:
-    meeting = Meeting(meeting_metadata, lines=meeting_lines)
-    meeting.add_page_column_metadata(column_metadata)
-    # add number of lines to session info in meeting searcher
-    session_info = meeting_searcher.sessions[meeting_metadata['meeting_date']][-1]
-    session_info['num_lines'] = len(meeting_lines)
-    if meeting.date.is_rest_day() or not meeting_searcher.has_meeting_date_match():
-        return meeting
-    # Check if the next meeting date is more than 1 workday ahead
-    date_match = meeting_searcher.get_meeting_date_match()
-    new_date = derive_date_from_string(date_match['match_keyword'], meeting_searcher.year)
-    if meeting.date.isoformat() == new_date.isoformat():
-        # print('SAME DAY:', meeting_searcher.current_date.isoformat(), '\t', meeting.date.isoformat())
-        return meeting
-    workday_shift = calculate_work_day_shift(new_date, meeting.date)
+def generate_session_doc(session_metadata: dict, session_lines: list,
+                         session_searcher: SessionSearcher, column_metadata: Dict[str, dict]) -> iter:
+    session = Session(session_metadata, lines=session_lines)
+    session.add_page_column_metadata(column_metadata)
+    # add number of lines to session info in session searcher
+    session_info = session_searcher.sessions[session_metadata['session_date']][-1]
+    session_info['num_lines'] = len(session_lines)
+    if session.date.is_rest_day() or not session_searcher.has_session_date_match():
+        return session
+    # Check if the next session date is more than 1 workday ahead
+    date_match = session_searcher.get_session_date_match()
+    new_date = derive_date_from_string(date_match['match_keyword'], session_searcher.year)
+    if session.date.isoformat() == new_date.isoformat():
+        # print('SAME DAY:', session_searcher.current_date.isoformat(), '\t', session.date.isoformat())
+        return session
+    workday_shift = calculate_work_day_shift(new_date, session.date)
     # print('workday_shift:', workday_shift)
     if workday_shift > 1:
         print('MEETING DOC IS MULTI DAY')
-        meeting.metadata['date_shift_status'] = 'multi_day'
-    return meeting
+        session.metadata['date_shift_status'] = 'multi_day'
+    return session
 
 
-def get_meeting_scans_version(meeting: Meeting) -> List:
+def get_session_scans_version(session: Session) -> List:
     scans_version = {}
-    for line in meeting.lines:
+    for line in session.lines:
         scans_version[line['metadata']['doc_id']] = copy.copy(line['metadata']['scan_version'])
         scans_version[line['metadata']['doc_id']]['doc_id'] = line['metadata']['doc_id']
-    # print("meeting scans versions:", scans_version)
+    # print("session scans versions:", scans_version)
     return list(scans_version.values())
 
 
@@ -294,26 +294,26 @@ def get_columns_metadata(sorted_pages: List[Union[StructureDoc, dict]]) -> Dict[
     return column_metadata
 
 
-def get_meeting_dates(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
-                      inv_metadata: dict) -> Iterator[Meeting]:
+def get_sessions(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
+                 inv_metadata: dict) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - add holidays: Easter, Christmas
     # - make model year-dependent
     # - check for large date jumps and short meeting docs
     column_metadata = get_columns_metadata(sorted_pages)
     current_date = initialize_inventory_date(inv_metadata)
-    meeting_searcher = MeetingSearcher(inv_config['inventory_num'], current_date,
+    session_searcher = SessionSearcher(inv_config['inventory_num'], current_date,
                                        meeting_phrase_model, window_size=30)
-    meeting_metadata = meeting_searcher.parse_meeting_metadata(None)
+    session_metadata = session_searcher.parse_session_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
-    meeting_lines = []
+    session_lines = []
     word_freq_counter = read_word_freq_counter(inv_config, 'line')
     for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages,
                                                                 word_freq_counter=word_freq_counter)):
         # list all lines belonging to the same meeting date
-        meeting_lines += [line_info]
+        session_lines += [line_info]
         if line_info['text'] is None or line_info['text'] == '':
             continue
         # add the line to the gated_window
@@ -324,80 +324,80 @@ def get_meeting_dates(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
         if not check_line:
             lines_skipped += 1
             # add a None to the sliding window as a placeholder so the sliding window keeps sliding
-            meeting_searcher.add_empty_document()
+            session_searcher.add_empty_document()
             # print(li, None)
         else:
-            # add the line as a new document to the meeting searcher and search for meeting elements
-            meeting_searcher.add_document(check_line['metadata']['id'], check_line['text'])
+            # add the line as a new document to the session searcher and search for session elements
+            session_searcher.add_document(check_line['metadata']['id'], check_line['text'])
             # print(li, check_line['text'])
         # Keep sliding until the first line in the sliding window has matches
-        # last_line = meeting_searcher.sliding_window[-1]
+        # last_line = session_searcher.sliding_window[-1]
         # if not last_line:
         #     print(None)
         # else:
         #     print(li - 40, last_line['text_string'], [match['match_string'] for match in last_line['matches']])
-        if not meeting_searcher.sliding_window[0] or len(meeting_searcher.sliding_window[0]['matches']) == 0:
+        if not session_searcher.sliding_window[0] or len(session_searcher.sliding_window[0]['matches']) == 0:
             continue
-        # get the meeting elements found in the lines of the sliding window
-        meeting_elements = meeting_searcher.get_meeting_elements()
-        # print(meeting_elements)
-        # check if first meeting element is in the first line of the sliding window
-        if len(meeting_elements.items()) == 0 or min(meeting_elements.values()) != 0:
-            # move to next line if first meeting element is not in the first line of the sliding window
+        # get the session opening elements found in the lines of the sliding window
+        session_opening_elements = session_searcher.get_session_opening_elements()
+        # print(session_opening_elements)
+        # check if first session opening element is in the first line of the sliding window
+        if len(session_opening_elements.items()) == 0 or min(session_opening_elements.values()) != 0:
+            # move to next line if first session opening element is not in the first line of the sliding window
             continue
-        if 'extract' in meeting_elements: # and meeting_elements['extract'] == 0:
+        if 'extract' in session_opening_elements:
             # what follows in the sliding window is an extract from earlier days, which looks
-            # like a meeting opening but isn't. Reset the sliding window
-            meeting_searcher.reset_sliding_window()
+            # like a session opening but isn't. Reset the sliding window
+            session_searcher.reset_sliding_window()
             continue
-        if 'extract' in meeting_elements:
-            for line in meeting_searcher.sliding_window:
+        if 'extract' in session_opening_elements:
+            for line in session_searcher.sliding_window:
                 if not line:
                     continue
                 print(line['metadata']['text_id'], line['text_string'])
-        # score the found meeting elements for how well they match the order in which they are expected to appear
+        # score the found session opening elements for how well
+        # they match the order in which they are expected to appear
         # Empirically established threshold:
-        # - need to match at least four meeting elements
-        # - number of elements in expected order must be 80% of found elements
-        # (so with four elements, all need to be in the right order, with five elements, one may be in wrong order)
-        if score_meeting_elements(meeting_elements, num_elements_threshold=4) > 0.99:
-            # for line in meeting_searcher.sliding_window:
+        # - need to match at least four session opening elements
+        # - number of opening elements in expected order must be 99% of found opening elements
+        if score_session_opening_elements(session_opening_elements, num_elements_threshold=4) > 0.99:
+            # for line in session_searcher.sliding_window:
             #     if not line:
             #         print(None)
             #     else:
             #         print(line['text_string'], [match['match_keyword'] for match in line['matches']])
             # get the first line of the new meeting day in the sliding window
-            first_new_meeting_line_id = meeting_searcher.sliding_window[0]['text_id']
-            # find that first line in the list of the collected meeting lines
-            first_new_meeting_line = find_meeting_line(first_new_meeting_line_id, meeting_lines)
-            # find the index of the first new meeting day line in the collected meeting lines
-            new_meeting_index = meeting_lines.index(first_new_meeting_line)
-            # everything before the first new meeting day line belongs to the previous day
-            finished_meeting_lines = meeting_lines[:new_meeting_index]
-            # everything after the first new meeting day line belongs to the new meeting day
-            meeting_lines = meeting_lines[new_meeting_index:]
-            meeting_doc = generate_meeting_doc(meeting_metadata, finished_meeting_lines,
-                                               meeting_searcher, column_metadata)
-            if meeting_doc.metadata['num_lines'] == 0:
-                # A meeting with no lines only happens at the beginning
+            first_new_session_line_id = session_searcher.sliding_window[0]['text_id']
+            # find that first line in the list of the collected session lines
+            first_new_session_line = find_session_line(first_new_session_line_id, session_lines)
+            # find the index of the first new session day line in the collected session lines
+            new_session_index = session_lines.index(first_new_session_line)
+            # everything before the first new session day line belongs to the previous day
+            finished_session_lines = session_lines[:new_session_index]
+            # everything after the first new session day line belongs to the new session day
+            session_lines = session_lines[new_session_index:]
+            session_doc = generate_session_doc(session_metadata, finished_session_lines,
+                                               session_searcher, column_metadata)
+            if session_doc.metadata['num_lines'] == 0:
+                # A session with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
                 # Also, reset the session counter
-                meeting_searcher.sessions[meeting_doc.metadata['meeting_date']] = []
-                date = meeting_searcher.current_date
+                session_searcher.sessions[session_doc.metadata['session_date']] = []
+                date = session_searcher.current_date
                 if date.month == 1 and 1 < date.day <= 4:
                     # reset_date = RepublicDate(date.year, 1, 1)
                     day_shift = date.day - 1
-                    meeting_searcher.update_meeting_date(day_shift)
+                    session_searcher.update_session_date(day_shift)
             else:
-                yield meeting_doc
-            # update the current meeting date in the searcher
-            meeting_searcher.update_meeting_date()
+                yield session_doc
+            # update the current session date in the searcher
+            session_searcher.update_session_date()
             # update the searcher with new date strings for the next seven days
-            meeting_searcher.update_meeting_date_searcher(num_dates=7)
-            # get the meeting metadata for the new meeting date
-            meeting_metadata = meeting_searcher.parse_meeting_metadata(meeting_doc.metadata)
-            # reset the sliding window to search the next meeting opening
-            meeting_searcher.shift_sliding_window()
-    meeting_metadata['num_lines'] = len(meeting_lines)
-    # after processing all lines in the inventory, create a meeting doc from the remaining lines
-    yield generate_meeting_doc(meeting_metadata, meeting_lines, meeting_searcher, column_metadata)
+            session_searcher.update_session_date_searcher(num_dates=7)
+            # get the session metadata for the new session date
+            session_metadata = session_searcher.parse_session_metadata(session_doc.metadata)
+            # reset the sliding window to search the next session opening
+            session_searcher.shift_sliding_window()
+    session_metadata['num_lines'] = len(session_lines)
+    # after processing all lines in the inventory, create a session doc from the remaining lines
+    yield generate_session_doc(session_metadata, session_lines, session_searcher, column_metadata)

@@ -12,7 +12,7 @@ from republic.extraction.extract_resolution_metadata import generate_proposition
 from republic.model.generic_document_model import StructureDoc
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
-import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
+import republic.parser.pagexml.pagexml_session_parser as session_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_inventory_parser as inv_parser
 import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
@@ -23,7 +23,7 @@ from republic.model.republic_date import RepublicDate, make_republic_date
 from republic.model.republic_hocr_model import HOCRPage
 from republic.model.republic_phrase_model import category_index
 from republic.model.republic_pagexml_model import parse_derived_coords
-from republic.model.republic_document_model import Meeting, get_meeting_resolutions, Resolution, ResolutionPageDoc
+from republic.model.republic_document_model import Session, get_session_resolutions, Resolution, ResolutionPageDoc
 from republic.config.republic_config import set_config_inventory_num
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
@@ -305,7 +305,7 @@ def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
                      id=paragraph['metadata']['paragraph_id'], body=paragraph)
 
 
-def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
     # pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
     pages = rep_es.retrieve_resolution_pages(es, inv_num, inv_config)
     pages.sort(key=lambda page: page.metadata['page_num'])
@@ -314,53 +314,53 @@ def index_meetings_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
     if not pages:
         print('No pages retrieved for inventory', inv_num)
         return None
-    for mi, meeting in enumerate(meeting_parser.get_meeting_dates(pages, inv_config, inv_metadata)):
-        if meeting.metadata['num_lines'] > 4000:
-            # exceptionally long meeting docs probably contain multiple meetings
+    for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
+        if session.metadata['num_lines'] > 4000:
+            # exceptionally long session docs probably contain multiple sessions
             # so quarantine these
-            meeting.metadata['date_shift_status'] = 'quarantined'
-            # print('Error: too many lines for meeting on date', meeting.metadata['meeting_date'])
+            session.metadata['date_shift_status'] = 'quarantined'
+            # print('Error: too many lines for session on date', session.metadata['session_date'])
             # continue
-        meeting_date_string = 'None'
-        for missing_meeting in add_missing_dates(prev_date, meeting):
-            add_timestamp(missing_meeting)
-            es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                     id=missing_meeting.metadata['id'],
-                     body=missing_meeting.json(with_columns=True, with_scan_versions=True))
+        session_date_string = 'None'
+        for missing_session in add_missing_dates(prev_date, session):
+            add_timestamp(missing_session)
+            es.index(index=inv_config['session_index'], doc_type=inv_config['session_doc_type'],
+                     id=missing_session.metadata['id'],
+                     body=missing_session.json(with_columns=True, with_scan_versions=True))
 
-        meeting.scan_versions = meeting_parser.get_meeting_scans_version(meeting)
-        meeting_parser.clean_lines(meeting.lines, clean_copy=False)
-        if meeting.metadata['has_meeting_date_element']:
-            for evidence in meeting.metadata['evidence']:
-                if evidence['metadata_field'] == 'meeting_date':
-                    meeting_date_string = evidence['matches'][-1]['match_string']
-        page_num = int(meeting.columns[0]['metadata']['page_id'].split('page-')[1])
-        num_lines = meeting.metadata['num_lines']
-        meeting_id = meeting.metadata['id']
+        session.scan_versions = session_parser.get_session_scans_version(session)
+        session_parser.clean_lines(session.lines, clean_copy=False)
+        if session.metadata['has_session_date_element']:
+            for evidence in session.metadata['evidence']:
+                if evidence['metadata_field'] == 'session_date':
+                    session_date_string = evidence['matches'][-1]['match_string']
+        page_num = int(session.columns[0]['metadata']['page_id'].split('page-')[1])
+        num_lines = session.metadata['num_lines']
+        session_id = session.metadata['id']
         print(
-            f"{mi}\t{meeting_id}\t{meeting_date_string: <30}\tnum_lines: {num_lines}\tpage: {page_num}")
+            f"{mi}\t{session_id}\t{session_date_string: <30}\tnum_lines: {num_lines}\tpage: {page_num}")
 
-        # print('Indexing meeting on date', meeting.metadata['meeting_date'],
-        #      '\tdate_string:', meeting_date_string,
-        #      '\tnum meeting lines:', meeting.metadata['num_lines'])
-        prev_date = meeting.date
+        # print('Indexing session on date', session.metadata['session_date'],
+        #      '\tdate_string:', session_date_string,
+        #      '\tnum session lines:', session.metadata['num_lines'])
+        prev_date = session.date
         try:
-            add_timestamp(meeting)
-            if meeting.metadata['date_shift_status'] == 'quarantined':
-                quarantine_index = inv_config['meeting_index'] + '_quarantine'
-                es.index(index=quarantine_index, doc_type=inv_config['meeting_doc_type'],
-                         id=meeting.metadata['id'], body=meeting.json(with_columns=True, with_scan_versions=True))
+            add_timestamp(session)
+            if session.metadata['date_shift_status'] == 'quarantined':
+                quarantine_index = inv_config['session_index'] + '_quarantine'
+                es.index(index=quarantine_index, doc_type=inv_config['session_doc_type'],
+                         id=session.metadata['id'], body=session.json(with_columns=True, with_scan_versions=True))
             else:
-                es.index(index=inv_config['meeting_index'], doc_type=inv_config['meeting_doc_type'],
-                         id=meeting.metadata['id'], body=meeting.json(with_columns=True, with_scan_versions=True))
+                es.index(index=inv_config['session_index'], doc_type=inv_config['session_doc_type'],
+                         id=session.metadata['id'], body=session.json(with_columns=True, with_scan_versions=True))
         except RequestError:
             print('skipping doc')
             continue
     return None
 
 
-def add_missing_dates(prev_date: RepublicDate, meeting: Meeting):
-    missing = (meeting.date - prev_date).days - 1
+def add_missing_dates(prev_date: RepublicDate, session: Session):
+    missing = (session.date - prev_date).days - 1
     if missing > 0:
         print('missing days:', missing)
     for diff in range(1, missing + 1):
@@ -368,31 +368,31 @@ def add_missing_dates(prev_date: RepublicDate, meeting: Meeting):
         # as most likely the missing date is a non-meeting date with 'nihil actum est'
         missing_date = prev_date.date + datetime.timedelta(days=diff)
         missing_date = RepublicDate(missing_date.year, missing_date.month, missing_date.day)
-        missing_meeting = copy.deepcopy(meeting)
-        missing_meeting.metadata['id'] = f'meeting-{missing_date.isoformat()}-session-1'
-        missing_meeting.id = missing_meeting.metadata['id']
-        missing_meeting.metadata['meeting_date'] = missing_date.isoformat()
-        missing_meeting.metadata['year'] = missing_date.year
-        missing_meeting.metadata['meeting_month'] = missing_date.month
-        missing_meeting.metadata['meeting_day'] = missing_date.day
-        missing_meeting.metadata['meeting_weekday'] = missing_date.day_name
-        missing_meeting.metadata['is_workday'] = missing_date.is_work_day()
-        missing_meeting.metadata['session'] = None
-        missing_meeting.metadata['president'] = None
-        missing_meeting.metadata['attendants_list_id'] = None
-        evidence_lines = set([evidence['line_id'] for evidence in missing_meeting.metadata['evidence']])
+        missing_session = copy.deepcopy(session)
+        missing_session.metadata['id'] = f'session-{missing_date.isoformat()}-session-1'
+        missing_session.id = missing_session.metadata['id']
+        missing_session.metadata['session_date'] = missing_date.isoformat()
+        missing_session.metadata['year'] = missing_date.year
+        missing_session.metadata['session_month'] = missing_date.month
+        missing_session.metadata['session_day'] = missing_date.day
+        missing_session.metadata['session_weekday'] = missing_date.day_name
+        missing_session.metadata['is_workday'] = missing_date.is_work_day()
+        missing_session.metadata['session'] = None
+        missing_session.metadata['president'] = None
+        missing_session.metadata['attendants_list_id'] = None
+        evidence_lines = set([evidence['line_id'] for evidence in missing_session.metadata['evidence']])
         keep_columns = []
         num_lines = 0
         num_words = 0
-        missing_meeting.lines = []
-        for column in missing_meeting.columns:
+        missing_session.lines = []
+        for column in missing_session.columns:
             keep_textregions = []
             for textregion in column['textregions']:
                 keep_lines = []
                 for line in textregion['lines']:
                     if len(evidence_lines) > 0:
                         keep_lines += [line]
-                        missing_meeting.lines += [line]
+                        missing_session.lines += [line]
                         num_lines += 1
                         if line['text']:
                             num_words += len([word for word in re.split(r'\W+', line['text']) if word != ''])
@@ -408,14 +408,14 @@ def add_missing_dates(prev_date: RepublicDate, meeting: Meeting):
             if len(column['textregions']) > 0:
                 column['coords'] = parse_derived_coords(column['textregions'])
                 keep_columns += [column]
-        missing_meeting.columns = keep_columns
-        missing_meeting.metadata['num_columns'] = len(missing_meeting.columns)
-        missing_meeting.metadata['num_lines'] = num_lines
-        missing_meeting.metadata['num_words'] = num_words
-        missing_meeting.scan_versions = meeting_parser.get_meeting_scans_version(missing_meeting)
-        meeting_parser.clean_lines(missing_meeting.lines, clean_copy=False)
-        print('missing meeting:', missing_meeting.id)
-        yield missing_meeting
+        missing_session.columns = keep_columns
+        missing_session.metadata['num_columns'] = len(missing_session.columns)
+        missing_session.metadata['num_lines'] = num_lines
+        missing_session.metadata['num_words'] = num_words
+        missing_session.scan_versions = session_parser.get_session_scans_version(missing_session)
+        session_parser.clean_lines(missing_session.lines, clean_copy=False)
+        print('missing session:', missing_session.id)
+        yield missing_session
 
 
 def configure_resolution_searchers():
@@ -447,19 +447,19 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
             }
         }
     }
-    for hit in rep_es.scroll_hits(es, query, index=inv_config['meeting_index'], doc_type="meeting", size=2):
+    for hit in rep_es.scroll_hits(es, query, index=inv_config['session_index'], doc_type="session", size=2):
         print(hit['_id'])
-        meeting_json = hit['_source']
-        meeting = Meeting(meeting_json['metadata'], columns=meeting_json['columns'],
-                          scan_versions=meeting_json['scan_versions'])
-        for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
+        session_json = hit['_source']
+        session = Session(session_json['metadata'], columns=session_json['columns'],
+                          scan_versions=session_json['scan_versions'])
+        for resolution in get_session_resolutions(session, opening_searcher, verb_searcher):
             add_timestamp(resolution)
             es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
 
 
-def index_meeting_resolutions(es: Elasticsearch, meeting: Meeting, opening_searcher: FuzzyPhraseSearcher,
+def index_session_resolutions(es: Elasticsearch, session: Session, opening_searcher: FuzzyPhraseSearcher,
                               verb_searcher: FuzzyPhraseSearcher, inv_config: dict) -> None:
-    for resolution in get_meeting_resolutions(meeting, opening_searcher, verb_searcher):
+    for resolution in get_session_resolutions(session, opening_searcher, verb_searcher):
         index_resolution(es, resolution, inv_config)
 
 

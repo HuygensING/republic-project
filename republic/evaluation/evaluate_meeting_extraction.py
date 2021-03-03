@@ -4,12 +4,12 @@ import datetime
 from elasticsearch import Elasticsearch
 
 import republic.elastic.republic_retrieving as rep_es
-import republic.parser.pagexml.pagexml_meeting_parser as meeting_parser
+import republic.parser.pagexml.pagexml_session_parser as meeting_parser
 import republic.analyser.republic_inventory_analyser as inv_analyser
 from republic.helper.metadata_helper import make_scan_urls
 from republic.config.republic_config import base_config, set_config_inventory_num
 from republic.model.republic_date import RepublicDate, get_next_workday, get_previous_workday
-from republic.model.republic_meeting import Meeting, meeting_from_json
+from republic.model.republic_session import Meeting, session_from_json
 
 
 # old index
@@ -58,7 +58,7 @@ def get_meeting_by_date(es: Elasticsearch, date: RepublicDate) -> Union[None, Me
     doc_id = f'meeting-{date.isoformat()}-session-1'
     if es.exists(index=index, doc_type=doc_type, id=doc_id):
         response = es.get(index=index, doc_type=doc_type, id=doc_id)
-        return meeting_from_json(response['_source'])
+        return session_from_json(response['_source'])
     else:
         return None
 
