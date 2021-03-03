@@ -7,7 +7,8 @@ services:
       - "9200:9200"
     networks:
       - gnb_network
-
+    restart: always
+    
   gnb_nginx:
     image: nginx:1.19
     volumes:
@@ -23,6 +24,7 @@ services:
       - 80:80
     depends_on:
       - gnb_es
+    restart: always
 
 networks:
   nginxproxynetwork:
