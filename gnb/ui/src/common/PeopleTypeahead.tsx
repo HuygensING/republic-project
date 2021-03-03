@@ -72,6 +72,7 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
     onChange={props.handleSubmit}
     options={state.loading ? [] : state.options}
     labelKey={option => `${option.name} (${option.total}x)`}
+    filterBy={() => true}
     onInputChange={handleInputChange}
     placeholder={props.placeholder}
     id={props.id}

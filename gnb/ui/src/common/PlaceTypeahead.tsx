@@ -61,6 +61,7 @@ export default function PlaceTypeahead(props: PlaceTypeaheadProps) {
     multiple
     onChange={props.handleSubmit}
     options={state.loading ? [] : state.options}
+    filterBy={() => true}
     labelKey={option => `${option.name} (${option.total}x)`}
     onInputChange={handleInputChange}
     placeholder={props.placeholder}
