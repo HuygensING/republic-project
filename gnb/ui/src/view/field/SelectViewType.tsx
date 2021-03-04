@@ -38,10 +38,6 @@ export const ViewTypes = [
     placeholder: TERM
   },
   {
-    name: ViewType.FUNCTION,
-    placeholder: PLACE
-  },
-  {
     name: ViewType.PLACE,
     placeholder: PLACE
   },
