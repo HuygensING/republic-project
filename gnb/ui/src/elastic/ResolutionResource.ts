@@ -4,7 +4,7 @@ import FilterRange from "./query/filter/FilterRange";
 import AggsResolutionHistogram from "./query/aggs/AggsResolutionHistogram";
 import {PersonType} from "./model/PersonType";
 import FilterFullText from "./query/filter/FilterFullText";
-import FilterPeople from "./query/filter/FilterPeople";
+import FilterPerson from "./query/filter/FilterPerson";
 import Resolution from "./model/Resolution";
 
 import {
@@ -20,6 +20,8 @@ import {QueryWithIdsAndHighlights} from "./query/QueryWithIdsAndHighlights";
 import Place from "../view/model/Place";
 import {Term} from "../view/model/Term";
 import FilterAnnotation from "./query/filter/FilterAnnotation";
+import {PersonFunction} from "./model/PersonFunction";
+import FilterPeople from "./query/filter/FilterPeople";
 
 /**
  * ElasticSearch Resolution Resource
@@ -57,11 +59,11 @@ export default class ResolutionResource {
     }
 
     for (const a of attendants) {
-      query.addFilter(new FilterPeople(a, PersonType.ATTENDANT));
+      query.addFilter(new FilterPerson(a, PersonType.ATTENDANT));
     }
 
     for (const m of mentioned) {
-      query.addFilter(new FilterPeople(m, PersonType.MENTIONED));
+      query.addFilter(new FilterPerson(m, PersonType.MENTIONED));
     }
 
     for (const p of places) {
@@ -111,13 +113,6 @@ export default class ResolutionResource {
     }
   }
 
-  /**
-   * @param resolutions
-   * @param id
-   * @param type
-   * @param begin
-   * @param end
-   */
   public async aggregateByPerson(
     resolutions: string[],
     id: number,
@@ -131,18 +126,11 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new FilterPeople(id, type));
+    filteredQuery.addFilter(new FilterPerson(id, type));
 
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
-
   }
 
-  /**
-   * @param resolutions
-   * @param term
-   * @param begin
-   * @param end
-   */
   public async aggregateByTerm(
     resolutions: string[],
     term: Term,
@@ -158,15 +146,8 @@ export default class ResolutionResource {
     filteredQuery.addFilter(new FilterFullText(term.val));
 
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
-
   }
 
-  /**
-   * @param resolutions
-   * @param place
-   * @param begin
-   * @param end
-   */
   public async aggregateByPlace(
     resolutions: string[],
     place: Place,
@@ -182,7 +163,22 @@ export default class ResolutionResource {
     filteredQuery.addFilter(new FilterAnnotation('plaats', place.val));
 
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
+  }
 
+  public async aggregateByFunction(
+    resolutions: string[],
+    personFunction: PersonFunction,
+    begin: Date,
+    end: Date
+  ): Promise<Resolution[]> {
+
+    if (resolutions.length === 0) {
+      return [];
+    }
+
+    const filteredQuery = new AggWithFilters();
+    filteredQuery.addFilter(new FilterPeople(personFunction.people));
+    return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
   }
 
   private async aggregateByResolutionsAndFilters(

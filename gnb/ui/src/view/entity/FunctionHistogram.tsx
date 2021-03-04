@@ -9,21 +9,22 @@ import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import Place from "../model/Place";
-import {C3} from "../../style/Colors";
+import {C6, C3} from "../../style/Colors";
+import {PersonFunction} from "../../elastic/model/PersonFunction";
 
 moment.locale('nl');
 
-type PlaceHistogramProps = {
+type FunctionHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  place: Place,
+  personFunction: PersonFunction,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
+export const FunctionHistogram = memo(function (props: FunctionHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -39,9 +40,9 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
       return;
     }
 
-    client.resolutionResource.aggregateByPlace(
+    client.resolutionResource.aggregateByFunction(
       bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
-      props.place,
+      props.personFunction,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -54,7 +55,7 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { color: C3, y: { title: `${HISTOGRAM_PREFIX} ${props.place.val}`}},
+        { color: C6, y: { title: `${HISTOGRAM_PREFIX} ${props.personFunction.name}`}},
         props.handleResolutions
       );
 

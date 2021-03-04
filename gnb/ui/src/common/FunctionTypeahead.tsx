@@ -2,6 +2,8 @@ import {Typeahead} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
 import {useAsyncError} from "../hook/useAsyncError";
 import {useClientContext} from "../elastic/ClientContext";
+import {PEOPLE} from "../content/Placeholder";
+import {PersonFunction} from "../elastic/model/PersonFunction";
 
 type FunctionTypeaheadProps = {
   id: string;
@@ -44,7 +46,9 @@ export default function FunctionTypeahead(props: FunctionTypeaheadProps) {
       return [];
     }
     return found.map((f: any) => {
-      return new FunctionOption(f.key, f.function_name.buckets[0].key, f.doc_count);
+      const functionName = f.function_name.buckets[0].key;
+      const people = f.function_name.buckets[0].unnest_functions.people.buckets.map((p: any) => p.key);
+      return new FunctionOption(f.key, functionName, f.doc_count, people);
     });
   }
 
@@ -62,7 +66,7 @@ export default function FunctionTypeahead(props: FunctionTypeaheadProps) {
     onChange={props.handleSubmit}
     options={state.loading ? [] : state.options}
     filterBy={() => true}
-    labelKey={option => `${option.name} (${option.total}x)`}
+    labelKey={option => `${option.name} (${option.total} ${PEOPLE})`}
     onInputChange={handleInputChange}
     placeholder={props.placeholder}
     id={props.id}
@@ -70,13 +74,29 @@ export default function FunctionTypeahead(props: FunctionTypeaheadProps) {
 }
 
 export class FunctionOption {
+
   public id: number;
   public name: string;
   public total: number;
+  public personFunction: PersonFunction;
 
-  constructor(id: number, name: string, total: number) {
+  constructor(
+    id: number,
+    name: string,
+    total: number,
+    people: number[]
+  ) {
+
     this.id = id;
     this.name = name;
     this.total = total;
+
+    this.personFunction = {
+      id,
+      name,
+      people: people
+    } as PersonFunction;
+
   }
+
 }

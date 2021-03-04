@@ -8,9 +8,9 @@ import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
-import {PERSON_HISTOGRAM_PREFIX} from "../../content/Placeholder";
+import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Person, toName} from "../../elastic/model/Person";
-import {BURNT_SIENNA, SANDY_BROWN} from "../../style/Colors";
+import {C6, C4} from "../../style/Colors";
 
 moment.locale('nl');
 
@@ -60,8 +60,8 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
         props.svgRef,
         bars,
         {
-          color: props.type === PersonType.ATTENDANT ? BURNT_SIENNA : SANDY_BROWN,
-          y: { title: `${PERSON_HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${toName(props.person)}`}
+          color: props.type === PersonType.ATTENDANT ? C6 : C4,
+          y: { title: `${HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${toName(props.person)}`}
         },
         props.handleResolutions
       );

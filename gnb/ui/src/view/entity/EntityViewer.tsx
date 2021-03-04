@@ -11,6 +11,8 @@ import Place from "../model/Place";
 import {PlaceHistogram} from "./PlaceHistogram";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
 import {ViewEntityType} from "../model/ViewEntityType";
+import {PersonFunction} from "../../elastic/model/PersonFunction";
+import {FunctionHistogram} from "./FunctionHistogram";
 
 type EntityViewerProps = {
   entity: ViewEntityType,
@@ -58,7 +60,15 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
       place={props.entity as Place}
       memoKey={props.memoKey}
     />;
+  }
 
+  function renderFunctionHistogram() {
+    return <FunctionHistogram
+      handleResolutions={handleResolutions}
+      svgRef={svgRef}
+      personFunction={props.entity as PersonFunction}
+      memoKey={props.memoKey}
+    />;
   }
 
   function handleResolutions(ids: string[]) {
@@ -83,6 +93,8 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     {hasSvg && props.type === ViewType.TERM ? renderTermHistogram() : null}
 
     {hasSvg && props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
+
+    {hasSvg && props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
 
     {state.showTexts ? <Texts
       resolutions={state.ids}

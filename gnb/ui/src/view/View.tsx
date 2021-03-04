@@ -4,7 +4,7 @@ import useHover from "../hook/useHover";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 import {EntityViewer} from "./entity/EntityViewer";
 import {ViewType} from "./model/ViewType";
-import {ViewEntityType, toString} from "./model/ViewEntityType";
+import {ViewEntityType, toStr} from "./model/ViewEntityType";
 
 type ViewProps = {
   entity: ViewEntityType,
@@ -31,7 +31,7 @@ export default function View(props: ViewProps) {
         <EntityViewer
           entity={props.entity}
           type={props.type}
-          memoKey={[resolutionState.updatedOn, props.type, toString(props.entity)]}
+          memoKey={[resolutionState.updatedOn, props.type, toStr(props.entity)]}
         />
 
       </div>

@@ -7,9 +7,9 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
-import {PERSON_HISTOGRAM_PREFIX} from "../../content/Placeholder";
+import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Term} from "../model/Term";
-import {PERSIAN_GREEN} from "../../style/Colors";
+import {C2} from "../../style/Colors";
 
 moment.locale('nl');
 
@@ -54,7 +54,7 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { color: PERSIAN_GREEN, y: { title: `${PERSON_HISTOGRAM_PREFIX} ${props.term.val}`}},
+        { color: C2, y: { title: `${HISTOGRAM_PREFIX} ${props.term.val}`}},
         props.handleResolutions
       );
 

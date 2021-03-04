@@ -26,7 +26,8 @@
                     "aggs": {
                       "people": {
                         "terms": {
-                          "field": "id"
+                          "field": "id",
+                          "size": 10000
                         }
                       }
                     }
