@@ -1,4 +1,4 @@
-import {ATTENDANT, MENTIONED, PICK_USER_VIEW, PLACE, TERM} from "../../content/Placeholder";
+import {ATTENDANT, FUNCTION, MENTIONED, PICK_USER_VIEW, PLACE, TERM} from "../../content/Placeholder";
 import React, {ChangeEvent} from "react";
 import {ViewType} from "../model/ViewType";
 import {PersonType} from "../../elastic/model/PersonType";
@@ -38,8 +38,16 @@ export const ViewTypes = [
     placeholder: TERM
   },
   {
+    name: ViewType.FUNCTION,
+    placeholder: PLACE
+  },
+  {
     name: ViewType.PLACE,
     placeholder: PLACE
+  },
+  {
+    name: ViewType.FUNCTION,
+    placeholder: FUNCTION
   }
 ];
 

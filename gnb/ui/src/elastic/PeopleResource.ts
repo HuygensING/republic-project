@@ -1,5 +1,5 @@
 import {Client, MGetResponse} from "elasticsearch";
-import AggsRequest from "./query/aggs/AggsRequest";
+import ResolutionRequest from "./query/aggs/ResolutionRequest";
 import aggsPeopleWithName from './query/aggs/aggs-people-with-filters.json';
 import FilterPersonName from "./query/filter/FilterPersonName";
 import {Person} from "./model/Person";
@@ -42,7 +42,7 @@ export default class PeopleResource {
     });
 
     const response = await this.esClient
-      .search(new AggsRequest(query))
+      .search(new ResolutionRequest(query))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_PEOPLE));
     return response.aggregations.people.filter_people.sum_people_id.buckets;
   }

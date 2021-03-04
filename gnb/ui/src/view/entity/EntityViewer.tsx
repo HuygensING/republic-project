@@ -10,9 +10,10 @@ import {TermHistogram} from "./TermHistogram";
 import Place from "../model/Place";
 import {PlaceHistogram} from "./PlaceHistogram";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
+import {ViewEntityType} from "../model/ViewEntityType";
 
 type EntityViewerProps = {
-  entity: Person | Term | Place,
+  entity: ViewEntityType,
   type: ViewType
   memoKey: any
 }

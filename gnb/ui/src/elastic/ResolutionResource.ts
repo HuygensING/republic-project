@@ -1,5 +1,5 @@
 import {Client} from "elasticsearch";
-import AggsRequest from "./query/aggs/AggsRequest";
+import ResolutionRequest from "./query/aggs/ResolutionRequest";
 import FilterRange from "./query/filter/FilterRange";
 import AggsResolutionHistogram from "./query/aggs/AggsResolutionHistogram";
 import {PersonType} from "./model/PersonType";
@@ -72,7 +72,7 @@ export default class ResolutionResource {
     query.addAgg(hist);
 
     const response = await this.esClient
-      .search(new AggsRequest(query))
+      .search(new ResolutionRequest(query))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_RESOLUTIONS));
 
     return response.aggregations
@@ -197,7 +197,7 @@ export default class ResolutionResource {
     const aggWithIdFilter = new AggWithIdFilter(sortedResolutions);
     aggWithIdFilter.addAgg(filteredQuery);
 
-    const aggsQuery = new AggsRequest(aggWithIdFilter);
+    const aggsQuery = new ResolutionRequest(aggWithIdFilter);
 
     const response = await this.esClient
       .search(aggsQuery)

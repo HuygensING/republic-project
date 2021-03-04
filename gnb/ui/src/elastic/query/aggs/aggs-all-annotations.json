@@ -7,8 +7,7 @@
       "filter_annotations": {
         "filter": {
           "bool": {
-            "must": [
-            ]
+            "must": []
           }
         },
         "aggs": {

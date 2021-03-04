@@ -1,5 +1,5 @@
 import {Client} from "elasticsearch";
-import AggsRequest from "./query/aggs/AggsRequest";
+import ResolutionRequest from "./query/aggs/ResolutionRequest";
 import {handleEsError} from "./EsErrorHandler";
 import clone from "../util/clone";
 import aggsAllAnnotations from "./query/aggs/aggs-all-annotations.json";
@@ -33,7 +33,7 @@ export default class ResolutionResource {
     filters.push(new FilterAnnotationValuePrefix(prefix));
 
     const response = await this.esClient
-      .search(new AggsRequest(query))
+      .search(new ResolutionRequest(query))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
 
     return response.aggregations.nested_annotations.filter_annotations.sum.buckets;

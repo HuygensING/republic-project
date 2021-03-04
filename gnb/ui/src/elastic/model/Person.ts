@@ -1,10 +1,12 @@
+import {PersonFunction} from "./PersonFunction";
+
 export type Person = {
   id: number;
   firstNames: string;
   interpositions: string;
   familyName: string;
   nameType?: string;
-  functions: any[];
+  functions: PersonFunction[];
 }
 
 export function toName(person: Person) {

@@ -1,15 +1,13 @@
 import React, {useRef} from "react";
-import {Person} from "../elastic/model/Person";
 import DeleteViewButton from "./field/DeleteViewButton";
 import useHover from "../hook/useHover";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 import {EntityViewer} from "./entity/EntityViewer";
-import {toString, ViewType} from "./model/ViewType";
-import {Term} from "./model/Term";
-import Place from "./model/Place";
+import {ViewType} from "./model/ViewType";
+import {ViewEntityType, toString} from "./model/ViewEntityType";
 
 type ViewProps = {
-  entity: Person | Term | Place,
+  entity: ViewEntityType,
   type: ViewType
   onDelete: () => void;
 }
@@ -37,7 +35,6 @@ export default function View(props: ViewProps) {
         />
 
       </div>
-
     </div>
   </div>
 
