@@ -7,9 +7,8 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
-import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
-import Place from "../model/Place";
-import {C6, C3} from "../../style/Colors";
+import {FUNCTION, HISTOGRAM_PREFIX} from "../../content/Placeholder";
+import {C6} from "../../style/Colors";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
 
 moment.locale('nl');
@@ -55,7 +54,7 @@ export const FunctionHistogram = memo(function (props: FunctionHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { color: C6, y: { title: `${HISTOGRAM_PREFIX} ${props.personFunction.name}`}},
+        { color: C6, y: { title: `${HISTOGRAM_PREFIX} ${FUNCTION}: ${props.personFunction.name}`}},
         props.handleResolutions
       );
 

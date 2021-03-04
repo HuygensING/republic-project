@@ -15,9 +15,9 @@ export function toStr(xml: Document): string {
   return xml.documentElement.outerHTML;
 }
 
-export function highlightMentioned(dom: Document, mentioned: Person[]) {
+export function highlightMentioned(dom: Document, mentioned: number[]) {
   for (const m of mentioned) {
-    const found = dom.querySelectorAll(`[idnr="${m.id}"]`)?.item(0);
+    const found = dom.querySelectorAll(`[idnr="${m}"]`)?.item(0);
     if (found) {
       found.setAttribute('class', 'highlight');
     }

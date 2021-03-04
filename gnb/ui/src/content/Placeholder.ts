@@ -17,7 +17,7 @@ export const WITH_PLACES = 'met plaatsen...';
 // Histograms:
 export const RESOLUTIONS_TEXTS_TITLE = "Resoluties";
 export const RESOLUTIONS_HISTOGRAM_TITLE = "# Resoluties";
-export const HISTOGRAM_PREFIX = "Met ";
+export const HISTOGRAM_PREFIX = "met";
 
 // Errors:
 export const ERR_ES_NOT_AVAILABLE = 'De Elasticsearch database is niet beschikbaar'

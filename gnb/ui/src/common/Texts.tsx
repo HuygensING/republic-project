@@ -119,7 +119,7 @@ export function highlight(xml: string, mentioned: Person[], places: Place[]) : s
   }
   const dom = toDom(xml);
 
-  highlightMentioned(dom, mentioned);
+  highlightMentioned(dom, mentioned.map(m => m.id));
   highlightPlaces(dom, places);
 
   return toStr(dom);

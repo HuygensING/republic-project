@@ -77,10 +77,12 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
 
   function highlightEntity(originalXml: string) {
     const dom = toDom(originalXml);
-    if(props.type === ViewType.MENTIONED) {
-      highlightMentioned(dom, [props.entity as Person])
+    if (props.type === ViewType.MENTIONED) {
+      highlightMentioned(dom, [(props.entity as Person).id])
+    } else if (props.type === ViewType.FUNCTION) {
+      highlightMentioned(dom, (props.entity as PersonFunction).people)
     } else if (props.type === ViewType.PLACE) {
-      highlightPlaces(dom, [props.entity as Place])
+      highlightPlaces(dom, [props.entity as Place]);
     }
     return toStr(dom);
   }
@@ -99,7 +101,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     {state.showTexts ? <Texts
       resolutions={state.ids}
       handleClose={() => setState({...state, showTexts: false})}
-      highlightAttendants={props.type === ViewType.ATTENDANT ? [(props.entity as Person).id] : []}
+      highlightAttendants={getAttendants(props)}
       highlightQuery={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
       highlightXml={highlightEntity}
       memoKey={props.memoKey}
@@ -107,3 +109,13 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   </>
 
 }, ((prev, next) => equal(prev.memoKey, next.memoKey)));
+
+function getAttendants(props: EntityViewerProps) : number[] {
+  if (props.type === ViewType.ATTENDANT) {
+    return [(props.entity as Person).id];
+  }
+  if (props.type === ViewType.FUNCTION) {
+    return (props.entity as PersonFunction).people;
+  }
+  return [];
+}
