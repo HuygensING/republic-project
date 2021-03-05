@@ -5,6 +5,7 @@ import MentionedFormField from "./field/MentionedFormField";
 import AttendantsFormField from "./field/AttendantsFormField";
 import Help from "../content/Help";
 import PlaceFormField from "./field/PlaceFormField";
+import FunctionFormField from "./field/FunctionFormField";
 
 export function Search() {
 
@@ -26,6 +27,9 @@ export function Search() {
             </div>
             <div className="col  form-group">
               <PlaceFormField/>
+            </div>
+            <div className="col  form-group">
+              <FunctionFormField/>
             </div>
           </div>
           <div className="form-row">

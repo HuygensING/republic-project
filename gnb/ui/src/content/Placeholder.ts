@@ -12,6 +12,7 @@ export const WITH_ATTENDANTS = 'met aanwezigen...';
 export const WITH_MENTIONED = 'met genoemden...';
 export const WITH_FULL_TEXT = 'met zoektermen...';
 export const WITH_PLACES = 'met plaatsen...';
+export const WITH_FUNCTIONS = 'met functies...';
 
 // SearchHelp:
 // Histograms:

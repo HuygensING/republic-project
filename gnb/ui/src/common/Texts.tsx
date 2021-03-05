@@ -10,7 +10,6 @@ import {useSearchContext} from "../search/SearchContext";
 import {joinJsx} from "../util/joinJsx";
 import {useClientContext} from "../elastic/ClientContext";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../util/highlight";
-import {Person} from "../elastic/model/Person";
 import Place from "../view/model/Place";
 
 type TextsProps = {
@@ -63,10 +62,17 @@ export const Texts = memo(function (props: TextsProps) {
       .catch(throwError);
   }
 
-  let attendantIds = searchState.attendants.map(a => a.id);
+  const peopleWithFunctionIds = Array.from(new Set(([] as number[]).concat(
+    ...searchState.functions.map(f => f.people))
+  ));
+
+  const mentionedToHighlight : number[] = [...searchState.mentioned.map(m => m.id), ...peopleWithFunctionIds];
+  const attendantsToHighlight : number[] = [...searchState.attendants.map(a => a.id), ...peopleWithFunctionIds];
+
   if(props.highlightAttendants) {
-    attendantIds = [...attendantIds, ...props.highlightAttendants];
+    attendantsToHighlight.push(...props.highlightAttendants);
   }
+
   return (
     <Modal
       title={`${RESOLUTIONS_TEXTS_TITLE} (n=${state.resolutions.length})`}
@@ -74,7 +80,11 @@ export const Texts = memo(function (props: TextsProps) {
       handleClose={props.handleClose}
     >
       {state.hasLoaded ? state.resolutions.map((r: any, i: number) => {
-        let highlighted = highlight(r.resolution.originalXml, searchState.mentioned, searchState.places);
+        let highlighted = highlight(
+          r.resolution.originalXml,
+          mentionedToHighlight,
+          searchState.places,
+        );
 
         if(props.highlightXml) {
           highlighted = props.highlightXml(highlighted);
@@ -82,7 +92,7 @@ export const Texts = memo(function (props: TextsProps) {
 
         return <div key={i}>
           <h5>{r.id}</h5>
-          <small><strong>Aanwezigen</strong>: {renderAttendants(r, attendantIds)}</small>
+          <small><strong>Aanwezigen</strong>: {renderAttendants(r, attendantsToHighlight)}</small>
           <div dangerouslySetInnerHTML={{__html: highlighted}}/>
         </div>;
 
@@ -102,24 +112,27 @@ function sortResolutions(newResolutions: Resolution[]) {
 }
 
 function renderAttendants(r: any, markedIds: number[]) {
-  const rendered = r.people
+  if(!r.people.length) {
+    return '-';
+  }
+  return r.people
     .filter((p: PersonAnn) => p.type === PersonType.ATTENDANT)
     .map((p: PersonAnn, i: number) => {
       const isAttendant = markedIds.includes(p.id);
       return <span key={i} className={isAttendant ? 'highlight' : ''}>{p.name} (ID {p.id})</span>
     })
-    .reduce(joinJsx, []);
-  return rendered.length ? rendered : '-';
+    .reduce(joinJsx);
 }
 
 
-export function highlight(xml: string, mentioned: Person[], places: Place[]) : string {
-  if (mentioned.length === 0 && places.length === 0) {
-    return xml;
-  }
+function highlight(
+  xml: string,
+  mentioned: number[],
+  places: Place[],
+) : string {
   const dom = toDom(xml);
 
-  highlightMentioned(dom, mentioned.map(m => m.id));
+  highlightMentioned(dom, mentioned);
   highlightPlaces(dom, places);
 
   return toStr(dom);

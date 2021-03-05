@@ -2,7 +2,7 @@ import EsError from "./EsError";
 import {ERR_ES_NOT_AVAILABLE} from "../content/Placeholder";
 
 export function handleEsError(e: Error, msg: string): never {
-  console.trace('handle Es Error;', e);
+  console.trace('Es Error:', e);
 
   let resultMsg: string = '';
 

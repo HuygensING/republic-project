@@ -16,7 +16,7 @@ export default function PlaceFormField() {
     <PlaceTypeahead
       placeholder={WITH_PLACES}
       handleSubmit={handleSubmit}
-      id="mentioned-typeahead"
+      id="places-typeahead"
     />
   </div>;
 }
