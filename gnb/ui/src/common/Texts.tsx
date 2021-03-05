@@ -62,12 +62,12 @@ export const Texts = memo(function (props: TextsProps) {
       .catch(throwError);
   }
 
-  const peopleWithFunctionIds = Array.from(new Set(([] as number[]).concat(
+  const peopleWithFunction = Array.from(new Set(([] as number[]).concat(
     ...searchState.functions.map(f => f.people))
   ));
 
-  const mentionedToHighlight : number[] = [...searchState.mentioned.map(m => m.id), ...peopleWithFunctionIds];
-  const attendantsToHighlight : number[] = [...searchState.attendants.map(a => a.id), ...peopleWithFunctionIds];
+  const mentionedToHighlight : number[] = [...searchState.mentioned.map(m => m.id), ...peopleWithFunction];
+  const attendantsToHighlight : number[] = [...searchState.attendants.map(a => a.id), ...peopleWithFunction];
 
   if(props.highlightAttendants) {
     attendantsToHighlight.push(...props.highlightAttendants);
