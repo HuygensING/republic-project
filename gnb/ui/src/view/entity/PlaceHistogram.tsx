@@ -9,7 +9,7 @@ import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import Place from "../model/Place";
-import {C3} from "../../style/Colors";
+import {C3, C5} from "../../style/Colors";
 
 moment.locale('nl');
 
@@ -54,7 +54,7 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { color: C3, y: { title: `${HISTOGRAM_PREFIX} ${props.place.val}`}},
+        { color: C5, y: { title: `${HISTOGRAM_PREFIX} ${props.place.val}`}},
         props.handleResolutions
       );
 

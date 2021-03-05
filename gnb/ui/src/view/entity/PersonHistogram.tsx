@@ -10,7 +10,7 @@ import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Person, toName} from "../../elastic/model/Person";
-import {C6, C4} from "../../style/Colors";
+import {C6, C4, C7} from "../../style/Colors";
 
 moment.locale('nl');
 
@@ -60,7 +60,7 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
         props.svgRef,
         bars,
         {
-          color: props.type === PersonType.ATTENDANT ? C6 : C4,
+          color: props.type === PersonType.ATTENDANT ? C6 : C7,
           y: { title: `${HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${toName(props.person)}`}
         },
         props.handleResolutions

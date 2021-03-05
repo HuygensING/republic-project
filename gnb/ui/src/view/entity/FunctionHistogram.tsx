@@ -8,7 +8,7 @@ import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {FUNCTION, HISTOGRAM_PREFIX} from "../../content/Placeholder";
-import {C6} from "../../style/Colors";
+import {C1, C10, C7} from "../../style/Colors";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
 
 moment.locale('nl');
@@ -54,7 +54,7 @@ export const FunctionHistogram = memo(function (props: FunctionHistogramProps) {
       renderHistogram(
         props.svgRef,
         bars,
-        { color: C6, y: { title: `${HISTOGRAM_PREFIX} ${FUNCTION}: ${props.personFunction.name}`}},
+        { color: C10, y: { title: `${HISTOGRAM_PREFIX} ${FUNCTION}: ${props.personFunction.name}`}},
         props.handleResolutions
       );
 
