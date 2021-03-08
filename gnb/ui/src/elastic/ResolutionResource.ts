@@ -22,6 +22,7 @@ import {Term} from "../view/model/Term";
 import FilterAnnotation from "./query/filter/FilterAnnotation";
 import {PersonFunction} from "./model/PersonFunction";
 import FilterPeople from "./query/filter/FilterPeople";
+import {PersonFunctionCategory} from "./model/PersonFunctionCategory";
 
 /**
  * ElasticSearch Resolution Resource
@@ -183,6 +184,22 @@ export default class ResolutionResource {
 
     const filteredQuery = new AggWithFilters();
     filteredQuery.addFilter(new FilterPeople(personFunction.people));
+    return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
+  }
+
+  public async aggregateByFunctionCategory(
+    resolutions: string[],
+    personFunctionCategory: PersonFunctionCategory,
+    begin: Date,
+    end: Date
+  ): Promise<Resolution[]> {
+
+    if (resolutions.length === 0) {
+      return [];
+    }
+
+    const filteredQuery = new AggWithFilters();
+    filteredQuery.addFilter(new FilterPeople(personFunctionCategory.people));
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
   }
 

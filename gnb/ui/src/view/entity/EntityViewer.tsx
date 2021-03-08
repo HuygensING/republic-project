@@ -13,6 +13,8 @@ import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/high
 import {ViewEntityType} from "../model/ViewEntityType";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
 import {FunctionHistogram} from "./FunctionHistogram";
+import {FunctionCategoryHistogram} from "./FunctionCategoryHistogram";
+import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 
 type EntityViewerProps = {
   entity: ViewEntityType,
@@ -71,20 +73,17 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     />;
   }
 
-  function handleResolutions(ids: string[]) {
-    return setState({...state, ids, showTexts: true});
+  function renderFunctionCategoryHistogram() {
+    return <FunctionCategoryHistogram
+      handleResolutions={handleResolutions}
+      svgRef={svgRef}
+      personFunctionCategory={props.entity as PersonFunctionCategory}
+      memoKey={props.memoKey}
+    />;
   }
 
-  function highlightEntity(originalXml: string) {
-    const dom = toDom(originalXml);
-    if (props.type === ViewType.MENTIONED) {
-      highlightMentioned(dom, [(props.entity as Person).id])
-    } else if (props.type === ViewType.FUNCTION) {
-      highlightMentioned(dom, (props.entity as PersonFunction).people)
-    } else if (props.type === ViewType.PLACE) {
-      highlightPlaces(dom, [props.entity as Place]);
-    }
-    return toStr(dom);
+  function handleResolutions(ids: string[]) {
+    return setState({...state, ids, showTexts: true});
   }
 
   return <>
@@ -98,6 +97,8 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
 
     {hasSvg && props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
 
+    {hasSvg && props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
+
     {state.showTexts ? <Texts
       resolutions={state.ids}
       handleClose={() => setState({...state, showTexts: false})}
@@ -108,14 +109,31 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     /> : null}
   </>
 
-}, ((prev, next) => equal(prev.memoKey, next.memoKey)));
+  function highlightEntity(originalXml: string) {
+    const dom = toDom(originalXml);
+    if (props.type === ViewType.MENTIONED) {
+      highlightMentioned(dom, [(props.entity as Person).id])
+    } else if (props.type === ViewType.FUNCTION) {
+      highlightMentioned(dom, (props.entity as PersonFunction).people)
+    } else if (props.type === ViewType.FUNCTION_CATEGORY) {
+      highlightMentioned(dom, (props.entity as PersonFunctionCategory).people)
+    } else if (props.type === ViewType.PLACE) {
+      highlightPlaces(dom, [props.entity as Place]);
+    }
+    return toStr(dom);
+  }
 
-function getAttendants(props: EntityViewerProps) : number[] {
-  if (props.type === ViewType.ATTENDANT) {
-    return [(props.entity as Person).id];
+  function getAttendants(props: EntityViewerProps): number[] {
+    if (props.type === ViewType.ATTENDANT) {
+      return [(props.entity as Person).id];
+    }
+    if (props.type === ViewType.FUNCTION) {
+      return (props.entity as PersonFunction).people;
+    }
+    if (props.type === ViewType.FUNCTION_CATEGORY) {
+      return (props.entity as PersonFunctionCategory).people;
+    }
+    return [];
   }
-  if (props.type === ViewType.FUNCTION) {
-    return (props.entity as PersonFunction).people;
-  }
-  return [];
-}
+
+}, ((prev, next) => equal(prev.memoKey, next.memoKey)));
