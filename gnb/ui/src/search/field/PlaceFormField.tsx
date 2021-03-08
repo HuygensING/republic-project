@@ -1,7 +1,7 @@
 import React from "react";
 import {useSearchContext} from "../SearchContext";
 import {WITH_PLACES} from "../../content/Placeholder";
-import PlaceTypeahead, {PlaceOption} from "../../common/PlaceTypeahead";
+import PlaceTypeahead, {PlaceOption} from "../../common/form/PlaceTypeahead";
 import Place from "../../view/model/Place";
 
 export default function PlaceFormField() {

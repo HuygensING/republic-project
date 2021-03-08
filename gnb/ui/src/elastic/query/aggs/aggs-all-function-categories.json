@@ -1,0 +1,37 @@
+{
+  "nested_functions": {
+    "nested": {
+      "path": "functions"
+    },
+    "aggs": {
+      "filter_functions": {
+        "filter": {
+          "bool": {
+            "must": []
+          }
+        },
+        "aggs": {
+          "function_category": {
+            "terms": {
+              "field": "functions.category",
+              "size": 10000
+            },
+            "aggs": {
+              "unnest_functions": {
+                "reverse_nested": {},
+                "aggs": {
+                  "people": {
+                    "terms": {
+                      "field": "id",
+                      "size": 10000
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

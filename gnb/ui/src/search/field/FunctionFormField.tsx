@@ -1,7 +1,7 @@
 import React from "react";
 import {useSearchContext} from "../SearchContext";
 import {WITH_FUNCTIONS} from "../../content/Placeholder";
-import FunctionTypeahead, {FunctionOption} from "../../common/FunctionTypeahead";
+import FunctionTypeahead, {FunctionOption} from "../../common/form/FunctionTypeahead";
 
 export default function FunctionFormField() {
 

@@ -1,9 +1,9 @@
 import {Typeahead, TypeaheadModel, TypeaheadProps} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
-import {Person, toName} from "../elastic/model/Person";
-import {PersonType} from "../elastic/model/PersonType";
-import {useAsyncError} from "../hook/useAsyncError";
-import {useClientContext} from "../elastic/ClientContext";
+import {Person, toName} from "../../elastic/model/Person";
+import {PersonType} from "../../elastic/model/PersonType";
+import {useAsyncError} from "../../hook/useAsyncError";
+import {useClientContext} from "../../elastic/ClientContext";
 
 type PeopleTypeaheadProps = {
   id: string;

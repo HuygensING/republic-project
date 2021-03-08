@@ -3,8 +3,9 @@ import {Term} from "./Term";
 import Place from "./Place";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
 import {ERR_UNKNOWN_VIEW_TYPE_TO_STRING} from "../../content/Placeholder";
+import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 
-export type ViewEntityType = Person | Term | Place | PersonFunction;
+export type ViewEntityType = Person | Term | Place | PersonFunction | PersonFunctionCategory;
 
 
 export function toStr(entity: ViewEntityType) {

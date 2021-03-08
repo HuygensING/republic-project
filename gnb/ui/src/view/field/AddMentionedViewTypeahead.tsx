@@ -1,4 +1,4 @@
-import PeopleTypeahead from "../../common/PeopleTypeahead";
+import PeopleTypeahead from "../../common/form/PeopleTypeahead";
 import React from "react";
 import {PersonType} from "../../elastic/model/PersonType";
 import {PICK_MENTIONED} from "../../content/Placeholder";
@@ -14,6 +14,6 @@ export default function AddMentionedViewTypeahead(props: AddMentionedViewTypeahe
     placeholder={PICK_MENTIONED}
     personType={PersonType.MENTIONED}
     handleSubmit={(o) => props.handleSubmit(o[0].person, ViewType.MENTIONED)}
-    id="mentioned-typeahead"
+    id="add-mentioned-typeahead"
   />;
 }

@@ -6,7 +6,8 @@ export enum ViewType {
   MENTIONED = 'mentioned',
   TERM = 'term',
   PLACE = 'place',
-  FUNCTION = 'function'
+  FUNCTION = 'function',
+  FUNCTION_CATEGORY = 'functionCategory'
 }
 
 export function isPerson(type: ViewType) : boolean {

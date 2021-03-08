@@ -1,7 +1,7 @@
 import React from "react";
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import PeopleTypeahead, {PersonOption} from "../../common/PeopleTypeahead";
+import PeopleTypeahead, {PersonOption} from "../../common/form/PeopleTypeahead";
 import {WITH_ATTENDANTS} from "../../content/Placeholder";
 import {PersonType} from "../../elastic/model/PersonType";
 import {useSearchContext} from "../SearchContext";

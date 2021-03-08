@@ -2,7 +2,7 @@ import React from "react";
 import Place from "../model/Place";
 import {ViewType} from "../model/ViewType";
 import {PICK_PLACE} from "../../content/Placeholder";
-import PlaceTypeahead from "../../common/PlaceTypeahead";
+import PlaceTypeahead from "../../common/form/PlaceTypeahead";
 
 type AddPlaceViewTypeaheadProps = {
   handleSubmit: (l: Place, t: ViewType) => Promise<void>

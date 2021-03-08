@@ -6,6 +6,7 @@ export const ATTENDANT = 'aanwezige';
 export const PLACE = 'plaats';
 export const TERM = 'zoekterm';
 export const FUNCTION = 'functie';
+export const FUNCTION_CATEGORY = 'functiecategorie';
 
 // Search:
 export const WITH_ATTENDANTS = 'met aanwezigen...';
@@ -43,6 +44,7 @@ export const PICK_ATTENDANT = 'Kies aanwezige';
 export const PICK_MENTIONED = 'Kies genoemde';
 export const PICK_PLACE = 'Kies plaats';
 export const PICK_FUNCTION = 'Kies functie';
+export const PICK_FUNCTION_CATEGORY = 'Kies functiecategorie';
 export const PICK_USER_VIEW = 'Kies type plot...'
 
 // Version:

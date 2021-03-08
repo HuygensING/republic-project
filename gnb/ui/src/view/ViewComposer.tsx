@@ -11,6 +11,7 @@ import AddTermFormField from "./field/AddTermFormField";
 import AddPlaceViewTypeahead from "./field/AddPlaceViewTypeahead";
 import {ViewEntityType} from "./model/ViewEntityType";
 import AddFunctionViewTypeahead from "./field/AddFunctionViewTypeahead";
+import AddFunctionCategoryViewTypeahead from "./field/AddFunctionCategoryViewTypeahead";
 
 
 export default function ViewComposer() {
@@ -67,6 +68,10 @@ export default function ViewComposer() {
         {
           state.isOpen && state.viewType === ViewType.FUNCTION
             ? <AddFunctionViewTypeahead handleSubmit={handleSubmit}/> : null
+        }
+        {
+          state.isOpen && state.viewType === ViewType.FUNCTION_CATEGORY
+            ? <AddFunctionCategoryViewTypeahead handleSubmit={handleSubmit}/> : null
         }
 
       </div>

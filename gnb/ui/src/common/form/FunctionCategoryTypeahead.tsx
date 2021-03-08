@@ -1,55 +1,71 @@
 import {Typeahead} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
-import {useAsyncError} from "../hook/useAsyncError";
-import {useClientContext} from "../elastic/ClientContext";
-import {PEOPLE} from "../content/Placeholder";
-import {PersonFunction} from "../elastic/model/PersonFunction";
+import {useAsyncError} from "../../hook/useAsyncError";
+import {useClientContext} from "../../elastic/ClientContext";
+import {PEOPLE} from "../../content/Placeholder";
+import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 
-type FunctionTypeaheadProps = {
+type FunctionCategoryTypeaheadProps = {
   id: string;
   placeholder: string,
-  handleSubmit: (selected: FunctionOption[]) => Promise<void>
+  handleSubmit: (selected: FunctionCategoryOption[]) => Promise<void>
 }
 
-export default function FunctionTypeahead(props: FunctionTypeaheadProps) {
+export default function FunctionCategoryTypeahead(props: FunctionCategoryTypeaheadProps) {
 
   const client = useClientContext().clientState.client;
 
   const [state, setState] = useState({
     inputField: '',
     loading: true,
-    options: [] as FunctionOption[],
+    allOptions: [] as FunctionCategoryOption[],
+    options: [] as FunctionCategoryOption[],
   });
 
   const ref = React.createRef<Typeahead<any>>();
 
   const throwError = useAsyncError();
+
   if (state.loading) {
     handleLoading();
   }
 
   async function handleLoading() {
-    const options = await createOptions();
+    const allOptions = state.allOptions.length
+      ? state.allOptions
+      : await createAllOptions();
+
+    const options = await createOptions(allOptions);
+
     setState({
       ...state,
+      allOptions,
       options,
       loading: false
+    });
+  }
+
+  async function createAllOptions() {
+    const found = await client.functionResource
+      .aggregateCategoriesBy(state.inputField)
+      .catch(throwError);
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((f: any) => {
+      const functionCategory = f.key;
+      const people = f.unnest_functions.people.buckets.map((p: any) => p.key);
+      return new FunctionCategoryOption(f.key, functionCategory, f.doc_count, people);
     });
 
   }
 
-  async function createOptions() {
-    const found = await client.functionResource
-      .aggregateBy(state.inputField)
-      .catch(throwError);
-    if (found.length === 0) {
-      return [];
-    }
-    return found.map((f: any) => {
-      const functionName = f.function_name.buckets[0].key;
-      const people = f.function_name.buckets[0].unnest_functions.people.buckets.map((p: any) => p.key);
-      return new FunctionOption(f.key, functionName, f.doc_count, people);
-    });
+  async function createOptions(allOptions: FunctionCategoryOption[]) : Promise<FunctionCategoryOption[]> {
+    return allOptions.filter(
+      o => o.name.toLowerCase().includes(state.inputField.toLowerCase())
+    );
   }
 
   function handleInputChange() {
@@ -73,12 +89,11 @@ export default function FunctionTypeahead(props: FunctionTypeaheadProps) {
   />
 }
 
-export class FunctionOption {
+export class FunctionCategoryOption {
 
-  public id: number;
   public name: string;
   public total: number;
-  public personFunction: PersonFunction;
+  public personFunctionCategory: PersonFunctionCategory;
 
   constructor(
     id: number,
@@ -87,15 +102,13 @@ export class FunctionOption {
     people: number[]
   ) {
 
-    this.id = id;
     this.name = name;
     this.total = total;
 
-    this.personFunction = {
-      id,
+    this.personFunctionCategory = {
       name,
       people: people
-    } as PersonFunction;
+    } as PersonFunctionCategory;
 
   }
 

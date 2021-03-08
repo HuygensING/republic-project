@@ -1,4 +1,4 @@
-import PeopleTypeahead from "../../common/PeopleTypeahead";
+import PeopleTypeahead from "../../common/form/PeopleTypeahead";
 import React from "react";
 import {PersonType} from "../../elastic/model/PersonType";
 import {PICK_ATTENDANT} from "../../content/Placeholder";
