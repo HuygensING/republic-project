@@ -3,6 +3,7 @@ import {Person} from "../elastic/model/Person";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
 import Place from "../view/model/Place";
 import {PersonFunction} from "../elastic/model/PersonFunction";
+import {PersonFunctionCategory} from "../elastic/model/PersonFunctionCategory";
 
 export type SearchStateType = BaseStateType & {
   attendants: Person[];
@@ -11,7 +12,8 @@ export type SearchStateType = BaseStateType & {
   places: Place[];
   start: Date;
   end: Date;
-  functions: PersonFunction[]
+  functions: PersonFunction[];
+  functionCategories: PersonFunctionCategory[];
 }
 
 export type SearchContextType = {
@@ -28,7 +30,8 @@ export const defaultSearchContext = {
     places: [],
     start: new Date('1626-01-01'),
     end: new Date('1626-01-31'),
-    functions: []
+    functions: [],
+    functionCategories: []
   },
   setSearchState: dummy
 } as SearchContextType;

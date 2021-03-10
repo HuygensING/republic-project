@@ -6,7 +6,7 @@ import {useAsyncError} from "../hook/useAsyncError";
 import {equal} from "../util/equal";
 import {PersonType} from "../elastic/model/PersonType";
 import {PersonAnn} from "../elastic/model/PersonAnn";
-import {useSearchContext} from "../search/SearchContext";
+import {SearchStateType, useSearchContext} from "../search/SearchContext";
 import {joinJsx} from "../util/joinJsx";
 import {useClientContext} from "../elastic/ClientContext";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../util/highlight";
@@ -62,16 +62,7 @@ export const Texts = memo(function (props: TextsProps) {
       .catch(throwError);
   }
 
-  const peopleWithFunction = Array.from(new Set(([] as number[]).concat(
-    ...searchState.functions.map(f => f.people))
-  ));
-
-  const mentionedToHighlight : number[] = [...searchState.mentioned.map(m => m.id), ...peopleWithFunction];
-  const attendantsToHighlight : number[] = [...searchState.attendants.map(a => a.id), ...peopleWithFunction];
-
-  if(props.highlightAttendants) {
-    attendantsToHighlight.push(...props.highlightAttendants);
-  }
+  const {mentionedToHighlight, attendantsToHighlight} = combinePeopleToHighlight(searchState, props);
 
   return (
     <Modal
@@ -137,3 +128,24 @@ function highlight(
 
   return toStr(dom);
 }
+
+/**
+ * Combine attendants and mentioned from search context and Texts props
+ */
+function combinePeopleToHighlight(searchState: SearchStateType, props: TextsProps) {
+  // Deduplicate people IDs:
+  const peopleToHighlight = Array.from(new Set(([] as number[]).concat(
+    ...searchState.functions.map(f => f.people)).concat(
+    ...searchState.functionCategories.map(f => f.people))
+  ));
+
+  const mentionedToHighlight: number[] = [...searchState.mentioned.map(m => m.id), ...peopleToHighlight];
+  const attendantsToHighlight: number[] = [...searchState.attendants.map(a => a.id), ...peopleToHighlight];
+
+  if (props.highlightAttendants) {
+    attendantsToHighlight.push(...props.highlightAttendants);
+  }
+
+  return {mentionedToHighlight, attendantsToHighlight};
+}
+

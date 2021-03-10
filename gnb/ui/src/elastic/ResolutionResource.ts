@@ -50,7 +50,8 @@ export default class ResolutionResource {
     end: Date,
     fullText: string,
     places: Place[],
-    functions: PersonFunction[]
+    functions: PersonFunction[],
+    functionCategories: PersonFunctionCategory[]
   ): Promise<any> {
     const query = new AggWithFilters();
 
@@ -73,6 +74,10 @@ export default class ResolutionResource {
     }
 
     for (const f of functions) {
+      query.addFilter(new FilterPeople(f.people));
+    }
+
+    for (const f of functionCategories) {
       query.addFilter(new FilterPeople(f.people));
     }
 
