@@ -35,7 +35,8 @@ export default function ViewComposer() {
 
   const handleSubmit = async (selected: ViewEntityType, type: ViewType) => {
     const newViews = viewState.views;
-    newViews.push({entity: selected, type});
+    const key = '' + Math.round(Math.random() * 1000);
+    newViews.push({key, entity: selected, type});
     setViewState({...viewState, views: newViews});
   };
 

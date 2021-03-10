@@ -5,6 +5,7 @@ import {ViewEntityType} from "./model/ViewEntityType";
 
 export type ViewStateType = BaseStateType & {
   views: {
+    key: string,
     type: ViewType,
     entity: ViewEntityType
   }[];

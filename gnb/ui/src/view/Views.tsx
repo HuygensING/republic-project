@@ -16,7 +16,7 @@ export default function Views () {
   return <>
     {viewState.views.map((v, i) => {
         return <View
-          key={i}
+          key={v.key}
           entity={v.entity}
           type={v.type}
           onDelete={() => deleteView(i)}
