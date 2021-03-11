@@ -1,6 +1,6 @@
 import {Typeahead, TypeaheadModel, TypeaheadProps} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
-import {Person, toName} from "../../elastic/model/Person";
+import {Person} from "../../elastic/model/Person";
 import {PersonType} from "../../elastic/model/PersonType";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {useClientContext} from "../../elastic/ClientContext";
@@ -46,14 +46,11 @@ export default function PeopleTypeahead(props: PeopleTypeaheadProps) {
       return [];
     }
 
-    const people = await client.peopleResource
-      .getMulti(found.map((f: any) => f.key))
-      .catch(throwError);
-
     return found.map((f: any) => {
-      const person = people.find(p => p.id === f.key) || {id: found.key} as Person;
-      const name = person ? toName(person) : f.name
-      const total = f.sum_people_name.buckets.reduce((a: number, bucket: any) => a += bucket.doc_count, 0);
+      const person = f._source as Person;
+      const name = person ? person.searchName : f.name
+      const s = props.personType + 'Count';
+      const total = (person as any)[s];
       return new PersonOption(f.key, name, total, person);
     });
   }

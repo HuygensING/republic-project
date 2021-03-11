@@ -7,6 +7,7 @@ export enum ViewType {
   TERM = 'term',
   PLACE = 'place',
   FUNCTION = 'function',
+
   FUNCTION_CATEGORY = 'functionCategory'
 }
 

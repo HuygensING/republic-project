@@ -5,7 +5,7 @@ import aggsAllFunctions from "./query/aggs/aggs-all-functions.json";
 import aggsAllFunctionCategories from "./query/aggs/aggs-all-function-categories.json";
 import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
 import FilterFunctionNamePrefix from "./query/filter/FilterFunctionNamePrefix";
-import PeopleRequest from "./query/aggs/PeopleRequest";
+import PeopleAggsRequest from "./query/aggs/PeopleAggsRequest";
 import FilterFunctionCategory from "./query/filter/FilterFunctionCategory";
 import {Filter} from "./query/filter/Filter";
 
@@ -48,7 +48,7 @@ export default class FunctionResource {
     const query = clone<any>(queryTemplate);
     const filters = query.nested_functions.aggs.filter_functions.filter.bool.must;
     filters.push(filter);
-    const aggsRequest = new PeopleRequest(query);
+    const aggsRequest = new PeopleAggsRequest(query);
     return await this.esClient
       .search(aggsRequest)
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
