@@ -32,10 +32,10 @@ export default class PeopleResource {
   ): Promise<any> {
     const query = clone<any>(queryWithSort);
 
-    if (type == PersonType.ATTENDANT) {
+    if (type === PersonType.ATTENDANT) {
       query.query.bool.must.push({"range": {"attendantCount" : { "gte": 0 }}});
       query.sort.push({ "attendantCount" : {"order" : "desc"}});
-    } else if (type == PersonType.MENTIONED) {
+    } else if (type === PersonType.MENTIONED) {
       query.query.bool.must.push({"range": {"mentionedCount": {"gte": 0}}});
       query.sort.push({ "mentionedCount" : {"order" : "desc"}});
     }

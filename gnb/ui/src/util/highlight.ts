@@ -1,4 +1,3 @@
-import {Person} from "../elastic/model/Person";
 import Place from "../view/model/Place";
 
 /**

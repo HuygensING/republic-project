@@ -8,7 +8,7 @@ import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {FUNCTION, HISTOGRAM_PREFIX} from "../../content/Placeholder";
-import {C1, C10, C7} from "../../style/Colors";
+import {C10} from "../../style/Colors";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
 
 moment.locale('nl');
