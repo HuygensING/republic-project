@@ -9,7 +9,7 @@ import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import Place from "../model/Place";
-import {C3, C5} from "../../style/Colors";
+import {C5} from "../../style/Colors";
 
 moment.locale('nl');
 

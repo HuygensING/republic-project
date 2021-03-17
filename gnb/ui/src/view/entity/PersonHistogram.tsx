@@ -10,7 +10,7 @@ import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Person} from "../../elastic/model/Person";
-import {C6, C4, C7} from "../../style/Colors";
+import {C6, C7} from "../../style/Colors";
 
 moment.locale('nl');
 

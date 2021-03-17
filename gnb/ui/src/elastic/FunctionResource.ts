@@ -1,13 +1,11 @@
 import {Client} from "elasticsearch";
 import {handleEsError} from "./EsErrorHandler";
-import clone from "../util/clone";
-import aggsAllFunctions from "./query/aggs/aggs-all-functions.json";
-import aggsAllFunctionCategories from "./query/aggs/aggs-all-function-categories.json";
 import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
 import FilterFunctionNamePrefix from "./query/filter/FilterFunctionNamePrefix";
 import PeopleAggsRequest from "./query/aggs/PeopleAggsRequest";
 import FilterFunctionCategory from "./query/filter/FilterFunctionCategory";
-import {Filter} from "./query/filter/Filter";
+import AggsAllFunctionCategories from "./query/aggs/AggsAllFunctionCategories";
+import AggsAllFunctions from "./query/aggs/AggsAllFunctions";
 
 /**
  * ElasticSearch Resolution Resource
@@ -29,7 +27,9 @@ export default class FunctionResource {
     prefix: string
   ): Promise<any> {
     const filter = new FilterFunctionNamePrefix(prefix);
-    const response = await this.aggregateByFilter(filter, aggsAllFunctions);
+    const aggs = new AggsAllFunctions();
+    aggs.addFilter(filter);
+    const response = await this.request(aggs);
     return response.aggregations.nested_functions.filter_functions.function_id.buckets;
   }
 
@@ -40,17 +40,22 @@ export default class FunctionResource {
     category: string
   ): Promise<any> {
     const filter = new FilterFunctionCategory(category);
-    const response = await this.aggregateByFilter(filter, aggsAllFunctionCategories);
+    const aggs = new AggsAllFunctionCategories();
+    aggs.addFilter(filter);
+    const response = await this.request(aggs);
     return response.aggregations.nested_functions.filter_functions.function_category.buckets;
   }
 
-  private async aggregateByFilter(filter: Filter, queryTemplate: any) {
-    const query = clone<any>(queryTemplate);
-    const filters = query.nested_functions.aggs.filter_functions.filter.bool.must;
-    filters.push(filter);
-    const aggsRequest = new PeopleAggsRequest(query);
+  private async aggregate(queryTemplate: any) {
+    const aggsRequest = new PeopleAggsRequest(queryTemplate);
     return await this.esClient
       .search(aggsRequest)
+      .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
+  }
+
+  private async request(aggs: AggsAllFunctionCategories) {
+    return await this.esClient
+      .search(new PeopleAggsRequest(aggs))
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
   }
 }
