@@ -2,7 +2,6 @@ import {QueryWithSize} from "./QueryWithSize";
 
 export class QueryWithIdsAndHighlights extends QueryWithSize {
 
-  public aggs: any;
   private query: any;
   private highlight: any;
 

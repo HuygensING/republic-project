@@ -1,12 +1,15 @@
 import {Client, MGetResponse} from "elasticsearch";
-import queryWithSort from './query/query/query-with-sort.json';
 import {Person} from "./model/Person";
 import {PersonType} from "./model/PersonType";
 import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../content/Placeholder";
 import {handleEsError} from "./EsErrorHandler";
-import clone from "../util/clone";
 import PeopleRequest from "./query/aggs/PeopleRequest";
 import FilterSearchName from "./query/filter/FilterSearchName";
+import {QueryWithSort} from "./query/query/QueryWithSort";
+import FilterIsAttendant from "./query/filter/FilterIsAttendant";
+import FilterIsMentioned from "./query/filter/FilterIsMentioned";
+import SortAttendantCount from "./query/sort/SortAttendantCount";
+import SortMentionedCount from "./query/sort/SortMentionedCount";
 
 /**
  * ElasticSearch Resolution Resource
@@ -30,18 +33,18 @@ export default class PeopleResource {
     namePrefix: string,
     type?: PersonType
   ): Promise<any> {
-    const query = clone<any>(queryWithSort);
+    const query = new QueryWithSort();
 
     if (type === PersonType.ATTENDANT) {
-      query.query.bool.must.push({"range": {"attendantCount" : { "gte": 0 }}});
-      query.sort.push({ "attendantCount" : {"order" : "desc"}});
+      query.addFilter(new FilterIsAttendant());
+      query.addSort(new SortAttendantCount("desc"));
     } else if (type === PersonType.MENTIONED) {
-      query.query.bool.must.push({"range": {"mentionedCount": {"gte": 0}}});
-      query.sort.push({ "mentionedCount" : {"order" : "desc"}});
+      query.addFilter(new FilterIsMentioned());
+      query.addSort(new SortMentionedCount("desc"));
     }
 
     namePrefix.split(' ').forEach(np => {
-      query.query.bool.must.push(new FilterSearchName(np));
+      query.addFilter(new FilterSearchName(np));
     });
 
     const response = await this.esClient

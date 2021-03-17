@@ -1,4 +1,4 @@
-import {QueryWithSize} from "../QueryWithSize";
+import {QueryWithSize} from "../query/QueryWithSize";
 import {isAgg} from "./Agg";
 
 export class AggsQuery extends QueryWithSize {
