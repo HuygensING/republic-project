@@ -1,6 +1,6 @@
-import {Query} from "./query/Query";
+import {Query} from "../query/query/Query";
 
-export default class Request {
+export default class BaseSearchParams {
 
   public index: string;
   public body: Query;

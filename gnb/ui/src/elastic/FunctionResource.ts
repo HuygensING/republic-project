@@ -1,11 +1,12 @@
 import {Client} from "elasticsearch";
 import {handleEsError} from "./EsErrorHandler";
 import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
-import FilterFunctionNamePrefix from "./query/filter/FilterFunctionNamePrefix";
-import PeopleAggsRequest from "./query/aggs/PeopleAggsRequest";
-import FilterFunctionCategory from "./query/filter/FilterFunctionCategory";
-import AggsAllFunctionCategories from "./query/aggs/AggsAllFunctionCategories";
-import AggsAllFunctions from "./query/aggs/AggsAllFunctions";
+import FilterFunctionNamePrefix from "./query/filter/people/FilterFunctionNamePrefix";
+import PeopleSearchParams from "./params/PeopleSearchParams";
+import FilterFunctionCategory from "./query/filter/people/FilterFunctionCategory";
+import AggAllFunctionCategories from "./query/aggs/people/AggAllFunctionCategories";
+import AggsAllFunctions from "./query/aggs/people/AggsAllFunctions";
+import PeopleAggsSearchParams from "./params/PeopleAggsSearchParams";
 
 /**
  * ElasticSearch Resolution Resource
@@ -40,22 +41,23 @@ export default class FunctionResource {
     category: string
   ): Promise<any> {
     const filter = new FilterFunctionCategory(category);
-    const aggs = new AggsAllFunctionCategories();
+    const aggs = new AggAllFunctionCategories();
     aggs.addFilter(filter);
     const response = await this.request(aggs);
     return response.aggregations.nested_functions.filter_functions.function_category.buckets;
   }
 
   private async aggregate(queryTemplate: any) {
-    const aggsRequest = new PeopleAggsRequest(queryTemplate);
+    const params = new PeopleSearchParams(queryTemplate);
     return await this.esClient
-      .search(aggsRequest)
+      .search(params)
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
   }
 
-  private async request(aggs: AggsAllFunctionCategories) {
+  private async request(aggs: AggAllFunctionCategories) {
+    const params = new PeopleAggsSearchParams(aggs);
     return await this.esClient
-      .search(new PeopleAggsRequest(aggs))
+      .search(params)
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_LOCATION));
   }
 }

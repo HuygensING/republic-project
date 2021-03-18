@@ -1,10 +1,10 @@
 import {Client} from "elasticsearch";
-import ResolutionRequest from "./query/aggs/ResolutionRequest";
-import FilterRange from "./query/filter/FilterRange";
-import AggsResolutionHistogram from "./query/aggs/AggsResolutionHistogram";
+import ResolutionSearchParams from "./params/ResolutionSearchParams";
+import FilterRange from "./query/filter/resolution/FilterRange";
+import AggResolutionHistogram from "./query/aggs/resolution/AggResolutionHistogram";
 import {PersonType} from "./model/PersonType";
-import FilterFullText from "./query/filter/FilterFullText";
-import FilterPerson from "./query/filter/FilterPerson";
+import FilterFullText from "./query/filter/resolution/FilterFullText";
+import FilterPerson from "./query/filter/resolution/FilterPerson";
 import Resolution from "./model/Resolution";
 
 import {
@@ -15,13 +15,13 @@ import {
 import {handleEsError} from "./EsErrorHandler";
 import AggWithIdFilter from "./query/aggs/AggWithIdFilter";
 import AggWithFilters from "./query/aggs/AggWithFilters";
-import Request from "./query/Request";
-import {QueryWithIdsAndHighlights} from "./query/query/QueryWithIdsAndHighlights";
+import BaseSearchParams from "./params/BaseSearchParams";
+import {QueryWithIdsAndHighlights} from "./query/query/resolution/QueryWithIdsAndHighlights";
 import Place from "../view/model/Place";
 import {Term} from "../view/model/Term";
-import FilterAnnotation from "./query/filter/FilterAnnotation";
+import FilterAnnotation from "./query/filter/resolution/FilterAnnotation";
 import {PersonFunction} from "./model/PersonFunction";
-import FilterPeople from "./query/filter/FilterPeople";
+import FilterPeople from "./query/filter/resolution/FilterPeople";
 import {PersonFunctionCategory} from "./model/PersonFunctionCategory";
 
 /**
@@ -81,11 +81,12 @@ export default class ResolutionResource {
       query.addFilter(new FilterPeople(f.people));
     }
 
-    const hist = new AggsResolutionHistogram(begin, end, 1);
+    const hist = new AggResolutionHistogram(begin, end, 1);
     query.addAgg(hist);
 
+    const params = new ResolutionSearchParams(query);
     const response = await this.esClient
-      .search(new ResolutionRequest(query))
+      .search(params)
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_RESOLUTIONS));
 
     return response.aggregations
@@ -106,7 +107,7 @@ export default class ResolutionResource {
     if (ids.length === 0) {
       return [];
     }
-    const request = new Request(this.index, new QueryWithIdsAndHighlights(ids, highlight));
+    const request = new BaseSearchParams(this.index, new QueryWithIdsAndHighlights(ids, highlight));
     const response = await this.esClient
       .search<Resolution>(request)
       .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
@@ -215,15 +216,15 @@ export default class ResolutionResource {
     end: Date
   ) {
     const sortedResolutions = resolutions.sort();
-    filteredQuery.addAgg(new AggsResolutionHistogram(begin, end, 1));
+    filteredQuery.addAgg(new AggResolutionHistogram(begin, end, 1));
 
     const aggWithIdFilter = new AggWithIdFilter(sortedResolutions);
     aggWithIdFilter.addAgg(filteredQuery);
 
-    const aggsQuery = new ResolutionRequest(aggWithIdFilter);
+    const params = new ResolutionSearchParams(aggWithIdFilter);
 
     const response = await this.esClient
-      .search(aggsQuery)
+      .search(params)
       .catch(e => handleEsError(e, ERR_ES_AGGREGATE_RESOLUTIONS_BY_PERSON));
 
     return response.aggregations

@@ -1,5 +1,5 @@
-import {PersonType} from "../../model/PersonType";
-import {Filter} from "./Filter";
+import {PersonType} from "../../../model/PersonType";
+import {Filter} from "../Filter";
 
 export default class FilterPerson implements Filter {
   public nested: any;

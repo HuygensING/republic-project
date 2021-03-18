@@ -1,4 +1,4 @@
-import {QueryWithSize} from "./QueryWithSize";
+import {QueryWithSize} from "../QueryWithSize";
 
 export class QueryWithIdsAndHighlights extends QueryWithSize {
 

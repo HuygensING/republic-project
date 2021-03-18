@@ -1,7 +1,7 @@
-import {AggImpl} from "./AggImpl";
-import {Filter} from "../filter/Filter";
+import {AggImpl} from "../AggImpl";
+import {Filter} from "../../filter/Filter";
 
-export default class AggsAllFunctionCategories extends AggImpl {
+export default class AggAllFunctionCategories extends AggImpl {
 
   constructor() {
     super('nested_functions')

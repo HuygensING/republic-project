@@ -1,4 +1,4 @@
-import {Filter} from "./Filter";
+import {Filter} from "../Filter";
 
 export default class FilterFullText implements Filter {
   public simple_query_string: any;

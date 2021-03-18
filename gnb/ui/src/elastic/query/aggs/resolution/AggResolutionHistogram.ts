@@ -1,8 +1,8 @@
 import moment from "moment";
-import Config from "../../../Config";
-import {Agg} from "./Agg";
+import Config from "../../../../Config";
+import {Agg} from "../Agg";
 
-export default class AggsResolutionHistogram implements Agg {
+export default class AggResolutionHistogram implements Agg {
 
   private _name = 'resolution_histogram';
   private _agg: any;

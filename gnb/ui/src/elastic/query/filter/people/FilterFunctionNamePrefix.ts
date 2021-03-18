@@ -1,4 +1,4 @@
-import {Filter} from "./Filter";
+import {Filter} from "../Filter";
 
 export default class FilterFunctionNamePrefix implements Filter {
   public prefix: any;
