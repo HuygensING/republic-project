@@ -1,5 +1,6 @@
 import {MODAL_CLOSE} from "../content/Placeholder";
 import React, {ReactNode} from "react";
+import useEvent from "../hook/useEvent";
 
 type ModalProps = {
   title: string
@@ -9,6 +10,14 @@ type ModalProps = {
 }
 
 export default function Modal(props: ModalProps) {
+  useEvent('keyup', closeOnEsc);
+
+  function closeOnEsc(e: React.KeyboardEvent<HTMLElement>) {
+    if (e.key === 'Escape') {
+      props.handleClose();
+    }
+  }
+
   return (
     <div>
       <div
