@@ -9,7 +9,7 @@ import ResolutionAggsSearchParams from "../query/search-params/ResolutionAggsSea
 /**
  * ElasticSearch Resolution Resource
  */
-export default class ResolutionResource {
+export default class PlaceResource {
 
   private esClient: Client;
   private index: string;

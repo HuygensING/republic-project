@@ -15,7 +15,7 @@ import {handleEsError} from "../EsErrorHandler";
 import AggWithIdFilter from "../query/aggs/AggWithIdFilter";
 import AggWithFilters from "../query/aggs/AggWithFilters";
 import SearchParams from "../query/SearchParams";
-import {QueryWithIdsAndHighlights} from "../query/query/resolution/QueryWithIdsAndHighlights";
+import {QueryWithIdsAndHighlights} from "../query/body/resolution/QueryWithIdsAndHighlights";
 import Place from "../../view/model/Place";
 import {Term} from "../../view/model/Term";
 import FilterAnnotation from "../query/filter/resolution/FilterAnnotation";

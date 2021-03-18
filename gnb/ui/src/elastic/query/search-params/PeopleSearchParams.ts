@@ -1,8 +1,8 @@
 import SearchParams from "../SearchParams";
-import {Query} from "../query/Query";
+import {Body} from "../body/Body";
 
 export default class PeopleSearchParams extends SearchParams {
-  constructor(query: Query) {
+  constructor(query: Body) {
     super("gnb-people", query);
   }
 }

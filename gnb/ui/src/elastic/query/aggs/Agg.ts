@@ -1,5 +1,5 @@
 /**
- * Building block of Elasticsearch Aggs
+ * Building block of Elasticsearch aggregations
  */
 export interface Agg {
 

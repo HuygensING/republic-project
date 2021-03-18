@@ -6,11 +6,11 @@ import FunctionResource from "./resource/FunctionResource";
 
 export default class GnbElasticClient {
 
-  private esClient: Client;
-  private _resolutionResource: ResolutionResource;
-  private _peopleResource: PeopleResource;
-  private _placeResource: PlaceResource;
-  private _functionResource: FunctionResource;
+  private readonly esClient: Client;
+  private readonly _resolutionResource: ResolutionResource;
+  private readonly _peopleResource: PeopleResource;
+  private readonly _placeResource: PlaceResource;
+  private readonly _functionResource: FunctionResource;
 
   constructor(host: string) {
 

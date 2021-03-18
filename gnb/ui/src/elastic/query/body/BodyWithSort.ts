@@ -1,8 +1,8 @@
-import {QueryWithSize} from "./QueryWithSize";
+import {BodyWithSize} from "./BodyWithSize";
 import {Filter} from "../filter/Filter";
 import {Sort} from "../sort/Sort";
 
-export class QueryWithSort extends QueryWithSize {
+export class BodyWithSort extends BodyWithSize {
 
   private query: any;
   private sort: any[];

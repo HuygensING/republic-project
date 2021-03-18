@@ -1,6 +1,6 @@
-import {QueryWithSize} from "../QueryWithSize";
+import {BodyWithSize} from "../BodyWithSize";
 
-export class QueryWithIdsAndHighlights extends QueryWithSize {
+export class QueryWithIdsAndHighlights extends BodyWithSize {
 
   private query: any;
   private highlight: any;

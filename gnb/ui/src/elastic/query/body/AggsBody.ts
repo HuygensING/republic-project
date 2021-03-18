@@ -1,7 +1,7 @@
-import {QueryWithSize} from "./QueryWithSize";
+import {BodyWithSize} from "./BodyWithSize";
 import {Agg} from "../aggs/Agg";
 
-export class AggsQuery extends QueryWithSize {
+export default class AggsBody extends BodyWithSize {
 
   public aggs: any = {};
 

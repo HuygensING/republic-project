@@ -4,7 +4,7 @@ import {PersonType} from "../model/PersonType";
 import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../../content/Placeholder";
 import {handleEsError} from "../EsErrorHandler";
 import FilterSearchName from "../query/filter/people/FilterSearchName";
-import {QueryWithSort} from "../query/query/QueryWithSort";
+import {BodyWithSort} from "../query/body/BodyWithSort";
 import FilterIsAttendant from "../query/filter/people/FilterIsAttendant";
 import FilterIsMentioned from "../query/filter/people/FilterIsMentioned";
 import SortAttendantCount from "../query/sort/SortAttendantCount";
@@ -33,7 +33,7 @@ export default class PeopleResource {
     namePrefix: string,
     type?: PersonType
   ): Promise<any> {
-    const query = new QueryWithSort();
+    const query = new BodyWithSort();
 
     if (type === PersonType.ATTENDANT) {
       query.addFilter(new FilterIsAttendant());
