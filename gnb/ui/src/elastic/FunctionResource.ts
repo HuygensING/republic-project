@@ -2,11 +2,11 @@ import {Client} from "elasticsearch";
 import {handleEsError} from "./EsErrorHandler";
 import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
 import FilterFunctionNamePrefix from "./query/filter/people/FilterFunctionNamePrefix";
-import PeopleSearchParams from "./params/PeopleSearchParams";
+import PeopleSearchParams from "./query/params/PeopleSearchParams";
 import FilterFunctionCategory from "./query/filter/people/FilterFunctionCategory";
 import AggAllFunctionCategories from "./query/aggs/people/AggAllFunctionCategories";
 import AggsAllFunctions from "./query/aggs/people/AggsAllFunctions";
-import PeopleAggsSearchParams from "./params/PeopleAggsSearchParams";
+import PeopleAggsSearchParams from "./query/params/PeopleAggsSearchParams";
 
 /**
  * ElasticSearch Resolution Resource

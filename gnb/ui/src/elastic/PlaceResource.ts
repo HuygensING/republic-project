@@ -1,5 +1,5 @@
 import {Client} from "elasticsearch";
-import ResolutionSearchParams from "./params/ResolutionSearchParams";
+import ResolutionSearchParams from "./query/params/ResolutionSearchParams";
 import {handleEsError} from "./EsErrorHandler";
 import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
 import FilterAnnotationName from "./query/filter/resolution/FilterAnnotationName";

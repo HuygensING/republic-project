@@ -1,5 +1,5 @@
 import {Client} from "elasticsearch";
-import ResolutionSearchParams from "./params/ResolutionSearchParams";
+import ResolutionSearchParams from "./query/params/ResolutionSearchParams";
 import FilterRange from "./query/filter/resolution/FilterRange";
 import AggResolutionHistogram from "./query/aggs/resolution/AggResolutionHistogram";
 import {PersonType} from "./model/PersonType";
@@ -15,7 +15,7 @@ import {
 import {handleEsError} from "./EsErrorHandler";
 import AggWithIdFilter from "./query/aggs/AggWithIdFilter";
 import AggWithFilters from "./query/aggs/AggWithFilters";
-import BaseSearchParams from "./params/BaseSearchParams";
+import SearchParams from "./query/SearchParams";
 import {QueryWithIdsAndHighlights} from "./query/query/resolution/QueryWithIdsAndHighlights";
 import Place from "../view/model/Place";
 import {Term} from "../view/model/Term";
@@ -107,7 +107,7 @@ export default class ResolutionResource {
     if (ids.length === 0) {
       return [];
     }
-    const request = new BaseSearchParams(this.index, new QueryWithIdsAndHighlights(ids, highlight));
+    const request = new SearchParams(this.index, new QueryWithIdsAndHighlights(ids, highlight));
     const response = await this.esClient
       .search<Resolution>(request)
       .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));

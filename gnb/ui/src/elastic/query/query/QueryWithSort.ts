@@ -1,5 +1,6 @@
 import {QueryWithSize} from "./QueryWithSize";
 import {Filter} from "../filter/Filter";
+import {Sort} from "../sort/Sort";
 
 export class QueryWithSort extends QueryWithSize {
 
@@ -23,8 +24,8 @@ export class QueryWithSort extends QueryWithSize {
     this.query.bool.must.push(filter);
   }
 
-  addSort(filter: Filter) {
-    this.sort.push(filter);
+  addSort(sort: Sort) {
+    this.sort.push(sort);
   }
 
 }
