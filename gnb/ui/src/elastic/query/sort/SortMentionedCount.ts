@@ -1,7 +1,7 @@
 export default class SortAttendantCountDesc {
-  public attendantCount: any;
+  public mentionedCount: any;
 
   constructor(order: string) {
-    this.attendantCount = {"order" : order};
+    this.mentionedCount = {"order" : order};
   }
 }
