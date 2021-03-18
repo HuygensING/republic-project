@@ -1,20 +1,14 @@
 import {QueryWithSize} from "./QueryWithSize";
-import {isAgg} from "../aggs/Agg";
+import {Agg} from "../aggs/Agg";
 
 export class AggsQuery extends QueryWithSize {
 
-  public aggs: any;
+  public aggs: any = {};
 
-  constructor(aggs: any) {
+  constructor(agg: Agg) {
     super();
     this.size = 0;
-
-    if(isAgg(aggs)) {
-      this.aggs = {};
-      this.aggs[aggs.name()] = aggs.agg();
-    } else {
-      this.aggs = aggs;
-    }
+    this.aggs[agg.name()] = agg.agg();
   }
 
 }
