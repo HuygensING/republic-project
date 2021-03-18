@@ -1,15 +1,15 @@
 import {Client, MGetResponse} from "elasticsearch";
-import {Person} from "./model/Person";
-import {PersonType} from "./model/PersonType";
-import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../content/Placeholder";
-import {handleEsError} from "./EsErrorHandler";
-import PeopleSearchParams from "./query/params/PeopleSearchParams";
-import FilterSearchName from "./query/filter/people/FilterSearchName";
-import {QueryWithSort} from "./query/query/QueryWithSort";
-import FilterIsAttendant from "./query/filter/people/FilterIsAttendant";
-import FilterIsMentioned from "./query/filter/people/FilterIsMentioned";
-import SortAttendantCount from "./query/sort/SortAttendantCount";
-import SortMentionedCount from "./query/sort/SortMentionedCount";
+import {Person} from "../model/Person";
+import {PersonType} from "../model/PersonType";
+import {ERR_ES_AGGREGATE_PEOPLE, ERR_ES_GET_MULTI_PEOPLE} from "../../content/Placeholder";
+import {handleEsError} from "../EsErrorHandler";
+import FilterSearchName from "../query/filter/people/FilterSearchName";
+import {QueryWithSort} from "../query/query/QueryWithSort";
+import FilterIsAttendant from "../query/filter/people/FilterIsAttendant";
+import FilterIsMentioned from "../query/filter/people/FilterIsMentioned";
+import SortAttendantCount from "../query/sort/SortAttendantCount";
+import SortMentionedCount from "../query/sort/SortMentionedCount";
+import PeopleSearchParams from "../query/search-params/PeopleSearchParams";
 
 /**
  * ElasticSearch Resolution Resource

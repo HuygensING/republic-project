@@ -1,10 +1,10 @@
 import {Client} from "elasticsearch";
-import ResolutionSearchParams from "./query/params/ResolutionSearchParams";
-import {handleEsError} from "./EsErrorHandler";
-import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
-import FilterAnnotationName from "./query/filter/resolution/FilterAnnotationName";
-import FilterAnnotationValuePrefix from "./query/filter/resolution/FilterAnnotationValuePrefix";
-import AggAllAnnotations from "./query/aggs/resolution/AggAllAnnotations";
+import {handleEsError} from "../EsErrorHandler";
+import {ERR_ES_AGGREGATE_LOCATION} from "../../content/Placeholder";
+import FilterAnnotationName from "../query/filter/resolution/FilterAnnotationName";
+import FilterAnnotationValuePrefix from "../query/filter/resolution/FilterAnnotationValuePrefix";
+import AggAllAnnotations from "../query/aggs/resolution/AggAllAnnotations";
+import ResolutionAggsSearchParams from "../query/search-params/ResolutionAggsSearchParams";
 
 /**
  * ElasticSearch Resolution Resource
@@ -29,7 +29,7 @@ export default class ResolutionResource {
     const query = new AggAllAnnotations();
     query.addFilter(new FilterAnnotationName('plaats'));
     query.addFilter(new FilterAnnotationValuePrefix(prefix));
-    const params = new ResolutionSearchParams(query);
+    const params = new ResolutionAggsSearchParams(query);
 
     const response = await this.esClient
       .search(params)

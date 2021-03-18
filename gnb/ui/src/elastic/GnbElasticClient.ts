@@ -1,8 +1,8 @@
 import {Client} from 'elasticsearch';
-import ResolutionResource from "./ResolutionResource";
-import PeopleResource from "./PeopleResource";
-import PlaceResource from "./PlaceResource";
-import FunctionResource from "./FunctionResource";
+import ResolutionResource from "./resource/ResolutionResource";
+import PeopleResource from "./resource/PeopleResource";
+import PlaceResource from "./resource/PlaceResource";
+import FunctionResource from "./resource/FunctionResource";
 
 export default class GnbElasticClient {
 

@@ -1,12 +1,12 @@
 import {Client} from "elasticsearch";
-import {handleEsError} from "./EsErrorHandler";
-import {ERR_ES_AGGREGATE_LOCATION} from "../content/Placeholder";
-import FilterFunctionNamePrefix from "./query/filter/people/FilterFunctionNamePrefix";
-import PeopleSearchParams from "./query/params/PeopleSearchParams";
-import FilterFunctionCategory from "./query/filter/people/FilterFunctionCategory";
-import AggAllFunctionCategories from "./query/aggs/people/AggAllFunctionCategories";
-import AggsAllFunctions from "./query/aggs/people/AggsAllFunctions";
-import PeopleAggsSearchParams from "./query/params/PeopleAggsSearchParams";
+import {handleEsError} from "../EsErrorHandler";
+import {ERR_ES_AGGREGATE_LOCATION} from "../../content/Placeholder";
+import FilterFunctionNamePrefix from "../query/filter/people/FilterFunctionNamePrefix";
+import FilterFunctionCategory from "../query/filter/people/FilterFunctionCategory";
+import AggAllFunctionCategories from "../query/aggs/people/AggAllFunctionCategories";
+import PeopleSearchParams from "../query/search-params/PeopleSearchParams";
+import PeopleAggsSearchParams from "../query/search-params/PeopleAggsSearchParams";
+import AggAllFunctions from "../query/aggs/people/AggAllFunctions";
 
 /**
  * ElasticSearch Resolution Resource
@@ -28,7 +28,7 @@ export default class FunctionResource {
     prefix: string
   ): Promise<any> {
     const filter = new FilterFunctionNamePrefix(prefix);
-    const aggs = new AggsAllFunctions();
+    const aggs = new AggAllFunctions();
     aggs.addFilter(filter);
     const response = await this.request(aggs);
     return response.aggregations.nested_functions.filter_functions.function_id.buckets;
