@@ -4,6 +4,7 @@ import {PersonAnn} from "../../elastic/model/PersonAnn";
 import {joinJsx} from "../../util/joinJsx";
 import {useClientContext} from "../../elastic/ClientContext";
 import {Person} from "../../elastic/model/Person";
+import Attendant from "./Attendant";
 
 type AttendantProps = {
   resolution: Resolution,
@@ -12,13 +13,11 @@ type AttendantProps = {
 
 type StateType = {
   show: boolean,
-  person?: Person
+  person?: number
 }
 
 export function Attendants(props: AttendantProps) {
   const r = props.resolution;
-
-  const client = useClientContext().clientState.client;
 
   const [state, setState] = useState({
     show: false,
@@ -26,8 +25,7 @@ export function Attendants(props: AttendantProps) {
 
   async function toggle(i: number) {
     const personAnn = r.people[i];
-    const person = (await client.peopleResource.getMulti([personAnn.id]))[0];
-    setState({...state, person, show: !state.show});
+    setState({...state, person: personAnn.id, show: !state.show});
   }
 
   const p = state.person;
@@ -48,24 +46,7 @@ export function Attendants(props: AttendantProps) {
         {p ?
           <div className={`collapse ${state.show ? 'show' : 'hide'}`}>
             <div className="card-body">
-              <h5>{p.searchName}</h5>
-              <p className="mb-1">
-                <span>Aanwezig: <span className="badge badge-pill badge-info">{p.mentionedCount}x</span> </span>
-                <span>Genoemd: <span className="badge badge-pill badge-info">{p.attendantCount}x</span> </span>
-                <span>ID: <span className="badge badge-pill badge-info">{p.id}</span> </span>
-              </p>
-              {p.functions
-                ? <>
-                  <p className="mb-0">Functies:</p>
-                  <ul className="mb-0">{p.functions.map(
-                    f => <li className="small">
-                      {f.name}
-                      <br/>
-                      <span className="text-muted">{f.start} t/m {f.end}</span>
-                    </li>
-                  )}</ul>
-                </>
-                : null}
+              <Attendant person={p} />
             </div>
           </div>
           : null}
