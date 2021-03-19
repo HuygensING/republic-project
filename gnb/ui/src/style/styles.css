@@ -107,3 +107,10 @@ code {
   line-height: 1em;
   margin-right: 0.5em
 }
+
+resolutie persoon {
+  text-decoration: underline;
+}
+resolutie persoon:hover{
+  cursor: pointer;
+}
