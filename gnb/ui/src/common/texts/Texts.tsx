@@ -1,14 +1,12 @@
 import React, {memo, useState} from "react";
 import Resolution from "../../elastic/model/Resolution";
 import Modal from "../Modal";
-import {RESOLUTION, RESOLUTIONS_TEXTS_TITLE} from "../../content/Placeholder";
+import {RESOLUTIONS_TEXTS_TITLE} from "../../content/Placeholder";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {equal} from "../../util/equal";
 import {SearchStateType, useSearchContext} from "../../search/SearchContext";
 import {useClientContext} from "../../elastic/ClientContext";
-import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
-import Place from "../../view/model/Place";
-import {Attendants} from "./Attendants";
+import {Text} from "./Text";
 
 type TextsProps = {
   resolutions: string[],
@@ -67,24 +65,15 @@ export const Texts = memo(function (props: TextsProps) {
       isOpen={true}
       handleClose={props.handleClose}
     >
-      {state.hasLoaded ? state.resolutions.map((r: any, i: number) => {
-        let highlighted = highlight(
-          r.resolution.originalXml,
-          mentionedToHighlight,
-          searchState.places,
-        );
-
-        if (props.highlightXml) {
-          highlighted = props.highlightXml(highlighted);
-        }
-
-        return <div key={i}>
-          <h5>{RESOLUTION} {r.metadata.meeting.date} #{r.metadata.resolution}</h5>
-          <Attendants resolution={r} markedIds={attendantsToHighlight}/>
-          <div dangerouslySetInnerHTML={{__html: highlighted}}/>
-        </div>;
-
-      }) : 'Loading...'}
+      {state.hasLoaded ? state.resolutions.map((r: any, i: number) =>
+        <Text
+          key={i}
+          resolution={r}
+          attendantsToHighlight={attendantsToHighlight}
+          mentionedToHighlight={mentionedToHighlight}
+          highlightXml={props.highlightXml}
+        />
+      ) : 'Loading...'}
     </Modal>
   );
 
@@ -99,19 +88,6 @@ function sortResolutions(newResolutions: Resolution[]) {
   return newResolutions;
 }
 
-
-function highlight(
-  xml: string,
-  mentioned: number[],
-  places: Place[],
-): string {
-  const dom = toDom(xml);
-
-  highlightMentioned(dom, mentioned);
-  highlightPlaces(dom, places);
-
-  return toStr(dom);
-}
 
 /**
  * Combine attendants and mentioned from search context and Texts props

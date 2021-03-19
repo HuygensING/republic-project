@@ -1,25 +1,27 @@
 import React, {useEffect, useState} from "react";
 import {Person} from "../../elastic/model/Person";
 import {useClientContext} from "../../elastic/ClientContext";
+import {equal} from "../../util/equal";
 
-type AttendantProps = {
+type ProfileProps = {
   person: number
 }
 
-type AttendantState = {
+type ProfileState = {
   person: Person
 }
 
-export default function Attendant (props: AttendantProps){
+export const Profile = React.memo(function(props: ProfileProps){
+  console.log('props', props.person);
   const client = useClientContext().clientState.client;
-
-  const [state, setState] = useState({} as AttendantState);
+  const p2 = props.person;
+  const [state, setState] = useState({} as ProfileState);
 
   useEffect(() => {
-    client.peopleResource.getMulti([props.person]).then((d) => {
-      setState({...state, person: d[0]});
+    client.peopleResource.getMulti([p2]).then((d) => {
+      setState(s => {return {...s, person: d[0]}});
     });
-  });
+  }, [p2, client.peopleResource]);
 
   if(!state.person) {
     return <></>
@@ -33,11 +35,11 @@ export default function Attendant (props: AttendantProps){
       <span>Genoemd: <span className="badge badge-pill badge-info">{p.mentionedCount}x</span> </span>
       <span>ID: <span className="badge badge-pill badge-info">{p.id}</span> </span>
     </p>
-    {p.functions
+    {p.functions.length
       ? <>
         <p className="mb-0">Functies:</p>
         <ul className="mb-0">{p.functions.map(
-          f => <li className="small">
+          (f, i)  => <li className="small" key={i}>
             {f.name}
             <br/>
             <span className="text-muted">{f.start} t/m {f.end}</span>
@@ -47,4 +49,4 @@ export default function Attendant (props: AttendantProps){
       : null}
   </>
 
-}
+}, (p, n) => equal(p.person, n.person));

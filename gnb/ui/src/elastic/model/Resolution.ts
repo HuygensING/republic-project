@@ -1,9 +1,11 @@
 import {PersonAnn} from "./PersonAnn";
+import {Ann} from "./Ann";
 
 export default interface Resolution {
   id: string;
   metadata: {
-    meeting: { date: string }
+    meeting: { date: string },
+    resolution: number
   };
   source: string;
   indexedOn: string;
@@ -13,14 +15,7 @@ export default interface Resolution {
     plainText: string;
     originalXml: string;
   }
-  annotations: [
-    {
-      id: number;
-      name: string;
-      value: string;
-    }
-  ]
+  annotations: Ann[]
 
 }
-
 

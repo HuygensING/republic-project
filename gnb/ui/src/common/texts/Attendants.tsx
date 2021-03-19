@@ -2,9 +2,7 @@ import React, {useState} from "react";
 import Resolution from "../../elastic/model/Resolution";
 import {PersonAnn} from "../../elastic/model/PersonAnn";
 import {joinJsx} from "../../util/joinJsx";
-import {useClientContext} from "../../elastic/ClientContext";
-import {Person} from "../../elastic/model/Person";
-import Attendant from "./Attendant";
+import {Profile} from "./Profile";
 
 type AttendantProps = {
   resolution: Resolution,
@@ -46,7 +44,7 @@ export function Attendants(props: AttendantProps) {
         {p ?
           <div className={`collapse ${state.show ? 'show' : 'hide'}`}>
             <div className="card-body">
-              <Attendant person={p} />
+              <Profile person={p} />
             </div>
           </div>
           : null}

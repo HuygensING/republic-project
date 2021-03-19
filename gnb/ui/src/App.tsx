@@ -9,7 +9,7 @@ export default async function App() {
 
   const client: GnbElasticClient = new GnbElasticClient(Config.ES_HOST);
 
-  const strict = false;
+  const strict = true;
   await init(strict);
 
   function init(strict: boolean) {
