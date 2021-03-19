@@ -3,7 +3,6 @@ import ResolutionHistogram from "./ResolutionHistogram";
 import {D3Canvas} from "../common/D3Canvas";
 import {Texts} from "../common/texts/Texts";
 import {useResolutionContext} from "./ResolutionContext";
-import Resolution from "../elastic/model/Resolution";
 
 export default function ResolutionViewer() {
 

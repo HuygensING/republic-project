@@ -5,4 +5,5 @@ export type PersonAnn = {
   type: PersonType;
   province?: string;
   name: string;
+  president: boolean
 }

@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import Resolution from "../../elastic/model/Resolution";
 import {PersonAnn} from "../../elastic/model/PersonAnn";
 import {joinJsx} from "../../util/joinJsx";
-import {PersonType} from "../../elastic/model/PersonType";
 import {useClientContext} from "../../elastic/ClientContext";
 import {Person} from "../../elastic/model/Person";
 
@@ -46,9 +45,11 @@ export function Attendants(props: AttendantProps) {
       <div className="card">
         <div className="card-header attendants-card">
 
-          <small><strong>Aanwezigen:</strong> {r.people.sort(markedFirst).map(
+          <small><strong>Aanwezigen:</strong> {r.people.sort(presidentFirst).map(
             (a: PersonAnn, i: number) =>
-              <a className={highlightMarked(a)} onClick={() => toggle(i)} key={i}>{a.name}</a>
+              <a className={highlightMarked(a)} onClick={() => toggle(i)} key={i}>
+                {a.name} {a.president ? '(president)' : ''}
+              </a>
           ).reduce(joinJsx)}
           </small>
         </div>
@@ -80,9 +81,8 @@ export function Attendants(props: AttendantProps) {
     </div>
   </>;
 
-  function markedFirst(a: PersonAnn, b: PersonAnn) {
-    return isMarked(a) && isMarked(b) ? 0 : (isMarked(a) ? -1 : (isMarked(b) ? 1 : 0));
+  function presidentFirst(a: PersonAnn, b: PersonAnn) {
+    return a.president ? -1 : b.president ? 1 : 0;
   }
-
 
 }
