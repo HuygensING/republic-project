@@ -1,5 +1,6 @@
 // Common:
 export const MODAL_CLOSE = 'Sluit';
+export const RESOLUTION = 'Resolutie';
 export const PEOPLE = 'personen';
 export const MENTIONED = 'genoemde';
 export const ATTENDANT = 'aanwezige';

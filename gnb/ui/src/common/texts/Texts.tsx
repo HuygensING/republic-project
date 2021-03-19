@@ -1,16 +1,14 @@
 import React, {memo, useState} from "react";
-import Resolution from "../elastic/model/Resolution";
-import Modal from "./Modal";
-import {RESOLUTIONS_TEXTS_TITLE} from "../content/Placeholder";
-import {useAsyncError} from "../hook/useAsyncError";
-import {equal} from "../util/equal";
-import {PersonType} from "../elastic/model/PersonType";
-import {PersonAnn} from "../elastic/model/PersonAnn";
-import {SearchStateType, useSearchContext} from "../search/SearchContext";
-import {joinJsx} from "../util/joinJsx";
-import {useClientContext} from "../elastic/ClientContext";
-import {highlightMentioned, highlightPlaces, toDom, toStr} from "../util/highlight";
-import Place from "../view/model/Place";
+import Resolution from "../../elastic/model/Resolution";
+import Modal from "../Modal";
+import {RESOLUTION, RESOLUTIONS_TEXTS_TITLE} from "../../content/Placeholder";
+import {useAsyncError} from "../../hook/useAsyncError";
+import {equal} from "../../util/equal";
+import {SearchStateType, useSearchContext} from "../../search/SearchContext";
+import {useClientContext} from "../../elastic/ClientContext";
+import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
+import Place from "../../view/model/Place";
+import {Attendants} from "./Attendants";
 
 type TextsProps = {
   resolutions: string[],
@@ -38,26 +36,25 @@ type TextsProps = {
 export const Texts = memo(function (props: TextsProps) {
 
   const client = useClientContext().clientState.client;
+  const {searchState} = useSearchContext();
 
-  const [state, setResolutions] = useState({
+  const [state, setState] = useState({
     resolutions: [] as Resolution[],
     hasLoaded: false
   });
 
-  const {searchState} = useSearchContext();
-
   const throwError = useAsyncError();
 
-  if(!state.hasLoaded) {
+  if (!state.hasLoaded) {
     let fullTextHighlight = searchState.fullText;
-    if(props.highlightQuery) {
+    if (props.highlightQuery) {
       fullTextHighlight += ' ' + props.highlightQuery;
     }
     client.resolutionResource
       .getMulti(props.resolutions, fullTextHighlight)
       .then((results) => {
         results = sortResolutions(results);
-        setResolutions({resolutions: results, hasLoaded: true});
+        setState({resolutions: results, hasLoaded: true});
       })
       .catch(throwError);
   }
@@ -77,13 +74,13 @@ export const Texts = memo(function (props: TextsProps) {
           searchState.places,
         );
 
-        if(props.highlightXml) {
+        if (props.highlightXml) {
           highlighted = props.highlightXml(highlighted);
         }
 
         return <div key={i}>
-          <h5>{r.id}</h5>
-          <small><strong>Aanwezigen</strong>: {renderAttendants(r, attendantsToHighlight)}</small>
+          <h5>{RESOLUTION} {r.metadata.meeting.date} #{r.metadata.resolution}</h5>
+          <Attendants resolution={r} markedIds={attendantsToHighlight}/>
           <div dangerouslySetInnerHTML={{__html: highlighted}}/>
         </div>;
 
@@ -102,25 +99,12 @@ function sortResolutions(newResolutions: Resolution[]) {
   return newResolutions;
 }
 
-function renderAttendants(r: any, markedIds: number[]) {
-  if(!r.people.length) {
-    return '-';
-  }
-  return r.people
-    .filter((p: PersonAnn) => p.type === PersonType.ATTENDANT)
-    .map((p: PersonAnn, i: number) => {
-      const isAttendant = markedIds.includes(p.id);
-      return <span key={i} className={isAttendant ? 'highlight' : ''}>{p.name} (ID {p.id})</span>
-    })
-    .reduce(joinJsx);
-}
-
 
 function highlight(
   xml: string,
   mentioned: number[],
   places: Place[],
-) : string {
+): string {
   const dom = toDom(xml);
 
   highlightMentioned(dom, mentioned);
@@ -148,4 +132,3 @@ function combinePeopleToHighlight(searchState: SearchStateType, props: TextsProp
 
   return {mentionedToHighlight, attendantsToHighlight};
 }
-

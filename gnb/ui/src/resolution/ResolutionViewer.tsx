@@ -1,8 +1,9 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import ResolutionHistogram from "./ResolutionHistogram";
 import {D3Canvas} from "../common/D3Canvas";
-import {Texts} from "../common/Texts";
+import {Texts} from "../common/texts/Texts";
 import {useResolutionContext} from "./ResolutionContext";
+import Resolution from "../elastic/model/Resolution";
 
 export default function ResolutionViewer() {
 

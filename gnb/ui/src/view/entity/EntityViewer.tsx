@@ -3,7 +3,7 @@ import {PersonHistogram} from "./PersonHistogram";
 import React, {memo, useEffect, useRef, useState} from "react";
 import {Person} from "../../elastic/model/Person";
 import {equal} from "../../util/equal";
-import {Texts} from "../../common/Texts";
+import {Texts} from "../../common/texts/Texts";
 import {Term} from "../model/Term";
 import {isPerson, toPerson, ViewType} from "../model/ViewType";
 import {TermHistogram} from "./TermHistogram";

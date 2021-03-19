@@ -96,3 +96,14 @@ code {
   position: absolute;
   right: 0.75em;
 }
+
+.attendants-card {
+  padding: 0.5em;
+  text-align: left;
+}
+
+.attendants-card a {
+  text-align: left;
+  line-height: 1em;
+  margin-right: 0.5em
+}

@@ -8,4 +8,6 @@ export type Person = {
   familyName: string;
   nameType?: string;
   functions: PersonFunction[];
+  mentionedCount: number;
+  attendantCount: number;
 }
