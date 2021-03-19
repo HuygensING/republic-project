@@ -63,7 +63,7 @@ export const Texts = memo(function (props: TextsProps) {
 
   return (
     <Modal
-      title={`${RESOLUTIONS_TEXTS_TITLE} (n=${state.resolutions.length})`}
+      title={`${RESOLUTIONS_TEXTS_TITLE} (${state.resolutions.length})`}
       isOpen={true}
       handleClose={props.handleClose}
     >

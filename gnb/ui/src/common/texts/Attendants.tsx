@@ -30,15 +30,7 @@ export function Attendants(props: AttendantProps) {
     setState({...state, person, show: !state.show});
   }
 
-  function isMarked(p: any) {
-    return props.markedIds.includes(p.id);
-  }
-
   const p = state.person;
-
-  function highlightMarked(a: any) {
-    return isMarked(a) ? 'highlight' : '';
-  }
 
   return <>
     <div className="accordion mb-2">
@@ -48,7 +40,7 @@ export function Attendants(props: AttendantProps) {
           <small><strong>Aanwezigen:</strong> {r.people.sort(presidentFirst).map(
             (a: PersonAnn, i: number) =>
               <a className={highlightMarked(a)} onClick={() => toggle(i)} key={i}>
-                {a.name} {a.president ? '(president)' : ''}
+                {a.name}{a.president ? ' (president)' : ''}
               </a>
           ).reduce(joinJsx)}
           </small>
@@ -83,6 +75,14 @@ export function Attendants(props: AttendantProps) {
 
   function presidentFirst(a: PersonAnn, b: PersonAnn) {
     return a.president ? -1 : b.president ? 1 : 0;
+  }
+
+  function isMarked(p: any) {
+    return props.markedIds.includes(p.id);
+  }
+
+  function highlightMarked(a: any) {
+    return isMarked(a) ? 'highlight' : '';
   }
 
 }
