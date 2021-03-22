@@ -7,13 +7,21 @@ from republic.config.republic_config import base_config, set_config_inventory_nu
 from republic.model.inventory_mapping import get_inventories_by_year
 import republic.analyser.republic_inventory_analyser as inv_analyser
 import republic.elastic.republic_page_checks as page_checker
-#import republic.parser.republic_file_parser as file_parser
+# import republic.parser.republic_file_parser as file_parser
 from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.model.republic_phrase_model import resolution_phrases, spelling_variants
 
 
+host_type = os.environ.get('REPUBLIC_HOST_TYPE')
+print('host type form environment:', host_type)
+if not host_type:
+    message = """REPUBLIC_HOST_TYPE is not set, assuming "external".
+                To use internal, set environment variable REPUBLIC_HOST_TYPE='internal'."""
+    print()
+    host_type = "external"
+print('host_type:', host_type)
 
-es_republic = rep_es.initialize_es(host_type="internal")
+es_republic = rep_es.initialize_es(host_type=host_type)
 
 data_type = "hocr"
 base_dir = "/data/republic/"
@@ -79,7 +87,7 @@ def do_scan_page_indexing_pagexml(inv_num, inv_config, year):
     print(f"Indexing {ocr_type} scans and pages for inventory {inv_num} (year {year})...")
     if zip_exists(inv_num, ocr_type, inv_config):
         rep_indexing.index_inventory_from_zip(es_republic, inv_num, inv_config)
-    #rep_es.index_inventory_from_text_repo(es_republic, inv_num, inv_config, ignore_version=True)
+    rep_es.index_inventory_from_text_repo(es_republic, inv_num, inv_config, ignore_version=True)
 
 
 def do_scan_indexing_hocr(inv_num, inv_config, year):
@@ -116,6 +124,7 @@ def do_page_type_correction_hocr(inv_num, inv_config, year):
     page_checker.correct_page_types(es_republic, inv_config)
     add_resolution_page_numbers(es_republic, inv_num, metadata, inv_config)
 
+
 def do_page_type_indexing_pagexml(inv_num, inv_config, year):
     metadata = inv_analyser.get_inventory_metadata(es_republic, inv_num, inv_config)
     print(f"Updating page types for inventory {inv_num} (year {year})...")
@@ -145,9 +154,9 @@ def do_paragraph_indexing(inv_num, inv_config, year):
     rep_es.index_paragraphs(es_republic, keyword_searcher, inv_num, inv_config)
 
 
-def do_meeting_indexing(inv_num, inv_config, year):
-    print(f"Indexing PageXML meetings for inventory {inv_num} (year {year})...")
-    rep_indexing.index_meetings_inventory(es_republic, inv_num, inv_config)
+def do_session_indexing(inv_num, inv_config, year):
+    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+    rep_indexing.index_sessions_inventory(es_republic, inv_num, inv_config)
 
 
 def do_resolution_indexing(inv_num, inv_config, year):
@@ -191,8 +200,8 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
         do_page_type_indexing_pagexml(inv_num, inv_config, year)
     #if indexing_step == "page_numbers":
     #    do_typed_page_number_indexing_pagexml(inv_num, inv_config, year)
-    if indexing_step == "meetings":
-        do_meeting_indexing(inv_num, inv_config, year)
+    if indexing_step == "sessions":
+        do_session_indexing(inv_num, inv_config, year)
     if indexing_step == "resolutions":
         do_resolution_indexing(inv_num, inv_config, year)
     if indexing_step == "phrase_matches":
@@ -201,8 +210,8 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
         do_resolution_metadata_indexing(inv_num, inv_config, year)
 
 
-def process_inventories(years, ocr_type, indexing_step):
-    for inv_map in get_inventories_by_year(years):
+def process_inventories(inv_years, ocr_type, indexing_step):
+    for inv_map in get_inventories_by_year(inv_years):
         inv_num = inv_map["inventory_num"]
         inv_config = set_config_inventory_num(inv_num, ocr_type, base_config, base_dir=base_dir)
         if ocr_type == "hocr":

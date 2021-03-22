@@ -36,7 +36,7 @@ exception_dates = {
     "1750-02-07": {"mistake": "next day is misrecognized", "shift_days": 3},
     "1762-11-11": {"mistake": "heavy bleed through on many pages", "shift_days": 11},
     "1765-05-29": {"mistake": "heavy bleed through on many pages", "shift_days": 6},
-    "1767-11-04": {"mistake": "bad OCR causes week of meetings missed", "shift_days": 7},
+    "1767-11-04": {"mistake": "bad OCR causes week of sessions missed", "shift_days": 7},
     "1771-07-02": {"mistake": "next day is misrecognized", "shift_days": 2},
     "1777-05-07": {"mistake": "OCR output is missing columns", "shift_days": 16},
     "1777-05-26": {"mistake": "OCR output is missing columns", "shift_days": 7},
@@ -44,8 +44,8 @@ exception_dates = {
     "1777-10-09": {"mistake": "OCR output is missing columns", "shift_days": 5},
     "1778-04-21": {"mistake": "OCR output is missing columns", "shift_days": 9},
     "1778-10-26": {"mistake": "next day has wrong week day name", "shift_days": 1},
-    "1780-12-23": {"mistake": "christmas day has meeting", "shift_days": 2},
-    "1780-12-25": {"mistake": "christmas day has meeting", "shift_days": 1},
+    "1780-12-23": {"mistake": "christmas day has session", "shift_days": 2},
+    "1780-12-25": {"mistake": "christmas day has session", "shift_days": 1},
     "1787-05-10": {"mistake": "next Saturday is a work day", "shift_days": 2},
     "1787-05-12": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1788-12-24": {"mistake": "OCR problems, skip whole week", "shift_days": 7},
@@ -94,7 +94,7 @@ class RepublicDate:
 
     def __init__(self, year: int = None, month: int = None, day: int = None, date_string: str = None):
         """A Republic date extends the regular datetime.date object with names
-        for weekday and month, a date string as used in the meeting openings,
+        for weekday and month, a date string as used in the session openings,
         and methods for checking whether the current date is a work day, a rest
         day or a holiday.
 
@@ -234,7 +234,7 @@ def get_coming_holidays_phrases(current_date: RepublicDate) -> List[Dict[str, Un
     return coming_holiday_phrases
 
 
-def is_meeting_date_exception(current_date: RepublicDate) -> bool:
+def is_session_date_exception(current_date: RepublicDate) -> bool:
     date = current_date.isoformat()
     return date in exception_dates
 
@@ -307,7 +307,7 @@ def make_republic_date(date_string: str) -> RepublicDate:
 
 
 def derive_date_from_string(date_string: str, year: int) -> RepublicDate:
-    """Return a RepublicDate object derived from a meeting date string."""
+    """Return a RepublicDate object derived from a session date string."""
     weekday, _, day_num, month_name = date_string.split(' ')
     day_num = int(day_num)
     month_names = month_names_early if year <= 1750 else month_names_late

@@ -7,14 +7,13 @@ import re
 from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
-from republic.model.republic_date import get_date_exception_shift, is_meeting_date_exception, exception_dates
+from republic.model.republic_date import get_date_exception_shift, is_session_date_exception, exception_dates
 from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
-from republic.model.generic_document_model import LogicalStructureDoc
-from republic.model.republic_document_model import ResolutionDoc, get_paragraphs
+from republic.model.republic_document_model import ResolutionDoc, Session, get_paragraphs
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 
 
-meetingdate_config = {
+sessiondate_config = {
     'char_match_threshold': 0.6,
     'ngram_threshold': 0.5,
     'levenshtein_threshold': 0.6,
@@ -37,8 +36,8 @@ attendance_config = {
     "skip_size": 2,
 }
 
-meeting_element_order = [
-    'meeting_date', 'meeting_year',
+session_opening_element_order = [
+    'session_date', 'session_year',
     # This is mainly for the period of the Bataafsche Repbulic (1795-1796)
     'tagline',
     # holidays like new years day, Easter, Christmas, ... are mentioned if they are on normal work days
@@ -53,7 +52,7 @@ meeting_element_order = [
 ]
 
 
-class Meeting(ResolutionDoc):
+class MeetingOld(ResolutionDoc):
 
     def __init__(self, metadata: Dict, scan_versions: List[dict] = None, **kwargs):
         """A meeting occurs on a specific day, with a president and attendants, and has textual content in the form of
@@ -126,18 +125,16 @@ class Meeting(ResolutionDoc):
         return get_paragraphs(self, use_indent=use_indent, use_vertical_space=use_vertical_space)
 
 
-def meeting_from_json(json_doc: dict) -> Meeting:
-    """Turn a meeting JSON representation into a Meeting object."""
-    metadata = json_doc['metadata']
-    meeting_date = RepublicDate(metadata['meeting_year'], metadata['meeting_month'], metadata['meeting_day'])
-    return Meeting(json_doc['metadata'], columns=json_doc['columns'])
+def session_from_json(json_doc: dict) -> Session:
+    """Turn a session JSON representation into a Session object."""
+    return Session(metadata=json_doc['metadata'], columns=json_doc['columns'], evidence=json_doc['evidence'])
 
 
 def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate) -> int:
-    """Calculate the number of work days different between current meeting date and previous meeting date."""
+    """Calculate the number of work days different between current session date and previous session date."""
     if current_date.date < prev_date.date:
         return 0
-    #     raise ValueError("current meeting dates should be later than previous meeting date.")
+    #     raise ValueError("current session dates should be later than previous session date.")
     next_date = get_next_workday(prev_date)
     workday_shift = 1
     # if not next_date:
@@ -152,13 +149,13 @@ def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate
     return workday_shift
 
 
-class MeetingSearcher(EventSearcher):
+class SessionSearcher(EventSearcher):
 
     def __init__(self, inventory_num: int, current_date: RepublicDate,
                  phrase_model_list: List[Dict[str, Union[str, int, List[str]]]],
                  window_size: int = 30):
-        """MeetingSearcher extends the generic event searcher to specifically search for the lines
-        that express the opening of a new meeting date in the resolutions."""
+        """SessionSearcher extends the generic event searcher to specifically search for the lines
+        that express the opening of a new session in the resolutions."""
         super(self.__class__, self).__init__(window_size=window_size)
         # store the inventory number to add it to meeting metadata
         self.inventory_num = inventory_num
@@ -170,9 +167,9 @@ class MeetingSearcher(EventSearcher):
         self.date_strings: Union[None, List[str]] = get_next_date_strings(self.current_date, num_dates=7,
                                                                           include_year=False)
         self.add_attendance_searcher(phrase_model_list)
-        self.add_meeting_date_searcher()
-        self.meeting_elements: Dict[str, int] = {}
-        self.label_order: List[Dict[str, Union[str,int]]] = []
+        self.add_session_date_searcher()
+        self.session_opening_elements: Dict[str, int] = {}
+        self.label_order: List[Dict[str, Union[str, int]]] = []
         self.sessions: Dict[str, List[Dict[str, int]]] = defaultdict(list)
 
     def add_attendance_searcher(self, phrase_model_list: List[Dict[str, Union[str, int, List[str]]]]):
@@ -189,30 +186,30 @@ class MeetingSearcher(EventSearcher):
         # Add fuzzy searchers for attendance phrases
         self.add_searcher(attendance_config, 'attendance_searcher', self.phrase_models['attendance_searcher'])
 
-    def add_meeting_date_searcher(self, num_dates: int = 7) -> None:
-        """Add a fuzzy searcher configured with a meeting date phrase model"""
-        # generate meeting date strings for the current day and next six days
+    def add_session_date_searcher(self, num_dates: int = 7) -> None:
+        """Add a fuzzy searcher configured with a session date phrase model"""
+        # generate session date strings for the current day and next six days
         self.date_strings = get_next_date_strings(self.current_date, num_dates=num_dates, include_year=False)
-        # generate meeting date phrases for the first week covered in this inventory
-        date_phrases = [{'keyword': date_string, 'label': 'meeting_date'} for date_string in self.date_strings]
-        date_phrases += [{'keyword': str(self.year), 'label': 'meeting_year'}]
+        # generate session date phrases for the first week covered in this inventory
+        date_phrases = [{'keyword': date_string, 'label': 'session_date'} for date_string in self.date_strings]
+        date_phrases += [{'keyword': str(self.year), 'label': 'session_year'}]
         self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases)
-        self.add_searcher(meetingdate_config, 'date_searcher', self.phrase_models['date_searcher'])
+        self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'])
         # when multiple date string match, only use the best matching one.
         self.searchers['date_searcher'].allow_overlapping_matches = False
 
-    def update_meeting_date_searcher(self,
+    def update_session_date_searcher(self,
                                      current_date: Union[None, RepublicDate] = None,
                                      num_dates: int = 7) -> None:
-        """Update the meeting date searcher with a new set of date strings."""
+        """Update the session date searcher with a new set of date strings."""
         # update current date
         if current_date:
             self.current_date = current_date
-        self.add_meeting_date_searcher(num_dates=num_dates)
+        self.add_session_date_searcher(num_dates=num_dates)
 
     def extract_date_matches(self) -> None:
-        """Extract matches with meeting date labels and add the corresponding
-        line_index to the meeting elements in the current sliding window."""
+        """Extract matches with session date labels and add the corresponding
+        line_index to the session elements in the current sliding window."""
         for line_index, line in enumerate(self.sliding_window):
             if not line:
                 continue
@@ -224,8 +221,8 @@ class MeetingSearcher(EventSearcher):
             date_matches = [match for match in line['matches'] if match['searcher'] == 'date_searcher']
             if len(date_matches) == 0:
                 continue
-            # the meeting date should be at the start of the line
-            # the meeting year can be on separate line, so should start at beginning of line, or
+            # the session date should be at the start of the line
+            # the session year can be on separate line, so should start at beginning of line, or
             # on same line as rest of date, so at the end of the line.
             match_offset = min([match['match_offset'] for match in date_matches])
             # dates should match at or near the start of the line
@@ -233,17 +230,17 @@ class MeetingSearcher(EventSearcher):
                 continue
             for match in date_matches:
                 label = match['match_label']
-                if label in self.meeting_elements and self.meeting_elements[label] < line_index:
+                if label in self.session_opening_elements and self.session_opening_elements[label] < line_index:
                     # Always use the first meeting date line, even if it's a rest day.
                     continue
-                self.meeting_elements[label] = line_index
+                self.session_opening_elements[label] = line_index
 
     def extract_attendance_matches(self):
         """Extract matches with meeting attendance labels and add the corresponding
         line_index to the meeting elements in the current sliding window."""
         first_date = None
-        if 'meeting_date' in self.meeting_elements:
-            date_match = self.get_meeting_date_match()
+        if 'meeting_date' in self.session_opening_elements:
+            date_match = self.get_session_date_match()
             first_date = derive_date_from_string(date_match['match_keyword'], self.year)
         for line_index, line in enumerate(self.sliding_window):
             if not line or len(line['matches']) == 0:
@@ -268,14 +265,14 @@ class MeetingSearcher(EventSearcher):
                 #     continue
                 label = match['match_label']
                 # only add the match if there is no earlier match with the same label
-                if label in self.meeting_elements and self.meeting_elements[label] < line_index:
+                if label in self.session_opening_elements and self.session_opening_elements[label] < line_index:
                     continue
                 # PRAESIDE and PRAESIDING cannot be on the same line, but the shorter one might match the later
                 # one. In that case, ignore the shorter match
                 if label == 'presiding' and 'attending' in attendance_labels:
                     continue
                 if label == 'president':
-                    if 'meeting_date' in self.meeting_elements:
+                    if 'meeting_date' in self.session_opening_elements:
                         # get all meeting date labels that appear before this president label
                         meeting_date_labels = [label_info['index'] for label_info in self.label_order
                                                if label_info['label'] == 'meeting_date'
@@ -289,45 +286,47 @@ class MeetingSearcher(EventSearcher):
                             continue
                         if distance > 5:
                             # there should be other meeting elements in between meeting_date and president
-                            president_index = meeting_element_order.index('president')
+                            president_index = session_opening_element_order.index('president')
                             earlier_element_indexes = []
-                            for earlier_element in meeting_element_order[:president_index]:
-                                if earlier_element in self.meeting_elements \
-                                        and self.meeting_elements[earlier_element] < line_index:
-                                    earlier_element_indexes += [self.meeting_elements[earlier_element]]
+                            for earlier_element in session_opening_element_order[:president_index]:
+                                if earlier_element in self.session_opening_elements \
+                                        and self.session_opening_elements[earlier_element] < line_index:
+                                    earlier_element_indexes += [self.session_opening_elements[earlier_element]]
                                 max_index = max(earlier_element_indexes)
                                 if line_index - max_index > 4:
                                     continue
-                    if 'attendants' in self.meeting_elements and self.meeting_elements['attendants'] == line_index:
+                    if 'attendants' in self.session_opening_elements and \
+                            self.session_opening_elements['attendants'] == line_index:
                         # First match of attendants is on same line as president: same string matches both phrases
                         # so remove the attendants phrase
-                        del self.meeting_elements['attendants']
+                        del self.session_opening_elements['attendants']
                 if label == 'attendants':
-                    if 'meeting_date' in self.meeting_elements:
+                    if 'meeting_date' in self.session_opening_elements:
                         # attendants should be at least 3 lines below the meeting date
                         # but no more than 12
-                        distance = line_index - self.meeting_elements['meeting_date']
+                        distance = line_index - self.session_opening_elements['session_date']
                         if distance < 3 or distance > 12:
                             continue
-                    if 'president' in self.meeting_elements:
-                        distance = line_index - self.meeting_elements['president']
+                    if 'president' in self.session_opening_elements:
+                        distance = line_index - self.session_opening_elements['president']
                         if distance < 1 or distance > 4:
                             # if attendants and first occurrence of president found on the same line, skip attendants
                             # if attendants appear much later than president, this is not an opening
                             continue
-                        if 'attendants' in self.meeting_elements and line_index - self.meeting_elements['president'] < 2:
+                        if 'attendants' in self.session_opening_elements and \
+                                line_index - self.session_opening_elements['president'] < 2:
                             # president and attendants should be on separate lines
                             # and with at least one line in between them
                             continue
                 label = self.labels[match['match_keyword']]
-                self.meeting_elements[label] = line_index
+                self.session_opening_elements[label] = line_index
 
-    def get_meeting_elements(self) -> Dict[str, int]:
+    def get_session_opening_elements(self) -> Dict[str, int]:
         """
-        Check which lines in sliding window match meeting opening elements.
+        Check which lines in sliding window match session opening elements.
         The elements should match at or near the start of the line.
         """
-        self.meeting_elements: Dict[str, int] = {}
+        self.session_opening_elements: Dict[str, int] = {}
         self.label_order: List[Dict[str, Union[str, int]]] = []
         for line_index, line in enumerate(self.sliding_window):
             if not line:
@@ -336,16 +335,16 @@ class MeetingSearcher(EventSearcher):
                 self.label_order += [{'index': line_index, 'label': match['match_label']} for match in line['matches']]
         self.extract_date_matches()
         self.extract_attendance_matches()
-        return self.meeting_elements
+        return self.session_opening_elements
 
-    def get_last_meeting_element(self) -> str:
-        """Find the last found meeting element in the encountered order."""
-        sorted_elements = sorted(self.meeting_elements.items(), key=lambda x: x[1])
+    def get_last_session_opening_element(self) -> str:
+        """Find the last found session element in the encountered order."""
+        sorted_elements = sorted(self.session_opening_elements.items(), key=lambda x: x[1])
         return sorted_elements[-1][0]
 
-    def get_last_meeting_element_line(self) -> Union[None, Dict[str, Union[str, int, Dict[str, int]]]]:
-        """Return the last line in the sliding window that has the last meeting element."""
-        last_element = self.get_last_meeting_element()
+    def get_last_session_opening_element_line(self) -> Union[None, Dict[str, Union[str, int, Dict[str, int]]]]:
+        """Return the last line in the sliding window that has the last session element."""
+        last_element = self.get_last_session_opening_element()
         for line in self.sliding_window:
             if not line:
                 continue
@@ -354,25 +353,25 @@ class MeetingSearcher(EventSearcher):
                     return line
         return None
 
-    def get_meeting_date_matches(self) -> List[Dict[str, Union[str, int, float]]]:
-        """Return a list of all meeting date matches in the sliding window."""
+    def get_session_date_matches(self) -> List[Dict[str, Union[str, int, float]]]:
+        """Return a list of all session date matches in the sliding window."""
         date_matches: List[Dict[str, Union[str, int, float]]] = []
-        last_meeting_element_line = self.get_last_meeting_element_line()
+        last_session_opening_element_line = self.get_last_session_opening_element_line()
         for line in self.sliding_window:
             if not line:
                 continue
             if self.has_attendance_match(line):
                 break
-            if line == last_meeting_element_line:
+            if line == last_session_opening_element_line:
                 break
             date_matches += [match for match in line['matches'] if match['searcher'] == 'date_searcher']
         return date_matches
 
     def shift_sliding_window(self):
-        """Remove all lines up to the line with the last meeting element."""
-        last_element = self.get_last_meeting_element()
-        last_meeting_element_line_index = self.meeting_elements[last_element]
-        self.reset_sliding_window(first_lines=last_meeting_element_line_index+1)
+        """Remove all lines up to the line with the last session element."""
+        last_element = self.get_last_session_opening_element()
+        last_opening_element_line_index = self.session_opening_elements[last_element]
+        self.reset_sliding_window(first_lines=last_opening_element_line_index+1)
 
     def get_attendance_matches(self) -> List[Dict[str, Union[str, int, float]]]:
         """Return a list of all attendance matches in the sliding window."""
@@ -394,16 +393,16 @@ class MeetingSearcher(EventSearcher):
             prev_prev_date = RepublicDate(year, month, day)
         return prev_date, prev_prev_date
 
-    def check_date_shift_validity(self, prev_meeting_metadata: Union[None, dict]) -> str:
+    def check_date_shift_validity(self, prev_session_metadata: Union[None, dict]) -> str:
         status = 'normal'
-        if not prev_meeting_metadata:
-            # First meeting of the year has no previous meeting, so no date shift
+        if not prev_session_metadata:
+            # First session of the year has no previous session, so no date shift
             return status
-        if len(self.sessions[prev_meeting_metadata['meeting_date']]) == 0:
+        if len(self.sessions[prev_session_metadata['session_date']]) == 0:
             print('NO SESSIONS ON PREVIOUS DATE')
             return status
-        prev_session_info = self.sessions[prev_meeting_metadata['meeting_date']][-1]
-        prev_session_num_lines = prev_session_info['num_lines']
+        # prev_session_info = self.sessions[prev_session_metadata['session_date']][-1]
+        # prev_session_num_lines = prev_session_info['num_lines']
         # TO DO:
         # use number of work day shift (to avoid quarantining christmas period with many rest days
         # use number of lines:
@@ -421,135 +420,125 @@ class MeetingSearcher(EventSearcher):
         if prev_prev_date:
             prev_prev_date_num_lines = sum(
                 [session['num_lines'] for session in self.sessions[prev_prev_date.isoformat()]])
-            two_meetings_num_lines = prev_prev_date_num_lines + prev_date_num_lines
+            two_sessions_num_lines = prev_prev_date_num_lines + prev_date_num_lines
             prev_prev_date_day_shift = self.current_date - prev_prev_date
             workday_shift = calculate_work_day_shift(self.current_date, prev_prev_date)
-            if prev_prev_date_day_shift.days > 7 and two_meetings_num_lines < workday_shift * 200:
-                # If the date is more than 7 days ahead of the date two meetings ago
-                # and the number of lines for the previous two meetings is low,
+            if prev_prev_date_day_shift.days > 7 and two_sessions_num_lines < workday_shift * 200:
+                # If the date is more than 7 days ahead of the date two sessions ago
+                # and the number of lines for the previous two sessions is low,
                 # something went wrong and the date should be pushed back by a week.
                 status = 'set_back'
                 print('DATE IS SET BACK')
-                # update the current meeting date in the searcher
-                self.update_meeting_date(day_shift=-7)
+                # update the current session date in the searcher
+                self.update_session_date(day_shift=-7)
                 # update the searcher with new date strings for the next seven days
-                self.update_meeting_date_searcher()
+                self.update_session_date_searcher()
                 return status
         if prev_date:
             workday_shift = calculate_work_day_shift(self.current_date, prev_date)
             # print('workday_shift:', workday_shift)
             if workday_shift > 4 and prev_date_num_lines < workday_shift * 200:
                 # If the new date is more than 4 work days ahead of the previous date,
-                # and the previous meeting document has few lines
+                # and the previous session document has few lines
                 # it is likely mis-recognized. This date will be quarantined.
                 status = 'quarantined'
                 print('DATE IS QUARANTINED')
-            long_day_lines = 1000
-            # if workday_shift < 7 and prev_date_num_lines > 7 * long_day_lines:
-                # If the date is less than 7 days ahead of the previous meeting,
-                # and the number of lines for the previous meeting is extremely high,
-                # something went wrong and the date should be moved forward by a week.
-            #    status = 'set_forward'
-            #    print('DATE IS SET FORWARD')
-                # update the current meeting date in the searcher
-            #    self.update_meeting_date(day_shift=7)
-                # update the searcher with new date strings for the next seven days
-            #    self.update_meeting_date_searcher()
         return status
 
-    def parse_meeting_metadata(self, prev_meeting_metadata: Union[None, dict]) -> dict:
-        """Turn meeting elements and sliding window into proper metadata."""
+    def parse_session_metadata(self, prev_session_metadata: Union[None, dict]) -> dict:
+        """Turn session elements and sliding window into proper metadata."""
         # make sure local current_date is a copy and not a reference to the original object
         try:
-            date_shift_status = self.check_date_shift_validity(prev_meeting_metadata)
+            date_shift_status = self.check_date_shift_validity(prev_session_metadata)
         except ValueError:
-            print('has_meeting_date_match:', self.has_meeting_date_match())
-            if self.has_meeting_date_match():
-                date_match = self.get_meeting_date_match()
+            print('has_session_date_match:', self.has_session_date_match())
+            if self.has_session_date_match():
+                date_match = self.get_session_date_match()
                 print('date_match:', date_match)
             raise
         current_date = copy.copy(self.current_date)
         includes_rest_day = False
         prev_date, prev_prev_date = self.get_prev_dates()
-        if current_date.is_rest_day() and prev_date and not is_meeting_date_exception(prev_date):
+        if current_date.is_rest_day() and prev_date and not is_session_date_exception(prev_date):
             print('current date is rest, shifting')
-            # If the current date is a rest day, the subsequent meeting is on the next work day
+            # If the current date is a rest day, the subsequent session is on the next work day
             includes_rest_day = True
             next_work_day = get_next_workday(self.current_date)
             if next_work_day:
                 current_date = next_work_day
             print('shifting to:', current_date.isoformat())
-        meeting_date = current_date.isoformat()
-        session_num = len(self.sessions[meeting_date]) + 1
-        self.sessions[meeting_date].append({'session_num': session_num, 'num_lines': 0})
-        meeting_metadata = {
-            'id': f'meeting-{meeting_date}-session-{len(self.sessions[meeting_date])}',
-            'doc_type': 'meeting',
+        session_date = current_date.isoformat()
+        session_num = len(self.sessions[session_date]) + 1
+        self.sessions[session_date].append({'session_num': session_num, 'num_lines': 0})
+        session_metadata = {
+            'id': f'session-{session_date}-num-{len(self.sessions[session_date])}',
+            'type': 'session',
             'inventory_num': self.inventory_num,
             # copy current date instead passing a reference, as current date gets updated
-            'meeting_date': current_date.isoformat(),
-            'meeting_year': current_date.year,
-            'meeting_month': current_date.month,
-            'meeting_day': current_date.day,
-            'meeting_weekday': current_date.day_name,
+            'session_date': current_date.isoformat(),
+            'session_year': current_date.year,
+            'session_month': current_date.month,
+            'session_day': current_date.day,
+            'session_weekday': current_date.day_name,
             'date_shift_status': date_shift_status,
-            # in case there are more meeting sessions on the same day
-            'session': self.sessions[meeting_date][-1]['session_num'],
+            # in case there are more session sessions on the same day
+            'session_num': self.sessions[session_date][-1]['session_num'],
             'president': None,
             'attendants_list_id': None,
             'resolution_ids': [],
             'is_workday': current_date.is_work_day(),
             # 'lines': [line['text_id'] for line in self.sliding_window if line and len(line['matches']) > 0],
-            'has_meeting_date_element': False,
+            'has_session_date_element': False,
             'lines_include_rest_day': includes_rest_day,
             'evidence': []
         }
         attendance_matches = self.get_attendance_matches()
-        for meeting_element, line_index in sorted(self.meeting_elements.items(), key=lambda x: x[1]):
-            meeting_date_line_indexes = []
+        for session_opening_element, line_index in sorted(self.session_opening_elements.items(), key=lambda x: x[1]):
+            session_date_line_indexes = []
             for entry in self.label_order:
                 if entry['label'] in ['presiding', 'president', 'attending', 'attendants', 'reviewed']:
                     break
-                if entry['label'] == 'meeting_date':
-                    meeting_date_line_indexes += [entry['index']]
-                    line = self.sliding_window[entry['index']]
+                if entry['label'] == 'session_date':
+                    session_date_line_indexes += [entry['index']]
+                    # line = self.sliding_window[entry['index']]
             evidence = []
             for sliding_index, line in enumerate(self.sliding_window):
                 if not line:
                     continue
-                if meeting_element == 'meeting_date' and sliding_index not in meeting_date_line_indexes:
+                if session_opening_element == 'session_date' and sliding_index not in session_date_line_indexes:
                     continue
-                matches = [match for match in line['matches'] if match['match_label'] == meeting_element]
+                matches = [match for match in line['matches'] if match['match_label'] == session_opening_element]
                 if len(matches) > 0:
-                    evidence += [{'metadata_field': meeting_element, 'line_id': line['text_id'], 'matches': matches}]
-            meeting_metadata['evidence'] += evidence
-            if meeting_element == 'meeting_date' and self.get_current_date().is_rest_day():
-                # If this is a rest day and there are later meeting_date matches,
+                    evidence += [{'metadata_field': session_opening_element,
+                                  'line_id': line['text_id'], 'matches': matches}]
+            session_metadata['evidence'] += evidence
+            if session_opening_element == 'session_date' and self.get_current_date().is_rest_day():
+                # If this is a rest day and there are later session_date matches,
                 # use the last one for the date evidence.
-                if len(meeting_date_line_indexes) > 1:
-                    line_index = meeting_date_line_indexes[-1]
+                if len(session_date_line_indexes) > 1:
+                    line_index = session_date_line_indexes[-1]
             line_info = self.sliding_window[line_index]
-            if meeting_element == 'meeting_date':
-                meeting_metadata['has_meeting_date_element'] = True
-            elif meeting_element == 'president':
+            if session_opening_element == 'session_date':
+                session_metadata['has_session_date_element'] = True
+            elif session_opening_element == 'president':
                 president_name = None
                 for match in attendance_matches:
                     if match['match_label'] == 'president':
                         start_offset = match['match_offset']
                         end_offset = start_offset + len(match['match_string'])
                         president_name = line_info['text_string'][end_offset:]
-                meeting_metadata['president'] = president_name
-        return meeting_metadata
+                session_metadata['president'] = president_name
+        return session_metadata
 
-    def has_meeting_date_match(self) -> bool:
-        """Check if the sliding window has a meeting date match."""
-        meeting_elements = self.get_meeting_elements()
-        if 'meeting_date' not in meeting_elements:
+    def has_session_date_match(self) -> bool:
+        """Check if the sliding window has a session date match."""
+        session_opening_elements = self.get_session_opening_elements()
+        if 'session_date' not in session_opening_elements:
             return False
-        match_line_index = meeting_elements['meeting_date']
+        match_line_index = session_opening_elements['session_date']
         match_line = self.sliding_window[match_line_index]
         for match in match_line['matches']:
-            if match['match_label'] == 'meeting_date':
+            if match['match_label'] == 'session_date':
                 return True
         return False
 
@@ -564,47 +553,47 @@ class MeetingSearcher(EventSearcher):
                 has_match = True
         return has_match
 
-    def get_meeting_date_match(self) -> Dict[str, Union[str, int, float]]:
-        """If the sliding window has a meeting date match, return it."""
-        if 'meeting_date' not in self.meeting_elements:
-            raise KeyError('No meeting date in sliding window')
-        # Use the last meeting date match in the sliding window, as earlier matches are more likely to be rest days
-        first_date_line = self.sliding_window[self.meeting_elements['meeting_date']]
+    def get_session_date_match(self) -> Dict[str, Union[str, int, float]]:
+        """If the sliding window has a session date match, return it."""
+        if 'session_date' not in self.session_opening_elements:
+            raise KeyError('No session date in sliding window')
+        # Use the last session date match in the sliding window, as earlier matches are more likely to be rest days
+        first_date_line = self.sliding_window[self.session_opening_elements['session_date']]
         date_match = None
         for match in first_date_line['matches']:
-            if match['match_label'] == 'meeting_date':
+            if match['match_label'] == 'session_date':
                 date_match = match
-        last_meeting_element_line = self.get_last_meeting_element_line()
+        last_opening_element_line = self.get_last_session_opening_element_line()
         for line in self.sliding_window:
             if not line:
                 continue
             if self.has_attendance_match(line):
                 break
-            date_matches = [match for match in line['matches'] if match['match_label'] == 'meeting_date']
+            date_matches = [match for match in line['matches'] if match['match_label'] == 'session_date']
             if len(date_matches) > 0:
                 date_match = date_matches[0]
-            if line == last_meeting_element_line:
+            if line == last_opening_element_line:
                 break
         return date_match
 
-    def update_meeting_date(self, day_shift: Union[None, int] = None) -> RepublicDate:
+    def update_session_date(self, day_shift: Union[None, int] = None) -> RepublicDate:
         """Shift current date by day_shift days. If not day_shift is passed as argument,
-        determine the number of days to shift current date based on found meeting date.
-        If no day_shift is passed and not meeting date was found, keep current date."""
-        if is_meeting_date_exception(self.current_date):
+        determine the number of days to shift current date based on found session date.
+        If no day_shift is passed and not session date was found, keep current date."""
+        if is_session_date_exception(self.current_date):
             day_shift = get_date_exception_shift(self.current_date)
             new_date = get_shifted_date(self.current_date, day_shift)
         elif day_shift:
             # print('shifting by passing a day shift:', day_shift)
             # if a day_shift is passed, this is an override, probably because of too large
-            # date shifts (see parse_meeting_metadata method above)
+            # date shifts (see parse_session_metadata method above)
             new_date = get_shifted_date(self.current_date, day_shift)
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
                 new_date = get_next_workday(new_date)
-        elif self.has_meeting_date_match():
-            # there is a meeting date match
-            date_match = self.get_meeting_date_match()
+        elif self.has_session_date_match():
+            # there is a session date match
+            date_match = self.get_session_date_match()
             # print('shifting by date match:', date_match['match_keyword'])
             # determine number of days to shift based on the match in the list of date strings
             new_date = derive_date_from_string(date_match['match_keyword'], self.year)
@@ -613,7 +602,7 @@ class MeetingSearcher(EventSearcher):
                 new_date = get_next_workday(new_date)
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
-            if is_meeting_date_exception(self.current_date):
+            if is_session_date_exception(self.current_date):
                 day_shift = get_date_exception_shift(self.current_date)
                 new_date = get_shifted_date(self.current_date, day_shift)
         else:
@@ -621,11 +610,11 @@ class MeetingSearcher(EventSearcher):
             # so assume this is the next day
             day_shift = 1
             # print('shifting by default day_shift:', day_shift)
-            # however, if the number of lines for the previous meeting is high,
+            # however, if the number of lines for the previous session is high,
             # this is a signal that some days have been missed, so shift and extra day
             # prev_session = self.sessions[self.current_date.isoformat()][-1]
             # if prev_session['num_lines'] > 1000:
-            #     print("SHIFTING BY TWO DAYS BECAUSE OF HIGH NUMBER OF MEETING LINES")
+            #     print("SHIFTING BY TWO DAYS BECAUSE OF HIGH NUMBER OF SESSION LINES")
             #     day_shift = 2
             new_date = get_shifted_date(self.current_date, day_shift)
             if new_date.is_rest_day():
@@ -633,7 +622,7 @@ class MeetingSearcher(EventSearcher):
                 new_date = get_next_workday(new_date)
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
-            if is_meeting_date_exception(self.current_date):
+            if is_session_date_exception(self.current_date):
                 try:
                     day_shift = get_date_exception_shift(self.current_date)
                     new_date = get_shifted_date(self.current_date, day_shift)

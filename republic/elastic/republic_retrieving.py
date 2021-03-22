@@ -7,7 +7,7 @@ from collections import defaultdict
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 from republic.helper.metadata_helper import get_scan_id
-from republic.model.republic_meeting import Meeting, meeting_from_json
+from republic.model.republic_session import Session, session_from_json
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_document_model import resolution_from_json, Resolution, parse_phrase_matches
 from republic.model.republic_document_model import page_json_to_resolution_page, ResolutionPageDoc
@@ -142,6 +142,11 @@ def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config:
     return [parse_es_scan_doc(hit['_source']) for hit in response['hits']['hits']]
 
 
+def retrieve_inventory_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
+    return retrieve_scans_by_query(es, query, config)
+
+
 def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
     query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
     return retrieve_pages_by_query(es, query, config)
@@ -202,7 +207,6 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int,
     elif 'year' in config:
         match_fields += [{'match': {'metadata.year': config['year']}}]
     query = make_bool_query(match_fields)
-    print(query)
     pages = retrieve_pages_by_query(es, query, config)
     if len(pages) == 0:
         return None
@@ -291,7 +295,7 @@ def retrieve_paragraphs_by_inventory(es: Elasticsearch, inventory_num: int, conf
         return [hit['_source'] for hit in response['hits']['hits']]
 
 
-def retrieve_pagexml_meetings(es: Elasticsearch, inv_num: int, config: dict) -> List[dict]:
+def retrieve_pagexml_sessions(es: Elasticsearch, inv_num: int, config: dict) -> List[dict]:
     query = {
         "query": {
             "match": {
@@ -300,30 +304,30 @@ def retrieve_pagexml_meetings(es: Elasticsearch, inv_num: int, config: dict) -> 
         },
         "size": 1000
     }
-    response = es.search(index=config['meeting_index'], doc_type=config['meeting_doc_type'], body=query)
+    response = es.search(index=config['session_index'], doc_type=config['session_doc_type'], body=query)
     if response['hits']['total']['value'] == 0:
         return []
     else:
         return [hit['_source'] for hit in response['hits']['hits']]
 
 
-def retrieve_meetings_by_query(es: Elasticsearch, query: dict, config: dict) -> List[Meeting]:
-    response = es.search(index=config['meeting_index'], body=query)
+def retrieve_sessions_by_query(es: Elasticsearch, query: dict, config: dict) -> List[Session]:
+    response = es.search(index=config['session_index'], body=query)
     if response['hits']['total']['value'] == 0:
         return []
     else:
         docs = [hit['_source'] for hit in response['hits']['hits']]
-        return [meeting_from_json(doc) for doc in docs]
+        return [session_from_json(doc) for doc in docs]
 
 
-def retrieve_meeting_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Meeting]:
+def retrieve_session_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
     if isinstance(date, RepublicDate):
-        doc_id = f'meeting-{date.isoformat()}-session-1'
+        doc_id = f'session-{date.isoformat()}-num-1'
     else:
-        doc_id = f'meeting-{date}-session-1'
-    if es.exists(index=config["meeting_index"], doc_type=config["meeting_doc_type"], id=doc_id):
-        response = es.get(index=config["meeting_index"], doc_type=config["meeting_doc_type"], id=doc_id)
-        return meeting_from_json(response['_source'])
+        doc_id = f'session-{date}-num-1'
+    if es.exists(index=config["session_index"], doc_type=config["session_doc_type"], id=doc_id):
+        response = es.get(index=config["session_index"], doc_type=config["session_doc_type"], id=doc_id)
+        return session_from_json(response['_source'])
     else:
         return None
 
@@ -425,14 +429,14 @@ def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_confi
         return None
 
 
-def retrieve_date_num_sessions(es, meeting_date, config):
-    query = {'query': {'match': {'metadata.meeting_date': str(meeting_date)}}, 'size': 0}
-    response = es.search(index=config['meeting_index'], body=query)
+def retrieve_date_num_sessions(es, session_date, config):
+    query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 0}
+    response = es.search(index=config['session_index'], body=query)
     return response['hits']['total']['value']
 
 
-def retrieve_meeting_resolutions(es, meeting_date, config):
-    query = {'query': {'match': {'metadata.meeting_date': str(meeting_date)}}, 'size': 1000}
+def retrieve_resolutions_by_session_date(es, session_date, config):
+    query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 1000}
     resolutions = retrieve_resolutions_by_query(es, query, config)
     session_resolutions = defaultdict(list)
     for resolution in resolutions:
@@ -441,13 +445,13 @@ def retrieve_meeting_resolutions(es, meeting_date, config):
     return session_resolutions
 
 
-def retrieve_session_resolutions(es, session_id, config):
+def retrieve_resolutions_by_session_id(es, session_id, config):
     query = {'query': {'match': {'metadata.session_id.keyword': session_id}}, 'size': 1000}
     return retrieve_resolutions_by_query(es, query, config)
 
 
-def retrieve_meeting_phrase_matches(es, meeting_resolutions, config):
-    paragraph_ids = [paragraph.metadata['id'] for resolution in meeting_resolutions
+def retrieve_session_phrase_matches(es, session_resolutions, config):
+    paragraph_ids = [paragraph.metadata['id'] for resolution in session_resolutions
                      for paragraph in resolution.paragraphs]
     phrase_matches = []
     for para_id in paragraph_ids:

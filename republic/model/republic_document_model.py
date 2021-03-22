@@ -71,7 +71,8 @@ class ResolutionPageDoc(ResolutionDoc):
         page_json = {
             'metadata': self.metadata,
             'coords': self.coords,
-            'columns': self.columns
+            'columns': self.columns,
+            'version': self.scan_version
         }
         if include_header:
             page_json['header'] = self.header
@@ -102,7 +103,8 @@ class ResolutionPageDoc(ResolutionDoc):
 
 def page_json_to_resolution_page(page_json: Dict[str, any]) -> ResolutionPageDoc:
     return ResolutionPageDoc(metadata=page_json['metadata'], coords=page_json['coords'],
-                             columns=page_json['columns'], header=page_json['header'])
+                             columns=page_json['columns'], header=page_json['header'],
+                             scan_version=page_json['version'])
 
 
 class ResolutionParagraph(ResolutionDoc):
@@ -165,7 +167,6 @@ class ResolutionParagraph(ResolutionDoc):
                 line_text = line["text"] + " "
             line_range = {
                 "start": len(self.text), "end": len(self.text + line_text),
-                #"line_index": li,
                 'line_id': line['metadata']['id']
             }
             self.text += line_text
@@ -180,16 +181,38 @@ class ResolutionParagraph(ResolutionDoc):
         return match_lines
 
 
-class Meeting(ResolutionDoc):
+def lines_to_paragraph_text(lines: List[dict], line_break_chars: str = '-',
+                            term_freq: Counter = None):
+    if term_freq:
+        raise ValueError('term frequency handling is not yet implemented!')
+    paragraph_text = ''
+    line_ranges = []
+    for line in lines:
+        if line['text'][-1] in line_break_chars:
+            line_text = line['text'][:-1]
+        else:
+            line_text = line['text'] + ' '
+        line_range = {
+            "start": len(paragraph_text), "end": len(paragraph_text + line_text),
+            'line_id': line['metadata']['id']
+        }
+        line_ranges.append(line_range)
+        paragraph_text += line_text
+    return {'paragraph_text': paragraph_text, 'line_ranges': line_ranges}
 
-    def __init__(self, metadata: Dict, scan_versions: List[dict] = None, **kwargs):
-        """A meeting occurs on a specific day, with a president and attendants, and has textual content in the form of
+
+class Session(ResolutionDoc):
+
+    def __init__(self, metadata: Dict, scan_versions: List[dict] = None,
+                 evidence: List[dict] = None, **kwargs):
+        """A meeting session occurs on a specific day, with a president and attendants,
+        and has textual content in the form of
          lines or possibly as Resolution objects."""
         super().__init__(metadata=metadata, **kwargs)
-        self.meeting_date = RepublicDate(date_string=metadata['meeting_date'])
-        self.type = "meeting"
-        self.date = self.meeting_date
-        self.id = f"meeting-{self.meeting_date.as_date_string()}-session-1"
+        self.session_date = RepublicDate(date_string=metadata['session_date'])
+        self.type = "session"
+        self.date = self.session_date
+        self.id = f"session-{self.session_date.as_date_string()}-num-1"
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions
@@ -197,6 +220,11 @@ class Meeting(ResolutionDoc):
         self.metadata['num_columns'] = len(self.columns)
         self.metadata['num_lines'] = len(self.lines)
         self.metadata['num_words'] = 0
+        self.add_column_metadata()
+        self.evidence: List[dict] = evidence
+
+    def add_column_metadata(self):
+        """Add page column id, iiif urls and stats on number of columns, lines, words."""
         for ci, column in enumerate(self.columns):
             if '-page-' in column['metadata']['id']:
                 column['metadata']['page_column_id'] = column['metadata']['id']
@@ -205,7 +233,9 @@ class Meeting(ResolutionDoc):
             column['metadata']['id'] = self.id + f'-column-{ci}'
             urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],
                                   scan_id=column['metadata']['scan_id'])
-            column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
+            column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'],
+                                                                  column['coords'],
+                                                                  add_margin=100)
             words = []
             column['metadata']['num_lines'] = 0
             for tr in column['textregions']:
@@ -229,15 +259,18 @@ class Meeting(ResolutionDoc):
                     column['metadata'][key] = page_col_metadata[key]
 
     def get_metadata(self) -> Dict[str, Union[str, List[str]]]:
-        """Return the metadata of the meeting, including date, president and attendants."""
+        """Return the metadata of the session, including date, president and attendants."""
         return self.metadata
 
-    def json(self, with_resolutions: bool = False, with_columns: bool = False,
-             with_lines: bool = False, with_scan_versions: bool = False) -> dict:
-        """Return a JSON presentation of the meeting."""
+    def json(self, with_resolutions: bool = False, with_columns: bool = True,
+             with_lines: bool = False, with_scan_versions: bool = True) -> dict:
+        """Return a JSON presentation of the session."""
         json_doc = {
             'metadata': self.metadata,
+            'columns': self.columns,
+            'evidence': self.evidence
         }
+        self.metadata['type'] = self.type
         if with_resolutions:
             json_doc['resolutions'] = self.resolutions
         if with_columns:
@@ -324,13 +357,14 @@ class Resolution(ResolutionDoc):
                  metadata: dict = None,
                  coords: Union[None, Dict] = None, scan_versions: dict = None,
                  lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 meeting: Union[None, Meeting] = None,
+                 session: Union[None, Session] = None,
                  columns: Union[None, List[Dict[str, Union[dict, list]]]] = None,
                  paragraphs: List[ResolutionParagraph] = None,
                  evidence: Union[List[dict], List[PhraseMatch]] = None):
-        """A resolution has textual content of the resolution, as well as an opening formula, decision information,
-        and type information on the source document that instigated the discussion and resolution. Source documents
-        can be missives, requests, reports, ..."""
+        """A resolution has textual content of the resolution, as well as an
+        opening formula, decision information, and type information on the
+        source document that instigated the discussion and resolution. Source
+        documents can be missives, requests, reports, ..."""
         if not metadata:
             metadata = {}
         if 'proposition_type' not in metadata:
@@ -339,22 +373,23 @@ class Resolution(ResolutionDoc):
             metadata['proposer'] = None
         if 'decision' not in metadata:
             metadata['decision'] = None
-        metadata['doc_type'] = 'resolution'
-        if meeting:
-            metadata['meeting_date'] = meeting.metadata['meeting_date']
-            metadata['session_id'] = meeting.metadata['id']
-            metadata['session'] = meeting.metadata['session']
-            metadata['inventory_num'] = meeting.metadata['inventory_num']
-            metadata['president'] = meeting.metadata['president']
+        metadata['type'] = 'resolution'
+        if session:
+            metadata['session_date'] = session.metadata['session_date']
+            metadata['session_id'] = session.metadata['id']
+            metadata['session_num'] = session.metadata['session_num']
+            metadata['inventory_num'] = session.metadata['inventory_num']
+            metadata['president'] = session.metadata['president']
         super().__init__(metadata=metadata, coords=coords, lines=lines, columns=columns)
         self.type = "resolution"
+        self.metadata['resolution_type'] = 'ordinaris'
         self.scan_versions = scan_versions if scan_versions else []
         self.opening = None
         self.decision = None
         # proposition type is one of missive, requeste, rapport, ...
         self.proposition_type: Union[None, str] = None
         self.proposer: Union[None, str, List[str]] = None
-        self.meeting_date: Union[RepublicDate, None] = None
+        self.session_date: Union[RepublicDate, None] = None
         self.paragraphs: List[ResolutionParagraph] = paragraphs if paragraphs else []
         if paragraphs and not columns:
             self.add_columns_from_paragraphs()
@@ -529,12 +564,12 @@ def sort_resolution_columns(columns):
     return [(ci, column) for ci, column in enumerate(columns) if ci not in merge]
 
 
-def get_meeting_resolutions(meeting: Meeting, opening_searcher: FuzzyPhraseSearcher,
+def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher) -> Generator[Resolution, None, None]:
     resolution = None
     resolution_number = 0
-    generate_id = running_id_generator(meeting.metadata['id'], '-resolution-')
-    for paragraph in meeting.get_paragraphs():
+    generate_id = running_id_generator(session.metadata['id'], '-resolution-')
+    for paragraph in session.get_paragraphs():
         # print(paragraph.text, '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
@@ -546,8 +581,8 @@ def get_meeting_resolutions(meeting: Meeting, opening_searcher: FuzzyPhraseSearc
             if resolution:
                 resolution.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
                 yield resolution
-            metadata = get_base_metadata(meeting, generate_id(), 'resolution')
-            resolution = Resolution(metadata=metadata, meeting=meeting)
+            metadata = get_base_metadata(session, generate_id(), 'resolution')
+            resolution = Resolution(metadata=metadata, session=session)
             print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
@@ -566,7 +601,7 @@ def get_paragraphs(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
 
 
 def running_id_generator(base_id: str, suffix: str, count: int = 0):
-
+    """Returns an ID generator based on running numbers."""
     def generate_id():
         nonlocal count
         count += 1
@@ -576,6 +611,7 @@ def running_id_generator(base_id: str, suffix: str, count: int = 0):
 
 
 def get_base_metadata(source_doc: ResolutionDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int]]:
+    """Return a dictionary with basic metadata for a structure document."""
     return {
         'inventory_num': source_doc.metadata['inventory_num'],
         'doc_id': source_doc.metadata['id'],

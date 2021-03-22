@@ -35,14 +35,14 @@ def set_inventory_metadata(inventory_num: int, config: dict) -> None:
 
 
 def set_inventory_indexes(ocr_type: str, config: dict) -> None:
-    config['page_index'] = f'republic_{ocr_type}_pages'
-    config['scan_index'] = f'republic_{ocr_type}_scans'
-    config['paragraph_index'] = f'republic_{ocr_type}_paragraphs'
-    config['meeting_index'] = f'{ocr_type}_meeting'
-    config['resolution_index'] = f'{ocr_type}_resolutions'
-    config['meeting_doc_type'] = 'meeting'
-    config['phrase_match_index'] = 'republic_phrase_matches'
-    config['resolution_metadata_index'] = 'republic_resolution_metadata'
+    config['page_index'] = f'{ocr_type}_pages'
+    config['scan_index'] = f'{ocr_type}_scans'
+    config['paragraph_index'] = f'paragraphs'
+    config['session_index'] = f'sessions'
+    config['resolution_index'] = f'resolutions'
+    config['session_doc_type'] = 'session'
+    config['phrase_match_index'] = 'phrase_matches'
+    config['resolution_metadata_index'] = 'resolution_metadata'
 
 
 def set_inventory_period_elements(inventory_num: int, config: dict):
