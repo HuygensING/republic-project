@@ -94,6 +94,7 @@ export default function StartEndFormField() {
         onChange={handlePickedStartDate}
         dateFormat={dateFormat}
         showYearDropdown
+        showMonthDropdown
       />
       <div className="input-group-append">
         <span className="input-group-text">t/m</span>
@@ -105,6 +106,7 @@ export default function StartEndFormField() {
         dateFormat={dateFormat}
         // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
         showYearDropdown
+        showMonthDropdown
       />
       <div className="input-group-append">
         <button
