@@ -12,7 +12,6 @@ type ProfileState = {
 }
 
 export const Profile = React.memo(function(props: ProfileProps){
-  console.log('props', props.person);
   const client = useClientContext().clientState.client;
   const p2 = props.person;
   const [state, setState] = useState({} as ProfileState);
@@ -24,29 +23,29 @@ export const Profile = React.memo(function(props: ProfileProps){
   }, [p2, client.peopleResource]);
 
   if(!state.person) {
-    return <></>
+    return null;
   }
 
-  const p = state.person;
+  const person = state.person;
   return <>
-    <h5>{p.searchName}</h5>
+    <h5>{person.searchName}</h5>
     <p className="mb-1">
-      <span>Aanwezig: <span className="badge badge-pill badge-info">{p.attendantCount}x</span> </span>
-      <span>Genoemd: <span className="badge badge-pill badge-info">{p.mentionedCount}x</span> </span>
-      <span>ID: <span className="badge badge-pill badge-info">{p.id}</span> </span>
+      <span>Aanwezig: <span className="badge badge-pill badge-info">{person.attendantCount}x</span> </span>
+      <span>Genoemd: <span className="badge badge-pill badge-info">{person.mentionedCount}x</span> </span>
+      <span>ID: <span className="badge badge-pill badge-info">{person.id}</span> </span>
     </p>
-    {p.functions.length
+    {person.functions.length
       ? <>
         <p className="mb-0">Functies:</p>
-        <ul className="mb-0">{p.functions.map(
-          (f, i)  => <li className="small" key={i}>
-            {f.name}
+        <ul className="mb-0">{person.functions.map(
+          (func, i)  => <li className="small" key={i}>
+            {func.name}
             <br/>
-            <span className="text-muted">{f.start} t/m {f.end}</span>
+            <span className="text-muted">{func.start} t/m {func.end}</span>
           </li>
         )}</ul>
       </>
       : null}
   </>
 
-}, (p, n) => equal(p.person, n.person));
+}, (prev, next) => equal(prev.person, next.person));

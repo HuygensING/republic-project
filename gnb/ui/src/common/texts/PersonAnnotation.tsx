@@ -3,11 +3,12 @@ import {equal} from "../../util/equal";
 import {Profile} from "./Profile";
 
 type PersonAnnotationProps = {
-  annotation: number
+  annotation: number,
+  id: string
 }
 
 export const PersonAnnotation = React.memo(function (props: PersonAnnotationProps) {
-  return <div className="card mb-3">
+  return <div className="card mb-3" id={props.id}>
     <div className="card-body">
       <Profile person={props.annotation}/>
     </div>

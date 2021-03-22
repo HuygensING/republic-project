@@ -1,11 +1,15 @@
 import {RESOLUTION} from "../../content/Placeholder";
 import {Attendants} from "./Attendants";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Place from "../../view/model/Place";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
 import {useSearchContext} from "../../search/SearchContext";
 import Resolution from "../../elastic/model/Resolution";
 import {PersonAnnotation} from "./PersonAnnotation";
+
+import smoothscroll from 'smoothscroll-polyfill';
+
+smoothscroll.polyfill();
 
 type TextProps = {
   resolution: Resolution,
@@ -37,14 +41,23 @@ export function Text(props: TextProps) {
     highlighted = props.highlightXml(highlighted);
   }
 
+  const ann = state.annotation;
+  const annId = r.id + '_' + ann;
+
+  useEffect(() => {
+    const anchor = document.getElementById(annId);
+    anchor?.scrollIntoView({behavior: 'smooth'});
+  }, [annId])
+
   function handlePersonClick(e: React.MouseEvent<HTMLElement>) {
     const nodeName = (e.target as any).nodeName;
-    if(nodeName !== 'PERSOON') {
+    if (nodeName !== 'PERSOON') {
       return;
     }
-    setState(s => {return {...s, annotation: parseInt((e.target as any).getAttribute('idnr'))}});
+    setState(s => {
+      return {...s, annotation: parseInt((e.target as any).getAttribute('idnr'))}
+    });
   }
-
 
   return <div>
     <h5>{RESOLUTION} {r.metadata.meeting.date} #{r.metadata.resolution}</h5>
@@ -53,7 +66,7 @@ export function Text(props: TextProps) {
       dangerouslySetInnerHTML={{__html: highlighted}}
       onClick={handlePersonClick}
     />
-    {state.annotation ? <PersonAnnotation annotation={state.annotation}/> : null }
+    {ann ? <PersonAnnotation annotation={ann} id={annId}/> : null}
   </div>;
 
 }

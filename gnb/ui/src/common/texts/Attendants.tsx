@@ -35,9 +35,9 @@ export function Attendants(props: AttendantProps) {
 
           <small><strong>Aanwezigen:</strong> {r.people.sort(presidentFirst).map(
             (a: PersonAnn, i: number) =>
-              <a className={highlightMarked(a)} onClick={() => toggle(i)} key={i}>
+              <button className={'btn btn-link ' + highlightMarked(a)} onClick={() => toggle(i)} key={i}>
                 {a.name}{a.president ? ' (president)' : ''}
-              </a>
+              </button>
           ).reduce(joinJsx)}
           </small>
         </div>
