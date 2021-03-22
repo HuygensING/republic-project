@@ -3,6 +3,9 @@ import React from "react";
 import clone from "../util/clone";
 import {useViewContext, ViewStateType} from "./ViewContext";
 
+/**
+ * Contains custom plots created by the ViewComposer
+ */
 export default function Views () {
 
   const {viewState, setViewState} = useViewContext();

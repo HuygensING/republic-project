@@ -13,7 +13,9 @@ import {ViewEntityType} from "./model/ViewEntityType";
 import AddFunctionViewTypeahead from "./field/AddFunctionViewTypeahead";
 import AddFunctionCategoryViewTypeahead from "./field/AddFunctionCategoryViewTypeahead";
 
-
+/**
+ * Allows the user to create custom views
+ */
 export default function ViewComposer() {
 
   const {viewState, setViewState} = useViewContext();
@@ -80,7 +82,9 @@ export default function ViewComposer() {
 
     <div className="col">
       <div className="row-view bg-light">
-        <AddViewBtn handleClick={() => setState({...state, isOpen: true})}/>
+        <AddViewBtn
+          handleClick={() => setState({...state, isOpen: true})}
+        />
       </div>
     </div>
   </div>;

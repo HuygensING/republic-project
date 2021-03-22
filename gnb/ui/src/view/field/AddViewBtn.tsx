@@ -1,4 +1,4 @@
-import {ADD_NEW_VIEW_BTN} from "../../content/Placeholder";
+import {ADD_NEW_VIEW_BALLOON, ADD_NEW_VIEW_BTN} from "../../content/Placeholder";
 import React from "react";
 
 type AddViewBtnProps = {
@@ -12,6 +12,7 @@ export default function AddViewBtn(props: AddViewBtnProps) {
         onClick={props.handleClick}
         type="button"
         className="btn btn-success align-self-center"
+        aria-label={ADD_NEW_VIEW_BALLOON} data-balloon-pos="up"
       >
         {ADD_NEW_VIEW_BTN}
       </button>

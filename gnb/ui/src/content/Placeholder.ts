@@ -41,6 +41,7 @@ export const ERR_UNKNOWN_VIEW_TYPE_TO_STRING = 'View type onbekend';
 export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begindatum te liggen.';
 
 // View composer:
+export const ADD_NEW_VIEW_BALLOON = 'Plot het voorkomen van specifieke entiteiten binnen de gevonden resoluties';
 export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
 export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
 export const PICK_ATTENDANT = 'Kies aanwezige';
