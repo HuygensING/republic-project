@@ -16,8 +16,9 @@ export const WITH_FULL_TEXT = 'met zoektermen...';
 export const WITH_PLACES = 'met plaatsen...';
 export const WITH_FUNCTIONS = 'met functies...';
 export const WITH_FUNCTION_CATEGORIES = 'met functiecategorieën...';
+export const CALENDAR_MOVE_WITH_RIGHT_ARROW = 'Of gebruik rechter pijltoets';
+export const CALENDAR_MOVE_WITH_LEFT_ARROW = 'Of gebruik linker pijltoets';
 
-// SearchHelp:
 // Histograms:
 export const RESOLUTIONS_TEXTS_TITLE = "Resoluties";
 export const RESOLUTIONS_HISTOGRAM_TITLE = "# Resoluties";

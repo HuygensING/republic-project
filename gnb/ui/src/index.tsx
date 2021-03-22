@@ -1,5 +1,6 @@
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'balloon-css';
 import './style/styles.css';
 
 App();
