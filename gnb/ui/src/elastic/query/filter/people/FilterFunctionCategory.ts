@@ -1,6 +1,6 @@
 import {Filter} from "../Filter";
 
-export default class FilterFunctionNamePrefix implements Filter {
+export default class FilterFunctionCategory implements Filter {
   public prefix: any;
 
   constructor(category: string) {

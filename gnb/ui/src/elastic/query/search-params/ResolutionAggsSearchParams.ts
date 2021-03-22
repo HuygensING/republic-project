@@ -1,8 +1,8 @@
 import SearchParams from "../SearchParams";
-import AggsBody from "../body/AggsBody";
+import BodyWithAggs from "../body/BodyWithAggs";
 
 export default class ResolutionAggsSearchParams extends SearchParams {
   constructor(aggs: any) {
-    super("gnb-resolutions", new AggsBody(aggs));
+    super("gnb-resolutions", new BodyWithAggs(aggs));
   }
 }

@@ -1,8 +1,8 @@
 import SearchParams from "../SearchParams";
-import AggsBody from "../body/AggsBody";
+import BodyWithAggs from "../body/BodyWithAggs";
 
 export default class PeopleAggsSearchParams extends SearchParams {
   constructor(aggs: any) {
-    super("gnb-people", new AggsBody(aggs));
+    super("gnb-people", new BodyWithAggs(aggs));
   }
 }

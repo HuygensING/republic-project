@@ -1,7 +1,7 @@
 import {BodyWithSize} from "./BodyWithSize";
 import {Agg} from "../aggs/Agg";
 
-export default class AggsBody extends BodyWithSize {
+export default class BodyWithAggs extends BodyWithSize {
 
   public aggs: any = {};
 

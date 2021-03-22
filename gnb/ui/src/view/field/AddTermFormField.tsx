@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {WITH_FULL_TEXT} from "../../content/Placeholder";
 import {ViewType} from "../model/ViewType";
-import {onEnter} from "../../search/FormUtil";
+import {onEnter} from "../../util/onEnter";
 import {Term} from "../model/Term";
 
 type AddTermFormFieldProps = {
