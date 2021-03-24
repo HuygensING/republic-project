@@ -28,7 +28,7 @@ function HelpHtml() {
     <p>Hierna kunt u grafieken toevoegen voor specifieke personen, locaties en zoektermen. Deze grafieken tonen het voorkomen aan binnen de selectie van gevonden resoluties.</p>
     <p>Wanneer u dieper wilt duiken in de gevonden resoluties en het bijbehorende sociale netwerk van aanwezigen en genoemden, dan kunt u de huidige selectie exporteren:</p>
     <ul>
-      <li>Als <strong>json</strong>: de gevonden <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html" target="_blank" rel="noreferrer">elasticsearch</a>-documenten</li>
+      <li>Als <strong>json</strong>: de gevonden <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html" target="_blank" rel="noreferrer">elasticsearch</a>-documenten</li>
       <li>Als <strong>csv</strong>: een lijst met nodes en edges geschikt voor <a href="https://gephi.org/users/quick-start/" target="_blank" rel="noreferrer">gephi</a></li>
     </ul>
     <p>(Aan deze functionaliteit wordt nog gewerkt.)</p>
@@ -36,7 +36,11 @@ function HelpHtml() {
     <h3>Aanwezigen en genoemden</h3>
     <p>Aanwezigen zijn mensen genoemd in de presentielijst van een zittingsdag. Genoemden zijn de mensen getagd in de resoluties zelf.</p>
     <h3>Zoeken in resoluties</h3>
-    <p>Zoek 'full-text' in de resoluties met behulp van <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" target="_blank" rel="noreferrer" ><code>simple_query_string</code></a> zoektaal van elasticsearch.</p>
+    <p>Zoek 'full-text' in de resoluties met behulp van <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" target="_blank" rel="noreferrer" ><code>query string</code></a> zoektaal van elasticsearch. Hieronder twee voorbeelden:</p>
+    <ul>
+      <li>Zoek op resoluties die 'brief' en niet 'regiment' bevatten: <pre>brief -regiment</pre></li>
+      <li>Zoek zowel op 'RvS' als 'Raad van State': <pre>(RvS | "Raad van State")</pre></li>
+    </ul>
     <h3>Zoeken in de tijd</h3>
     <p>Gebruik de linker en rechter pijltjestoets of de kalender-<i>widget</i> om door de tijd (1626-1630) te lopen. De lengte van de periode kan veranderd worden met de einddatum.</p>
   </>
