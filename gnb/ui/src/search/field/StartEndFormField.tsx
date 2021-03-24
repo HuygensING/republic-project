@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {
   CALENDAR_MOVE_WITH_LEFT_ARROW,
   CALENDAR_MOVE_WITH_RIGHT_ARROW,
+  HELP_BALLOON_PERIOD,
   WARN_DATEPICKER_END_BEFORE_START
 } from "../../content/Placeholder";
 import Warning from "../../common/Warning";
@@ -47,7 +48,7 @@ export default function StartEndFormField() {
 
   const handlePickedEndDate = (newEnd: Date) => {
     if (newEnd < start) {
-      setState({...state, warning : true});
+      setState({...state, warning: true});
       return;
     }
     updateStartEnd(start, newEnd);
@@ -72,7 +73,7 @@ export default function StartEndFormField() {
   }
 
   function closeWarning() {
-    setState({...state, warning : false});
+    setState({...state, warning: false});
   }
 
   return <>
@@ -88,26 +89,30 @@ export default function StartEndFormField() {
           &lt;&lt;
         </button>
       </div>
-      <DatePicker
-        customInput={createElement(forwardRef(DatePickerCustomInput))}
-        selected={start}
-        onChange={handlePickedStartDate}
-        dateFormat={dateFormat}
-        showYearDropdown
-        showMonthDropdown
-      />
+      <div aria-label={HELP_BALLOON_PERIOD} data-balloon-pos="up">
+        <DatePicker
+          customInput={createElement(forwardRef(DatePickerCustomInput))}
+          selected={start}
+          onChange={handlePickedStartDate}
+          dateFormat={dateFormat}
+          showYearDropdown
+          showMonthDropdown
+        />
+      </div>
       <div className="input-group-append">
         <span className="input-group-text">t/m</span>
       </div>
-      <DatePicker
-        customInput={createElement(forwardRef(DatePickerCustomInput))}
-        selected={end}
-        onChange={handlePickedEndDate}
-        dateFormat={dateFormat}
-        // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
-        showYearDropdown
-        showMonthDropdown
-      />
+      <div aria-label={HELP_BALLOON_PERIOD} data-balloon-pos="up">
+        <DatePicker
+          customInput={createElement(forwardRef(DatePickerCustomInput))}
+          selected={end}
+          onChange={handlePickedEndDate}
+          dateFormat={dateFormat}
+          // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
+          showYearDropdown
+          showMonthDropdown
+        />
+      </div>
       <div className="input-group-append">
         <button
           type="button"
@@ -126,7 +131,13 @@ const DatePickerCustomInput = (
   {value, onClick}: { value: string; onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void },
   ref: Ref<HTMLButtonElement>
 ) => (
-  <button type="button" className="form-control text-center stretched-link text-monospace" onClick={onClick}
-          ref={ref}>{value} 📅</button>
+  <button
+    type="button"
+    className="form-control text-center stretched-link text-monospace"
+    onClick={onClick}
+    ref={ref}
+  >
+    {value} 📅
+  </button>
 );
 
