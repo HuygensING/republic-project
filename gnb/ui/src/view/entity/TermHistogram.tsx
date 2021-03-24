@@ -40,7 +40,7 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
     }
 
     client.resolutionResource.aggregateByTerm(
-      bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
+      bars.reduce((all: any, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
       props.term,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)

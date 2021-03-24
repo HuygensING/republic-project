@@ -44,7 +44,7 @@ export function renderHistogram(
     .padding(0.1);
 
   function dataToBucket(d: HistogramBar) {
-    return moment(d.date).format('D MMM');
+    return moment(d.date).format('DD-MM-YYYY');
   }
 
   const y1 = d3
