@@ -35,7 +35,7 @@ function HelpHtml() {
       <li>Als <strong>csv</strong>: een lijst met nodes en edges geschikt voor <a href="https://gephi.org/users/quick-start/" target="_blank" rel="noreferrer">gephi</a></li>
     </ul>
     <p>(Aan deze functionaliteit wordt nog gewerkt.)</p>
-    <h2>Zoekhulp</h2>
+    <h2>Zoeken</h2>
     <h3>Aanwezigen en genoemden</h3>
     <p>Aanwezigen zijn mensen genoemd in de presentielijst van een zittingsdag. Genoemden zijn de mensen getagd in de resoluties zelf.</p>
     <h3>Full-text zoeken in resoluties</h3>
@@ -49,5 +49,7 @@ function HelpHtml() {
     <h3>Functies en functiecategorieën</h3>
     <p>Personen kunnen functies bekleden. Deze functies zijn vervolgens weer ingedeeld in een aantal categorieën. Op deze functies en categorieën kunt u zoeken.</p>
     <p className="font-italic">NB: Er wordt enkel gekeken binnen de genoemden wanneer u zoekt op functies en categorieën. Daarnaast wordt er geen rekening gehouden met de periode waarbinnen iemand de functie bekleedde: een persoon zal dus ook buiten deze functieperiode om worden gevonden op de functie.</p>
+    <h2>Exporteren</h2>
+    <p>U kunt de huidige selectie exporteren, op het moment enkel in de vorm van twee csv-bestanden: de nodes en edges van de huidige selectie, geschikt voor bijvoorbeeld Gephi.</p>
   </>
 }

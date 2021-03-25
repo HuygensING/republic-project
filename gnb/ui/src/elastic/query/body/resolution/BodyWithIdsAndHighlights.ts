@@ -1,8 +1,8 @@
 import {BodyWithSize} from "../BodyWithSize";
+import {BodyWithIds} from "./BodyWithIds";
 
-export class QueryWithIdsAndHighlights extends BodyWithSize {
+export class BodyWithIdsAndHighlights extends BodyWithIds {
 
-  private query: any;
   private highlight: any;
 
   /**
@@ -12,12 +12,7 @@ export class QueryWithIdsAndHighlights extends BodyWithSize {
    * @param highlight using simple query format
    */
   constructor(ids: string[], highlight: string) {
-    super();
-    this.size = 10000;
-
-    this.query = {
-      "ids": { "values": ids }
-    };
+    super(ids);
 
     this.highlight = highlight ? {
       "number_of_fragments": 0,
