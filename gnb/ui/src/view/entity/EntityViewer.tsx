@@ -127,12 +127,6 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     if (props.type === ViewType.ATTENDANT) {
       return [(props.entity as Person).id];
     }
-    if (props.type === ViewType.FUNCTION) {
-      return (props.entity as PersonFunction).people;
-    }
-    if (props.type === ViewType.FUNCTION_CATEGORY) {
-      return (props.entity as PersonFunctionCategory).people;
-    }
     return [];
   }
 

@@ -10,7 +10,7 @@ export const FUNCTION = 'functie';
 export const FUNCTION_CATEGORY = 'functiecategorie';
 
 // Search:
-export const WITH_ATTENDANTS = 'Zoek resoluties waarbij aanwezig waren...';
+export const WITH_ATTENDANTS = 'Zoek resoluties met de volgende aanwezen...';
 export const WITH_MENTIONED = 'met genoemden...';
 export const WITH_FULL_TEXT = 'met zoektermen...';
 export const WITH_PLACES = 'met plaatsen...';
@@ -19,9 +19,9 @@ export const WITH_FUNCTION_CATEGORIES = 'met functiecategorieën...';
 export const CALENDAR_MOVE_WITH_RIGHT_ARROW = 'Of gebruik rechter pijltoets';
 export const CALENDAR_MOVE_WITH_LEFT_ARROW = 'Of gebruik linker pijltoets';
 export const HELP_BALLOON_MENTIONED = 'Zoek resoluties met de genoemde personen';
-export const HELP_BALLOON_FUNCTIONS = 'Zoek resoluties met alle genoemde personen die de functie bekleedden';
-export const HELP_BALLOON_FUNCTION_CATEGORIES = 'Zoek resoluties met alle genoemde personen die een functie hadden binnen de categorie';
-export const HELP_BALLOON_PLACES = 'Zoek resoluties met plaats';
+export const HELP_BALLOON_FUNCTIONS = 'Zoek resoluties met alle genoemde personen die deze functie bekleedden';
+export const HELP_BALLOON_FUNCTION_CATEGORIES = 'Zoek resoluties met alle genoemde personen die een functie hadden binnen deze categorie';
+export const HELP_BALLOON_PLACES = 'Zoek resoluties met de plaatsen';
 export const HELP_BALLOON_PERIOD = 'Zoek resoluties binnen periode';
 export const HELP_BALLOON_SEARCH_TERMS = 'Zoek resoluties m.b.v. een query string (zie help)';
 

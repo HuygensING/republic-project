@@ -74,11 +74,11 @@ export default class ResolutionResource {
     }
 
     for (const f of functions) {
-      query.addFilter(new FilterPeople(f.people));
+      query.addFilter(new FilterPeople(f.people, PersonType.MENTIONED));
     }
 
     for (const f of functionCategories) {
-      query.addFilter(new FilterPeople(f.people));
+      query.addFilter(new FilterPeople(f.people, PersonType.MENTIONED));
     }
 
     const hist = new AggResolutionHistogram(begin, end, 1);
@@ -189,7 +189,7 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new FilterPeople(personFunction.people));
+    filteredQuery.addFilter(new FilterPeople(personFunction.people, PersonType.MENTIONED));
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
   }
 
@@ -205,7 +205,7 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new FilterPeople(personFunctionCategory.people));
+    filteredQuery.addFilter(new FilterPeople(personFunctionCategory.people, PersonType.MENTIONED));
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
   }
 
