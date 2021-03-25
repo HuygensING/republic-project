@@ -7,6 +7,7 @@ import Help from "../content/Help";
 import PlaceFormField from "./field/PlaceFormField";
 import FunctionFormField from "./field/FunctionFormField";
 import FunctionCategoryFormField from "./field/FunctionCategoryFormField";
+import Export from "../export/Export";
 
 export function Search() {
 
@@ -39,6 +40,9 @@ export function Search() {
           <div className="form-row">
             <div className="col form-group">
               <StartEndFormField/>
+            </div>
+            <div className="col form-group">
+              <Export />
             </div>
           </div>
         </form>

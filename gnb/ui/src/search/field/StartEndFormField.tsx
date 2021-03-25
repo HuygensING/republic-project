@@ -86,7 +86,7 @@ export default function StartEndFormField() {
           onClick={handlePrevious}
           aria-label={CALENDAR_MOVE_WITH_LEFT_ARROW} data-balloon-pos="up-left"
         >
-          &lt;&lt;
+          <i className="fas fa-arrow-left" />
         </button>
       </div>
       <div aria-label={HELP_BALLOON_PERIOD} data-balloon-pos="up">
@@ -120,7 +120,7 @@ export default function StartEndFormField() {
           aria-label={CALENDAR_MOVE_WITH_RIGHT_ARROW} data-balloon-pos="up-right"
           onClick={handleNext}
         >
-          &gt;&gt;
+          <i className="fas fa-arrow-right" />
         </button>
       </div>
     </div>
@@ -137,7 +137,7 @@ const DatePickerCustomInput = (
     onClick={onClick}
     ref={ref}
   >
-    {value} 📅
+    {value} <i className="far fa-calendar-alt" />
   </button>
 );
 

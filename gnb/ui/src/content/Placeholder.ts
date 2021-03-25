@@ -48,7 +48,7 @@ export const WARN_DATEPICKER_END_BEFORE_START = 'Een einddatum dient na de begin
 
 // View composer:
 export const ADD_NEW_VIEW_BALLOON = 'Plot het voorkomen van specifieke entiteiten binnen de gevonden resoluties';
-export const ADD_NEW_VIEW_BTN = '+ Voeg toe'
+export const ADD_NEW_VIEW_BTN = 'Voeg toe'
 export const NEW_VIEW_MODAL_TITLE = 'Voeg nieuwe grafiek toe'
 export const PICK_ATTENDANT = 'Kies aanwezige';
 export const PICK_MENTIONED = 'Kies genoemde';
