@@ -46,6 +46,6 @@ function HelpHtml() {
     <p>Gebruik de linker en rechter pijltjestoets of de kalender-<i>widget</i> om door de tijd (1626-1630) te lopen. De periodelengte kunt u veranderd door de einddatum in te stellen.</p>
     <h3>Functies en functiecategorieën</h3>
     <p>Personen kunnen functies bekleden. Deze functies zijn vervolgens weer ingedeeld in een aantal categorieën. Op deze functies en categorieën kunt u zoeken.</p>
-    <p className="font-italic">NB: Er wordt enkel gekeken binnen de genoemden wanneer u zoekt op functies en categorieën.</p>
+    <p className="font-italic">NB: Er wordt enkel gekeken binnen de genoemden wanneer u zoekt op functies en categorieën. Daarnaast wordt er geen rekening gehouden met de periode waarbinnen iemand de functie bekleedde: een persoon zal dus ook buiten deze functieperiode worden gevonden om op de functie.</p>
   </>
 }
