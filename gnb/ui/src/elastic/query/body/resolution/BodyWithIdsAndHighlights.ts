@@ -1,4 +1,3 @@
-import {BodyWithSize} from "../BodyWithSize";
 import {BodyWithIds} from "./BodyWithIds";
 
 export class BodyWithIdsAndHighlights extends BodyWithIds {

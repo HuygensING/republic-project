@@ -7,6 +7,12 @@ import {useClientContext} from "../elastic/ClientContext";
 import {PersonAnn} from "../elastic/model/PersonAnn";
 import {PersonType} from "../elastic/model/PersonType";
 import Resolution from "../elastic/model/Resolution";
+import {useSearchContext} from "../search/SearchContext";
+import {useViewContext} from "../view/ViewContext";
+import {ViewType} from "../view/model/ViewType";
+import {Person} from "../elastic/model/Person";
+import {PersonFunction} from "../elastic/model/PersonFunction";
+import {PersonFunctionCategory} from "../elastic/model/PersonFunctionCategory";
 
 const downloadDataType = 'data:text/plain;charset=utf-8,';
 const NODES_FILENAME = 'nodes.csv';
@@ -14,8 +20,15 @@ const EDGES_FILENAME = 'edges.csv';
 
 type Node = {
   id: number,
-  label: string
+  label: string,
+  type: NodeType
 };
+
+enum NodeType {
+  NONE = '',
+  SEARCHED = 'searched',
+  PLOTTED = 'plotted',
+}
 
 type Edge = {
   source: number,
@@ -45,7 +58,9 @@ export default function Export() {
   });
 
   const {resolutionState} = useResolutionContext();
-  const client = useClientContext().clientState.client;
+  const {searchState} = useSearchContext();
+  const {viewState} = useViewContext();
+  const {client} = useClientContext().clientState;
 
   async function startCreatingContents() {
     const {nodes, edges} = await createContents();
@@ -67,6 +82,24 @@ export default function Export() {
 
     const people = await client.peopleResource.getMulti(peopleIds);
 
+    const peopleSearched = [...new Set(searchState.attendants.map(a => a.id)
+      .concat(searchState.mentioned.map(m => m.id))
+      .concat(searchState.functions.reduce((all, f) => all.concat(f.people), [] as number[]))
+      .concat(searchState.functionCategories.reduce((all, fc) => all.concat(fc.people), [] as number[])))];
+
+    const peoplePlotted = [...new Set(viewState.views
+      .filter(v => [ViewType.MENTIONED, ViewType.ATTENDANT].includes(v.type))
+      .map(v => (v.entity as Person).id)
+      .concat(
+        viewState.views
+          .filter(v => v.type === ViewType.FUNCTION)
+          .reduce((all, v) => all.concat((v.entity as PersonFunction).people), [] as number[])
+      ).concat(
+        viewState.views
+          .filter(v => v.type === ViewType.FUNCTION_CATEGORY)
+          .reduce((all, v) => all.concat((v.entity as PersonFunctionCategory).people), [] as number[])
+      ))];
+
     const nodes = [] as Node[];
     const edges = [] as Edge[];
     for (const r of resolutions) {
@@ -78,11 +111,34 @@ export default function Export() {
       }
     }
 
+    let nodesString = 'Id;Label;Type\n';
+    for (const n of nodes) {
+      nodesString += `${n.id};${n.label};${n.type}\n`
+    }
+
+    let edgesString = 'Source;Target;Label;Weight;Type\n';
+    for (const e of edges) {
+      edgesString += `${e.source};${e.target};${e.label};${e.weight};${e.type}\n`
+    }
+
+    let nodesEncoded = downloadDataType + encodeURIComponent(nodesString);
+    let edgesEncoded = downloadDataType + encodeURIComponent(edgesString);
+    return {nodes: nodesEncoded, edges: edgesEncoded};
+
     function handleNode(p: PersonAnn) {
       const found = nodes.find(n => n.id === p.id);
       if (!found) {
         const label = people.find(p2 => p2 && p2.id === p.id)?.searchName;
         const node = {id: p.id, label: label ? label : 'id-' + p.id} as Node;
+
+        if (peoplePlotted.includes(node.id)) {
+          node.type = NodeType.PLOTTED;
+        } else if (peopleSearched.includes(node.id)) {
+          node.type = NodeType.SEARCHED;
+        } else {
+          node.type = NodeType.NONE;
+        }
+
         nodes.push(node);
       }
     }
@@ -97,7 +153,7 @@ export default function Export() {
       if (p1.id === p2.id) {
         return;
       }
-      const newEdge = createEdge(p2, p1);
+      const newEdge = createEdge(p1, p2);
       const added = resolutionEdges.find(byEdge(newEdge));
 
       if (added) {
@@ -126,7 +182,7 @@ export default function Export() {
       }
     }
 
-    function createEdge(p2: PersonAnn, p1: PersonAnn) {
+    function createEdge(p1: PersonAnn, p2: PersonAnn) {
       let label: EdgeLabel;
       let type: EdgeType;
       let sourceTarget: number[];
@@ -153,19 +209,6 @@ export default function Export() {
       return {label, type, source: sourceTarget[0], target: sourceTarget[1]} as Edge;
     }
 
-    let nodesString = 'Id;Label\n';
-    for (const n of nodes) {
-      nodesString += `${n.id};${n.label}\n`
-    }
-
-    let edgesString = 'Source;Target;Label;Weight;Type\n';
-    for (const e of edges) {
-      edgesString += `${e.source};${e.target};${e.label};${e.weight};${e.type}\n`
-    }
-
-    let nodesEncoded = downloadDataType + encodeURIComponent(nodesString);
-    let edgesEncoded = downloadDataType + encodeURIComponent(edgesString);
-    return {nodes: nodesEncoded, edges: edgesEncoded};
   }
 
   async function openModal() {
