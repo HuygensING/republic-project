@@ -62,4 +62,5 @@ export const VERSION = 'Versie'
 
 // Export:
 export const EXPORT_BUTTON = 'Export';
-export const EXPORT_DESCRIPTION = 'Hier kunt u huidige selectie downloaden als nodes en edges. Voor meer informatie, zie help. Klik op de links om te downloaden:';
+export const EXPORT_DESCRIPTION = 'Hier kunt u huidige selectie downloaden als nodes en edges. Bij een grote dataset kan het genereren even duren. Voor meer informatie, zie help.';
+export const EXPORT_DOWNLOAD_LINKS = 'Klik op de links om te downloaden:';
