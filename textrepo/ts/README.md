@@ -13,13 +13,13 @@ npm install -g ts-node
 
 ## Import from csv
 ```
-source ../.env && npm run create-all
+source ./.env && npm run create-all
 ```
 See also: **.env**
 
 ## Delete from csv
 ```
-source ../.env && npm run delete-all
+source ./.env && npm run delete-all
 ```
 See also: **.env**
 
@@ -35,10 +35,10 @@ A number of environment variables are expected:
  export GOOGLE_AUTHORIZATION='Google <uuid>'
 
  # Csv with identifiers to create and import from pim:
- export SUBSET_CSV='../external-identifiers.csv'
+ export SUBSET_CSV='./external-identifiers.csv'
  
  # Csv with types to create (or to get IDs from)
- export TYPE_CSV='../types.csv'
+ export TYPE_CSV='./types.csv'
 
  # Where to put temporary files:
  export TMP='./tmp'
