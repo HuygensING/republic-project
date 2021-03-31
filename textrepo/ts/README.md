@@ -25,7 +25,7 @@ See also: **.env**
 
 ## .env
 
-A number environment of variables are expected:
+A number of environment variables are expected:
 
 ```
  # Pergamon images host:
