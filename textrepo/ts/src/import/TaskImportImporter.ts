@@ -81,7 +81,10 @@ export default class TaskImportImporter implements TextRepoImporter<ImportEndpoi
         documentImages = documentImages.slice(0, 1);
       }
 
+      let counter = 0;
       for (const img of documentImages) {
+
+        console.log(`Handling img ${counter++} of ${documentImages.length}`);
 
         const scanNo = IdUtil.remoteuri2scan(img.remoteuri);
         const externalId = IdentifierUtil.createExternalId(identifier, scanNo);
