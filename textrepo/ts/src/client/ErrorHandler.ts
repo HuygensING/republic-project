@@ -19,8 +19,11 @@ export default class ErrorHandler {
     }
 
     public static async catch(reason: Response) : Promise<never> {
-        let reasonText = await reason.text();
-        let msg = `Failed to request ${reason.url}`;
+        let reasonText = '';
+        if(typeof reason.text === 'function') {
+            reasonText = await reason.text();
+        }
+        let msg = `Failed to request ${JSON.stringify(reason.url)}`;
         throw new RequestError(msg, reason.status, reasonText);
     }
 

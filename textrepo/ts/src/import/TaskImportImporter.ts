@@ -1,5 +1,3 @@
-import {TextRepoImporter} from "./TextRepoImporter";
-import ImportResult from "./model/ImportResult";
 import TextRepoClient from "../client/textrepo/TextRepoClient";
 import PimClient from "../client/pim/PimClient";
 import CsvIdentifierRecord from "./model/CsvIdentifierRecord";
@@ -10,7 +8,6 @@ import ErrorHandler from "../client/ErrorHandler";
 import TextRepoDocument from "../client/textrepo/model/TextRepoDocument";
 import TmpUtil from "../util/TmpUtil";
 import TextRepoType from "../client/textrepo/model/TextRepoType";
-import {ImportEndpointResult} from "./model/ImportEndpointResult";
 
 const KEY_PREFIX = 'pim:image:';
 export const IMAGE_UUID_KEY = KEY_PREFIX + 'uuid';
@@ -75,8 +72,13 @@ export default class TaskImportImporter {
       const identifier = record.identifier;
       const [archiefNo, inventarisNo] = IdUtil.extractArchiefAndInventarisFrom(identifier);
       const set = IdentifierUtil.findSet(documentImageSet, archiefNo, inventarisNo);
-
-      let documentImages = await this.pimClient.documentImages.getAll(set.uuid);
+      let documentImages;
+      try {
+        documentImages = await this.pimClient.documentImages.getAll(set.uuid);
+      } catch (e) {
+        ErrorHandler.handle(`Could not retrieve pim images from set ${set.uuid}`, e);
+        continue;
+      }
 
       if (test) {
         documentImages = documentImages.slice(0, 1);
@@ -90,7 +92,13 @@ export default class TaskImportImporter {
         const scanNo = IdUtil.remoteuri2scan(img.remoteuri);
         const externalId = IdentifierUtil.createExternalId(identifier, scanNo);
 
-        let allPimVersions = await this.getAndCachePimVersions(img.uuid);
+        let allPimVersions;
+        try {
+          allPimVersions = await this.getAndCachePimVersions(img.uuid);
+        } catch (e) {
+          ErrorHandler.handle(`Could not getretrieve pim versions from img ${img.uuid}`, e);
+          continue;
+        }
         allPimVersions.sort((a, b) => a.analyzed - b.analyzed);
 
         let docMetadataCreated = false;
@@ -111,7 +119,7 @@ export default class TaskImportImporter {
 
               console.log(`Importing externalId ${externalId} and type ${type.id}  (analyzed: ${pv.analyzed})`);
               const result = await this.textRepoClient.tasks.import(
-                  type.name,
+                type.name,
                 externalId,
                 pv.result,
                 isLatestVersion

@@ -14,10 +14,10 @@ services:
       PIM: 'https://images.diginfra.net'
       SUBSET_CSV: './external-identifiers.csv'
       TMP: './tmp'
-      TR: 'http://tr_textrepo:8080'
+      TR: 'https://textrepo.republic-caf.diginfra.org/api'
       TYPE_CSV: './types.csv'
       CACHE: 250
-    command: npm run test-create-all
+    command: npm run create-all
     networks:
       - textrepo_network
 
