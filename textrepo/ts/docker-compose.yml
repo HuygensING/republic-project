@@ -6,7 +6,6 @@ services:
     container_name: importer
     build: .
     volumes:
-      - ./.env:/pim-tr-import/.env
       - ./types.csv:/pim-tr-import/types.csv
       - ./external-identifiers.csv:/pim-tr-import/external-identifiers.csv
     environment:
