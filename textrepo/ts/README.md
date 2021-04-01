@@ -15,20 +15,11 @@ Modify docker-compose.yml:
 - network 
 - file names
 - env vars
+- command (`create-all`, `delete-all`)
 
 Run:
 ```
+ export GOOGLE_AUTHORIZATION='Google <token>'
 docker-compose up --build -d
-docker-exec -ti importer sh 
-```
-
-## Import from csv
-```
-npm run create-all
-```
-
-## Delete from csv
-```
-npm run delete-all
 ```
 

@@ -9,14 +9,14 @@ services:
       - ./types.csv:/pim-tr-import/types.csv
       - ./external-identifiers.csv:/pim-tr-import/external-identifiers.csv
     environment:
+      GOOGLE_AUTHORIZATION: ${GOOGLE_AUTHORIZATION}
+      NODE_OPTIONS: '--max_old_space_size=4096'
       PIM: 'https://images.diginfra.net'
       SUBSET_CSV: './external-identifiers.csv'
       TMP: './tmp'
       TR: 'http://tr_textrepo:8080'
       TYPE_CSV: './types.csv'
-      NODE_OPTIONS: '--max_old_space_size=4096'
-      GOOGLE_AUTHORIZATION: ${GOOGLE_AUTHORIZATION}
-    command: tail -f /dev/null
+    command: npm run create-all
     networks:
       - textrepo_network
 
