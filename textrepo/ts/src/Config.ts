@@ -9,6 +9,7 @@ export default class Config {
     static TMP;
     static TYPE_CSV;
     static TR;
+    static CACHE;
 
     public static init() {
         this.PIM = env.PIM;
@@ -17,6 +18,7 @@ export default class Config {
         this.TMP = env.TMP;
         this.TYPE_CSV = env.TYPE_CSV;
         this.TR = env.TR;
+        this.CACHE = env.CACHE;
 
         for (var prop in this) {
             if (Object.prototype.hasOwnProperty.call(this, prop)) {

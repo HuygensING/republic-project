@@ -16,6 +16,7 @@ services:
       TMP: './tmp'
       TR: 'http://tr_textrepo:8080'
       TYPE_CSV: './types.csv'
+      CACHE: 250
     command: npm run create-all
     networks:
       - textrepo_network

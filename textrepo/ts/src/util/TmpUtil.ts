@@ -2,7 +2,7 @@ import Config from "../Config";
 import * as flatCache from 'flat-cache';
 import * as path from "path";
 
-const MAX_CACHE_KEYS = 500;
+const MAX_CACHE_KEYS = Config.CACHE;
 
 export default class TmpUtil {
 

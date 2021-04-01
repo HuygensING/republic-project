@@ -103,7 +103,7 @@ class Importer {
 
     const imports = await taskImporter.run(this.test);
 
-    console.log(`${records.length} records resulted in ${imports.results.length}`
+    console.log(`${records.length} records resulted in ${imports}`
       + ` imported versions (and their files and documents)`);
   }
 

@@ -6,7 +6,6 @@ import PimClient from "../client/pim/PimClient";
 import ImportResult from "./model/ImportResult";
 import CsvIdentifierRecord from "./model/CsvIdentifierRecord";
 import ErrorHandler from "../client/ErrorHandler";
-import {DocumentResult} from "./model/DocumentResult";
 
 /**
  * Delete a document by its externalId, including all its files, contents and metadata

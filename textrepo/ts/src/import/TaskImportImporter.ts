@@ -18,7 +18,7 @@ export const IMAGE_UUID_KEY = KEY_PREFIX + 'uuid';
 /**
  * Import using <textrepo>/task/import
  */
-export default class TaskImportImporter implements TextRepoImporter<ImportEndpointResult> {
+export default class TaskImportImporter {
 
   private textRepoClient: TextRepoClient;
   private pimClient: PimClient;
@@ -50,7 +50,8 @@ export default class TaskImportImporter implements TextRepoImporter<ImportEndpoi
   ];
 
   private types: TextRepoType[];
-  private results = [] as ImportEndpointResult[];
+
+  private versionCounter = 0;
 
   constructor(
     textRepoClient: TextRepoClient,
@@ -64,7 +65,7 @@ export default class TaskImportImporter implements TextRepoImporter<ImportEndpoi
     this.types = types;
   }
 
-  async run(test?: boolean): Promise<ImportResult<ImportEndpointResult>> {
+  async run(test?: boolean): Promise<number> {
     console.log(`Create documents for ${this.records.length} csv records`);
     const documentImageSet = await this.pimClient.documentImageSet.getAll();
     let success = true;
@@ -120,6 +121,7 @@ export default class TaskImportImporter implements TextRepoImporter<ImportEndpoi
 
               if (newVersion) {
                 console.log(`Created documentId ${documentId}, fileId ${fileId} and versionId ${versionId}`);
+                this.versionCounter++;
               } else {
                 console.log('Version already existed for versionId', versionId);
               }
@@ -135,20 +137,15 @@ export default class TaskImportImporter implements TextRepoImporter<ImportEndpoi
                 await this.createVersionPimMetadata(pv, versionId);
               }
 
-              this.results.push({documentId, fileId, versionId} as ImportEndpointResult);
             } catch (e) {
               success = false;
               ErrorHandler.handle(`Could not import pim transcription ${pv.uuid} of scan ${img.uuid}`, e);
             }
           }
-
         }
-
       }
-
     }
-
-    return new ImportResult<ImportEndpointResult>(true, this.results);
+    return this.versionCounter;
   }
 
   private async createExternalIdMetadata(parts: ExternlIdParts, newDoc: TextRepoDocument) {
