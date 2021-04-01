@@ -85,7 +85,7 @@ export default class TaskImportImporter {
       let counter = 0;
       for (const img of documentImages) {
 
-        console.log(`Handling img ${counter++} of ${documentImages.length}`);
+        console.log(`Handling img ${++counter} of ${documentImages.length}: ${img.uuid}`);
 
         const scanNo = IdUtil.remoteuri2scan(img.remoteuri);
         const externalId = IdentifierUtil.createExternalId(identifier, scanNo);
@@ -111,7 +111,7 @@ export default class TaskImportImporter {
 
               console.log(`Importing externalId ${externalId} and type ${type.id}  (analyzed: ${pv.analyzed})`);
               const result = await this.textRepoClient.tasks.import(
-                type.name,
+                  type.name,
                 externalId,
                 pv.result,
                 isLatestVersion
@@ -120,7 +120,7 @@ export default class TaskImportImporter {
               const {documentId, fileId, versionId, newVersion} = result;
 
               if (newVersion) {
-                console.log(`Created documentId ${documentId}, fileId ${fileId} and versionId ${versionId}`);
+                console.log(`Created version ${versionId} with document ${documentId} and file ${fileId}`);
                 this.versionCounter++;
               } else {
                 console.log('Version already existed for versionId', versionId);

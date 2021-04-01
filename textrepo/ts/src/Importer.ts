@@ -66,14 +66,14 @@ class Importer {
       throw new Error('Could not create types');
     }
 
-    console.log(`Create documents, files and versions for file types ${JSON.stringify(types)}`);
+    console.log(`Create documents, files and versions for file types: ${JSON.stringify(types)}`);
 
     const records = await CsvUtil.getRecords<CsvIdentifierRecord>(Config.SUBSET_CSV);
-    let recordCount = 0;
+    console.log(`Records to process: ${JSON.stringify(records.map(i => i.identifier))}`);
 
+    let recordCount = 0;
     for (const record of records) {
-      recordCount++;
-      console.log(`Import record ${recordCount} of ${records.length}: ${record.identifier}`);
+      console.log(`Import record ${++recordCount} of ${records.length}: ${record.identifier}`);
       try {
         await this.createByRecords(types.results, [record]);
       } catch (e) {
@@ -88,11 +88,6 @@ class Importer {
   }
 
   private async createByRecords(types: TextRepoType[], records: CsvIdentifierRecord[]) {
-
-    if (this.test) {
-      records = records.slice(0, 1);
-      console.log('test records', records);
-    }
 
     let taskImporter = new TaskImportImporter(
       this.textRepoClient,
