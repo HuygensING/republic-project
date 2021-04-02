@@ -9,5 +9,6 @@ COPY ./tsconfig.json /pim-tr-import
 
 WORKDIR /pim-tr-import
 
-RUN npm install
+RUN npm install -g typescript
 RUN npm install -g ts-node
+RUN npm install
