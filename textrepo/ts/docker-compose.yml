@@ -8,6 +8,7 @@ services:
     volumes:
       - ./types.csv:/pim-tr-import/types.csv
       - ./external-identifiers-all-210329.csv:/pim-tr-import/external-identifiers.csv
+      - ./import.log:/pim-tr-import/import.log
     environment:
       GOOGLE_AUTHORIZATION: ${GOOGLE_AUTHORIZATION}
       NODE_OPTIONS: '--max_old_space_size=4096'
@@ -17,7 +18,7 @@ services:
       TR: 'http://tr_textrepo:8080'
       TYPE_CSV: './types.csv'
       CACHE: 250
-    command: npm run import
+    command: ./import.sh
     networks:
       - textrepo_network
 

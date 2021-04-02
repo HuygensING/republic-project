@@ -6,6 +6,7 @@ COPY ./src/ /pim-tr-import/src
 COPY ./package.json /pim-tr-import
 COPY ./package-lock.json /pim-tr-import
 COPY ./tsconfig.json /pim-tr-import
+COPY ./import.sh /pim-tr-import
 
 WORKDIR /pim-tr-import
 
