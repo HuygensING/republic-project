@@ -1,5 +1,4 @@
 import RestUtil from "../../RestUtil";
-import {TextRepoMetadataEntry} from "../model/TextRepoMetadataEntry";
 
 export default class VersionMetadataResource {
     private host: string;

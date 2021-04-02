@@ -18,13 +18,16 @@ export default class ErrorHandler {
         }
     }
 
-    public static async catch(reason: Response) : Promise<never> {
+    public static async throw(msg: string, originalResponse: any) : Promise<never> {
         let reasonText = '';
-        if(typeof reason.text === 'function') {
-            reasonText = await reason.text();
+        if(typeof originalResponse.text === 'function') {
+            reasonText = await originalResponse.text();
+        } else if (originalResponse.message) {
+            reasonText = originalResponse.message;
+        } else {
+            reasonText = JSON.stringify(originalResponse);
         }
-        let msg = `Failed to request ${JSON.stringify(reason.url)}`;
-        throw new RequestError(msg, reason.status, reasonText);
+        throw new RequestError(msg, originalResponse.status, reasonText);
     }
 
 }

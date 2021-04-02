@@ -13,8 +13,7 @@ export default class TypesResource {
 
     public async getAll() : Promise<TextRepoType[]> {
         const url = new URL(this.host + this.endpoint);
-        const response = await fetch(url)
-            .catch(await ErrorHandler.catch);
+        const response = await fetch(url);
         await RestUtil.checkOk(url.toString(), response);
         return await response.json();
     }

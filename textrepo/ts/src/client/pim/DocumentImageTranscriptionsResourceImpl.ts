@@ -18,8 +18,7 @@ export class DocumentImageTranscriptionsResourceImpl implements DocumentImageTra
         let url = this.host + this.endpoint;
         url = url.replace('{imageId}', imageId);
         try {
-            const response = await fetch(url, {headers: {'authorization': this.authorization}})
-                .catch(await ErrorHandler.catch);
+            const response = await fetch(url, {headers: {'authorization': this.authorization}});
             await RestUtil.checkOk(url, response);
             return RestUtil.asJson(response);
         } catch (e) {

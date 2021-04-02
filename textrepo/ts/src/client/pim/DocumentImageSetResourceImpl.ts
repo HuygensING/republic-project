@@ -16,8 +16,7 @@ export default class DocumentImageSetResourceImpl implements DocumentImageSetRes
 
     public async getAll() {
         let url = this.host + this.endpoint;
-        const response = await fetch(url, {headers: {'authorization': this.authorization}})
-            .catch(await ErrorHandler.catch);
+        const response = await fetch(url, {headers: {'authorization': this.authorization}});
         await RestUtil.checkOk(url, response);
         return RestUtil.asJson(response);
     }

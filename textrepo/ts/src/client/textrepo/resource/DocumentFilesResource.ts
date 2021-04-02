@@ -13,8 +13,7 @@ export default class DocumentFilesResource {
 
     public async getAll(docId) : Promise<TextRepoFile[]> {
         const url = new URL(this.host + this.endpoint.replace('{id}', docId));
-        const response = await fetch(url)
-            .catch(await ErrorHandler.catch);
+        const response = await fetch(url);
         await RestUtil.checkOk(url.toString(), response);
         let page = await response.json();
         return page.items;

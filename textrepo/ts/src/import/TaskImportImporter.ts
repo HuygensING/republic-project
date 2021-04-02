@@ -65,7 +65,6 @@ export default class TaskImportImporter {
   async run(test?: boolean): Promise<number> {
     console.log(`Create documents for ${this.records.length} csv records`);
     const documentImageSet = await this.pimClient.documentImageSet.getAll();
-    let success = true;
 
     for (const record of this.records) {
 
@@ -96,9 +95,10 @@ export default class TaskImportImporter {
         try {
           allPimVersions = await this.getAndCachePimVersions(img.uuid);
         } catch (e) {
-          ErrorHandler.handle(`Could not getretrieve pim versions from img ${img.uuid}`, e);
+          ErrorHandler.handle(`Could not retrieve pim versions from img ${img.uuid}`, e);
           continue;
         }
+
         allPimVersions.sort((a, b) => a.analyzed - b.analyzed);
 
         let docMetadataCreated = false;
@@ -117,13 +117,14 @@ export default class TaskImportImporter {
 
               let isLatestVersion = parseInt(i) === (pimVersionsToAdd.length - 1);
 
-              console.log(`Importing externalId ${externalId} and type ${type.id}  (analyzed: ${pv.analyzed})`);
-              const result = await this.textRepoClient.tasks.import(
-                type.name,
-                externalId,
-                pv.result,
-                isLatestVersion
-              );
+              let result;
+              try {
+                console.log(`Importing externalId ${externalId} and type ${type.name}  (analyzed: ${pv.analyzed})`);
+                result = await this.textRepoClient.tasks.import(type.name, externalId, pv.result, isLatestVersion);
+              } catch (e) {
+                ErrorHandler.handle(`Could not import document by ${externalId} and type ${type.name}`, e);
+                continue;
+              }
 
               const {documentId, fileId, versionId, newVersion} = result;
 
@@ -146,7 +147,6 @@ export default class TaskImportImporter {
               }
 
             } catch (e) {
-              success = false;
               ErrorHandler.handle(`Could not import pim transcription ${pv.uuid} of scan ${img.uuid}`, e);
             }
           }

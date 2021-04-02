@@ -15,8 +15,7 @@ export default class DocumentImagesResource {
     public async getAll(setId: string) {
         let url = this.host + this.endpoint;
         url = url.replace('{setId}', setId);
-        const response = await fetch(url, {headers: {'authorization': this.authorization}})
-            .catch(await ErrorHandler.catch);
+        const response = await fetch(url, {headers: {'authorization': this.authorization}});
         await RestUtil.checkOk(url, response);
         return RestUtil.asJson(response);
     }

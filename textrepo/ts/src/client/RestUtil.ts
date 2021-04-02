@@ -17,8 +17,7 @@ export default class RestUtil {
             body: formData
         };
 
-        const response = await fetch(url, requestOptions)
-            .catch(await ErrorHandler.catch);
+        const response = await fetch(url, requestOptions);
 
         await RestUtil.checkOk(url, response);
         return await response.json();
@@ -29,7 +28,7 @@ export default class RestUtil {
             method: 'PUT',
             body: body,
             headers: {'content-type': mimetype}
-        }).catch(await ErrorHandler.catch);
+        });
         await RestUtil.checkOk(url, response);
         return await response.json();
     }
@@ -40,7 +39,7 @@ export default class RestUtil {
             method: 'POST',
             body: json,
             headers: {'content-type': 'application/json'}
-        }).catch(await ErrorHandler.catch);
+        });
     }
 
     public static async asJson(response: Response) {
@@ -52,8 +51,9 @@ export default class RestUtil {
     }
 
     public static async checkOk(url: string, response: Response) {
-        if (![200, 201].includes(response.status)) {
-            await ErrorHandler.catch(response);
+        let expected = [200, 201];
+        if (!expected.includes(response.status)) {
+            await ErrorHandler.throw(`Expected status of ${expected} but was ${response.status}`, response);
         }
     }
 
@@ -62,7 +62,7 @@ export default class RestUtil {
         let response = await fetch(url, {
             headers: headers,
             method: 'DELETE',
-        }).catch(await ErrorHandler.catch);
+        });
         await RestUtil.checkOk(url, response);
         return response;
 

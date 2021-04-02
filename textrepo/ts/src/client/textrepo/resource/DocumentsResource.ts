@@ -23,8 +23,7 @@ export default class DocumentsResource {
     public async getAll(params: Partial<DocumentCollectionParams>) {
         const url = new URL(this.host + this.endpoint);
         Object.keys(params).forEach(p => url.searchParams.append(p, params[p]))
-        const response = await fetch(url)
-            .catch(await ErrorHandler.catch);
+        const response = await fetch(url);
         await RestUtil.checkOk(url.toString(), response);
         return await response.json();
     }
