@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 import RestUtil from "../../RestUtil";
 import TextRepoFile from "../model/TextRepoFile";
-import ErrorHandler from "../../ErrorHandler";
 
 export default class DocumentFilesResource {
     private host: string;

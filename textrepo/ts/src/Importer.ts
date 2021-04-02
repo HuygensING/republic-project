@@ -60,24 +60,22 @@ class Importer {
 
   private async createAll() {
     this.start = moment();
-    // const types = await new TypeImporter(this.textRepoClient).run()
+    const types = await new TypeImporter(this.textRepoClient).run()
 
-    // if (!types.isSuccesful()) {
-    //   throw new Error('Could not create types');
-    // }
+    if (!types.isSuccesful()) {
+      throw new Error('Could not create types');
+    }
 
-    // console.log(`Create documents, files and versions for file types: ${JSON.stringify(types)}`);
+    console.log(`Create documents, files and versions for file types: ${JSON.stringify(types)}`);
+
     const records = await CsvUtil.getRecords<CsvIdentifierRecord>(Config.SUBSET_CSV);
-
-    // let typeResult = types.results;
-    let typeResult = [{"name":"pagexml","mimetype":"application/vnd.prima.page+xml"},{"name":"hocr","mimetype":"text/vnd.hocr+html"}] as TextRepoType[];
-
     console.log(`Records to process: ${JSON.stringify(records.map(i => i.identifier))}`);
+
     let recordCount = 0;
     for (const record of records) {
       console.log(`Import record ${++recordCount} of ${records.length}: ${record.identifier}`);
       try {
-        await this.createByRecords(typeResult, [record]);
+        await this.createByRecords(types.results, [record]);
       } catch (e) {
         ErrorHandler.handle(`Could not create record ${JSON.stringify(record)}`, e);
         await Importer.wait(5000);

@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
 
@@ -14,10 +14,10 @@ services:
       PIM: 'https://images.diginfra.net'
       SUBSET_CSV: './external-identifiers.csv'
       TMP: './tmp'
-      TR: 'localhost:8080/textrepo'
+      TR: 'http://tr_textrepo:8080'
       TYPE_CSV: './types.csv'
       CACHE: 250
-    command: npm run create-all
+    command: npm run import
     networks:
       - textrepo_network
 

@@ -19,7 +19,10 @@
   "scripts": {
     "create-all": "ts-node ./src/Importer.ts create-all",
     "test-create-all": "ts-node ./src/Importer.ts test-create-all",
-    "delete-all": "ts-node ./src/Importer.ts delete-all"
+    "delete-all": "ts-node ./src/Importer.ts delete-all",
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "import": "npm run build && node dist/Importer.js create-all"
   },
   "keywords": [],
   "author": "",

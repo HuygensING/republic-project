@@ -1,10 +1,11 @@
-FROM node:15.12-alpine3.10
+FROM node:13.8.0
 
-RUN apk update && apk add curl
+RUN apt-get update && apt-get install curl -y
 
 COPY ./src/ /pim-tr-import/src
 COPY ./package.json /pim-tr-import
 COPY ./package-lock.json /pim-tr-import
+COPY ./tsconfig.json /pim-tr-import
 
 WORKDIR /pim-tr-import
 
