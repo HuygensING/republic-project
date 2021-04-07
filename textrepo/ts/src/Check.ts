@@ -75,21 +75,25 @@ class Check {
       ['pim:transcription:uuid'];
     console.log('transcriptionUuid:', transcriptionUuid);
 
-    const latestVersionContents = (await (await fetch(
-      tr + `/rest/contents/${latestContentsSha}`
+    let versionContentsUrl = tr + `/rest/contents/${latestContentsSha}`;
+    console.log(`latest version contents url: ${versionContentsUrl}`);
+    const versionContents = (await (await fetch(
+      versionContentsUrl
     )).text());
-    console.log(`latestVersionContents substring: ${latestVersionContents.substr(0, 200)}[..]`);
+    console.log(`latest version contents substring:\n${versionContents.substr(0, 200)}[..]`);
 
+    let transcriptionUrl = Config.PIM + `/api/pim/documentimage/${imageUuid}/transcriptions`;
+    console.log(`transcription url ${transcriptionUrl}`);
     const imageTranscriptions: any[] = (await (await fetch(
-      Config.PIM + `/api/pim/documentimage/${imageUuid}/transcriptions`,
+      transcriptionUrl,
       {headers: {'authorization': Config.GOOGLE_AUTHORIZATION}}
     )).json());
     const transcriptionContents = imageTranscriptions
       .find((it: any) => it.uuid === transcriptionUuid)
       .result;
-    console.log(`transcriptionContents substring: ${transcriptionContents.substr(0, 200)}[..]`);
+    console.log(`transcription substring:\n${transcriptionContents.substr(0, 200)}[..]`);
 
-    let match = transcriptionContents === latestVersionContents;
+    let match = transcriptionContents === versionContents;
     console.log('contents match?', match);
   }
 }
