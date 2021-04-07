@@ -13,8 +13,9 @@ class Check {
     console.log('Start check');
     switch (this.commands[0]) {
       case "external-id-type": {
-        if (!this.commands[1]) {
+        if (!this.commands[1] || !this.commands[2]) {
           console.error("run as:\ncheck external-id-type <external-id> <type-name>");
+          break;
         }
         return this.checkByExternalIdAndType(this.commands[1], this.commands[2]);
       }
