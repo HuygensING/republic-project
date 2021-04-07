@@ -77,6 +77,7 @@ class Check {
     const latestVersionContents = (await (await fetch(
       tr + `/rest/contents/${latestContentsSha}`
     )).text());
+    console.log(`latestVersionContents substring: ${latestVersionContents.substr(0, 200)}[..]`);
 
     const imageTranscriptions: any[] = (await (await fetch(
       Config.PIM + `/api/pim/documentimage/${imageUuid}/transcriptions`,
@@ -85,6 +86,8 @@ class Check {
     const transcriptionContents = imageTranscriptions
       .find((it: any) => it.uuid === transcriptionUuid)
       .result;
+    console.log(`transcriptionContents substring: ${transcriptionContents.substr(0, 200)}[..]`);
+
     let match = transcriptionContents === latestVersionContents;
     console.log('contents match?', match);
   }
