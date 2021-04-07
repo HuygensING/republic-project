@@ -22,7 +22,8 @@
     "delete-all": "ts-node ./src/Importer.ts delete-all",
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "import": "npm run build && node dist/Importer.js create-all"
+    "import": "npm run build && node dist/Importer.js create-all",
+    "check": "ts-node ./src/Check.ts"
   },
   "keywords": [],
   "author": "",

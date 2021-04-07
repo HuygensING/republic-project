@@ -23,3 +23,9 @@ Run:
 docker-compose up --build -d
 ```
 
+## Check contents match
+
+To check if the contents in TR match the contents in PIM, run:
+```
+docker-compose run importer npm run check external-id-type <externalId> <typeName>
+```

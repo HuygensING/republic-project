@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
 
-  pim-tr-importer:
+  importer:
     container_name: importer
     build: .
     volumes:
