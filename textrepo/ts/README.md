@@ -21,6 +21,7 @@ Run:
 ```
  export GOOGLE_AUTHORIZATION='Google <token>'
 docker-compose up --build -d
+tail -f import.log
 ```
 
 ## Check contents match
