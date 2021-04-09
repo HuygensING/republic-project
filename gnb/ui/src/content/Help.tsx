@@ -48,7 +48,7 @@ function HelpHtml() {
     <p>Gebruik de linker en rechter pijltjestoets of de kalender-<i>widget</i> om door de tijd (1626-1630) te lopen. De periodelengte kunt u veranderd door de einddatum in te stellen.</p>
     <h3>Functies en functiecategorieën</h3>
     <p>Personen kunnen functies bekleden. Deze functies zijn vervolgens weer ingedeeld in een aantal categorieën. Op deze functies en categorieën kunt u zoeken.</p>
-    <p className="font-italic">NB: Er wordt enkel gekeken binnen de genoemden wanneer u zoekt op functies en categorieën. Daarnaast wordt er geen rekening gehouden met de periode waarbinnen iemand de functie bekleedde: een persoon zal dus ook buiten deze functieperiode om worden gevonden op de functie.</p>
+    <p className="font-italic">NB: Wanneer u zoekt op personen met functies en categorieën, dan wordt er enkel gezocht binnen de genoemden, niet de aanwezigen. Daarnaast wordt er geen rekening gehouden met de periode waarbinnen iemand de functie bekleedde: een persoon zal dus ook buiten deze functieperiode om worden gevonden op de functie.</p>
     <h2>Exporteren</h2>
     <p>U kunt de huidige selectie exporteren, op het moment enkel in de vorm van twee csv-bestanden: de nodes en edges van de huidige selectie, geschikt voor bijvoorbeeld Gephi. Naast de standaard kolommen is aan het nodes.csv een Type-kolom toegevoegd met de waarde <code>searched</code> of <code>plotted</code> bij de gezochte dan wel geplotte entities.</p>
   </>
