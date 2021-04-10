@@ -10,7 +10,7 @@ export function renderHeatmap(
 ) {
 
   const data = heatmapTestdata;
-  
+
   let result = new Map(data.map(value => [value['date'], value['count']]));
 
   const width = 960, height = 136, cellSize = 17;
