@@ -20,13 +20,9 @@ export function renderHeatmap(
 
   const start = data[0].date;
   const startDate = new Date(start);
-  // Set to start of month:
-  startDate.setDate(0);
 
   const end = data[data.length-1].date;
-  let endDate = new Date(end);
-  // Set to end of month:
-  endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0)
+  const endDate = new Date(end);
 
   const svg = d3.select(canvasRef.current)
     .select(".d3-canvas")
@@ -42,7 +38,11 @@ export function renderHeatmap(
     .attr('stroke', '#000')
     .attr('stroke-width', '0.1px')
     .selectAll('rect')
-    .data(d => d3.timeDays(startDate, endDate))
+    .data(d => {
+      let startDateEdge = new Date(startDate);
+      startDateEdge.setDate(startDate.getDate()-1)
+      return d3.timeDays(startDateEdge, endDate);
+    })
     .enter()
     .append('rect')
     .attr('width', cellSize)
@@ -73,18 +73,21 @@ export function renderHeatmap(
     .attr('stroke-width', '1.5px')
     .selectAll('path')
     .data(d => {
-      return d3.timeMonth.range(startDate, endDate);
+      const startMonthDate = new Date(startDate);
+      startMonthDate.setDate(0);
+      return d3.timeMonth.range(startMonthDate, endDate);
     })
     .enter()
     .append('path')
     .attr('d', function (startMonth) {
-
+      if(startMonth < startDate) {
+        startMonth.setDate(startDate.getDate());
+      }
       const startWeekday = startMonth.getUTCDay();
       const startWeek = d3.timeMonday.count(startDate, startMonth);
 
-      const endMonth = new Date(startMonth.getFullYear(), startMonth.getMonth() + 1, 0);
-      const endWeek = d3.timeMonday.count(startDate, endMonth);
-      const endWeekday = endMonth.getUTCDay();
+      const endWeek = d3.timeMonday.count(startDate, endDate);
+      const endWeekday = endDate.getUTCDay() - 1;
 
       return 'M' + (startWeek + 1) * cellSize + ',' + startWeekday * cellSize
         + 'H' + startWeek * cellSize + 'V' + 7 * cellSize
