@@ -30,6 +30,34 @@ def parse_points(points: Union[str, List[Tuple[int, int]]]) -> List[Tuple[int, i
         return points
 
 
+def get_base_y(line):
+    if line_starts_with_big_capital(line):
+        return [point[1] for point in line['baseline'].points if point[1] < line['baseline'].bottom - 20]
+    else:
+        return [point[1] for point in line['baseline'].points]
+
+
+def line_is_below(line1, line2):
+    base_y1 = get_base_y(line1)
+    base_y2 = get_base_y(line2)
+    return base_y1[0] + 30 < base_y2[0] and base_y1[-1] + 30 < base_y2[-1]
+
+
+def line_starts_with_big_capital(line):
+    if line['baseline'].h < 30:
+        return False
+    lowest_point = find_lowest_point(line)
+    if lowest_point[0] - line['baseline'].left > 100:
+        return False
+    return True
+
+
+def find_lowest_point(line):
+    for point in line['baseline'].points:
+        if point[1] == line['baseline'].bottom:
+            return point
+
+
 class Coords:
 
     def __init__(self, points: Union[str, List[Tuple[int, int]]]):
@@ -88,6 +116,18 @@ class Baseline(Coords):
     def __init__(self, points: Union[str, List[Tuple[int, int]]]):
         super().__init__(points)
         self.type = "baseline"
+
+
+def horizontal_overlap(coords1: Coords, coords2: Coords) -> int:
+    right = min(coords1.right, coords2.right)
+    left = max(coords1.left, coords2.left)
+    return right - left if right > left else 0
+
+
+def vertical_overlap(coords1: Coords, coords2: Coords) -> int:
+    bottom = min(coords1.bottom, coords2.bottom)
+    top = max(coords1.top, coords2.top)
+    return bottom - top if bottom > top else 0
 
 
 def parse_derived_coords(document_list: list) -> Coords:
@@ -264,7 +304,7 @@ class PageXMLTextLine(PageXMLDoc):
         doc_json = super().json
         doc_json['text'] = self.text
         if self.baseline:
-            doc_json['baseline'] = self.baseline.json
+            doc_json['baseline'] = self.baseline.points
         if self.words:
             doc_json['words'] = [word.json for word in self.words]
         if self.xheight:
@@ -282,6 +322,29 @@ class PageXMLTextLine(PageXMLDoc):
     @property
     def num_words(self):
         return len(self.get_words())
+
+    def is_below(self, other: PageXMLTextLine) -> bool:
+        h_overlap = horizontal_overlap(self.baseline, other.baseline)
+        # if there is no horizontal overlap, this line is not directly below the other
+        if not h_overlap:
+            return False
+        # if the bottom of this line is above the top of the other line, this line is above the other
+        if self.baseline.bottom < other.baseline.top:
+            return False
+        # if most of this line's baseline points are not below most the other's baseline points
+        # this line is not below the other
+        print(self.baseline, other.baseline)
+        return True
+
+    def is_next_to(self, other: PageXMLTextLine) -> bool:
+        if vertical_overlap(self.coords, other.coords) == 0:
+            return False
+        if horizontal_overlap(self.coords, other.coords) > 10:
+            return False
+        if self.baseline.top > other.baseline.bottom + 10:
+            return False
+        else:
+            return True
 
 
 class PageXMLTextRegion(PageXMLDoc):
@@ -534,7 +597,7 @@ class StructureDocOld:
                     'scan_id': line['metadata']['scan_id'],
                     'doc_id': line['metadata']['doc_id'],
                 },
-                'coords': parse_derived_coords_old(self.column_ids[column_id]),
+                'coords': None, # parse_derived_coords_old(self.column_ids[column_id]),
                 'textregions': []
             }
             if 'page_column_id' in line['metadata']:
@@ -542,7 +605,7 @@ class StructureDocOld:
             for textregion_id in textregion_lines:
                 textregion = {
                     'metadata': {'id': textregion_id},
-                    'coords': parse_derived_coords_old(textregion_lines[textregion_id]),
+                    'coords': None, # parse_derived_coords_old(textregion_lines[textregion_id]),
                     'lines': textregion_lines[textregion_id]
                 }
                 column['textregions'] += [textregion]
@@ -834,9 +897,14 @@ def json_to_pagexml_word(json_doc: dict) -> PageXMLWord:
 
 def json_to_pagexml_line(json_doc: dict) -> PageXMLTextLine:
     words = [json_to_pagexml_word(word) for word in json_doc['words']] if 'words' in json_doc else []
-    line = PageXMLTextLine(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
-                           coords=Coords(json_doc['coords']), text=json_doc['text'], words=words)
-    return line
+    try:
+        line = PageXMLTextLine(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
+                               coords=Coords(json_doc['coords']), baseline=Baseline(json_doc['baseline']),
+                               text=json_doc['text'], words=words)
+        return line
+    except TypeError:
+        print(json_doc['baseline'])
+        raise
 
 
 def json_to_pagexml_text_region(json_doc: dict) -> PageXMLTextRegion:

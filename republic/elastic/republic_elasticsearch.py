@@ -22,9 +22,9 @@ def initialize_es(host_type: str = 'internal', timeout: int = 10) -> Elasticsear
     return es_republic
 
 
-def initialize_es_text_repo():
+def initialize_es_text_repo(timeout: int = 10):
     es_config = text_repo_es_config()
-    return Elasticsearch([es_config])
+    return Elasticsearch([es_config], timeout=timeout)
 
 
 def text_repo_es_config():
@@ -41,6 +41,7 @@ def set_elasticsearch_config(host_type: str = 'internal'):
     host = settings.anno_host_internal if host_type == 'internal' else settings.anno_host_external
     scheme = 'http' if host_type == 'internal' else 'https'
     port = 80 if scheme == 'http' else 443
+    port = 443 if host_type == "external" else 9200
     config = {
         'elastic_config': {
             'host': host,

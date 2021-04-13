@@ -177,8 +177,10 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
     year = inv_config["year"]
     if indexing_step == "download":
         do_downloading(inv_num, inv_config, year)
+    if indexing_step == "scans_pages":
+        do_scan_indexing_pagexml(inv_num, inv_config, year)
+        do_page_indexing_pagexml(inv_num, inv_config, year)
     if indexing_step == "scans":
-        print("calling do_scan_indexing_pagexml")
         do_scan_indexing_pagexml(inv_num, inv_config, year)
     if indexing_step == "pages":
         do_page_indexing_pagexml(inv_num, inv_config, year)
