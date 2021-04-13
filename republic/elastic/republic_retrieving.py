@@ -6,20 +6,24 @@ from collections import defaultdict
 
 from fuzzy_search.fuzzy_match import PhraseMatch
 
-from republic.helper.metadata_helper import get_scan_id
+from settings import text_repo_url
+from republic.download.text_repo import TextRepo
+from republic.helper.metadata_helper import get_scan_id, get_per_page_type_index
 from republic.model.republic_session import Session, session_from_json
 from republic.model.republic_date import RepublicDate
+from republic.model.physical_document_model import json_to_pagexml_doc, PageXMLScan, PageXMLPage
+from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
 from republic.model.republic_document_model import resolution_from_json, Resolution, parse_phrase_matches
 from republic.model.republic_document_model import page_json_to_resolution_page, ResolutionPageDoc
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
-def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str, size: int = 100,
-                scroll: str = '2m') -> iter:
+def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
+                size: int = 100, scroll: str = '2m') -> iter:
     response = es.search(index=index, doc_type=doc_type, scroll=scroll, size=size, body=query)
     sid = response['_scroll_id']
     scroll_size = response['hits']['total']
-    print('total hits:', scroll_size)
+    print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))
     if type(scroll_size) == dict:
         scroll_size = scroll_size['value']
     # Start scrolling
@@ -73,8 +77,8 @@ def create_es_index_lemma_doc(lemma: str, lemma_index: dict, config: dict):
     }
 
 
-def parse_hits_as_pages(hits: dict) -> List[ResolutionPageDoc]:
-    return [page_json_to_resolution_page(hit['_source']) for hit in hits]
+def parse_hits_as_pages(hits: dict) -> List[PageXMLPage]:
+    return [json_to_pagexml_page(hit['_source']) for hit in hits]
 
 
 def make_bool_query(match_fields, size: int = 10000) -> dict:
@@ -82,6 +86,37 @@ def make_bool_query(match_fields, size: int = 10000) -> dict:
         'query': {
             'bool': {
                 'must': match_fields
+            }
+        },
+        'size': size
+    }
+
+
+def make_text_repo_inventory_query(inventory_num):
+    """Returns a Nested Query to match a key/value pair for inventory numbers in the Text Repository."""
+    return {
+        "query": {
+            "nested": {
+                "path": "doc.metadata",
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"match": {"doc.metadata.key": "inventaris"}},
+                            {"match": {"doc.metadata.value": str(inventory_num)}}
+                        ]
+                    }
+                }
+            }
+        },
+        'size': 2
+    }
+
+
+def make_inventory_query(inventory_num: int, size: int = 10):
+    return {
+        'query': {
+            'match': {
+                'metadata.inventory_num': inventory_num
             }
         },
         'size': size
@@ -119,12 +154,35 @@ def make_range_query(field: str, start: int, end: int):
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
-    match_fields = [{'match': {'metadata.page_type': page_type}}]
+    match_fields = [{'match': {'metadata.type': page_type}}]
     if inventory_num:
         match_fields += [{'match': {'metadata.inventory_num': inventory_num}}]
     if year:
         match_fields += [{'match': {'metadata.year': year}}]
     return make_bool_query(match_fields, size)
+
+
+def select_latest_tesseract_version(versions: List[Dict[str, any]]) -> Dict[str, any]:
+    return sorted(versions, key=lambda version: version['createdAt'])[-1]
+
+
+def get_tesseract_versions(doc: Dict[str, any]) -> List[Dict[str, any]]:
+    versions = []
+    for version in doc['versions']:
+        for field in version['metadata']:
+            if field['key'] == 'pim:transcription:transcriber' and field['value'] == 'CustomTesseractPageXML':
+                versions.append(version)
+    return versions
+
+
+def is_tesseract_version(version: Dict[str, any], text_repo: TextRepo):
+    version_metadata = text_repo.get_version_metadata(version['id'])
+    return version_metadata['pim:transcription:transcriber'] == 'CustomTesseractPageXML'
+
+
+def get_tesseract_versions_by_external_id(external_id: str, text_repo: TextRepo):
+    versions_info = text_repo.get_file_type_versions(external_id, 'pagexml')
+    return [version for version in versions_info['items'] if is_tesseract_version(version, text_repo)]
 
 
 def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
@@ -163,12 +221,30 @@ def retrieve_scan_by_id(es: Elasticsearch, scan_id: str, config) -> Union[dict, 
         return None
 
 
-def retrieve_scans_by_query(es: Elasticsearch, query: dict, config) -> List[dict]:
+def retrieve_scans_by_query(es: Elasticsearch, query: dict, config) -> List[PageXMLScan]:
     response = es.search(index=config['scan_index'], body=query)
     if response['hits']['total']['value'] == 0:
         return []
     else:
-        return [hit['_source'] for hit in response['hits']['hits']]
+        return [json_to_pagexml_scan(hit['_source']) for hit in response['hits']['hits']]
+
+
+def retrieve_scans_pagexml_from_text_repo_by_inventory(es_text: Elasticsearch,
+                                                       inventory_num: int , config: Dict[str, any]):
+    text_repo = TextRepo(text_repo_url)
+    query = make_text_repo_inventory_query(inventory_num)
+    for hi, hit in enumerate(scroll_hits(es_text, query, index='file', size=2)):
+        doc = hit['_source']
+        versions = get_tesseract_versions(doc)
+        if len(versions) == 0:
+            continue
+            # raise ValueError(f"Document has no versions: {doc['doc']['externalId']}")
+        version = select_latest_tesseract_version(versions)
+        pagexml = text_repo.get_content_by_version_id(version['id'])
+        filename = f"{doc['doc']['externalId']}.xml"
+        scan_doc = pagexml_parser.get_scan_pagexml(filename, config, pagexml_data=pagexml)
+        scan_doc.metadata['textrepo_version'] = version
+        yield scan_doc
 
 
 def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[ResolutionPageDoc, None]:
@@ -184,7 +260,7 @@ def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[Resolu
 
 def retrieve_pages_by_query(es: Elasticsearch,
                             query: dict, config: dict,
-                            use_scroll: bool = False) -> List[ResolutionPageDoc]:
+                            use_scroll: bool = False) -> List[PageXMLPage]:
     hits = []
     if use_scroll:
         for hit in scroll_hits(es, query, config['page_index'], config['page_doc_type'], size=10):
@@ -200,7 +276,7 @@ def retrieve_pages_by_query(es: Elasticsearch,
 
 
 def retrieve_page_by_page_number(es: Elasticsearch, page_num: int,
-                                 config: dict) -> Union[ResolutionPageDoc, None]:
+                                 config: dict) -> Union[PageXMLPage, None]:
     match_fields = [{'match': {'metadata.page_num': page_num}}]
     if 'inventory_num' in config:
         match_fields += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
@@ -216,7 +292,7 @@ def retrieve_page_by_page_number(es: Elasticsearch, page_num: int,
 
 def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
                                         page_num_end: int, config: dict,
-                                        use_scroll: bool = False) -> Union[List[ResolutionPageDoc], None]:
+                                        use_scroll: bool = False) -> Union[List[PageXMLPage], None]:
     """Retrieve a range of Republic PageXML pages based on page number"""
     match_fields = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
     if 'inventory_num' in config:
@@ -232,7 +308,7 @@ def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
 
 
 def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int,
-                           config: dict) -> List[ResolutionPageDoc]:
+                           config: dict) -> List[PageXMLPage]:
     query = make_page_type_query(page_type, inventory_num=inventory_num)
     return retrieve_pages_by_query(es, query, config)
 
@@ -243,30 +319,30 @@ def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
     return retrieve_pages_by_query(es, query, inventory_config)
 
 
-def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
     return retrieve_pages_by_type(es, 'title_page', inventory_num, config)
 
 
-def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
     pages = retrieve_pages_by_type(es, 'index_page', inventory_num, config)
     return sorted(pages, key=lambda page: page.metadata['page_num'])
 
 
-def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
     pages = retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
     return sorted(pages, key=lambda page: page.metadata['page_num'])
 
 
 def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int,
-                                      inv_config: dict, use_scroll=False) -> Union[None, List[dict]]:
+                                      inv_config: dict, use_scroll=False) -> List[PageXMLPage]:
     try:
         resolution_start, resolution_end = get_pagexml_resolution_page_range(es, inv_num, inv_config)
     except TypeError:
-        return None
+        return []
     return retrieve_pages_by_page_number_range(es, resolution_start, resolution_end, inv_config, use_scroll=use_scroll)
 
 
-def retrieve_respect_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
+def retrieve_respect_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
     return retrieve_pages_by_type(es, 'respect_page', inventory_num, config)
 
 
@@ -404,7 +480,7 @@ def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_
         pagexml = text_repo.get_last_version_content(doc_id, inventory_config['ocr_type'])
         file_extension = '.hocr' if inventory_config['ocr_type'] == 'hocr' else '.page.xml'
         scan_doc = pagexml_parser.get_scan_pagexml(doc_id + file_extension, inventory_config, pagexml_data=pagexml)
-        scan_doc["version"] = version_info
+        scan_doc.metadata["version"] = version_info
         return scan_doc
     except ValueError:
         print('missing scan:', doc_id)

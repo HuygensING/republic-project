@@ -1,4 +1,3 @@
-from elasticsearch import Elasticsearch
 
 from settings import set_elasticsearch_config
 # import retrieval and indexing functions so they cna be imported from a single module

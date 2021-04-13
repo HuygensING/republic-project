@@ -9,7 +9,7 @@ from fuzzy_search.fuzzy_match import PhraseMatch
 
 import republic.model.resolution_phrase_model as rpm
 import republic.elastic.republic_retrieving as rep_es
-from republic.model.generic_document_model import parse_derived_coords
+from republic.model.physical_document_model import parse_derived_coords
 from republic.model.republic_document_model import ResolutionParagraph, Resolution, ResolutionDoc
 from republic.helper.annotation_helper import make_hash_id
 

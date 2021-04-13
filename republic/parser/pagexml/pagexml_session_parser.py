@@ -2,7 +2,7 @@ from typing import List, Dict, Union, Iterator
 from collections import Counter
 import copy
 
-from republic.model.generic_document_model import StructureDoc
+from republic.model.physical_document_model import StructureDoc
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
@@ -221,15 +221,6 @@ def generate_session_doc(session_metadata: dict, session_lines: list,
         print('MEETING DOC IS MULTI DAY')
         session.metadata['date_shift_status'] = 'multi_day'
     return session
-
-
-def get_session_scans_version(session: Session) -> List:
-    scans_version = {}
-    for line in session.lines:
-        scans_version[line['metadata']['doc_id']] = copy.copy(line['metadata']['scan_version'])
-        scans_version[line['metadata']['doc_id']]['doc_id'] = line['metadata']['doc_id']
-    # print("session scans versions:", scans_version)
-    return list(scans_version.values())
 
 
 def clean_lines(lines: List, clean_copy=True) -> List:
