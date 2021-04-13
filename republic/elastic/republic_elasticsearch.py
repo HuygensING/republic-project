@@ -40,14 +40,13 @@ def text_repo_es_config():
 def set_elasticsearch_config(host_type: str = 'internal'):
     host = settings.anno_host_internal if host_type == 'internal' else settings.anno_host_external
     scheme = 'http' if host_type == 'internal' else 'https'
-    port = 80 if scheme == 'http' else 443
     port = 443 if host_type == "external" else 9200
     config = {
         'elastic_config': {
             'host': host,
             'port': port,
             'scheme': scheme,
-            'url_prefix': settings.anno_url_prefix,
+            'url_prefix': settings.anno_url_prefix if host_type == 'external' else '',
             'url': f'{scheme}://{host}:{port}/' + f'{settings.anno_url_prefix}/' if host_type == 'external' else '',
         },
         'image_host': {
