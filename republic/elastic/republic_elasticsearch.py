@@ -46,7 +46,6 @@ def set_elasticsearch_config(host_type: str = 'internal'):
             'host': host,
             'port': port,
             'scheme': scheme,
-            'settings.anno_url_prefix': settings.anno_url_prefix,
             'url': f'{scheme}://{host}:{port}/' + f'{settings.anno_url_prefix}/' if host_type == 'external' else '',
             'url_prefix': settings.anno_url_prefix if host_type == 'external' else None
         },
