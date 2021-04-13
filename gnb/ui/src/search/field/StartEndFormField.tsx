@@ -5,8 +5,14 @@ import {useSearchContext} from "../SearchContext";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import {WARN_DATEPICKER_END_BEFORE_START} from "../../Placeholder";
+import {
+  CALENDAR_MOVE_WITH_LEFT_ARROW,
+  CALENDAR_MOVE_WITH_RIGHT_ARROW,
+  WARN_DATEPICKER_END_BEFORE_START
+} from "../../content/Placeholder";
 import Warning from "../../common/Warning";
+
+const dateFormat = "yyyy-MM-dd";
 
 export default function StartEndFormField() {
 
@@ -77,6 +83,7 @@ export default function StartEndFormField() {
           type="button"
           className="btn btn-outline-secondary"
           onClick={handlePrevious}
+          aria-label={CALENDAR_MOVE_WITH_LEFT_ARROW} data-balloon-pos="up-left"
         >
           &lt;&lt;
         </button>
@@ -85,6 +92,9 @@ export default function StartEndFormField() {
         customInput={createElement(forwardRef(DatePickerCustomInput))}
         selected={start}
         onChange={handlePickedStartDate}
+        dateFormat={dateFormat}
+        showYearDropdown
+        showMonthDropdown
       />
       <div className="input-group-append">
         <span className="input-group-text">t/m</span>
@@ -93,11 +103,16 @@ export default function StartEndFormField() {
         customInput={createElement(forwardRef(DatePickerCustomInput))}
         selected={end}
         onChange={handlePickedEndDate}
+        dateFormat={dateFormat}
+        // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
+        showYearDropdown
+        showMonthDropdown
       />
       <div className="input-group-append">
         <button
           type="button"
           className="btn btn-outline-secondary"
+          aria-label={CALENDAR_MOVE_WITH_RIGHT_ARROW} data-balloon-pos="up-right"
           onClick={handleNext}
         >
           &gt;&gt;

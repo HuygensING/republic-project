@@ -4,3 +4,6 @@ settings.py
 __pycache__
 
 *.pcl
+
+*.iml
+.idea/*

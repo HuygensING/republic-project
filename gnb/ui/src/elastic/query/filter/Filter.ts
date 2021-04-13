@@ -1,4 +1,4 @@
 /**
- * Marker interface for elasticsearch filters
+ * Marker interface for Elasticsearch filters
  */
 export interface Filter {}

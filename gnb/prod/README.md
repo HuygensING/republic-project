@@ -2,11 +2,7 @@
 
 ## Prepare and run prod setup
 
-- Set production build environment variables in `./ui/.env`:
-```
-REACT_APP_ES_HOST='gnb.tt.di.huc.knaw.nl/index'
-REACT_APP_ES_DATE='YYYY-MM-DD'
-```
+- Set production build environment variables in `./ui/.env`
 
 - Build in `./ui`:
 ```
