@@ -1,5 +1,5 @@
 
-from settings import set_elasticsearch_config
+from settings import set_elasticsearch_config, text_repo_es_config
 # import retrieval and indexing functions so they cna be imported from a single module
 from republic.elastic.republic_retrieving import *
 from republic.elastic.republic_indexing import *
@@ -20,5 +20,9 @@ def initialize_es(host_type: str = 'internal', timeout: int = 10) -> Elasticsear
                                       'scheme': es_config['scheme']}],
                                     timeout=timeout)
     return es_republic
+
+
+def initliaze_es_text_repo():
+    return Elasticsearch([text_repo_es_config])
 
 
