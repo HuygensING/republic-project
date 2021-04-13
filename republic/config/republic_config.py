@@ -35,11 +35,13 @@ def set_inventory_metadata(inventory_num: int, config: dict) -> None:
 
 
 def set_inventory_indexes(ocr_type: str, config: dict) -> None:
-    config['page_index'] = f'{ocr_type}_pages'
-    config['scan_index'] = f'{ocr_type}_scans'
-    config['paragraph_index'] = f'paragraphs'
-    config['session_index'] = f'sessions'
-    config['resolution_index'] = f'resolutions'
+    # config['page_index'] = f'{ocr_type}_pages'
+    # config['scan_index'] = f'{ocr_type}_scans'
+    config['page_index'] = 'pages'
+    config['scan_index'] = 'scans'
+    config['paragraph_index'] = 'paragraphs'
+    config['session_index'] = 'sessions'
+    config['resolution_index'] = 'resolutions'
     config['session_doc_type'] = 'session'
     config['phrase_match_index'] = 'phrase_matches'
     config['resolution_metadata_index'] = 'resolution_metadata'

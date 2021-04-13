@@ -15,8 +15,9 @@ from republic.parser.hocr.republic_index_page_parser import count_page_ref_lines
 
 OCR_FILE_TYPES = ['.hocr', '.page.xml']
 ocr_type_file_extensions = {
-    'hocr': '.hocr',
-    'pagexml': '.page.xml'
+    '.hocr': 'hocr',
+    '.page.xml': 'pagexml',
+    '.xml': 'pagexml'
 }
 
 
@@ -26,9 +27,9 @@ ocr_type_file_extensions = {
 
 
 def get_ocr_type(filename: str) -> str:
-    for ocr_type in ocr_type_file_extensions:
-        if filename.endswith(ocr_type_file_extensions[ocr_type]):
-            return ocr_type
+    for extension in ocr_type_file_extensions:
+        if filename.endswith(extension):
+            return ocr_type_file_extensions[extension]
     raise ValueError('Unknown OCR type file extension')
 
 
@@ -41,8 +42,8 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         print(scan_fname.split('.'))
         raise
     inv_info = get_inventory_by_num(inv_num)
-    ocr_type = get_ocr_type(scan_file)
-    inv_period = get_inventory_period(scan_file)
+    ocr_type = get_ocr_type(scan_fname)
+    inv_period = get_inventory_period(scan_fname)
     urls = make_scan_urls(inv_info, scan_num=scan_num)
     return {
         'series_name': inv_info['series_name'],
@@ -52,10 +53,10 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         'inventory_year': inv_info['year'],
         'inventory_period_start': inv_period[0],
         'inventory_period_end': inv_period[1],
-        'scan_file': scan_file,
+        'scan_file': scan_fname,
         'scan_num': scan_num,
         'ocr_type': ocr_type,
-        'doc_type': 'scan',
+        'type': 'scan',
         'id': f'{inv_info["series_name"]}_{inv_num}_{format_scan_number(scan_num)}',
         'viewer_url': urls['viewer_url'],
         'jpg_url': urls['jpg_url'],
@@ -117,6 +118,10 @@ def get_scan_num(fname: str) -> int:
 
 
 def get_inventory_num(fname: str) -> int:
+    # strip out optional dir path from file name
+    fname = os.path.split(fname)[-1]
+    # scan filename has form "NL-HaNA_1.01.02_3768_0570.(hocr|page.xnl|xml)
+    # 3768 is inventory num
     fname_parts = fname.split(".")
     return int(fname_parts[2].split("_")[1])
 

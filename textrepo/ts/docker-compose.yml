@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+
+  importer:
+    container_name: importer
+    build: .
+    volumes:
+      - ./types.csv:/pim-tr-import/types.csv
+      - ./external-identifiers-all-210329.csv:/pim-tr-import/external-identifiers.csv
+      - ./import.log:/pim-tr-import/import.log
+    environment:
+      GOOGLE_AUTHORIZATION: ${GOOGLE_AUTHORIZATION}
+      NODE_OPTIONS: '--max_old_space_size=4096'
+      PIM: 'https://images.diginfra.net'
+      SUBSET_CSV: './external-identifiers.csv'
+      TMP: './tmp'
+      TR: 'http://tr_textrepo:8080'
+      TYPE_CSV: './types.csv'
+      CACHE: 250
+    command: ./import.sh
+    networks:
+      - textrepo_network
+
+networks:
+  textrepo_network:
+    external:
+      name: pim-tr-import-install_textrepo_network

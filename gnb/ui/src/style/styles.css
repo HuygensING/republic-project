@@ -1,0 +1,118 @@
+/* WIP. Disable dev error overlay */
+iframe {
+  display: none;
+}
+
+/* Default */
+body {
+  margin: 0;
+  font-family: -guile-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+/* Gui */
+.gui {
+  margin-bottom: 5em;
+}
+
+/* Align multiple inline calendars: https://github.com/Hacker0x01/react-datepicker/issues/1955 */
+.react-datepicker__tab-loop {
+  display: inline-block
+}
+
+.disabled-input {
+  background: #fff !important;
+  color: darkgrey !important;
+}
+
+/* Put date-picker and modal on top of autocomplete */
+.react-datepicker-popper, .ReactModal__Overlay--after-open {
+  z-index: 2 !important;
+}
+
+.search-help-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.modal {
+  overflow-y:auto;
+}
+
+/* D3Canvas */
+.row-view {
+  height: 15em;
+}
+
+.d3-canvas-wrapper, .d3-canvas {
+  width: 100%;
+  height: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* BarChart */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable-bar:hover{
+  fill-opacity: 0.8;
+}
+
+.d3-tooltip {
+  position: absolute;
+  text-align: center;
+  font-size: 0.7em;
+  width: 12em;
+  height: 1.5em;
+  border: 0;
+  pointer-events: none;
+}
+
+.tooltip-label {
+  padding: 3px 6px;
+  border-radius: 8px;
+  pointer-events: none;
+  color: white;
+}
+
+/* Texts */
+.highlight {
+  background-color: #ffff00;
+}
+
+/* Delete button */
+.delete-btn {
+  position: absolute;
+  right: 0.75em;
+}
+
+.attendants-card {
+  padding: 0.5em;
+  text-align: left;
+}
+
+.attendants-card button {
+  text-align: left;
+  line-height: 1em;
+  margin-right: 0.5em;
+  padding: 0;
+  font-size: 1em;
+}
+
+resolutie persoon {
+  text-decoration: underline;
+}
+resolutie persoon:hover{
+  cursor: pointer;
+}

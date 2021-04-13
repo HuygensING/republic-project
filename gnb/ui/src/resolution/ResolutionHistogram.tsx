@@ -1,6 +1,5 @@
 import {MutableRefObject} from "react";
 import {useSearchContext} from "../search/SearchContext";
-import GnbElasticClient from "../elastic/GnbElasticClient";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
@@ -8,11 +7,13 @@ import {HistogramBar, renderHistogram} from "../common/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
+import {useClientContext} from "../elastic/ClientContext";
+import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
+import {C9} from "../style/Colors";
 
 moment.locale('nl');
 
 type BarChartProps = {
-  client: GnbElasticClient,
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void
 }
@@ -22,20 +23,11 @@ type BarChartProps = {
  */
 export default function ResolutionHistogram(props: BarChartProps) {
 
+  const client = useClientContext().clientState.client;
+
   const {searchState} = useSearchContext();
-  const prevAttendants = usePrevious(searchState.attendants)
-
-  const prevMentioned = usePrevious(searchState.mentioned)
-  const prevStart = usePrevious(searchState.start)
-  const prevEnd = usePrevious(searchState.end)
-  const prevFullText = usePrevious(searchState.fullText)
-
-  const searchStateChanged =
-    !equal(prevAttendants, searchState.attendants) ||
-    !equal(prevMentioned, searchState.mentioned) ||
-    !equal(prevStart, searchState.start) ||
-    !equal(prevEnd, searchState.end) ||
-    !equal(prevFullText, searchState.fullText);
+  const prevUpdate = usePrevious(searchState.updatedOn)
+  const searchStateChanged = !equal(prevUpdate, searchState.updatedOn);
 
   const {resolutionState, setResolutionState} = useResolutionContext();
   const prevResolutions = usePrevious(resolutionState.resolutions);
@@ -56,12 +48,15 @@ export default function ResolutionHistogram(props: BarChartProps) {
     const attendants = searchState.attendants.map(p => p.id);
     const mentioned = searchState.mentioned.map(p => p.id);
 
-    props.client.resolutionResource.aggregateBy(
+    client.resolutionResource.aggregateBy(
       attendants,
       mentioned,
       searchState.start,
       searchState.end,
-      searchState.fullText
+      searchState.fullText,
+      searchState.places,
+      searchState.functions,
+      searchState.functionCategories
     ).then((buckets: any) => {
       const bars = buckets.map((b: any) => ({
         date: b.key_as_string,
@@ -78,7 +73,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
     renderHistogram(
       props.svgRef,
       resolutionState.resolutions,
-      {bar: {color: "steelblue"}, y: {title: `# Resolutions`}},
+      {color: C9, y: {title: RESOLUTIONS_HISTOGRAM_TITLE}},
       props.handleResolutions
     );
   }

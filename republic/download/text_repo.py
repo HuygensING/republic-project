@@ -37,6 +37,7 @@ class TextRepo:
         for type_info in data:
             self.type_id[type_info['name']] = type_info['id']
             self.type_name[type_info['id']] = type_info['name']
+        return data
 
     def get_type_name(self, type_id: str) -> str:
         """Return the corresponding file_type name for a given file_type ID."""
@@ -114,3 +115,7 @@ class TextRepo:
             return None
         return sorted(versions["items"], key=lambda x: x["createdAt"], reverse=True)[0]
 
+    def get_version_metadata(self, version_id: str) -> Union[None, Dict[str, str]]:
+        """Return content of a version of a file given a version ID."""
+        url = self.api_url + f'/rest/versions/{version_id}/metadata'
+        return make_request(url)
