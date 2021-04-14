@@ -3,13 +3,15 @@ import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
-import {HistogramBar, renderHistogram} from "../common/Histogram";
+import {HistogramBar} from "../common/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../elastic/ClientContext";
 import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {C9} from "../style/Colors";
+import renderPlot from "../plot/Plot";
+import {usePlotContext} from "../plot/PlotContext";
 
 moment.locale('nl');
 
@@ -21,9 +23,10 @@ type BarChartProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export default function ResolutionHistogram(props: BarChartProps) {
+export default function ResolutionPlot(props: BarChartProps) {
 
   const client = useClientContext().clientState.client;
+  const {plotState} = usePlotContext();
 
   const {searchState} = useSearchContext();
   const prevUpdate = usePrevious(searchState.updatedOn)
@@ -40,7 +43,7 @@ export default function ResolutionHistogram(props: BarChartProps) {
   }
 
   if(resolutionStateChanged) {
-    updateHistogram();
+    updatePlot();
   }
 
   function updateResolutions() {
@@ -69,8 +72,9 @@ export default function ResolutionHistogram(props: BarChartProps) {
     }).catch(throwError);
   }
 
-  function updateHistogram() {
-    renderHistogram(
+  function updatePlot() {
+    renderPlot(
+      plotState.type,
       props.svgRef,
       resolutionState.resolutions,
       {color: C9, y: {title: RESOLUTIONS_HISTOGRAM_TITLE}},

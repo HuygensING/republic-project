@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
 import {MutableRefObject} from 'react';
 import heatmapTestdata from './heatmap-testdata.json';
+import {HistogramBar} from "./Histogram";
 
 export function renderHeatmap(
   canvasRef: MutableRefObject<any>,
-  // bars: HistogramBar[],
+  bars: HistogramBar[],
   // config: HistogramConfig,
   // handleBarClick: (ids: string[]) => void
 ) {

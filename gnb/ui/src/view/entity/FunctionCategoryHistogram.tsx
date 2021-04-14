@@ -1,7 +1,7 @@
 import {memo, MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
-import {HistogramBar, renderHistogram} from "../../common/Histogram";
+import {HistogramBar} from "../../common/Histogram";
 import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
@@ -10,6 +10,8 @@ import {equal} from "../../util/equal";
 import {FUNCTION_CATEGORY, HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {C10} from "../../style/Colors";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
+import renderPlot from "../../plot/Plot";
+import {usePlotContext} from "../../plot/PlotContext";
 
 moment.locale('nl');
 
@@ -28,6 +30,7 @@ export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryH
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
+  const {plotState} = usePlotContext();
 
   updateHistogram();
 
@@ -51,7 +54,8 @@ export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryH
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
       } as HistogramBar));
 
-      renderHistogram(
+      renderPlot(
+        plotState.type,
         props.svgRef,
         bars,
         { color: C10, y: { title: `${HISTOGRAM_PREFIX} ${FUNCTION_CATEGORY}: ${props.personFunctionCategory.name}`}},

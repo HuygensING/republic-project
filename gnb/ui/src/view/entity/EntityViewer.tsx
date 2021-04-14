@@ -25,16 +25,11 @@ type EntityViewerProps = {
 export const EntityViewer = memo(function (props: EntityViewerProps) {
 
   const svgRef = useRef(null);
-  const [hasSvg, setHasSvg] = useState(svgRef.current);
 
   const [state, setState] = React.useState({
     ids: [] as string[],
     showTexts: false
   });
-
-  useEffect(() => {
-    setHasSvg(svgRef.current)
-  }, [svgRef]);
 
   function renderPersonHistogram() {
     return <PersonHistogram
@@ -89,15 +84,15 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   return <>
     <D3Canvas svgRef={svgRef}/>
 
-    {hasSvg && isPerson(props.type) ? renderPersonHistogram() : null}
+    {isPerson(props.type) ? renderPersonHistogram() : null}
 
-    {hasSvg && props.type === ViewType.TERM ? renderTermHistogram() : null}
+    {props.type === ViewType.TERM ? renderTermHistogram() : null}
 
-    {hasSvg && props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
+    {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
 
-    {hasSvg && props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
+    {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
 
-    {hasSvg && props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
+    {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
 
     {state.showTexts ? <Texts
       resolutions={state.ids}

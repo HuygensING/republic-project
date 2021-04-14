@@ -2,18 +2,12 @@ import * as d3 from "d3";
 import {ScaleBand} from "d3";
 import moment from "moment";
 import {MutableRefObject} from "react";
+import {HistogramConfig} from "./PlotConfig";
 
 export type HistogramBar = {
   date: string;
   count: number,
   ids: string[],
-}
-
-export type HistogramConfig = {
-  y: {
-    title: string
-  },
-  color: string
 }
 
 export function renderHistogram(
