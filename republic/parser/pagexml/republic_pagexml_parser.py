@@ -60,6 +60,7 @@ def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
         scan_doc.metadata['scan_type'] = ['double_page']
     else:
         scan_doc.metadata['scan_type'] = ['special_page']
+    set_document_children_derived_ids(scan_doc, scan_doc.id)
     return scan_doc
 
 
@@ -159,8 +160,11 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
                 page_doc.coords = parse_derived_coords(page_doc.columns)
             elif len(page_doc.text_regions):
                 page_doc.coords = parse_derived_coords(page_doc.text_regions)
-            page_doc.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'],
-                                                                         page_doc.coords)
+            if page_doc.coords:
+                page_doc.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'],
+                                                                             page_doc.coords)
+            else:
+                page_doc.metadata['iiif_url'] = scan_doc.metadata['iiif_url']
         pages += [page_doc]
     return pages
 
@@ -361,6 +365,49 @@ def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
                            metadata=page_doc.metadata, columns=columns, extra=extra_text_regions)
     new_page.set_parent(page_doc.parent)
     return new_page
+
+
+def set_document_children_derived_ids(doc: PageXMLDoc, scan_id: str):
+    doc.set_parentage()
+    doc_text_regions: List[PageXMLDoc] = []
+    if hasattr(doc, 'text_regions'):
+        doc_text_regions += doc.text_regions
+    if hasattr(doc, 'columns'):
+        doc_text_regions += doc.columns
+    if hasattr(doc, 'extra'):
+        doc_text_regions += doc.extra
+    for text_region in doc_text_regions:
+        # print('\tcolumn id:', text_region.id)
+        # print('\tparent id:', text_region.parent.id)
+        text_region.set_derived_id(scan_id)
+        if text_region.has_type('column'):
+            id_field = 'column_id'
+        elif text_region.has_type('header'):
+            id_field = 'header_id'
+        elif text_region.has_type('footer'):
+            id_field = 'footer_id'
+        else:
+            id_field = 'extra_id'
+        id_value = text_region.id
+        if hasattr(text_region, 'text_regions'):
+            for inner_region in text_region.text_regions:
+                inner_region.metadata[id_field] = id_value
+                inner_region.set_derived_id(scan_id)
+                for line in inner_region.lines:
+                    line.metadata[id_field] = id_value
+                    if 'scan_id' in text_region.metadata:
+                        line.metadata['scan_id'] = text_region.metadata['scan_id']
+                    if 'page_id' in text_region.metadata:
+                        line.metadata['page_id'] = text_region.metadata['page_id']
+                    line.set_derived_id(scan_id)
+        if hasattr(text_region, 'lines'):
+            for line in text_region.lines:
+                line.metadata[id_field] = id_value
+                if 'scan_id' in text_region.metadata:
+                    line.metadata['scan_id'] = text_region.metadata['scan_id']
+                if 'page_id' in text_region.metadata:
+                    line.metadata['page_id'] = text_region.metadata['page_id']
+                line.set_derived_id(scan_id)
 
 
 def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
