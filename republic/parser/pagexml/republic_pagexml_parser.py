@@ -93,6 +93,7 @@ def initialize_pagexml_page(scan_doc: PageXMLScan, side: str) -> PageXMLPage:
         metadata['id'] = f"{scan_doc.metadata['id']}-page-{metadata['page_num']}-extra"
     metadata['scan_id'] = scan_doc.metadata['id']
     page_doc = PageXMLPage(doc_id=metadata['id'], metadata=metadata, text_regions=[])
+    page_doc.set_parent(scan_doc)
     return page_doc
 
 
@@ -104,18 +105,23 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
     page_even = initialize_pagexml_page(scan_doc, 'even')
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     for text_region in scan_doc.text_regions:
+        text_region.metadata['scan_id'] = scan_doc.id
         if text_region.metadata and 'type' in text_region.metadata:
             if is_even_side(text_region):
-                page_even.text_regions.append(text_region)
+                page_even.add_child(text_region)
+                # print("stats after adding child", page_even.stats)
             elif is_odd_side(text_region):
-                page_odd.text_regions.append(text_region)
+                page_odd.add_child(text_region)
+                # print("stats after adding child", page_odd.stats)
         elif text_region.lines:
             even_lines = [line for line in text_region.lines if is_even_side(line)]
             odd_lines = [line for line in text_region.lines if is_odd_side(line)]
             if len(even_lines) == 0:
-                page_odd.text_regions.append(text_region)
+                page_odd.add_child(text_region)
+                # print("stats after adding child", page_odd.stats)
             elif len(odd_lines) == 0:
-                page_even.text_regions.append(text_region)
+                page_even.add_child(text_region)
+                # print("stats after adding child", page_even.stats)
             else:
                 # The text region crosses the page boundary. Split the lines into new text regions per
                 # page, and create new text regions
@@ -123,15 +129,19 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
                                                metadata=text_region.metadata)
                 even_region = PageXMLTextRegion(lines=even_lines, coords=parse_derived_coords(even_lines),
                                                 metadata=text_region.metadata)
-                page_even.text_regions.append(even_region)
-                page_odd.text_regions.append(odd_region)
+                page_even.add_child(even_region)
+                # print("stats after adding child", page_even.stats)
+                page_odd.add_child(odd_region)
+                # print("stats after adding child", page_odd.stats)
         elif text_region.text_regions:
             even_text_regions = [text_region for text_region in text_region.text_regions if is_even_side(text_region)]
             odd_text_regions = [text_region for text_region in text_region.text_regions if is_odd_side(text_region)]
             if len(even_text_regions) == 0:
-                page_odd.text_regions.append(text_region)
+                page_odd.add_child(text_region)
+                # print("stats after adding child", page_odd.stats)
             elif len(odd_text_regions) == 0:
-                page_even.text_regions.append(text_region)
+                page_even.add_child(text_region)
+                # print("stats after adding child", page_even.stats)
             else:
                 # The text region crosses the page boundary. Split the text_regions into new text regions per
                 # page, and create new text regions
@@ -139,14 +149,19 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
                                                coords=parse_derived_coords(odd_text_regions))
                 even_region = PageXMLTextRegion(text_regions=even_text_regions, metadata=text_region.metadata,
                                                 coords=parse_derived_coords(even_text_regions))
-                page_even.text_regions.append(even_region)
-                page_odd.text_regions.append(odd_region)
+                page_even.add_child(even_region)
+                # print("stats after adding child", page_even.stats)
+                page_odd.add_child(odd_region)
+                # print("stats after adding child", page_odd.stats)
     for page_doc in [page_even, page_odd]:
-        if len(page_doc.text_regions) > 0 and not page_doc.coords:
-            page_doc.coords = parse_derived_coords(page_doc.text_regions)
+        if not page_doc.coords:
+            if len(page_doc.columns):
+                page_doc.coords = parse_derived_coords(page_doc.columns)
+            elif len(page_doc.text_regions):
+                page_doc.coords = parse_derived_coords(page_doc.text_regions)
             page_doc.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'],
                                                                          page_doc.coords)
-            pages += [page_doc]
+        pages += [page_doc]
     return pages
 
 
@@ -344,6 +359,7 @@ def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
         extra = None
     new_page = PageXMLPage(doc_id=page_doc.id, doc_type=page_doc.type, coords=page_doc.coords,
                            metadata=page_doc.metadata, columns=columns, extra=extra_text_regions)
+    new_page.set_parent(page_doc.parent)
     return new_page
 
 
@@ -361,24 +377,50 @@ def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
             extra = []
             for text_region in page.text_regions:
                 if not text_region.type or text_region.has_type('extra'):
-                    extra.append(text_region)
+                    # extra.append(text_region)
+                    page.add_child(text_region, as_extra=True)
                 else:
                     # turn the text region into a column
                     column = PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
                                            text_regions=text_region.text_regions,
                                            lines=text_region.lines)
-                    columns.append(column)
-            page.columns = columns
-            page.extra = extra
+                    column.set_derived_id(scan_doc.id)
+                    # print('column id:', column.id)
+                    page.add_child(column)
+                    # print('column parent after adding to page:', column.parent.id)
+                    # print('column metadata after adding to page:', column.metadata)
+                    # columns.append(column)
+            # page.columns = columns
+            # page.extra = extra
             page.text_regions = []
     for page in pages:
         # page.set_derived_id(scan_doc.id)
+        # print('page_id:', page.id)
         for text_region in page.columns + page.extra:
+            # print('\tcolumn id:', text_region.id)
+            # print('\tparent id:', text_region.parent.id)
             text_region.set_derived_id(scan_doc.id)
+            if text_region.has_type('column'):
+                id_field = 'column_id'
+            elif text_region.has_type('header'):
+                id_field = 'header_id'
+            elif text_region.has_type('footer'):
+                id_field = 'footer_id'
+            else:
+                id_field = 'extra_id'
+            id_value = text_region.id
             for inner_region in text_region.text_regions:
+                inner_region.metadata[id_field] = id_value
                 inner_region.set_derived_id(scan_doc.id)
                 for line in inner_region.lines:
+                    line.metadata[id_field] = id_value
+                    line.metadata['scan_id'] = text_region.metadata['scan_id']
+                    line.metadata['page_id'] = text_region.metadata['page_id']
                     line.set_derived_id(scan_doc.id)
             for line in text_region.lines:
+                line.metadata[id_field] = id_value
+                line.metadata['scan_id'] = text_region.metadata['scan_id']
+                line.metadata['page_id'] = text_region.metadata['page_id']
                 line.set_derived_id(scan_doc.id)
+    # print([column.parent.id for page in pages for column in page.columns])
     return pages

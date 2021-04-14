@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Set, Tuple, Union
+from typing import Dict, Generator, List, Set, Tuple, Union
 from collections import defaultdict
 from collections import Counter
 import copy
@@ -30,31 +30,31 @@ def parse_points(points: Union[str, List[Tuple[int, int]]]) -> List[Tuple[int, i
         return points
 
 
-def get_base_y(line):
+def get_baseline_y(line: PageXMLTextLine) -> List[int]:
     if line_starts_with_big_capital(line):
-        return [point[1] for point in line['baseline'].points if point[1] < line['baseline'].bottom - 20]
+        return [point[1] for point in line.baseline.points if point[1] < line.baseline.bottom - 20]
     else:
-        return [point[1] for point in line['baseline'].points]
+        return [point[1] for point in line.baseline.points]
 
 
-def line_is_below(line1, line2):
-    base_y1 = get_base_y(line1)
-    base_y2 = get_base_y(line2)
-    return base_y1[0] + 30 < base_y2[0] and base_y1[-1] + 30 < base_y2[-1]
+def line_is_below(line1: PageXMLTextLine, line2: PageXMLTextLine) -> bool:
+    baseline1_y = get_baseline_y(line1)
+    baseline2_y = get_baseline_y(line2)
+    return baseline1_y[0] + 30 < baseline2_y[0] and baseline1_y[-1] + 30 < baseline2_y[-1]
 
 
-def line_starts_with_big_capital(line):
-    if line['baseline'].h < 30:
+def line_starts_with_big_capital(line: PageXMLTextLine) -> bool:
+    if line.baseline.h < 30:
         return False
     lowest_point = find_lowest_point(line)
-    if lowest_point[0] - line['baseline'].left > 100:
+    if lowest_point[0] - line.baseline.left > 100:
         return False
     return True
 
 
-def find_lowest_point(line):
-    for point in line['baseline'].points:
-        if point[1] == line['baseline'].bottom:
+def find_lowest_point(line: PageXMLTextLine) -> Tuple[int, int]:
+    for point in line.baseline.points:
+        if point[1] == line.baseline.bottom:
             return point
 
 
@@ -116,6 +116,50 @@ class Baseline(Coords):
     def __init__(self, points: Union[str, List[Tuple[int, int]]]):
         super().__init__(points)
         self.type = "baseline"
+
+
+def find_baseline_overlap_start_indexes(baseline1: Baseline, baseline2: Baseline) -> Tuple[int, int]:
+    """Find the first point in each baseline where the two start to horizontally overlap."""
+    baseline1_start_index = 0
+    baseline2_start_index = 0
+    for bi1, p1 in enumerate(baseline1.points):
+        if bi1 < len(baseline1.points) - 1 and baseline1.points[bi1 + 1][0] < baseline2.points[0][0]:
+            continue
+        baseline1_start_index = bi1
+        break
+    for bi2, p2 in enumerate(baseline2.points):
+        if bi2 < len(baseline2.points) - 1 and baseline2.points[bi2 + 1][0] < baseline1.points[0][0]:
+            continue
+        baseline2_start_index = bi2
+        break
+    return baseline1_start_index, baseline2_start_index
+
+
+def baseline_is_below(baseline1: Baseline, baseline2: Baseline) -> bool:
+    """Test if baseline 1 is directly below baseline 2"""
+    num_below = 0
+    num_overlap = 0
+    # find the indexes of the first baseline points where the two lines horizontally overlap
+    index1, index2 = find_baseline_overlap_start_indexes(baseline1, baseline2)
+    while True:
+        # check if the current baseline point of line 1 is below that of the one of line 2
+        if baseline1.points[index1][1] > baseline2.points[index2][1]:
+            num_below += 1
+        num_overlap += 1
+        # Check which baseline index to move forward for the next test
+        if baseline1.points[index1][0] <= baseline2.points[index2][0]:
+            # if current point of baseline 1 is to the left of the current point of baseline 2
+            # move to the next point of baseline 1
+            index1 += 1
+        else:
+            # otherwise, move to the next points of baseline 2
+            index2 += 1
+        if len(baseline1.points) == index1 or len(baseline2.points) == index2:
+            # if the end of one of the baselines is reached, counting is done
+            break
+    # baseline 1 is below baseline 2 if the majority of
+    # the horizontally overlapping points is below
+    return num_below / num_overlap > 0.5
 
 
 def horizontal_overlap(coords1: Coords, coords2: Coords) -> int:
@@ -188,10 +232,17 @@ def order_lines(lines):
 class StructureDoc:
 
     def __init__(self, doc_id: Union[None, str] = None, doc_type: Union[None, str, List[str]] = None,
-                 metadata: Union[None, Dict[str, any]] = None):
+                 metadata: Dict[str, any] = None):
         self.id = doc_id
         self.type = doc_type
-        self.metadata = metadata
+        self.main_type = 'doc'
+        self.metadata = metadata if metadata else {}
+        self.parent: Union[StructureDoc, None] = None
+
+    def set_parent(self, parent: StructureDoc):
+        """Set parent document and add metadata of parent to this document's metadata"""
+        self.parent = parent
+        self.add_parent_id_to_metadata()
 
     def add_type(self, doc_type: Union[str, List[str]]) -> None:
         doc_types = [doc_type] if isinstance(doc_type, str) else doc_type
@@ -224,6 +275,18 @@ class StructureDoc:
         else:
             return set(self.type)
 
+    def set_as_parent(self, children: List[StructureDoc]):
+        """Set this document as parent of a list of child documents"""
+        for child in children:
+            child.set_parent(self)
+
+    def add_parent_id_to_metadata(self):
+        if self.parent:
+            self.metadata['parent_type'] = self.parent.main_type
+            self.metadata['parent_id'] = self.parent.id
+            if hasattr(self.parent, 'main_type'):
+                self.metadata[f'{self.parent.main_type}_id'] = self.parent.id
+
     @property
     def json(self) -> Dict[str, any]:
         return {
@@ -239,7 +302,7 @@ class PhysicalStructureDoc(StructureDoc):
                  metadata: Dict[str, any] = None, coords: Coords = None):
         super().__init__(doc_id, doc_type, metadata)
         self.coords: Union[None, Coords] = coords
-        self.main_type = 'doc'
+        self.main_type = 'physical_structure_doc'
 
     @property
     def json(self) -> Dict[str, any]:
@@ -248,9 +311,20 @@ class PhysicalStructureDoc(StructureDoc):
             doc_json['coords'] = self.coords.points
         return doc_json
 
+    def set_parentage(self):
+        if hasattr(self, 'pages') and self.pages:
+            self.set_as_parent(self.pages)
+        if hasattr(self, 'columns') and self.columns:
+            self.set_as_parent(self.columns)
+        if hasattr(self, 'text_regions') and self.text_regions:
+            self.set_as_parent(self.text_regions)
+        if hasattr(self, 'lines') and self.lines:
+            self.set_as_parent(self.lines)
+
     def set_derived_id(self, parent_id: str):
         box_string = f"{self.coords.x}-{self.coords.y}-{self.coords.w}-{self.coords.h}"
         self.id = f"{parent_id}-{self.main_type}-{box_string}"
+        self.set_parentage()
 
 
 class PageXMLDoc(PhysicalStructureDoc):
@@ -296,6 +370,8 @@ class PageXMLTextLine(PageXMLDoc):
         self.xheight: Union[None, int] = xheight
         self.baseline: Union[None, Baseline] = baseline
         self.words: List[PageXMLWord] = words if words else []
+        self.metadata['type'] = 'line'
+        self.set_as_parent(self.words)
         if doc_type:
             self.add_type(doc_type)
 
@@ -324,24 +400,32 @@ class PageXMLTextLine(PageXMLDoc):
         return len(self.get_words())
 
     def is_below(self, other: PageXMLTextLine) -> bool:
-        h_overlap = horizontal_overlap(self.baseline, other.baseline)
+        """Test if the baseline of this line is directly below the baseline of the other line."""
         # if there is no horizontal overlap, this line is not directly below the other
-        if not h_overlap:
+        if not horizontal_overlap(self.baseline, other.baseline):
+            # print("NO HORIZONTAL OVERLAP")
             return False
         # if the bottom of this line is above the top of the other line, this line is above the other
         if self.baseline.bottom < other.baseline.top:
+            # print("BOTTOM IS ABOVE TOP")
             return False
         # if most of this line's baseline points are not below most the other's baseline points
         # this line is not below the other
-        print(self.baseline, other.baseline)
-        return True
+        if baseline_is_below(self.baseline, other.baseline):
+            # print("BASELINE IS BELOW")
+            return True
+        return False
 
     def is_next_to(self, other: PageXMLTextLine) -> bool:
+        """Test if this line is vertically aligned with the other line."""
         if vertical_overlap(self.coords, other.coords) == 0:
+            # print("NO VERTICAL OVERLAP")
             return False
-        if horizontal_overlap(self.coords, other.coords) > 10:
+        if horizontal_overlap(self.coords, other.coords) > 40:
+            # print("TOO MUCH HORIZONTAL OVERLAP", horizontal_overlap(self.coords, other.coords))
             return False
         if self.baseline.top > other.baseline.bottom + 10:
+            # print("VERTICAL BASELINE GAP TOO BIG")
             return False
         else:
             return True
@@ -358,8 +442,24 @@ class PageXMLTextRegion(PageXMLDoc):
         self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
         self.lines: List[PageXMLTextLine] = lines if lines else []
         self.orientation: Union[None, float] = orientation
+        self.set_parentage()
         if doc_type:
             self.add_type(doc_type)
+
+    def set_parentage(self):
+        if self.text_regions:
+            self.set_as_parent(self.text_regions)
+        if self.lines:
+            self.set_as_parent(self.lines)
+
+    def add_child(self, child: PageXMLDoc):
+        child.set_parent(self)
+        if isinstance(child, PageXMLTextLine):
+            self.lines.append(child)
+        elif isinstance(child, PageXMLTextRegion):
+            self.text_regions.append(child)
+        else:
+            raise TypeError(f'unknown child type: {child.__class__.__name__}')
 
     @property
     def json(self) -> Dict[str, any]:
@@ -432,10 +532,10 @@ class PageXMLColumn(PageXMLTextRegion):
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, coords: Coords = None,
                  text_regions: List[PageXMLTextRegion] = None, lines: List[PageXMLTextLine] = None):
-        super().__init__(doc_id=doc_id, doc_type="column", metadata=metadata, coords=coords)
+        super().__init__(doc_id=doc_id, doc_type="column", metadata=metadata, coords=coords, lines=lines,
+                         text_regions=text_regions)
         self.main_type = 'column'
-        self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
-        self.lines: List[PageXMLTextLine] = lines if lines else []
+        self.set_parentage()
         if doc_type:
             self.add_type(doc_type)
 
@@ -462,14 +562,30 @@ class PageXMLPage(PageXMLTextRegion):
                  columns: List[PageXMLColumn] = None, text_regions: List[PageXMLTextRegion] = None,
                  extra: List[PageXMLTextRegion] = None,
                  lines: List[PageXMLTextLine] = None):
-        super().__init__(doc_id=doc_id, doc_type="page", metadata=metadata, coords=coords)
+        super().__init__(doc_id=doc_id, doc_type="page", metadata=metadata, coords=coords, lines=lines,
+                         text_regions=text_regions)
         self.main_type = 'page'
         self.columns: List[PageXMLColumn] = columns if columns else []
-        self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
-        self.lines: List[PageXMLTextLine] = lines if lines else []
         self.extra: List[PageXMLTextRegion] = extra if extra else []
+        self.set_parentage()
+        self.set_as_parent(self.columns)
+        self.set_as_parent(self.extra)
         if doc_type:
             self.add_type(doc_type)
+
+    def add_child(self, child: PageXMLDoc, as_extra: bool = False):
+        child.set_parent(self)
+        if isinstance(child, PageXMLColumn):
+            self.columns.append(child)
+        elif isinstance(child, PageXMLTextLine):
+            self.lines.append(child)
+        elif isinstance(child, PageXMLTextRegion):
+            if as_extra:
+                self.extra.append(child)
+            else:
+                self.text_regions.append(child)
+        else:
+            raise TypeError(f'unknown child type: {child.__class__.__name__}')
 
     @property
     def json(self) -> Dict[str, any]:
@@ -505,14 +621,27 @@ class PageXMLScan(PageXMLTextRegion):
                  columns: List[PageXMLColumn] = None,
                  text_regions: List[PageXMLTextRegion] = None,
                  lines: List[PageXMLTextLine] = None):
-        super().__init__(doc_id=doc_id, doc_type="scan", metadata=metadata, coords=coords)
+        super().__init__(doc_id=doc_id, doc_type="scan", metadata=metadata, coords=coords, lines=lines,
+                         text_regions=text_regions)
         self.main_type = 'scan'
         self.pages: List[PageXMLPage] = pages if pages else []
         self.columns: List[PageXMLColumn] = columns if columns else []
-        self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
-        self.lines: List[PageXMLTextLine] = lines if lines else []
+        self.set_parentage()
+        self.set_as_parent(self.pages)
+        self.set_as_parent(self.columns)
         if doc_type:
             self.add_type(doc_type)
+
+    def add_child(self, child: PageXMLDoc):
+        child.set_parent(self)
+        if isinstance(child, PageXMLPage):
+            self.pages.append(child)
+        elif isinstance(child, PageXMLColumn):
+            self.columns.append(child)
+        elif isinstance(child, PageXMLTextRegion):
+            self.text_regions.append(child)
+        elif isinstance(child, PageXMLTextLine):
+            self.lines.append(child)
 
     @property
     def json(self) -> Dict[str, any]:
@@ -535,6 +664,60 @@ class PageXMLScan(PageXMLTextRegion):
         stats['extra'] = len([text_region for page in self.pages for text_region in page.extra])
         stats['pages'] = len(self.pages)
         return stats
+
+
+def sort_regions_in_reading_order(doc: PageXMLDoc) -> List[PageXMLTextRegion]:
+    doc_text_regions: List[PageXMLTextRegion] = []
+    if hasattr(doc, 'columns') and doc.columns:
+        doc_text_regions = doc.columns
+    elif hasattr(doc, 'text_regions') and doc.text_regions:
+        doc_text_regions = doc.text_regions
+        for text_region in doc_text_regions:
+            if doc.main_type == 'column':
+                text_region.metadata['column_id'] = doc.id
+            elif 'column_id' in doc.metadata:
+                text_region.metadata['column_id'] = doc.metadata['column_id']
+    if doc_text_regions:
+        sub_text_regions = []
+        for text_region in sorted(doc_text_regions, key=lambda x: x.coords.left):
+            sub_text_regions += sort_regions_in_reading_order(text_region)
+        return sub_text_regions
+    elif isinstance(doc, PageXMLTextRegion):
+        return [doc]
+    else:
+        return []
+
+
+def sort_lines_in_reading_order(doc: PageXMLDoc) -> Generator[PageXMLTextLine]:
+    """Sort the lines of a PageXML document in reading order.
+    Reading order is: columns from left to right, text regions in columns from top to bottom,
+    lines in text regions from top to bottom, and when (roughly) adjacent, from left to right."""
+    for text_region in sort_regions_in_reading_order(doc):
+        lines = sorted(text_region.lines, key=lambda x: x.coords.top)
+        if text_region.main_type == 'column':
+            text_region.metadata['column_id'] = text_region.id
+        if 'column_id' not in text_region.metadata:
+            raise KeyError(f'missing column id: {text_region.metadata}')
+        if lines[0].metadata is None:
+            lines[0].metadata = {'id': lines[0].id}
+        if 'column_id' in text_region.metadata and 'column_id' not in lines[0].metadata:
+            lines[0].metadata['column_id'] = text_region.metadata['column_id']
+        stacked_lines = [[lines[0]]]
+        rest_lines = lines[1:]
+        if len(lines) > 1:
+            for li, curr_line in enumerate(rest_lines):
+                if curr_line.metadata is None:
+                    curr_line.metadata = {'id': curr_line.id}
+                if 'column_id' in text_region.metadata and 'column_id' not in curr_line.metadata:
+                    curr_line.metadata['column_id'] = text_region.metadata['column_id']
+                prev_line = stacked_lines[-1][-1]
+                if curr_line.is_below(prev_line):
+                    stacked_lines.append([curr_line])
+                elif curr_line.is_next_to(prev_line):
+                    stacked_lines[-1].append(curr_line)
+        for lines in stacked_lines:
+            for line in sorted(lines, key=lambda x: x.coords.left):
+                yield line
 
 
 class StructureDocOld:

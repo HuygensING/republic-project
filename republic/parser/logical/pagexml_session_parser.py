@@ -2,7 +2,7 @@ from typing import List, Dict, Union, Iterator
 from collections import Counter
 import copy
 
-from republic.model.physical_document_model import StructureDoc
+from republic.model.physical_document_model import StructureDoc, PageXMLDoc, PageXMLPage
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
@@ -277,21 +277,22 @@ class GatedWindow:
         return self.sliding_window[0] if self.let_through[0] else None
 
 
-def get_columns_metadata(sorted_pages: List[Union[StructureDoc, dict]]) -> Dict[str, dict]:
+def get_columns_metadata(sorted_pages: List[PageXMLPage]) -> Dict[str, dict]:
     column_metadata = {}
     for page in sorted_pages:
-        columns = page.columns if isinstance(page, StructureDoc) else page['columns']
-        for column in columns:
-            column_id = column['metadata']['id']
-            column_metadata[column_id] = copy.deepcopy(column['metadata'])
+        for column in page.columns:
+            if 'scan_id' not in column.metadata:
+                raise KeyError('column is missing scan_id')
+            if 'page_id' not in column.metadata:
+                raise KeyError('column is missing page_id')
+            column_id = column.metadata['id']
+            column_metadata[column_id] = copy.deepcopy(column.metadata)
     return column_metadata
 
 
-def get_sessions(sorted_pages: List[ResolutionPageDoc], inv_config: dict,
+def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
                  inv_metadata: dict) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
-    # - add holidays: Easter, Christmas
-    # - make model year-dependent
     # - check for large date jumps and short session docs
     column_metadata = get_columns_metadata(sorted_pages)
     current_date = initialize_inventory_date(inv_metadata)

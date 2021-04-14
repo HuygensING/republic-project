@@ -13,20 +13,15 @@ from republic.model.physical_document_model import StructureDoc, parse_derived_c
 from republic.model.physical_document_model import PageXMLPage
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
-import republic.parser.pagexml.pagexml_session_parser as session_parser
+import republic.parser.logical.pagexml_session_parser as session_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_inventory_parser as inv_parser
-import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
-import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.model.resolution_phrase_model as rpm
 from republic.model.republic_date import RepublicDate, make_republic_date
-from republic.model.republic_hocr_model import HOCRPage
-from republic.model.republic_phrase_model import category_index
 from republic.model.republic_document_model import Session, get_session_resolutions, get_session_scans_version
 from republic.model.republic_document_model import Resolution, ResolutionPageDoc, configure_resolution_searchers
 from republic.config.republic_config import set_config_inventory_num
-from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
 from republic.helper.metadata_helper import get_per_page_type_index
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
@@ -231,40 +226,6 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
         scan_es_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
                  id=scan_es_doc['id'], body=scan_es_doc)
-
-
-def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
-                     inventory_num: int, inventory_config: dict):
-    current_date = hocr_para_parser.initialize_current_date(inventory_config)
-    page_docs = rep_es.retrieve_resolution_pages(es, inventory_num, inventory_config)
-    print('Pages retrieved:', len(page_docs), '\n')
-    for page_doc in sorted(page_docs, key=lambda x: x['page_num']):
-        if 'resolution_page' not in page_doc['page_type']:
-            continue
-        try:
-            hocr_page = HOCRPage(page_doc, inventory_config)
-        except KeyError:
-            print('Error parsing page', page_doc['id'])
-            continue
-            # print(json.dumps(page_doc, indent=2))
-            # raise
-        paragraphs, header = hocr_para_parser.get_resolution_page_paragraphs(hocr_page, inventory_config)
-        for paragraph_order, paragraph in enumerate(paragraphs):
-            matches = fuzzy_searcher.find_candidates(paragraph['text'], include_variants=True)
-            if hocr_para_parser.matches_resolution_phrase(matches):
-                paragraph['metadata']['type'] = 'resolution'
-            current_date = hocr_para_parser.track_meeting_date(paragraph, matches, current_date, inventory_config)
-            paragraph['metadata']['keyword_matches'] = matches
-            for match in matches:
-                if match['match_keyword'] in category_index:
-                    category = category_index[match['match_keyword']]
-                    match['match_category'] = category
-                    paragraph['metadata']['categories'].add(category)
-            paragraph['metadata']['categories'] = list(paragraph['metadata']['categories'])
-            del paragraph['lines']
-            paragraph['metadata']['index_timestamp'] = datetime.datetime.now()
-            es.index(index=inventory_config['paragraph_index'], doc_type=inventory_config['paragraph_doc_type'],
-                     id=paragraph['metadata']['paragraph_id'], body=paragraph)
 
 
 def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
