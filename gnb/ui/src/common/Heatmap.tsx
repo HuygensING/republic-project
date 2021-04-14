@@ -16,7 +16,7 @@ export function renderHeatmap(
   const start = data[0].date;
   const startDate = new Date(start);
 
-  const end = data[data.length-1].date;
+  const end = data[data.length - 1].date;
   const endDate = new Date(end);
 
   const svgSize = canvasRef.current.getBoundingClientRect();
@@ -27,11 +27,10 @@ export function renderHeatmap(
   startMonthDate.setDate(0);
   const monthRange = d3.timeMonth.range(startMonthDate, endDate);
 
-  let yAxisSpace = 20;
+  const margin = {top: 20, right: 30, bottom: 20, left: 20};
 
-  const cellWidth = (width - yAxisSpace - monthRange.length * 2) / (result.size / 7);
+  const cellWidth = (width - margin.left - monthRange.length * 2) / (result.size / 7);
   const cellHeight = height / 8;
-
 
   const color = d3.scaleQuantize<string>()
     .domain([0, 100])
@@ -43,16 +42,16 @@ export function renderHeatmap(
     .attr('width', width)
     .attr('height', height)
     .append('g')
-    .attr('transform', `translate(${yAxisSpace},1)`);
+    .attr('transform', `translate(${margin.left},1)`);
 
   svg.append('g')
     .attr('fill', 'none')
     .attr('stroke', '#000')
     .attr('stroke-width', '0.1px')
     .selectAll('rect')
-    .data(d => {
+    .data(() => {
       let startDateEdge = new Date(startDate);
-      startDateEdge.setDate(startDate.getDate()-1)
+      startDateEdge.setDate(startDate.getDate() - 1)
       return d3.timeDays(startDateEdge, endDate);
     })
     .enter()
@@ -70,29 +69,30 @@ export function renderHeatmap(
       d3.select(this).attr('stroke-width', '0.1px');
     })
     .append('title')
-    .text(d => d + ': ' + result.get(d) + '%')
+    .text(d => d + ': ' + result.get(d) + '%');
 
   svg.append('text')
     .attr('transform', 'translate(-6,' + cellHeight * 3.5 + ')rotate(-90)')
-    .attr('font-family', 'sans-serif')
-    .attr('font-size', '1em')
     .attr('text-anchor', 'middle')
     .text(() => {
       const y1 = startDate.getFullYear();
       const y2 = endDate.getFullYear();
       return y1 === y2 ? `${y1}` : `${y1} - ${y2}`;
     })
+    .attr('class', 'heatmap-y-label');
 
-  svg.append('g')
+  const months = svg.append('g')
+    .selectAll('path')
+    .data(monthRange)
+    .enter();
+
+  months
+    .append('path')
     .attr('fill', 'none')
     .attr('stroke', '#000')
     .attr('stroke-width', '1.5px')
-    .selectAll('path')
-    .data(monthRange)
-    .enter()
-    .append('path')
     .attr('d', function (startMonth) {
-      if(startMonth < startDate) {
+      if (startMonth < startDate) {
         startMonth.setDate(startDate.getDate());
       }
       const startWeekday = startMonth.getUTCDay();
@@ -108,12 +108,19 @@ export function renderHeatmap(
         + 'H' + (startWeek + 1) * cellWidth + 'Z';
     });
 
+  months
+    .append('g')
+    .attr(`transform`, (d) => `translate(${(d3.timeMonday.count(startDate, d) * cellWidth)}, ${height - 5})`)
+    .append('text')
+    .text(d => d.toLocaleString('nl', {month: "short"}))
+    .attr('class', 'month-label');
+
 }
 
 function toStr(date: Date) {
   return date.getFullYear()
     + '-'
-    + ('0' + (date.getMonth()+1)).slice(-2)
+    + ('0' + (date.getMonth() + 1)).slice(-2)
     + '-'
     + ('0' + date.getDate()).slice(-2)
 }
