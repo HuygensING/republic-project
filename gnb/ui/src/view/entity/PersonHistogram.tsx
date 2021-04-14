@@ -1,7 +1,7 @@
 import {memo, MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
-import {HistogramBar} from "../../common/Histogram";
+import {HistogramBar} from "../../common/plot/Histogram";
 import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
@@ -11,8 +11,8 @@ import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Person} from "../../elastic/model/Person";
 import {C6, C7} from "../../style/Colors";
-import {usePlotContext} from "../../plot/PlotContext";
-import renderPlot from "../../plot/Plot";
+import {usePlotContext} from "../../common/plot/PlotContext";
+import renderPlot from "../../common/plot/Plot";
 
 moment.locale('nl');
 

@@ -1,6 +1,6 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import ResolutionPlot from "./ResolutionPlot";
-import {D3Canvas} from "../common/D3Canvas";
+import {D3Canvas} from "../common/plot/D3Canvas";
 import {Texts} from "../common/texts/Texts";
 import {useResolutionContext} from "./ResolutionContext";
 

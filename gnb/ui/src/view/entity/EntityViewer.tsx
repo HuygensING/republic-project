@@ -1,4 +1,4 @@
-import {D3Canvas} from "../../common/D3Canvas";
+import {D3Canvas} from "../../common/plot/D3Canvas";
 import {PersonHistogram} from "./PersonHistogram";
 import React, {memo, useEffect, useRef, useState} from "react";
 import {Person} from "../../elastic/model/Person";

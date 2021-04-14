@@ -3,15 +3,15 @@ import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
-import {HistogramBar} from "../common/Histogram";
+import {HistogramBar} from "../common/plot/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../elastic/ClientContext";
 import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {C9} from "../style/Colors";
-import renderPlot from "../plot/Plot";
-import {usePlotContext} from "../plot/PlotContext";
+import renderPlot from "../common/plot/Plot";
+import {usePlotContext} from "../common/plot/PlotContext";
 
 moment.locale('nl');
 

@@ -1,5 +1,5 @@
 import {createContext, useContext} from 'react';
-import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
+import {BaseStateType, defaultBaseContext, dummy, reducer} from "../../BaseStateType";
 import {PlotType} from "./Plot";
 
 export type PlotStateType = BaseStateType & {
@@ -14,7 +14,7 @@ export type PlotContextType = {
 export const defaultPlotContext = {
   plotState: {
     ...defaultBaseContext,
-    type: PlotType.HISTOGRAM
+    type: PlotType.HEATMAP
   },
   setPlotState: dummy
 } as PlotContextType;

@@ -4,7 +4,7 @@ import {defaultResolutionContext, ResolutionContext, resolutionReducer} from "./
 import React, {useReducer} from "react";
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import {defaultViewContext, viewReducer, ViewContext} from "./view/ViewContext";
-import {defaultPlotContext, PlotContext, plotReducer} from "./plot/PlotContext";
+import {defaultPlotContext, PlotContext, plotReducer} from "./common/plot/PlotContext";
 
 interface ContextProviderProps {
   client: GnbElasticClient

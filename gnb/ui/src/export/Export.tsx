@@ -2,7 +2,7 @@ import Modal from "../common/Modal";
 import {useState} from "react";
 import {EXPORT_BUTTON, EXPORT_DESCRIPTION, EXPORT_DOWNLOAD_LINKS} from "../content/Placeholder";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {HistogramBar} from "../common/Histogram";
+import {HistogramBar} from "../common/plot/Histogram";
 import {useClientContext} from "../elastic/ClientContext";
 import {PersonAnn} from "../elastic/model/PersonAnn";
 import {PersonType} from "../elastic/model/PersonType";

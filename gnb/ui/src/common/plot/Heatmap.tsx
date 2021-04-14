@@ -1,62 +1,65 @@
 import * as d3 from 'd3';
 import {MutableRefObject} from 'react';
-import heatmapTestdata from './heatmap-testdata.json';
 import {HistogramBar} from "./Histogram";
 
 export function renderHeatmap(
   canvasRef: MutableRefObject<any>,
-  bars: HistogramBar[],
+  data: HistogramBar[],
   // config: HistogramConfig,
   // handleBarClick: (ids: string[]) => void
 ) {
 
-  const data = heatmapTestdata;
+  console.log('data', data);
 
   let result = new Map(data.map(value => [value['date'], value['count']]));
 
   const start = data[0].date;
   const startDate = new Date(start);
-
   const end = data[data.length - 1].date;
   const endDate = new Date(end);
+  const startMonthDate = new Date(startDate);
+  startMonthDate.setDate(0);
 
+  const svg = d3
+    .select(canvasRef.current)
+    .select('.d3-canvas');
+
+  const margin = {top: 20, right: 30, bottom: 20, left: 20};
   const svgSize = canvasRef.current.getBoundingClientRect();
   const height = svgSize.height;
   const width = svgSize.width;
 
-  const startMonthDate = new Date(startDate);
-  startMonthDate.setDate(0);
   const monthRange = d3.timeMonth.range(startMonthDate, endDate);
+  let columns = d3.timeMonday.count(startDate, endDate);
 
-  const margin = {top: 20, right: 30, bottom: 20, left: 20};
-
-  const cellWidth = (width - margin.left - monthRange.length * 2) / (result.size / 7);
+  const cellWidth = (width - margin.left - monthRange.length * 2) / (columns + 1);
   const cellHeight = height / 8;
 
   const color = d3.scaleQuantize<string>()
     .domain([0, 100])
     .range(['#f3f6e7', '#e7eecf', '#dbe5b7', '#d0dd9f', '#c4d587', '#b8cd6f', '#acc457', '#a1bc3f', '#94b327', '#89ab0f']);
-  const svg = d3.select(canvasRef.current)
-    .select(".d3-canvas")
-    .select(".plot-area")
-    .data([parseInt(start)])
+
+  const plot = svg.select(".plot-area");
+
+  // Size:
+  plot.data([parseInt(start)])
     .attr('width', width)
     .attr('height', height)
-    .append('g')
     .attr('transform', `translate(${margin.left},1)`);
 
-  svg.append('g')
+  // Cells:
+  plot
+    .selectAll('.cell')
     .attr('fill', 'none')
     .attr('stroke', '#000')
     .attr('stroke-width', '0.1px')
-    .selectAll('rect')
     .data(() => {
       let startDateEdge = new Date(startDate);
       startDateEdge.setDate(startDate.getDate() - 1)
       return d3.timeDays(startDateEdge, endDate);
     })
-    .enter()
-    .append('rect')
+    .join('rect')
+    .attr("class", "cell clickable-cell clickable")
     .attr('width', cellWidth)
     .attr('height', cellHeight)
     .attr('x', d => d3.timeMonday.count(startDate, d) * cellWidth)
@@ -70,25 +73,27 @@ export function renderHeatmap(
       d3.select(this).attr('stroke-width', '0.1px');
     })
     .append('title')
-    .text(d => d + ': ' + result.get(d) + '%');
+    .text(d => d + ': ' + result.get(d) + 'x');
 
-  svg.append('text')
+  // Y-label:
+  plot
+    .selectAll('.heatmap-y-label')
+    .data([startDate])
+    .join('text')
+    .attr('class', 'heatmap-y-label')
     .attr('transform', 'translate(-6,' + cellHeight * 3.5 + ')rotate(-90)')
     .attr('text-anchor', 'middle')
     .text(() => {
       const y1 = startDate.getFullYear();
       const y2 = endDate.getFullYear();
       return y1 === y2 ? `${y1}` : `${y1} - ${y2}`;
-    })
-    .attr('class', 'heatmap-y-label');
+    });
 
-  const months = svg.append('g')
-    .selectAll('path')
+  // Outlined months:
+  plot.selectAll('.month')
     .data(monthRange)
-    .enter();
-
-  months
-    .append('path')
+    .join('path')
+    .attr('class', 'month')
     .attr('fill', 'none')
     .attr('stroke', '#000')
     .attr('stroke-width', '1.5px')
@@ -109,12 +114,19 @@ export function renderHeatmap(
         + 'H' + (startWeek + 1) * cellWidth + 'Z';
     });
 
-  months
-    .append('g')
+  plot
+    .selectAll('.month-label')
+    .data(monthRange)
+    .join('text')
+    .attr('class', 'month-label')
     .attr(`transform`, (d) => `translate(${(d3.timeMonday.count(startDate, d) * cellWidth)}, ${height - 5})`)
-    .append('text')
-    .text(d => d.toLocaleString('nl', {month: "short"}))
-    .attr('class', 'month-label');
+    .attr('visibility', (d, i) => {
+      const currentPos = d3.timeMonday.count(startDate, monthRange[i]);
+      const nextPos = d3.timeMonday.count(startDate, monthRange[i + 1]);
+      const overlappingLabelPosition = currentPos === nextPos;
+      return overlappingLabelPosition ? 'hidden' : 'visible';
+    })
+    .text(d => d.toLocaleString('nl', {month: "short"}));
 
 }
 

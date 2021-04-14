@@ -18,6 +18,7 @@ const dateFormat = "yyyy-MM-dd";
 export default function StartEndFormField() {
 
   const {searchState, setSearchState} = useSearchContext();
+
   const [state, setState] = useState({
     warning: false
   });
@@ -86,7 +87,7 @@ export default function StartEndFormField() {
           onClick={handlePrevious}
           aria-label={CALENDAR_MOVE_WITH_LEFT_ARROW} data-balloon-pos="up-left"
         >
-          <i className="fas fa-arrow-left" />
+          <i className="fas fa-arrow-left"/>
         </button>
       </div>
       <div aria-label={HELP_BALLOON_PERIOD} data-balloon-pos="up">
@@ -120,7 +121,7 @@ export default function StartEndFormField() {
           aria-label={CALENDAR_MOVE_WITH_RIGHT_ARROW} data-balloon-pos="up-right"
           onClick={handleNext}
         >
-          <i className="fas fa-arrow-right" />
+          <i className="fas fa-arrow-right"/>
         </button>
       </div>
     </div>
@@ -137,7 +138,7 @@ const DatePickerCustomInput = (
     onClick={onClick}
     ref={ref}
   >
-    {value} <i className="far fa-calendar-alt" />
+    {value} <i className="far fa-calendar-alt"/>
   </button>
 );
 

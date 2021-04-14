@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ContextProvider from "./ContextProvider";
 import Version from "./Version";
-import {D3Canvas} from "./common/D3Canvas";
+import {D3Canvas} from "./common/plot/D3Canvas";
 import ResolutionViewer from "./resolution/ResolutionViewer";
 import ViewComposer from "./view/ViewComposer";
 import Views from "./view/Views";
@@ -18,11 +18,6 @@ type GuiProps = {
 export default function Gui(props: GuiProps) {
 
   const svgRef = useRef(null);
-  const [hasSvg, setHasSvg] = useState(svgRef.current);
-
-  useEffect(() => {
-    setHasSvg(svgRef.current)
-  }, [svgRef]);
 
   return (
     <>

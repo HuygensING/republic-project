@@ -88,10 +88,9 @@ code {
 
 /* Heatmap */
 .heatmap-y-label, .month-label {
-  font-weight: normal;
   font-size: 0.8em;
   font-family: sans-serif;
-  margin-left: 2em;
+  color: black;
 }
 
 
