@@ -1,8 +1,9 @@
-import React, {createElement, forwardRef, Ref, useState} from "react";
+import React, {createElement, forwardRef, Ref, useEffect, useState} from "react";
 import moment from "moment";
 import useEvent from "../../hook/useEvent";
 import {useSearchContext} from "../SearchContext";
-import DatePicker from "react-datepicker";
+import DatePicker, {registerLocale} from "react-datepicker";
+import enGB from "date-fns/locale/en-GB";
 
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -59,6 +60,8 @@ export default function StartEndFormField() {
     setSearchState({...searchState, start, end});
   }
 
+  useEffect(() => registerLocale("en-GB", enGB));
+
   useEvent('keyup', handleArrowKeys);
 
   function handleArrowKeys(e: React.KeyboardEvent<HTMLElement>) {
@@ -96,6 +99,7 @@ export default function StartEndFormField() {
           selected={start}
           onChange={handlePickedStartDate}
           dateFormat={dateFormat}
+          locale="en-GB"
           showYearDropdown
           showMonthDropdown
         />
@@ -109,6 +113,7 @@ export default function StartEndFormField() {
           selected={end}
           onChange={handlePickedEndDate}
           dateFormat={dateFormat}
+          locale="en-GB"
           // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
           showYearDropdown
           showMonthDropdown
