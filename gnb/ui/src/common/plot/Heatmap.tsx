@@ -36,7 +36,7 @@ export function renderHeatmap(
   const cellHeight = height / 8;
 
   const color = d3.scaleQuantize<string>()
-    .domain([0, 100])
+    .domain([0, 40])
     .range(['#f3f6e7', '#e7eecf', '#dbe5b7', '#d0dd9f', '#c4d587', '#b8cd6f', '#acc457', '#a1bc3f', '#94b327', '#89ab0f']);
 
   const plot = svg.select(".plot-area");
