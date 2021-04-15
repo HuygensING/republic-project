@@ -1,7 +1,7 @@
 import {memo, MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
-import {HistogramBar} from "../../common/plot/Histogram";
+import {DataEntry} from "../../common/plot/Histogram";
 import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
@@ -43,21 +43,21 @@ export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryH
     }
 
     client.resolutionResource.aggregateByFunctionCategory(
-      bars.reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]),
+      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
       props.personFunctionCategory,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
-      const bars = buckets.map((b: any) => ({
+      const data = buckets.map((b: any) => ({
         date: b.key_as_string,
         count: b.doc_count,
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
-      } as HistogramBar));
+      } as DataEntry));
 
       renderPlot(
         plotState.type,
         props.svgRef,
-        bars,
+        data,
         { color: C10, y: { title: `${HISTOGRAM_PREFIX} ${FUNCTION_CATEGORY}: ${props.personFunctionCategory.name}`}},
         props.handleResolutions
       );

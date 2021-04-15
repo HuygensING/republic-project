@@ -5,7 +5,7 @@ import {MutableRefObject} from 'react';
 import {PlotConfig} from './PlotConfig';
 import {getTooltip, showTooltip} from "./D3Canvas";
 
-export type HistogramBar = {
+export type DataEntry = {
   date: string;
   count: number,
   ids: string[],
@@ -13,7 +13,7 @@ export type HistogramBar = {
 
 export function renderHistogram(
   canvasRef: MutableRefObject<any>,
-  bars: HistogramBar[],
+  bars: DataEntry[],
   config: PlotConfig,
   handleBarClick: (ids: string[]) => void
 ) {
@@ -33,7 +33,7 @@ export function renderHistogram(
     .range([margin.left, width - margin.right])
     .padding(0.1);
 
-  function dataToBucket(d: HistogramBar) {
+  function dataToBucket(d: DataEntry) {
     return moment(d.date).format('DD-MM-YYYY');
   }
 
@@ -85,7 +85,7 @@ export function renderHistogram(
     .data(bars)
     .join('rect')
     .attr('class', 'bar clickable-bar clickable')
-    .attr('x', (d: HistogramBar) => '' + x(dataToBucket(d)))
+    .attr('x', (d: DataEntry) => '' + x(dataToBucket(d)))
     .attr('width', x.bandwidth())
     .attr('y', (d: { count: d3.NumberValue; }) => y1(d.count))
     .attr('height', (d: { count: d3.NumberValue; }) => y1(0) - y1(d.count))

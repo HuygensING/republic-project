@@ -3,7 +3,7 @@ import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
-import {HistogramBar} from "../common/plot/Histogram";
+import {DataEntry} from "../common/plot/Histogram";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
@@ -65,7 +65,7 @@ export default function ResolutionPlot(props: BarChartProps) {
         date: b.key_as_string,
         count: b.doc_count,
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
-      } as HistogramBar));
+      } as DataEntry));
 
       setResolutionState({...resolutionState, resolutions: bars});
 

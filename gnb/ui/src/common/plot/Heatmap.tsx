@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
 import {MutableRefObject} from 'react';
-import {HistogramBar} from "./Histogram";
+import {DataEntry} from "./Histogram";
 import {getTooltip, showTooltip} from "./D3Canvas";
 import {PlotConfig} from "./PlotConfig";
 
 export function renderHeatmap(
   canvasRef: MutableRefObject<any>,
-  data: HistogramBar[],
+  data: DataEntry[],
   config: PlotConfig,
   handleBarClick: (ids: string[]) => void
 ) {

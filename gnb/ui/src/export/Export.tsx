@@ -2,7 +2,7 @@ import Modal from "../common/Modal";
 import {useState} from "react";
 import {EXPORT_BUTTON, EXPORT_DESCRIPTION, EXPORT_DOWNLOAD_LINKS} from "../content/Placeholder";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {HistogramBar} from "../common/plot/Histogram";
+import {DataEntry} from "../common/plot/Histogram";
 import {useClientContext} from "../elastic/ClientContext";
 import {PersonAnn} from "../elastic/model/PersonAnn";
 import {PersonType} from "../elastic/model/PersonType";
@@ -72,7 +72,7 @@ export default function Export() {
   async function createContents(): Promise<{ nodes: string, edges: string }> {
 
     const resolutionIds = resolutionState.resolutions
-      .reduce((all, arr: HistogramBar) => all.concat(arr.ids), [] as string[]);
+      .reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]);
 
     const resolutions = await client.resolutionResource.getMulti(resolutionIds);
 
