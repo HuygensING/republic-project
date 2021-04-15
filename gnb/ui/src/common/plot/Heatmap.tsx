@@ -8,10 +8,10 @@ export function renderHeatmap(
   canvasRef: MutableRefObject<any>,
   data: HistogramBar[],
   config: PlotConfig,
-  // handleBarClick: (ids: string[]) => void
+  handleBarClick: (ids: string[]) => void
 ) {
 
-  let result = new Map(data.map(value => [value['date'], value['count']]));
+  const result = new Map(data.map(value => [value['date'], value['count']]));
 
   const start = data[0].date;
   const startDate = new Date(start);
@@ -30,7 +30,7 @@ export function renderHeatmap(
   const width = svgSize.width;
 
   const monthRange = d3.timeMonth.range(startMonthDate, endDate);
-  let columns = d3.timeMonday.count(startDate, endDate);
+  const columns = d3.timeMonday.count(startDate, endDate);
 
   const cellWidth = (width - margin.left - monthRange.length * 2) / (columns + 1);
   const cellHeight = height / 8;
@@ -83,7 +83,8 @@ export function renderHeatmap(
       getTooltip(canvasRef)
         .transition()
         .style('visibility', 'hidden');
-    });
+    })
+    .on('click', handleClick);
 
   // Y-label:
   plot
@@ -137,7 +138,13 @@ export function renderHeatmap(
       const overlappingLabelPosition = currentPos === nextPos;
       return overlappingLabelPosition ? 'hidden' : 'visible';
     })
-    .text(d => d.toLocaleString('nl', {month: "short"}));
+    .text(d => d.toLocaleString('nl', {month: 'short'}));
+
+  function handleClick(e: any, d: any) {
+    const date = data.find(di => di.date === d);
+    const ids = date ? date.ids : [];
+    handleBarClick(ids);
+  }
 
 }
 

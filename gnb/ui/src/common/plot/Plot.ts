@@ -16,17 +16,17 @@ const functions = [
 export default function renderPlot(
   type: PlotType,
   canvasRef: MutableRefObject<any>,
-  bars: HistogramBar[],
+  data: HistogramBar[],
   config: PlotConfig,
   handleBarClick: (r: string[]) => void,
 ) {
-  if(!canvasRef || !bars.length) {
+  if(!canvasRef || !data.length) {
     return;
   }
   let functionRef = functions.find(f => f.type === type)?.functionRef;
   if (!functionRef) {
     functionRef = renderHistogram;
   }
-  return functionRef(canvasRef, bars, config, handleBarClick);
+  return functionRef(canvasRef, data, config, handleBarClick);
 
 }
