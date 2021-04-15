@@ -35,12 +35,9 @@ export function renderHeatmap(
   const cellWidth = (width - margin.left - monthRange.length * 2) / (columns + 1);
   const cellHeight = height / 8;
 
-  const color = d3.scaleQuantize<string>()
-    .domain([0, 40])
-    .range([
-      '#f3f6e7', '#e7eecf', '#dbe5b7', '#d0dd9f', '#c4d587',
-      '#b8cd6f', '#acc457', '#a1bc3f', '#94b327', '#89ab0f'
-    ]);
+  const opacity = d3.scaleQuantize<number>()
+    .domain([0, 30])
+    .range([0.05, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
 
   const plot = svg.select(".plot-area");
 
@@ -71,7 +68,8 @@ export function renderHeatmap(
     .attr('x', d => d3.timeMonday.count(startDate, d) * cellWidth)
     .attr('y', d => d.getUTCDay() * cellHeight)
     .datum(d3.timeFormat('%Y-%m-%d'))
-    .attr('fill', d => color(result.get(d) as number))
+    .attr('fill', () => config.color)
+    .attr('opacity', d => opacity(result.get(d) as number))
     .on('mouseover', function (e, d) {
       let weekDay = new Date(d).getUTCDay();
       // Sunday should be 7 instead of 0:
