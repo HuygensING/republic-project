@@ -38,7 +38,7 @@ export default function ResolutionViewer() {
   return <div className="row mt-3">
     <div className="col row-view">
 
-      <D3Canvas svgRef={svgRef}/>
+      <D3Canvas svgRef={svgRef} />
       {
         hasSvg
           ? renderPlot()

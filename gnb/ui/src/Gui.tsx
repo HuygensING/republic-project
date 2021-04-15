@@ -2,7 +2,6 @@ import React, {useRef} from 'react';
 import GnbElasticClient from "./elastic/GnbElasticClient";
 import ContextProvider from "./ContextProvider";
 import Version from "./Version";
-import {D3Canvas} from "./common/plot/D3Canvas";
 import ResolutionViewer from "./resolution/ResolutionViewer";
 import ViewComposer from "./view/ViewComposer";
 import Views from "./view/Views";
@@ -32,9 +31,6 @@ export default function Gui(props: GuiProps) {
           <ResolutionViewer/>
           <Views/>
           <ViewComposer/>
-
-          <D3Canvas svgRef={svgRef}/>
-
         </ContextProvider>
       </div>
       <Version />

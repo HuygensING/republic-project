@@ -27,14 +27,15 @@ export default function ResolutionPlot(props: BarChartProps) {
 
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
-
   const {searchState} = useSearchContext();
   const prevUpdate = usePrevious(searchState.updatedOn)
   const searchStateChanged = !equal(prevUpdate, searchState.updatedOn);
 
   const {resolutionState, setResolutionState} = useResolutionContext();
-  const prevResolutions = usePrevious(resolutionState.resolutions);
-  const resolutionStateChanged = !equal(prevResolutions, resolutionState.resolutions);
+  const prevResolutions = usePrevious(resolutionState.updatedOn);
+  const prevPlot = usePrevious(plotState.updatedOn);
+  const resolutionStateChanged = !equal(prevResolutions, resolutionState.updatedOn)
+    || !equal(prevPlot, plotState.updatedOn);
 
   const throwError = useAsyncError();
 
@@ -42,7 +43,7 @@ export default function ResolutionPlot(props: BarChartProps) {
     updateResolutions();
   }
 
-  if(resolutionStateChanged) {
+  if (resolutionStateChanged) {
     updatePlot();
   }
 

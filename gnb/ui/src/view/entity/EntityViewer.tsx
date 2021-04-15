@@ -1,6 +1,6 @@
 import {D3Canvas} from "../../common/plot/D3Canvas";
 import {PersonHistogram} from "./PersonHistogram";
-import React, {memo, useEffect, useRef, useState} from "react";
+import React, {memo, useRef} from "react";
 import {Person} from "../../elastic/model/Person";
 import {equal} from "../../util/equal";
 import {Texts} from "../../common/texts/Texts";

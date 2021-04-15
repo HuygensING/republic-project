@@ -24,6 +24,8 @@ export const HELP_BALLOON_FUNCTION_CATEGORIES = 'Zoek resoluties met alle genoem
 export const HELP_BALLOON_PLACES = 'Zoek resoluties met de plaatsen';
 export const HELP_BALLOON_PERIOD = 'Zoek resoluties binnen periode';
 export const HELP_BALLOON_SEARCH_TERMS = 'Zoek resoluties m.b.v. een query string (zie help)';
+export const HISTOGRAM = 'Histogram';
+export const HEATMAP = 'Heatmap';
 
 // Histograms:
 export const RESOLUTIONS_TEXTS_TITLE = "Resoluties";
@@ -40,6 +42,7 @@ export const ERR_ES_GET_MULTI_RESOLUTIONS = 'Resoluties konden niet opgehaald wo
 export const ERR_VIEW_TYPE_NOT_FOUND = 'Type is onbekend'
 export const ERR_NOT_A_PERSON = 'Ingevoerde ViewType is geen persoon'
 export const ERR_NOT_A_VIEW_TYPE_VALUE = 'Ingevoerde waarde bestaat niet voor ViewType'
+export const ERR_NOT_A_PLOT_TYPE_VALUE = 'Ingevoerde waarde bestaat niet voor PlotType'
 export const ERR_ES_AGGREGATE_LOCATION = 'Locaties konden niet geaggregeerd worden';
 export const ERR_UNKNOWN_VIEW_TYPE_TO_STRING = 'View type onbekend';
 

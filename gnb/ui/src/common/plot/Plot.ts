@@ -2,6 +2,7 @@ import {renderHeatmap} from "./Heatmap";
 import {MutableRefObject} from "react";
 import {DataEntry, renderHistogram} from "./Histogram";
 import {PlotConfig} from "./PlotConfig";
+import {resetCanvas} from "./D3Canvas";
 
 export enum PlotType {
   HISTOGRAM = 'histogram',
@@ -12,6 +13,8 @@ const functions = [
   {type: PlotType.HISTOGRAM, functionRef: renderHistogram},
   {type: PlotType.HEATMAP, functionRef: renderHeatmap}
 ];
+
+let currentType: PlotType;
 
 export default function renderPlot(
   type: PlotType,
@@ -27,6 +30,11 @@ export default function renderPlot(
   if (!functionRef) {
     functionRef = renderHistogram;
   }
-  return functionRef(canvasRef, data, config, handleBarClick);
 
+  if(currentType !== type) {
+    resetCanvas(canvasRef);
+    currentType = type;
+  }
+
+  return functionRef(canvasRef, data, config, handleBarClick);
 }

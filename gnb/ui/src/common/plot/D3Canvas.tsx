@@ -9,6 +9,20 @@ function areEqual(): boolean {
   return true;
 }
 
+export function resetCanvas(ref: MutableRefObject<any>) {
+  const canvas = d3
+    .select(ref.current)
+    .select('.d3-canvas');
+  canvas
+    .selectAll('*')
+    .remove();
+  canvas.html(
+    '<g class="plot-area"/>' +
+    '<g class="x-axis"/>' +
+    '<g class="y-axis"/>'
+  );
+}
+
 export const D3Canvas = React.memo<D3CanvasProps>((props) => {
 
   const ref = props.svgRef;
@@ -18,13 +32,7 @@ export const D3Canvas = React.memo<D3CanvasProps>((props) => {
       className="d3-canvas-wrapper"
       ref={ref}
     >
-      <svg
-        className="d3-canvas"
-      >
-        <g className="plot-area"/>
-        <g className="x-axis"/>
-        <g className="y-axis"/>
-      </svg>
+      <svg className="d3-canvas"/>
       <div className="d3-tooltip"/>
     </div>
   );

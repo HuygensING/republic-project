@@ -237,11 +237,11 @@ export default function Export() {
     </>;
   }
 
-  return <div>
+  return <>
     <button
       type="button"
       onClick={openModal}
-      className="btn btn-info float-right"
+      className="btn btn-info"
     >
       {EXPORT_BUTTON} <i className="fas fa-sign-out-alt"/>
     </button>
@@ -249,5 +249,5 @@ export default function Export() {
       {EXPORT_DESCRIPTION}
       {renderFiles()}
     </Modal>
-  </div>
+  </>
 }
