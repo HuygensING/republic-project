@@ -4,6 +4,9 @@ import {DataEntry} from "./Histogram";
 import {getTooltip, showTooltip} from "./D3Canvas";
 import {PlotConfig} from "./PlotConfig";
 
+/**
+ * Original example: https://itnext.io/d3-v6-calendar-heat-map-c709fe20e737
+ */
 export function renderHeatmap(
   canvasRef: MutableRefObject<any>,
   data: DataEntry[],
@@ -24,7 +27,7 @@ export function renderHeatmap(
     .select(canvasRef.current)
     .select('.d3-canvas');
 
-  const margin = {top: 20, right: 30, bottom: 20, left: 20};
+  const margin = {left: 20};
   const svgSize = canvasRef.current.getBoundingClientRect();
   const height = svgSize.height;
   const width = svgSize.width;
