@@ -1,5 +1,6 @@
 import React, {MutableRefObject} from "react";
 import * as d3 from "d3";
+import {PlotType} from "./Plot";
 
 type D3CanvasProps = {
   svgRef: MutableRefObject<any>
@@ -9,10 +10,15 @@ function areEqual(): boolean {
   return true;
 }
 
-export function resetCanvas(ref: MutableRefObject<any>) {
+export function resetCanvas(ref: React.MutableRefObject<any>, type: PlotType) {
   const canvas = d3
     .select(ref.current)
     .select('.d3-canvas');
+
+  if(canvas.attr('data-type') === type) {
+    return;
+  }
+
   canvas
     .selectAll('*')
     .remove();
@@ -21,12 +27,12 @@ export function resetCanvas(ref: MutableRefObject<any>) {
     '<g class="x-axis"/>' +
     '<g class="y-axis"/>'
   );
+  canvas.attr('data-type', type)
 }
 
 export const D3Canvas = React.memo<D3CanvasProps>((props) => {
 
   const ref = props.svgRef;
-
   return (
     <div
       className="d3-canvas-wrapper"
@@ -36,7 +42,8 @@ export const D3Canvas = React.memo<D3CanvasProps>((props) => {
       <div className="d3-tooltip"/>
     </div>
   );
-}, areEqual);
+
+  }, areEqual);
 
 export function getTooltip(canvasRef: any) {
   return d3

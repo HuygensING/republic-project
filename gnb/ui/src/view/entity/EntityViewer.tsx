@@ -85,13 +85,9 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     <D3Canvas svgRef={svgRef}/>
 
     {isPerson(props.type) ? renderPersonHistogram() : null}
-
     {props.type === ViewType.TERM ? renderTermHistogram() : null}
-
     {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
-
     {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
-
     {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
 
     {state.showTexts ? <Texts

@@ -14,8 +14,6 @@ const functions = [
   {type: PlotType.HEATMAP, functionRef: renderHeatmap}
 ];
 
-let currentType: PlotType;
-
 export default function renderPlot(
   type: PlotType,
   canvasRef: MutableRefObject<any>,
@@ -30,11 +28,6 @@ export default function renderPlot(
   if (!functionRef) {
     functionRef = renderHistogram;
   }
-
-  if(currentType !== type) {
-    resetCanvas(canvasRef);
-    currentType = type;
-  }
-
+  resetCanvas(canvasRef, type);
   return functionRef(canvasRef, data, config, handleBarClick);
 }
