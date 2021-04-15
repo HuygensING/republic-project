@@ -60,7 +60,7 @@ code {
   margin-left: 0;
 }
 
-/* BarChart */
+/* Histogram */
 .clickable {
   cursor: pointer;
 }
@@ -85,6 +85,14 @@ code {
   pointer-events: none;
   color: white;
 }
+
+/* Heatmap */
+.heatmap-y-label, .month-label {
+  font-size: 0.8em;
+  font-family: sans-serif;
+  color: black;
+}
+
 
 /* Texts */
 .highlight {

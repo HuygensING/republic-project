@@ -14,7 +14,7 @@ export default function AddViewBtn(props: AddViewBtnProps) {
         className="btn btn-success align-self-center"
         aria-label={ADD_NEW_VIEW_BALLOON} data-balloon-pos="up"
       >
-        {ADD_NEW_VIEW_BTN}
+        <i className="fas fa-plus-circle" /> {ADD_NEW_VIEW_BTN}
       </button>
     </div>
   </div>

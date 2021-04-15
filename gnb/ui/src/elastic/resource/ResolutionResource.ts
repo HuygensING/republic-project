@@ -15,7 +15,7 @@ import {handleEsError} from "../EsErrorHandler";
 import AggWithIdFilter from "../query/aggs/AggWithIdFilter";
 import AggWithFilters from "../query/aggs/AggWithFilters";
 import SearchParams from "../query/SearchParams";
-import {QueryWithIdsAndHighlights} from "../query/body/resolution/QueryWithIdsAndHighlights";
+import {BodyWithIdsAndHighlights} from "../query/body/resolution/BodyWithIdsAndHighlights";
 import Place from "../../view/model/Place";
 import {Term} from "../../view/model/Term";
 import FilterAnnotation from "../query/filter/resolution/FilterAnnotation";
@@ -23,6 +23,7 @@ import {PersonFunction} from "../model/PersonFunction";
 import FilterPeople from "../query/filter/resolution/FilterPeople";
 import {PersonFunctionCategory} from "../model/PersonFunctionCategory";
 import ResolutionAggsSearchParams from "../query/search-params/ResolutionAggsSearchParams";
+import {BodyWithIds} from "../query/body/resolution/BodyWithIds";
 
 /**
  * ElasticSearch Resolution Resource
@@ -74,11 +75,11 @@ export default class ResolutionResource {
     }
 
     for (const f of functions) {
-      query.addFilter(new FilterPeople(f.people));
+      query.addFilter(new FilterPeople(f.people, PersonType.MENTIONED));
     }
 
     for (const f of functionCategories) {
-      query.addFilter(new FilterPeople(f.people));
+      query.addFilter(new FilterPeople(f.people, PersonType.MENTIONED));
     }
 
     const hist = new AggResolutionHistogram(begin, end, 1);
@@ -102,12 +103,15 @@ export default class ResolutionResource {
    */
   public async getMulti(
     ids: string[],
-    highlight: string
+    highlight?: string
   ): Promise<Resolution[]> {
     if (ids.length === 0) {
       return [];
     }
-    const request = new SearchParams(this.index, new QueryWithIdsAndHighlights(ids, highlight));
+    const request = highlight
+      ? new SearchParams(this.index, new BodyWithIdsAndHighlights(ids, highlight))
+      : new SearchParams(this.index, new BodyWithIds(ids));
+
     const response = await this.esClient
       .search<Resolution>(request)
       .catch(e => handleEsError(e, ERR_ES_GET_MULTI_RESOLUTIONS));
@@ -189,7 +193,7 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new FilterPeople(personFunction.people));
+    filteredQuery.addFilter(new FilterPeople(personFunction.people, PersonType.MENTIONED));
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
   }
 
@@ -205,7 +209,7 @@ export default class ResolutionResource {
     }
 
     const filteredQuery = new AggWithFilters();
-    filteredQuery.addFilter(new FilterPeople(personFunctionCategory.people));
+    filteredQuery.addFilter(new FilterPeople(personFunctionCategory.people, PersonType.MENTIONED));
     return await this.aggregateByResolutionsAndFilters(resolutions, filteredQuery, begin, end);
   }
 

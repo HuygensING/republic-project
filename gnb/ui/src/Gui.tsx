@@ -1,11 +1,11 @@
-import React from 'react';
-import {Search} from "./search/Search";
+import React, {useRef} from 'react';
 import GnbElasticClient from "./elastic/GnbElasticClient";
-import ResolutionViewer from "./resolution/ResolutionViewer";
-import Views from "./view/Views";
 import ContextProvider from "./ContextProvider";
-import ViewComposer from "./view/ViewComposer";
 import Version from "./Version";
+import ResolutionViewer from "./resolution/ResolutionViewer";
+import ViewComposer from "./view/ViewComposer";
+import Views from "./view/Views";
+import {Search} from "./search/Search";
 
 type GuiProps = {
   client: GnbElasticClient
@@ -15,6 +15,8 @@ type GuiProps = {
  * Graphic User Interface
  */
 export default function Gui(props: GuiProps) {
+
+  const svgRef = useRef(null);
 
   return (
     <>

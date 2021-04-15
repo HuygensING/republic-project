@@ -1,24 +1,29 @@
-import React, {createElement, forwardRef, Ref, useState} from "react";
+import React, {createElement, forwardRef, Ref, useEffect, useState} from "react";
 import moment from "moment";
 import useEvent from "../../hook/useEvent";
 import {useSearchContext} from "../SearchContext";
-import DatePicker from "react-datepicker";
+import DatePicker, {registerLocale} from "react-datepicker";
+import nl from "date-fns/locale/nl";
 
 import "react-datepicker/dist/react-datepicker.css";
 import {
   CALENDAR_MOVE_WITH_LEFT_ARROW,
   CALENDAR_MOVE_WITH_RIGHT_ARROW,
+  HELP_BALLOON_PERIOD,
   WARN_DATEPICKER_END_BEFORE_START
 } from "../../content/Placeholder";
 import Warning from "../../common/Warning";
 
-const dateFormat = "yyyy-MM-dd";
+const DATE_FORMAT = "yyyy-MM-dd";
+const LOCALE_NL = "nl";
 
 export default function StartEndFormField() {
 
   const {searchState, setSearchState} = useSearchContext();
+
   const [state, setState] = useState({
-    warning: false
+    warning: false,
+    localeRegistered: false
   });
 
   function calcStepSize(start: Date, end: Date) {
@@ -47,7 +52,7 @@ export default function StartEndFormField() {
 
   const handlePickedEndDate = (newEnd: Date) => {
     if (newEnd < start) {
-      setState({...state, warning : true});
+      setState({...state, warning: true});
       return;
     }
     updateStartEnd(start, newEnd);
@@ -56,6 +61,11 @@ export default function StartEndFormField() {
   function updateStartEnd(start: Date, end: Date) {
     setSearchState({...searchState, start, end});
   }
+
+  useEffect(() => {
+    registerLocale(LOCALE_NL, nl);
+    setState(s => {return {...s, localeRegistered: true}})
+  }, [setState]);
 
   useEvent('keyup', handleArrowKeys);
 
@@ -72,7 +82,7 @@ export default function StartEndFormField() {
   }
 
   function closeWarning() {
-    setState({...state, warning : false});
+    setState({...state, warning: false});
   }
 
   return <>
@@ -85,29 +95,35 @@ export default function StartEndFormField() {
           onClick={handlePrevious}
           aria-label={CALENDAR_MOVE_WITH_LEFT_ARROW} data-balloon-pos="up-left"
         >
-          &lt;&lt;
+          <i className="fas fa-arrow-left"/>
         </button>
       </div>
-      <DatePicker
-        customInput={createElement(forwardRef(DatePickerCustomInput))}
-        selected={start}
-        onChange={handlePickedStartDate}
-        dateFormat={dateFormat}
-        showYearDropdown
-        showMonthDropdown
-      />
+      <div aria-label={HELP_BALLOON_PERIOD} data-balloon-pos="up">
+        <DatePicker
+          customInput={createElement(forwardRef(DatePickerCustomInput))}
+          selected={start}
+          onChange={handlePickedStartDate}
+          dateFormat={DATE_FORMAT}
+          locale={state.localeRegistered ? LOCALE_NL : undefined}
+          showYearDropdown
+          showMonthDropdown
+        />
+      </div>
       <div className="input-group-append">
         <span className="input-group-text">t/m</span>
       </div>
-      <DatePicker
-        customInput={createElement(forwardRef(DatePickerCustomInput))}
-        selected={end}
-        onChange={handlePickedEndDate}
-        dateFormat={dateFormat}
-        // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
-        showYearDropdown
-        showMonthDropdown
-      />
+      <div aria-label={HELP_BALLOON_PERIOD} data-balloon-pos="up">
+        <DatePicker
+          customInput={createElement(forwardRef(DatePickerCustomInput))}
+          selected={end}
+          onChange={handlePickedEndDate}
+          dateFormat={DATE_FORMAT}
+          locale={state.localeRegistered ? LOCALE_NL : undefined}
+          // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
+          showYearDropdown
+          showMonthDropdown
+        />
+      </div>
       <div className="input-group-append">
         <button
           type="button"
@@ -115,7 +131,7 @@ export default function StartEndFormField() {
           aria-label={CALENDAR_MOVE_WITH_RIGHT_ARROW} data-balloon-pos="up-right"
           onClick={handleNext}
         >
-          &gt;&gt;
+          <i className="fas fa-arrow-right"/>
         </button>
       </div>
     </div>
@@ -126,7 +142,13 @@ const DatePickerCustomInput = (
   {value, onClick}: { value: string; onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void },
   ref: Ref<HTMLButtonElement>
 ) => (
-  <button type="button" className="form-control text-center stretched-link text-monospace" onClick={onClick}
-          ref={ref}>{value} 📅</button>
+  <button
+    type="button"
+    className="form-control text-center stretched-link text-monospace"
+    onClick={onClick}
+    ref={ref}
+  >
+    {value} <i className="far fa-calendar-alt"/>
+  </button>
 );
 

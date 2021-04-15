@@ -3,13 +3,15 @@ import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
-import {HistogramBar, renderHistogram} from "../common/Histogram";
+import {DataEntry} from "../common/plot/DataEntry";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";
 import {useClientContext} from "../elastic/ClientContext";
 import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {C9} from "../style/Colors";
+import renderPlot from "../common/plot/Plot";
+import {usePlotContext} from "../common/plot/PlotContext";
 
 moment.locale('nl');
 
@@ -21,17 +23,19 @@ type BarChartProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export default function ResolutionHistogram(props: BarChartProps) {
+export default function ResolutionPlot(props: BarChartProps) {
 
   const client = useClientContext().clientState.client;
-
+  const {plotState} = usePlotContext();
   const {searchState} = useSearchContext();
   const prevUpdate = usePrevious(searchState.updatedOn)
   const searchStateChanged = !equal(prevUpdate, searchState.updatedOn);
 
   const {resolutionState, setResolutionState} = useResolutionContext();
-  const prevResolutions = usePrevious(resolutionState.resolutions);
-  const resolutionStateChanged = !equal(prevResolutions, resolutionState.resolutions);
+  const prevResolutions = usePrevious(resolutionState.updatedOn);
+  const prevPlot = usePrevious(plotState.updatedOn);
+  const resolutionStateChanged = !equal(prevResolutions, resolutionState.updatedOn)
+    || !equal(prevPlot, plotState.updatedOn);
 
   const throwError = useAsyncError();
 
@@ -39,8 +43,8 @@ export default function ResolutionHistogram(props: BarChartProps) {
     updateResolutions();
   }
 
-  if(resolutionStateChanged) {
-    updateHistogram();
+  if (resolutionStateChanged) {
+    updatePlot();
   }
 
   function updateResolutions() {
@@ -62,15 +66,16 @@ export default function ResolutionHistogram(props: BarChartProps) {
         date: b.key_as_string,
         count: b.doc_count,
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
-      } as HistogramBar));
+      } as DataEntry));
 
       setResolutionState({...resolutionState, resolutions: bars});
 
     }).catch(throwError);
   }
 
-  function updateHistogram() {
-    renderHistogram(
+  function updatePlot() {
+    renderPlot(
+      plotState.type,
       props.svgRef,
       resolutionState.resolutions,
       {color: C9, y: {title: RESOLUTIONS_HISTOGRAM_TITLE}},

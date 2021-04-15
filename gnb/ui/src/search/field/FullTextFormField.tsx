@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useState} from "react";
 import {useSearchContext} from "../SearchContext";
-import {WITH_FULL_TEXT} from "../../content/Placeholder";
+import {HELP_BALLOON_SEARCH_TERMS, WITH_FULL_TEXT} from "../../content/Placeholder";
 import {onEnter} from "../../util/onEnter";
 
 export default function FullTextFormField() {
@@ -19,7 +19,8 @@ export default function FullTextFormField() {
     setSearchState({...searchState, fullText: state.fullText});
   };
 
-  return <input
+  return <div aria-label={HELP_BALLOON_SEARCH_TERMS} data-balloon-pos="down">
+    <input
       className="form-control"
       value={state.fullText}
       onChange={handleChange}
@@ -27,5 +28,5 @@ export default function FullTextFormField() {
       placeholder={WITH_FULL_TEXT}
       onBlur={handleSubmit}
       onKeyPress={(e) => onEnter(e, handleSubmit)}
-    />;
+    /></div>
 }

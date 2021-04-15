@@ -1,6 +1,6 @@
 import React from "react";
 import {useSearchContext} from "../SearchContext";
-import {WITH_FUNCTION_CATEGORIES} from "../../content/Placeholder";
+import {HELP_BALLOON_FUNCTION_CATEGORIES, WITH_FUNCTION_CATEGORIES} from "../../content/Placeholder";
 import FunctionCategoryTypeahead, {FunctionCategoryOption} from "../../common/form/FunctionCategoryTypeahead";
 
 export default function FunctionCategoryFormField() {
@@ -12,7 +12,7 @@ export default function FunctionCategoryFormField() {
     setSearchState({...searchState, functionCategories});
   };
 
-  return <div>
+  return <div aria-label={HELP_BALLOON_FUNCTION_CATEGORIES} data-balloon-pos="down">
     <FunctionCategoryTypeahead
       placeholder={WITH_FUNCTION_CATEGORIES}
       handleSubmit={handleSubmit}

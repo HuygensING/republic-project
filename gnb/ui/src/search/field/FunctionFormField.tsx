@@ -1,6 +1,6 @@
 import React from "react";
 import {useSearchContext} from "../SearchContext";
-import {WITH_FUNCTIONS} from "../../content/Placeholder";
+import {HELP_BALLOON_FUNCTIONS, WITH_FUNCTIONS} from "../../content/Placeholder";
 import FunctionTypeahead, {FunctionOption} from "../../common/form/FunctionTypeahead";
 
 export default function FunctionFormField() {
@@ -12,7 +12,7 @@ export default function FunctionFormField() {
     setSearchState({...searchState, functions});
   };
 
-  return <div>
+  return <div aria-label={HELP_BALLOON_FUNCTIONS} data-balloon-pos="down">
     <FunctionTypeahead
       placeholder={WITH_FUNCTIONS}
       handleSubmit={handleSubmit}
