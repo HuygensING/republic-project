@@ -1,10 +1,7 @@
 from typing import Dict, Union, List
 import random
-import datetime
 from elasticsearch import Elasticsearch
 
-import republic.elastic.republic_retrieving as rep_es
-import republic.parser.pagexml.pagexml_session_parser as meeting_parser
 import republic.analyser.republic_inventory_analyser as inv_analyser
 from republic.helper.metadata_helper import make_scan_urls
 from republic.config.republic_config import base_config, set_config_inventory_num

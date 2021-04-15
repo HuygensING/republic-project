@@ -4,6 +4,6 @@ settings.py
 __pycache__
 
 *.pcl
-
+nohup*
 *.iml
 .idea/*

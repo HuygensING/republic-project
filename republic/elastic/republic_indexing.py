@@ -9,23 +9,19 @@ from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
 from republic.extraction.extract_resolution_metadata import generate_proposition_searchers, add_resolution_metadata
-from republic.model.generic_document_model import StructureDoc
+from republic.model.physical_document_model import StructureDoc, parse_derived_coords, json_to_pagexml_scan
+from republic.model.physical_document_model import PageXMLPage
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
-import republic.parser.pagexml.pagexml_session_parser as session_parser
+import republic.parser.logical.pagexml_session_parser as session_parser
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.republic_inventory_parser as inv_parser
-import republic.parser.hocr.republic_base_page_parser as hocr_base_parser
 import republic.parser.hocr.republic_page_parser as hocr_page_parser
-import republic.parser.hocr.republic_paragraph_parser as hocr_para_parser
 import republic.model.resolution_phrase_model as rpm
 from republic.model.republic_date import RepublicDate, make_republic_date
-from republic.model.republic_hocr_model import HOCRPage
-from republic.model.republic_phrase_model import category_index
-from republic.model.republic_pagexml_model import parse_derived_coords
-from republic.model.republic_document_model import Session, get_session_resolutions, Resolution, ResolutionPageDoc
+from republic.model.republic_document_model import Session, get_session_resolutions, get_session_scans_version
+from republic.model.republic_document_model import Resolution, ResolutionPageDoc, configure_resolution_searchers
 from republic.config.republic_config import set_config_inventory_num
-from republic.fuzzy.fuzzy_context_searcher import FuzzyContextSearcher
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
 from republic.helper.metadata_helper import get_per_page_type_index
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
@@ -40,7 +36,7 @@ def add_timestamp(doc: Union[Dict[str, any], StructureDoc]) -> None:
         doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
 
 
-def get_pagexml_page_type(page: Union[ResolutionPageDoc, Dict[str, any]],
+def get_pagexml_page_type(page: Union[PageXMLPage, ResolutionPageDoc, Dict[str, any]],
                           page_type_index: Dict[str, str]) -> str:
     page_num = page.metadata['page_num'] if isinstance(page, ResolutionPageDoc) else page['metadata']['page_num']
     if page_num not in page_type_index:
@@ -120,6 +116,8 @@ def normalize_lemma(lemma):
 
 
 def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_config: dict):
+    inv_metadata = rep_es.retrieve_inventory_metadata(es, inventory_num, inventory_config)
+    page_type_index = get_per_page_type_index(inv_metadata)
     text_repo = TextRepo(text_repo_url)
     for scan_doc in inv_parser.parse_inventory_from_zip(inventory_num, inventory_config):
         version_info = text_repo.get_last_version_info(scan_doc["metadata"]["id"],
@@ -136,8 +134,9 @@ def index_inventory_from_zip(es: Elasticsearch, inventory_num: int, inventory_co
         else:
             pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
         for page_doc in pages_doc:
-            page_doc["version"] = version_info
-            index_page(es, page_doc, inventory_config)
+            page_doc.metadata["version"] = version_info
+            page_doc.metadata['type'] = [page_doc.metadata['type'], page_type_index[page_doc.metadata['page_num']]]
+            index_page(es, page_doc.json, inventory_config)
 
 
 def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any], ignore_version: bool = False):
@@ -165,17 +164,34 @@ def index_inventory_from_text_repo(es, inv_num, inventory_config: Dict[str, any]
             index_page(es, page_doc, inventory_config)
 
 
-def index_inventory_pages_from_scans(es: Elasticsearch, inventory_num: int, config: Dict[str, any]) -> None:
-    inventory_metadata = rep_es.retrieve_inventory_metadata(es, inventory_num, config)
-    page_type_index = get_per_page_type_index(inventory_metadata)
-    for scan_doc in rep_es.retrieve_inventory_scans(es, inventory_num, config):
+def index_inventory_scans_from_text_repo(es_anno, es_text, inventory_num, config):
+    for si, scan_doc in enumerate(rep_es.retrieve_scans_pagexml_from_text_repo_by_inventory(es_text,
+                                                                                            inventory_num, config)):
+        scan_doc.metadata['index_timestamp'] = datetime.datetime.now()
+        es_anno.index(index=config['scan_index'], id=scan_doc.id, body=scan_doc.json)
+    return None
+
+
+def index_inventory_pages_from_scans(es_anno: Elasticsearch, inventory_num: int):
+    inv_config = set_config_inventory_num(inventory_num, ocr_type="pagexml")
+    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_config["inventory_num"], inv_config)
+    page_type_index = rep_es.get_per_page_type_index(inv_metadata)
+    query = rep_es.make_inventory_query(inventory_num)
+    del query['size']
+    for hi, hit in enumerate(rep_es.scroll_hits(es_anno, query, index='scans', size=2)):
+        scan_doc = json_to_pagexml_scan(hit['_source'])
         pages_doc = pagexml_parser.split_pagexml_scan(scan_doc)
         for page_doc in pages_doc:
-            add_timestamp(page_doc)
-            page_doc['metadata']['page_type'] = get_pagexml_page_type(page_doc, page_type_index)
-            page_doc["version"] = scan_doc["version"]
-            print('Indexing page from scan, page id:', page_doc['metadata']['id'])
-            index_page(es, page_doc, config)
+            if page_doc.metadata['page_num'] not in page_type_index:
+                page_doc.metadata['type'] = "empty_page"
+                print("page without page_num:", page_doc.id)
+                print("\tpage stats:", page_doc.stats)
+            else:
+                page_doc.metadata['type'] = [page_doc.metadata['type'], page_type_index[page_doc.metadata['page_num']]]
+            page_doc.metadata['index_timestamp'] = datetime.datetime.now()
+            es_anno.index(index=inv_config['page_index'], id=page_doc.id, body=page_doc.json)
+        if (hi+1) % 100 == 0:
+            print(hi+1, "scans processed")
 
 
 def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dict, base_dir: str):
@@ -199,44 +215,6 @@ def index_hocr_inventory(es: Elasticsearch, inventory_num: int, base_config: dic
             continue
 
 
-def index_pre_split_column_inventory(es: Elasticsearch, pages_info: dict, config: dict, delete_index: bool = False):
-    numbering = 0
-    if delete_index:
-        delete_es_index(es, config['page_index'])
-    for doc_id in pages_info:
-        numbering += 1
-        page_doc = hocr_page_parser.make_page_doc(doc_id, pages_info, config)
-        page_doc['num_columns'] = len(page_doc['columns'])
-        try:
-            page_type = hocr_page_parser.get_page_type(page_doc, config, debug=False)
-        except TypeError:
-            print(json.dumps(page_doc, indent=2))
-            raise
-        page_doc['page_type'] = page_type
-        page_doc['is_parseable'] = True if page_type != 'bad_page' else False
-        if hocr_base_parser.is_title_page(page_doc, config['title_page']):
-            # reset numbering
-            numbering = 1
-            # page_doc['page_type'] += ['title_page']
-            page_doc['is_title_page'] = True
-        else:
-            page_doc['is_title_page'] = False
-        page_doc['type_page_num'] = numbering
-        page_doc['type_page_num_checked'] = False
-        ##################################
-        # DIRTY HACK FOR INVENTORY 3780! #
-        if page_doc['page_num'] in [89, 563, 565]:
-            if 'title_page' not in page_doc['page_type']:
-                page_doc['page_type'] += ['title_page']
-            page_doc['is_title_page'] = True
-        ##################################
-        page_es_doc = create_es_page_doc(page_doc)
-        print(config['inventory_num'], page_doc['page_num'], page_doc['page_type'])
-        page_doc['metadata']['index_timestamp'] = datetime.datetime.now()
-        es.index(index=config['page_index'], doc_type=config['page_doc_type'], id=doc_id, body=page_es_doc)
-        # print(doc_id, page_type, numbering)
-
-
 def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
     scan_files = file_parser.get_hocr_files(config['hocr_dir'])
     for scan_file in scan_files:
@@ -248,61 +226,6 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
         scan_es_doc['metadata']['index_timestamp'] = datetime.datetime.now()
         es.index(index=config['scan_index'], doc_type=config['scan_doc_type'],
                  id=scan_es_doc['id'], body=scan_es_doc)
-
-
-def index_inventory_hocr_pages(es: Elasticsearch, inventory_num: int, config: dict):
-    scans_hocr: list = rep_es.retrieve_inventory_hocr_scans(es, inventory_num, config)
-    print('number of scans:', len(scans_hocr))
-    for scan_hocr in scans_hocr:
-        if 'double_page' in scan_hocr['scan_type']:
-            pages_hocr = hocr_page_parser.parse_double_page_scan(scan_hocr, config)
-            for page_hocr in pages_hocr:
-                print('Indexing page', page_hocr['id'])
-                index_page(es, page_hocr, config)
-        elif 'small' in scan_hocr['scan_type']:
-            scan_hocr['page_type'] = ['empty_page', 'book_cover']
-            scan_hocr['columns'] = []
-            if scan_hocr['scan_num'] == 1:
-                scan_hocr['id'] = '{}-page-1'.format(scan_hocr['scan_num'])
-            else:
-                scan_hocr['id'] = '{}-page-{}'.format(scan_hocr['scan_num'], scan_hocr['scan_num'] * 2 - 2)
-            index_page(es, scan_hocr, config)
-        else:
-            print('Non-double page:', scan_hocr['scan_num'], scan_hocr['scan_type'])
-
-
-def index_paragraphs(es: Elasticsearch, fuzzy_searcher: FuzzyContextSearcher,
-                     inventory_num: int, inventory_config: dict):
-    current_date = hocr_para_parser.initialize_current_date(inventory_config)
-    page_docs = rep_es.retrieve_resolution_pages(es, inventory_num, inventory_config)
-    print('Pages retrieved:', len(page_docs), '\n')
-    for page_doc in sorted(page_docs, key=lambda x: x['page_num']):
-        if 'resolution_page' not in page_doc['page_type']:
-            continue
-        try:
-            hocr_page = HOCRPage(page_doc, inventory_config)
-        except KeyError:
-            print('Error parsing page', page_doc['id'])
-            continue
-            # print(json.dumps(page_doc, indent=2))
-            # raise
-        paragraphs, header = hocr_para_parser.get_resolution_page_paragraphs(hocr_page, inventory_config)
-        for paragraph_order, paragraph in enumerate(paragraphs):
-            matches = fuzzy_searcher.find_candidates(paragraph['text'], include_variants=True)
-            if hocr_para_parser.matches_resolution_phrase(matches):
-                paragraph['metadata']['type'] = 'resolution'
-            current_date = hocr_para_parser.track_meeting_date(paragraph, matches, current_date, inventory_config)
-            paragraph['metadata']['keyword_matches'] = matches
-            for match in matches:
-                if match['match_keyword'] in category_index:
-                    category = category_index[match['match_keyword']]
-                    match['match_category'] = category
-                    paragraph['metadata']['categories'].add(category)
-            paragraph['metadata']['categories'] = list(paragraph['metadata']['categories'])
-            del paragraph['lines']
-            paragraph['metadata']['index_timestamp'] = datetime.datetime.now()
-            es.index(index=inventory_config['paragraph_index'], doc_type=inventory_config['paragraph_doc_type'],
-                     id=paragraph['metadata']['paragraph_id'], body=paragraph)
 
 
 def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
@@ -329,7 +252,7 @@ def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) 
                      id=missing_session.metadata['id'],
                      body=missing_session.json(with_columns=True, with_scan_versions=True))
 
-        session.scan_versions = session_parser.get_session_scans_version(session)
+        session.scan_versions = get_session_scans_version(session)
         session_parser.clean_lines(session.lines, clean_copy=False)
         if session.metadata['has_session_date_element']:
             for evidence in session.evidence:
@@ -413,28 +336,10 @@ def add_missing_dates(prev_date: RepublicDate, session: Session):
         missing_session.metadata['num_columns'] = len(missing_session.columns)
         missing_session.metadata['num_lines'] = num_lines
         missing_session.metadata['num_words'] = num_words
-        missing_session.scan_versions = session_parser.get_session_scans_version(missing_session)
+        missing_session.scan_versions = get_session_scans_version(missing_session)
         session_parser.clean_lines(missing_session.lines, clean_copy=False)
         print('missing session:', missing_session.id)
         yield missing_session
-
-
-def configure_resolution_searchers():
-    opening_searcher_config = {
-        'filter_distractors': True,
-        'include_variants': True,
-        'max_length_variance': 3
-    }
-    opening_searcher = FuzzyPhraseSearcher(opening_searcher_config)
-    opening_phrase_model = PhraseModel(model=rpm.proposition_opening_phrases)
-    opening_searcher.index_phrase_model(opening_phrase_model)
-    verb_searcher_config = {
-        'max_length_variance': 1
-    }
-    verb_searcher = FuzzyPhraseSearcher(verb_searcher_config)
-    verb_phrase_model = PhraseModel(model=rpm.proposition_verbs)
-    verb_searcher.index_phrase_model(verb_phrase_model)
-    return opening_searcher, verb_searcher
 
 
 def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):

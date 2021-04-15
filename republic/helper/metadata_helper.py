@@ -1,6 +1,7 @@
 from typing import Dict, List, Union
 
 import numpy as np
+from settings import image_host_url
 from republic.model.inventory_mapping import get_inventory_by_num
 
 
@@ -17,11 +18,11 @@ def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
     if not scan_num:
         raise ValueError('Must use page_num or scan_num')
     scan_num_string = format_scan_number(scan_num)
-    viewer_baseurl = "https://images.diginfra.net/framed3.html"
+    viewer_baseurl = f"{image_host_url}/framed3.html"
     jpg_file = "{}_{}_{}.jpg".format(inventory_metadata["series_name"],
                                      inventory_metadata["inventory_num"], scan_num_string)
-    jpg_url = "https://images.diginfra.net/iiif/{}/{}/{}".format(inventory_metadata["series_name"],
-                                                                 inventory_metadata["inventory_num"], jpg_file)
+    jpg_url = image_host_url + "/iiif/{}/{}/{}".format(inventory_metadata["series_name"],
+                                                       inventory_metadata["inventory_num"], jpg_file)
     viewer_url = viewer_baseurl + "?imagesetuuid=" + inventory_metadata["inventory_uuid"] + "&uri=" + jpg_url
     return {
         "jpg_url": jpg_url,
