@@ -27,7 +27,7 @@ export function renderHeatmap(
     .select(canvasRef.current)
     .select('.d3-canvas');
 
-  const margin = {left: 20};
+  const margin = {left: 35};
   const svgSize = canvasRef.current.getBoundingClientRect();
   const height = svgSize.height;
   const width = svgSize.width;
@@ -90,19 +90,21 @@ export function renderHeatmap(
     })
     .on('click', handleClick);
 
-  // Y-label:
+  const title = config.y.title;
+  const y1 = startDate.getFullYear();
+  const y2 = endDate.getFullYear();
+  const subtitle = `(${config.y.subtitle ? config.y.subtitle + ', ' : ''}${y1}${y1 === y2 ? '' : '-' + y2})`;
+
+  // Y-labels:
   plot
     .selectAll('.heatmap-y-label')
-    .data([startDate])
+    .data([subtitle, title])
     .join('text')
     .attr('class', 'heatmap-y-label')
-    .attr('transform', 'translate(-6,' + cellHeight * 3.5 + ')rotate(-90)')
+    .attr('transform', (d, i) => `translate(${-8 + -15 * (i)},${cellHeight * 3.5})rotate(-90)`)
     .attr('text-anchor', 'middle')
-    .text(() => {
-      const y1 = startDate.getFullYear();
-      const y2 = endDate.getFullYear();
-      return y1 === y2 ? `${y1}` : `${y1} - ${y2}`;
-    });
+    .text(d => d.length > 45 ? d.substr(0, 45) + '[..]' : d)
+    .style('font-size', d => d.length > 40 ? 9 : 12);
 
   // Outlined months:
   plot.selectAll('.month')

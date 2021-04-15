@@ -7,7 +7,6 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
-import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import Place from "../model/Place";
 import {C5} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
@@ -58,7 +57,7 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        { color: C5, y: { title: `${HISTOGRAM_PREFIX} ${props.place.val}`}},
+        { color: C5, y: { title: props.place.val}},
         props.handleResolutions
       );
 

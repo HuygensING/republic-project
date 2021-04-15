@@ -66,7 +66,7 @@ export function renderHistogram(
           .attr('y', 10)
           .attr('fill', 'currentColor')
           .attr('text-anchor', 'start')
-          .text(config.y.title)
+          .text(`${config.y.subtitle ? config.y.subtitle + ': ' : ''}${config.y.title}`)
       );
   };
 

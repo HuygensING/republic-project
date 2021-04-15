@@ -1,6 +1,7 @@
 export type PlotConfig = {
   y: {
-    title: string
+    title: string,
+    subtitle?: string
   },
   color: string
 }

@@ -7,7 +7,7 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
-import {FUNCTION_CATEGORY, HISTOGRAM_PREFIX} from "../../content/Placeholder";
+import {FUNCTION_CATEGORY} from "../../content/Placeholder";
 import {C10} from "../../style/Colors";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 import renderPlot from "../../common/plot/Plot";
@@ -58,7 +58,7 @@ export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryH
         plotState.type,
         props.svgRef,
         data,
-        { color: C10, y: { title: `${HISTOGRAM_PREFIX} ${FUNCTION_CATEGORY}: ${props.personFunctionCategory.name}`}},
+        { color: C10, y: { title: props.personFunctionCategory.name, subtitle: FUNCTION_CATEGORY}},
         props.handleResolutions
       );
 

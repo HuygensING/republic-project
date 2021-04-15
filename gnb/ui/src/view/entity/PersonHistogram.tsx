@@ -8,7 +8,6 @@ import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
-import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Person} from "../../elastic/model/Person";
 import {C6, C7} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
@@ -65,7 +64,7 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
         data,
         {
           color: props.type === PersonType.ATTENDANT ? C6 : C7,
-          y: { title: `${HISTOGRAM_PREFIX} ${toPlaceholder(type)} ${props.person.searchName}`}
+          y: { title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
         },
         props.handleResolutions
       );

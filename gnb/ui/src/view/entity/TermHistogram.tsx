@@ -7,7 +7,6 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
 import {equal} from "../../util/equal";
-import {HISTOGRAM_PREFIX} from "../../content/Placeholder";
 import {Term} from "../model/Term";
 import {C3} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
@@ -58,7 +57,7 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        { color: C3, y: { title: `${HISTOGRAM_PREFIX} ${props.term.val}`}},
+        { color: C3, y: { title: props.term.val}},
         props.handleResolutions
       );
 
