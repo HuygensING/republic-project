@@ -1,4 +1,4 @@
-export type HistogramConfig = {
+export type PlotConfig = {
   y: {
     title: string
   },

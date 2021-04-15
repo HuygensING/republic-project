@@ -1,15 +1,15 @@
 import * as d3 from 'd3';
 import {MutableRefObject} from 'react';
 import {HistogramBar} from "./Histogram";
+import {getTooltip, showTooltip} from "./D3Canvas";
+import {PlotConfig} from "./PlotConfig";
 
 export function renderHeatmap(
   canvasRef: MutableRefObject<any>,
   data: HistogramBar[],
-  // config: HistogramConfig,
+  config: PlotConfig,
   // handleBarClick: (ids: string[]) => void
 ) {
-
-  console.log('data', data);
 
   let result = new Map(data.map(value => [value['date'], value['count']]));
 
@@ -47,8 +47,8 @@ export function renderHeatmap(
     .attr('height', height)
     .attr('transform', `translate(${margin.left},1)`);
 
-  // Cells:
-  plot
+  // Cell outlines:
+  const cells = plot
     .selectAll('.cell')
     .attr('fill', 'none')
     .attr('stroke', '#000')
@@ -57,7 +57,10 @@ export function renderHeatmap(
       let startDateEdge = new Date(startDate);
       startDateEdge.setDate(startDate.getDate() - 1)
       return d3.timeDays(startDateEdge, endDate);
-    })
+    });
+
+  // Cell contents and interaction:
+  cells
     .join('rect')
     .attr("class", "cell clickable-cell clickable")
     .attr('width', cellWidth)
@@ -67,13 +70,20 @@ export function renderHeatmap(
     .datum(d3.timeFormat('%Y-%m-%d'))
     .attr('fill', d => color(result.get(d) as number))
     .on('mouseover', function (e, d) {
-      d3.select(this).attr('stroke-width', '1px');
+      let weekDay = new Date(d).getUTCDay();
+      // Sunday should be 7 instead of 0:
+      if (!weekDay) weekDay = 7;
+      const yPos = weekDay * cellHeight;
+      const barRect = e.target.getBoundingClientRect();
+      const xPos = Math.round(barRect.left + barRect.width / 2);
+      showTooltip(canvasRef, `${d}: ${result.get(d)}x`, config.color, xPos, yPos)
     })
     .on('mouseout', function () {
       d3.select(this).attr('stroke-width', '0.1px');
-    })
-    .append('title')
-    .text(d => d + ': ' + result.get(d) + 'x');
+      getTooltip(canvasRef)
+        .transition()
+        .style('visibility', 'hidden');
+    });
 
   // Y-label:
   plot
@@ -114,12 +124,13 @@ export function renderHeatmap(
         + 'H' + (startWeek + 1) * cellWidth + 'Z';
     });
 
+  // Month labels:
   plot
     .selectAll('.month-label')
     .data(monthRange)
     .join('text')
     .attr('class', 'month-label')
-    .attr(`transform`, (d) => `translate(${(d3.timeMonday.count(startDate, d) * cellWidth)}, ${height - 5})`)
+    .attr(`transform`, (d) => `translate(${d3.timeMonday.count(startDate, d) * cellWidth}, ${height - 5})`)
     .attr('visibility', (d, i) => {
       const currentPos = d3.timeMonday.count(startDate, monthRange[i]);
       const nextPos = d3.timeMonday.count(startDate, monthRange[i + 1]);
@@ -130,10 +141,3 @@ export function renderHeatmap(
 
 }
 
-function toStr(date: Date) {
-  return date.getFullYear()
-    + '-'
-    + ('0' + (date.getMonth() + 1)).slice(-2)
-    + '-'
-    + ('0' + date.getDate()).slice(-2)
-}

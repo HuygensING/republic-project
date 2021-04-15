@@ -1,7 +1,7 @@
 import {renderHeatmap} from "./Heatmap";
 import {MutableRefObject} from "react";
 import {HistogramBar, renderHistogram} from "./Histogram";
-import {HistogramConfig} from "./PlotConfig";
+import {PlotConfig} from "./PlotConfig";
 
 export enum PlotType {
   HISTOGRAM = 'histogram',
@@ -17,7 +17,7 @@ export default function renderPlot(
   type: PlotType,
   canvasRef: MutableRefObject<any>,
   bars: HistogramBar[],
-  config: HistogramConfig,
+  config: PlotConfig,
   handleBarClick: (r: string[]) => void,
 ) {
   if(!canvasRef || !bars.length) {
