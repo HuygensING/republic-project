@@ -3,7 +3,7 @@ import moment from "moment";
 import useEvent from "../../hook/useEvent";
 import {useSearchContext} from "../SearchContext";
 import DatePicker, {registerLocale} from "react-datepicker";
-import enGB from "date-fns/locale/en-GB";
+import nl from "date-fns/locale/nl";
 
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -14,14 +14,16 @@ import {
 } from "../../content/Placeholder";
 import Warning from "../../common/Warning";
 
-const dateFormat = "yyyy-MM-dd";
+const DATE_FORMAT = "yyyy-MM-dd";
+const LOCALE_NL = "nl";
 
 export default function StartEndFormField() {
 
   const {searchState, setSearchState} = useSearchContext();
 
   const [state, setState] = useState({
-    warning: false
+    warning: false,
+    localeRegistered: false
   });
 
   function calcStepSize(start: Date, end: Date) {
@@ -60,7 +62,10 @@ export default function StartEndFormField() {
     setSearchState({...searchState, start, end});
   }
 
-  useEffect(() => registerLocale("en-GB", enGB));
+  useEffect(() => {
+    registerLocale(LOCALE_NL, nl);
+    setState(s => {return {...s, localeRegistered: true}})
+  }, [setState]);
 
   useEvent('keyup', handleArrowKeys);
 
@@ -98,8 +103,8 @@ export default function StartEndFormField() {
           customInput={createElement(forwardRef(DatePickerCustomInput))}
           selected={start}
           onChange={handlePickedStartDate}
-          dateFormat={dateFormat}
-          locale="en-GB"
+          dateFormat={DATE_FORMAT}
+          locale={state.localeRegistered ? LOCALE_NL : undefined}
           showYearDropdown
           showMonthDropdown
         />
@@ -112,8 +117,8 @@ export default function StartEndFormField() {
           customInput={createElement(forwardRef(DatePickerCustomInput))}
           selected={end}
           onChange={handlePickedEndDate}
-          dateFormat={dateFormat}
-          locale="en-GB"
+          dateFormat={DATE_FORMAT}
+          locale={state.localeRegistered ? LOCALE_NL : undefined}
           // TODO: clicking year dropdown results in error: 'findDOMNode is deprecated in StrictMode'
           showYearDropdown
           showMonthDropdown
