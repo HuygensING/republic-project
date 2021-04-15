@@ -4,12 +4,7 @@ import moment from 'moment';
 import {MutableRefObject} from 'react';
 import {PlotConfig} from './PlotConfig';
 import {getTooltip, showTooltip} from "./D3Canvas";
-
-export type DataEntry = {
-  date: string;
-  count: number,
-  ids: string[],
-}
+import {DataEntry} from "./DataEntry";
 
 export function renderHistogram(
   canvasRef: MutableRefObject<any>,

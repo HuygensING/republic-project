@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import {MutableRefObject} from 'react';
-import {DataEntry} from "./Histogram";
+import {DataEntry} from "./DataEntry";
 import {getTooltip, showTooltip} from "./D3Canvas";
 import {PlotConfig} from "./PlotConfig";
 

@@ -1,5 +1,5 @@
 import {createContext, useContext} from 'react';
-import {DataEntry} from "../common/plot/Histogram";
+import {DataEntry} from "../common/plot/DataEntry";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
 
 export type ResolutionStateType = BaseStateType & {

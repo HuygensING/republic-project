@@ -1,7 +1,7 @@
 import {memo, MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
-import {DataEntry} from "../../common/plot/Histogram";
+import {DataEntry} from "../../common/plot/DataEntry";
 import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";

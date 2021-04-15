@@ -2,7 +2,6 @@ import Modal from "../common/Modal";
 import {useState} from "react";
 import {EXPORT_BUTTON, EXPORT_DESCRIPTION, EXPORT_DOWNLOAD_LINKS} from "../content/Placeholder";
 import {useResolutionContext} from "../resolution/ResolutionContext";
-import {DataEntry} from "../common/plot/Histogram";
 import {useClientContext} from "../elastic/ClientContext";
 import {PersonAnn} from "../elastic/model/PersonAnn";
 import {PersonType} from "../elastic/model/PersonType";
@@ -13,6 +12,7 @@ import {ViewType} from "../view/model/ViewType";
 import {Person} from "../elastic/model/Person";
 import {PersonFunction} from "../elastic/model/PersonFunction";
 import {PersonFunctionCategory} from "../elastic/model/PersonFunctionCategory";
+import {DataEntry} from "../common/plot/DataEntry";
 
 const downloadDataType = 'data:text/plain;charset=utf-8,';
 const NODES_FILENAME = 'nodes.csv';

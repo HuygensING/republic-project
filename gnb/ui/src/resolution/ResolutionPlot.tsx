@@ -3,7 +3,7 @@ import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
 import {useAsyncError} from "../hook/useAsyncError";
-import {DataEntry} from "../common/plot/Histogram";
+import {DataEntry} from "../common/plot/DataEntry";
 import {usePrevious} from "../hook/usePrevious";
 import {equal} from "../util/equal";
 import {useResolutionContext} from "./ResolutionContext";

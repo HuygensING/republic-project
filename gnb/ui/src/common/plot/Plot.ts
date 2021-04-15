@@ -1,8 +1,9 @@
 import {renderHeatmap} from "./Heatmap";
 import {MutableRefObject} from "react";
-import {DataEntry, renderHistogram} from "./Histogram";
+import {renderHistogram} from "./Histogram";
 import {PlotConfig} from "./PlotConfig";
 import {resetCanvas} from "./D3Canvas";
+import {DataEntry} from "./DataEntry";
 
 export enum PlotType {
   HISTOGRAM = 'histogram',
