@@ -121,7 +121,7 @@ export function renderHeatmap(
 
       return 'M' + (startWeek + 1) * cellWidth + ',' + startWeekday * cellHeight
         + 'H' + startWeek * cellWidth + 'V' + 7 * cellHeight
-        + 'H' + endWeek * cellWidth + 'V' + (endWeekday + 1) * cellHeight
+        + 'H' + (endWeekday == -1 ? endWeek + 1 : endWeek) * cellWidth + 'V' + (endWeekday + 1) * cellHeight
         + 'H' + (endWeek + 1) * cellWidth + 'V' + 0
         + 'H' + (startWeek + 1) * cellWidth + 'Z';
     });
