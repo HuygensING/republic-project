@@ -23,6 +23,8 @@ def stream_resolution_page_lines(pages: List[PageXMLPage]) -> Generator[PageXMLT
     Assumption: lines are returned in reading order."""
     pages = sorted(pages, key=lambda x: x.metadata['page_num'])
     for page in pages:
+        if not page.columns:
+            continue
         for line in sort_lines_in_reading_order(page):
             yield line
 
