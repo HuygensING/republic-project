@@ -14,7 +14,7 @@ export type PlotContextType = {
 export const defaultPlotContext = {
   plotState: {
     ...defaultBaseContext,
-    type: PlotType.HISTOGRAM
+    type: PlotType.HEATMAP
   },
   setPlotState: dummy
 } as PlotContextType;

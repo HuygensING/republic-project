@@ -29,7 +29,7 @@ export const defaultSearchContext = {
     fullText: '',
     places: [],
     start: new Date('1626-01-01'),
-    end: new Date('1626-01-31'),
+    end: new Date('1626-06-30'),
     functions: [],
     functionCategories: []
   },
