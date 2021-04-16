@@ -1,9 +1,9 @@
 import {createContext, useContext} from 'react';
-import {HistogramBar} from "../common/Histogram";
+import {DataEntry} from "../common/plot/DataEntry";
 import {BaseStateType, defaultBaseContext, dummy, reducer} from "../BaseStateType";
 
 export type ResolutionStateType = BaseStateType & {
-  resolutions: HistogramBar[];
+  resolutions: DataEntry[];
 }
 
 export type ResolutionContextType = {

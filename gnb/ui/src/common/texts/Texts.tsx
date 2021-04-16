@@ -100,7 +100,7 @@ function combinePeopleToHighlight(searchState: SearchStateType, props: TextsProp
   ));
 
   const mentionedToHighlight: number[] = [...searchState.mentioned.map(m => m.id), ...peopleToHighlight];
-  const attendantsToHighlight: number[] = [...searchState.attendants.map(a => a.id), ...peopleToHighlight];
+  const attendantsToHighlight: number[] = [...searchState.attendants.map(a => a.id)];
 
   if (props.highlightAttendants) {
     attendantsToHighlight.push(...props.highlightAttendants);

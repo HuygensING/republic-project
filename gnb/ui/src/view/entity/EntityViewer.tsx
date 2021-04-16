@@ -1,6 +1,6 @@
-import {D3Canvas} from "../../common/D3Canvas";
+import {D3Canvas} from "../../common/plot/D3Canvas";
 import {PersonHistogram} from "./PersonHistogram";
-import React, {memo, useEffect, useRef, useState} from "react";
+import React, {memo, useRef} from "react";
 import {Person} from "../../elastic/model/Person";
 import {equal} from "../../util/equal";
 import {Texts} from "../../common/texts/Texts";
@@ -25,16 +25,11 @@ type EntityViewerProps = {
 export const EntityViewer = memo(function (props: EntityViewerProps) {
 
   const svgRef = useRef(null);
-  const [hasSvg, setHasSvg] = useState(svgRef.current);
 
   const [state, setState] = React.useState({
     ids: [] as string[],
     showTexts: false
   });
-
-  useEffect(() => {
-    setHasSvg(svgRef.current)
-  }, [svgRef]);
 
   function renderPersonHistogram() {
     return <PersonHistogram
@@ -89,15 +84,11 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   return <>
     <D3Canvas svgRef={svgRef}/>
 
-    {hasSvg && isPerson(props.type) ? renderPersonHistogram() : null}
-
-    {hasSvg && props.type === ViewType.TERM ? renderTermHistogram() : null}
-
-    {hasSvg && props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
-
-    {hasSvg && props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
-
-    {hasSvg && props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
+    {isPerson(props.type) ? renderPersonHistogram() : null}
+    {props.type === ViewType.TERM ? renderTermHistogram() : null}
+    {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
+    {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
+    {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
 
     {state.showTexts ? <Texts
       resolutions={state.ids}
@@ -126,12 +117,6 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   function getAttendants(props: EntityViewerProps): number[] {
     if (props.type === ViewType.ATTENDANT) {
       return [(props.entity as Person).id];
-    }
-    if (props.type === ViewType.FUNCTION) {
-      return (props.entity as PersonFunction).people;
-    }
-    if (props.type === ViewType.FUNCTION_CATEGORY) {
-      return (props.entity as PersonFunctionCategory).people;
     }
     return [];
   }

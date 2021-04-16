@@ -1,6 +1,6 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
-import ResolutionHistogram from "./ResolutionHistogram";
-import {D3Canvas} from "../common/D3Canvas";
+import ResolutionPlot from "./ResolutionPlot";
+import {D3Canvas} from "../common/plot/D3Canvas";
 import {Texts} from "../common/texts/Texts";
 import {useResolutionContext} from "./ResolutionContext";
 
@@ -20,8 +20,8 @@ export default function ResolutionViewer() {
     showTexts: false
   });
 
-  function renderHistogram() {
-    return <ResolutionHistogram
+  function renderPlot() {
+    return <ResolutionPlot
       handleResolutions={(ids: string[]) => setResolutions({ids, showTexts: true})}
       svgRef={svgRef}
     />;
@@ -38,10 +38,10 @@ export default function ResolutionViewer() {
   return <div className="row mt-3">
     <div className="col row-view">
 
-      <D3Canvas svgRef={svgRef}/>
+      <D3Canvas svgRef={svgRef} />
       {
         hasSvg
-          ? renderHistogram()
+          ? renderPlot()
           : null
       }
       {resolutions.showTexts
