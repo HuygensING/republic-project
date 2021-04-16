@@ -23,12 +23,20 @@ def parse_line_words(textline: dict) -> List[PageXMLWord]:
     if isinstance(textline["Word"], dict):
         textline["Word"] = [textline["Word"]]
     for word_dict in textline["Word"]:
-        word = PageXMLWord(text=word_dict["TextEquiv"]["Unicode"]['#text'],
-                           doc_id=word_dict['@id'] if '@id' in word_dict else None,
-                           metadata=parse_custom_metadata(word_dict) if '@custom' in word_dict else None,
-                           coords=parse_coords(word_dict["Coords"]),
-                           conf=word_dict["TextEquiv"]["@conf"] if "@conf" in word_dict["TextEquiv"] else None)
-        words.append(word)
+        if isinstance(word_dict["TextEquiv"]["Unicode"], str):
+            unicode_string = word_dict["TextEquiv"]["Unicode"]
+        else:
+            unicode_string = word_dict["TextEquiv"]["Unicode"]['#text']
+        try:
+            word = PageXMLWord(text=unicode_string,
+                               doc_id=word_dict['@id'] if '@id' in word_dict else None,
+                               metadata=parse_custom_metadata(word_dict) if '@custom' in word_dict else None,
+                               coords=parse_coords(word_dict["Coords"]),
+                               conf=word_dict["TextEquiv"]["@conf"] if "@conf" in word_dict["TextEquiv"] else None)
+            words.append(word)
+        except TypeError:
+            print('Unexpected format for Word Unicode representation:', word_dict)
+            raise
     return words
 
 
@@ -118,7 +126,7 @@ def parse_page_metadata(metadata_json: dict) -> dict:
                 metadata[field] = datetime.fromtimestamp(int(metadata_json[field]) / 1000)
             else:
                 try:
-                    metadata[field] = datetime.strptime(metadata_json[field], "%Y-%m-%dT%H:%M:%S")
+                    metadata[field] = date_parse(metadata_json[field])
                 except ValueError:
                     print('Date format deviation')
                     print(metadata_json)

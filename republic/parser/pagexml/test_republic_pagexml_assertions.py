@@ -49,8 +49,6 @@ def check_textline_assertions(textline: dict) -> None:
         if child not in textline_children:
             print(textline)
             raise KeyError(f"Unknown child element in PageXML TextLine: {child}")
-        if child == '@id':
-            assert(len(textline['@id'].split('-')) == 5)
         if child == 'idString':
             assert(textline['idString'] is None)
         if child == 'TextStyle':
@@ -145,14 +143,14 @@ def check_reading_order_assertions(reading_order_json: dict) -> None:
 
 
 def check_page_assertions(page_json: Dict[str, any]) -> None:
-    assert(page_json['PcGts']['Page']['@imageWidth'].isdigit() is True)
-    assert(page_json['PcGts']['Page']['@imageHeight'].isdigit() is True)
-    if 'ReadingOrder' in page_json['PcGts']['Page']:
-        assert(page_json['PcGts']['Page']['ReadingOrder'] is None)
-    if 'PrintSpace' in page_json['PcGts']['Page']:
-        assert(page_json['PcGts']['Page']['PrintSpace'] is None)
-    if '@imageFilename' in page_json['PcGts']['Page']:
-        assert(isinstance(page_json['PcGts']['Page']['@imageFilename'], str))
+    assert(page_json['@imageWidth'].isdigit() is True)
+    assert(page_json['@imageHeight'].isdigit() is True)
+    if 'ReadingOrder' in page_json:
+        assert(page_json['ReadingOrder'] is None or isinstance(page_json['ReadingOrder'], dict))
+    if 'PrintSpace' in page_json:
+        assert(page_json['PrintSpace'] is None)
+    if '@imageFilename' in page_json:
+        assert(isinstance(page_json['@imageFilename'], str))
     page_children = [
         'ReadingOrder', 'TextRegion', 'PrintSpace',
         '@imageWidth', '@imageHeight', '@imageFilename'
@@ -174,11 +172,11 @@ def check_root_assertions(scan_json: dict) -> None:
         check_page_metadata_assertions(scan_json['PcGts']['Metadata'])
     if 'pcGtsId' in scan_json['PcGts']:
         assert(scan_json['PcGts']['pcGtsId'] is None)
-    check_page_assertions(scan_json)
-    pcgts_children = ['@xmlns', 'schemaLocation', 'Metadata', 'pcGtsId', 'Page']
+    pcgts_children = ['@xmlns', '@xmlns:xsi', '@xsi:schemaLocation', 'schemaLocation', 'Metadata', 'pcGtsId', 'Page']
     for child in scan_json['PcGts']:
         if child not in pcgts_children:
             raise KeyError(f"Unknown child element in PageXML PcGts: {child}")
+    check_page_assertions(scan_json['PcGts']['Page'])
 
 
 def test_republic_pagexml_assertions(scan_json: dict):
