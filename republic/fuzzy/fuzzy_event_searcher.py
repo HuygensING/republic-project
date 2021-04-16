@@ -10,7 +10,7 @@ class EventSearcher:
     def __init__(self, window_size: int = 10):
         self.window_size = window_size
         # Initialize the sliding window with None elements, so first documents are appended at the end.
-        self.sliding_window: List[Union[None, Dict[str, Union[str, int, list]]]] = [None] * self.window_size
+        self.sliding_window: List[Union[None, Dict[str, any]]] = [None] * self.window_size
         self.keywords = {}
         self.variants = {}
         self.labels = {}
@@ -102,10 +102,12 @@ class EventSearcher:
             self.sliding_window = self.sliding_window[-self.window_size:]
         self.sliding_window += [None]
 
-    def add_document(self, text_id: Union[str, int], text_string: str):
+    def add_document(self, text_id: Union[str, int], text_string: str, text_object: any = None):
         """Add a text with identifier to the sliding window and run registered fuzzy searchers."""
         matches: List[Dict[str, Union[str, int, float]]] = []
         doc = {'text_id': text_id, 'text_string': text_string, 'matches': matches}
+        if text_object:
+            doc['text_object'] = text_object
         # iterate over all registered searchers
         for searcher_name in self.searchers:
             # add the matches to the document

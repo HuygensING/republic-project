@@ -7,6 +7,7 @@ import numpy as np
 from republic.helper.metadata_helper import make_iiif_region_url
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
+from republic.parser.pagexml.test_republic_pagexml_assertions import test_republic_pagexml_assertions
 from republic.model.physical_document_model import Coords, parse_derived_coords, PhysicalStructureDoc
 from republic.model.physical_document_model import PageXMLTextRegion, PageXMLColumn, PageXMLScan, PageXMLPage
 from republic.model.physical_document_model import PageXMLTextLine, PageXMLWord, PageXMLDoc
@@ -14,15 +15,14 @@ from republic.model.physical_document_model import PageXMLTextLine, PageXMLWord,
 
 def parse_republic_pagexml_file(pagexml_file: str) -> PageXMLScan:
     try:
-        scan_json = file_parser.read_pagexml_file(pagexml_file)
-        scan_doc = pagexml_parser.parse_pagexml(scan_json)
+        scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file)
         metadata = file_parser.get_republic_scan_metadata(pagexml_file)
         for field in metadata:
             scan_doc.metadata[field] = metadata[field]
         if 'coords' not in scan_doc:
             scan_doc.coords = parse_derived_coords(scan_doc.text_regions)
         return scan_doc
-    except (AssertionError, KeyError, TypeError):
+    except (AssertionError, KeyError, TypeError, ValueError):
         print(f"Error parsing file {pagexml_file}")
         raise
 
@@ -30,9 +30,10 @@ def parse_republic_pagexml_file(pagexml_file: str) -> PageXMLScan:
 def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
                      pagexml_data: Union[str, None] = None) -> PageXMLScan:
     # print('Parsing file', pagexml_file)
-    scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
     try:
-        scan_doc = pagexml_parser.parse_pagexml(scan_json)
+        scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
+        test_republic_pagexml_assertions(scan_json)
+        scan_doc = pagexml_parser.parse_pagexml_json(scan_json)
     except (AssertionError, KeyError, TypeError):
         print('Error parsing file', pagexml_file)
         raise
@@ -420,11 +421,10 @@ def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
         pages = [split_column_regions(page_doc) for page_doc in pages]
     else:
         for page in pages:
-            columns = []
-            extra = []
             for text_region in page.text_regions:
                 if not text_region.type or text_region.has_type('extra'):
-                    # extra.append(text_region)
+                    text_region.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
+                                                                                    text_region.coords)
                     page.add_child(text_region, as_extra=True)
                 else:
                     # turn the text region into a column
@@ -432,20 +432,12 @@ def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
                                            text_regions=text_region.text_regions,
                                            lines=text_region.lines)
                     column.set_derived_id(scan_doc.id)
-                    # print('column id:', column.id)
+                    column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
+                                                                               column.coords)
                     page.add_child(column)
-                    # print('column parent after adding to page:', column.parent.id)
-                    # print('column metadata after adding to page:', column.metadata)
-                    # columns.append(column)
-            # page.columns = columns
-            # page.extra = extra
             page.text_regions = []
     for page in pages:
-        # page.set_derived_id(scan_doc.id)
-        # print('page_id:', page.id)
         for text_region in page.columns + page.extra:
-            # print('\tcolumn id:', text_region.id)
-            # print('\tparent id:', text_region.parent.id)
             text_region.set_derived_id(scan_doc.id)
             if text_region.has_type('column'):
                 id_field = 'column_id'
@@ -459,6 +451,8 @@ def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
             for inner_region in text_region.text_regions:
                 inner_region.metadata[id_field] = id_value
                 inner_region.set_derived_id(scan_doc.id)
+                inner_region.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
+                                                                                 inner_region.coords)
                 for line in inner_region.lines:
                     line.metadata[id_field] = id_value
                     line.metadata['scan_id'] = text_region.metadata['scan_id']

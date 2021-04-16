@@ -20,7 +20,8 @@ import republic.parser.hocr.republic_page_parser as hocr_page_parser
 import republic.model.resolution_phrase_model as rpm
 from republic.model.republic_date import RepublicDate, make_republic_date
 from republic.model.republic_document_model import Session, get_session_resolutions, get_session_scans_version
-from republic.model.republic_document_model import Resolution, ResolutionPageDoc, configure_resolution_searchers
+from republic.model.republic_document_model import Resolution, configure_resolution_searchers
+from republic.model.republic_document_model import make_session_text_version
 from republic.config.republic_config import set_config_inventory_num
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
 from republic.helper.metadata_helper import get_per_page_type_index
@@ -36,9 +37,9 @@ def add_timestamp(doc: Union[Dict[str, any], StructureDoc]) -> None:
         doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
 
 
-def get_pagexml_page_type(page: Union[PageXMLPage, ResolutionPageDoc, Dict[str, any]],
+def get_pagexml_page_type(page: Union[PageXMLPage, Dict[str, any]],
                           page_type_index: Dict[str, str]) -> str:
-    page_num = page.metadata['page_num'] if isinstance(page, ResolutionPageDoc) else page['metadata']['page_num']
+    page_num = page.metadata['page_num'] if isinstance(page, PageXMLPage) else page['metadata']['page_num']
     if page_num not in page_type_index:
         return "empty_page"
     else:
@@ -228,7 +229,17 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
                  id=scan_es_doc['id'], body=scan_es_doc)
 
 
-def index_sessions_inventory(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+def index_sessions_inventory(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+    pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, inv_config)
+    pages.sort(key=lambda page: page.metadata['page_num'])
+    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
+    for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
+        session_text_doc = make_session_text_version(session)
+        print(session.metadata['id'], session_text_doc['metadata']['id'])
+        es_anno.index(index='session_text', id=session.metadata['id'], body=session_text_doc)
+
+
+def index_sessions_inventory_old(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:
     # pages = retrieve_pagexml_resolution_pages(es, inv_num, inv_config)
     pages = rep_es.retrieve_resolution_pages(es, inv_num, inv_config)
     pages.sort(key=lambda page: page.metadata['page_num'])

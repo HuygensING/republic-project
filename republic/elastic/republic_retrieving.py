@@ -11,10 +11,9 @@ from republic.download.text_repo import TextRepo
 from republic.helper.metadata_helper import get_scan_id, get_per_page_type_index
 from republic.model.republic_session import Session, session_from_json
 from republic.model.republic_date import RepublicDate
-from republic.model.physical_document_model import json_to_pagexml_doc, PageXMLScan, PageXMLPage
+from republic.model.physical_document_model import PageXMLScan, PageXMLPage
 from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
 from republic.model.republic_document_model import resolution_from_json, Resolution, parse_phrase_matches
-from republic.model.republic_document_model import page_json_to_resolution_page, ResolutionPageDoc
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -247,12 +246,12 @@ def retrieve_scans_pagexml_from_text_repo_by_inventory(es_text: Elasticsearch,
         yield scan_doc
 
 
-def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[ResolutionPageDoc, None]:
-    if not es.exists(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id):
+def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[PageXMLPage, None]:
+    if not es.exists(index=config['page_index'], id=page_id):
         return None
-    response = es.get(index=config['page_index'], doc_type=config['page_doc_type'], id=page_id)
+    response = es.get(index=config['page_index'], id=page_id)
     if '_source' in response:
-        page_doc = page_json_to_resolution_page(response['_source'])
+        page_doc = json_to_pagexml_page(response['_source'])
         return page_doc
     else:
         return None
@@ -263,7 +262,7 @@ def retrieve_pages_by_query(es: Elasticsearch,
                             use_scroll: bool = False) -> List[PageXMLPage]:
     hits = []
     if use_scroll:
-        for hit in scroll_hits(es, query, config['page_index'], config['page_doc_type'], size=10):
+        for hit in scroll_hits(es, query, config['page_index'], '_doc', size=10):
             hits += [hit]
             if len(hits) % 100 == 0:
                 print(len(hits), 'hits scrolled')

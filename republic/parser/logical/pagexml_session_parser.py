@@ -1,15 +1,15 @@
-from typing import List, Dict, Union, Iterator
-from collections import Counter
+from typing import List, Dict, Generator, Union, Iterator
+from collections import defaultdict
 import copy
 
-from republic.model.physical_document_model import StructureDoc, PageXMLDoc, PageXMLPage
+from republic.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
+from republic.model.physical_document_model import parse_derived_coords
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
-from republic.model.republic_document_model import Session, ResolutionPageDoc
-from republic.model.republic_document_model import check_special_column_for_bleed_through, sort_resolution_columns
-from republic.helper.text_helper import read_word_freq_counter
+from republic.model.republic_document_model import Session
+from republic.model.physical_document_model import sort_lines_in_reading_order
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
@@ -17,142 +17,14 @@ def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
     return RepublicDate(year, month, day)
 
 
-def get_vertical_overlap(line1: dict, line2: dict) -> int:
-    top = max(line1['coords']['top'], line2['coords']['top'])
-    bottom = min(line1['coords']['bottom'], line2['coords']['bottom'])
-    return bottom - top if bottom > top else 0
-
-
-def get_horizontal_overlap(line1: dict, line2: dict) -> int:
-    left = max(line1['coords']['left'], line2['coords']['left'])
-    right = min(line1['coords']['right'], line2['coords']['right'])
-    return right - left if right > left else 0
-
-
-def merge_aligned_lines(lines: list) -> list:
-    aligned_lines = []
-    prev_line = None
-    for li, line in enumerate(lines):
-        line = copy.copy(line)
-        if not line['text']:
-            continue
-        vertical_overlap, horizontal_overlap = 0, 0
-        if prev_line:
-            vertical_overlap = get_vertical_overlap(prev_line, line)
-            horizontal_overlap = get_horizontal_overlap(prev_line, line)
-        if vertical_overlap / line['coords']['height'] < 0.75:
-            aligned_lines += [line]
-        elif horizontal_overlap / 10:
-            aligned_lines += [line]
-        elif line['coords']['left'] < aligned_lines[-1]['coords']['left']:
-            aligned_lines[-1]['text'] = line['text'] + ' ' + aligned_lines[-1]['text']
-        else:
-            aligned_lines[-1]['text'] += ' ' + line['text']
-        prev_line = line
-    return aligned_lines
-
-
-def swap_lines(line1: dict, line2: dict):
-    if line2 is None:
-        # line2 is not a line, so no swap
-        return False
-    if line1["coords"]["right"] < line2["coords"]["left"]:
-        # line2 is to the right of line1, so no swap
-        return False
-    if line1["coords"]["bottom"] < line2["coords"]["top"] + 10:
-        # line2 is below line1, so no swap
-        return False
-    if line2["coords"]["bottom"] < line1["coords"]["top"] + 10:
-        # line2 is entirely above line1, so swap
-        return True
-    if line1["left_alignment"] == "column":
-        # lines have horizontal overlap, but line 1 is left aligned
-        return False
-    if line1["coords"]["left"] < line2["coords"]["right"] - 10:
-        # line 1 has too much overlap with line 2
-        return False
-    else:
-        return True
-
-
-def order_document_lines(document: ResolutionPageDoc):
-    lines = [line for line in stream_resolution_document_lines([document])
-             if line is not None and line["text"] is not None]
-    ordered_lines = []
-    for li, line in enumerate(lines):
-        if line in ordered_lines:
-            continue
-        next_line = lines[li + 1] if li < len(lines) - 1 else None
-        if swap_lines(line, next_line):
-            ordered_lines.append(next_line)
-        ordered_lines.append(line)
-
-
-def stream_resolution_page_lines(pages: List[ResolutionPageDoc],
-                                 word_freq_counter: Counter = None) -> Union[None, iter]:
+def stream_resolution_page_lines(pages: List[PageXMLPage]) -> Generator[PageXMLTextLine, None, None]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     pages = sorted(pages, key=lambda x: x.metadata['page_num'])
     for page in pages:
-        if 'scan_id' not in page.metadata:
-            page.metadata['scan_id'] = page.metadata['id'].split('-page')[0]
-    return stream_resolution_document_lines(pages, word_freq_counter=word_freq_counter)
-
-
-def line_add_document_metadata(line: dict, document: ResolutionPageDoc):
-    # line['inventory_num'] = document.metadata['inventory_num']
-    line['metadata']['scan_id'] = document.metadata['scan_id']
-    line['metadata']['scan_num'] = document.metadata['scan_num']
-    line['metadata']['doc_id'] = document.metadata['id']
-    # line['page_num'] = document.metadata['page_num']
-    # line['column_index'] = ci
-    line['metadata']['column_id'] = line['metadata']['id'].split('-tr-')[0]
-    # line['textregion_index'] = ti
-    line['metadata']['textregion_id'] = line['metadata']['id'].split('-line-')[0]
-    line['metadata']['line_index'] = int(line['metadata']['id'].split('-line-')[1])
-    line['metadata']['scan_version'] = document.scan_version
-    return line
-
-
-def stream_resolution_document_lines(documents: List[ResolutionPageDoc],
-                                     word_freq_counter: Counter = None) -> Union[None, iter]:
-    """Iterate over list of documents and return a generator that yields individuals lines.
-    Iterator iterates over columns and textregions.
-    Assumption: lines are returned in reading order."""
-    for document in documents:
-        if word_freq_counter:
-            for column in document.columns:
-                check_special_column_for_bleed_through(column, word_freq_counter)
-        try:
-            columns = sort_resolution_columns(document.columns)
-        except KeyError:
-            print(document.metadata['id'])
-            raise
-        for ci, column in columns:
-            # print('column id:', column['metadata']['id'])
-            # print('column coords:', column['coords'])
-            lines = []
-            for ti, textregion in enumerate(column['textregions']):
-                # print('textregion coords:', textregion['coords'])
-                if 'lines' not in textregion or not textregion['lines']:
-                    continue
-                for li, line in enumerate(textregion['lines']):
-                    line = line_add_document_metadata(line, document)
-                    lines += [line]
-            # sort lines to make sure they are in reading order (assuming column has single text column)
-            # some columns split their text in sub columns, but for session date detection this is not an issue
-            for line in sorted(lines, key=lambda x: x['coords']['bottom']):
-                yield line
-    return None
-
-
-def print_line_info(line_info: dict) -> None:
-    print('\t', line_info['page_num'], line_info['column_index'],
-          line_info['metadata']['textregion_index'], line_info['line_index'],
-          line_info['coords']['top'], line_info['coords']['bottom'],
-          line_info['coords']['left'], line_info['coords']['right'],
-          line_info['text'])
+        for line in sort_lines_in_reading_order(page):
+            yield line
 
 
 def score_session_opening_elements(session_opening_elements: Dict[str, int], num_elements_threshold: int) -> float:
@@ -190,20 +62,31 @@ def score_opening_element_order(opening_element_list: List[any]) -> float:
     return order_score
 
 
-def find_session_line(line_id: str, session_lines: List[dict]) -> dict:
+def find_session_line(line_id: str, session_lines: List[PageXMLTextLine]) -> PageXMLTextLine:
     """Find a specific line by id in the list of lines belonging to a session."""
     for line in session_lines:
-        if line['metadata']['id'] == line_id:
+        if line.id == line_id:
             return line
     raise IndexError(f'Line with id {line_id} not in session lines.')
 
 
-def generate_session_doc(session_metadata: dict, session_lines: list,
+def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLTextLine],
                          session_searcher: SessionSearcher, column_metadata: Dict[str, dict]) -> iter:
     evidence = session_metadata['evidence']
     del session_metadata['evidence']
-    session = Session(session_metadata, lines=session_lines, evidence=evidence)
-    session.add_page_column_metadata(column_metadata)
+    text_region_lines = defaultdict(list)
+    text_regions: List[PageXMLTextRegion] = []
+    for line in session_lines:
+        text_region_id = line.metadata['column_id']
+        text_region_lines[text_region_id].append(line)
+    for text_region_id in text_region_lines:
+        metadata = column_metadata[text_region_id]
+        coords = parse_derived_coords(text_region_lines[text_region_id])
+        text_region = PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
+                                        coords=coords, lines=text_region_lines[text_region_id])
+        text_regions.append(text_region)
+    session = Session(metadata=session_metadata, text_regions=text_regions, evidence=evidence)
+    # session.add_page_text_region_metadata(column_metadata)
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
     session_info['num_lines'] = len(session_lines)
@@ -242,26 +125,26 @@ class GatedWindow:
         self.window_size = window_size
         self.middle_doc = int(window_size/2)
         # fill the sliding window with empty elements, so that first documents are appended at the end.
-        self.sliding_window: List[Union[None, Dict[str, Union[str, int, Dict[str, int]]]]] = [None] * window_size
+        self.sliding_window: List[Union[None, PageXMLTextLine]] = [None] * window_size
         self.open_threshold = open_threshold
         self.shut_threshold = shut_threshold
         self.gate_open = False
         self.num_chars = 0
         self.let_through: List[bool] = [False] * window_size
 
-    def add_doc(self, doc: Dict[str, Union[str, int, Dict[str, int]]]):
+    def add_line(self, line: PageXMLTextLine):
         """Add a document to the sliding window. doc should be a dictionary with
         the 'text' property containing the document text."""
         if len(self.sliding_window) >= self.window_size:
             self.sliding_window = self.sliding_window[-self.window_size+1:]
             self.let_through = self.let_through[-self.window_size+1:]
         self.let_through += [False]
-        self.sliding_window += [doc]
+        self.sliding_window += [line]
         self.check_treshold()
 
     def num_chars_in_window(self) -> int:
         """Return the number of characters in the sliding window documents."""
-        return sum([len(doc['text']) for doc in self.sliding_window if doc])
+        return sum([len(line.text) for line in self.sliding_window if line])
 
     def check_treshold(self) -> None:
         """Check whether the number of characters in the sliding window crosses
@@ -272,7 +155,7 @@ class GatedWindow:
         elif self.num_chars_in_window() < self.shut_threshold:
             self.let_through[self.middle_doc] = True
 
-    def get_first_doc(self) -> Dict[str, Union[str, int, Dict[str, int]]]:
+    def get_first_doc(self) -> Union[None, PageXMLTextLine]:
         """Return the first sentence in the sliding window if it is set to be let through, otherwise return None."""
         return self.sliding_window[0] if self.let_through[0] else None
 
@@ -284,9 +167,13 @@ def get_columns_metadata(sorted_pages: List[PageXMLPage]) -> Dict[str, dict]:
             if 'scan_id' not in column.metadata:
                 raise KeyError('column is missing scan_id')
             if 'page_id' not in column.metadata:
+                print('page:', page.id)
+                print('column:', column.id)
+                print('column metadata:', column.metadata)
                 raise KeyError('column is missing page_id')
-            column_id = column.metadata['id']
+            column_id = column.id
             column_metadata[column_id] = copy.deepcopy(column.metadata)
+            column_metadata['textrepo_version'] = page.metadata['textrepo_version']
     return column_metadata
 
 
@@ -299,19 +186,17 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
     session_searcher = SessionSearcher(inv_config['inventory_num'], current_date,
                                        session_phrase_model, window_size=30)
     session_metadata = session_searcher.parse_session_metadata(None)
-    gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
+    gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
-    session_lines = []
-    word_freq_counter = read_word_freq_counter(inv_config, 'line')
-    for li, line_info in enumerate(stream_resolution_page_lines(sorted_pages,
-                                                                word_freq_counter=word_freq_counter)):
+    session_lines: List[PageXMLTextLine] = []
+    for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
         # list all lines belonging to the same session date
-        session_lines += [line_info]
-        if line_info['text'] is None or line_info['text'] == '':
+        session_lines += [line]
+        if line.text is None or line.text == '':
             continue
         # add the line to the gated_window
-        gated_window.add_doc(line_info)
+        gated_window.add_line(line)
         if (li+1) % 1000 == 0:
             print(f'{li+1} lines processed, {lines_skipped} lines skipped in fuzzy search')
         check_line = gated_window.get_first_doc()
@@ -322,8 +207,8 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
             # print(li, None)
         else:
             # add the line as a new document to the session searcher and search for session elements
-            session_searcher.add_document(check_line['metadata']['id'], check_line['text'])
-            # print(li, check_line['text'])
+            session_searcher.add_document(check_line.id, check_line.text, text_object=line)
+            # print(li, check_line.text)
         # Keep sliding until the first line in the sliding window has matches
         # last_line = session_searcher.sliding_window[-1]
         # if not last_line:
@@ -345,10 +230,10 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
             session_searcher.reset_sliding_window()
             continue
         if 'extract' in session_opening_elements:
-            for line in session_searcher.sliding_window:
-                if not line:
+            for line_doc in session_searcher.sliding_window:
+                if not line_doc:
                     continue
-                print(line['metadata']['text_id'], line['text_string'])
+                print(line_doc['text_id'], line_doc['text_string'])
         # score the found session opening elements for how well
         # they match the order in which they are expected to appear
         # Empirically established threshold:
@@ -372,7 +257,8 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
             session_lines = session_lines[new_session_index:]
             session_doc = generate_session_doc(session_metadata, finished_session_lines,
                                                session_searcher, column_metadata)
-            if session_doc.metadata['num_lines'] == 0:
+            # if session_doc.metadata['num_lines'] == 0:
+            if session_doc.num_lines == 0:
                 # A session with no lines only happens at the beginning
                 # Don't generate a doc and sets the already shifted date back by 1 day
                 # Also, reset the session counter

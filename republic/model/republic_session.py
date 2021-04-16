@@ -2,15 +2,13 @@ from typing import Dict, List, Union
 from collections import defaultdict
 import copy
 import datetime
-import re
 
 from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
 from republic.model.republic_date import get_date_exception_shift, is_session_date_exception, exception_dates
 from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
-from republic.model.republic_document_model import ResolutionDoc, Session, get_paragraphs
-from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
+from republic.model.republic_document_model import Session
 
 
 sessiondate_config = {
@@ -50,79 +48,6 @@ session_opening_element_order = [
     'attending', 'attendants',
     'reviewed',
 ]
-
-
-class MeetingOld(ResolutionDoc):
-
-    def __init__(self, metadata: Dict, scan_versions: List[dict] = None, **kwargs):
-        """A meeting occurs on a specific day, with a president and attendants, and has textual content in the form of
-         lines or possibly as Resolution objects."""
-        super().__init__(metadata=metadata, **kwargs)
-        self.meeting_date = RepublicDate(date_string=metadata['meeting_date'])
-        self.type = "meeting"
-        self.date = self.meeting_date
-        self.id = f"meeting-{self.meeting_date.isoformat()}-session-1"
-        self.president: Union[str, None] = None
-        self.attendance: List[str] = []
-        self.scan_versions: Union[None, List[dict]] = scan_versions
-        self.resolutions = []
-        self.metadata['num_columns'] = len(self.columns)
-        self.metadata['num_lines'] = len(self.lines)
-        self.metadata['num_words'] = 0
-        for ci, column in enumerate(self.columns):
-            column['metadata']['page_column_id'] = column['metadata']['id']
-            column['metadata']['page_id'] = column['metadata']['doc_id']
-            column['metadata']['doc_id'] = self.id
-            column['metadata']['id'] = self.id + f'-col-{ci}'
-            urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],
-                                  scan_id=column['metadata']['scan_id'])
-            column['metadata']['iiif_url'] = make_iiif_region_url(urls['jpg_url'], column['coords'], add_margin=100)
-            words = []
-            column['metadata']['num_lines'] = 0
-            for tr in column['textregions']:
-                for line in tr['lines']:
-                    column['metadata']['num_lines'] += 1
-                    if line["text"]:
-                        words += [word for word in re.split(r'\W+', line['text']) if word != '']
-                # words = [word for line in self.lines for word in re.split(r"\W+", line["text"]) if line["text"]]
-            column['metadata']['num_words'] = len(words)
-            self.metadata['num_words'] += len(words)
-
-    def add_page_column_metadata(self, page_column_metadata: Dict[str, dict]) -> None:
-        for ci, column in enumerate(self.columns):
-            page_col_metadata = page_column_metadata[column['metadata']['id']]
-            for key in page_col_metadata:
-                if key == 'id':
-                    column['metadata']['page_column_id'] = page_col_metadata[key]
-                elif key in ['num_words', 'num_lines', 'iiif_url']:
-                    continue
-                else:
-                    column['metadata'][key] = page_col_metadata[key]
-
-    def get_metadata(self) -> Dict[str, Union[str, List[str]]]:
-        """Return the metadata of the meeting, including date, president and attendants."""
-        return self.metadata
-
-    def to_json(self, with_resolutions: bool = False, with_columns: bool = False,
-                with_lines: bool = False, with_scan_versions: bool = False):
-        """Return a JSON presentation of the meeting."""
-        json_doc = {
-            'metadata': self.metadata,
-        }
-        if with_resolutions:
-            json_doc['resolutions'] = self.resolutions
-        if with_columns:
-            json_doc['columns'] = self.get_columns()
-        if with_lines:
-            json_doc['lines'] = self.get_lines()
-        if with_scan_versions:
-            json_doc["scan_versions"] = self.scan_versions
-        return json_doc
-
-    def get_paragraphs(self, use_indent=False, use_vertical_space=True):
-        if 1705 <= self.date.date.year < 1711:
-            use_indent = True
-        return get_paragraphs(self, use_indent=use_indent, use_vertical_space=use_vertical_space)
 
 
 def session_from_json(json_doc: dict) -> Session:
