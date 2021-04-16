@@ -34,7 +34,7 @@ export function Attendants(props: AttendantProps) {
       <div className="card">
         <div className="card-header attendants-card">
 
-          <small><strong>Aanwezigen:</strong> {r.people
+          <small><strong>Aanwezigen:</strong> {r.people.length ? r.people
             .sort(presidentFirst)
             .filter(isAttendant)
             .map(
@@ -42,7 +42,7 @@ export function Attendants(props: AttendantProps) {
                 <button className={'btn btn-link ' + highlightMarked(a)} onClick={() => toggle(i)} key={i}>
                   {a.name}{a.president ? ' (president)' : ''}
                 </button>
-            ).reduce(joinJsx)}
+            ).reduce(joinJsx) : '-'}
           </small>
         </div>
         {p ?
