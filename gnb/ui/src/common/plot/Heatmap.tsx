@@ -38,10 +38,6 @@ export function renderHeatmap(
   const cellWidth = (width - margin.left - monthRange.length * 2) / (columns + 1);
   const cellHeight = height / 8;
 
-  const opacity = d3.scaleQuantize<number>()
-    .domain([0, 30])
-    .range([0.05, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
-
   const plot = svg.select(".plot-area");
 
   // Size:
@@ -54,13 +50,16 @@ export function renderHeatmap(
   const cells = plot
     .selectAll('.cell')
     .attr('fill', 'none')
-    .attr('stroke', '#000')
-    .attr('stroke-width', '0.1px')
     .data(() => {
       let startDateEdge = new Date(startDate);
       startDateEdge.setDate(startDate.getDate() - 1)
       return d3.timeDays(startDateEdge, endDate);
     });
+
+  const opacity = d3.scaleSqrt<number>()
+    .domain([0, 40])
+    .range([0, 1]);
+  const round = d3.format(".2f");
 
   // Cell contents and interaction:
   cells
@@ -72,7 +71,7 @@ export function renderHeatmap(
     .attr('y', d => d.getUTCDay() * cellHeight)
     .datum(d3.timeFormat('%Y-%m-%d'))
     .attr('fill', () => config.color)
-    .attr('opacity', d => opacity(result.get(d) as number))
+    .attr('opacity', d => round(opacity(result.get(d) as number)))
     .on('mouseover', function (e, d) {
       let weekDay = new Date(d).getUTCDay();
       // Sunday should be 7 instead of 0:
@@ -112,8 +111,8 @@ export function renderHeatmap(
     .join('path')
     .attr('class', 'month')
     .attr('fill', 'none')
-    .attr('stroke', '#000')
-    .attr('stroke-width', '1.5px')
+    .attr('stroke', '#666')
+    .attr('stroke-width', '1px')
     .attr('d', function (startMonth) {
       if (startMonth < startDate) {
         startMonth.setDate(startDate.getDate());
