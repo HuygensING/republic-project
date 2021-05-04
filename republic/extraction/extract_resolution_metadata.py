@@ -5,7 +5,7 @@ from elasticsearch import Elasticsearch
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 
-from republic.model.republic_document_model import parse_phrase_match, PhraseMatch, ResolutionParagraph, Resolution
+from republic.model.republic_document_model import parse_phrase_match, PhraseMatch, RepublicParagraph, Resolution
 from fuzzy_search.fuzzy_template_searcher import FuzzyTemplateSearcher, FuzzyTemplate, TemplateMatch
 from republic.model.resolution_templates import opening_templates
 from republic.model.resolution_phrase_model import resolution_phrase_sets as rps
@@ -36,7 +36,7 @@ class VariableMatcher:
         return self.length_min <= end - start <= self.length_max
 
     def add_variable_phrases(self, template_match: TemplateMatch,
-                             paragraph: ResolutionParagraph) -> List[Dict[str, any]]:
+                             paragraph: RepublicParagraph) -> List[Dict[str, any]]:
         prev_phrase_match = None
         prev_element_match = None
         prev_group_label = None

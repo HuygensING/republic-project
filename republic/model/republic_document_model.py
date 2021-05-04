@@ -8,23 +8,35 @@ from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
 from republic.model.physical_document_model import LogicalStructureDoc, PageXMLTextLine, PageXMLWord
 from republic.model.physical_document_model import PageXMLTextRegion
-from republic.model.physical_document_model import same_column
+from republic.model.physical_document_model import same_column, json_to_pagexml_text_region
+from republic.model.physical_document_model import json_to_pagexml_line
 from republic.model.physical_document_model import parse_derived_coords, line_ends_with_word_break
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 import republic.model.resolution_phrase_model as rpm
 
 
-class ResolutionDoc(LogicalStructureDoc):
+class RepublicDoc(LogicalStructureDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Union[None, Dict] = None,
                  lines: List[PageXMLTextLine] = None,
                  text_regions: List[PageXMLTextRegion] = None):
-        super().__init__(doc_id=doc_id, doc_type='resolution_doc', metadata=metadata,
+        super().__init__(doc_id=doc_id, doc_type='republic_doc', metadata=metadata,
                          lines=lines, text_regions=text_regions)
-        self.main_type = "resolution_doc"
+        self.main_type = "republic_doc"
         if doc_type:
             self.add_type(doc_type)
+        self.add_text_region_iiif_url()
+
+    def add_text_region_iiif_url(self):
+        """Add text_region iiif url based on the scan it is part of."""
+        for text_region in self.text_regions:
+            scan_id = text_region.metadata['scan_id']
+            # Example scan_id: NL-HaNA_1.01.02_3783_0051
+            inventory_num = int(scan_id.replace('NL-HaNA_1.01.02_', '').split('_')[0])
+            urls = make_scan_urls(inventory_num=inventory_num, scan_id=scan_id)
+            text_region.metadata['iiif_url'] = make_iiif_region_url(urls['jpg_url'], text_region.coords.box,
+                                                                    add_margin=100)
 
     def get_lines(self) -> List[PageXMLTextLine]:
         lines: List[PageXMLTextLine] = []
@@ -69,14 +81,14 @@ class ResolutionDoc(LogicalStructureDoc):
         }
 
 
-class ResolutionParagraph(ResolutionDoc):
+class RepublicParagraph(RepublicDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None,
                  lines: List[PageXMLTextLine] = None, text_regions: List[PageXMLTextRegion] = None,
                  metadata: dict = None,
                  scan_versions: List[Dict[str, any]] = None, text: str = None, text_region_ids: List[str] = None,
                  line_ranges: List[Dict[str, any]] = None, word_freq_counter: Counter = None):
-        super().__init__(doc_id=doc_id, doc_type='resolution_doc', lines=lines,
+        super().__init__(doc_id=doc_id, doc_type='resolution_paragraph', lines=lines,
                          text_regions=text_regions, metadata=metadata)
         if not self.id and 'id' in self.metadata:
             self.id = self.metadata['id']
@@ -101,6 +113,7 @@ class ResolutionParagraph(ResolutionDoc):
     def __repr__(self):
         return f"ResolutionParagraph(lines={[line.metadata['id'] for line in self.lines]}, text={self.text})"
 
+    @property
     def json(self, include_text_regions: bool = True):
         json_data = {
             "id": self.id,
@@ -171,14 +184,89 @@ def lines_to_paragraph_text(lines: List[dict], line_break_chars: str = '-',
     return {'paragraph_text': paragraph_text, 'line_ranges': line_ranges}
 
 
-class Session(ResolutionDoc):
+class ResolutionElementDoc(RepublicDoc):
+
+    def __init__(self,
+                 doc_id: str = None, doc_type: str = None,
+                 metadata: dict = None, scan_versions: dict = None,
+                 lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
+                 text_regions: Union[None, List[Dict[str, Union[dict, list]]]] = None,
+                 paragraphs: List[RepublicParagraph] = None,
+                 evidence: List[PhraseMatch] = None):
+        """An attendance list has textual content."""
+        if not metadata:
+            metadata = {}
+        super().__init__(doc_id=doc_id, doc_type='resolution_element', metadata=metadata,
+                         lines=lines, text_regions=text_regions)
+        if doc_type:
+            self.add_type(doc_type)
+        self.scan_versions = scan_versions if scan_versions else []
+        self.session_date: Union[RepublicDate, None] = None
+        self.paragraphs: List[RepublicParagraph] = paragraphs if paragraphs else []
+        self.text_region_ids: Set[str] = set()
+        self.evidence: List[PhraseMatch] = []
+        if evidence:
+            for match in evidence:
+                if not isinstance(match, PhraseMatch):
+                    print(match)
+                    raise TypeError('Evidence must be a list of PhraseMatch objects')
+            self.evidence = evidence
+
+    def __repr__(self):
+        return f"AttendanceList({json.dumps(self.json, indent=4)}"
+
+    def get_text_regions_from_paragraphs(self):
+        return [text_region for paragraph in self.paragraphs for text_region in paragraph.text_regions]
+
+    def add_paragraph(self, paragraph: RepublicParagraph, matches: List[PhraseMatch] = None):
+        paragraph.metadata['paragraph_index'] = len(self.paragraphs)
+        self.paragraphs.append(paragraph)
+        self.text_region_ids = self.text_region_ids.union([text_region.metadata['id']
+                                                           for text_region in paragraph.text_regions])
+        self.evidence += matches
+
+    @property
+    def stats(self) -> Dict[str, int]:
+        stats = super().stats
+        if self.paragraphs:
+            for paragraph in self.paragraphs:
+                para_stats = paragraph.stats
+                for field in para_stats:
+                    stats[field] += para_stats[field]
+            stats['paragraphs'] = len(self.paragraphs)
+        return stats
+
+    @property
+    def json(self):
+        json_doc = {
+            'id': self.id,
+            'type': self.type,
+            'metadata': self.metadata,
+            'evidence': [match.json() for match in self.evidence],
+            'stats': self.stats
+        }
+        if self.paragraphs:
+            json_doc['paragraphs'] = [paragraph.json for paragraph in self.paragraphs]
+        if self.text_regions:
+            json_doc['text_regions'] = [text_region.json for text_region in self.text_regions]
+        if self.lines:
+            json_doc['lines'] = [line.json for line in self.lines]
+        if self.scan_versions:
+            json_doc["scan_versions"] = self.scan_versions
+        return json_doc
+
+
+class Session(ResolutionElementDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Dict = None,
-                 scan_versions: List[dict] = None, evidence: List[dict] = None, **kwargs):
+                 paragraphs: List[RepublicParagraph] = None, text_regions: List[PageXMLTextRegion] = None,
+                 lines: List[PageXMLTextLine] = None,
+                 scan_versions: List[dict] = None, evidence: List[PhraseMatch] = None, **kwargs):
         """A meeting session occurs on a specific day, with a president and attendants,
         and has textual content in the form of
          lines or possibly as Resolution objects."""
-        super().__init__(doc_id=doc_id, doc_type='session', metadata=metadata, **kwargs)
+        super().__init__(doc_id=doc_id, doc_type='session', metadata=metadata, paragraphs=paragraphs,
+                         text_regions=text_regions, lines=lines, evidence=evidence, **kwargs)
         self.session_date = RepublicDate(date_string=metadata['session_date'])
         self.main_type = "session"
         if doc_type:
@@ -191,29 +279,6 @@ class Session(ResolutionDoc):
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions
         self.resolutions = []
-        self.metadata['num_text_regions'] = len(self.text_regions)
-        self.metadata['num_lines'] = len(self.lines)
-        self.metadata['num_words'] = 0
-        self.add_text_region_metadata()
-        self.evidence: List[dict] = evidence
-
-    def add_text_region_metadata(self):
-        """Add page text_region id, iiif urls and stats on number of text_regions, lines, words."""
-        for ci, text_region in enumerate(self.text_regions):
-            urls = make_scan_urls(inventory_num=self.metadata['inventory_num'],
-                                  scan_id=text_region.metadata['scan_id'])
-            text_region.metadata['iiif_url'] = make_iiif_region_url(urls['jpg_url'], text_region.coords.box,
-                                                                    add_margin=100)
-            words = []
-            text_region.metadata['num_lines'] = 0
-            for tr in text_region.text_regions:
-                for line in tr.lines:
-                    text_region.metadata['num_lines'] += 1
-                    if line.text:
-                        words += [word for word in re.split(r'\W+', line.text) if word != '']
-                # words = [word for line in self.lines for word in re.split(r"\W+", line["text"]) if line["text"]]
-            text_region.metadata['num_words'] = len(words)
-            self.metadata['num_words'] += len(words)
 
     def add_page_text_region_metadata(self, page_text_region_metadata: Dict[str, dict]) -> None:
         for ci, text_region in enumerate(self.text_regions):
@@ -230,35 +295,36 @@ class Session(ResolutionDoc):
         """Return the metadata of the session, including date, president and attendants."""
         return self.metadata
 
-    def json(self, with_resolutions: bool = False, with_text_regions: bool = True,
-             with_lines: bool = False, with_scan_versions: bool = True) -> dict:
+    @property
+    def json(self) -> dict:
         """Return a JSON presentation of the session."""
-        json_doc = {
-            "id": self.id,
-            "type": self.type,
-            "metadata": self.metadata,
-            'text_regions': self.text_regions,
-            'evidence': self.evidence,
-            'stats': self.stats
-        }
-        self.metadata['type'] = self.type
-        if with_resolutions:
-            json_doc['resolutions'] = self.resolutions
-        if with_text_regions:
-            json_doc['text_regions'] = [text_region.json for text_region in self.text_regions]
-        if with_lines:
-            json_doc['lines'] = [line.json for line in self.lines]
-        if with_scan_versions:
-            json_doc["scan_versions"] = self.scan_versions
+        json_doc = super().json
+        if self.resolutions:
+            json_doc['resolutions'] = [resolution.json for resolution in self.resolutions]
         return json_doc
 
+    @property
+    def stats(self) -> Dict[str, int]:
+        stats = super().stats
+        if self.resolutions:
+            for resolution in self.resolutions:
+                resolution_stats = resolution.stats
+                for field in resolution_stats:
+                    stats[field] += resolution_stats[field]
+            stats['resolutions'] = len(self.resolutions)
+        return stats
+
     def get_paragraphs(self, use_indent=False,
-                       use_vertical_space=True) -> Generator[ResolutionParagraph, None, None]:
-        if 1705 <= self.date.date.year < 1711:
-            use_indent = True
-        for paragraph in get_paragraphs(self, use_indent=use_indent, use_vertical_space=use_vertical_space):
-            paragraph.metadata['doc_id'] = self.metadata['id']
-            yield paragraph
+                       use_vertical_space=True) -> Generator[RepublicParagraph, None, None]:
+        if self.paragraphs:
+            for paragraph in self.paragraphs:
+                yield paragraph
+        else:
+            if 1705 <= self.date.date.year < 1711:
+                use_indent = True
+            for paragraph in get_paragraphs(self, use_indent=use_indent, use_vertical_space=use_vertical_space):
+                paragraph.metadata['doc_id'] = self.metadata['id']
+                yield paragraph
 
 
 def get_proposition_type_from_evidence(evidence: List[PhraseMatch]) -> Union[None, str]:
@@ -322,84 +388,41 @@ def parse_phrase_matches(phrase_matches: Union[List[PhraseMatch], List[dict]]):
     return match_objects
 
 
-class AttendanceList(ResolutionDoc):
+class AttendanceList(ResolutionElementDoc):
 
     def __init__(self,
+                 doc_id: str = None, doc_type: str = None,
                  metadata: dict = None, scan_versions: dict = None,
-                 lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 session: Union[None, Session] = None,
-                 text_regions: Union[None, List[Dict[str, Union[dict, list]]]] = None,
-                 paragraphs: List[ResolutionParagraph] = None,
+                 lines: List[PageXMLTextLine] = None,
+                 text_regions: List[PageXMLTextRegion] = None,
+                 paragraphs: List[RepublicParagraph] = None,
                  evidence: Union[List[dict], List[PhraseMatch]] = None):
         """An attendance list has textual content."""
         if not metadata:
             metadata = {}
         metadata['type'] = 'attendance_list'
-        if session:
-            metadata['session_date'] = session.metadata['session_date']
-            metadata['session_id'] = session.metadata['id']
-            metadata['session_num'] = session.metadata['session_num']
-            metadata['inventory_num'] = session.metadata['inventory_num']
-            metadata['president'] = session.metadata['president']
-        super().__init__(metadata=metadata, lines=lines, text_regions=text_regions)
-        self.type = "attendance_list"
+        super().__init__(doc_id=doc_id, doc_type='attendance_list', metadata=metadata,
+                         paragraphs=paragraphs, lines=lines, text_regions=text_regions,
+                         evidence=evidence)
+        if doc_type:
+            self.add_type(doc_type)
         self.scan_versions = scan_versions if scan_versions else []
         self.session_date: Union[RepublicDate, None] = None
-        self.paragraphs: List[ResolutionParagraph] = paragraphs if paragraphs else []
-        if paragraphs and not text_regions:
-            self.add_text_regions_from_paragraphs()
         self.text_region_ids: Set[str] = set()
-        if len(self.paragraphs) == 0:
-            self.metadata['num_paragraphs'] = 0
-            self.metadata['num_columns'] = 0
-            self.metadata['num_lines'] = 0
-            self.metadata['num_words'] = 0
-        # if 'evidence' in self.metadata and self.metadata['evidence']:
-        #     self.evidence = parse_phrase_matches(metadata['evidence'])
-        #     self.metadata['evidence'] = self.evidence
-        self.evidence: List[PhraseMatch] = []
-        if evidence:
-            self.evidence = parse_phrase_matches(evidence)
 
     def __repr__(self):
-        return f"AttendanceList({json.dumps(self.json(), indent=4)}"
-
-    def add_text_regions_from_paragraphs(self):
-        for paragraph in self.paragraphs:
-            for text_region in paragraph.text_regions:
-                self.text_regions.append(text_region)
-
-    def add_paragraph(self, paragraph: ResolutionParagraph, matches: List[PhraseMatch] = None):
-        paragraph.metadata['paragraph_index'] = len(self.paragraphs)
-        self.paragraphs.append(paragraph)
-        self.text_region_ids = self.text_region_ids.union([text_region.metadata['id']
-                                                           for text_region in paragraph.text_regions])
-        self.text_regions += paragraph.text_regions
-        self.metadata['num_paragraphs'] = len(self.paragraphs)
-        self.metadata['num_text_regions'] = len(self.text_region_ids)
-        self.metadata['num_lines'] += paragraph.metadata['num_lines']
-        self.metadata['num_words'] += paragraph.metadata['num_words']
-        self.evidence += matches
-
-    def json(self):
-        json_data = {
-            'metadata': self.metadata,
-            'paragraphs': [paragraph.json(include_text_regions=False) for paragraph in self.paragraphs],
-            'evidence': [match.json() for match in self.evidence],
-            'text_regions': self.text_regions
-        }
-        return json_data
+        return f"AttendanceList({json.dumps(self.json, indent=4)}"
 
 
-class Resolution(ResolutionDoc):
+class Resolution(ResolutionElementDoc):
 
     def __init__(self,
+                 doc_id: str = None, doc_type: str = None,
                  metadata: dict = None,
                  scan_versions: dict = None,
-                 lines: Union[None, List[Dict[str, Union[str, int, Dict[str, int]]]]] = None,
-                 session: Union[None, Session] = None,
-                 text_regions: Union[None, List[Dict[str, Union[dict, list]]]] = None,
-                 paragraphs: List[ResolutionParagraph] = None,
+                 lines: List[PageXMLTextLine] = None,
+                 text_regions: List[PageXMLTextRegion] = None,
+                 paragraphs: List[RepublicParagraph] = None,
                  evidence: Union[List[dict], List[PhraseMatch]] = None):
         """A resolution has textual content of the resolution, as well as an
         opening formula, decision information, and type information on the
@@ -414,14 +437,11 @@ class Resolution(ResolutionDoc):
         if 'decision' not in metadata:
             metadata['decision'] = None
         metadata['type'] = 'resolution'
-        if session:
-            metadata['session_date'] = session.metadata['session_date']
-            metadata['session_id'] = session.metadata['id']
-            metadata['session_num'] = session.metadata['session_num']
-            metadata['inventory_num'] = session.metadata['inventory_num']
-            metadata['president'] = session.metadata['president']
-        super().__init__(metadata=metadata, lines=lines, text_regions=text_regions)
-        self.type = "resolution"
+        super().__init__(doc_id=doc_id, doc_type='resolution', metadata=metadata,
+                         paragraphs=paragraphs, lines=lines, text_regions=text_regions,
+                         evidence=evidence)
+        if doc_type:
+            self.add_type(doc_type)
         self.metadata['resolution_type'] = 'ordinaris'
         self.scan_versions = scan_versions if scan_versions else []
         self.opening = None
@@ -430,21 +450,8 @@ class Resolution(ResolutionDoc):
         self.proposition_type: Union[None, str] = None
         self.proposer: Union[None, str, List[str]] = None
         self.session_date: Union[RepublicDate, None] = None
-        self.paragraphs: List[ResolutionParagraph] = paragraphs if paragraphs else []
-        if paragraphs and not text_regions:
-            self.add_text_regions_from_paragraphs()
         self.text_region_ids: Set[str] = set()
-        if len(self.paragraphs) == 0:
-            self.metadata['num_paragraphs'] = 0
-            self.metadata['num_text_regions'] = 0
-            self.metadata['num_lines'] = 0
-            self.metadata['num_words'] = 0
-        # if 'evidence' in self.metadata and self.metadata['evidence']:
-        #     self.evidence = parse_phrase_matches(metadata['evidence'])
-        #     self.metadata['evidence'] = self.evidence
-        self.evidence: List[PhraseMatch] = []
-        if evidence:
-            self.evidence = parse_phrase_matches(evidence)
+        if self.evidence:
             if self.metadata['proposition_type']:
                 self.proposition_type = self.metadata['proposition_type']
             else:
@@ -452,56 +459,79 @@ class Resolution(ResolutionDoc):
                 self.metadata['proposition_type'] = self.proposition_type
 
     def __repr__(self):
-        return f"Resolution({json.dumps(self.json(), indent=4)}"
-
-    def add_text_regions_from_paragraphs(self):
-        for paragraph in self.paragraphs:
-            for text_region in paragraph.text_regions:
-                self.text_regions.append(text_region)
-
-    def add_paragraph(self, paragraph: ResolutionParagraph, matches: List[PhraseMatch] = None):
-        paragraph.metadata['paragraph_index'] = len(self.paragraphs)
-        self.paragraphs.append(paragraph)
-        self.text_region_ids = self.text_region_ids.union([text_region.metadata['id']
-                                                           for text_region in paragraph.text_regions])
-        self.text_regions += paragraph.text_regions
-        self.metadata['num_paragraphs'] = len(self.paragraphs)
-        self.metadata['num_text_regions'] = len(self.text_region_ids)
-        self.metadata['num_lines'] += paragraph.metadata['num_lines']
-        self.metadata['num_words'] += paragraph.metadata['num_words']
-        self.evidence += matches
-
-    def json(self):
-        json_data = {
-            'metadata': self.metadata,
-            'paragraphs': [paragraph.json(include_text_regions=False) for paragraph in self.paragraphs],
-            'evidence': [match.json() for match in self.evidence],
-            'text_regions': self.text_regions
-        }
-        return json_data
+        return f"Resolution({json.dumps(self.json, indent=4)}"
 
 
-def resolution_from_json(resolution_json: dict) -> Resolution:
+def json_to_republic_doc(json_doc: dict) -> RepublicDoc:
+    if 'session' in json_doc['type']:
+        return json_to_republic_session(json_doc)
+    if 'resolution' in json_doc['type']:
+        return json_to_republic_resolution(json_doc)
+    if 'resolution_paragraph' in json_doc['type']:
+        return json_to_republic_resolution_paragraph(json_doc)
+    if 'attendance_list' in json_doc['type']:
+        return json_to_republic_attendance_list(json_doc)
+
+
+def json_to_republic_attendance_list(attendance_json: dict) -> AttendanceList:
+    paragraphs = []
+    for paragraph_json in attendance_json['paragraphs']:
+        paragraph = json_to_republic_resolution_paragraph(paragraph_json)
+        paragraphs.append(paragraph)
+    text_regions, lines, evidence = json_to_physical_elements(attendance_json)
+    return AttendanceList(doc_id=attendance_json['id'], doc_type=attendance_json['type'],
+                          metadata=attendance_json['metadata'],
+                          paragraphs=paragraphs, text_regions=text_regions,
+                          lines=lines,
+                          scan_versions=attendance_json['scan_versions'])
+
+
+def json_to_republic_resolution_paragraph(paragraph_json: dict) -> RepublicParagraph:
+    if 'text_regions' not in paragraph_json:
+        paragraph_json['text_regions'] = []
+    if 'text_region_ids' not in paragraph_json:
+        paragraph_json['text_region_ids'] = []
+    text_regions, lines, evidence = json_to_physical_elements(paragraph_json)
+    return RepublicParagraph(doc_id=paragraph_json['id'], doc_type=paragraph_json['type'],
+                             metadata=paragraph_json['metadata'],
+                             text_regions=text_regions,
+                             text_region_ids=paragraph_json['text_region_ids'],
+                             scan_versions=paragraph_json['scan_versions'],
+                             text=paragraph_json['text'],
+                             line_ranges=paragraph_json['line_ranges'])
+
+
+def json_to_republic_resolution(resolution_json: dict) -> Resolution:
     paragraphs = []
     for paragraph_json in resolution_json['paragraphs']:
-        if 'text_regions' not in paragraph_json:
-            paragraph_json['text_regions'] = []
-        if 'text_region_ids' not in paragraph_json:
-            paragraph_json['text_region_ids'] = []
-        paragraph = ResolutionParagraph(metadata=paragraph_json['metadata'],
-                                        text_regions=paragraph_json['text_regions'],
-                                        text_region_ids=paragraph_json['text_region_ids'],
-                                        scan_versions=paragraph_json['scan_versions'],
-                                        text=paragraph_json['text'],
-                                        line_ranges=paragraph_json['line_ranges'])
+        paragraph = json_to_republic_resolution_paragraph(paragraph_json)
         paragraphs.append(paragraph)
-    if 'text_regions' not in resolution_json:
-        resolution_json['text_regions'] = []
-    text_region_map = defaultdict(list)
-    for text_region in resolution_json['text_regions']:
-        text_region_map[text_region['metadata']['id']].append(text_region)
-    return Resolution(metadata=resolution_json['metadata'], paragraphs=paragraphs,
-                      evidence=resolution_json['evidence'], text_regions=resolution_json['text_regions'])
+    text_regions, lines, evidence = json_to_physical_elements(resolution_json)
+    return Resolution(doc_id=resolution_json['id'], doc_type=resolution_json['type'],
+                      metadata=resolution_json['metadata'], evidence=evidence,
+                      paragraphs=paragraphs, text_regions=text_regions, lines=lines)
+
+
+def json_to_physical_elements(republic_json: dict):
+    text_regions = republic_json['text_regions'] if 'text_regions' in republic_json else []
+    text_regions = [json_to_pagexml_text_region(tr_json) for tr_json in text_regions]
+    lines = republic_json['lines'] if 'lines' in republic_json else []
+    lines = [json_to_pagexml_line(line_json) for line_json in lines]
+    evidence = republic_json['evidence'] if 'evidence' in republic_json else []
+    evidence = parse_phrase_matches(evidence)
+    return text_regions, lines, evidence
+
+
+def json_to_republic_session(session_json: dict) -> Session:
+    paragraphs = []
+    if 'paragraph' in session_json:
+        for paragraph_json in session_json['paragraphs']:
+            paragraph = json_to_republic_resolution_paragraph(paragraph_json)
+            paragraphs.append(paragraph)
+    text_regions, lines, evidence = json_to_physical_elements(session_json)
+    return Session(doc_id=session_json['id'], doc_type=session_json['type'],
+                   metadata=session_json['metadata'], evidence=evidence,
+                   paragraphs=paragraphs, text_regions=text_regions, lines=lines)
 
 
 def check_special_column_for_bleed_through(column: dict, word_freq_counter: Counter) -> None:
@@ -556,7 +586,12 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
             if resolution:
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
-            resolution = Resolution(metadata=metadata, session=session)
+            metadata['session_date'] = session.metadata['session_date']
+            metadata['session_id'] = session.metadata['id']
+            metadata['session_num'] = session.metadata['session_num']
+            metadata['inventory_num'] = session.metadata['inventory_num']
+            metadata['president'] = session.metadata['president']
+            resolution = Resolution(metadata=metadata)
             # print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
@@ -565,7 +600,12 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
         else:
             metadata = get_base_metadata(session, session.metadata['id'] + '-attendance_list',
                                          'attendance_list')
-            attendance_list = AttendanceList(metadata=metadata, session=session)
+            metadata['session_date'] = session.metadata['session_date']
+            metadata['session_id'] = session.metadata['id']
+            metadata['session_num'] = session.metadata['session_num']
+            metadata['inventory_num'] = session.metadata['inventory_num']
+            metadata['president'] = session.metadata['president']
+            attendance_list = AttendanceList(metadata=metadata)
             # print('\tCreating new attedance list with number:', 1, attendance_list.metadata['id'])
             attendance_list.add_paragraph(paragraph, matches=[])
         # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
@@ -576,6 +616,7 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
 
 def running_id_generator(base_id: str, suffix: str, count: int = 0):
     """Returns an ID generator based on running numbers."""
+
     def generate_id():
         nonlocal count
         count += 1
@@ -584,7 +625,7 @@ def running_id_generator(base_id: str, suffix: str, count: int = 0):
     return generate_id
 
 
-def get_base_metadata(source_doc: ResolutionDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int]]:
+def get_base_metadata(source_doc: RepublicDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int]]:
     """Return a dictionary with basic metadata for a structure document."""
     return {
         'inventory_num': source_doc.metadata['inventory_num'],
@@ -594,18 +635,18 @@ def get_base_metadata(source_doc: ResolutionDoc, doc_id: str, doc_type: str) -> 
     }
 
 
-def get_paragraphs(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
+def get_paragraphs(doc: RepublicDoc, prev_line: Union[None, dict] = None,
                    use_indent: bool = False, use_vertical_space: bool = True,
-                   word_freq_counter: Counter = None) -> List[ResolutionParagraph]:
+                   word_freq_counter: Counter = None) -> List[RepublicParagraph]:
     if use_indent:
         return get_paragraphs_with_indent(doc, prev_line=prev_line, word_freq_counter=word_freq_counter)
     elif use_vertical_space:
         return get_paragraphs_with_vertical_space(doc, prev_line=prev_line, word_freq_counter=word_freq_counter)
 
 
-def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, PageXMLTextLine] = None,
-                               word_freq_counter: Counter = None) -> List[ResolutionParagraph]:
-    paragraphs: List[ResolutionParagraph] = []
+def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, PageXMLTextLine] = None,
+                               word_freq_counter: Counter = None) -> List[RepublicParagraph]:
+    paragraphs: List[RepublicParagraph] = []
     generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
     para_lines = []
     doc_text_offset = 0
@@ -621,8 +662,8 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, PageXM
                 # so is the start of a new paragraph
                 if len(para_lines) > 0:
                     metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                    paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
-                                                    word_freq_counter=word_freq_counter)
+                    paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                                  word_freq_counter=word_freq_counter)
                     paragraph.metadata["start_offset"] = doc_text_offset
                     doc_text_offset += len(paragraph.text)
                     paragraphs.append(paragraph)
@@ -633,8 +674,8 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, PageXM
                     # but the previous line ends early, so is the end of a paragraph.
                     if len(para_lines) > 0:
                         metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                        paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
-                                                        word_freq_counter=word_freq_counter)
+                        paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                                      word_freq_counter=word_freq_counter)
                         paragraph.metadata["start_offset"] = doc_text_offset
                         doc_text_offset += len(paragraph.text)
                         paragraphs.append(paragraph)
@@ -643,8 +684,8 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, PageXM
             if line.coords.left > next_line.coords.left + 20:
                 if len(para_lines) > 0:
                     metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                    paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
-                                                    word_freq_counter=word_freq_counter)
+                    paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                                  word_freq_counter=word_freq_counter)
                     paragraph.metadata["start_offset"] = doc_text_offset
                     doc_text_offset += len(paragraph.text)
                     paragraphs.append(paragraph)
@@ -660,16 +701,16 @@ def get_paragraphs_with_indent(doc: ResolutionDoc, prev_line: Union[None, PageXM
         prev_line = line
     if len(para_lines) > 0:
         metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-        paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
-                                        word_freq_counter=word_freq_counter)
+        paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                      word_freq_counter=word_freq_counter)
         paragraph.metadata["start_offset"] = doc_text_offset
         doc_text_offset += len(paragraph.text)
         paragraphs.append(paragraph)
     return paragraphs
 
 
-def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None, dict] = None,
-                                       word_freq_counter: Counter = None) -> List[ResolutionParagraph]:
+def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, dict] = None,
+                                       word_freq_counter: Counter = None) -> List[RepublicParagraph]:
     para_lines = []
     paragraphs = []
     doc_text_offset = 0
@@ -679,8 +720,8 @@ def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None
         if prev_line and line.coords.top - prev_line.coords.top > 65:
             if len(para_lines) > 0:
                 metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
-                                                word_freq_counter=word_freq_counter)
+                paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                              word_freq_counter=word_freq_counter)
                 paragraph.metadata['start_offset'] = doc_text_offset
                 doc_text_offset += len(paragraph.text)
                 paragraphs.append(paragraph)
@@ -693,8 +734,8 @@ def get_paragraphs_with_vertical_space(doc: ResolutionDoc, prev_line: Union[None
         prev_line = line
     if len(para_lines) > 0:
         metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-        paragraph = ResolutionParagraph(lines=para_lines, metadata=metadata,
-                                        word_freq_counter=word_freq_counter)
+        paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                      word_freq_counter=word_freq_counter)
         paragraph.metadata['start_offset'] = doc_text_offset
         doc_text_offset += len(paragraph.text)
         paragraphs.append(paragraph)
@@ -710,7 +751,7 @@ def get_session_scans_version(session: Session) -> List:
     return list(scans_version.values())
 
 
-def make_paragraph_line_annotations(paragraph: ResolutionParagraph, doc_text_offset: int,
+def make_paragraph_line_annotations(paragraph: RepublicParagraph, doc_text_offset: int,
                                     line_index: Dict[str, PageXMLTextLine]) -> List[Dict[str, any]]:
     annotations = []
     tr_lines = defaultdict(list)
@@ -728,7 +769,8 @@ def make_paragraph_line_annotations(paragraph: ResolutionParagraph, doc_text_off
             'start_offset': doc_text_offset + tr_lines[column_id][0]['start'],
             'end_offset': doc_text_offset + tr_lines[column_id][-1]['end'],
             'metadata': {
-                'para_id': paragraph.metadata['id']
+                'para_id': paragraph.metadata['id'],
+                'scan_id': first_line.metadata['scan_id']
             }
         }
         annotations.append(tr_anno)
@@ -754,7 +796,7 @@ def make_paragraph_line_annotations(paragraph: ResolutionParagraph, doc_text_off
     return annotations
 
 
-def make_paragraph_annotation(paragraph: ResolutionParagraph, doc_text_offset: int,
+def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int,
                               parent_id: str) -> Dict[str, any]:
     return {
         'id': paragraph.id,

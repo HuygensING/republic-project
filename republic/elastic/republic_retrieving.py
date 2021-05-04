@@ -13,7 +13,7 @@ from republic.model.republic_session import Session, session_from_json
 from republic.model.republic_date import RepublicDate
 from republic.model.physical_document_model import PageXMLScan, PageXMLPage
 from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
-from republic.model.republic_document_model import resolution_from_json, Resolution, parse_phrase_matches
+from republic.model.republic_document_model import json_to_republic_resolution, Resolution, parse_phrase_matches
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -410,7 +410,7 @@ def retrieve_session_by_date(es: Elasticsearch, date: Union[str, RepublicDate], 
 def retrieve_resolution_by_id(es: Elasticsearch, resolution_id: str, config: dict) -> Union[Resolution, None]:
     if es.exists(index=config['resolution_index'], id=resolution_id):
         response = es.get(index=config['resolution_index'], id=resolution_id)
-        return resolution_from_json(response['_source'])
+        return json_to_republic_resolution(response['_source'])
     else:
         return None
 
@@ -420,7 +420,7 @@ def scroll_resolutions_by_query(es: Elasticsearch, query: dict,
     for hit in scroll_hits(es, query, index=config['resolution_index'],
                            doc_type="_doc", size=10, scroll=scroll):
         resolution_json = hit['_source']
-        yield resolution_from_json(resolution_json)
+        yield json_to_republic_resolution(resolution_json)
 
 
 def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
@@ -429,7 +429,7 @@ def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
     if response['hits']['total']['value'] == 0:
         return []
     else:
-        return [resolution_from_json(hit['_source']) for hit in response['hits']['hits']]
+        return [json_to_republic_resolution(hit['_source']) for hit in response['hits']['hits']]
 
 
 def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):

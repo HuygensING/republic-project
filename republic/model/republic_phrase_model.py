@@ -172,7 +172,7 @@ spelling_variants = {
 
 session_phrase_model = [
     {
-        'keyword': 'Extract uyt de Resolutien',
+        'phrase': 'Extract uyt de Resolutien',
         'start_year': 1703, 'end_year': 1796,
         'label': 'extract',
         'variants': [
@@ -182,17 +182,17 @@ session_phrase_model = [
         ]
     },
     {
-        'keyword': 'Het eerste jaar der Bataafsche Vryheid',
+        'phrase': 'Het eerste jaar der Bataafsche Vryheid',
         'start_year': 1795, 'end_year': 1796,
         'label': 'tagline'
     },
     {
-        'keyword': 'Nihil actum est',
+        'phrase': 'Nihil actum est',
         'start_year': 1703, 'end_year': 1796,
         'label': 'rest_day'
     },
     {
-        'keyword': 'Zynde Vast- en Bede-dag',
+        'phrase': 'Zynde Vast- en Bede-dag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'variants': [
@@ -200,12 +200,12 @@ session_phrase_model = [
         ]
     },
     {
-        'keyword': 'GECOMPAREERT,',
+        'phrase': 'GECOMPAREERT,',
         'start_year': 1703, 'end_year': 1796,
         'label': 'special_attendance'
     },
     {
-        'keyword': 'Zyne Hoogheid den Heere Prince van ',
+        'phrase': 'Zyne Hoogheid den Heere Prince van ',
         'label': 'prince_attending',
         'start_year': 1703, 'end_year': 1796,
         'line_type': 'multi_line',
@@ -214,40 +214,40 @@ session_phrase_model = [
         ],
     },
     {
-        'keyword': 'PRAESIDE,',
+        'phrase': 'PRAESIDE,',
         'variants': ['P R AE S I D E,'],
         'start_year': 1703, 'end_year': 1796,
         'label': 'presiding'
     },
     {
-        'keyword': 'PRAESENTIBUS,',
+        'phrase': 'PRAESENTIBUS,',
         'variants': ['P R AE S E N T I B U S,'],
         'start_year': 1703, 'end_year': 1796,
         'label': 'attending'
     },
     {
-        'keyword': 'Den Heere',
+        'phrase': 'Den Heere',
         'variants': ['De Heer'],
         'start_year': 1703, 'end_year': 1796,
         'label': 'president'
     },
     {
-        'keyword': 'De Heeren',
+        'phrase': 'De Heeren',
         'start_year': 1703, 'end_year': 1796,
         'label': 'attendants'
     },
     {
-        'keyword': 'Den Burger',
+        'phrase': 'Den Burger',
         'start_year': 1795, 'end_year': 1796,
         'label': 'president'
     },
     {
-        'keyword': 'De Burgers',
+        'phrase': 'De Burgers',
         'start_year': 1795, 'end_year': 1796,
         'label': 'attendants'
     },
     {
-        'keyword': 'DE Resolutien gisteren genomen',
+        'phrase': 'DE Resolutien gisteren genomen',
         'variants': [
             'DE Resolutien eergisteren genomen',
             'DE Resolutien voorleede ',
@@ -260,7 +260,7 @@ session_phrase_model = [
 
 extra_phrases = [
     {
-        'keyword': 'Zyne Hoogheid den Heere Prince van ',
+        'phrase': 'Zyne Hoogheid den Heere Prince van ',
         'label': 'prince_attending',
         'start_year': 1703, 'end_year': 1796,
         'line_type': 'multi_line',
@@ -273,49 +273,49 @@ extra_phrases = [
 
 holiday_phrases = [
     {
-        'keyword': 'Zynde Nieuwjaarsdag',
+        'phrase': 'Zynde Nieuwjaarsdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': True
     },
     {
-        'keyword': 'Zynde Vast- en Bede-dag',
+        'phrase': 'Zynde Vast- en Bede-dag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': False
     },
     {
-        'keyword': 'Zynde eerste Paasdag',
+        'phrase': 'Zynde eerste Paasdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': False
     },
     {
-        'keyword': 'Zynde tweede Paasdag',
+        'phrase': 'Zynde tweede Paasdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': False
     },
     {
-        'keyword': 'Zynde Hemelvaartsdag',
+        'phrase': 'Zynde Hemelvaartsdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': False
     },
     {
-        'keyword': 'Zynde tweede Pinksterdag',
+        'phrase': 'Zynde tweede Pinksterdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': False
     },
     {
-        'keyword': 'Zynde eerste Kerstdag',
+        'phrase': 'Zynde eerste Kerstdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': True
     },
     {
-        'keyword': 'Zynde tweede Kerstdag',
+        'phrase': 'Zynde tweede Kerstdag',
         'start_year': 1703, 'end_year': 1796,
         'label': 'holiday',
         'date_specifc': True
@@ -324,24 +324,24 @@ holiday_phrases = [
 
 resolution_phrase_model = [
     {
-        'keyword': 'hebben ter Vergaderinge ingebraght',
+        'phrase': 'hebben ter Vergaderinge ingebraght',
         'label': 'resolution_opening',
         'variants': [
             'heeft ter Vergaderinge ingebraght',
         ]
     },
     {
-        'keyword': 'Zynde ter Vergaderinge getoont',
+        'phrase': 'Zynde ter Vergaderinge getoont',
         'label': 'resolution_opening',
         'max_offset': 4
     },
     {
-        'keyword': 'Is ter Vergaderinge gelesen',
+        'phrase': 'Is ter Vergaderinge gelesen',
         'label': 'resolution_opening',
         'max_offset': 4
     },
     {
-        'keyword': 'Ontfangen een Missive van',
+        'phrase': 'Ontfangen een Missive van',
         'label': 'resolution_opening',
         'resolution_source': 'missive',
         'variants': [
@@ -352,31 +352,31 @@ resolution_phrase_model = [
         'max_offset': 4
     },
     {
-        'keyword': 'Is gehoort het rapport van',
+        'phrase': 'Is gehoort het rapport van',
         'label': 'resolution_opening',
         'resolution_source': 'rapport',
         'max_offset': 4
     },
     {
-        'keyword': 'Op de Requeste van',
+        'phrase': 'Op de Requeste van',
         'label': 'resolution_opening',
         'resolution_source': 'request',
         'max_offset': 4
     },
     {
-        'keyword': 'Op de Memorie van',
+        'phrase': 'Op de Memorie van',
         'label': 'resolution_opening',
         'resolution_source': 'memorie',
         'max_offset': 4
     },
     {
-        'keyword': 'Op het gerapporteerde van de Heeren van',
+        'phrase': 'Op het gerapporteerde van de Heeren van',
         'label': 'resolution_opening',
         'resolution_source': 'rapport',
         'max_offset': 4
     },
     {
-        'keyword': 'heeft aan haar Hoogh Mogende voorgedraagen en bekend gemaackt',
+        'phrase': 'heeft aan haar Hoogh Mogende voorgedraagen en bekend gemaackt',
         'variants': [
             'hebben aan haar Hoogh Mogende voorgedraagen en bekend gemaackt'
         ],
@@ -384,42 +384,42 @@ resolution_phrase_model = [
         'max_offset': 100
     },
     {
-        'keyword': 'is goedgevonden ende verstaan',
+        'phrase': 'is goedgevonden ende verstaan',
         'label': 'resolution_decision',
         'variants': [
             "IS naar voorgaande deliberatie goedgevonden ende verstaan",
         ]
     },
     {
-        'keyword': 'de voorfchreve Missive copielijck overgenomen',
+        'phrase': 'de voorfchreve Missive copielijck overgenomen',
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'waar by goedgevonden is',
+        'phrase': 'waar by goedgevonden is',
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'gehouden voor gecommiteert',
+        'phrase': 'gehouden voor gecommiteert',
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'WAAR op gedelibereert en in achtinge genomen zynde',
+        'phrase': 'WAAR op gedelibereert en in achtinge genomen zynde',
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'WAAR op gedelibereert zijnde',
+        'phrase': 'WAAR op gedelibereert zijnde',
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'WAAR op gedelibereert',
+        'phrase': 'WAAR op gedelibereert',
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'voor de genomen moeyte bedanckt',  # should probably move somewhere else
+        'phrase': 'voor de genomen moeyte bedanckt',  # should probably move somewhere else
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'WAAR op geen resolutie is gevallen',
+        'phrase': 'WAAR op geen resolutie is gevallen',
         'variants': [
             "Waer op geen resolutie is gevallen",
             "WAAR op geen resolutie voor alsnoch is gevallen",
@@ -428,12 +428,12 @@ resolution_phrase_model = [
         'label': 'resolution_decision',
     },
     {
-        'keyword': 'BY refumptie gedelibereert zynde',
+        'phrase': 'BY refumptie gedelibereert zynde',
         'label': 'resolution_opening',
         'max_offset': 4
     },
     {
-        'keyword': 'DE Resolutien, gisteren genomen',
+        'phrase': 'DE Resolutien, gisteren genomen',
         'label': 'resolution_summarized',
         'max_offset': 4,
         'variants': [
@@ -442,8 +442,8 @@ resolution_phrase_model = [
         ]
     },
     {
-        'keyword': 'zyn gelesen en gerefumeert',
-        'label': 'resolution_summarized',
+        'phrase': 'zyn gelesen en gerefumeert',
+        'label': 'resolution_summarized'
     },
 ]
 

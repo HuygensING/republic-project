@@ -10,7 +10,7 @@ from fuzzy_search.fuzzy_match import PhraseMatch
 import republic.model.resolution_phrase_model as rpm
 import republic.elastic.republic_retrieving as rep_es
 from republic.model.physical_document_model import parse_derived_coords
-from republic.model.republic_document_model import ResolutionParagraph, Resolution, ResolutionDoc
+from republic.model.republic_document_model import RepublicParagraph, Resolution, RepublicDoc
 from republic.helper.annotation_helper import make_hash_id
 
 MINIMUM_RESOLUTION_LENGTH = 150
@@ -55,7 +55,7 @@ def group_phrase_matches_by_resolution(phrase_matches: List[PhraseMatch],
     return resolution_matches
 
 
-def should_split(phrase_match: PhraseMatch, paragraph: ResolutionParagraph, max_offset: Dict[str, int]) -> bool:
+def should_split(phrase_match: PhraseMatch, paragraph: RepublicParagraph, max_offset: Dict[str, int]) -> bool:
     # determine the offset of the phrase match from the line where the paragraph is to be split
     split_line_offset = get_split_line_offset(paragraph, phrase_match)
     if split_line_offset > max_offset[phrase_match.phrase.phrase_string]:
@@ -75,7 +75,7 @@ def get_split_texts(split: Dict[str, any], new_paragraph_offset: int) -> Tuple[s
     return pre_text, post_text
 
 
-def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matches: List[PhraseMatch],
+def get_paragraph_splits(paragraph: RepublicParagraph, paragraph_phrase_matches: List[PhraseMatch],
                          paragraph_resolution_map: Dict[str, Resolution], max_offset: Dict[str, int],
                          variable_start_formulas: Set[str]) -> List[Dict[str, any]]:
     splits = []
@@ -120,7 +120,7 @@ def get_paragraph_splits(paragraph: ResolutionParagraph, paragraph_phrase_matche
     return splits
 
 
-def get_split_line_offset(paragraph: ResolutionParagraph, phrase_match: PhraseMatch) -> int:
+def get_split_line_offset(paragraph: RepublicParagraph, phrase_match: PhraseMatch) -> int:
     for line_range in paragraph.line_ranges:
         if line_range['end'] <= phrase_match.offset:
             continue
@@ -195,7 +195,7 @@ def get_split_columns(split: Dict[str, any], first_paragraph_num_lines: int) -> 
     return first_columns, next_columns
 
 
-def get_running_id(doc: ResolutionDoc) -> int:
+def get_running_id(doc: RepublicDoc) -> int:
     return int(doc.metadata['id'].split('-')[-1])
 
 
@@ -210,7 +210,7 @@ def update_running_id(para_id: str, increment: int) -> str:
 
 
 def split_paragraph(split: Dict[str, any], paragraph_id: str,
-                    paragraph_increment: int) -> Tuple[ResolutionParagraph, ResolutionParagraph]:
+                    paragraph_increment: int) -> Tuple[RepublicParagraph, RepublicParagraph]:
     # split line ranges
     # print("split_paragraph - paragraph__id:", paragraph_id)
     first_ranges, next_ranges = get_split_line_ranges(split)
@@ -243,17 +243,17 @@ def split_paragraph(split: Dict[str, any], paragraph_id: str,
     first_columns, next_columns = get_split_columns(split, len(first_ranges))
     # print('first_para_column:', first_columns[0]['metadata'])
     # print('next_para_column:', next_columns[0]['metadata'])
-    first_para = ResolutionParagraph(metadata=split['paragraph'].metadata, columns=first_columns,
-                                     text=first_para_text, line_ranges=first_ranges)
-    next_para = ResolutionParagraph(metadata=split['paragraph'].metadata, columns=next_columns,
-                                    text=next_para_text, line_ranges=next_ranges)
+    first_para = RepublicParagraph(metadata=split['paragraph'].metadata, columns=first_columns,
+                                   text=first_para_text, line_ranges=first_ranges)
+    next_para = RepublicParagraph(metadata=split['paragraph'].metadata, columns=next_columns,
+                                  text=next_para_text, line_ranges=next_ranges)
     next_para.metadata['id'] = next_para_id
     # print('next paragraph id:', next_para_id)
     return first_para, next_para
 
 
 def process_paragraph_splits(paragraph_splits: List[Dict[str, any]], paragraph_id: str,
-                             paragraph_increment: int, max_offset: Dict[str, int]) -> List[ResolutionParagraph]:
+                             paragraph_increment: int, max_offset: Dict[str, int]) -> List[RepublicParagraph]:
     first_para = paragraph_splits[0]['paragraph']
     split_paras = []
     # Update the id for the first part of the split paragraph, using the increment
@@ -288,7 +288,7 @@ def process_paragraph_splits(paragraph_splits: List[Dict[str, any]], paragraph_i
     return [first_para] + split_paras
 
 
-def process_paragraphs(paragraphs: List[ResolutionParagraph], paragraph_matches: Dict[str, List[PhraseMatch]],
+def process_paragraphs(paragraphs: List[RepublicParagraph], paragraph_matches: Dict[str, List[PhraseMatch]],
                        paragraph_resolution_map: Dict[str, Resolution],
                        max_offset: Dict[str, int], variable_start_formulas: Set[str],
                        resolution_increment: int):
@@ -334,8 +334,8 @@ def process_paragraphs(paragraphs: List[ResolutionParagraph], paragraph_matches:
 def make_mappings(resolutions: List[Resolution], phrase_matches: List[PhraseMatch]):
     # make mappings for quick lookup
     res_map: Dict[str, Resolution] = {resolution.metadata['id']: resolution for resolution in resolutions}
-    para_map: Dict[str: ResolutionParagraph] = {paragraph.metadata['id']: paragraph for resolution in resolutions
-                                                for paragraph in resolution.paragraphs}
+    para_map: Dict[str: RepublicParagraph] = {paragraph.metadata['id']: paragraph for resolution in resolutions
+                                              for paragraph in resolution.paragraphs}
     para_res_map = map_paragraphs_to_resolutions(resolutions)
     resolution_matches = group_phrase_matches_by_resolution(phrase_matches, para_res_map)
     para_matches: Dict[str, List[PhraseMatch]] = defaultdict(list)

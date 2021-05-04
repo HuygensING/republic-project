@@ -216,7 +216,7 @@ def get_holiday_phrases(year: int) -> List[Dict[str, Union[str, int, bool, Repub
     year_holiday_phrases: List[Dict[str, Union[str, int, bool, RepublicDate]]] = []
     for holiday in holidays:
         for holiday_phrase in holiday_phrases:
-            if holiday['holiday'] in holiday_phrase['keyword']:
+            if holiday['holiday'] in holiday_phrase['phrase']:
                 year_holiday_phrase = copy.copy(holiday_phrase)
                 year_holiday_phrase['date'] = holiday['date']
                 year_holiday_phrases.append(year_holiday_phrase)

@@ -96,7 +96,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         return session
     # Check if the next session date is more than 1 workday ahead
     date_match = session_searcher.get_session_date_match()
-    new_date = derive_date_from_string(date_match['match_keyword'], session_searcher.year)
+    new_date = derive_date_from_string(date_match.phrase.phrase_string, session_searcher.year)
     if session.date.isoformat() == new_date.isoformat():
         # print('SAME DAY:', session_searcher.current_date.isoformat(), '\t', session.date.isoformat())
         return session
@@ -193,6 +193,10 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
     print('indexing start for current date:', current_date.isoformat())
     session_lines: List[PageXMLTextLine] = []
     for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
+        # before modifying, make sure we're working on a copy
+        line = copy.deepcopy(line)
+        # remove all word-level objects, as we only need the text
+        line.words = []
         # list all lines belonging to the same session date
         session_lines += [line]
         if line.text is None or line.text == '':
@@ -235,7 +239,7 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
             for line_doc in session_searcher.sliding_window:
                 if not line_doc:
                     continue
-                print(line_doc['text_id'], line_doc['text_string'])
+                print(line_doc['id'], line_doc['text'])
         # score the found session opening elements for how well
         # they match the order in which they are expected to appear
         # Empirically established threshold:
@@ -248,7 +252,7 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
             #     else:
             #         print(line['text_string'], [match['match_keyword'] for match in line['matches']])
             # get the first line of the new session day in the sliding window
-            first_new_session_line_id = session_searcher.sliding_window[0]['text_id']
+            first_new_session_line_id = session_searcher.sliding_window[0]['id']
             # find that first line in the list of the collected session lines
             first_new_session_line = find_session_line(first_new_session_line_id, session_lines)
             # find the index of the first new session day line in the collected session lines

@@ -1,8 +1,11 @@
 from typing import Dict, List, Union
 from collections import defaultdict
 
-from republic.fuzzy.fuzzy_phrase_model import PhraseModel
-from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
+from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseMatch
+
+# from republic.fuzzy.fuzzy_phrase_model import PhraseModel
+# from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
 
 
 class EventSearcher:
@@ -11,10 +14,10 @@ class EventSearcher:
         self.window_size = window_size
         # Initialize the sliding window with None elements, so first documents are appended at the end.
         self.sliding_window: List[Union[None, Dict[str, any]]] = [None] * self.window_size
-        self.keywords = {}
+        self.phrases = {}
         self.variants = {}
         self.labels = {}
-        self.searchers: Dict[str, FuzzyKeywordSearcher] = {}
+        self.searchers: Dict[str, FuzzyPhraseSearcher] = {}
         self.phrase_models: Dict[str, PhraseModel] = {}
         self.max_offsets: Dict[str, int] = {}
         self.min_offsets: Dict[str, int] = {}
@@ -34,64 +37,68 @@ class EventSearcher:
                      phrase_model: PhraseModel):
         """Add a fuzzy keyword searcher with its own config and phrase model"""
         # Create a new fuzzy keyword searcher
-        searcher = FuzzyKeywordSearcher(searcher_config)
-        searcher.index_keywords(phrase_model.get_keywords())
+        searcher = FuzzyPhraseSearcher(searcher_config)
+        searcher.index_phrase_model(phrase_model)
+        # searcher.index_phrases(phrase_model.get_phrases())
         # make sure the EventSearcher knows which keywords and labels are registered
-        self.add_keywords(phrase_model)
-        self.add_labels(phrase_model)
-        searcher.index_spelling_variants(phrase_model.variants)
+        # self.add_keywords(phrase_model)
+        # self.add_labels(phrase_model)
+        # searcher.index_variants(phrase_model.get_variants())
         # add the keyword searcher to the EventSearcher
         self.searchers[searcher_name] = searcher
         self.phrase_models[searcher_name] = phrase_model
 
-    def add_keywords(self, phrase_model: PhraseModel):
-        """Add all the keywords of a phrase model to the EventSearcher."""
-        for keyword in phrase_model.get_keywords():
-            self.keywords[keyword] = True
+    def add_phrases(self, phrase_model: PhraseModel):
+        """Add all the phrases of a phrase model to the EventSearcher."""
+        for phrase in phrase_model.get_phrases():
+            self.phrases[phrase] = True
 
-    def get_keywords(self):
-        """Return all the keywords registered in the EventSearcher."""
-        return list(self.keywords.keys())
+    def get_phrases(self):
+        """Return all the phrases registered in the EventSearcher."""
+        return list(self.phrases.keys())
 
-    def has_keyword(self, keyword: str):
-        """Check if keyword is registered in the EventSearcher."""
-        return keyword in self.keywords
+    def has_phrase(self, phrase: str):
+        """Check if phrase is registered in the EventSearcher."""
+        return phrase in self.phrases
 
     def add_labels(self, phrase_model: PhraseModel):
-        """Add the labels of all the keywords of a phrase model to the EventSearcher."""
-        for keyword in phrase_model.get_keywords():
-            if phrase_model.has_label(keyword):
-                self.labels[keyword] = phrase_model.get_label(keyword)
+        """Add the labels of all the phrases of a phrase model to the EventSearcher."""
+        for phrase in phrase_model.get_phrases():
+            for label in phrase.label_list:
+                if phrase_model.has_label(label):
+                    self.labels[phrase] = label
 
-    def get_label(self, keyword: str):
-        """Return all the keywords registered in the EventSearcher."""
-        if not self.has_keyword(keyword):
-            raise ValueError(f"Unknown keyword {keyword}")
-        if not self.has_label(keyword):
-            raise KeyError(f"Keyword {keyword} has no registered label")
-        return list(self.keywords.keys())
+    def get_label(self, phrase: str):
+        """Return all the phrases registered in the EventSearcher."""
+        if not self.has_phrase(phrase):
+            raise ValueError(f"Unknown phrase {phrase}")
+        if not self.has_label(phrase):
+            raise KeyError(f"Keyword {phrase} has no registered label")
+        return list(self.phrases.keys())
 
-    def has_label(self, keyword: str):
-        """Check if keyword has a registered label in the EventSearcher."""
-        return keyword in self.labels
+    def has_label(self, phrase: str):
+        """Check if phrase has a registered label in the EventSearcher."""
+        return phrase in self.labels
 
     def search_document(self, doc: Dict[str, Union[str, int]],
-                        searcher_name: str) -> List[Union[str, int, float]]:
+                        searcher_name: str) -> List[PhraseMatch]:
         """Use a registered searcher to find fuzzy match for a document."""
-        matches = []
+        matches: List[PhraseMatch] = []
         # use the searcher to find fuzzy matches
-        for match in self.searchers[searcher_name].find_candidates(doc['text_string'], include_variants=True):
-            keyword = match['match_keyword']
-            # check if the keyword exceeds minimum or maximum offset thresholds
-            if keyword in self.max_offsets and match['match_offset'] > self.max_offsets[keyword]:
+        for match in self.searchers[searcher_name].find_matches(doc, include_variants=True):
+            match_string = match.phrase.phrase_string
+            # check if the phrase exceeds minimum or maximum offset thresholds
+            if match_string in self.max_offsets and match.offset > self.max_offsets[match_string]:
                 continue
-            if keyword in self.min_offsets and match['match_offset'] < self.min_offsets[keyword]:
+            if match_string in self.min_offsets and match.offset < self.min_offsets[match_string]:
                 continue
             # add the searcher_name to the match so we know where it came from
-            match['searcher'] = searcher_name
-            # if the keyword has a label, add it to the match
-            if self.phrase_models[searcher_name].has_label(keyword):
-                match['match_label'] = self.phrase_models[searcher_name].get_label(keyword)
+            if isinstance(match.label, str):
+                match.label = [match.label]
+            match.label.append(searcher_name)
+            # if the phrase has a label, add it to the match
+            # if self.phrase_models[searcher_name].has_label(phrase):
+            #     match['match_label'] = self.phrase_models[searcher_name].get_label(phrase)
             matches += [match]
         return matches
 
@@ -102,10 +109,10 @@ class EventSearcher:
             self.sliding_window = self.sliding_window[-self.window_size:]
         self.sliding_window += [None]
 
-    def add_document(self, text_id: Union[str, int], text_string: str, text_object: any = None):
+    def add_document(self, doc_id: Union[str, int], doc_text: str, text_object: any = None):
         """Add a text with identifier to the sliding window and run registered fuzzy searchers."""
-        matches: List[Dict[str, Union[str, int, float]]] = []
-        doc = {'text_id': text_id, 'text_string': text_string, 'matches': matches}
+        matches: List[PhraseMatch] = []
+        doc = {'id': doc_id, 'text': doc_text, 'matches': matches}
         if text_object:
             doc['text_object'] = text_object
         # iterate over all registered searchers
@@ -149,5 +156,5 @@ class EventSearcher:
             if text or len(text['matches']) == 0:
                 continue
             for match in text['matches']:
-                matches.append({'text_index': text_index, 'text_id': text['text_id'], 'match': match})
+                matches.append({'text_index': text_index, 'id': text['id'], 'match': match})
         return matches

@@ -3,7 +3,9 @@ from collections import defaultdict
 import copy
 import datetime
 
-from republic.fuzzy.fuzzy_phrase_model import PhraseModel
+from fuzzy_search.fuzzy_phrase_searcher import PhraseModel
+from fuzzy_search.fuzzy_match import PhraseMatch
+
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
 from republic.model.republic_date import get_date_exception_shift, is_session_date_exception, exception_dates
@@ -74,6 +76,18 @@ def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate
     return workday_shift
 
 
+def has_attendance_match(line: Dict[str, Union[str, int, dict]]) -> bool:
+    """Return boolean checking if one of the matches is an attendance match."""
+    attendance_labels = [
+        'special_attendance', 'prince_attending', 'presiding', 'president', 'attending', 'attendants'
+    ]
+    for match in line['matches']:
+        for label in match.label_list:
+            if label in attendance_labels:
+                return True
+    return False
+
+
 class SessionSearcher(EventSearcher):
 
     def __init__(self, inventory_num: int, current_date: RepublicDate,
@@ -116,8 +130,8 @@ class SessionSearcher(EventSearcher):
         # generate session date strings for the current day and next six days
         self.date_strings = get_next_date_strings(self.current_date, num_dates=num_dates, include_year=False)
         # generate session date phrases for the first week covered in this inventory
-        date_phrases = [{'keyword': date_string, 'label': 'session_date'} for date_string in self.date_strings]
-        date_phrases += [{'keyword': str(self.year), 'label': 'session_year'}]
+        date_phrases = [{'phrase': date_string, 'label': 'session_date'} for date_string in self.date_strings]
+        date_phrases += [{'phrase': str(self.year), 'label': 'session_year'}]
         self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases)
         self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'])
         # when multiple date string match, only use the best matching one.
@@ -138,27 +152,31 @@ class SessionSearcher(EventSearcher):
         for line_index, line in enumerate(self.sliding_window):
             if not line:
                 continue
-            if self.has_attendance_match(line):
+            if has_attendance_match(line):
                 break
             if line_index > 10:
                 # date matches should be early in the sliding window
                 break
-            date_matches = [match for match in line['matches'] if match['searcher'] == 'date_searcher']
+            date_matches = [match for match in line['matches'] if match.has_label('date_searcher')]
             if len(date_matches) == 0:
                 continue
             # the session date should be at the start of the line
             # the session year can be on separate line, so should start at beginning of line, or
             # on same line as rest of date, so at the end of the line.
-            match_offset = min([match['match_offset'] for match in date_matches])
+            match_offset = min([match.offset for match in date_matches])
             # dates should match at or near the start of the line
             if match_offset > 4:
                 continue
             for match in date_matches:
-                label = match['match_label']
-                if label in self.session_opening_elements and self.session_opening_elements[label] < line_index:
-                    # Always use the first meeting date line, even if it's a rest day.
-                    continue
-                self.session_opening_elements[label] = line_index
+                for label in match.label_list:
+                    if label not in session_opening_element_order:
+                        continue
+                    if label in self.session_opening_elements and self.session_opening_elements[label] < line_index:
+                        # Always use the first meeting date line, even if it's a rest day.
+                        continue
+                    # print('adding line with match label:', label, match)
+                    self.session_opening_elements[label] = line_index
+                    break
 
     def extract_attendance_matches(self):
         """Extract matches with meeting attendance labels and add the corresponding
@@ -166,37 +184,43 @@ class SessionSearcher(EventSearcher):
         first_date = None
         if 'meeting_date' in self.session_opening_elements:
             date_match = self.get_session_date_match()
-            first_date = derive_date_from_string(date_match['match_keyword'], self.year)
+            first_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
         for line_index, line in enumerate(self.sliding_window):
             if not line or len(line['matches']) == 0:
                 continue
             # check if after the first date in line order, any later dates are found that are temporally
             # out of order (i.e. before the first date). If so, we're not in a meeting opening
-            date_matches = [match for match in line['matches'] if match['match_label'] == 'meeting_date']
+            date_matches = [match for match in line['matches'] if match.has_label('meeting_date')]
             dates_ordered = True
             for date_match in date_matches:
-                date = derive_date_from_string(date_match['match_keyword'], self.year)
+                date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
                 if first_date and date.date < first_date.date:
                     dates_ordered = False
             if not dates_ordered:
                 break
-            attendance_matches = [match for match in line['matches'] if match['searcher'] == 'attendance_searcher']
-            attendance_labels = [match['match_label'] for match in attendance_matches]
+            attendance_matches: List[PhraseMatch] = [match for match in line['matches']
+                                                     if match.has_label('attendance_searcher')]
+            attendance_labels = [label for match in attendance_matches for label in match.label_list]
             for match in attendance_matches:
                 # attendants keywords should match at or near the start of the line
-                if match['match_offset'] > 4:
+                if match.offset > 4:
                     continue
                 # if not self.has_keyword(match['match_keyword']):
                 #     continue
-                label = match['match_label']
+                opening_label = None
+                for label in match.label_list:
+                    if label not in session_opening_element_order:
+                        continue
+                    opening_label = label
                 # only add the match if there is no earlier match with the same label
-                if label in self.session_opening_elements and self.session_opening_elements[label] < line_index:
+                if opening_label in self.session_opening_elements and \
+                        self.session_opening_elements[opening_label] < line_index:
                     continue
                 # PRAESIDE and PRAESIDING cannot be on the same line, but the shorter one might match the later
                 # one. In that case, ignore the shorter match
-                if label == 'presiding' and 'attending' in attendance_labels:
+                if opening_label == 'presiding' and 'attending' in attendance_labels:
                     continue
-                if label == 'president':
+                if opening_label == 'president':
                     if 'meeting_date' in self.session_opening_elements:
                         # get all meeting date labels that appear before this president label
                         meeting_date_labels = [label_info['index'] for label_info in self.label_order
@@ -225,7 +249,7 @@ class SessionSearcher(EventSearcher):
                         # First match of attendants is on same line as president: same string matches both phrases
                         # so remove the attendants phrase
                         del self.session_opening_elements['attendants']
-                if label == 'attendants':
+                if opening_label == 'attendants':
                     if 'meeting_date' in self.session_opening_elements:
                         # attendants should be at least 3 lines below the meeting date
                         # but no more than 12
@@ -243,8 +267,8 @@ class SessionSearcher(EventSearcher):
                             # president and attendants should be on separate lines
                             # and with at least one line in between them
                             continue
-                label = self.labels[match['match_keyword']]
-                self.session_opening_elements[label] = line_index
+                # opening_label = self.labels[match['match_keyword']]
+                self.session_opening_elements[opening_label] = line_index
 
     def get_session_opening_elements(self) -> Dict[str, int]:
         """
@@ -256,8 +280,12 @@ class SessionSearcher(EventSearcher):
         for line_index, line in enumerate(self.sliding_window):
             if not line:
                 continue
-            if len(line['matches']) > 0:
-                self.label_order += [{'index': line_index, 'label': match['match_label']} for match in line['matches']]
+            for match in line['matches']:
+                opening_label = None
+                for label in match.label_list:
+                    if label in session_opening_element_order:
+                        opening_label = label
+                self.label_order += [{'index': line_index, 'label': opening_label}]
         self.extract_date_matches()
         self.extract_attendance_matches()
         return self.session_opening_elements
@@ -274,22 +302,22 @@ class SessionSearcher(EventSearcher):
             if not line:
                 continue
             for match in line['matches']:
-                if match['match_label'] == last_element:
+                if match.has_label(last_element):
                     return line
         return None
 
-    def get_session_date_matches(self) -> List[Dict[str, Union[str, int, float]]]:
+    def get_session_date_matches(self) -> List[PhraseMatch]:
         """Return a list of all session date matches in the sliding window."""
-        date_matches: List[Dict[str, Union[str, int, float]]] = []
+        date_matches: List[PhraseMatch] = []
         last_session_opening_element_line = self.get_last_session_opening_element_line()
         for line in self.sliding_window:
             if not line:
                 continue
-            if self.has_attendance_match(line):
+            if has_attendance_match(line):
                 break
             if line == last_session_opening_element_line:
                 break
-            date_matches += [match for match in line['matches'] if match['searcher'] == 'date_searcher']
+            date_matches += [match for match in line['matches'] if match.has_label('date_searcher')]
         return date_matches
 
     def shift_sliding_window(self):
@@ -298,13 +326,13 @@ class SessionSearcher(EventSearcher):
         last_opening_element_line_index = self.session_opening_elements[last_element]
         self.reset_sliding_window(first_lines=last_opening_element_line_index+1)
 
-    def get_attendance_matches(self) -> List[Dict[str, Union[str, int, float]]]:
+    def get_attendance_matches(self) -> List[PhraseMatch]:
         """Return a list of all attendance matches in the sliding window."""
-        attendance_matches: List[Dict[str, Union[str, int, float]]] = []
+        attendance_matches: List[PhraseMatch] = []
         for line in self.sliding_window:
             if not line:
                 continue
-            attendance_matches += [match for match in line['matches'] if match['searcher'] == 'attendance_searcher']
+            attendance_matches += [match for match in line['matches'] if match.has_label('attendance_searcher')]
         return attendance_matches
 
     def get_prev_dates(self):
@@ -412,7 +440,6 @@ class SessionSearcher(EventSearcher):
             'attendants_list_id': None,
             'resolution_ids': [],
             'is_workday': current_date.is_work_day(),
-            # 'lines': [line['text_id'] for line in self.sliding_window if line and len(line['matches']) > 0],
             'has_session_date_element': False,
             'lines_include_rest_day': includes_rest_day,
             'evidence': []
@@ -432,10 +459,10 @@ class SessionSearcher(EventSearcher):
                     continue
                 if session_opening_element == 'session_date' and sliding_index not in session_date_line_indexes:
                     continue
-                matches = [match for match in line['matches'] if match['match_label'] == session_opening_element]
+                matches = [match for match in line['matches'] if match.has_label(session_opening_element)]
                 if len(matches) > 0:
-                    evidence += [{'metadata_field': session_opening_element,
-                                  'line_id': line['text_id'], 'matches': matches}]
+                    # evidence += [{'metadata_field': session_opening_element, 'matches': matches}]
+                    evidence += matches
             session_metadata['evidence'] += evidence
             if session_opening_element == 'session_date' and self.get_current_date().is_rest_day():
                 # If this is a rest day and there are later session_date matches,
@@ -448,10 +475,8 @@ class SessionSearcher(EventSearcher):
             elif session_opening_element == 'president':
                 president_name = None
                 for match in attendance_matches:
-                    if match['match_label'] == 'president':
-                        start_offset = match['match_offset']
-                        end_offset = start_offset + len(match['match_string'])
-                        president_name = line_info['text_string'][end_offset:]
+                    if match.has_label('president'):
+                        president_name = line_info['text'][match.end:]
                 session_metadata['president'] = president_name
         return session_metadata
 
@@ -463,22 +488,11 @@ class SessionSearcher(EventSearcher):
         match_line_index = session_opening_elements['session_date']
         match_line = self.sliding_window[match_line_index]
         for match in match_line['matches']:
-            if match['match_label'] == 'session_date':
+            if match.has_label('session_date'):
                 return True
         return False
 
-    def has_attendance_match(self, line: Dict[str, Union[str, int, dict]]) -> bool:
-        """Return boolean checking if one of the matches is an attendance match."""
-        attendance_labels = [
-            'special_attendance', 'prince_attending', 'presiding', 'president', 'attending', 'attendants'
-        ]
-        has_match = False
-        for match in line['matches']:
-            if match['match_label'] in attendance_labels:
-                has_match = True
-        return has_match
-
-    def get_session_date_match(self) -> Dict[str, Union[str, int, float]]:
+    def get_session_date_match(self) -> Union[None, PhraseMatch]:
         """If the sliding window has a session date match, return it."""
         if 'session_date' not in self.session_opening_elements:
             raise KeyError('No session date in sliding window')
@@ -486,15 +500,15 @@ class SessionSearcher(EventSearcher):
         first_date_line = self.sliding_window[self.session_opening_elements['session_date']]
         date_match = None
         for match in first_date_line['matches']:
-            if match['match_label'] == 'session_date':
+            if match.has_label('session_date'):
                 date_match = match
         last_opening_element_line = self.get_last_session_opening_element_line()
         for line in self.sliding_window:
             if not line:
                 continue
-            if self.has_attendance_match(line):
+            if has_attendance_match(line):
                 break
-            date_matches = [match for match in line['matches'] if match['match_label'] == 'session_date']
+            date_matches = [match for match in line['matches'] if match.has_label('session_date')]
             if len(date_matches) > 0:
                 date_match = date_matches[0]
             if line == last_opening_element_line:
@@ -521,7 +535,7 @@ class SessionSearcher(EventSearcher):
             date_match = self.get_session_date_match()
             # print('shifting by date match:', date_match['match_keyword'])
             # determine number of days to shift based on the match in the list of date strings
-            new_date = derive_date_from_string(date_match['match_keyword'], self.year)
+            new_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
                 new_date = get_next_workday(new_date)
