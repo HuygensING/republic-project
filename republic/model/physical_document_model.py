@@ -55,6 +55,75 @@ def find_lowest_point(line: PageXMLTextLine) -> Tuple[int, int]:
             return point
 
 
+def interpolate_points(p1: Tuple[int, int], p2: Tuple[int, int],
+                       step: int = 50) -> Generator[Dict[int, int], None, None]:
+    """Determine the x coordinates between a pair of points on a baseline
+    and calculate their corresponding y coordinates.
+    :param p1: a 2D point
+    :type p1: Tuple[int, int]
+    :param p2: a 2D point
+    :type p2: Tuple[int, int]
+    :param step: the step size in pixels for interpolation
+    :type step: int
+    :return: a generator of interpolated points based on step size
+    :rtype: Generator[Dict[int, int], None, None]
+    """
+    if p1[0] > p2[0]:
+        # p2 should be to the right of p1
+        p1, p2 = p2, p1
+    start_x = p1[0] + step - (p1[0] % step)
+    end_x = p2[0] - (p2[0] % step)
+    delta_y = (p1[1] - p2[1]) / (p2[0] - p1[0])
+    for int_x in range(start_x, end_x + 1, step):
+        int_y = p1[1] - int((int_x - p1[0]) * delta_y)
+        yield int_x, int_y
+
+
+def interpolate_baseline_points(points: List[Tuple[int, int]],
+                                step: int = 50) -> Dict[int, int]:
+    """Determine the x coordinates between each pair of subsequent
+    points on a baseline and calculate their corresponding y coordinates.
+
+    :param points: the list of points of a baseline object
+    :type points: List[Tuple[int, int]]
+    :param step: the step size in pixels for interpolation
+    :type step: int
+    :return: a dictionary of interpolated points based on step size
+    :rtype: Dict[int, int]
+    """
+    interpolated_baseline_points = {}
+    # iterate over each subsequent pair of baseline points
+    for ci, curr_point in enumerate(points[:-1]):
+        next_point = points[ci + 1]
+        # interpolate points between the current and next points using step as size
+        for int_x, int_y in interpolate_points(curr_point, next_point, step=step):
+            interpolated_baseline_points[int_x] = int_y
+    return interpolated_baseline_points
+
+
+def compute_baseline_distances(baseline1: Baseline, baseline2: Baseline,
+                               step: int = 50) -> List[int]:
+    """Compute the vertical distance between two baselines, based on
+    their horizontal overlap, using a fixed step size. Interpolated
+    points will be generated at fixed increments of step size for
+    both baselines, so they have points with corresponding x
+    coordinates to calculate the distance.
+
+    :param baseline1: the first Baseline object to compare
+    :type baseline1: Baseline
+    :param baseline2: the second Baseline object to compare
+    :type baseline2: Baseline
+    :param step: the step size in pixels for interpolation
+    :type step: int
+    :return: a list of vertical distances based on horizontal overlap
+    :rtype: List[int]
+    """
+    b1_points = interpolate_baseline_points(baseline1.points, step=step)
+    b2_points = interpolate_baseline_points(baseline2.points, step=step)
+    return [abs(b2_points[curr_x] - b1_points[curr_x]) for curr_x in b1_points
+            if curr_x in b2_points]
+
+
 class Coords:
 
     def __init__(self, points: Union[str, List[Tuple[int, int]]]):
