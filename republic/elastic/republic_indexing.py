@@ -229,7 +229,16 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
                  id=scan_es_doc['id'], body=scan_es_doc)
 
 
-def index_sessions_inventory(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+    pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, inv_config)
+    pages.sort(key=lambda page: page.metadata['page_num'])
+    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
+    for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
+        print('session received from get_sessions:', session.id)
+        es_anno.index(index='session_lines', id=session.id, body=session.json)
+
+
+def index_inventory_sessions_with_text(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
     pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, inv_config)
     pages.sort(key=lambda page: page.metadata['page_num'])
     inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)

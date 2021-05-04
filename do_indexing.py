@@ -141,9 +141,14 @@ def do_paragraph_indexing(inv_num, inv_config, year):
     rep_es.index_paragraphs(es_anno, keyword_searcher, inv_num, inv_config)
 
 
-def do_session_indexing(inv_num, inv_config, year):
+def do_session_lines_indexing(inv_num, inv_config, year):
     print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
-    rep_indexing.index_sessions_inventory(es_anno, inv_num, inv_config)
+    rep_indexing.index_inventory_sessions_with_lines(es_anno, inv_num, inv_config)
+
+
+def do_session_text_indexing(inv_num, inv_config, year):
+    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+    rep_indexing.index_inventory_sessions_with_text(es_anno, inv_num, inv_config)
 
 
 def do_resolution_indexing(inv_num, inv_config, year):
@@ -191,7 +196,7 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
     #if indexing_step == "page_numbers":
     #    do_typed_page_number_indexing_pagexml(inv_num, inv_config, year)
     if indexing_step == "sessions":
-        do_session_indexing(inv_num, inv_config, year)
+        do_session_lines_indexing(inv_num, inv_config, year)
     if indexing_step == "resolutions":
         do_resolution_indexing(inv_num, inv_config, year)
     if indexing_step == "phrase_matches":
