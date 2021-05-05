@@ -73,7 +73,7 @@ def add_resolution_page_numbers(es, inv_num, metadata, inv_config):
 
 
 def do_downloading(inv_num, inv_config, year):
-    ocr_type = inv_config[')ocr_type']
+    ocr_type = inv_config['ocr_type']
     print(f"Downloading {ocr_type} zip file for inventory {inv_num} (year {year})...")
     downloader.download_inventory(es_anno, inv_num, ocr_type, inv_config)
 

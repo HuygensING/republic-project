@@ -103,15 +103,12 @@ class RepublicParagraph(RepublicDoc):
             self.text_region_ids = {text_region.metadata['id'] for text_region in self.text_regions}
         if not text:
             self.set_text(word_freq_counter)
-        self.metadata["num_text_regions"] = len(self.text_regions)
-        self.metadata["num_lines"] = len(self.lines)
-        self.metadata["type"] = "resolution_paragraph"
-        self.metadata["num_words"] = len([word for word in re.split(r"\W+", self.text) if word != ""])
+        self.metadata["type"] = "republic_paragraph"
         self.scan_versions = scan_versions
         self.evidence: List[PhraseMatch] = []
 
     def __repr__(self):
-        return f"ResolutionParagraph(lines={[line.metadata['id'] for line in self.lines]}, text={self.text})"
+        return f"{self.__class__.__name__}(lines={[line.metadata['id'] for line in self.lines]}, text={self.text})"
 
     @property
     def json(self, include_text_regions: bool = True):

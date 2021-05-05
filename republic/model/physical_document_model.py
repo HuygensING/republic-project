@@ -49,7 +49,13 @@ def line_starts_with_big_capital(line: PageXMLTextLine) -> bool:
 
 
 def find_lowest_point(line: PageXMLTextLine) -> Tuple[int, int]:
-    """Find the first baseline point that corresponds to the lowest vertical point."""
+    """Find the first baseline point that corresponds to the lowest vertical point.
+
+    :param line: a PageXML TextLine object with baseline information
+    :type line: PageXMLTextLine
+    :return: the left most point that has the lowest vertical coordinate
+    :rtype: Tuple[int, int]
+    """
     for point in line.baseline.points:
         if point[1] == line.baseline.bottom:
             return point
@@ -102,12 +108,15 @@ def interpolate_baseline_points(points: List[Tuple[int, int]],
 
 
 def compute_baseline_distances(baseline1: Baseline, baseline2: Baseline,
-                               step: int = 50) -> List[int]:
+                               step: int = 50) -> np.ndarray:
     """Compute the vertical distance between two baselines, based on
     their horizontal overlap, using a fixed step size. Interpolated
     points will be generated at fixed increments of step size for
     both baselines, so they have points with corresponding x
     coordinates to calculate the distance.
+
+    If two lines have no horizontal overlap, it returns a list with
+    a single distance between the average heights of the two baselines
 
     :param baseline1: the first Baseline object to compare
     :type baseline1: Baseline
@@ -120,8 +129,137 @@ def compute_baseline_distances(baseline1: Baseline, baseline2: Baseline,
     """
     b1_points = interpolate_baseline_points(baseline1.points, step=step)
     b2_points = interpolate_baseline_points(baseline2.points, step=step)
-    return [abs(b2_points[curr_x] - b1_points[curr_x]) for curr_x in b1_points
-            if curr_x in b2_points]
+    distances = np.array([abs(b2_points[curr_x] - b1_points[curr_x]) for curr_x in b1_points
+                     if curr_x in b2_points])
+    if len(distances) == 0:
+        avg1 = average_baseline_height(baseline1)
+        avg2 = average_baseline_height(baseline2)
+        distances = np.array([abs(avg1 - avg2)])
+    return distances
+
+
+def average_baseline_height(baseline: Baseline) -> int:
+    """Compute the average (mean) baseline height for comparing lines that
+    are not horizontally aligned.
+
+    :param baseline: the baseline of a TextLine
+    :type baseline: Baseline
+    :return: the average (mean) baseline height across all its baseline points
+    :rtype: int
+    """
+    total_avg = 0
+    # iterate over each subsequent pair of baseline points
+    for ci, curr_point in enumerate(baseline.points[:-1]):
+        next_point = baseline.points[ci + 1]
+        segment_avg = (curr_point[1] + next_point[1]) / 2
+        # segment contributes its average height times its width
+        total_avg += segment_avg * (next_point[0] - curr_point[0])
+    # average is total of average heights divided by total width
+    return int(total_avg / (baseline.points[-1][0] - baseline.points[0][0]))
+
+
+def get_textregion_line_distances(text_region: PageXMLTextRegion) -> List[np.ndarray]:
+    """Returns a list of line distance numpy arrays. For each line, its distance
+    to the next at 50 pixel intervals is computed and stored in an numpy ndarray.
+
+    :param text_region: a TextRegion object that contains TextLines
+    :type text_region: PageXMLTextRegion
+    :return: a list of numpy ndarrays of line distances
+    :rtype: List[np.ndarray]
+    """
+    all_distances: List[np.ndarray] = []
+    text_regions = text_region.get_inner_text_regions()
+    for ti, curr_tr in enumerate(text_regions):
+        above_next_tr = False
+        next_tr = None
+        if ti + 1 < len(text_regions):
+            # check if the next textregion is directly below the current one
+            next_tr = text_regions[ti + 1]
+            above_next_tr = same_column(curr_tr, next_tr)
+        for li, curr_line in enumerate(curr_tr.lines):
+            next_line = None
+            if li + 1 < len(curr_tr.lines):
+                next_line = curr_tr.lines[li + 1]
+            elif above_next_tr and next_tr.lines:
+                # if the next textregion is directly below this one, include the distance
+                # of this textregion's last line and the next textregion's first line
+                next_line = next_tr.lines[0]
+            if next_line:
+                distances = compute_baseline_distances(curr_line.baseline, next_line.baseline)
+                all_distances.append(distances)
+    return all_distances
+
+
+def get_textregion_avg_line_distance(text_region: PageXMLTextRegion,
+                                     avg_type: str = "macro") -> np.float:
+    """Returns the average (mean) distance between subsequent lines in a
+    textregion object. If the textregion contains smaller textregions, it only
+    considers line distances between lines within the same column (i.e. only
+    lines from textregions that are horizontally aligned.
+
+    By default the macro-average is returned.
+
+    :param text_region: a TextRegion object that contains TextLines
+    :type text_region: PageXMLTextRegion
+    :param avg_type: the type of averging to apply (macro or micro)
+    :type avg_type: str
+    :return: the average (mean) distance between horizontally aligned lines
+    :rtype: np.float
+    """
+    if avg_type not in ["micro", "macro"]:
+        raise ValueError(f'Invalid avg_type "{avg_type}", must be "macro" or "micro"')
+    all_distances = get_textregion_line_distances(text_region)
+    if avg_type == "micro":
+        return np.concatenate(all_distances).mean()
+    else:
+        return np.array([distances.mean() for distances in all_distances]).mean()
+
+
+def get_textregion_avg_char_width(text_region: PageXMLTextRegion) -> float:
+    """Return the estimated average (mean) character width, determined as the sum
+    of the width of text lines divided by the sum of the number of characters
+    of all text lines.
+
+    :param text_region: a TextRegion object that contains TextLines
+    :type text_region: PageXMLTextRegion
+    :return: the average (mean) character width
+    :rtype: float
+    """
+    total_chars = 0
+    total_text_width = 0
+    for tr in text_region.get_inner_text_regions():
+        for line in tr.lines:
+            total_chars += len(line.text)
+            total_text_width += line.coords.width
+    return total_text_width / total_chars
+
+
+def pretty_print_textregion(text_region: PageXMLTextRegion) -> None:
+    """Pretty print the text of a text region, using indentation and
+    vertical space based on the average character width and average
+    distance between lines. If no corresponding images of the PageXML
+    are available, this can serve as a visual approximation to reveal
+    the page layout.
+
+    :param text_region: a TextRegion object that contains TextLines
+    :type text_region: PageXMLTextRegion
+    """
+    avg_line_distance = get_textregion_avg_line_distance(text_region)
+    avg_char_width = get_textregion_avg_char_width(text_region)
+    for ti, tr in enumerate(text_region.text_regions):
+        if len(tr.lines) < 2:
+            continue
+        for li, curr_line in enumerate(tr.lines[:-1]):
+            next_line = tr.lines[li + 1]
+            left_indent = (curr_line.coords.left - tr.coords.left)
+            if left_indent > 0:
+                preceding_whitespace = " " * int(float(left_indent) / avg_char_width)
+            else:
+                preceding_whitespace = ""
+            distances = compute_baseline_distances(curr_line.baseline, next_line.baseline)
+            print(preceding_whitespace, curr_line.text)
+            if np.median(distances) > avg_line_distance * 1.2:
+                print()
 
 
 class Coords:
@@ -240,9 +378,12 @@ def vertical_overlap(coords1: Coords, coords2: Coords) -> int:
     return bottom - top if bottom > top else 0
 
 
-def same_column(line1: PageXMLTextLine, line2: PageXMLTextLine) -> bool:
+def same_column(line1: PageXMLDoc, line2: PageXMLDoc) -> bool:
+    if 'scan_id' in line1.metadata and 'scan_id' in line2.metadata:
+        if line1.metadata['scan_id'] != line2.metadata['scan_id']:
+            return False
     if 'column_id' in line1.metadata and 'column_id' in line2.metadata:
-        return True
+        return line1.metadata['column_id'] == line2.metadata['column_id']
     else:
         # check if the two lines have a horizontal overlap that is more than 50% of the width of line 1
         # Note: this doesn't work for short adjacent lines within the same column
