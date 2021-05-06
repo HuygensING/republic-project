@@ -312,6 +312,14 @@ inventory_mapping_no_uuid = [
 
 inventory_mapping = [
     {
+        'inventory_num': 3156,
+        'inventory_uuid': '234e9de0-f668-4fce-a41a-e415142295a9',
+        'period': ['1606-01-01', '1606-12-31'],
+        'series_name': 'NL-HaNA_1.01.02',
+        'series_uuid': '6e8998f6-cc66-43b9-92ae-85423ed66958',
+        'year': 1606
+    },
+    {
         'inventory_num': 3174,
         'inventory_uuid': 'b45d410c-68a3-47c8-a32c-83d1ec0fdf3d',
         'series_name': 'NL-HaNA_1.01.02',

@@ -79,6 +79,10 @@ def interpolate_points(p1: Tuple[int, int], p2: Tuple[int, int],
         p1, p2 = p2, p1
     start_x = p1[0] + step - (p1[0] % step)
     end_x = p2[0] - (p2[0] % step)
+    if p2[0] == p1[0]:
+        # points 1 and 2 have the same x coordinate
+        # so there is nothing to interpolate
+        return None
     delta_y = (p1[1] - p2[1]) / (p2[0] - p1[0])
     for int_x in range(start_x, end_x + 1, step):
         int_y = p1[1] - int((int_x - p1[0]) * delta_y)
@@ -101,6 +105,9 @@ def interpolate_baseline_points(points: List[Tuple[int, int]],
     # iterate over each subsequent pair of baseline points
     for ci, curr_point in enumerate(points[:-1]):
         next_point = points[ci + 1]
+        if next_point[0] == curr_point[0]:
+            # skip pair when they have the same x coordinate
+            continue
         # interpolate points between the current and next points using step as size
         for int_x, int_y in interpolate_points(curr_point, next_point, step=step):
             interpolated_baseline_points[int_x] = int_y
@@ -130,7 +137,7 @@ def compute_baseline_distances(baseline1: Baseline, baseline2: Baseline,
     b1_points = interpolate_baseline_points(baseline1.points, step=step)
     b2_points = interpolate_baseline_points(baseline2.points, step=step)
     distances = np.array([abs(b2_points[curr_x] - b1_points[curr_x]) for curr_x in b1_points
-                     if curr_x in b2_points])
+                          if curr_x in b2_points])
     if len(distances) == 0:
         avg1 = average_baseline_height(baseline1)
         avg2 = average_baseline_height(baseline2)
@@ -192,7 +199,7 @@ def get_textregion_line_distances(text_region: PageXMLTextRegion) -> List[np.nda
 
 def get_textregion_avg_line_distance(text_region: PageXMLTextRegion,
                                      avg_type: str = "macro") -> np.float:
-    """Returns the average (mean) distance between subsequent lines in a
+    """Returns the median distance between subsequent lines in a
     textregion object. If the textregion contains smaller textregions, it only
     considers line distances between lines within the same column (i.e. only
     lines from textregions that are horizontally aligned.
@@ -203,16 +210,22 @@ def get_textregion_avg_line_distance(text_region: PageXMLTextRegion,
     :type text_region: PageXMLTextRegion
     :param avg_type: the type of averging to apply (macro or micro)
     :type avg_type: str
-    :return: the average (mean) distance between horizontally aligned lines
+    :return: the median distance between horizontally aligned lines
     :rtype: np.float
     """
     if avg_type not in ["micro", "macro"]:
         raise ValueError(f'Invalid avg_type "{avg_type}", must be "macro" or "micro"')
     all_distances = get_textregion_line_distances(text_region)
+    if len(all_distances) == 0:
+        return 0
     if avg_type == "micro":
-        return np.concatenate(all_distances).mean()
+        all_distances = np.concatenate(all_distances)
+        print(len(all_distances))
+        return np.median(all_distances)
+        # return np.median(np.concatenate(all_distances))
     else:
-        return np.array([distances.mean() for distances in all_distances]).mean()
+        return np.median(np.array([distances.mean() for distances in all_distances]))
+        # return np.array([distances.mean() for distances in all_distances]).mean()
 
 
 def get_textregion_avg_char_width(text_region: PageXMLTextRegion) -> float:
@@ -229,12 +242,65 @@ def get_textregion_avg_char_width(text_region: PageXMLTextRegion) -> float:
     total_text_width = 0
     for tr in text_region.get_inner_text_regions():
         for line in tr.lines:
+            if line.text is None:
+                continue
             total_chars += len(line.text)
             total_text_width += line.coords.width
-    return total_text_width / total_chars
+    return total_text_width / total_chars if total_chars else 0.0
 
 
-def pretty_print_textregion(text_region: PageXMLTextRegion) -> None:
+def get_textregion_avg_line_width(text_region: PageXMLTextRegion, unit: str = "char") -> float:
+    """Return the estimated average (mean) character width, determined as the sum
+    of the width of text lines divided by the sum of the number of characters
+    of all text lines.
+
+    :param text_region: a TextRegion object that contains TextLines
+    :type text_region: PageXMLTextRegion
+    :param unit: the unit to measure line width, either char or pixel
+    :type unit: str
+    :return: the average (mean) character width
+    :rtype: float
+    """
+    if unit not in {'char', 'pixel'}:
+        raise ValueError(f'Invalid unit "{unit}", must be "char" (default) or "pixel"')
+    total_lines = 0
+    total_line_width = 0
+    for tr in text_region.get_inner_text_regions():
+        for line in tr.lines:
+            if line.text is None:
+                # skip non-text lines
+                continue
+            total_lines += 1
+            total_line_width += len(line.text) if unit == 'char' else line.coords.width
+    return total_line_width / total_lines if total_lines > 0 else 0.0
+
+
+def print_textregion_stats(text_region: PageXMLTextRegion) -> None:
+    """Print statistics on the textual content of a text region.
+
+    :param text_region: a TextRegion object that contains TextLines
+    :type text_region: PageXMLTextRegion
+    """
+    avg_line_distance = get_textregion_avg_line_distance(text_region)
+    avg_char_width = get_textregion_avg_char_width(text_region)
+    avg_line_width_chars = get_textregion_avg_line_width(text_region, unit="char")
+    avg_line_width_pixels = get_textregion_avg_line_width(text_region, unit="pixel")
+    print("\n--------------------------------------")
+    print("Document info")
+    print(f"  {'id:': <30}{text_region.id}")
+    print(f"  {'type:': <30}{text_region.type}")
+    stats = text_region.stats
+    for element_type in stats:
+        element_string = f'number of {element_type}:'
+        print(f'  {element_string: <30}{stats[element_type]:>6.0f}')
+    print(f"  {'avg. distance between lines:': <30}{avg_line_distance: >6.0f}")
+    print(f"  {'avg. char width:': <30}{avg_char_width: >6.0f}")
+    print(f"  {'avg. chars per line:': <30}{avg_line_width_chars: >6.0f}")
+    print(f"  {'avg. pixels per line:': <30}{avg_line_width_pixels: >6.0f}")
+    print("--------------------------------------\n")
+
+
+def pretty_print_textregion(text_region: PageXMLTextRegion, print_stats: bool = False) -> None:
     """Pretty print the text of a text region, using indentation and
     vertical space based on the average character width and average
     distance between lines. If no corresponding images of the PageXML
@@ -244,22 +310,28 @@ def pretty_print_textregion(text_region: PageXMLTextRegion) -> None:
     :param text_region: a TextRegion object that contains TextLines
     :type text_region: PageXMLTextRegion
     """
+    if print_stats:
+        print_textregion_stats(text_region)
     avg_line_distance = get_textregion_avg_line_distance(text_region)
     avg_char_width = get_textregion_avg_char_width(text_region)
-    for ti, tr in enumerate(text_region.text_regions):
+    for ti, tr in enumerate(text_region.get_inner_text_regions()):
         if len(tr.lines) < 2:
             continue
         for li, curr_line in enumerate(tr.lines[:-1]):
             next_line = tr.lines[li + 1]
             left_indent = (curr_line.coords.left - tr.coords.left)
-            if left_indent > 0:
+            if left_indent > 0 and avg_char_width > 0:
                 preceding_whitespace = " " * int(float(left_indent) / avg_char_width)
             else:
                 preceding_whitespace = ""
             distances = compute_baseline_distances(curr_line.baseline, next_line.baseline)
-            print(preceding_whitespace, curr_line.text)
+            if curr_line.text is None:
+                print()
+            else:
+                print(preceding_whitespace, curr_line.text)
             if np.median(distances) > avg_line_distance * 1.2:
                 print()
+    print()
 
 
 class Coords:

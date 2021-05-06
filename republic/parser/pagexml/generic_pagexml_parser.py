@@ -1,15 +1,21 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 from datetime import datetime
 from dateutil.parser import parse as date_parse
 import re
 
-import republic.parser.republic_file_parser as file_parser
+import xmltodict
+
 from republic.model.physical_document_model import Baseline, Coords, parse_derived_coords
 from republic.model.physical_document_model import PageXMLScan, PageXMLTextLine, PageXMLTextRegion, PageXMLWord
 
 
-def parse_coords(coords: dict) -> Coords:
-    return Coords(points=coords['@points'])
+def parse_coords(coords: dict) -> Union[Coords, None]:
+    if coords is None:
+        return None
+    if '@points' in coords:
+        return Coords(points=coords['@points'])
+    else:
+        return None
 
 
 def parse_baseline(baseline: dict) -> Baseline:
@@ -41,12 +47,22 @@ def parse_line_words(textline: dict) -> List[PageXMLWord]:
 
 
 def parse_textline(textline: dict) -> PageXMLTextLine:
+    if 'TextEquiv' not in textline:
+        text = None
+    elif isinstance(textline['TextEquiv'], str):
+        text = textline['TextEquiv']
+    elif 'Unicode' in textline['TextEquiv']:
+        text = textline['TextEquiv']['Unicode']
+    elif 'PlainText' in textline['TextEquiv']:
+        text = textline['TextEquiv']['PlainText']
+    else:
+        text = None
     line = PageXMLTextLine(xheight=int(textline["@xheight"]) if '@xheight' in textline else None,
                            doc_id=textline['@id'] if '@id' in textline else None,
                            metadata=parse_custom_metadata(textline) if '@custom' in textline else None,
                            coords=parse_coords(textline["Coords"]),
                            baseline=parse_baseline(textline["Baseline"]),
-                           text=textline["TextEquiv"]["Unicode"],
+                           text=text,
                            words=parse_line_words(textline))
     return line
 
@@ -85,11 +101,10 @@ def parse_custom_metadata(text_element: Dict[str, any]) -> Dict[str, any]:
 
 
 def parse_textregion(text_region_dict: dict) -> PageXMLTextRegion:
-    coords_dict = text_region_dict['Coords'] if 'Coords' in text_region_dict else None
     text_region = PageXMLTextRegion(
         doc_id=text_region_dict['@id'] if '@id' in text_region_dict else None,
         orientation=float(text_region_dict['@orientation']) if '@orientation' in text_region_dict else None,
-        coords=parse_coords(text_region_dict['Coords']) if coords_dict else None,
+        coords=parse_coords(text_region_dict['Coords']) if 'Coords' in text_region_dict else None,
         metadata=parse_custom_metadata(text_region_dict) if '@custom' in text_region_dict else None,
     )
     if text_region.metadata and 'type' in text_region.metadata:
@@ -152,11 +167,20 @@ def parse_page_reading_order(page_json: dict) -> dict:
     return page_json['ReadingOrder']
 
 
-def parse_pagexml_file(pagexml_file: str, pagexml_data: str) -> PageXMLScan:
-    """Read PageXML from file (or passed separately if read from elsewhere) and return
-    a PageXMLScan object."""
-    scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
-    return parse_pagexml_json(scan_json)
+def read_pagexml_file(pagexml_file: str) -> dict:
+    with open(pagexml_file, 'rt') as fh:
+        data = xmltodict.parse(fh.read())
+        return data
+
+
+def parse_pagexml_file(pagexml_file: str, pagexml_data: Union[str, None] = None) -> PageXMLScan:
+    """Read PageXML from file (or passed separately if read from elsewhere, e.g. tarball)
+    and return a PageXMLScan object."""
+    if not pagexml_data:
+        pagexml_data = read_pagexml_file(pagexml_file)
+    scan_doc = parse_pagexml_json(pagexml_data)
+    scan_doc.metadata['filename'] = pagexml_file
+    return scan_doc
 
 
 def parse_pagexml_json(scan_json: dict) -> PageXMLScan:

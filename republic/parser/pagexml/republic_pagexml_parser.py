@@ -10,7 +10,7 @@ import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
 from republic.parser.pagexml.test_republic_pagexml_assertions import test_republic_pagexml_assertions
 from republic.model.physical_document_model import Coords, parse_derived_coords, PhysicalStructureDoc
 from republic.model.physical_document_model import PageXMLTextRegion, PageXMLColumn, PageXMLScan, PageXMLPage
-from republic.model.physical_document_model import PageXMLTextLine, PageXMLWord, PageXMLDoc
+from republic.model.physical_document_model import PageXMLTextLine, PageXMLDoc
 
 
 def parse_republic_pagexml_file(pagexml_file: str) -> PageXMLScan:
@@ -31,7 +31,7 @@ def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
                      pagexml_data: Union[str, None] = None) -> PageXMLScan:
     # print('Parsing file', pagexml_file)
     try:
-        scan_json = file_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
+        scan_json = pagexml_parser.read_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
         test_republic_pagexml_assertions(scan_json)
         scan_doc = pagexml_parser.parse_pagexml_json(scan_json)
     except (AssertionError, KeyError, TypeError):
@@ -378,6 +378,10 @@ def set_document_children_derived_ids(doc: PageXMLDoc, scan_id: str):
     if hasattr(doc, 'extra'):
         doc_text_regions += doc.extra
     for text_region in doc_text_regions:
+        if text_region.id is None:
+            text_region.set_derived_id(scan_id)
+        if 'scan_id' not in text_region.metadata:
+            text_region.metadata['scan_id'] = scan_id
         # print('\tcolumn id:', text_region.id)
         # print('\tparent id:', text_region.parent.id)
         text_region.set_derived_id(scan_id)
@@ -387,14 +391,22 @@ def set_document_children_derived_ids(doc: PageXMLDoc, scan_id: str):
             id_field = 'header_id'
         elif text_region.has_type('footer'):
             id_field = 'footer_id'
-        else:
+        elif doc.has_type('page'):
             id_field = 'extra_id'
+        else:
+            id_field = 'text_region_id'
         id_value = text_region.id
         if hasattr(text_region, 'text_regions'):
             for inner_region in text_region.text_regions:
+                if inner_region.id is None:
+                    inner_region.set_derived_id(scan_id)
+                if 'scan_id' not in inner_region.metadata:
+                    inner_region.metadata['scan_id'] = scan_id
                 inner_region.metadata[id_field] = id_value
                 inner_region.set_derived_id(scan_id)
                 for line in inner_region.lines:
+                    if line.id is None:
+                        line.set_derived_id(scan_id)
                     line.metadata[id_field] = id_value
                     if 'scan_id' in text_region.metadata:
                         line.metadata['scan_id'] = text_region.metadata['scan_id']
@@ -403,6 +415,8 @@ def set_document_children_derived_ids(doc: PageXMLDoc, scan_id: str):
                     line.set_derived_id(scan_id)
         if hasattr(text_region, 'lines'):
             for line in text_region.lines:
+                if line.id is None:
+                    line.set_derived_id(scan_id)
                 line.metadata[id_field] = id_value
                 if 'scan_id' in text_region.metadata:
                     line.metadata['scan_id'] = text_region.metadata['scan_id']
