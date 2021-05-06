@@ -32,6 +32,7 @@ def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
     # print('Parsing file', pagexml_file)
     try:
         scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
+        scan_doc.reading_order = {}
     except (AssertionError, KeyError, TypeError):
         print('Error parsing file', pagexml_file)
         raise
