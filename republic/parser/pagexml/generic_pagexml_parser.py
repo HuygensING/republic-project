@@ -163,14 +163,24 @@ def parse_page_image_size(page_json: dict) -> Coords:
 
 
 def parse_page_reading_order(page_json: dict) -> dict:
-    # TO DO: parse to more useful structure
-    return page_json['ReadingOrder']
+    order_dict = page_json['ReadingOrder']
+    reading_order = {}
+    if order_dict is None:
+        return {}
+    if 'OrderedGroup' in order_dict and 'RegionRefIndexed' in order_dict['OrderedGroup']:
+        if isinstance(order_dict['OrderedGroup']['RegionRefIndexed'], list):
+            group_list = order_dict['OrderedGroup']['RegionRefIndexed']
+            for region_ref in group_list:
+                reading_order[int(region_ref['@index'])] = region_ref['@regionRef']
+        else:
+            group_item = order_dict['OrderedGroup']['RegionRefIndexed']
+            reading_order[int(group_item['@index'])] = group_item['@regionRef']
+    return reading_order
 
 
-def read_pagexml_file(pagexml_file: str) -> dict:
+def read_pagexml_file(pagexml_file: str) -> str:
     with open(pagexml_file, 'rt') as fh:
-        data = xmltodict.parse(fh.read())
-        return data
+        return fh.read()
 
 
 def parse_pagexml_file(pagexml_file: str, pagexml_data: Union[str, None] = None) -> PageXMLScan:
@@ -178,7 +188,8 @@ def parse_pagexml_file(pagexml_file: str, pagexml_data: Union[str, None] = None)
     and return a PageXMLScan object."""
     if not pagexml_data:
         pagexml_data = read_pagexml_file(pagexml_file)
-    scan_doc = parse_pagexml_json(pagexml_data)
+    scan_json = xmltodict.parse(pagexml_data)
+    scan_doc = parse_pagexml_json(scan_json)
     scan_doc.metadata['filename'] = pagexml_file
     return scan_doc
 
@@ -194,11 +205,14 @@ def parse_pagexml_json(scan_json: dict) -> PageXMLScan:
     scan_json = scan_json['PcGts']['Page']
     if scan_json['@imageWidth'] != '0' and scan_json['@imageHeight'] != '0':
         coords = parse_page_image_size(scan_json)
-    if 'ReadingOrder' in scan_json and scan_json['ReadingOrder']:
-        metadata['reading_order'] = parse_page_reading_order(scan_json)
     if 'TextRegion' in scan_json:
         if isinstance(scan_json['TextRegion'], list):
             text_regions = parse_textregion_list(scan_json['TextRegion'])
         else:
             text_regions = [parse_textregion(scan_json['TextRegion'])]
-    return PageXMLScan(metadata=metadata, coords=coords, text_regions=text_regions)
+    if 'ReadingOrder' in scan_json and scan_json['ReadingOrder']:
+        reading_order = parse_page_reading_order(scan_json)
+    else:
+        reading_order = {}
+    scan_doc = PageXMLScan(metadata=metadata, coords=coords, text_regions=text_regions, reading_order=reading_order)
+    return scan_doc

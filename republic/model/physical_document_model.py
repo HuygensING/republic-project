@@ -219,13 +219,9 @@ def get_textregion_avg_line_distance(text_region: PageXMLTextRegion,
     if len(all_distances) == 0:
         return 0
     if avg_type == "micro":
-        all_distances = np.concatenate(all_distances)
-        print(len(all_distances))
-        return np.median(all_distances)
-        # return np.median(np.concatenate(all_distances))
+        return float(np.median(np.concatenate(all_distances)))
     else:
-        return np.median(np.array([distances.mean() for distances in all_distances]))
-        # return np.array([distances.mean() for distances in all_distances]).mean()
+        return float(np.median(np.array([distances.mean() for distances in all_distances])))
 
 
 def get_textregion_avg_char_width(text_region: PageXMLTextRegion) -> float:
@@ -309,6 +305,8 @@ def pretty_print_textregion(text_region: PageXMLTextRegion, print_stats: bool = 
 
     :param text_region: a TextRegion object that contains TextLines
     :type text_region: PageXMLTextRegion
+    :param print_stats: flag to print text_region statistics if set to True
+    :type print_stats: bool
     """
     if print_stats:
         print_textregion_stats(text_region)
@@ -502,11 +500,12 @@ def edges_to_hull_points(edges):
 class StructureDoc:
 
     def __init__(self, doc_id: Union[None, str] = None, doc_type: Union[None, str, List[str]] = None,
-                 metadata: Dict[str, any] = None):
+                 metadata: Dict[str, any] = None, reading_order: Dict[int, str] = None):
         self.id = doc_id
         self.type = doc_type
         self.main_type = 'doc'
         self.metadata = metadata if metadata else {}
+        self.reading_order: Dict[int, str] = reading_order if reading_order else {}
         self.parent: Union[StructureDoc, None] = None
 
     def set_parent(self, parent: StructureDoc):
@@ -559,18 +558,21 @@ class StructureDoc:
 
     @property
     def json(self) -> Dict[str, any]:
-        return {
+        json_data = {
             'id': self.id,
             'type': self.type,
             'metadata': self.metadata
         }
+        if self.reading_order:
+            json_data['reading_order'] = self.reading_order
+        return json_data
 
 
 class PhysicalStructureDoc(StructureDoc):
 
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
-                 metadata: Dict[str, any] = None, coords: Coords = None):
-        super().__init__(doc_id, doc_type, metadata)
+                 metadata: Dict[str, any] = None, coords: Coords = None, reading_order: Dict[int, str] = None):
+        super().__init__(doc_id=doc_id, doc_type=doc_type, metadata=metadata, reading_order=reading_order)
         self.coords: Union[None, Coords] = coords
         self.main_type = 'physical_structure_doc'
 
@@ -601,8 +603,8 @@ class LogicalStructureDoc(StructureDoc):
 
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, lines: List[PageXMLTextLine] = None,
-                 text_regions: List[PageXMLTextRegion] = None):
-        super().__init__(doc_id, doc_type, metadata)
+                 text_regions: List[PageXMLTextRegion] = None, reading_order: Dict[int, str] = None):
+        super().__init__(doc_id, doc_type, metadata, reading_order=reading_order)
         self.lines: List[PageXMLTextLine] = lines if lines else []
         self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
         self.logical_parent: Union[StructureDoc, None] = None
@@ -623,8 +625,8 @@ class LogicalStructureDoc(StructureDoc):
 class PageXMLDoc(PhysicalStructureDoc):
 
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
-                 metadata: Dict[str, any] = None, coords: Coords = None):
-        super().__init__(doc_id, "pagexml_doc", metadata)
+                 metadata: Dict[str, any] = None, coords: Coords = None, reading_order: Dict[int, str] = None):
+        super().__init__(doc_id=doc_id, doc_type="pagexml_doc", metadata=metadata, reading_order=reading_order)
         self.coords: Union[None, Coords] = coords
         self.add_type(doc_type)
         self.main_type = 'pagexml_doc'
@@ -656,8 +658,10 @@ class PageXMLTextLine(PageXMLDoc):
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, coords: Coords = None,
                  baseline: Baseline = None, xheight: int = None,
-                 text: str = None, words: List[PageXMLWord] = None):
-        super().__init__(doc_id, "line", metadata, coords)
+                 text: str = None, words: List[PageXMLWord] = None,
+                 reading_order: Dict[int, str] = None):
+        super().__init__(doc_id=doc_id, doc_type="line", metadata=metadata,
+                         coords=coords, reading_order=reading_order)
         self.main_type = 'line'
         self.text: Union[None, str] = text
         self.xheight: Union[None, int] = xheight
@@ -729,12 +733,16 @@ class PageXMLTextRegion(PageXMLDoc):
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, coords: Coords = None,
                  text_regions: List[PageXMLTextRegion] = None,
-                 lines: List[PageXMLTextLine] = None, orientation: float = None):
-        super().__init__(doc_id, "text_region", metadata, coords)
+                 lines: List[PageXMLTextLine] = None, orientation: float = None,
+                 reading_order: Dict[int, str] = None):
+        super().__init__(doc_id=doc_id, doc_type="text_region", metadata=metadata,
+                         coords=coords, reading_order=reading_order)
         self.main_type = 'text_region'
         self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
         self.lines: List[PageXMLTextLine] = lines if lines else []
         self.orientation: Union[None, float] = orientation
+        if self.reading_order:
+            self.set_text_regions_in_reader_order()
         self.set_parentage()
         if doc_type:
             self.add_type(doc_type)
@@ -765,6 +773,21 @@ class PageXMLTextRegion(PageXMLDoc):
             doc_json['orientation'] = self.orientation
         doc_json['stats'] = self.stats
         return doc_json
+    
+    def get_text_regions_in_reading_order(self):
+        if not self.reading_order:
+            return self.text_regions
+        tr_ids = {region_id for _index, region_id in sorted(self.reading_order.items(), key=lambda x: x[0])}
+        tr_map = {}
+        for text_region in self.text_regions:
+            if text_region.id not in tr_ids:
+                print("reading order:", self.reading_order)
+                raise KeyError(f"text_region with id {text_region.id} is not listed in reading_order")
+            tr_map[text_region.id] = text_region
+        return [tr_map[tr_id] for tr_id in tr_ids if tr_id in tr_map]
+
+    def set_text_regions_in_reader_order(self):
+        self.text_regions = self.get_text_regions_in_reading_order()
 
     def get_inner_text_regions(self) -> List[PageXMLTextRegion]:
         text_regions: List[PageXMLTextRegion] = []
@@ -824,9 +847,10 @@ class PageXMLColumn(PageXMLTextRegion):
 
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, coords: Coords = None,
-                 text_regions: List[PageXMLTextRegion] = None, lines: List[PageXMLTextLine] = None):
+                 text_regions: List[PageXMLTextRegion] = None, lines: List[PageXMLTextLine] = None,
+                 reading_order: Dict[int, str] = None):
         super().__init__(doc_id=doc_id, doc_type="column", metadata=metadata, coords=coords, lines=lines,
-                         text_regions=text_regions)
+                         text_regions=text_regions, reading_order=reading_order)
         self.main_type = 'column'
         self.set_parentage()
         if doc_type:
@@ -853,10 +877,10 @@ class PageXMLPage(PageXMLTextRegion):
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, coords: Coords = None,
                  columns: List[PageXMLColumn] = None, text_regions: List[PageXMLTextRegion] = None,
-                 extra: List[PageXMLTextRegion] = None,
-                 lines: List[PageXMLTextLine] = None):
+                 extra: List[PageXMLTextRegion] = None, lines: List[PageXMLTextLine] = None,
+                 reading_order: Dict[int, str] = None):
         super().__init__(doc_id=doc_id, doc_type="page", metadata=metadata, coords=coords, lines=lines,
-                         text_regions=text_regions)
+                         text_regions=text_regions, reading_order=reading_order)
         self.main_type = 'page'
         self.columns: List[PageXMLColumn] = columns if columns else []
         self.extra: List[PageXMLTextRegion] = extra if extra else []
@@ -910,12 +934,11 @@ class PageXMLScan(PageXMLTextRegion):
 
     def __init__(self, doc_id: str = None, doc_type: Union[str, List[str]] = None,
                  metadata: Dict[str, any] = None, coords: Coords = None,
-                 pages: List[PageXMLPage] = None,
-                 columns: List[PageXMLColumn] = None,
-                 text_regions: List[PageXMLTextRegion] = None,
-                 lines: List[PageXMLTextLine] = None):
+                 pages: List[PageXMLPage] = None, columns: List[PageXMLColumn] = None,
+                 text_regions: List[PageXMLTextRegion] = None, lines: List[PageXMLTextLine] = None,
+                 reading_order: Dict[int, str] = None):
         super().__init__(doc_id=doc_id, doc_type="scan", metadata=metadata, coords=coords, lines=lines,
-                         text_regions=text_regions)
+                         text_regions=text_regions, reading_order=reading_order)
         self.main_type = 'scan'
         self.pages: List[PageXMLPage] = pages if pages else []
         self.columns: List[PageXMLColumn] = columns if columns else []
@@ -961,15 +984,13 @@ class PageXMLScan(PageXMLTextRegion):
 
 def sort_regions_in_reading_order(doc: PageXMLDoc) -> List[PageXMLTextRegion]:
     doc_text_regions: List[PageXMLTextRegion] = []
+    if doc.reading_order and hasattr(doc, 'text_regions'):
+        text_region_ids = [region for _index, region in sorted(doc.reading_order.items(), key=lambda x: x[0])]
+        return [tr for tr in sorted(doc.text_regions, key=lambda x: text_region_ids.index(x))]
     if hasattr(doc, 'columns') and doc.columns:
         doc_text_regions = doc.columns
     elif hasattr(doc, 'text_regions') and doc.text_regions:
         doc_text_regions = doc.text_regions
-        for text_region in doc_text_regions:
-            if doc.main_type == 'column':
-                text_region.metadata['column_id'] = doc.id
-            elif 'column_id' in doc.metadata:
-                text_region.metadata['column_id'] = doc.metadata['column_id']
     if doc_text_regions:
         sub_text_regions = []
         for text_region in sorted(doc_text_regions, key=lambda x: x.coords.left):
@@ -1067,10 +1088,11 @@ def json_to_pagexml_word(json_doc: dict) -> PageXMLWord:
 
 def json_to_pagexml_line(json_doc: dict) -> PageXMLTextLine:
     words = [json_to_pagexml_word(word) for word in json_doc['words']] if 'words' in json_doc else []
+    reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
     try:
         line = PageXMLTextLine(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
                                coords=Coords(json_doc['coords']), baseline=Baseline(json_doc['baseline']),
-                               text=json_doc['text'], words=words)
+                               text=json_doc['text'], words=words, reading_order=reading_order)
         return line
     except TypeError:
         print(json_doc['baseline'])
@@ -1081,9 +1103,11 @@ def json_to_pagexml_text_region(json_doc: dict) -> PageXMLTextRegion:
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
+    reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
 
     text_region = PageXMLTextRegion(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
-                                    coords=Coords(json_doc['coords']), text_regions=text_regions, lines=lines)
+                                    coords=Coords(json_doc['coords']), text_regions=text_regions, lines=lines,
+                                    reading_order=reading_order)
     return text_region
 
 
@@ -1091,9 +1115,11 @@ def json_to_pagexml_column(json_doc: dict) -> PageXMLColumn:
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
+    reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
 
     column = PageXMLColumn(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
-                           coords=Coords(json_doc['coords']), text_regions=text_regions, lines=lines)
+                           coords=Coords(json_doc['coords']), text_regions=text_regions, lines=lines,
+                           reading_order=reading_order)
     return column
 
 
@@ -1104,11 +1130,13 @@ def json_to_pagexml_page(json_doc: dict) -> PageXMLPage:
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
+    reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
 
     coords = Coords(json_doc['coords']) if 'coords' in json_doc else None
     page = PageXMLPage(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
                        coords=coords, extra=extra, columns=columns,
-                       text_regions=text_regions, lines=lines)
+                       text_regions=text_regions, lines=lines,
+                       reading_order=reading_order)
     return page
 
 
@@ -1118,10 +1146,11 @@ def json_to_pagexml_scan(json_doc: dict) -> PageXMLScan:
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
+    reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
 
     scan = PageXMLScan(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
                        coords=Coords(json_doc['coords']), pages=pages, columns=columns,
-                       text_regions=text_regions, lines=lines)
+                       text_regions=text_regions, lines=lines, reading_order=reading_order)
     return scan
 
 
