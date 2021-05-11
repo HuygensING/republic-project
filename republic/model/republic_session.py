@@ -286,6 +286,8 @@ class SessionSearcher(EventSearcher):
                 for label in match.label_list:
                     if label in session_opening_element_order:
                         opening_label = label
+                    elif label == 'extract':
+                        opening_label = label
                 self.label_order += [{'index': line_index, 'label': opening_label}]
         self.extract_date_matches()
         self.extract_attendance_matches()
