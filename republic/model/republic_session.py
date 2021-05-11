@@ -170,12 +170,10 @@ class SessionSearcher(EventSearcher):
                 continue
             for match in date_matches:
                 for label in match.label_list:
-                    if label not in session_opening_element_order:
-                        continue
                     if label in self.session_opening_elements and self.session_opening_elements[label] < line_index:
                         # Always use the first meeting date line, even if it's a rest day.
                         continue
-                    # print('adding line with match label:', label, match)
+                    # print('adding line with date match label:', label, match)
                     self.session_opening_elements[label] = line_index
                     break
 
@@ -210,7 +208,7 @@ class SessionSearcher(EventSearcher):
                 #     continue
                 opening_label = None
                 for label in match.label_list:
-                    if label not in session_opening_element_order:
+                    if label not in session_opening_element_order and label != 'extract':
                         continue
                     opening_label = label
                 # only add the match if there is no earlier match with the same label
@@ -269,6 +267,7 @@ class SessionSearcher(EventSearcher):
                             # and with at least one line in between them
                             continue
                 # opening_label = self.labels[match['match_keyword']]
+                # print('adding line with attendants match label:', opening_label, match)
                 self.session_opening_elements[opening_label] = line_index
 
     def get_session_opening_elements(self) -> Dict[str, int]:
@@ -289,8 +288,11 @@ class SessionSearcher(EventSearcher):
                     elif label == 'extract':
                         opening_label = label
                 self.label_order += [{'index': line_index, 'label': opening_label}]
+
+        # print('label order:', self.label_order)
         self.extract_date_matches()
         self.extract_attendance_matches()
+        # print('session_opening_elements:', self.session_opening_elements)
         return self.session_opening_elements
 
     def get_last_session_opening_element(self) -> str:
