@@ -14,26 +14,26 @@ from republic.model.republic_document_model import Session
 
 
 sessiondate_config = {
-    'char_match_threshold': 0.6,
-    'ngram_threshold': 0.5,
-    'levenshtein_threshold': 0.6,
+    'char_match_threshold': 0.7,
+    'ngram_threshold': 0.6,
+    'levenshtein_threshold': 0.7,
     'max_length_variance': 3,
     'use_word_boundaries': False,
     'perform_strip_suffix': False,
     'ignorecase': False,
-    'ngram_size': 2,
-    'skip_size': 2
+    'ngram_size': 3,
+    'skip_size': 1
 }
 attendance_config = {
-    "char_match_threshold": 0.6,
-    "ngram_threshold": 0.5,
-    "levenshtein_threshold": 0.6,
+    "char_match_threshold": 0.7,
+    "ngram_threshold": 0.6,
+    "levenshtein_threshold": 0.7,
     "max_length_variance": 3,
     "use_word_boundaries": False,
     "perform_strip_suffix": False,
     "ignorecase": False,
-    "ngram_size": 2,
-    "skip_size": 2,
+    "ngram_size": 3,
+    "skip_size": 1
 }
 
 session_opening_element_order = [
@@ -121,7 +121,8 @@ class SessionSearcher(EventSearcher):
         for coming_holiday_phrase in get_coming_holidays_phrases(self.current_date):
             attendance_phrases.append(coming_holiday_phrase)
         # add phrases as PhraseModel objects
-        self.phrase_models: Dict[str, PhraseModel] = {'attendance_searcher': PhraseModel(model=attendance_phrases)}
+        self.phrase_models: Dict[str, PhraseModel] = {'attendance_searcher': PhraseModel(model=attendance_phrases,
+                                                                                         config=attendance_config)}
         # Add fuzzy searchers for attendance phrases
         self.add_searcher(attendance_config, 'attendance_searcher', self.phrase_models['attendance_searcher'])
 
@@ -132,7 +133,7 @@ class SessionSearcher(EventSearcher):
         # generate session date phrases for the first week covered in this inventory
         date_phrases = [{'phrase': date_string, 'label': 'session_date'} for date_string in self.date_strings]
         date_phrases += [{'phrase': str(self.year), 'label': 'session_year'}]
-        self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases)
+        self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases, config=sessiondate_config)
         self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'])
         # when multiple date string match, only use the best matching one.
         self.searchers['date_searcher'].allow_overlapping_matches = False
@@ -157,7 +158,7 @@ class SessionSearcher(EventSearcher):
             if line_index > 10:
                 # date matches should be early in the sliding window
                 break
-            date_matches = [match for match in line['matches'] if match.has_label('date_searcher')]
+            date_matches = [match for match in line['matches'] if match.metadata['searcher'] == 'date_searcher']
             if len(date_matches) == 0:
                 continue
             # the session date should be at the start of the line
@@ -199,7 +200,7 @@ class SessionSearcher(EventSearcher):
             if not dates_ordered:
                 break
             attendance_matches: List[PhraseMatch] = [match for match in line['matches']
-                                                     if match.has_label('attendance_searcher')]
+                                                     if match.metadata['searcher'] == 'attendance_searcher']
             attendance_labels = [label for match in attendance_matches for label in match.label_list]
             for match in attendance_matches:
                 # attendants keywords should match at or near the start of the line

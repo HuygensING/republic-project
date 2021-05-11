@@ -235,6 +235,11 @@ def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, in
     inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
         print('session received from get_sessions:', session.id)
+        date_string = None
+        for match in session.evidence:
+            if match.has_label('session_date'):
+                date_string = match.string
+        print('\tdate string:', date_string)
         es_anno.index(index='session_lines', id=session.id, body=session.json)
 
 

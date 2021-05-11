@@ -1029,6 +1029,8 @@ def sort_lines_in_reading_order(doc: PageXMLDoc) -> Generator[PageXMLTextLine]:
                     stacked_lines.append([curr_line])
                 elif curr_line.is_next_to(prev_line):
                     stacked_lines[-1].append(curr_line)
+                else:
+                    stacked_lines.append([curr_line])
         for lines in stacked_lines:
             for line in sorted(lines, key=lambda x: x.coords.left):
                 yield line

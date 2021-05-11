@@ -95,7 +95,7 @@ class EventSearcher:
             # add the searcher_name to the match so we know where it came from
             if isinstance(match.label, str):
                 match.label = [match.label]
-            match.label.append(searcher_name)
+            match.metadata['searcher'] = searcher_name
             # if the phrase has a label, add it to the match
             # if self.phrase_models[searcher_name].has_label(phrase):
             #     match['match_label'] = self.phrase_models[searcher_name].get_label(phrase)

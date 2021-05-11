@@ -188,13 +188,12 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
     session_searcher = SessionSearcher(inv_config['inventory_num'], current_date,
                                        session_phrase_model, window_size=30)
     session_metadata = session_searcher.parse_session_metadata(None)
-    gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
+    gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
     session_lines: List[PageXMLTextLine] = []
     for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
         # before modifying, make sure we're working on a copy
-        line = copy.deepcopy(line)
         # remove all word-level objects, as we only need the text
         line.words = []
         # list all lines belonging to the same session date
