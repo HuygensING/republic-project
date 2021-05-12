@@ -4,7 +4,7 @@ import useHover from "../hook/useHover";
 import {useResolutionContext} from "../resolution/ResolutionContext";
 import {EntityViewer} from "./entity/EntityViewer";
 import {ViewType} from "./model/ViewType";
-import {ViewEntityType, toStr} from "./model/ViewEntityType";
+import {toStr, ViewEntityType} from "./model/ViewEntityType";
 
 type ViewProps = {
   entity: ViewEntityType,
@@ -17,6 +17,12 @@ export default function View(props: ViewProps) {
   const deleteRef = useRef(null)
   const isHovering = useHover(deleteRef);
   const {resolutionState} = useResolutionContext();
+
+  function memoBy() {
+    const resolutions = resolutionState.resolutions.map(r => r.ids).join(',');
+    const strEntity = toStr(props.entity);
+    return JSON.stringify([resolutions, props.type, strEntity]);
+  }
 
   return <div className="row mt-3">
     <div className="col">
@@ -31,7 +37,7 @@ export default function View(props: ViewProps) {
         <EntityViewer
           entity={props.entity}
           type={props.type}
-          memoKey={[resolutionState.updatedOn, props.type, toStr(props.entity)]}
+          memoKey={memoBy()}
         />
 
       </div>

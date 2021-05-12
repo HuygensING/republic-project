@@ -1,4 +1,4 @@
-import {memo, MutableRefObject} from "react";
+import {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
@@ -6,11 +6,11 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
 import {Term} from "../model/Term";
 import {C3} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {usePrevious} from "../../hook/usePrevious";
 
 moment.locale('nl');
 
@@ -24,14 +24,14 @@ type TermHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const TermHistogram = memo(function (props: TermHistogramProps) {
+export const TermHistogram = function (props: TermHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
 
-  updateHistogram();
+  if(usePrevious(props.memoKey) !== props.memoKey) updateHistogram();
 
   function updateHistogram() {
 
@@ -66,4 +66,4 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};

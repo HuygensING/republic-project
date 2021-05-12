@@ -1,8 +1,7 @@
 import {D3Canvas} from "../../common/plot/D3Canvas";
 import {PersonHistogram} from "./PersonHistogram";
-import React, {memo, useRef} from "react";
+import React, {useRef} from "react";
 import {Person} from "../../elastic/model/Person";
-import {equal} from "../../util/equal";
 import {Texts} from "../../common/texts/Texts";
 import {Term} from "../model/Term";
 import {isPerson, toPerson, ViewType} from "../model/ViewType";
@@ -22,7 +21,7 @@ type EntityViewerProps = {
   memoKey: any
 }
 
-export const EntityViewer = memo(function (props: EntityViewerProps) {
+export const EntityViewer = function (props: EntityViewerProps) {
 
   const svgRef = useRef(null);
 
@@ -81,25 +80,6 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     return setState({...state, ids, showTexts: true});
   }
 
-  return <>
-    <D3Canvas svgRef={svgRef}/>
-
-    {isPerson(props.type) ? renderPersonHistogram() : null}
-    {props.type === ViewType.TERM ? renderTermHistogram() : null}
-    {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
-    {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
-    {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
-
-    {state.showTexts ? <Texts
-      resolutions={state.ids}
-      handleClose={() => setState({...state, showTexts: false})}
-      highlightAttendants={getAttendants(props)}
-      highlightQuery={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
-      highlightXml={highlightEntity}
-      memoKey={props.memoKey}
-    /> : null}
-  </>
-
   function highlightEntity(originalXml: string) {
     const dom = toDom(originalXml);
     if (props.type === ViewType.MENTIONED) {
@@ -121,4 +101,23 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     return [];
   }
 
-}, ((prev, next) => equal(prev.memoKey, next.memoKey)));
+  return <>
+    <D3Canvas svgRef={svgRef}/>
+
+    {isPerson(props.type) ? renderPersonHistogram() : null}
+    {props.type === ViewType.TERM ? renderTermHistogram() : null}
+    {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
+    {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
+    {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
+
+    {state.showTexts ? <Texts
+      resolutions={state.ids}
+      handleClose={() => setState({...state, showTexts: false})}
+      highlightAttendants={getAttendants(props)}
+      highlightQuery={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
+      highlightXml={highlightEntity}
+      memoKey={props.memoKey}
+    /> : null}
+  </>
+
+};

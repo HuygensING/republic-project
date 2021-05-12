@@ -12,6 +12,7 @@ import {C10} from "../../style/Colors";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 import renderPlot from "../../common/plot/Plot";
 import {usePlotContext} from "../../common/plot/PlotContext";
+import {usePrevious} from "../../hook/usePrevious";
 
 moment.locale('nl');
 
@@ -25,14 +26,14 @@ type FunctionCategoryHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryHistogramProps) {
+export const FunctionCategoryHistogram = function (props: FunctionCategoryHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
 
-  updateHistogram();
+  if(usePrevious(props.memoKey) !== props.memoKey) updateHistogram();
 
   function updateHistogram() {
 
@@ -67,4 +68,4 @@ export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryH
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};
