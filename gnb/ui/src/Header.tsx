@@ -12,7 +12,7 @@ export function Header() {
           &nbsp;
           Governance, Netwerken en Besluitvorming in de Staten-Generaal
           &nbsp;
-          {useLoading() ? <i className="fas fa-sync fa-spin ml-3"/> : null}
+          {useLoading() ? <i className="main-loader fas fa-sync fa-spin ml-3"/> : null}
         </small>
 
       </h1>

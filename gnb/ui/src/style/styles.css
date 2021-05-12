@@ -124,3 +124,8 @@ resolutie persoon {
 resolutie persoon:hover{
   cursor: pointer;
 }
+
+.main-loader {
+  opacity: 0.2;
+  font-size: 0.8em;
+}
