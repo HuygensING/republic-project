@@ -8,7 +8,6 @@ import PlaceFormField from "./field/PlaceFormField";
 import FunctionFormField from "./field/FunctionFormField";
 import FunctionCategoryFormField from "./field/FunctionCategoryFormField";
 import Export from "../export/Export";
-import PlotTypeFormField from "./field/PlotTypeFormField";
 
 export function Search() {
 
@@ -44,7 +43,6 @@ export function Search() {
             </div>
             <div className="col">
               <div className="form-group float-right row mr-1">
-                <div className="mr-3"><PlotTypeFormField/></div>
                 <div><Export/></div>
               </div>
             </div>

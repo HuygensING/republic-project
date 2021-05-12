@@ -13,6 +13,7 @@ import {
   WARN_DATEPICKER_END_BEFORE_START
 } from "../../content/Placeholder";
 import Warning from "../../common/Warning";
+import PlotTypeFormField from "./PlotTypeFormField";
 
 const DATE_FORMAT = "yyyy-MM-dd";
 const LOCALE_NL = "nl";
@@ -134,6 +135,7 @@ export default function StartEndFormField() {
           <i className="fas fa-arrow-right"/>
         </button>
       </div>
+      <PlotTypeFormField/>
     </div>
   </>;
 }
