@@ -54,7 +54,7 @@ export default function FullTextFormField() {
    * Throw error or render component
    */
   function render() {
-    if(state.error) {
+    if (state.error) {
       throw new Error(state.error);
     }
     return <div aria-label={HELP_BALLOON_SEARCH_TERMS} data-balloon-pos="down">

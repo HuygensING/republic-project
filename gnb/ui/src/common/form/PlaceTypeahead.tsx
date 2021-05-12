@@ -2,6 +2,7 @@ import {Typeahead} from "react-bootstrap-typeahead";
 import React, {useState} from "react";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {useClientContext} from "../../elastic/ClientContext";
+import {useLoading} from "../../LoadingContext";
 
 type PlaceTypeaheadProps = {
   id: string;
@@ -57,6 +58,7 @@ export default function PlaceTypeahead(props: PlaceTypeaheadProps) {
   }
 
   return <Typeahead
+    disabled={useLoading()}
     ref={ref}
     multiple
     onChange={props.handleSubmit}

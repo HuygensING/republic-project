@@ -1,4 +1,4 @@
-import {MutableRefObject} from "react";
+import {MutableRefObject, useEffect} from "react";
 import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
@@ -12,6 +12,7 @@ import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {C9} from "../style/Colors";
 import renderPlot from "../common/plot/Plot";
 import {usePlotContext} from "../common/plot/PlotContext";
+import {useLoadingContext} from "../LoadingContext";
 
 moment.locale('nl');
 
@@ -28,7 +29,9 @@ export default function ResolutionPlot(props: BarChartProps) {
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
   const {searchState} = useSearchContext();
+  const {setLoadingState} = useLoadingContext();
   const {resolutionState, setResolutionState} = useResolutionContext();
+
   const throwError = useAsyncError();
 
   const prevSearchState = usePrevious(searchState);
@@ -39,14 +42,17 @@ export default function ResolutionPlot(props: BarChartProps) {
   const resolutionStateChanged = !equal(prevResolutions, resolutionState.resolutions);
   const plotStateChanged = !equal(prevPlotState, plotState);
 
+  useEffect(() => {
+    setLoadingState({resolutionsLoading: true});
+  }, [searchStateChanged, setLoadingState])
+
   if (searchStateChanged) {
     updateResolutions();
-  }
-
-  if (resolutionStateChanged || plotStateChanged) {
+  } else if (resolutionStateChanged || plotStateChanged) {
     updatePlot();
   }
 
+  return null;
 
   function updateResolutions() {
 
@@ -69,12 +75,11 @@ export default function ResolutionPlot(props: BarChartProps) {
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
       } as DataEntry));
       setResolutionState({...resolutionState, resolutions: bars});
-
+      setLoadingState({resolutionsLoading: false});
     }).catch(throwError);
   }
 
   function updatePlot() {
-
     renderPlot(
       plotState.type,
       props.svgRef,
@@ -83,8 +88,6 @@ export default function ResolutionPlot(props: BarChartProps) {
       props.handleResolutions
     );
   }
-
-  return null;
 
 };
 

@@ -4,6 +4,7 @@ import {useAsyncError} from "../../hook/useAsyncError";
 import {useClientContext} from "../../elastic/ClientContext";
 import {PEOPLE} from "../../content/Placeholder";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
+import {useLoading} from "../../LoadingContext";
 
 type FunctionCategoryTypeaheadProps = {
   id: string;
@@ -77,6 +78,7 @@ export default function FunctionCategoryTypeahead(props: FunctionCategoryTypeahe
   }
 
   return <Typeahead
+    disabled={useLoading()}
     ref={ref}
     multiple
     onChange={props.handleSubmit}

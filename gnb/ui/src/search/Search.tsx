@@ -8,45 +8,51 @@ import PlaceFormField from "./field/PlaceFormField";
 import FunctionFormField from "./field/FunctionFormField";
 import FunctionCategoryFormField from "./field/FunctionCategoryFormField";
 import Export from "../export/Export";
+import {useLoading, useLoadingContext} from "../LoadingContext";
 
 export function Search() {
+  const {loadingState, setLoadingState} = useLoadingContext();
 
   return (
     <div className="row">
       <div className="col">
+        <button type="button" onClick={() => setLoadingState({resolutionsLoading: !loadingState.resolutionsLoading})}>Toggle loading</button>
+
         <form>
-          <div className="form-row">
-            <div className="col form-group">
-              <AttendantsFormField/>
-            </div>
-            <div className="col form-group">
-              <MentionedFormField/>
-            </div>
-            <div className="col form-group">
-              <FunctionFormField/>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="col form-group">
-              <FullTextFormField/>
-            </div>
-            <div className="col form-group">
-              <PlaceFormField/>
-            </div>
-            <div className="col form-group">
-              <FunctionCategoryFormField/>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="col form-group">
-              <StartEndFormField/>
-            </div>
-            <div className="col">
-              <div className="form-group float-right row mr-1">
-                <div><Export/></div>
+          <fieldset disabled={useLoading()}>
+            <div className="form-row">
+              <div className="col form-group">
+                <AttendantsFormField/>
+              </div>
+              <div className="col form-group">
+                <MentionedFormField/>
+              </div>
+              <div className="col form-group">
+                <FunctionFormField/>
               </div>
             </div>
-          </div>
+            <div className="form-row">
+              <div className="col form-group">
+                <FullTextFormField/>
+              </div>
+              <div className="col form-group">
+                <PlaceFormField/>
+              </div>
+              <div className="col form-group">
+                <FunctionCategoryFormField/>
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="col form-group">
+                <StartEndFormField/>
+              </div>
+              <div className="col">
+                <div className="form-group float-right row mr-1">
+                  <div><Export/></div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
         </form>
       </div>
       <Help/>

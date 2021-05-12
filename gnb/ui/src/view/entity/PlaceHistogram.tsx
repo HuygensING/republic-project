@@ -1,5 +1,5 @@
 import {memo, MutableRefObject} from "react";
-import moment, {now} from "moment";
+import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
 import {useResolutionContext} from "../../resolution/ResolutionContext";

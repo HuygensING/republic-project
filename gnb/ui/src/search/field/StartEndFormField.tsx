@@ -14,6 +14,7 @@ import {
 } from "../../content/Placeholder";
 import Warning from "../../common/Warning";
 import PlotTypeFormField from "./PlotTypeFormField";
+import {useLoading} from "../../LoadingContext";
 
 const DATE_FORMAT = "yyyy-MM-dd";
 const LOCALE_NL = "nl";
@@ -34,6 +35,7 @@ export default function StartEndFormField() {
   const start = searchState.start;
   const end = searchState.end;
   const stepSize = calcStepSize(start, end);
+  const isLoadingState = useLoading();
 
   const handlePrevious = () => {
     const previous = (date: Date) => moment(date).subtract(stepSize, 'days').toDate();
@@ -69,8 +71,10 @@ export default function StartEndFormField() {
   }, [setState]);
 
   useEvent('keyup', handleArrowKeys);
-
   function handleArrowKeys(e: React.KeyboardEvent<HTMLElement>) {
+    if(isLoadingState) {
+      return;
+    }
     if ((e.target as any).tagName === "INPUT") {
       return;
     }
