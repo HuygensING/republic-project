@@ -55,7 +55,11 @@ export function Text(props: TextProps) {
       return;
     }
     setState(s => {
-      return {...s, annotation: parseInt((e.target as any).getAttribute('idnr'))}
+      const annotation = parseInt((e.target as any).getAttribute('idnr'));
+      if (s.annotation === annotation) {
+        return {...s, annotation: undefined};
+      }
+      return {...s, annotation}
     });
   }
 

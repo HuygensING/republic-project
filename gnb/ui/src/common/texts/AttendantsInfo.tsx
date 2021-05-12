@@ -24,7 +24,12 @@ export function AttendantsInfo(props: AttendantProps) {
 
   async function toggle(i: number) {
     const personAnn = r.people[i];
-    setState({...state, person: personAnn.id, show: !state.show});
+    if (personAnn.id === state.person) {
+      setState({...state, show: !state.show});
+      return;
+    }
+    setState({...state, person: personAnn.id, show: true});
+
   }
 
   const p = state.person;
