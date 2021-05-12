@@ -1,11 +1,11 @@
 import {RESOLUTION} from "../../content/Placeholder";
-import {Attendants} from "./Attendants";
+import {AttendantsInfo} from "./AttendantsInfo";
 import React, {useEffect, useState} from "react";
 import Place from "../../view/model/Place";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
 import {useSearchContext} from "../../search/SearchContext";
 import Resolution from "../../elastic/model/Resolution";
-import {PersonAnnotation} from "./PersonAnnotation";
+import {PersonAnnotationInfo} from "./PersonAnnotationInfo";
 
 import smoothscroll from 'smoothscroll-polyfill';
 
@@ -61,12 +61,12 @@ export function Text(props: TextProps) {
 
   return <div>
     <h5>{RESOLUTION} {r.metadata.meeting.date} #{r.metadata.resolution}</h5>
-    <Attendants resolution={r} markedIds={props.attendantsToHighlight}/>
+    <AttendantsInfo resolution={r} markedIds={props.attendantsToHighlight}/>
     <div
       dangerouslySetInnerHTML={{__html: highlighted}}
       onClick={handlePersonClick}
     />
-    {ann ? <PersonAnnotation annotation={ann} id={annId}/> : null}
+    {ann ? <PersonAnnotationInfo annotation={ann} id={annId}/> : null}
   </div>;
 
 }

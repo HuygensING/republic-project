@@ -15,7 +15,7 @@ type StateType = {
   person?: number
 }
 
-export function Attendants(props: AttendantProps) {
+export function AttendantsInfo(props: AttendantProps) {
   const r = props.resolution;
 
   const [state, setState] = useState({
