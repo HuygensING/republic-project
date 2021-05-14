@@ -125,7 +125,14 @@ resolutie persoon:hover{
   cursor: pointer;
 }
 
+/* Loading */
 .main-loader {
   opacity: 0.2;
   font-size: 0.8em;
+}
+
+button:disabled, input:disabled, .form-control:disabled, .form-control[disabled] {
+  background: initial !important;
+  border-color: #ccc !important;
+  pointer-events: none !important;
 }
