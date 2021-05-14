@@ -6,11 +6,15 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
 import Place from "../model/Place";
 import {C5} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {equal} from "../../util/equal";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
+import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -30,8 +34,12 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
@@ -41,12 +49,14 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
       return;
     }
 
+    const rIds = bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]);
     client.resolutionResource.aggregateByPlace(
-      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
+      rIds,
       props.place,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
+
       const data = buckets.map((b: any) => ({
         date: b.key_as_string,
         count: b.doc_count,
@@ -57,9 +67,10 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        { color: C5, y: { title: props.place.val}},
+        {color: C5, y: {title: props.place.val}},
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }

@@ -1,4 +1,4 @@
-import {memo, MutableRefObject} from "react";
+import {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
@@ -6,11 +6,14 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
 import {Term} from "../model/Term";
 import {C3} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
+import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -24,19 +27,22 @@ type TermHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const TermHistogram = memo(function (props: TermHistogramProps) {
+export const TermHistogram = function (props: TermHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
     const bars = resolutionState.resolutions;
-
     if (!bars.length) {
       return;
     }
@@ -57,13 +63,14 @@ export const TermHistogram = memo(function (props: TermHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        { color: C3, y: { title: props.term.val}},
+        {color: C3, y: {title: props.term.val}},
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};

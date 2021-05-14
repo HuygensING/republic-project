@@ -1,4 +1,4 @@
-import {memo, MutableRefObject} from "react";
+import {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
@@ -6,12 +6,15 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
 import {FUNCTION_CATEGORY} from "../../content/Placeholder";
 import {C10} from "../../style/Colors";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 import renderPlot from "../../common/plot/Plot";
 import {usePlotContext} from "../../common/plot/PlotContext";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
+import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -25,14 +28,18 @@ type FunctionCategoryHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryHistogramProps) {
+export const FunctionCategoryHistogram = function (props: FunctionCategoryHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
@@ -61,10 +68,10 @@ export const FunctionCategoryHistogram = memo(function (props: FunctionCategoryH
         { color: C10, y: { title: props.personFunctionCategory.name, subtitle: FUNCTION_CATEGORY}},
         props.handleResolutions
       );
-
+      setLoadingState({event: eventName, loading: false});
     }).catch(throwError);
   }
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};

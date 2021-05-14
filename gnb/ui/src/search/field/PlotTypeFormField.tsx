@@ -13,7 +13,7 @@ export default function PlotTypeFormField() {
   const {plotState, setPlotState} = usePlotContext();
 
   return <>
-    <div className="form-group">
+    <div className="col-2 mr-3">
       <select
         className="form-control"
         id="select-plot-type"

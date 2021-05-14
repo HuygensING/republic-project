@@ -7,7 +7,7 @@ type PersonAnnotationProps = {
   id: string
 }
 
-export const PersonAnnotation = React.memo(function (props: PersonAnnotationProps) {
+export const PersonAnnotationInfo = React.memo(function (props: PersonAnnotationProps) {
   return <div className="card mb-3" id={props.id}>
     <div className="card-body">
       <Profile person={props.annotation}/>

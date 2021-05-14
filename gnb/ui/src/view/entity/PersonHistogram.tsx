@@ -1,4 +1,4 @@
-import {memo, MutableRefObject} from "react";
+import {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
@@ -6,12 +6,15 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
 import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
 import {Person} from "../../elastic/model/Person";
 import {C6, C7} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
+import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -26,14 +29,18 @@ type AttendantHistogramProps = {
 /**
  * Bar chart rendered on svgRef
  */
-export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
+export const PersonHistogram = function (props: AttendantHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
@@ -64,14 +71,15 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
         data,
         {
           color: props.type === PersonType.ATTENDANT ? C6 : C7,
-          y: { title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
+          y: {title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
         },
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};
