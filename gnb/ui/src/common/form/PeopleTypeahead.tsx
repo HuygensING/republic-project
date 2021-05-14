@@ -4,7 +4,7 @@ import {Person} from "../../elastic/model/Person";
 import {PersonType} from "../../elastic/model/PersonType";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {useClientContext} from "../../elastic/ClientContext";
-import {useLoading, useLoadingContext} from "../../LoadingContext";
+import {useLoading} from "../../LoadingContext";
 
 type PeopleTypeaheadProps = {
   id: string;

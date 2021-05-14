@@ -11,15 +11,13 @@ import Export from "../export/Export";
 import {useLoading, useLoadingContext} from "../LoadingContext";
 
 export function Search() {
-  const {loadingState, setLoadingState} = useLoadingContext();
+  const loading = useLoadingContext().loadingState.loading;
 
   return (
     <div className="row">
       <div className="col">
-        <button type="button" onClick={() => setLoadingState({resolutionsLoading: !loadingState.resolutionsLoading})}>Toggle loading</button>
-
         <form>
-          <fieldset disabled={useLoading()}>
+          <fieldset disabled={loading}>
             <div className="form-row">
               <div className="col form-group">
                 <AttendantsFormField/>

@@ -42,15 +42,18 @@ export default function ResolutionPlot(props: BarChartProps) {
   const resolutionStateChanged = !equal(prevResolutions, resolutionState.resolutions);
   const plotStateChanged = !equal(prevPlotState, plotState);
 
-  useEffect(() => {
-    setLoadingState({resolutionsLoading: true});
-  }, [searchStateChanged, setLoadingState])
-
   if (searchStateChanged) {
     updateResolutions();
   } else if (resolutionStateChanged || plotStateChanged) {
     updatePlot();
   }
+
+  useEffect(() => {
+    // Start loading when search state changes:
+    if(searchStateChanged) {
+      setLoadingState({event: 'resolutions', loading: true});
+    }
+  }, [searchStateChanged, setLoadingState])
 
   return null;
 
@@ -75,7 +78,7 @@ export default function ResolutionPlot(props: BarChartProps) {
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
       } as DataEntry));
       setResolutionState({...resolutionState, resolutions: bars});
-      setLoadingState({resolutionsLoading: false});
+      setLoadingState({event: 'resolutions', loading: false});
     }).catch(throwError);
   }
 
