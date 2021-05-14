@@ -4,7 +4,7 @@ import clone from "./util/clone";
 import * as _ from "lodash";
 
 export type LoadingStateType = BaseStateType & {
-  loading?: boolean,
+  loading: boolean,
   loadingEvents: string[];
 }
 export type LoadingEvent = {event: string, loading: boolean};
