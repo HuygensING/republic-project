@@ -10,7 +10,10 @@ import {Term} from "../model/Term";
 import {C3} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
 import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -30,13 +33,16 @@ export const TermHistogram = function (props: TermHistogramProps) {
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  if(usePrevious(props.memoKey) !== props.memoKey) updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
     const bars = resolutionState.resolutions;
-
     if (!bars.length) {
       return;
     }
@@ -57,9 +63,10 @@ export const TermHistogram = function (props: TermHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        { color: C3, y: { title: props.term.val}},
+        {color: C3, y: {title: props.term.val}},
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }

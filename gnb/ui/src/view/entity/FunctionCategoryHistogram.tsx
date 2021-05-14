@@ -11,7 +11,10 @@ import {C10} from "../../style/Colors";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 import renderPlot from "../../common/plot/Plot";
 import {usePlotContext} from "../../common/plot/PlotContext";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
 import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -31,8 +34,12 @@ export const FunctionCategoryHistogram = function (props: FunctionCategoryHistog
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  if(usePrevious(props.memoKey) !== props.memoKey) updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
@@ -61,7 +68,7 @@ export const FunctionCategoryHistogram = function (props: FunctionCategoryHistog
         { color: C10, y: { title: props.personFunctionCategory.name, subtitle: FUNCTION_CATEGORY}},
         props.handleResolutions
       );
-
+      setLoadingState({event: eventName, loading: false});
     }).catch(throwError);
   }
 

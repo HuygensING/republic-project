@@ -127,7 +127,7 @@ resolutie persoon:hover{
 
 /* Loading */
 .main-loader {
-  opacity: 0.2;
+  opacity: 0.25;
   font-size: 0.8em;
 }
 

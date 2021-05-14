@@ -1,4 +1,4 @@
-import {MutableRefObject, useEffect} from "react";
+import {MutableRefObject} from "react";
 import {useSearchContext} from "../search/SearchContext";
 import moment from "moment";
 import 'moment/locale/nl'
@@ -12,6 +12,7 @@ import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {C9} from "../style/Colors";
 import renderPlot from "../common/plot/Plot";
 import {usePlotContext} from "../common/plot/PlotContext";
+import useSetLoadingWhen from "../hook/useSetLoadingWhen";
 import {useLoadingContext} from "../LoadingContext";
 
 moment.locale('nl');
@@ -29,7 +30,6 @@ export default function ResolutionPlot(props: BarChartProps) {
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
   const {searchState} = useSearchContext();
-  const {setLoadingState} = useLoadingContext();
   const {resolutionState, setResolutionState} = useResolutionContext();
 
   const throwError = useAsyncError();
@@ -47,13 +47,8 @@ export default function ResolutionPlot(props: BarChartProps) {
   } else if (resolutionStateChanged || plotStateChanged) {
     updatePlot();
   }
-
-  useEffect(() => {
-    // Start loading when search state changes:
-    if(searchStateChanged) {
-      setLoadingState({event: 'resolutions', loading: true});
-    }
-  }, [searchStateChanged, setLoadingState])
+  const {setLoadingState} = useLoadingContext();
+  useSetLoadingWhen('resolutions', true, searchStateChanged);
 
   return null;
 

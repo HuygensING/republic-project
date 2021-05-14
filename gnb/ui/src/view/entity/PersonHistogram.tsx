@@ -11,7 +11,10 @@ import {Person} from "../../elastic/model/Person";
 import {C6, C7} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
 import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
@@ -32,8 +35,12 @@ export const PersonHistogram = function (props: AttendantHistogramProps) {
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  if(usePrevious(props.memoKey) !== props.memoKey) updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
@@ -64,10 +71,11 @@ export const PersonHistogram = function (props: AttendantHistogramProps) {
         data,
         {
           color: props.type === PersonType.ATTENDANT ? C6 : C7,
-          y: { title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
+          y: {title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
         },
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }
