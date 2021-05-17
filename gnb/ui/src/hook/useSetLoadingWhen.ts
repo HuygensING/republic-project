@@ -18,6 +18,6 @@ export default function useSetLoadingWhen(
     if (condition) {
       setLoadingState({event, loading});
     }
-  }, [condition, setLoadingState]);
+  }, [condition, setLoadingState, event, loading]);
 }
 
