@@ -27,7 +27,7 @@ export function highlightPlaces(dom: Document, places: Place[]) {
   const found = dom.getElementsByTagName('plaats');
   for (const p of places) {
     for (const f of found) {
-      if (f.textContent?.toLowerCase() === p.val.toLowerCase()) {
+      if (f.textContent?.toLowerCase().includes(p.val.toLowerCase())) {
         f.setAttribute('class', 'highlight');
       }
     }

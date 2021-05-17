@@ -8,7 +8,7 @@ import PlaceFormField from "./field/PlaceFormField";
 import FunctionFormField from "./field/FunctionFormField";
 import FunctionCategoryFormField from "./field/FunctionCategoryFormField";
 import Export from "../export/Export";
-import {useLoading, useLoadingContext} from "../LoadingContext";
+import {useLoadingContext} from "../LoadingContext";
 
 export function Search() {
   const loading = useLoadingContext().loadingState.loading;
