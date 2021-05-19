@@ -6,8 +6,9 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {Term} from "../model/Term";
-import {C3} from "../../style/Colors";
+import {FUNCTION} from "../../content/Placeholder";
+import {C10} from "../../style/Colors";
+import {PersonFunction} from "../../elastic/model/PersonFunction";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
 import {useLoadingContext} from "../../LoadingContext";
@@ -17,17 +18,17 @@ import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
-type TermHistogramProps = {
+type FunctionHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  term: Term,
+  personFunction: PersonFunction,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const TermHistogram = function (props: TermHistogramProps) {
+export const FunctionPlot = function (props: FunctionHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -43,13 +44,14 @@ export const TermHistogram = function (props: TermHistogramProps) {
   function updateHistogram() {
 
     const bars = resolutionState.resolutions;
+
     if (!bars.length) {
       return;
     }
 
-    client.resolutionResource.aggregateByTerm(
-      bars.reduce((all: any, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
-      props.term,
+    client.resolutionResource.aggregateByFunction(
+      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
+      props.personFunction,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -63,7 +65,7 @@ export const TermHistogram = function (props: TermHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        {color: C3, y: {title: props.term.val}},
+        { color: C10, y: { title: props.personFunction.name, subtitle: FUNCTION}},
         props.handleResolutions
       );
       setLoadingState({event: eventName, loading: false});

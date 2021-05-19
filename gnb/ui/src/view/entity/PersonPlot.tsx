@@ -1,4 +1,4 @@
-import {memo, MutableRefObject} from "react";
+import {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
@@ -6,11 +6,11 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import Place from "../model/Place";
-import {C5} from "../../style/Colors";
+import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
+import {Person} from "../../elastic/model/Person";
+import {C6, C7} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
-import {equal} from "../../util/equal";
 import {useLoadingContext} from "../../LoadingContext";
 import {randStr} from "../../util/randStr";
 import {usePrevious} from "../../hook/usePrevious";
@@ -18,17 +18,18 @@ import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
-type PlaceHistogramProps = {
+type AttendantHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  place: Place,
+  person: Person,
+  type: PersonType,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
+export const PersonPlot = function (props: AttendantHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -49,14 +50,15 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
       return;
     }
 
-    const rIds = bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]);
-    client.resolutionResource.aggregateByPlace(
-      rIds,
-      props.place,
+    const type = props.type;
+
+    client.resolutionResource.aggregateByPerson(
+      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
+      props.person.id,
+      type,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
-
       const data = buckets.map((b: any) => ({
         date: b.key_as_string,
         count: b.doc_count,
@@ -67,7 +69,10 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        {color: C5, y: {title: props.place.val}},
+        {
+          color: props.type === PersonType.ATTENDANT ? C6 : C7,
+          y: {title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
+        },
         props.handleResolutions
       );
       setLoadingState({event: eventName, loading: false});
@@ -77,4 +82,4 @@ export const PlaceHistogram = memo(function (props: PlaceHistogramProps) {
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};

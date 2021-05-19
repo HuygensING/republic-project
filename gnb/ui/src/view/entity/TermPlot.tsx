@@ -6,11 +6,10 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {FUNCTION_CATEGORY} from "../../content/Placeholder";
-import {C10} from "../../style/Colors";
-import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
-import renderPlot from "../../common/plot/Plot";
+import {Term} from "../model/Term";
+import {C3} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
+import renderPlot from "../../common/plot/Plot";
 import {useLoadingContext} from "../../LoadingContext";
 import {randStr} from "../../util/randStr";
 import {usePrevious} from "../../hook/usePrevious";
@@ -18,17 +17,17 @@ import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
-type FunctionCategoryHistogramProps = {
+type TermHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  personFunctionCategory: PersonFunctionCategory,
+  term: Term,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const FunctionCategoryHistogram = function (props: FunctionCategoryHistogramProps) {
+export const TermPlot = function (props: TermHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -44,14 +43,13 @@ export const FunctionCategoryHistogram = function (props: FunctionCategoryHistog
   function updateHistogram() {
 
     const bars = resolutionState.resolutions;
-
     if (!bars.length) {
       return;
     }
 
-    client.resolutionResource.aggregateByFunctionCategory(
-      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
-      props.personFunctionCategory,
+    client.resolutionResource.aggregateByTerm(
+      bars.reduce((all: any, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
+      props.term,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -65,10 +63,11 @@ export const FunctionCategoryHistogram = function (props: FunctionCategoryHistog
         plotState.type,
         props.svgRef,
         data,
-        { color: C10, y: { title: props.personFunctionCategory.name, subtitle: FUNCTION_CATEGORY}},
+        {color: C3, y: {title: props.term.val}},
         props.handleResolutions
       );
       setLoadingState({event: eventName, loading: false});
+
     }).catch(throwError);
   }
 

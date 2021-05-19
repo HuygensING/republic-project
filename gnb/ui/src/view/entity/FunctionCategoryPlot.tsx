@@ -6,11 +6,11 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
-import {Person} from "../../elastic/model/Person";
-import {C6, C7} from "../../style/Colors";
-import {usePlotContext} from "../../common/plot/PlotContext";
+import {FUNCTION_CATEGORY} from "../../content/Placeholder";
+import {C10} from "../../style/Colors";
+import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 import renderPlot from "../../common/plot/Plot";
+import {usePlotContext} from "../../common/plot/PlotContext";
 import {useLoadingContext} from "../../LoadingContext";
 import {randStr} from "../../util/randStr";
 import {usePrevious} from "../../hook/usePrevious";
@@ -18,18 +18,17 @@ import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
-type AttendantHistogramProps = {
+type FunctionCategoryHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  person: Person,
-  type: PersonType,
+  personFunctionCategory: PersonFunctionCategory,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const PersonHistogram = function (props: AttendantHistogramProps) {
+export const FunctionCategoryPlot = function (props: FunctionCategoryHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
@@ -50,12 +49,9 @@ export const PersonHistogram = function (props: AttendantHistogramProps) {
       return;
     }
 
-    const type = props.type;
-
-    client.resolutionResource.aggregateByPerson(
+    client.resolutionResource.aggregateByFunctionCategory(
       bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
-      props.person.id,
-      type,
+      props.personFunctionCategory,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -69,14 +65,10 @@ export const PersonHistogram = function (props: AttendantHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        {
-          color: props.type === PersonType.ATTENDANT ? C6 : C7,
-          y: {title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
-        },
+        { color: C10, y: { title: props.personFunctionCategory.name, subtitle: FUNCTION_CATEGORY}},
         props.handleResolutions
       );
       setLoadingState({event: eventName, loading: false});
-
     }).catch(throwError);
   }
 

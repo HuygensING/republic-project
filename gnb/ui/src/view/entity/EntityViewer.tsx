@@ -1,18 +1,18 @@
 import {D3Canvas} from "../../common/plot/D3Canvas";
-import {PersonHistogram} from "./PersonHistogram";
+import {PersonPlot} from "./PersonPlot";
 import React, {useRef} from "react";
 import {Person} from "../../elastic/model/Person";
 import {Texts} from "../../common/texts/Texts";
 import {Term} from "../model/Term";
 import {isPerson, toPerson, ViewType} from "../model/ViewType";
-import {TermHistogram} from "./TermHistogram";
+import {TermPlot} from "./TermPlot";
 import Place from "../model/Place";
-import {PlaceHistogram} from "./PlaceHistogram";
+import {PlacePlot} from "./PlacePlot";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
 import {ViewEntityType} from "../model/ViewEntityType";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
-import {FunctionHistogram} from "./FunctionHistogram";
-import {FunctionCategoryHistogram} from "./FunctionCategoryHistogram";
+import {FunctionPlot} from "./FunctionPlot";
+import {FunctionCategoryPlot} from "./FunctionCategoryPlot";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 
 type EntityViewerProps = {
@@ -31,7 +31,7 @@ export const EntityViewer = function (props: EntityViewerProps) {
   });
 
   function renderPersonHistogram() {
-    return <PersonHistogram
+    return <PersonPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       person={props.entity as Person}
@@ -41,7 +41,7 @@ export const EntityViewer = function (props: EntityViewerProps) {
   }
 
   function renderTermHistogram() {
-    return <TermHistogram
+    return <TermPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       term={props.entity as Term}
@@ -50,7 +50,7 @@ export const EntityViewer = function (props: EntityViewerProps) {
   }
 
   function renderPlaceHistogram() {
-    return <PlaceHistogram
+    return <PlacePlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       place={props.entity as Place}
@@ -59,7 +59,7 @@ export const EntityViewer = function (props: EntityViewerProps) {
   }
 
   function renderFunctionHistogram() {
-    return <FunctionHistogram
+    return <FunctionPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       personFunction={props.entity as PersonFunction}
@@ -68,7 +68,7 @@ export const EntityViewer = function (props: EntityViewerProps) {
   }
 
   function renderFunctionCategoryHistogram() {
-    return <FunctionCategoryHistogram
+    return <FunctionCategoryPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       personFunctionCategory={props.entity as PersonFunctionCategory}
