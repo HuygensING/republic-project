@@ -12,6 +12,8 @@ import {RESOLUTIONS_HISTOGRAM_TITLE} from "../content/Placeholder";
 import {C9} from "../style/Colors";
 import renderPlot from "../common/plot/Plot";
 import {usePlotContext} from "../common/plot/PlotContext";
+import useSetLoadingWhen from "../hook/useSetLoadingWhen";
+import {useLoadingContext} from "../LoadingContext";
 
 moment.locale('nl');
 
@@ -28,24 +30,27 @@ export default function ResolutionPlot(props: BarChartProps) {
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
   const {searchState} = useSearchContext();
-  const prevUpdate = usePrevious(searchState.updatedOn)
-  const searchStateChanged = !equal(prevUpdate, searchState.updatedOn);
-
   const {resolutionState, setResolutionState} = useResolutionContext();
-  const prevResolutions = usePrevious(resolutionState.updatedOn);
-  const prevPlot = usePrevious(plotState.updatedOn);
-  const resolutionStateChanged = !equal(prevResolutions, resolutionState.updatedOn)
-    || !equal(prevPlot, plotState.updatedOn);
 
   const throwError = useAsyncError();
 
+  const prevSearchState = usePrevious(searchState);
+  const prevResolutions = usePrevious(resolutionState.resolutions);
+  const prevPlotState = usePrevious(plotState);
+
+  const searchStateChanged = !equal(prevSearchState, searchState);
+  const resolutionStateChanged = !equal(prevResolutions, resolutionState.resolutions);
+  const plotStateChanged = !equal(prevPlotState, plotState);
+
   if (searchStateChanged) {
     updateResolutions();
-  }
-
-  if (resolutionStateChanged) {
+  } else if (resolutionStateChanged || plotStateChanged) {
     updatePlot();
   }
+  const {setLoadingState} = useLoadingContext();
+  useSetLoadingWhen('resolutions', true, searchStateChanged);
+
+  return null;
 
   function updateResolutions() {
 
@@ -67,9 +72,8 @@ export default function ResolutionPlot(props: BarChartProps) {
         count: b.doc_count,
         ids: b.resolution_ids.buckets.map((b: any) => b.key)
       } as DataEntry));
-
       setResolutionState({...resolutionState, resolutions: bars});
-
+      setLoadingState({event: 'resolutions', loading: false});
     }).catch(throwError);
   }
 
@@ -82,8 +86,6 @@ export default function ResolutionPlot(props: BarChartProps) {
       props.handleResolutions
     );
   }
-
-  return null;
 
 };
 

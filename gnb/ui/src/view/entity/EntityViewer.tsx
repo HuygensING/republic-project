@@ -1,19 +1,18 @@
 import {D3Canvas} from "../../common/plot/D3Canvas";
-import {PersonHistogram} from "./PersonHistogram";
-import React, {memo, useRef} from "react";
+import {PersonPlot} from "./PersonPlot";
+import React, {useRef} from "react";
 import {Person} from "../../elastic/model/Person";
-import {equal} from "../../util/equal";
 import {Texts} from "../../common/texts/Texts";
 import {Term} from "../model/Term";
 import {isPerson, toPerson, ViewType} from "../model/ViewType";
-import {TermHistogram} from "./TermHistogram";
+import {TermPlot} from "./TermPlot";
 import Place from "../model/Place";
-import {PlaceHistogram} from "./PlaceHistogram";
+import {PlacePlot} from "./PlacePlot";
 import {highlightMentioned, highlightPlaces, toDom, toStr} from "../../util/highlight";
 import {ViewEntityType} from "../model/ViewEntityType";
 import {PersonFunction} from "../../elastic/model/PersonFunction";
-import {FunctionHistogram} from "./FunctionHistogram";
-import {FunctionCategoryHistogram} from "./FunctionCategoryHistogram";
+import {FunctionPlot} from "./FunctionPlot";
+import {FunctionCategoryPlot} from "./FunctionCategoryPlot";
 import {PersonFunctionCategory} from "../../elastic/model/PersonFunctionCategory";
 
 type EntityViewerProps = {
@@ -22,7 +21,7 @@ type EntityViewerProps = {
   memoKey: any
 }
 
-export const EntityViewer = memo(function (props: EntityViewerProps) {
+export const EntityViewer = function (props: EntityViewerProps) {
 
   const svgRef = useRef(null);
 
@@ -32,7 +31,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   });
 
   function renderPersonHistogram() {
-    return <PersonHistogram
+    return <PersonPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       person={props.entity as Person}
@@ -42,7 +41,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   }
 
   function renderTermHistogram() {
-    return <TermHistogram
+    return <TermPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       term={props.entity as Term}
@@ -51,7 +50,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   }
 
   function renderPlaceHistogram() {
-    return <PlaceHistogram
+    return <PlacePlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       place={props.entity as Place}
@@ -60,7 +59,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   }
 
   function renderFunctionHistogram() {
-    return <FunctionHistogram
+    return <FunctionPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       personFunction={props.entity as PersonFunction}
@@ -69,7 +68,7 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   }
 
   function renderFunctionCategoryHistogram() {
-    return <FunctionCategoryHistogram
+    return <FunctionCategoryPlot
       handleResolutions={handleResolutions}
       svgRef={svgRef}
       personFunctionCategory={props.entity as PersonFunctionCategory}
@@ -80,25 +79,6 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
   function handleResolutions(ids: string[]) {
     return setState({...state, ids, showTexts: true});
   }
-
-  return <>
-    <D3Canvas svgRef={svgRef}/>
-
-    {isPerson(props.type) ? renderPersonHistogram() : null}
-    {props.type === ViewType.TERM ? renderTermHistogram() : null}
-    {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
-    {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
-    {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
-
-    {state.showTexts ? <Texts
-      resolutions={state.ids}
-      handleClose={() => setState({...state, showTexts: false})}
-      highlightAttendants={getAttendants(props)}
-      highlightQuery={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
-      highlightXml={highlightEntity}
-      memoKey={props.memoKey}
-    /> : null}
-  </>
 
   function highlightEntity(originalXml: string) {
     const dom = toDom(originalXml);
@@ -121,4 +101,23 @@ export const EntityViewer = memo(function (props: EntityViewerProps) {
     return [];
   }
 
-}, ((prev, next) => equal(prev.memoKey, next.memoKey)));
+  return <>
+    <D3Canvas svgRef={svgRef}/>
+
+    {isPerson(props.type) ? renderPersonHistogram() : null}
+    {props.type === ViewType.TERM ? renderTermHistogram() : null}
+    {props.type === ViewType.PLACE ? renderPlaceHistogram() : null}
+    {props.type === ViewType.FUNCTION ? renderFunctionHistogram() : null}
+    {props.type === ViewType.FUNCTION_CATEGORY ? renderFunctionCategoryHistogram() : null}
+
+    {state.showTexts ? <Texts
+      resolutions={state.ids}
+      handleClose={() => setState({...state, showTexts: false})}
+      highlightAttendants={getAttendants(props)}
+      highlightQuery={props.type === ViewType.TERM ? (props.entity as Term).val : ''}
+      highlightXml={highlightEntity}
+      memoKey={props.memoKey}
+    /> : null}
+  </>
+
+};

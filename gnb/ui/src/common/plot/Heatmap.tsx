@@ -131,19 +131,36 @@ export function renderHeatmap(
     });
 
   // Month labels:
-  plot
+  const monthsToLabel = plot
     .selectAll('.month-label')
     .data(monthRange)
     .join('text')
     .attr('class', 'month-label')
-    .attr(`transform`, (d) => `translate(${d3.timeMonday.count(startDate, d) * cellWidth}, ${height - 5})`)
+    .attr(`transform`, (d) => `translate(${d3.timeMonday.count(startDate, d) * cellWidth}, ${height - 18})`)
     .attr('visibility', (d, i) => {
       const currentPos = d3.timeMonday.count(startDate, monthRange[i]);
       const nextPos = d3.timeMonday.count(startDate, monthRange[i + 1]);
       const overlappingLabelPosition = currentPos === nextPos;
       return overlappingLabelPosition ? 'hidden' : 'visible';
+    });
+
+  monthsToLabel
+    .text('')
+    .append('tspan')
+    .text(d => d.toLocaleString('nl', {month: 'short'})).append('tspan')
+    .attr('x', 0)
+    .attr('dy', '1.4em');
+  monthsToLabel
+    .append('tspan')
+    .text(d => {
+      if (d.getMonth() === 0) {
+        return d.getFullYear();
+      } else {
+        return '';
+      }
     })
-    .text(d => d.toLocaleString('nl', {month: 'short'}));
+    .attr('x', 0)
+    .attr('dy', '1.2em');
 
   function handleClick(e: any, d: any) {
     const date = data.find(di => di.date === d);

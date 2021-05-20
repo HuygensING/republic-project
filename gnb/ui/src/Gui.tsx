@@ -6,6 +6,7 @@ import ResolutionViewer from "./resolution/ResolutionViewer";
 import ViewComposer from "./view/ViewComposer";
 import Views from "./view/Views";
 import {Search} from "./search/Search";
+import {Header} from "./Header";
 
 type GuiProps = {
   client: GnbElasticClient
@@ -20,13 +21,7 @@ export default function Gui(props: GuiProps) {
     <>
       <div className="gui container-fluid">
         <ContextProvider client={props.client}>
-
-          <div className="row mt-3 mb-3">
-            <div className="col">
-              <h1>GNB <small className="text-muted">Governance, Netwerken en Besluitvorming in de Staten-Generaal </small></h1>
-            </div>
-          </div>
-
+          <Header />
           <Search/>
           <ResolutionViewer/>
           <Views/>

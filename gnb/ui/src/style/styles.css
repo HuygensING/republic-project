@@ -88,7 +88,7 @@ code {
 
 /* Heatmap */
 .heatmap-y-label, .month-label {
-  font-size: 0.8em;
+  font-size: 0.7em;
   font-family: sans-serif;
   color: black;
 }
@@ -123,4 +123,17 @@ resolutie persoon {
 }
 resolutie persoon:hover{
   cursor: pointer;
+}
+
+/* Loading */
+.main-loader {
+  opacity: 0.25;
+  font-size: 0.8em;
+}
+
+button:disabled, input:disabled, .form-control:disabled, .form-control[disabled] {
+  background: initial !important;
+  border-color: #ccc !important;
+  pointer-events: none !important;
+  color: #ccc;
 }

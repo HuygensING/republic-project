@@ -1,4 +1,4 @@
-import {memo, MutableRefObject} from "react";
+import {MutableRefObject} from "react";
 import moment from "moment";
 import 'moment/locale/nl'
 import {DataEntry} from "../../common/plot/DataEntry";
@@ -6,45 +6,50 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
-import {FUNCTION} from "../../content/Placeholder";
-import {C10} from "../../style/Colors";
-import {PersonFunction} from "../../elastic/model/PersonFunction";
+import {Term} from "../model/Term";
+import {C3} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
+import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
-type FunctionHistogramProps = {
+type TermHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  personFunction: PersonFunction,
+  term: Term,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const FunctionHistogram = memo(function (props: FunctionHistogramProps) {
+export const TermPlot = function (props: TermHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
     const bars = resolutionState.resolutions;
-
     if (!bars.length) {
       return;
     }
 
-    client.resolutionResource.aggregateByFunction(
-      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
-      props.personFunction,
+    client.resolutionResource.aggregateByTerm(
+      bars.reduce((all: any, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
+      props.term,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
@@ -58,13 +63,14 @@ export const FunctionHistogram = memo(function (props: FunctionHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        { color: C10, y: { title: props.personFunction.name, subtitle: FUNCTION}},
+        {color: C3, y: {title: props.term.val}},
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }
 
   return null;
 
-}, (prev, next) => equal(prev.memoKey, next.memoKey));
+};

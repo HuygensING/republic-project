@@ -10,7 +10,7 @@ export const FUNCTION = 'functie';
 export const FUNCTION_CATEGORY = 'functiecategorie';
 
 // Search:
-export const WITH_ATTENDANTS = 'Zoek resoluties met de volgende aanwezen...';
+export const WITH_ATTENDANTS = 'Zoek resoluties met de volgende aanwezigen...';
 export const WITH_MENTIONED = 'met genoemden...';
 export const WITH_FULL_TEXT = 'met zoektermen...';
 export const WITH_PLACES = 'met plaatsen...';

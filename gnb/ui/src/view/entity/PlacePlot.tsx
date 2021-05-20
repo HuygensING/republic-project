@@ -6,34 +6,40 @@ import {useResolutionContext} from "../../resolution/ResolutionContext";
 import {useAsyncError} from "../../hook/useAsyncError";
 import {fromEsFormat} from "../../util/fromEsFormat";
 import {useClientContext} from "../../elastic/ClientContext";
-import {equal} from "../../util/equal";
-import {PersonType, toPlaceholder} from "../../elastic/model/PersonType";
-import {Person} from "../../elastic/model/Person";
-import {C6, C7} from "../../style/Colors";
+import Place from "../model/Place";
+import {C5} from "../../style/Colors";
 import {usePlotContext} from "../../common/plot/PlotContext";
 import renderPlot from "../../common/plot/Plot";
+import {equal} from "../../util/equal";
+import {useLoadingContext} from "../../LoadingContext";
+import {randStr} from "../../util/randStr";
+import {usePrevious} from "../../hook/usePrevious";
+import useSetLoadingWhen from "../../hook/useSetLoadingWhen";
 
 moment.locale('nl');
 
-type AttendantHistogramProps = {
+type PlaceHistogramProps = {
   svgRef: MutableRefObject<any>,
   handleResolutions: (r: string[]) => void,
-  person: Person,
-  type: PersonType,
+  place: Place,
   memoKey: any
 }
 
 /**
  * Bar chart rendered on svgRef
  */
-export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
+export const PlacePlot = memo(function (props: PlaceHistogramProps) {
 
   const {resolutionState} = useResolutionContext();
   const throwError = useAsyncError();
   const client = useClientContext().clientState.client;
   const {plotState} = usePlotContext();
+  const {setLoadingState} = useLoadingContext();
+  const eventName = randStr();
+  const memokeyChanged = usePrevious(props.memoKey) !== props.memoKey;
 
-  updateHistogram();
+  if (memokeyChanged) updateHistogram();
+  useSetLoadingWhen(eventName, true, memokeyChanged);
 
   function updateHistogram() {
 
@@ -43,15 +49,14 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
       return;
     }
 
-    const type = props.type;
-
-    client.resolutionResource.aggregateByPerson(
-      bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]),
-      props.person.id,
-      type,
+    const rIds = bars.reduce((all, arr: DataEntry) => all.concat(arr.ids), [] as string[]);
+    client.resolutionResource.aggregateByPlace(
+      rIds,
+      props.place,
       fromEsFormat(bars[0].date),
       fromEsFormat(bars[bars.length - 1].date)
     ).then((buckets: any) => {
+
       const data = buckets.map((b: any) => ({
         date: b.key_as_string,
         count: b.doc_count,
@@ -62,12 +67,10 @@ export const PersonHistogram = memo(function (props: AttendantHistogramProps) {
         plotState.type,
         props.svgRef,
         data,
-        {
-          color: props.type === PersonType.ATTENDANT ? C6 : C7,
-          y: { title: props.person.searchName, subtitle: `${toPlaceholder(type)}`}
-        },
+        {color: C5, y: {title: props.place.val}},
         props.handleResolutions
       );
+      setLoadingState({event: eventName, loading: false});
 
     }).catch(throwError);
   }
