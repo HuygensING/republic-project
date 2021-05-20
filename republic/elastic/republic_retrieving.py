@@ -264,8 +264,8 @@ def retrieve_pages_by_query(es: Elasticsearch,
     if use_scroll:
         for hit in scroll_hits(es, query, config['page_index'], '_doc', size=10):
             hits += [hit]
-            if len(hits) % 100 == 0:
-                print(len(hits), 'hits scrolled')
+            # if len(hits) % 100 == 0:
+            #     print(len(hits), 'hits scrolled')
     else:
         response = es.search(index=config['page_index'], body=query)
         if response['hits']['total'] == 0:
@@ -307,9 +307,9 @@ def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
 
 
 def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int,
-                           config: dict) -> List[PageXMLPage]:
+                           config: dict, use_scroll: bool = True) -> List[PageXMLPage]:
     query = make_page_type_query(page_type, inventory_num=inventory_num)
-    return retrieve_pages_by_query(es, query, config)
+    return retrieve_pages_by_query(es, query, config, use_scroll=use_scroll)
 
 
 def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
@@ -323,12 +323,12 @@ def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) ->
 
 
 def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
-    pages = retrieve_pages_by_type(es, 'index_page', inventory_num, config)
+    pages = retrieve_pages_by_type(es, 'index_page', inventory_num, config, use_scroll=True)
     return sorted(pages, key=lambda page: page.metadata['page_num'])
 
 
 def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
-    pages = retrieve_pages_by_type(es, 'resolution_page', inventory_num, config)
+    pages = retrieve_pages_by_type(es, 'resolution_page', inventory_num, config, use_scroll=True)
     return sorted(pages, key=lambda page: page.metadata['page_num'])
 
 

@@ -230,9 +230,9 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
 
 
 def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
+    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
     pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, inv_config)
     pages.sort(key=lambda page: page.metadata['page_num'])
-    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
         print('session received from get_sessions:', session.id)
         date_string = None
