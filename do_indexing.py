@@ -195,8 +195,10 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
         do_page_type_indexing_pagexml(inv_num, inv_config, year)
     #if indexing_step == "page_numbers":
     #    do_typed_page_number_indexing_pagexml(inv_num, inv_config, year)
-    if indexing_step == "sessions":
+    if indexing_step == "session-lines":
         do_session_lines_indexing(inv_num, inv_config, year)
+    if indexing_step == "session_text":
+        do_session_text_indexing(inv_num, inv_config, year)
     if indexing_step == "resolutions":
         do_resolution_indexing(inv_num, inv_config, year)
     if indexing_step == "phrase_matches":
