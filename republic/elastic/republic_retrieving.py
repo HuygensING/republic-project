@@ -14,6 +14,7 @@ from republic.model.republic_date import RepublicDate
 from republic.model.physical_document_model import PageXMLScan, PageXMLPage
 from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
 from republic.model.republic_document_model import json_to_republic_resolution, Resolution, parse_phrase_matches
+from republic.model.republic_document_model import json_to_republic_session
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -368,6 +369,14 @@ def retrieve_paragraphs_by_inventory(es: Elasticsearch, inventory_num: int, conf
         return []
     else:
         return [hit['_source'] for hit in response['hits']['hits']]
+
+
+def retrieve_inventory_sessions_with_lines(es: Elasticsearch, inv_num: int,
+                                           config: dict) -> Generator[Session, None, None]:
+    query = make_inventory_query(inventory_num=inv_num, size=1000)
+    for hit in scroll_hits(es, query, config['session_lines_index'], size=2, scroll='10m'):
+        session = json_to_republic_session(hit['_source'])
+        yield session
 
 
 def retrieve_pagexml_sessions(es: Elasticsearch, inv_num: int, config: dict) -> List[dict]:

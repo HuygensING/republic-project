@@ -229,11 +229,11 @@ def index_inventory_hocr_scans(es: Elasticsearch, config: dict):
                  id=scan_es_doc['id'], body=scan_es_doc)
 
 
-def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
-    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
-    pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, inv_config)
+def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, config: dict) -> None:
+    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, config)
+    pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, config)
     pages.sort(key=lambda page: page.metadata['page_num'])
-    for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
+    for mi, session in enumerate(session_parser.get_sessions(pages, config, inv_metadata)):
         print('session received from get_sessions:', session.id)
         date_string = None
         for match in session.evidence:
@@ -243,14 +243,16 @@ def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, in
         es_anno.index(index='session_lines', id=session.id, body=session.json)
 
 
-def index_inventory_sessions_with_text(es_anno: Elasticsearch, inv_num: int, inv_config: dict) -> None:
-    pages = rep_es.retrieve_resolution_pages(es_anno, inv_num, inv_config)
-    pages.sort(key=lambda page: page.metadata['page_num'])
-    inv_metadata = rep_es.retrieve_inventory_metadata(es_anno, inv_num, inv_config)
-    for mi, session in enumerate(session_parser.get_sessions(pages, inv_config, inv_metadata)):
+def index_inventory_sessions_with_text(es_anno: Elasticsearch, inv_num: int, config: dict) -> None:
+    from collections import Counter
+    for mi, session in enumerate(rep_es.retrieve_inventory_sessions_with_lines(es_anno, inv_num, config)):
         session_text_doc = make_session_text_version(session)
-        print(session.metadata['id'], session_text_doc['metadata']['id'])
-        es_anno.index(index='session_text', id=session.metadata['id'], body=session_text_doc)
+        session_text_doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
+        type_freq = Counter([anno['type'] for anno in session_text_doc['annotations']])
+        for anno_type, freq in type_freq.most_common():
+            print(f'{anno_type: <20}{freq: >4}')
+        print(session.id, session_text_doc['metadata']['index_timestamp'])
+        es_anno.index(index=config['session_text_index'], id=session.id, body=session_text_doc)
 
 
 def index_sessions_inventory_old(es: Elasticsearch, inv_num: int, inv_config: dict) -> None:

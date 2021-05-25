@@ -41,6 +41,8 @@ def set_inventory_indexes(ocr_type: str, config: dict) -> None:
     config['scan_index'] = 'scans'
     config['paragraph_index'] = 'paragraphs'
     config['session_index'] = 'sessions'
+    config['session_lines_index'] = 'session_lines'
+    config['session_text_index'] = 'session_text'
     config['resolution_index'] = 'resolutions'
     config['session_doc_type'] = 'session'
     config['phrase_match_index'] = 'phrase_matches'

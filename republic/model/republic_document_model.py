@@ -811,7 +811,7 @@ def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int
 def make_resolution_annotation(resolution: Resolution, doc_text_offset: int, parent_id: str):
     resolution_anno = {
         'id': resolution.metadata['id'],
-        'type': resolution.type,
+        'type': 'resolution',
         'metadata': resolution.metadata,
         'paragraphs': [],
         'start_offset': doc_text_offset
@@ -891,17 +891,27 @@ def sort_annotations(annotations: List[Dict[str, any]]) -> List[Dict[str, any]]:
 
 def configure_resolution_searchers():
     opening_searcher_config = {
+        "char_match_threshold": 0.7,
+        "ngram_threshold": 0.6,
+        "levenshtein_threshold": 0.7,
         'filter_distractors': True,
         'include_variants': True,
+        'ngram_size': 3,
+        'skip_size': 1,
         'max_length_variance': 3
     }
     opening_searcher = FuzzyPhraseSearcher(opening_searcher_config)
-    opening_phrase_model = PhraseModel(model=rpm.proposition_opening_phrases)
+    opening_phrase_model = PhraseModel(model=rpm.proposition_opening_phrases, config=opening_searcher_config)
     opening_searcher.index_phrase_model(opening_phrase_model)
     verb_searcher_config = {
+        "char_match_threshold": 0.7,
+        "ngram_threshold": 0.6,
+        "levenshtein_threshold": 0.7,
+        'ngram_size': 3,
+        'skip_size': 1,
         'max_length_variance': 1
     }
     verb_searcher = FuzzyPhraseSearcher(verb_searcher_config)
-    verb_phrase_model = PhraseModel(model=rpm.proposition_verbs)
+    verb_phrase_model = PhraseModel(model=rpm.proposition_verbs, config=verb_searcher_config)
     verb_searcher.index_phrase_model(verb_phrase_model)
     return opening_searcher, verb_searcher
