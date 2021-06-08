@@ -4,8 +4,9 @@ Import CAF json and metadata into the Text Repository
 - The environment is configured using environment variables
 
 ## First time
-Add files:
-- .env
+Create files and dirs:
+- `.env`
+- `./tmp`
 
 Modify docker-compose.yml:
 - network 

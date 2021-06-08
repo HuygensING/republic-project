@@ -4,9 +4,11 @@
   "private": true,
   "description": "Import CAF data into the Text Repository",
   "dependencies": {
+    "@types/elasticsearch": "^5.0.37",
     "@types/flat-cache": "^2.0.0",
     "@types/node": "^14.14.9",
     "@types/node-fetch": "^2.5.7",
+    "elasticsearch": "^16.7.2",
     "flat-cache": "^3.0.4",
     "get-stream": "^6.0.0",
     "moment": "^2.29.1",

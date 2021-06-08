@@ -9,6 +9,6 @@ COPY ./package-lock.json /caf-tr-import
 RUN npm install -g ts-node
 
 COPY ./src/ /caf-tr-import/src
-COPY ./import.sh /caf-tr-import
+COPY ./scripts/import.sh /caf-tr-import
 
 RUN npm install
