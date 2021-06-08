@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+
+  importer:
+    container_name: importer
+    build: .
+    volumes:
+      - ./import.log:/caf-tr-import/import.log
+    environment:
+      NODE_OPTIONS: '--max_old_space_size=4096'
+      TMP: './tmp'
+      TR: 'http://tr_textrepo:8080'
+      CACHE: 250
+    command: ./import.sh
