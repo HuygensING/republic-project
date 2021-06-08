@@ -1,0 +1,8 @@
+**/*.iml
+**/.idea/*
+**/node_modules/*
+**/.env*
+**/*.csv
+**/*.log
+**/.DS_Store
+caf2tr/**/*
