@@ -8,6 +8,7 @@ export default class Config {
     static CACHE = '';
     static CAF = '';
     static CAF_INDEX = '';
+    static TYPE_CSV = '';
 }
 
 for (const prop in Config) {

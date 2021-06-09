@@ -10,5 +10,6 @@ RUN npm install -g ts-node
 
 COPY ./src/ /caf-tr-import/src
 COPY ./scripts/import.sh /caf-tr-import
+COPY ./types.csv /caf-tr-import
 
 RUN npm install

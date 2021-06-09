@@ -1,3 +1,3 @@
 export type CafDoc = {
-  id: string
+  metadata: { id: string }
 }

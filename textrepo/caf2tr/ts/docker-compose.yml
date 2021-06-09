@@ -15,29 +15,12 @@ services:
       CACHE: 250
       CAF: ${CAF}
       CAF_INDEX: ${CAF_INDEX}
+      TYPE_CSV: ${TYPE_CSV}
     networks:
-      - test_es
+      - textrepo_network
     command: ./import.sh
 
-  es:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
-    container_name: es
-    environment:
-      - node.name=es01
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=
-      - cluster.initial_master_nodes=es01
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 9200:9200
-    networks:
-      - test_es
-
 networks:
-  test_es:
-    driver: bridge
+  textrepo_network:
+    external:
+      name: pim-tr-import-install_textrepo_network

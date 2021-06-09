@@ -4,6 +4,7 @@ import * as moment from 'moment'
 import ErrorHandler from "./client/ErrorHandler";
 import CafEsImporter from "./import/CafEsImporter";
 import CafEsClient from "./client/caf/CafEsClient";
+import TypeImporter from "./import/TypeImporter";
 
 class Importer {
 
@@ -39,11 +40,24 @@ class Importer {
   private async createAll() {
     this.start = moment();
 
+    console.log('Creating types');
+    const types = await new TypeImporter(this.textRepoClient).run()
+    console.log(`Imported types: ${types.successes.length} successes and ${types.fails.length} failed`);
+    let typeName = types.successes[0].name;
+
+    console.log(`Creating caf files with type ${typeName}`);
+    const result = await new CafEsImporter(
+      this.textRepoClient,
+      this.cafEsClient,
+      Config.TMP,
+      typeName
+    ).run();
+    console.log(`Imported caf files: ${result.successes.length} successes and ${result.fails.length} failed`);
+
     this.end = moment();
-    const days = this.end.diff(this.start, 'days');
+    let days = this.end.diff(this.start, 'days');
     let time = moment.utc(this.end.diff(this.start)).format("HH:mm:ss");
-    const result = await new CafEsImporter(this.textRepoClient, this.cafEsClient, Config.TMP).run();
-    console.log(`Imported ${result.successes.length} succesfull and ${result.fails.length} failed CAF docs in ${days ? days + 'd' : ''} ${time}`);
+    console.log(`Took: ${days ? days + 'd' : ''} ${time}`);
   }
 
   public static async wait(ms) {
