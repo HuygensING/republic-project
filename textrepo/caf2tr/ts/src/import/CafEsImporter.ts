@@ -33,7 +33,7 @@ export default class CafEsImporter implements TextRepoImporter<string> {
 
     await this.cafEsClient.handleAll(async (doc: CafDoc) => {
       try {
-        console.log(`Importing externalId ${doc.metadata.id} adn type ${this.typeName}`);
+        console.log(`Importing externalId ${doc.metadata.id} and type ${this.typeName}`);
         await this.textRepoClient.tasks.import(this.typeName, doc.metadata.id, JSON.stringify(doc), true);
         results.push(doc.metadata.id);
       } catch (e) {
