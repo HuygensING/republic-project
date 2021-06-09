@@ -7,6 +7,8 @@ Import CAF json and metadata into the Text Repository
 Create files and dirs:
 - `.env`
 - `./tmp`
+- `import.log`
+- `types.csv`
 
 Modify docker-compose.yml:
 - network 
