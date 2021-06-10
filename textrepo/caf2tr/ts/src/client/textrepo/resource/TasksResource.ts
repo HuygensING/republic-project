@@ -1,5 +1,6 @@
 import RestUtil from "../../RestUtil";
 import FormData = require("form-data");
+import fetch, {RequestInit} from "node-fetch";
 
 export default class TasksResource {
 
@@ -16,5 +17,15 @@ export default class TasksResource {
     formData.append('contents', contents, {filename: `${externalId}.${typeName}`});
 
     return await RestUtil.postFormData(url, formData);
+  }
+
+  async index(externalId: string, typeName: string) :Promise<void>{
+    const url = this.host + `/index/document/${externalId}/${typeName}`;
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      body: ''
+    };
+    const response = await fetch(url, requestOptions);
+    await RestUtil.checkOk(url, response);
   }
 }
