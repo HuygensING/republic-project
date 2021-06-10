@@ -51,7 +51,7 @@ export default class RestUtil {
     }
 
     public static async checkOk(url: string, response: Response) {
-        let expected = [200, 201];
+        let expected = [200, 201, 202];
         if (!expected.includes(response.status)) {
             await ErrorHandler.throw(`Expected status of ${expected} but was ${response.status}`, response);
         }
