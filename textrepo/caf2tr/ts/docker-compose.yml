@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+
+  caf_importer:
+    container_name: caf_importer
+    build: .
+    volumes:
+      - ./import.log:/caf-tr-import/import.log
+      - ./tmp:/caf-tr-import/tmp
+    environment:
+      NODE_OPTIONS: '--max_old_space_size=4096'
+      TMP: './tmp'
+      TR: 'http://tr_textrepo:8080'
+      CACHE: 250
+      CAF: ${CAF}
+      CAF_INDEX: ${CAF_INDEX}
+      TYPE_CSV: ${TYPE_CSV}
+    networks:
+      - textrepo_network
+    command: ./import.sh
+
+networks:
+  textrepo_network:
+    external:
+      name: pim-tr-import-install_textrepo_network
