@@ -724,6 +724,8 @@ class PageXMLTextLine(PageXMLDoc):
         if self.baseline.top > other.baseline.bottom + 10:
             # print("VERTICAL BASELINE GAP TOO BIG")
             return False
+        elif self.baseline.bottom < other.baseline.top - 10:
+            return False
         else:
             return True
 
