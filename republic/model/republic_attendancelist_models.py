@@ -1,6 +1,6 @@
 import itertools
 import json
-
+import logging
 import pandas as pd
 from ..fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
 
@@ -38,7 +38,6 @@ class TextWithMetadata(object):
     def __init__(self, searchobject):
         metadata = searchobject['_source']['metadata']
         self.line_coords = []
-        self.text = self.find_preslst_text(searchob=searchobject)
         # lineob = self.find_preslst_text(searchob=searchobject)
         # if lineob:
         #    self.meeting_lines = lineob['lines']
@@ -47,12 +46,14 @@ class TextWithMetadata(object):
         self.invnr = metadata['inventory_num']
         # the following assumes the attendance list is on the first scan, but should really check offsets
         scan = [s for s in searchobject['_source']['annotations'] if s['type'] == 'scan'][0]['id']
+        self.scan = scan
         volgnr = scan.split('_')[-1]
         self.volgnr = int(volgnr)
         md = metadata.get('session_date')
         self.id = metadata.get('id')
         if md:
             self.meeting_date = md
+        self.text = self.find_preslst_text(searchob=searchobject)
         self.matched_text = MatchedText(self.text)
         self.matched_text.para_id = self.id
         # self.delegates = {'president': None,
@@ -101,6 +102,10 @@ class TextWithMetadata(object):
         #         if moffset < end:
         #             end = moffset
         text = txt[start:end]
+        if len(text) > 750: # something went wrong in the session matching, let's truncate the text
+            message = f"Too long text: {self.meeting_date} - length: {len(text)}. Scan: {self.scan}. Text truncated"
+            logging.info(message)
+            text = text[:750]
         return text
 
     def make_url(self):

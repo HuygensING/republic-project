@@ -1,12 +1,11 @@
-import pandas as pd
-import networkx as nx
-from ..elastic.attendancelist_retrieval import make_presentielijsten
-from ..analyser.attendance_lists.pattern_finders import *
-from ..analyser.attendance_lists.parse_delegates import *
-from ..helper.similarity_match import FuzzyKeywordGrouper
-from ..data.delegate_database import abbreviated_delegates, found_delegates, ekwz
-from ..helper.utils import reverse_dict
-
+import logging
+import os
+from republic.elastic.attendancelist_retrieval import make_presentielijsten
+from republic.analyser.attendance_lists.pattern_finders import *
+from republic.analyser.attendance_lists.parse_delegates import *
+from republic.helper.similarity_match import FuzzyKeywordGrouper
+from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+from republic.helper.utils import reverse_dict
 
 fuzzysearch_config = {
     "char_match_threshold": 0.7,
@@ -23,13 +22,12 @@ fuzzysearch_config = {
 junksweeper = make_junksweeper(ekwz=ekwz)
 transposed_graph = reverse_dict(ekwz)
 keywords = list(abbreviated_delegates.name)
-kwrds = {key:nm_to_delen(key) for key in keywords}
-
+kwrds = {key: nm_to_delen(key) for key in keywords}
 
 
 def sweep_list(dralist, junksweeper=junksweeper):
     def get_lscore(r):
-        return r['levenshtein_distance']
+        return r.score_levenshtein_similarity()
 
     rawres = []
     for t in dralist:
@@ -38,27 +36,34 @@ def sweep_list(dralist, junksweeper=junksweeper):
             rawtext = ' '.join(t)
         else:
             rawtext = t[0]
-        r = junksweeper.find_candidates(rawtext)
+        rawtext = rawtext.strip()
+        if rawtext == '':
+            break
         try:
-            nr = max(r, key=get_lscore)
-            if nr['levenshtein_distance'] < 0.5:
+            r = junksweeper.find_matches(text=rawtext)
+            try:
+                nr = max(r, key=get_lscore)
+                if nr.score_levenshtein_similarity() < 0.5:
+                    rawres.append(t)
+            except ValueError:
                 rawres.append(t)
         except ValueError:
-            rawres.append(t)
+            pass
+
+
     return rawres
+
 
 def list_tograph(inputlist: list):
     cl_heren = FuzzyKeywordGrouper(keyword_list=inputlist).find_close_distance_keywords()
-    G_heren = nx.Graph()
+    g_heren = nx.Graph()
     d_nodes = sorted(cl_heren)
     for node in d_nodes:
         attached_nodes = cl_heren[node]
-        G_heren.add_node(node)
+        g_heren.add_node(node)
         for nod in attached_nodes:
-            G_heren.add_edge(node, nod)
-    return G_heren
-
-
+            g_heren.add_edge(node, nod)
+    return g_heren
 
 
 matchfinder = FndMatch(year=0,
@@ -67,52 +72,54 @@ matchfinder = FndMatch(year=0,
                        junksearcher=junksweeper,
                        df=abbreviated_delegates)
 
+
 def prepare_found_delegates(framed_gtlm, found_delegates, year):
     framed_gtlm['vs'] = framed_gtlm.gentleobject.apply(lambda x: [e for e in x.variants['general']])
     framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
-    #framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
+    # framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
     framed_gtlm['name'] = framed_gtlm.gentleobject.apply(lambda x: x.name)
     framed_gtlm['found_in'] = year
     return framed_gtlm
 
 
-
-
-def run(year=0,  outdir='', verbose=True):
+def run(year=0, outdir='', verbose=True):
+    logging.basicConfig(filename=os.path.join(outdir, 'attendancelist.log'), level=logging.INFO)
+    logging.info(f'{year} Started')
     runner = RunAll(year=year)
-    if verbose == True:
-        print ("- gathering attendance lists")
-    runner.make_searchobs()
+    if verbose:
+        print("- gathering attendance lists")
     if len(runner.searchobs) == 0:
-        print ('no attendance lists found. Quitting')
+        print('no attendance lists found. Quitting')
         return
-    if verbose == True:
+    if verbose:
         print("- running initial find")
     runner.initial_find()
-    if verbose == True:
+    if verbose:
         print("- running gather_found_delegates")
     runner.gather_found_delegates()
-    if verbose == True:
+    if verbose:
         print("- running identification")
     runner.identify_delegates()
-    if verbose == True:
+    if verbose:
         print("- running verification")
     runner.verify_matches()
     outname = f'{outdir}/{year}_out.json'
-    if verbose == True:
+    if verbose:
         print(f"- saving results to {outname}")
     yout = year_output(year, runner.searchobs)
     with open(outname, 'w') as fout:
         json.dump(fp=fout, obj=yout)
-    #if verbose == True:
+    # if verbose == True:
     #    print("saving found delegates")
-    #save_db(runner.found_delegates)
+    # save_db(runner.found_delegates)
     # try:
     #     Popen()
     # except os.error:
     #     pass # this needs to be replaced with something more elegant
-    print (f"{year} done")
+    print(f"{year} done")
+    logging.info(f'{year} Finished')
     return 'runner'
+
 
 class RunAll(object):
     def __init__(self,
@@ -120,10 +127,12 @@ class RunAll(object):
                  abbreviated_delegates=abbreviated_delegates,
                  kwrds=kwrds,
                  found_delegates=found_delegates,
-                 matchfnd = matchfinder,
+                 matchfnd=matchfinder,
                  ekwz=ekwz
                  ):
         self.year = year
+        self.searchobs = make_presentielijsten(year=self.year)
+        logging.info(f'year: {year}, nr of attendancelists {len(self.searchobs)}')
         self.junksweeper = make_junksweeper(ekwz)
         self.abbreviated_delegates = abbreviated_delegates
         self.found_delegates = found_delegates
@@ -131,14 +140,9 @@ class RunAll(object):
         self.matchfnd = matchfnd
         self.herenkeywords = kwrds
 
-    def make_searchobs(self):
-        make_presentielijsten(year=self.year)
-        self.searchobs = make_presentielijsten(year=self.year)
-        print('year: ', len(self.searchobs), 'presentielijsten')
-
     def initial_find(self):
-        print ("1. finding presidents")
-        presidents = president_searcher(presentielijsten=self.searchobs) # update
+        print("1. finding presidents")
+        presidents = president_searcher(presentielijsten=self.searchobs)  # update
         print(len(presidents), 'found')
         self.presidents = [h.strip() for h in presidents]
         print("2.find provincial extraordinaris gedeputeerden")
@@ -175,7 +179,7 @@ class RunAll(object):
         for d in [found_presidents['matched'], new_found_delegates['matched']]:
             for key in d:
                 if key not in all_matched.keys():
-                    all_matched[key]= d[key]
+                    all_matched[key] = d[key]
                 else:
                     all_matched[key]['variants'].extend(d[key]['variants'])
         print(f"total {len(all_matched)} found")
@@ -193,11 +197,11 @@ class RunAll(object):
             name = self.all_matched[key].get('name')
             for variant in variants:
                 kws[keyword].append(variant[0])
-                matcher[variant[0]] = {'kw':keyword, 'id':idnr, 'name':name}
+                matcher[variant[0]] = {'kw': keyword, 'id': idnr, 'name': name}
         matchsearch.index_keywords(list(kws.keys()))
         for k in kws:
             for v in kws[k]:
-                matchsearch.index_spelling_variant(keyword=k,variant=v)
+                matchsearch.index_spelling_variant(keyword=k, variant=v)
         return matchsearch
 
     def verify_matches(self):
@@ -219,7 +223,7 @@ class RunAll(object):
         self.moregentlemen = [MatchHeer(all_matched[d]) for d in all_matched.keys() if
                               type(d) == int]  # strange keys sneak in
         framed_gtlm = pd.DataFrame(self.moregentlemen)
-        framed_gtlm.rename(columns={0:'gentleobject'}, inplace=True)
+        framed_gtlm.rename(columns={0: 'gentleobject'}, inplace=True)
         framed_gtlm['vs'] = framed_gtlm.gentleobject.apply(lambda x: [e for e in x.variants['general']])
         framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
         framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
@@ -231,17 +235,23 @@ class RunAll(object):
         print("verifying spans")
         for T in self.searchobs:
             searchob = self.searchobs[T]
-            mo = MatchAndSpan(searchob.matched_text, junksweeper=junksweeper, previously_matched=self.found_delegates, match_search=matchsearch)
+            try:
+                mo = MatchAndSpan(searchob.matched_text, junksweeper=junksweeper, previously_matched=self.found_delegates,
+                              match_search=matchsearch)
+            except TypeError:
+                print (T, searchob.matched_text)
             delegates2spans(searchob, framed_gtlm=framed_gtlm)
         print("updating merged delegates database")
-        merged_deps = pd.merge(left=framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id", how="left")
-        serializable_df = merged_deps[['ref_id','geboortejaar', 'sterfjaar', 'colleges', 'functions',
-           'period', 'sg', 'was_gedeputeerde', 'p_interval', 'h_life', 'vs','name_x', 'found_in',]]
-        serializable_df.rename(columns={'name_x':'name',
-                                    'vs':'variants',
-                                    "h_life": "hypothetical_life",
-                                    "p_interval":"period_active",
-                                    "sg": "active_stgen"},  inplace=True)
+        merged_deps = pd.merge(left=framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id",
+                               how="left")
+        serializable_df = merged_deps[['ref_id', 'geboortejaar', 'sterfjaar', 'colleges', 'functions',
+                                       'period', 'sg', 'was_gedeputeerde', 'p_interval', 'h_life', 'vs', 'name_x',
+                                       'found_in', ]]
+        serializable_df.rename(columns={'name_x': 'name',
+                                        'vs': 'variants',
+                                        "h_life": "hypothetical_life",
+                                        "p_interval": "period_active",
+                                        "sg": "active_stgen"}, inplace=True)
         self.serializable_df = serializable_df
         print("6. finished to attendance lists and found database")
 

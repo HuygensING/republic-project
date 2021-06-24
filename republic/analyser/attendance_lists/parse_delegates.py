@@ -1,41 +1,36 @@
 from collections import defaultdict, Counter
 import networkx as nx
-import pandas as pd
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_phrase_model import PhraseModel
+
+from .searchers import nm_to_delen, herensearcher
 from ...model.republic_phrase_model import month_names_early, month_names_late
 from ...helper.utils import reverse_dict, levenst_vals
 from ...model.republic_attendancelist_models import *
 from ...data.delegate_database import get_raa_db,ekwz
-from ...data.stopwords import stopwords
-from .pattern_finders import match_previous
 from .identify import *
 
-abbreviated_delegates = get_raa_db()
 
-def nm_to_delen(naam, stopwords=stopwords):
-    nms = [n for n in naam.split(' ') if n not in stopwords]
-    return nms
+
+abbreviated_delegates = get_raa_db()
 
 
 def make_junksweeper(ekwz):
     provincies = ['Holland', 'Zeeland', 'West-Vriesland', 'Gelderland', 'Overijssel', 'Utrecht', 'Friesland']
     months = month_names_early + month_names_late
-    junksweeper = FuzzyKeywordSearcher(config=fuzzysearch_config)
-    junksweeper.index_keywords(list(ekwz.keys()))
-    for key in ekwz.keys():
-        for variant in ekwz[key]:
-            junksweeper.index_spelling_variant(keyword=key, variant=variant)
-    junksweeper.index_keywords(months)
-    junksweeper.index_keywords(provincies)
+    indexkeywords = months + provincies
+    junksweeper = FuzzyPhraseSearcher(fuzzysearch_config)
+    variants = [{'phrase': k, 'variants': v} for k, v in ekwz.items()]
+    phrase_model = PhraseModel(model=variants, )
+    phrase_model.add_phrases(indexkeywords)
+    junksweeper.index_phrase_model(phrase_model=phrase_model)
     return junksweeper
 
 
 junksweeper = make_junksweeper(ekwz)
 transposed_graph = reverse_dict(ekwz)
 keywords = list(abbreviated_delegates.name)
-kwrds = {key:nm_to_delen(key) for key in keywords}
-
-
-
+kwrds = {key: nm_to_delen(key) for key in keywords}
 
 
 def fndmatch(heer='',
@@ -181,16 +176,14 @@ class FndMatch(object):
 
     def is_heer_junk(self, heer):
         probably_junk = False
-        # pat = re.compile(r"%s" % r"\b|\b".join(junk), flags=re.UNICODE | re.IGNORECASE)
-        probably_junk = self.junksearcher.find_candidates(text=heer, include_variants=True)
-        # maybejunk = pat.findall(heer)
-        #         for p in maybejunk:
-        #             if score_levenshtein_distance_ratio(term1=p, term2=heer) > 0.8:
-        #                 probably_junk = True
-        #         return probably_junk
-        if len(probably_junk) > 0:
-            probably_junk = True
-        return probably_junk
+        try:
+            probably_junk_result = self.junksearcher.find_matches(text=heer, include_variants=True)
+            if len(probably_junk_result) > 0:
+                probably_junk = True
+            return probably_junk
+        except ValueError:
+            return True
+
 
 
 class MatchAndSpan(object):
@@ -209,10 +202,13 @@ class MatchAndSpan(object):
         unmarked_text = ''.join(ob.get_unmatched_text())
         splittekst = re.split(pattern="\s", string=unmarked_text)
         for s in splittekst:
-            if len(s) > 2 and len(junksweeper.find_candidates(s, include_variants=True)) == 0:
-                sr = self.match_unmarked(s)
-                if sr:
-                    self.search_results.update(sr)
+            try:
+                if len(s) > 2 and len(junksweeper.find_matches(s, include_variants=True)) == 0:
+                    sr = self.match_unmarked(s)
+                    if sr:
+                        self.search_results.update(sr)
+            except ValueError:
+                pass # this sometimes happens if fuzzysearcher gets confused by our matches
         self.match2span()
 
     def match_unmarked(self, unmarked_text):
@@ -321,3 +317,11 @@ def delegates2spans(searchob, framed_gtlm):
             span.set_pattern(txt)
         if len(mres)>0:
             span.set_delegate(delegate_id=mres.ref_id.iat[0], delegate_name=mres.name.iat[0])
+
+
+def match_previous(heer, res=pd.DataFrame, existing_herensearcher=herensearcher):
+    result = pd.DataFrame()
+    r = existing_herensearcher.find_candidates(text=heer)
+    if len(r) > 0:
+        result = res.loc[res.name == r[0]['match_keyword']]
+    return result

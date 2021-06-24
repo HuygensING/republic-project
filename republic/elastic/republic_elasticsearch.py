@@ -1,4 +1,3 @@
-
 import settings as settings
 # import retrieval and indexing functions so they cna be imported from a single module
 from republic.elastic.republic_retrieving import *

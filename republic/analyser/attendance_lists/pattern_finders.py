@@ -1,12 +1,12 @@
 import re
-import pandas as pd
-#import networkx as nx
+# import networkx as nx
 from collections import Counter, defaultdict
+
 from ...config.republic_config import base_config
 from ...helper.utils import *
 from ...fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
 from ...data.delegate_database import abbreviated_delegates, found_delegates
-from .parse_delegates import FndMatch, nm_to_delen, stopwords
+from .parse_delegates import FndMatch, match_previous
 
 fuzzysearch_config = {
     "char_match_threshold": 0.8,
@@ -16,11 +16,13 @@ fuzzysearch_config = {
     "ngram_size": 2,
     "skip_size": 2,
 }
-from .identify import iterative_search #, identify
+from .identify import iterative_search  # , identify
+
+
 # #### praesentibus
 
 
-def make_alternatives(searcher=None, term:str='', alternatives:list=[], matchlist:dict={}):
+def make_alternatives(searcher=None, term: str = '', alternatives: list = [], matchlist: dict = {}):
     """
 
     :param searcher: FuzzyKeywordSearcher
@@ -75,7 +77,7 @@ def president_searcher(presentielijsten, from_scratch=True):
         presentibus_searcher.index_spelling_variant('PRAESENTIBUS', variant)
     make_alternatives(term='PRAESENTIBUS', searcher=presentibus_searcher, matchlist=presentielijsten)
     heren = []
-    pat = "%s(.*)%s" #pat = "%s.*(.*)%s"  # de presidenten
+    pat = "%s(.*)%s"  # pat = "%s.*(.*)%s"  # de presidenten
     pats = []
     for T in list(presentielijsten.keys()):
         ob = presentielijsten[T].matched_text
@@ -90,7 +92,7 @@ def president_searcher(presentielijsten, from_scratch=True):
             end = presentibus[0]['match_offset'] or len(txt)
             prez = president[0]['match_string'] or ''
             if ofset != 0:
-                preamble_span = (0, ofset -1)
+                preamble_span = (0, ofset - 1)
                 preamble = txt[preamble_span[0]:preamble_span[1]]
                 spns['preamble'] = (preamble, preamble_span)
             pre_span = (ofset, ofset + len(prez))
@@ -103,22 +105,22 @@ def president_searcher(presentielijsten, from_scratch=True):
             if r and r.group(1):
                 heer = r.group(1).strip()
                 heer = re.sub('[^\s\w]*', '', heer)
-                #print(r.group(1))
+                # print(r.group(1))
                 heren.append(heer)
                 s1 = txt.find(heer)
                 s2 = s1 + len(heer)
-                span = (s1, s2) #get_span_from_regex(r)
+                span = (s1, s2)  # get_span_from_regex(r)
                 spns['president'] = (heer, span)
                 for kw in spns.keys():
                     s = spns[kw][0]
                     spn = spns[kw][1]
-                    ob.set_span(span=spn,pattern=s, clas=kw)
+                    ob.set_span(span=spn, pattern=s, clas=kw)
                     setattr(ob, 'found', {'president': heer})
                     # if prae != '':
                     #     prespan = get_span_from_regex(prae)
                     #     mt.set_span(prespan, "presentibus")
             else:
-                #text_zonder_president.append(T)
+                # text_zonder_president.append(T)
                 pats.append((searchpat, txt))
 
         except IndexError:
@@ -148,7 +150,7 @@ def province_searcher(presentielijsten, config=base_config):
         itm = presentielijsten[T]
         txt = itm.text
         mt = itm.matched_text
-        #for kw in provinces:
+        # for kw in provinces:
         provs = kw_searcher.find_candidates(text=txt)
         if len(provs) > 0:
             profset = provs[0].get('match_offset') or 0
@@ -157,35 +159,6 @@ def province_searcher(presentielijsten, config=base_config):
             span = (ofset, ofset + len(res['match_string']))
             mt.set_span(span, "province")
 
-def delegates_to_keywords(abbreviated_delegates,
-                          stopwords=stopwords,
-                          exclude= ['Heeren', 'van', 'met', 'Holland']):
-    """TODO: better exclude"""
-    stopwords.extend(exclude)
-    keywords = list(abbreviated_delegates.name)
-    kwrds = {key:nm_to_delen(key) for key in keywords}
-    nwkw = {d: k for k in list(set(keywords)) for d in k.split(' ') if d not in stopwords}
-    return nwkw
-
-herenkeywords = delegates_to_keywords(abbreviated_delegates)
-
-
-def make_herensearcher(keywords=herenkeywords):
-    fuzzysearch_config = {'char_match_threshold': 0.7,
-     'ngram_threshold': 0.5,
-     'levenshtein_threshold': 0.5,
-     'ignorecase': False,
-     'ngram_size': 2,
-     'skip_size': 2}
-    herensearcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
-    herensearcher.use_word_boundaries = False
-    herensearcher.index_keywords(keywords=list(keywords.keys()))
-    for k in keywords:
-        for variant in keywords[k]:
-            herensearcher.index_spelling_variant(k, variant=variant)
-    return herensearcher
-
-herensearcher = make_herensearcher(keywords=herenkeywords)
 
 def make_groslijst(presentielijsten):
     """get rough list of unmarked text from presentielijsten"""
@@ -195,20 +168,21 @@ def make_groslijst(presentielijsten):
     for T in presentielijsten:
         marked_item = presentielijsten[T].matched_text
         unmatched_texts = marked_item.get_unmatched_text()
-        unmatched_texts = [u.strip() for u in unmatched_texts if len(u.strip())>2]
+        unmatched_texts = [u.strip() for u in unmatched_texts if len(u.strip()) > 2]
         for unmatched_text in unmatched_texts:
-            if len(unmatched_text)>2:
+            if len(unmatched_text) > 2:
                 interm = interpunctie.split(unmatched_text)
-                interm = [i.strip() for i in interm if len(i.strip())>2]
+                interm = [i.strip() for i in interm if len(i.strip()) > 2]
                 groslijst.extend(interm)
     return groslijst
 
+
 def find_delegates(input=[],
-                  matchfnd=None,
-                  df=abbreviated_delegates,
-                  previously_matched=found_delegates,
-                  year:int =0):
-    #matched_heren = defaultdict(list)
+                   matchfnd=None,
+                   df=abbreviated_delegates,
+                   previously_matched=found_delegates,
+                   year: int = 0):
+    # matched_heren = defaultdict(list)
     matched_deputies = defaultdict(list)
     unmatched_deputies = []
     for herengroup in input:
@@ -216,42 +190,39 @@ def find_delegates(input=[],
         recognized_group = []
         keyword_counter = Counter()
         in_matched = False
-        for heer in herengroup: # we try to fuzzymatch the whole group and give the string a score
+        for heer in herengroup:  # we try to fuzzymatch the whole group and give the string a score
             rslt = matchfnd.match_candidates(heer=heer)
             if rslt:
                 in_matched = True
-                match_kw = getattr(rslt,'match_keyword')
-                match_distance = getattr(rslt,'levenshtein_distance')
+                match_kw = getattr(rslt, 'match_keyword')
+                match_distance = getattr(rslt, 'levenshtein_distance')
                 recognized_group.append((heer, match_kw, match_distance))
                 keyword_counter.update([match_kw])
             else:
                 recognized_group.append((heer, '', 0.0))
-        if in_matched == True: # if there is at least one match, proceed
+        if in_matched == True:  # if there is at least one match, proceed
             kw = keyword_counter.most_common()[0][0]
             rec = previously_matched.loc[previously_matched.name == kw]
-            #ncol = 'proposed_delegate'
+            # ncol = 'proposed_delegate'
             ncol = 'name'
             if len(rec) == 0:
                 rec = iterative_search(name=kw, year=year, df=df)
                 ncol = 'name'
             drec = rec.to_dict(orient="records")[0]
             m_id = drec['id']
-#             if m_id == 'matched':
-#                 print(rec, kw)
+            #             if m_id == 'matched':
+            #                 print(rec, kw)
             name = drec[ncol]
             score = drec.get('score') or 0.0
             matched_deputies[m_id] = {'id': m_id,
-                                      'm_kw':kw,
-                                      'score':score,
-                                      'name':name,
-                                      'variants':recognized_group}
+                                      'm_kw': kw,
+                                      'score': score,
+                                      'name': name,
+                                      'variants': recognized_group}
         else:
-            unmatched_deputies.append(herengroup) # non-matched deputy-groups are also returned
-    return({"matched":matched_deputies,
-            "unmatched":unmatched_deputies})
-
-
-
+            unmatched_deputies.append(herengroup)  # non-matched deputy-groups are also returned
+    return ({"matched": matched_deputies,
+             "unmatched": unmatched_deputies})
 
 
 # def find_unmarked_deputies(keywords=[], presentielijsten={}, ):
@@ -279,21 +250,13 @@ def find_delegates(input=[],
 #                itemtype="delegate2")
 
 
-def match_previous(heer, res=pd.DataFrame, existing_herensearcher=herensearcher):
-    result = pd.DataFrame()
-    r = existing_herensearcher.find_candidates(text=heer)
-    if len(r) > 0:
-        result = res.loc[res.name == r[0]['match_keyword']]
-    return result
-
-
 def fndmatch(heer='',
-             keywords:list=[],
-             rev_graph:object=None,
-             searcher:object=None,
-             junksearcher:object=None,
-             register:dict={},
-             df:object=None):
+             keywords: list = [],
+             rev_graph: object = None,
+             searcher: object = None,
+             junksearcher: object = None,
+             register: dict = {},
+             df: object = None):
     transposed_graph = reverse_dict(keywords)
     result = match_previous(heer)
     if len(result) == 0:
@@ -305,5 +268,6 @@ def fndmatch(heer='',
         mf.match_candidates(heer=heer)
         result = result.heer.serialize()
     return result
+
 
 cdksearcher = FuzzyKeywordSearcher(config=fuzzysearch_config)

@@ -17,10 +17,16 @@ JUNK_JSON = pkg_resources.resource_filename(__name__, 'json/republic_junk.json')
 def get_raa_db():
     try:
         abbr_delegates = pd.read_parquet(PICKLE_FILE) # change this to parquet? YES
+        abbr_delegates['p_interval'] = abbr_delegates.apply(
+            lambda x: pd.Interval(left=x["p_interval.left"], right=x["p_interval.right"]), axis=1)
+        abbr_delegates['h_life'] = abbr_delegates.apply(
+            lambda x: pd.Interval(left=x["h_life.left"], right=x["h_life.right"]), axis=1)
     except OSError:
         try:
+            print("from excel")
             abbr_delegates = abbreviated_delegates_from_excel()
         except IOError:
+            print("making abbreviated delegates")
             abbr_delegates = make_abbreviated_delegates()
 
         for interval in ['h_life', 'p_interval']:
