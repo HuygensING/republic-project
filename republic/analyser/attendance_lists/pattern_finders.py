@@ -1,12 +1,16 @@
 import re
+import logging
 # import networkx as nx
 from collections import Counter, defaultdict
 
 from ...config.republic_config import base_config
 from ...helper.utils import *
-from ...fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
-from ...data.delegate_database import abbreviated_delegates, found_delegates
-from .parse_delegates import FndMatch, match_previous
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from ...data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+from .parse_delegates import FndMatch, fndmatch, match_previous
+from .identify import iterative_search
+
 
 fuzzysearch_config = {
     "char_match_threshold": 0.8,
@@ -16,147 +20,166 @@ fuzzysearch_config = {
     "ngram_size": 2,
     "skip_size": 2,
 }
-from .identify import iterative_search  # , identify
 
 
-# #### praesentibus
-
-
-def make_alternatives(searcher=None, term: str = '', alternatives: list = [], matchlist: dict = {}):
-    """
-
-    :param searcher: FuzzyKeywordSearcher
-    :type matchlist: dictionary
-    :type alternatives: list
-    """
-    alts = {}
-    alternatives = alternatives
-    for T in matchlist.keys():
-        res = searcher.find_candidates_new(keyword=term, text=matchlist[T].text)
-        if res:
-            alternatives.append(res[0]['match_string'])
-    alts[term] = list(set(alternatives))
-    for variant in alts[term]:
-        searcher.index_spelling_variant(term, variant)
-    return alts
+# def make_alternatives(searcher=None, term: str = '', alternatives: list = [], matchlist: dict = {}):
+#     """
+#
+#     :param searcher: FuzzyPhraseSearcher
+#     :type matchlist: dictionary
+#     :type alternatives: list
+#     """
+#     alts = {}
+#     alternatives = alternatives
+#     for T in matchlist.keys():
+#         res = searcher.find_candidates_new(keyword=term, text=matchlist[T].text)
+#         if res:
+#             alternatives.append(res[0]['match_string'])
+#     alts[term] = list(set(alternatives))
+#     for variant in alts[term]:
+#         searcher.index_spelling_variant(term, variant)
+#     return alts
 
 
 def president_searcher(presentielijsten, from_scratch=True):
     """search and mark president in delegate attendance list
        this returns heren, but marks the presidents
        in the presentielijsten texts"""
-    fuzzysearch_config = {'char_match_threshold': 0.5,
-                          'ngram_threshold': 0.5,
-                          'levenshtein_threshold': 0.4,
-                          'ignorecase': False,
-                          'ngram_size': 2,
-                          'skip_size': 2}
-    president_searcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
-    president_searcher.use_word_boundaries = False
-    president_searcher.index_keywords('PRAESIDE Den Heere')
-    for variant in ['PRASIDE Den Heere',
-                    'PRESIDE Den Heere',
-                    'P R A E S I D E Den Heere',
-                    'PRAESIDE Den Heere',
-                    'P R A S I D E Den Heere',
-                    'P R E S I D E Den Heere',
-                    'P R AE S I D E Den Heere',
-                    'DR AS 1D E Den Heere',
-                    'PR ASL DE Den Heere',
-                    'PR A31 DE; Den Heere',
-                    'BR JE 3.1. DE, Den Heere']:
-        president_searcher.index_spelling_variant('PRAESIDE', variant)
-    presentibus_searcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
-    presentibus_searcher.index_keywords('PRAESENTIBUS')
-    presentibus_searcher.use_word_boundaries = False
-    for variant in ['PRASENTIBUS',
-                    'PRESENTIBUS',
-                    'P R A E S E N T I B U S',
-                    'P RAE SE N TI B U S',
-                    'PRA&SENTIBUS']:
-        presentibus_searcher.index_spelling_variant('PRAESENTIBUS', variant)
-    make_alternatives(term='PRAESENTIBUS', searcher=presentibus_searcher, matchlist=presentielijsten)
+    ps = make_president_searcher()
     heren = []
     pat = "%s(.*)%s"  # pat = "%s.*(.*)%s"  # de presidenten
     pats = []
     for T in list(presentielijsten.keys()):
         ob = presentielijsten[T].matched_text
         txt = ob.item
-        president = president_searcher.find_candidates(keyword='PRASIDE Den Heere', include_variants=True, text=txt)
-        presentibus = presentibus_searcher.find_candidates(keyword='PRAESENTIBUS', include_variants=True, text=txt)
-        begin = 0  # in case we find no president marker
-        end = 0
-        try:
-            spns = {}
-            ofset = president[0]['match_offset'] or 0
-            end = presentibus[0]['match_offset'] or len(txt)
-            prez = president[0]['match_string'] or ''
-            if ofset != 0:
-                preamble_span = (0, ofset - 1)
-                preamble = txt[preamble_span[0]:preamble_span[1]]
-                spns['preamble'] = (preamble, preamble_span)
-            pre_span = (ofset, ofset + len(prez))
-            spns['pre'] = (prez, pre_span)
-            prae = presentibus[0]['match_string'] or ''
-            presentibus_span = (end, end + len(prae))
-            spns['presentibus'] = (prae, presentibus_span)
-            searchpat = pat % (re.escape(prez), re.escape(prae))
-            r = re.search(searchpat, txt)
-            if r and r.group(1):
-                heer = r.group(1).strip()
-                heer = re.sub('[^\s\w]*', '', heer)
-                # print(r.group(1))
-                heren.append(heer)
-                s1 = txt.find(heer)
-                s2 = s1 + len(heer)
-                span = (s1, s2)  # get_span_from_regex(r)
-                spns['president'] = (heer, span)
-                for kw in spns.keys():
-                    s = spns[kw][0]
-                    spn = spns[kw][1]
-                    ob.set_span(span=spn, pattern=s, clas=kw)
-                    setattr(ob, 'found', {'president': heer})
-                    # if prae != '':
-                    #     prespan = get_span_from_regex(prae)
-                    #     mt.set_span(prespan, "presentibus")
-            else:
-                # text_zonder_president.append(T)
-                pats.append((searchpat, txt))
-
-        except IndexError:
-            pass
+        heer = get_president(ob, pat, ps, txt)
+        if heer:
+            heren.append(heer)
     return heren
 
 
-def province_searcher(presentielijsten, config=base_config):
-    kw_searcher = FuzzyKeywordSearcher(config)
-    province_order = ["gelderlandt",
-                      "hollandt ende west-frieslandt",
-                      "utrecht",
-                      "frieslandt",
-                      "overijssel",
-                      "groningen",
-                      "zeelandt"]
+def make_president_searcher():
+    fuzzysearch_config = {'char_match_threshold': 0.5,
+                          'ngram_threshold': 0.5,
+                          'levenshtein_threshold': 0.4,
+                          'ignorecase': False,
+                          'ngram_size': 2,
+                          'skip_size': 2}
+    president_searcher = FuzzyPhraseSearcher(config=fuzzysearch_config)
+    vs = ['PRASIDE Den Heere',
+          'PRA ESIDE Den Heere',
+          'PRA ZSIDE Den Heere'
+          'PRESIDE Den Heere',
+          'P R A E S I D E Den Heere',
+          'PRAESIDE Den Heere',
+          'PRAESIDEDen Heere',
+          'P R A S I D E Den Heere',
+          'P R E S I D E Den Heere',
+          'P R AE S I D E Den Heere',
+          'DR AS 1D E Den Heere',
+          'PR ASL DE Den Heere',
+          'PR A31 DE; Den Heere',
+          'BR JE 3.1. DE, Den Heere']
+    vs = vs #+ ekwz['PRAS']
+    pvs = ['PRASENTIBUS',
+           'PRESENTIBUS',
+           'P R A E S E N T I B U S',
+           'P RAE SE N TI B U S',
+           'PRA&SENTIBUS',
+           'PRAESEN','PRAES']
+    pvs = ekwz['PRASENTIBUS'] + pvs
+    variants = [{'phrase': 'PRAESIDE Den Heere', 'label':'president', 'variants': vs},
+                {'phrase': 'PRAESENTIBUS', 'label':'presentibus', "variants": pvs}]
+    phrase_model = PhraseModel(model=variants)
+    #phrase_model.add_phrase(phrase='Den Heere', label)
+    president_searcher.index_phrase_model(phrase_model=phrase_model)
+    return president_searcher
 
+
+def get_president(ob, pat, ps, txt, debug=True):
+    """TODO: split president getting and span setting"""
+    ofset = 0  # in case we find no president marker
+    end = 0
+    prez = ''
+    prae = ''
+    matches = ps.find_matches(text=txt)#, include_variants=True, use_word_boundaries=False)
+    presidents = [m for m in matches if m.label == 'president']
+    president = best_match(presidents)
+    if president:
+        ofset = getattr(president, "offset") or 0
+        prez = getattr(president, "string") or ''
+    presentibi = [m for m in matches if m.label == 'presentibus']
+    if presentibi:
+        presentibus = best_match(presentibi)
+        prae = presentibus.string or ''
+        end = getattr(presentibus, "offset") or len(txt)
+    spns = {}
+    if ofset != 0:
+        preamble_span = (0, ofset - 1)
+        preamble = txt[preamble_span[0]:preamble_span[1]]
+        spns['preamble'] = (preamble, preamble_span)
+    pre_span = (ofset, ofset + len(prez))
+    spns['pre'] = (prez, pre_span)
+    presentibus_span = (end, end + len(prae))
+    spns['presentibus'] = (prae, presentibus_span)
+    searchpat = pat % (re.escape(prez), re.escape(prae))
+    r = re.search(searchpat, txt)
+    if r and r.group(1):
+        heer = r.group(1).strip()
+        # rex = re.search('e?r?e\s', heer)
+        # if rex:
+        #     if rex.span()[0] == 0:
+        #         heer = heer[rex.span()[1]:]
+        heer = re.sub('[^\s\w]*', '', heer)
+        if debug:
+            logging.info(heer)
+        s1 = txt.find(heer)
+        s2 = s1 + len(heer)
+        span = (s1, s2)  # get_span_from_regex(r)
+        spns['president'] = (heer, span)
+        for kw in spns.keys():
+            s = spns[kw][0]
+            spn = spns[kw][1]
+            ob.set_span(span=spn, pattern=s, clas=kw)
+            setattr(ob, 'found', {'president': heer})
+            # if prae != '':
+            #     prespan = get_span_from_regex(prae)
+            #     mt.set_span(prespan, "presentibus")
+        return heer
+
+def make_province_searcher(config):
+    """TODO is this faster if we first find the provinces and then find the rest???"""
+    pr_searcher = FuzzyPhraseSearcher(config)
+    province_order = ["Gelderlandt",
+                      "Hollandt ende West-Vrieslandt",
+                      "Utrecht",
+                      "Frieslandt",
+                      "Overijssel",
+                      "Groningen",
+                      "Zeelandt"]
     searchstring = "met {} extraordinaris gedeputeerde uyt de provincie van {}"
-    provinces = []
+    variants = []
     for provincie in province_order:
+        pc = []
         for telwoord in ['een', 'twee', 'drie']:
-            provinces.append(searchstring.format(telwoord, provincie))
-    kw_searcher.index_keywords(provinces)
-    kw_searcher.use_word_boundaries = False
+            pc.append(searchstring.format(telwoord, provincie))
+        phrase = {'phrase': pc[0], 'label': provincie, 'variants': pc}
+        variants.append(phrase)
+    phrase_model = PhraseModel(model=variants)
+    pr_searcher.index_phrase_model(phrase_model=phrase_model)
+    return pr_searcher
 
+
+def province_searcher(presentielijsten, config=base_config):
+    pr_searcher = make_province_searcher(config)
     for T in presentielijsten.keys():
         itm = presentielijsten[T]
         txt = itm.text
         mt = itm.matched_text
-        # for kw in provinces:
-        provs = kw_searcher.find_candidates(text=txt)
-        if len(provs) > 0:
-            profset = provs[0].get('match_offset') or 0
+        provs = pr_searcher.find_matches(text=txt, include_variants=True)
         for res in provs:
-            ofset = res['match_offset']
-            span = (ofset, ofset + len(res['match_string']))
+            ofset = res.offset
+            span = (ofset, ofset + len(res.string))
             mt.set_span(span, "province")
 
 
@@ -191,7 +214,7 @@ def find_delegates(input=[],
         keyword_counter = Counter()
         in_matched = False
         for heer in herengroup:  # we try to fuzzymatch the whole group and give the string a score
-            rslt = matchfnd.match_candidates(heer=heer)
+            rslt = matchfnd.match_candidates(heer=heer) #, include_variants=True, use_word_boundaries=False)
             if rslt:
                 in_matched = True
                 match_kw = getattr(rslt, 'match_keyword')
@@ -200,7 +223,7 @@ def find_delegates(input=[],
                 keyword_counter.update([match_kw])
             else:
                 recognized_group.append((heer, '', 0.0))
-        if in_matched == True:  # if there is at least one match, proceed
+        if in_matched is True:  # if there is at least one match, proceed
             kw = keyword_counter.most_common()[0][0]
             rec = previously_matched.loc[previously_matched.name == kw]
             # ncol = 'proposed_delegate'
@@ -228,7 +251,7 @@ def find_delegates(input=[],
 # def find_unmarked_deputies(keywords=[], presentielijsten={}, ):
 #     """mark deputies from keyword list """
 #     kws = keywords
-#     deputy_heuristic = FuzzyKeywordSearcher(config=base_config)
+#     deputy_heuristic = FuzzyPhraseSearcher(config=base_config)
 #     deputy_heuristic.index_keywords(kws)
 #     deputy_heuristic.index_spelling_variants = True
 #     ll = {}
@@ -236,7 +259,7 @@ def find_delegates(input=[],
 #
 #     merge(deps.values())
 #     deputies = {d: deps[d] for d in kws}
-#     deputy_searcher = FuzzyKeywordSearcher(config=base_config)
+#     deputy_searcher = FuzzyPhraseSearcher(config=base_config)
 #     deputy_searcher.index_keywords(list(deputies.keys()))
 #     deputy_searcher.index_spelling_variants = True
 #     for k in deputies.keys():
@@ -250,24 +273,24 @@ def find_delegates(input=[],
 #                itemtype="delegate2")
 
 
-def fndmatch(heer='',
-             keywords: list = [],
-             rev_graph: object = None,
-             searcher: object = None,
-             junksearcher: object = None,
-             register: dict = {},
-             df: object = None):
-    transposed_graph = reverse_dict(keywords)
-    result = match_previous(heer)
-    if len(result) == 0:
-        mf = FndMatch(rev_graph=transposed_graph,
-                      searcher=FuzzyKeywordSearcher,
-                      junksearcher=FuzzyKeywordSearcher,
-                      register=register,
-                      df=df)
-        mf.match_candidates(heer=heer)
-        result = result.heer.serialize()
-    return result
+# def fndmatch(heer='',
+#              keywords: list = [],
+#              rev_graph: object = None,
+#              searcher: object = None,
+#              junksearcher: object = None,
+#              register: dict = {},
+#              df: object = None):
+#     transposed_graph = reverse_dict(keywords)
+#     result = match_previous(heer)
+#     if len(result) == 0:
+#         mf = FndMatch(rev_graph=transposed_graph,
+#                       searcher=FuzzyPhraseSearcher,
+#                       junksearcher=FuzzyPhraseSearcher,
+#                       register=register,
+#                       df=df)
+#         mf.match_candidates(heer=heer, include_variants=True, use_word_boundaries=False)
+#         result = result.heer.serialize()
+#     return result
 
 
-cdksearcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
+cdksearcher = FuzzyPhraseSearcher(config=fuzzysearch_config)

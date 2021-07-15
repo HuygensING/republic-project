@@ -1,6 +1,6 @@
 import re
 import pandas as pd
-from ...fuzzy.fuzzy_keyword_searcher import score_levenshtein_distance_ratio
+from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
 
 def identify(name=str,
              df=pd.DataFrame,
@@ -15,7 +15,7 @@ def identify(name=str,
     yearmax = int(year) + window
     year = pd.Interval(yearmin, yearmax, closed="both")
     if fuzzy:
-        mask = df["name"].apply(lambda x: score_levenshtein_distance_ratio(x, name)) > 0.5
+        mask = df["name"].apply(lambda x: score_levenshtein_similarity_ratio(x, name)) > 0.5
     else:
         mask = df["name"].str.contains(re.escape(name))
     if exact_year is True:

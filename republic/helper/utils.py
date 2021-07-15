@@ -1,4 +1,5 @@
-from ..fuzzy.fuzzy_keyword_searcher import score_levenshtein_distance_ratio
+from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
+from numpy import argmax
 
 
 
@@ -138,7 +139,7 @@ def reverse_dict(d):
 
 
 def levenst_vals(x, txt):
-    scores= [score_levenshtein_distance_ratio(i.form,txt) for i in x if len(i.form)>1]
+    scores= [score_levenshtein_similarity_ratio(i.form,txt) for i in x if len(i.form)>1]
     if max(scores) > 0.8:
         return max(scores)
     else:
@@ -158,4 +159,23 @@ def levenst_vals(x, txt):
 #         if span not in item.spans:
 #             item.set_span(span, itemtype)
 
+# from scipy.special import softmax
+# from numpy import argmax
 
+# get best score from a fuzzy_search. This does not account for the length of a match
+def score_match(match):
+    """score fuzzy_search phrase searcher matches"""
+    result = sum([match.levenshtein_similarity, match.character_overlap, match.ngram_overlap, score_levenshtein_similarity_ratio(str(match.variant.exact_string),str(match.phrase.exact_string))])
+    return result
+
+def best_match(matches=[]):
+    """
+    calculates best match from fuzzysearch matches based on scorematch. Returns single match
+    TODO: this does not account for best length if match scores are equal"""
+    if matches:
+        mn = min([abs(len(m.phrase.exact_string) - len(m.string)) for m in matches])
+        candidates = [m for m in matches if abs(len(m.phrase.exact_string) - len( m.string)) == mn]
+        mx = max([score_match(m) for m in matches])
+        candidates = [m for m in matches if score_match(m) == mx]
+        candidate = max([m for m in candidates if score_match(m) == mx], key=lambda x: score_match(x))
+        return candidate

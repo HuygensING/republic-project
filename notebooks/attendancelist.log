@@ -1,0 +1,5 @@
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:24.855s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
