@@ -223,6 +223,7 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
     doc = {'id': opening_paragraph.metadata['id'], 'text': proposition_text}
     phrase_matches = proposition_searcher.find_matches(doc)
     phrase_matches = filter_matches(phrase_matches)
+    import json
     try:
         metadata = generate_resolution_metadata(phrase_matches, resolution, opening_searcher, variable_matcher)
     except ValueError:
@@ -246,6 +247,9 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
                     group_info[label] = element['phrase']
             # group_info = {element['element_label']: element['phrase'] for element in metadata[metadata_group]}
             resolution.metadata[metadata_group] = group_info
+
+    # print('resolution metadata:')
+    # print(json.dumps(resolution.metadata, indent=2))
     return resolution
 
 
@@ -268,7 +272,9 @@ def generate_proposition_searchers(searcher_config: Dict[str, any] = None):
             'max_length_variance': 3,
             'levenshtein_threshold': 0.7,
             'char_match_threshold': 0.7,
-            'use_word_boundaries': True
+            'use_word_boundaries': True,
+            'ngram_size': 3,
+            'skip_size': 1
         }
     phrases = [phrase for phrase_set in rps for phrase in rps[phrase_set]]
     return generate_template_searchers(opening_templates[0], phrases, searcher_config)
@@ -277,7 +283,7 @@ def generate_proposition_searchers(searcher_config: Dict[str, any] = None):
 def generate_template_searchers(template: Dict[str, any], phrases: List[Dict[str, any]],
                                 searcher_config: dict) -> Tuple[FuzzyPhraseSearcher, FuzzyTemplateSearcher, VariableMatcher]:
     proposition_searcher = FuzzyPhraseSearcher(searcher_config)
-    proposition_phrase_model = PhraseModel(model=phrases)
+    proposition_phrase_model = PhraseModel(model=phrases, config=searcher_config)
     proposition_searcher.index_phrase_model(proposition_phrase_model)
     opening_template = FuzzyTemplate(proposition_phrase_model, template)
     template_searcher = FuzzyTemplateSearcher(opening_template, searcher_config)

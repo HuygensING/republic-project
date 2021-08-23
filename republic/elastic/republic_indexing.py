@@ -437,13 +437,16 @@ def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
         'hebben ter Vergaderinge voorgedragen'
     }
     for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
+        if resolution.metadata['type'] == 'attendance_list':
+            continue
+        if len(resolution.evidence) == 0:
+            print(resolution.metadata)
         if resolution.evidence[0].phrase.phrase_string in skip_formulas:
             continue
         new_resolution = add_resolution_metadata(resolution, proposition_searcher,
                                                  template_searcher, variable_matcher)
         if not new_resolution:
             continue
-        print('indexing metadata for resolution', resolution.metadata['id'])
         # print(new_resolution.metadata)
         index_resolution_metadata(es, new_resolution, inv_config)
 
@@ -508,8 +511,10 @@ def index_split_resolutions(es: Elasticsearch, split_resolutions: Dict[str, any]
 
 def index_resolution_metadata(es: Elasticsearch, resolution: Resolution, config: dict):
     metadata_doc = {
-        'metadata': resolution.metadata,
+        'metadata': copy.deepcopy(resolution.metadata),
         'evidence': [pm.json() for pm in resolution.evidence]
     }
+    metadata_doc['metadata']['id'] = metadata_doc['metadata']['id'] + '-metadata'
     add_timestamp(metadata_doc)
-    es.index(index=config['resolution_metadata_index'], id=resolution.metadata['id'], body=metadata_doc)
+    print('indexing metadata for resolution', metadata_doc['metadata']['id'])
+    es.index(index=config['resolution_metadata_index'], id=metadata_doc['metadata']['id'], body=metadata_doc)
