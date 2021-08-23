@@ -21,7 +21,7 @@ import republic.model.resolution_phrase_model as rpm
 from republic.model.republic_date import RepublicDate, make_republic_date
 from republic.model.republic_document_model import Session, get_session_resolutions, get_session_scans_version
 from republic.model.republic_document_model import Resolution, configure_resolution_searchers
-from republic.model.republic_document_model import make_session_text_version
+from republic.model.republic_text_annotation_model import make_session_text_version
 from republic.config.republic_config import set_config_inventory_num
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
 from republic.helper.metadata_helper import get_per_page_type_index
@@ -300,10 +300,10 @@ def index_sessions_inventory_old(es: Elasticsearch, inv_num: int, inv_config: di
             if session.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['session_index'] + '_quarantine'
                 es.index(index=quarantine_index, doc_type=inv_config['session_doc_type'],
-                         id=session.metadata['id'], body=session.json(with_columns=True, with_scan_versions=True))
+                         id=session.metadata['id'], body=session.json)
             else:
                 es.index(index=inv_config['session_index'], doc_type=inv_config['session_doc_type'],
-                         id=session.metadata['id'], body=session.json(with_columns=True, with_scan_versions=True))
+                         id=session.metadata['id'], body=session.json)
         except RequestError:
             print('skipping doc')
             continue
@@ -380,14 +380,20 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
             }
         }
     }
-    for hit in rep_es.scroll_hits(es, query, index=inv_config['session_index'], doc_type="session", size=2):
-        print(hit['_id'])
-        session_json = hit['_source']
-        session = Session(session_json['metadata'], columns=session_json['columns'],
-                          scan_versions=session_json['scan_versions'])
+    print(query)
+    print(inv_config['session_lines_index'])
+    #for hit in rep_es.scroll_hits(es, query, index=inv_config['session_lines_index'], size=2):
+    #    print(hit['_id'])
+    #    session_json = hit['_source']
+    #    session = Session(session_json['metadata'], columns=session_json['columns'],
+    #                      scan_versions=session_json['scan_versions'])
+    for session in rep_es.retrieve_inventory_sessions_with_lines(es, inv_config['inventory_num'], inv_config):
+        print(session.id)
+        # print(session.metadata)
         for resolution in get_session_resolutions(session, opening_searcher, verb_searcher):
             add_timestamp(resolution)
-            es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
+            # print('\t', resolution.id)
+            es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json)
 
 
 def index_session_resolutions(es: Elasticsearch, session: Session, opening_searcher: FuzzyPhraseSearcher,
@@ -407,7 +413,7 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
     :type config: dict
     """
     add_timestamp(resolution)
-    resolution_json = resolution.json() if isinstance(resolution, Resolution) else resolution
+    resolution_json = resolution.json if isinstance(resolution, Resolution) else resolution
     es.index(index=config['resolution_index'], id=resolution_json['metadata']['id'], body=resolution_json)
 
 

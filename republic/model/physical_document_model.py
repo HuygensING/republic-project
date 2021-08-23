@@ -596,6 +596,7 @@ class PhysicalStructureDoc(StructureDoc):
     def set_derived_id(self, parent_id: str):
         box_string = f"{self.coords.x}-{self.coords.y}-{self.coords.w}-{self.coords.h}"
         self.id = f"{parent_id}-{self.main_type}-{box_string}"
+        self.metadata['id'] = self.id
         self.set_parentage()
 
 
@@ -728,6 +729,17 @@ class PageXMLTextLine(PageXMLDoc):
             return False
         else:
             return True
+
+    def concat(self, other: PageXMLTextLine) -> PageXMLTextLine:
+        merged_coords = coords_list_to_hull_coords([self.coords, other.coords])
+        merged_text = ' '.join([self.text, other.text])
+        merged_baseline = Baseline(self.baseline.points + other.baseline.points)
+        merged_words = None
+        if self.words and other.words:
+            merged_words = self.words + other.words
+        return PageXMLTextLine(doc_id=self.id, coords=merged_coords,
+                               baseline=merged_baseline, text=merged_text,
+                               words=merged_words, metadata=self.metadata)
 
 
 class PageXMLTextRegion(PageXMLDoc):
@@ -892,6 +904,16 @@ class PageXMLPage(PageXMLTextRegion):
         if doc_type:
             self.add_type(doc_type)
 
+    def get_lines(self):
+        lines = []
+        # First, add lines from columns
+        if self.columns:
+            for column in self.columns:
+                lines += column.get_lines()
+        # Second, add lines from text_regions
+        lines += super().get_lines()
+        return lines
+
     def add_child(self, child: PageXMLDoc, as_extra: bool = False):
         child.set_parent(self)
         if isinstance(child, PageXMLColumn):
@@ -1004,35 +1026,60 @@ def sort_regions_in_reading_order(doc: PageXMLDoc) -> List[PageXMLTextRegion]:
         return []
 
 
+def horizontal_group_lines(lines: List[PageXMLTextLine]) -> List[List[PageXMLTextLine]]:
+    """Sort lines of a text region vertically as a list of lists,
+    with adjacent lines grouped in inner lists."""
+    if len(lines) == 0:
+        return []
+    # First, sort lines vertically
+    vertically_sorted = [line for line in sorted(lines, key=lambda line: line.coords.top) if line.text is not None]
+    # Second, group adjacent lines in vertical line stack
+    horizontally_grouped_lines = [[vertically_sorted[0]]]
+    rest_lines = vertically_sorted[1:]
+    if len(vertically_sorted) > 1:
+        for li, curr_line in enumerate(rest_lines):
+            prev_line = horizontally_grouped_lines[-1][-1]
+            if curr_line.is_below(prev_line):
+                horizontally_grouped_lines.append([curr_line])
+            elif curr_line.is_next_to(prev_line):
+                horizontally_grouped_lines[-1].append(curr_line)
+            else:
+                horizontally_grouped_lines.append([curr_line])
+    # Third, sort adjecent lines horizontally
+    for line_group in horizontally_grouped_lines:
+        line_group.sort(key=lambda line: line.coords.left)
+    return horizontally_grouped_lines
+
+
+def horizontally_merge_lines(lines: List[PageXMLTextLine]) -> List[PageXMLTextLine]:
+    """Sort lines vertically and merge horizontally adjacent lines."""
+    horizontally_grouped_lines = horizontal_group_lines(lines)
+    horizontally_merged_lines = []
+    for line_group in horizontally_grouped_lines:
+        coords = parse_derived_coords(line_group)
+        baseline = Baseline([point for line in line_group for point in line.baseline.points])
+        line = PageXMLTextLine(metadata=line_group[0].metadata, coords=coords, baseline=baseline,
+                               text=' '.join([line.text for line in line_group]))
+        line.set_derived_id(line_group[0].metadata['parent_id'])
+        horizontally_merged_lines.append(line)
+    return horizontally_merged_lines
+
+
 def sort_lines_in_reading_order(doc: PageXMLDoc) -> Generator[PageXMLTextLine]:
     """Sort the lines of a PageXML document in reading order.
     Reading order is: columns from left to right, text regions in columns from top to bottom,
     lines in text regions from top to bottom, and when (roughly) adjacent, from left to right."""
     for text_region in sort_regions_in_reading_order(doc):
-        lines = sorted(text_region.lines, key=lambda x: x.coords.top)
         if text_region.main_type == 'column':
             text_region.metadata['column_id'] = text_region.id
         if 'column_id' not in text_region.metadata:
             raise KeyError(f'missing column id: {text_region.metadata}')
-        if lines[0].metadata is None:
-            lines[0].metadata = {'id': lines[0].id}
-        if 'column_id' in text_region.metadata and 'column_id' not in lines[0].metadata:
-            lines[0].metadata['column_id'] = text_region.metadata['column_id']
-        stacked_lines = [[lines[0]]]
-        rest_lines = lines[1:]
-        if len(lines) > 1:
-            for li, curr_line in enumerate(rest_lines):
-                if curr_line.metadata is None:
-                    curr_line.metadata = {'id': curr_line.id}
-                if 'column_id' in text_region.metadata and 'column_id' not in curr_line.metadata:
-                    curr_line.metadata['column_id'] = text_region.metadata['column_id']
-                prev_line = stacked_lines[-1][-1]
-                if curr_line.is_below(prev_line):
-                    stacked_lines.append([curr_line])
-                elif curr_line.is_next_to(prev_line):
-                    stacked_lines[-1].append(curr_line)
-                else:
-                    stacked_lines.append([curr_line])
+        for line in text_region.lines:
+            if line.metadata is None:
+                line.metadata = {'id': line.id, 'type': ['pagexml', 'line'], 'parent_id': text_region.id}
+            if 'column_id' in text_region.metadata and 'column_id' not in line.metadata:
+                line.metadata['column_id'] = text_region.metadata['column_id']
+        stacked_lines = horizontal_group_lines(text_region.lines)
         for lines in stacked_lines:
             for line in sorted(lines, key=lambda x: x.coords.left):
                 yield line
