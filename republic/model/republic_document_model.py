@@ -6,6 +6,7 @@ import json
 
 from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
+import republic.model.physical_document_model as pdm
 from republic.model.physical_document_model import LogicalStructureDoc, PageXMLTextLine, PageXMLWord
 from republic.model.physical_document_model import PageXMLTextRegion
 from republic.model.physical_document_model import same_column, json_to_pagexml_text_region
@@ -718,7 +719,7 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
     generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
     lines = [line for line in doc.get_lines()]
     for li, line in enumerate(lines):
-        if prev_line and line.coords.top - prev_line.coords.top > 65:
+        if is_resolution_gap(prev_line, line):
             if len(para_lines) > 0:
                 metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
                 paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
@@ -741,6 +742,25 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
         doc_text_offset += len(paragraph.text)
         paragraphs.append(paragraph)
     return paragraphs
+
+
+def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine) -> bool:
+    if not prev_line:
+        return False
+    # Resolution start line has big capital with low bottom.
+    # If gap between box bottoms is small, this is no resolution gap.
+    if -20 < line.coords.bottom - prev_line.coords.bottom < 80:
+        return False
+    # If this line starts with a big capital, this is a resolution gap.
+    if pdm.line_starts_with_big_capital(line):
+        return True
+    # If the previous line has no big capital starting a resolution,
+    # and it has a large vertical gap with the current line,
+    # this is resolution gap.
+    if not pdm.line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
+        return True
+    else:
+        return False
 
 
 def get_session_scans_version(session: Session) -> List:
