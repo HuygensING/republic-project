@@ -1,33 +1,20 @@
 from collections import defaultdict, Counter
 import networkx as nx
+#from scipy.special import softmax
+from numpy import argmax
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
-
-from .searchers import nm_to_delen, herensearcher
-from ...model.republic_phrase_model import month_names_early, month_names_late
-from ...helper.utils import reverse_dict, levenst_vals
+from fuzzy_search.fuzzy_string import score_levenshtein_distance, score_levenshtein_similarity_ratio
+from .searchers import nm_to_delen, herensearcher, make_junksweeper
+from ...helper.utils import *
 from ...model.republic_attendancelist_models import *
 from ...data.delegate_database import get_raa_db,ekwz
 from .identify import *
 
 
-
 abbreviated_delegates = get_raa_db()
 
 
-def make_junksweeper(ekwz):
-    provincies = ['Holland', 'Zeeland', 'West-Vriesland', 'Gelderland', 'Overijssel', 'Utrecht', 'Friesland']
-    months = month_names_early + month_names_late
-    indexkeywords = months + provincies
-    junksweeper = FuzzyPhraseSearcher(fuzzysearch_config)
-    variants = [{'phrase': k, 'variants': v} for k, v in ekwz.items()]
-    phrase_model = PhraseModel(model=variants, )
-    phrase_model.add_phrases(indexkeywords)
-    junksweeper.index_phrase_model(phrase_model=phrase_model)
-    return junksweeper
-
-
-junksweeper = make_junksweeper(ekwz)
 transposed_graph = reverse_dict(ekwz)
 keywords = list(abbreviated_delegates.name)
 kwrds = {key: nm_to_delen(key) for key in keywords}
@@ -36,14 +23,14 @@ kwrds = {key: nm_to_delen(key) for key in keywords}
 def fndmatch(heer='',
              nwkw=list,
              rev_graph=nx.Graph,
-             searcher=FuzzyKeywordSearcher,
-             junksearcher=FuzzyKeywordSearcher,
+             searcher=FuzzyPhraseSearcher,
+             junksearcher=FuzzyPhraseSearcher,
              df=pd.DataFrame):
     result = match_previous(heer)
     if len(result) == 0:
         mf = FndMatch(rev_graph=transposed_graph,
-                      searcher=FuzzyKeywordSearcher,
-                      junksearcher=FuzzyKeywordSearcher,
+                      searcher=FuzzyPhraseSearcher,
+                      junksearcher=FuzzyPhraseSearcher,
                       df=df)
         mf.match_candidates(heer=heer)
         result = result.heer.serialize()
@@ -114,8 +101,8 @@ def find_delegates(input=[],
 class FndMatch(object):
     def __init__(self,
                  year=0,
-                 searcher=FuzzyKeywordSearcher,
-                 junksearcher=FuzzyKeywordSearcher,
+                 searcher=FuzzyPhraseSearcher,
+                 junksearcher=FuzzyPhraseSearcher,
                  # patterns=list,
                  register=dict,
                  rev_graph=dict,
@@ -130,34 +117,39 @@ class FndMatch(object):
 
     def match_candidates(self, heer=str):
         found_heer = Heer()
-        candidates = self.searcher.find_candidates(text=heer)
-        if candidates:
-            # sort the best candidate
-            candidate = max(candidates, key=lambda x: x['levenshtein_distance'])
-            levenshtein_distance = candidate['levenshtein_distance']
-            searchterm = candidate['match_keyword']
-            n_candidates = self.rev_graph.get(searchterm) or []
-            found_heer.levenshtein_distance = levenshtein_distance
-            found_heer.searchterm = searchterm
-            found_heer.match_keyword = searchterm
-            found_heer.score = 1.0
-            if len(n_candidates) == 0:
-                found_heer.fill('')
-            elif len(n_candidates) == 1:
-                found_heer.proposed_delegate = n_candidates[0]
-                candidate = iterative_search(name=found_heer.proposed_delegate, year=self.year, df=self.df)
-                found_heer.fill(candidate)
-            else:
-                candidate = self.composite_name(candidates=n_candidates, heer='')
-                found_heer.fill(candidate)
-            found_heer.probably_junk = self.is_heer_junk(heer)
+        try:
+            candidates = self.searcher.find_matches(text=heer, use_word_boundaries=False, include_variants=True)
+            if candidates:
+                # sort the best candidate
+                candidate = max(candidates, key=lambda x: x.levenshtein_distance)
+                levenshtein_similarity = candidate.levenshtein_similarity
+                searchterm = candidate.phrase.exact_string
+                n_candidates = self.rev_graph.get(searchterm) or []
+                found_heer.levenshtein_distance = levenshtein_similarity
+                found_heer.searchterm = searchterm
+                found_heer.match_keyword = searchterm
+                found_heer.score = 1.0
+                if len(n_candidates) == 0:
+                    found_heer.fill('')
+                elif len(n_candidates) == 1:
+                    found_heer.proposed_delegate = n_candidates[0]
+                    candidate = iterative_search(name=found_heer.proposed_delegate, year=self.year, df=self.df)
+                    found_heer.fill(candidate)
+                else:
+                    candidate = self.composite_name(candidates=n_candidates, heer='')
+                    found_heer.fill(candidate)
+                found_heer.probably_junk = self.is_heer_junk(heer)
+        except ValueError:
+            logging.info(msg=f'{heer} ValueError')
+            pass
+
         return found_heer
 
     def composite_name(self, candidates=[], heer='', searchterm=str):
         dayinterval = pd.Interval(self.year, self.year, closed="both")
         candidate = dedup_candidates(proposed_candidates=candidates,
                                      register=self.register,
-                                     searcher=cdksearcher,
+                                     searcher=herensearcher,
                                      searchterm=searchterm,
                                      dayinterval=dayinterval,
                                      df=self.df)
@@ -182,6 +174,7 @@ class FndMatch(object):
                 probably_junk = True
             return probably_junk
         except ValueError:
+            logging.info(f"fuzzysearcher value error raised #{heer}#, {self.junksearcher.phrase_model.json}")
             return True
 
 
@@ -213,11 +206,11 @@ class MatchAndSpan(object):
 
     def match_unmarked(self, unmarked_text):
         s = unmarked_text
-        mtch = self.previously_matched.name.apply(lambda x: score_levenshtein_distance_ratio(x, s) > 0.6)
+        mtch = self.previously_matched.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s) > 0.6)
         tussenr = self.previously_matched.loc[mtch]
         try:
             if len(tussenr) > 0:
-                tussenr['score'] = tussenr.name.apply(lambda x: score_levenshtein_distance_ratio(x, s))
+                tussenr['score'] = tussenr.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s))
                 matchname = tussenr.loc[tussenr.score == tussenr.score.max()]
                 nm = matchname.name.iat[0]
                 idnr = matchname.id.iat[0]
@@ -225,7 +218,7 @@ class MatchAndSpan(object):
                 self.search_results[s] = {'match_term': nm, 'match_string': s, 'score': score}
             else:
                 # matchname = iterative_search(
-                search_result = self.match_search.find_candidates(s, include_variants=True)
+                search_result = self.match_search.find_matches(s, include_variants=True, use_word_boundaries=False)
                 if len(search_result) > 0:
                     self.search_results[s] = max(search_result,
                                                  key=lambda x: x['levenshtein_distance'])
@@ -254,7 +247,7 @@ class MatchAndSpan(object):
 
 
 def dedup_candidates(proposed_candidates=[],
-                     searcher=FuzzyKeywordSearcher,
+                     searcher=FuzzyPhraseSearcher,
                      register=dict,
                      dayinterval=pd.Interval,
                      df=pd.DataFrame,
@@ -264,12 +257,13 @@ def dedup_candidates(proposed_candidates=[],
         prts = nm_to_delen(d)
         for p in prts:
             if p != searchterm:
-                score = cdksearcher.find_candidates(text=p)
+                score = searcher.find_matches(text=p, include_variants=True,use_word_boundaries=False)
                 if len(score) > 1:
-                    score=max(score, key=lambda x: x.get('levenshtein_distance'))
+                    n = argmax(score_match(score))
+                    score = score[n]
                 if score:
                     try:
-                        scores[d] = (score[0].get('levenshtein_distance'), p)
+                        scores[d] = (score.levenshtein_similarity, p)
                     except:
                         print (score)
     if not scores:
@@ -282,13 +276,6 @@ def dedup_candidates(proposed_candidates=[],
         candidate = pd.DataFrame() # searchterm
     return result
 
-
-# In[29]:
-
-
-# and a second try
-cdksearcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
-#cdksearcher.index_keywords(list(cdk.keys()))
 
 def dedup_candidates2(proposed_candidates=[], dayinterval=pd.Interval, df=pd.DataFrame):
     if type(proposed_candidates) == str:

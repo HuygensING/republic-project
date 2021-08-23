@@ -2,7 +2,14 @@ import itertools
 import json
 import logging
 import pandas as pd
-from ..fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
+#from ..fuzzy.fuzzy_keyword_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_phrase_model import PhraseModel
+#from scipy.special import softmax
+from numpy import argmax
+from .republic_phrase_model import resolution_phrase_model
+from ..helper.utils import score_match
+
 
 fuzzysearch_config = {
     "char_match_threshold": 0.8,
@@ -13,25 +20,30 @@ fuzzysearch_config = {
     "skip_size": 2,
 }
 
-keywsearcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
+resumption_searcher = FuzzyPhraseSearcher(config=fuzzysearch_config)
+resumption = resolution_phrase_model[-3:]
+# let's extend these a bit
 yesterdays = ['gisteren', 'eergisteren', 'voorleden donderdag',
               'voorleden vrijdagh', 'voorlede saterdagh']
-searchstring = "Resolutien {g} ge-"
-samenv = []
+searchstring = "DE Resolutien {g} ge-"
+mrge = []
 for g in yesterdays:
-    samenv.append(searchstring.format(g=g))
-extra = [
-    'Raefslitien oilteren geno-hen ',
-    'Resolutien voorlede Sa-B DD erdagh genoomen ',
-    'Kelolutien g1-fteren genomen ',
-    'Resolutien eerg1-teren genomen ',
-    'Relolútien sifteren veno-men ',
-    'Relolutief Miteref sênio-B ND men',
-    'Refolutien voorleden Don-derdach genoomen ',
-]
-samenv.extend(extra)
-keywsearcher.index_keywords(samenv)
+    mrge.append(searchstring.format(g=g))
+resumption[1]["variants"].extend(mrge)
+# extra = [
+#     'Raefslitien oilteren geno-hen ',
+#     'Resolutien voorlede Sa-B DD erdagh genoomen ',
+#     'Kelolutien g1-fteren genomen ',
+#     'Resolutien eerg1-teren genomen ',
+#     'Relolútien sifteren veno-men ',
+#     'Relolutief Miteref sênio-B ND men',
+#     'Refolutien voorleden Don-derdach genoomen ',
+# ]
+# samenv.extend(extra)
 
+phrase_model = PhraseModel(resumption)
+# phrase_model.add_variants(variants)
+resumption_searcher.index_phrase_model(phrase_model=phrase_model)
 
 # we want this in an object so that we can store some metadata on it and retrieve them any time
 class TextWithMetadata(object):
@@ -91,21 +103,24 @@ class TextWithMetadata(object):
         #                 return result
 
         # al = [p for p in searchob['_source']['annotations'] if p['type'] == 'attendance_list'][0] # there should be only one
+
         al = [p for p in searchob['_source']['annotations'] if 'attendance_list' in p['id']][0]
         txt = searchob['_source']['text']
         start = al['start_offset']
         end = al['end_offset']
-        # resumption = keywsearcher.find_candidates(txt, include_variants=True)
-        # if resumption:
-        #     moffset = resumption[0].get('match_offset') or 0
-        #     if moffset > 0:
-        #         if moffset < end:
-        #             end = moffset
         text = txt[start:end]
-        if len(text) > 750: # something went wrong in the session matching, let's truncate the text
+        self.resumptionstart = 0
+        res = resumption_searcher.find_matches(text, include_variants=True, use_word_boundaries=False)
+        if res:
+            softscore = [score_match(match) for match in res]
+            i = argmax(softscore)
+            newend = res[i].offset
+            text = text[:newend]
+            self.resumptionstart = newend
+        if len(text) > 850: # something went wrong in the session matching, let's truncate the text
             message = f"Too long text: {self.meeting_date} - length: {len(text)}. Scan: {self.scan}. Text truncated"
             logging.info(message)
-            text = text[:750]
+            text = text[:850]
         return text
 
     def make_url(self):
@@ -269,7 +284,12 @@ class MatchedText(object):
                 ff = self.color_match(fragment['pattern'], color=tcolor)
                 outfragments.append(ff)
             else:
-                outfragments.append(fragment['pattern'])
+                if fragment['pattern'].strip() == '':
+                    frange = (fragment["begin"], fragment["end"])
+                    pattern = self.item[frange[0]:frange[1]]
+                else:
+                    pattern = fragment['pattern']
+                outfragments.append(pattern)
         txt = " ".join(outfragments)  # may want to turn this in object property
         return txt
 

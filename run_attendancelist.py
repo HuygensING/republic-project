@@ -1,11 +1,18 @@
 import logging
 import os
+import json
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
 from republic.analyser.attendance_lists.pattern_finders import *
 from republic.analyser.attendance_lists.parse_delegates import *
 from republic.helper.similarity_match import FuzzyKeywordGrouper
 from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from republic.helper.utils import reverse_dict
+
+def start_logger(outdir, year):
+    print(f"logging to {os.path.join(outdir, 'attendancelist.log')}")
+    logging.basicConfig(filename=os.path.join(outdir, 'attendancelist.log'), level=logging.INFO)
+    logging.info(f'{year} Started')
+
 
 fuzzysearch_config = {
     "char_match_threshold": 0.7,
@@ -83,8 +90,6 @@ def prepare_found_delegates(framed_gtlm, found_delegates, year):
 
 
 def run(year=0, outdir='', verbose=True):
-    logging.basicConfig(filename=os.path.join(outdir, 'attendancelist.log'), level=logging.INFO)
-    logging.info(f'{year} Started')
     runner = RunAll(year=year)
     if verbose:
         print("- gathering attendance lists")
@@ -128,8 +133,10 @@ class RunAll(object):
                  kwrds=kwrds,
                  found_delegates=found_delegates,
                  matchfnd=matchfinder,
-                 ekwz=ekwz
+                 ekwz=ekwz,
+                 outdir=''
                  ):
+        start_logger(outdir, year)
         self.year = year
         self.searchobs = make_presentielijsten(year=self.year)
         logging.info(f'year: {year}, nr of attendancelists {len(self.searchobs)}')
@@ -139,6 +146,7 @@ class RunAll(object):
         self.pm_heren = list(found_delegates['name'].unique())
         self.matchfnd = matchfnd
         self.herenkeywords = kwrds
+
 
     def initial_find(self):
         print("1. finding presidents")
@@ -187,29 +195,29 @@ class RunAll(object):
 
     def identify_delegates(self):
         """make search objects from matched delegates that are in self.all_matched"""
-        matchsearch = FuzzyKeywordSearcher(config=fuzzysearch_config)
+        matchsearch = FuzzyPhraseSearcher(config=fuzzysearch_config)
         kws = defaultdict(list)
         matcher = {}
+        phrases = []
         for key in self.all_matched:
-            variants = self.all_matched[key].get('variants')
-            keyword = self.all_matched[key].get('m_kw')
-            idnr = self.all_matched[key].get('id')
-            name = self.all_matched[key].get('name')
-            for variant in variants:
-                kws[keyword].append(variant[0])
-                matcher[variant[0]] = {'kw': keyword, 'id': idnr, 'name': name}
-        matchsearch.index_keywords(list(kws.keys()))
-        for k in kws:
-            for v in kws[k]:
-                matchsearch.index_spelling_variant(keyword=k, variant=v)
+            kw = self.all_matched[key]
+            variants = kw.get('variants')
+            keyword = kw.get('m_kw')
+            id = kw.get('id')
+            label = kw.get('name')
+            if keyword != '':
+                phrase = {'phrase':keyword, 'label': f"{label}({id})", 'variants': variants}
+                phrases.append(phrase)
+        phrase_model = PhraseModel(phrases=phrases)
+        matchsearch.index_phrase_model(phrase_model=phrase_model)
         return matchsearch
 
     def verify_matches(self):
         all_matched = self.all_matched
 
         print("5. verifying matches")
-        for T in self.searchobs:
-            ob = self.searchobs[T].matched_text
+        # for T in self.searchobs:
+        #     ob = self.searchobs[T].matched_text
         delresults = Counter()
         for T in self.searchobs.keys():
             searchob = self.searchobs[T]
@@ -239,7 +247,8 @@ class RunAll(object):
                 mo = MatchAndSpan(searchob.matched_text, junksweeper=junksweeper, previously_matched=self.found_delegates,
                               match_search=matchsearch)
             except TypeError:
-                print (T, searchob.matched_text)
+                print (T, searchob.matched_text.item)
+                raise
             delegates2spans(searchob, framed_gtlm=framed_gtlm)
         print("updating merged delegates database")
         merged_deps = pd.merge(left=framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id",
