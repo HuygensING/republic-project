@@ -373,6 +373,10 @@ organisation_phrases = [
         'label': ['organisation', 'council_of_states'],
     },
     {
+        'phrase': 'Raad der Stad',
+        'label': ['organisation', 'city_council'],
+    },
+    {
         'phrase': 'den Eerste Raad',
         'label': ['organisation', 'council'],
     },
@@ -494,6 +498,170 @@ location_phrases = [
         'phrase': 'Pruissen',
         'label': ['location', 'region'],
     },
+    {
+        'phrase': 'Londen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Parys',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Brussel',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Weenen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Franckfort',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Regensburgh',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Berlyn',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Hamburg',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Stockholm',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Lissabon',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Keulen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Madrid',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'St. Petersburg',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Koppenhagen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Rotterdam',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Mentz',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Amsterdam',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Dresden',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Middelburg',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Venlo',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Groningen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Dantzig',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': "'s Hertogenbosch",
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Livorno',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Turin',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Utrecht',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Munster',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Maastricht',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Manheim',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Arnhem',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Algiers',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Barcelona',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Enckhuisen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Goedesberg by Bonn',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Harlingen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Leyden',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Maltha',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Paramaribo',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Waalwyk',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Eyndhoven',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Dordrecht',
+        'label': ['location', 'region'],
+    },
 
 ]
 
@@ -513,6 +681,22 @@ person_role_phrases = [
     },
     {
         'phrase': 'Burger',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'den Resident',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'Huisvrouw',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'Weduwe',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'Weduwnaar',
         'label': ['citizen', 'person_role']
     },
     {
@@ -577,6 +761,10 @@ person_role_phrases = [
     {
         'phrase': 'Generaal Major',
         'label': ['person_role', 'general_major', 'domain:military'],
+    },
+    {
+        'phrase': 'Lieutenant',
+        'label': ['person_role', 'lieutenant', 'domain:military'],
     },
     {
         'phrase': 'de Kinderen van ',
@@ -645,7 +833,17 @@ person_role_phrases = [
         'role': 'captain_of_company'
     },
     {
-        'phrase': 'van Balliuw, Burgermeester en Scheepenen',
+        'phrase': 'Balliuw',
+        'label': ['person_role', 'representative', 'magistrate'],
+        'role': 'magistrate_single'
+    },
+    {
+        'phrase': 'Burgemeester',
+        'label': ['person_role', 'representative', 'magistrate'],
+        'role': 'magistrate_single'
+    },
+    {
+        'phrase': 'Scheepenen',
         'label': ['person_role', 'representative', 'magistrate'],
         'role': 'magistrate_multi'
     },
@@ -856,7 +1054,6 @@ misc = [
             "de gewoonlijke Nieuwejaars-Gifte van",
         ]
     },
-
     {
         'phrase': 'den Handel in',
         'label': ['trade', 'trade_relation'],
@@ -911,6 +1108,14 @@ provinces = [
         'phrase': ' van Vriesland',
         'label': 'of_province'
     },
+]
+
+
+known_persons = [
+    {
+        'phrase': 'Fagel',
+        'label': ['person_name', 'griffier_name']
+    }
 ]
 
 opening_formulas = [

@@ -155,7 +155,9 @@ def generate_resolution_metadata(phrase_matches: List[PhraseMatch], resolution: 
                     'group_label': group_label,
                     'element_label': element_match['label'],
                     'phrase': phrase_match.phrase.phrase_string,
-                    'evidence': phrase_match.json()
+                    'evidence': phrase_match.json(),
+                    'start_offset': phrase_match.offset,
+                    'end_offset': phrase_match.offset + len(phrase_match.string)
                 })
             prev_phrase_match = phrase_match
             if group_label == 'proposition_verb':
@@ -168,7 +170,9 @@ def generate_resolution_metadata(phrase_matches: List[PhraseMatch], resolution: 
         full_string = resolution.paragraphs[0].text[group_start:group_end]
         metadata[group].append({
             'element_label': 'full_string',
-            'phrase': full_string
+            'phrase': full_string,
+            'start_offset': group_start,
+            'end_offset': group_end
         })
     return metadata
 
@@ -240,11 +244,19 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
             for element in metadata[metadata_group]:
                 label = element['element_label']
                 if label in group_info:
-                    if isinstance(group_info[label], str):
+                    if not isinstance(group_info[label], list):
                         group_info[label] = [group_info[label]]
-                    group_info[label].append(element['phrase'])
+                    group_info[label].append({
+                        'text': element['phrase'],
+                        'start_offset': element['start_offset'],
+                        'end_offset': element['end_offset']
+                    })
                 else:
-                    group_info[label] = element['phrase']
+                    group_info[label] = {
+                        'text': element['phrase'],
+                        'start_offset': element['start_offset'],
+                        'end_offset': element['end_offset']
+                    }
             # group_info = {element['element_label']: element['phrase'] for element in metadata[metadata_group]}
             resolution.metadata[metadata_group] = group_info
 
@@ -277,6 +289,7 @@ def generate_proposition_searchers(searcher_config: Dict[str, any] = None):
             'skip_size': 1
         }
     phrases = [phrase for phrase_set in rps for phrase in rps[phrase_set]]
+    print(phrases)
     return generate_template_searchers(opening_templates[0], phrases, searcher_config)
 
 

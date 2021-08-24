@@ -80,6 +80,7 @@ opening_templates = [
                     {"label": "affairs_relation", "required": False},
                     {"label": "resolution_relation", "required": False},
                     {"label": "location_relation", "required": False},
+                    {"label": "location", "required": False, "variable": True},
                     {"label": "organisation", "required": False},
                 ]
             },
