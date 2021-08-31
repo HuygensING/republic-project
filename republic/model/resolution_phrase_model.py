@@ -397,6 +397,10 @@ organisation_phrases = [
         'label': ['organisation', 'german', 'political']
     },
     {
+        'phrase': 'by het Department van',
+        'label': ['organisation_relation', 'person_role'],
+    },
+    {
         'phrase': 'de Booden en Posten van',
         'label': ['organisation_relation', 'person_role'],
     },
@@ -662,6 +666,10 @@ location_phrases = [
         'phrase': 'Dordrecht',
         'label': ['location', 'region'],
     },
+    {
+        'phrase': 'Stad en Lande',
+        'label': ['location', 'region'],
+    },
 
 ]
 
@@ -896,6 +904,35 @@ person_role_phrases = [
         'label': ['person_role', 'ambassador', 'representative'],
     },
     {
+        'phrase': 'Schipper',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Leverancier',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Drossard',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Regent',
+        'label': ['person_role', 'merchant'],
+        'variants': ['Regenten']
+    },
+    {
+        'phrase': 'Boekhouder',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Koopman',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Kooplieden',
+        'label': ['person_role', 'merchant', 'merchant_multi'],
+    },
+    {
         'phrase': 'Arbeidsman',
         'label': ['person_role', 'laborer'],
     },
@@ -1063,7 +1100,10 @@ misc = [
     },
     {
         'phrase': 'de Vaart en Handel op de West-indien',
-        'label': ['topic', 'topic:trade', 'domain:maritime']
+        'label': ['topic', 'topic:trade', 'domain:maritime'],
+        'variants': [
+            'den Westindische Handel'
+        ]
     },
     {
         'phrase': 'tot de saaken van',
