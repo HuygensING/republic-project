@@ -59,7 +59,7 @@ def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
 
 def delete_es_index(es: Elasticsearch, index: str):
     if es.indices.exists(index=index):
-        print('exists, deleting')
+        print(f' index{index} exists, deleting')
         es.indices.delete(index=index)
 
 
@@ -440,7 +440,7 @@ def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
         if resolution.metadata['type'] == 'attendance_list':
             continue
         if len(resolution.evidence) == 0:
-            print(resolution.metadata)
+            print('resolution without evidence:', resolution.metadata)
         if resolution.evidence[0].phrase.phrase_string in skip_formulas:
             continue
         new_resolution = add_resolution_metadata(resolution, proposition_searcher,

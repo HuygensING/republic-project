@@ -143,9 +143,14 @@ def generate_resolution_metadata(phrase_matches: List[PhraseMatch], resolution: 
     if len(template_matches) == 0:
         return None
     template_match = template_matches[0]
+    # print(template_match.template)
     prev_phrase_match = None
     extended_elements = variable_matcher.add_variable_phrases(template_match, resolution.paragraphs[0])
+    # print()
     for element_match in extended_elements:
+        # print(element_match['label'])
+        # for match in element_match['phrase_matches']:
+        #     print(match.offset, match.string)
         group_label = element_match['label_groups'][0]
         if len(element_match["phrase_matches"]) == 0:
             continue
@@ -227,9 +232,13 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
     doc = {'id': opening_paragraph.metadata['id'], 'text': proposition_text}
     phrase_matches = proposition_searcher.find_matches(doc)
     phrase_matches = filter_matches(phrase_matches)
-    import json
     try:
         metadata = generate_resolution_metadata(phrase_matches, resolution, opening_searcher, variable_matcher)
+        # for key in metadata:
+            # print(metadata[key])
+            # for element in metadata[key]:
+            #     print(element)
+            #     print()
     except ValueError:
         print(f'Resolution paragraph {opening_paragraph.metadata["id"]}:\n\t', opening_paragraph.text, '\n')
         for match in phrase_matches:
@@ -289,7 +298,6 @@ def generate_proposition_searchers(searcher_config: Dict[str, any] = None):
             'skip_size': 1
         }
     phrases = [phrase for phrase_set in rps for phrase in rps[phrase_set]]
-    print(phrases)
     return generate_template_searchers(opening_templates[0], phrases, searcher_config)
 
 

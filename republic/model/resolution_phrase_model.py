@@ -305,7 +305,47 @@ proposition_closing_phrases = [
 decision_phrases = [
     {
         'phrase': 'WAAR op geen resolutie is gevallen.',
-        'label': 'no_decision'
+        'label': ['no_decision', 'resolution_decision'],
+        'variants': [
+            "Waer op geen resolutie is gevallen",
+            "WAAR op geen resolutie voor alsnoch is gevallen",
+            "Waer op geen resolutie voor alsnoch is gevallen",
+        ],
+    },
+    {
+        'phrase': 'is goedgevonden ende verstaan',
+        'label': 'resolution_decision',
+        'variants': [
+            "IS naar voorgaande deliberatie goedgevonden ende verstaan",
+        ]
+    },
+    {
+        'phrase': 'de voorfchreve Missive copielijck overgenomen',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'waar by goedgevonden is',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'gehouden voor gecommiteert',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'WAAR op gedelibereert en in achtinge genomen zynde',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'WAAR op gedelibereert zijnde',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'WAAR op gedelibereert',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'voor de genomen moeyte bedanckt',  # should probably move somewhere else
+        'label': 'resolution_decision',
     },
     {
         "phrase": "En sal Extract van deese haar Hoog Mogende Resolutie gesonden worden aan",
@@ -927,10 +967,16 @@ person_role_phrases = [
     {
         'phrase': 'Koopman',
         'label': ['person_role', 'merchant'],
+        'variants': [
+            'Koopvrouw'
+        ]
     },
     {
         'phrase': 'Kooplieden',
         'label': ['person_role', 'merchant', 'merchant_multi'],
+        'variants': [
+            'Koopluyden'
+        ]
     },
     {
         'phrase': 'Arbeidsman',

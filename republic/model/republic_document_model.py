@@ -516,7 +516,11 @@ def json_to_physical_elements(republic_json: dict):
     lines = republic_json['lines'] if 'lines' in republic_json else []
     lines = [json_to_pagexml_line(line_json) for line_json in lines]
     evidence = republic_json['evidence'] if 'evidence' in republic_json else []
-    evidence = parse_phrase_matches(evidence)
+    try:
+        evidence = parse_phrase_matches(evidence)
+    except TypeError:
+        print(evidence)
+        raise
     return text_regions, lines, evidence
 
 

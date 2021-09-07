@@ -388,7 +388,8 @@ def parse_lemma_line(line: pdm.PageXMLTextLine) -> Dict[str, Union[str, List[str
         'wan'
     }
     infix_phrases = {
-        'van', 'het', 'de', 'in', 'tot', 'ten', 'op'
+        'de', 'den', 'der', 'het', 'in', 'op', 'te', 'ten', 'tot',
+        'van', 'vande', 'vanden', 'vander'
     }
     lemma_string = line.text.strip()
     words = re.split(r' +', lemma_string)
