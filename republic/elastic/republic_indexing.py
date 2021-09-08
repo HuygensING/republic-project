@@ -382,17 +382,12 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
     }
     print(query)
     print(inv_config['session_lines_index'])
-    #for hit in rep_es.scroll_hits(es, query, index=inv_config['session_lines_index'], size=2):
-    #    print(hit['_id'])
-    #    session_json = hit['_source']
-    #    session = Session(session_json['metadata'], columns=session_json['columns'],
-    #                      scan_versions=session_json['scan_versions'])
     for session in rep_es.retrieve_inventory_sessions_with_lines(es, inv_config['inventory_num'], inv_config):
         print(session.id)
         # print(session.metadata)
         for resolution in get_session_resolutions(session, opening_searcher, verb_searcher):
             add_timestamp(resolution)
-            # print('\t', resolution.id)
+            print('\t', resolution.id, resolution.paragraphs[0].text[:60])
             es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json)
 
 
@@ -432,22 +427,33 @@ def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
     skip_formulas = {
         'heeft aan haar Hoog Mog. voorgedragen',
         'heeft ter Vergadering gecommuniceert ',
-        'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
-        'hebben ter Vergaderinge ingebraght',
-        'hebben ter Vergaderinge voorgedragen'
+        # 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
+        # 'hebben ter Vergaderinge ingebraght',
+        # 'hebben ter Vergaderinge voorgedragen'
     }
-    for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
+    no_evidence = 0
+    attendance = 0
+    no_new = 0
+    for ri, resolution in enumerate(rep_es.scroll_inventory_resolutions(es, inv_config)):
         if resolution.metadata['type'] == 'attendance_list':
+            attendance += 1
             continue
         if len(resolution.evidence) == 0:
             print('resolution without evidence:', resolution.metadata)
         if resolution.evidence[0].phrase.phrase_string in skip_formulas:
-            continue
+            print(resolution.id)
+            print(resolution.paragraphs[0].text)
+            print(resolution.evidence[0])
+            print()
+            # continue
         new_resolution = add_resolution_metadata(resolution, proposition_searcher,
                                                  template_searcher, variable_matcher)
         if not new_resolution:
+            no_new += 1
             continue
         # print(new_resolution.metadata)
+        if (ri+1) % 10 == 0:
+            print(ri+1, 'resolutions parsed\t', attendance, 'attendance lists\t', no_new, 'non-metadata')
         index_resolution_metadata(es, new_resolution, inv_config)
 
 

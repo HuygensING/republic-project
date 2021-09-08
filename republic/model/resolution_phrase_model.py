@@ -17,18 +17,21 @@ proposition_opening_phrases = [
     {
         'phrase': 'ONtfangen een Missive van',
         'label': ['proposition_opening', 'proposition_from_correspondence', 'proposition_type:missive'],
+        'variants': [
+            'ONtfangen twee Missiven van '
+        ],
         'proposition_type': 'missive',
         'max_offset': 10
     },
     {
         'phrase': 'heeft ter Vergadering gecommuniceert ',
         'label': 'proposition_opening',
-        'variants': [
+        'distractors': [
             'heeft ter Vergaderinge ingebraght',
             'heeft ter Vergaderinge voorgedragen',
         ],
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'oral',
+        'max_offset': 500
     },
     {
         'phrase': 'heeft aan haar Hoog Mog. voorgedragen',
@@ -37,20 +40,47 @@ proposition_opening_phrases = [
             'heeft aan haar Hoog Mog. ingebraght',
             'heeft aan haar Hoog Mog. gecommuniceert',
         ],
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'oral',
+        'max_offset': 500
+    },
+    {
+        'phrase': 'hebben ter Vergaderinge voorgedragen ',
+        'label': 'proposition_opening',
+        'proposition_type': 'oral',
+        'max_offset': 500
+    },
+    {
+        'phrase': '  heeft ter Vergaderinge geëxhibeert een Pasport',
+        'label': 'proposition_opening',
+        'proposition_type': 'paspoort',
+        'max_offset': 500
+    },
+    {
+        'phrase': ' heeft ter Vergadering geëxhibeert een Missive van',
+        'label': 'proposition_opening',
+        'proposition_type': 'missive',
+        'max_offset': 500
+    },
+    {
+        'phrase': 'hebben ter Vergaderinge ingebragt en laaten leezen de Resolutie',
+        'label': 'proposition_opening',
+        'variants': [
+            'heeft ter Vergaderinge ingebragt en laaten leezen de Resolutie van '
+        ],
+        'proposition_type': 'resolution',
+        'max_offset': 500
     },
     {
         'phrase': 'hebben ter Vergaderinge ingebraght',
         'label': 'proposition_opening',
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'document',
+        'max_offset': 500
     },
     {
         'phrase': 'hebben ter Vergaderinge voorgedragen',
         'label': 'proposition_opening',
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'oral',
+        'max_offset': 500
     },
     {
         'phrase': 'IS ter Vergaderinge gelesen de Requeste van ',
@@ -133,55 +163,58 @@ proposition_opening_phrases = [
     {
         'phrase': 'OP het geproponeerde door',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'unknown',
         'max_offset': 10
     },
     {
         'phrase': 'OP den differente gereezen voor de',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'differente',
         'max_offset': 10
     },
     {
         'phrase': 'BY Resumtie gedelibereert zynde',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'unknown',
         'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van versoek van',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Antwoord van',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van versoek om',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Duplicq van',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van Replicq op',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
-        'phrase': 'DE Conclusie van Eisch in Revisie van',
+        'phrase': 'DE Conclusie van Eisch',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'variants': [
+            'DE Conclusie van eisen'
+        ],
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
@@ -193,13 +226,13 @@ proposition_opening_phrases = [
     {
         'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'presentatie',
         'max_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde ter Vergaderinge gedaan',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'presentatie',
         'max_offset': 10
     },
     {
@@ -273,6 +306,9 @@ proposition_verbs = [
     {
         'phrase': 'aanneemende',
         'label': ['proposition_verb', 'claim', 'proposition_body'],
+        'distractors': [
+            'waarneemende'
+        ]
     },
     {
         'phrase': 'sustineeren',

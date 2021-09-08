@@ -211,7 +211,7 @@ class ResolutionElementDoc(RepublicDoc):
             self.evidence = evidence
 
     def __repr__(self):
-        return f"AttendanceList({json.dumps(self.json, indent=4)}"
+        return f"ResolutionElementDoc({json.dumps(self.json, indent=4)}"
 
     def get_text_regions_from_paragraphs(self):
         return [text_region for paragraph in self.paragraphs for text_region in paragraph.text_regions]
@@ -277,6 +277,9 @@ class Session(ResolutionElementDoc):
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions
         self.resolutions = []
+
+    def __repr__(self):
+        return f"Session({json.dumps(self.json, indent=4)}"
 
     def add_page_text_region_metadata(self, page_text_region_metadata: Dict[str, dict]) -> None:
         for ci, text_region in enumerate(self.text_regions):
@@ -573,13 +576,14 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
     attendance_list = None
     generate_id = running_id_generator(session.metadata['id'], '-resolution-')
     session_offset = 0
+    print('fuzzy searcher version:', opening_searcher.__version__)
     for paragraph in session.get_paragraphs():
-        # print(paragraph.text, '\n')
+        print('get_session_resolutions - paragraph:\n', paragraph.text, '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         for match in opening_matches + verb_matches:
             match.text_id = paragraph.metadata['id']
-            # print('\t', match.offset, '\t', match.string)
+            print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if len(opening_matches) > 0:
             if attendance_list:
                 yield attendance_list
@@ -722,7 +726,10 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
     doc_text_offset = 0
     generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
     lines = [line for line in doc.get_lines()]
+    print('getting paragraphs with vertical space')
     for li, line in enumerate(lines):
+        # if prev_line:
+        #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
         if is_resolution_gap(prev_line, line):
             if len(para_lines) > 0:
                 metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
@@ -730,6 +737,9 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
                                               word_freq_counter=word_freq_counter)
                 paragraph.metadata['start_offset'] = doc_text_offset
                 doc_text_offset += len(paragraph.text)
+                # print('appending paragraph:', paragraph.id)
+                # print(paragraph.text)
+                # print()
                 paragraphs.append(paragraph)
             para_lines = []
         para_lines.append(line)
@@ -754,16 +764,20 @@ def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine)
     # Resolution start line has big capital with low bottom.
     # If gap between box bottoms is small, this is no resolution gap.
     if -20 < line.coords.bottom - prev_line.coords.bottom < 80:
+        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
         return False
     # If this line starts with a big capital, this is a resolution gap.
     if pdm.line_starts_with_big_capital(line):
+        # print('is_resolution_gap: True, line starts with capital')
         return True
     # If the previous line has no big capital starting a resolution,
     # and it has a large vertical gap with the current line,
     # this is resolution gap.
     if not pdm.line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
+        # print('is_resolution_gap: True', line.coords.bottom - prev_line.coords.bottom)
         return True
     else:
+        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
         return False
 
 

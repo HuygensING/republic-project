@@ -396,12 +396,12 @@ def retrieve_pagexml_sessions(es: Elasticsearch, inv_num: int, config: dict) -> 
 
 
 def retrieve_sessions_by_query(es: Elasticsearch, query: dict, config: dict) -> List[Session]:
-    response = es.search(index=config['session_index'], body=query)
+    response = es.search(index=config['session_lines_index'], body=query)
     if response['hits']['total']['value'] == 0:
         return []
     else:
         docs = [hit['_source'] for hit in response['hits']['hits']]
-        return [session_from_json(doc) for doc in docs]
+        return [json_to_republic_session(doc) for doc in docs]
 
 
 def retrieve_session_text_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
