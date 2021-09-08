@@ -578,12 +578,12 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
     session_offset = 0
     print('fuzzy searcher version:', opening_searcher.__version__)
     for paragraph in session.get_paragraphs():
-        print('get_session_resolutions - paragraph:\n', paragraph.text, '\n')
+        # print('get_session_resolutions - paragraph:\n', paragraph.text, '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         for match in opening_matches + verb_matches:
             match.text_id = paragraph.metadata['id']
-            print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
+            # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if len(opening_matches) > 0:
             if attendance_list:
                 yield attendance_list
@@ -726,7 +726,7 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
     doc_text_offset = 0
     generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
     lines = [line for line in doc.get_lines()]
-    print('getting paragraphs with vertical space')
+    # print('getting paragraphs with vertical space')
     for li, line in enumerate(lines):
         # if prev_line:
         #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
