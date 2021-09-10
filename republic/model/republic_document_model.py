@@ -1,4 +1,4 @@
-from collections import Counter, defaultdict
+from collections import Counter
 from typing import Dict, Generator, List, Set, Union
 import copy
 import re
@@ -6,11 +6,12 @@ import json
 
 from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
+import republic.model.physical_document_model as pdm
 from republic.model.physical_document_model import LogicalStructureDoc, PageXMLTextLine, PageXMLWord
 from republic.model.physical_document_model import PageXMLTextRegion
 from republic.model.physical_document_model import same_column, json_to_pagexml_text_region
 from republic.model.physical_document_model import json_to_pagexml_line
-from republic.model.physical_document_model import parse_derived_coords, line_ends_with_word_break
+from republic.model.physical_document_model import line_ends_with_word_break
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 import republic.model.resolution_phrase_model as rpm
@@ -210,7 +211,7 @@ class ResolutionElementDoc(RepublicDoc):
             self.evidence = evidence
 
     def __repr__(self):
-        return f"AttendanceList({json.dumps(self.json, indent=4)}"
+        return f"ResolutionElementDoc({json.dumps(self.json, indent=4)}"
 
     def get_text_regions_from_paragraphs(self):
         return [text_region for paragraph in self.paragraphs for text_region in paragraph.text_regions]
@@ -276,6 +277,9 @@ class Session(ResolutionElementDoc):
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions
         self.resolutions = []
+
+    def __repr__(self):
+        return f"Session({json.dumps(self.json, indent=4)}"
 
     def add_page_text_region_metadata(self, page_text_region_metadata: Dict[str, dict]) -> None:
         for ci, text_region in enumerate(self.text_regions):
@@ -515,7 +519,11 @@ def json_to_physical_elements(republic_json: dict):
     lines = republic_json['lines'] if 'lines' in republic_json else []
     lines = [json_to_pagexml_line(line_json) for line_json in lines]
     evidence = republic_json['evidence'] if 'evidence' in republic_json else []
-    evidence = parse_phrase_matches(evidence)
+    try:
+        evidence = parse_phrase_matches(evidence)
+    except TypeError:
+        print(evidence)
+        raise
     return text_regions, lines, evidence
 
 
@@ -568,13 +576,14 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
     attendance_list = None
     generate_id = running_id_generator(session.metadata['id'], '-resolution-')
     session_offset = 0
+    print('fuzzy searcher version:', opening_searcher.__version__)
     for paragraph in session.get_paragraphs():
-        # print(paragraph.text, '\n')
+        # print('get_session_resolutions - paragraph:\n', paragraph.text, '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         for match in opening_matches + verb_matches:
             match.text_id = paragraph.metadata['id']
-            # print('\t', match.offset, '\t', match.string)
+            # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if len(opening_matches) > 0:
             if attendance_list:
                 yield attendance_list
@@ -588,7 +597,11 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
             metadata['session_num'] = session.metadata['session_num']
             metadata['inventory_num'] = session.metadata['inventory_num']
             metadata['president'] = session.metadata['president']
-            resolution = Resolution(metadata=metadata)
+            metadata['session_year'] = session.metadata['session_year']
+            metadata['session_month'] = session.metadata['session_month']
+            metadata['session_day'] = session.metadata['session_day']
+            metadata['session_weekday'] = session.metadata['session_weekday']
+            resolution = Resolution(doc_id=metadata['id'], metadata=metadata)
             # print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
@@ -602,7 +615,7 @@ def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearc
             metadata['session_num'] = session.metadata['session_num']
             metadata['inventory_num'] = session.metadata['inventory_num']
             metadata['president'] = session.metadata['president']
-            attendance_list = AttendanceList(metadata=metadata)
+            attendance_list = AttendanceList(doc_id=metadata['id'], metadata=metadata)
             # print('\tCreating new attedance list with number:', 1, attendance_list.metadata['id'])
             attendance_list.add_paragraph(paragraph, matches=[])
         # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
@@ -692,9 +705,9 @@ def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, PageXMLT
             continue
         if prev_line and line.is_next_to(prev_line):
             continue
-        if prev_line and line.text and line.is_next_to(prev_line):
-            words = re.split(r"\W+", line.text)
-            word_counts = [word_freq_counter[word] for word in words if word != ""]
+        # if prev_line and line.text and line.is_next_to(prev_line):
+            # words = re.split(r"\W+", line.text)
+            # word_counts = [word_freq_counter[word] for word in words if word != ""]
         prev_line = line
     if len(para_lines) > 0:
         metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
@@ -713,14 +726,20 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
     doc_text_offset = 0
     generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
     lines = [line for line in doc.get_lines()]
+    # print('getting paragraphs with vertical space')
     for li, line in enumerate(lines):
-        if prev_line and line.coords.top - prev_line.coords.top > 65:
+        # if prev_line:
+        #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
+        if is_resolution_gap(prev_line, line):
             if len(para_lines) > 0:
                 metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
                 paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
                                               word_freq_counter=word_freq_counter)
                 paragraph.metadata['start_offset'] = doc_text_offset
                 doc_text_offset += len(paragraph.text)
+                # print('appending paragraph:', paragraph.id)
+                # print(paragraph.text)
+                # print()
                 paragraphs.append(paragraph)
             para_lines = []
         para_lines.append(line)
@@ -739,6 +758,29 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
     return paragraphs
 
 
+def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine) -> bool:
+    if not prev_line:
+        return False
+    # Resolution start line has big capital with low bottom.
+    # If gap between box bottoms is small, this is no resolution gap.
+    if -20 < line.coords.bottom - prev_line.coords.bottom < 80:
+        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
+        return False
+    # If this line starts with a big capital, this is a resolution gap.
+    if pdm.line_starts_with_big_capital(line):
+        # print('is_resolution_gap: True, line starts with capital')
+        return True
+    # If the previous line has no big capital starting a resolution,
+    # and it has a large vertical gap with the current line,
+    # this is resolution gap.
+    if not pdm.line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
+        # print('is_resolution_gap: True', line.coords.bottom - prev_line.coords.bottom)
+        return True
+    else:
+        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
+        return False
+
+
 def get_session_scans_version(session: Session) -> List:
     scans_version = {}
     for line in session.lines:
@@ -746,147 +788,6 @@ def get_session_scans_version(session: Session) -> List:
         scans_version[line.metadata['doc_id']]['doc_id'] = line.metadata['doc_id']
     # print("session scans versions:", scans_version)
     return list(scans_version.values())
-
-
-def make_paragraph_line_annotations(paragraph: RepublicParagraph, doc_text_offset: int,
-                                    line_index: Dict[str, PageXMLTextLine]) -> List[Dict[str, any]]:
-    annotations = []
-    tr_lines = defaultdict(list)
-    for line_range in paragraph.line_ranges:
-        line = line_index[line_range['line_id']]
-        tr_lines[line.metadata['column_id']].append(line_range)
-    for column_id in tr_lines:
-        coords = parse_derived_coords([line_index[line_range['line_id']] for line_range in tr_lines[column_id]])
-        first_line = line_index[tr_lines[column_id][0]['line_id']]
-        tr_id = first_line.metadata['scan_id'] + f"-text_region-{coords.x}-{coords.y}-{coords.w}-{coords.h}"
-        tr_anno = {
-            'id': tr_id,
-            'type': 'text_region',
-            'coords': coords.points,
-            'start_offset': doc_text_offset + tr_lines[column_id][0]['start'],
-            'end_offset': doc_text_offset + tr_lines[column_id][-1]['end'],
-            'metadata': {
-                'para_id': paragraph.metadata['id'],
-                'scan_id': first_line.metadata['scan_id']
-            }
-        }
-        annotations.append(tr_anno)
-        for line_range in tr_lines[column_id]:
-            para_offset = line_range['start']
-            para_end = line_range['end']
-            # line_anno = line_index[line_range['line_id']].json
-            # line_anno['type'] = 'line'
-            line_anno = {
-                'id': line_range['line_id'],
-                'type': 'line',
-                'start_offset': doc_text_offset + para_offset,
-                'end_offset': doc_text_offset + para_end,
-                "metadata": {
-                    'text_region_id': tr_id,
-                    'para_id': paragraph.metadata['id'],
-                    'scan_id': line_index[line_range['line_id']].metadata['scan_id']
-                },
-                "coords": line_index[line_range['line_id']].coords.points
-            }
-            annotations.append(line_anno)
-    # for line_range in paragraph.line_ranges:
-    return annotations
-
-
-def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int,
-                              parent_id: str) -> Dict[str, any]:
-    return {
-        'id': paragraph.id,
-        'type': 'paragraph',
-        'metadata': {
-            'parent_id': parent_id,
-            'num_lines': len(paragraph.line_ranges),
-            'num_words': len(re.split(r'\W+', paragraph.text))
-        },
-        'start_offset': doc_text_offset,
-        'end_offset': doc_text_offset + len(paragraph.text),
-    }
-
-
-def make_resolution_annotation(resolution: Resolution, doc_text_offset: int, parent_id: str):
-    resolution_anno = {
-        'id': resolution.metadata['id'],
-        'type': 'resolution',
-        'metadata': resolution.metadata,
-        'paragraphs': [],
-        'start_offset': doc_text_offset
-    }
-    resolution_anno['metadata']['parent_id'] = parent_id
-    return resolution_anno
-
-
-def make_session_text_version(session: Session):
-    session.scan_versions = get_session_scans_version(session)
-    annotations = []
-    line_index = {
-        line.id: line for text_region in session.text_regions for line in text_region.lines
-    }
-    session_text_offset = 0
-    session_text = ''
-    opening_searcher, verb_searcher = configure_resolution_searchers()
-    resolutions = get_session_resolutions(session, opening_searcher, verb_searcher)
-    for resolution in resolutions:
-        resolution_anno = make_resolution_annotation(resolution, session_text_offset,
-                                                     session.metadata['id'])
-        annotations.append(resolution_anno)
-        for paragraph in resolution.paragraphs:
-            para_annotation = make_paragraph_annotation(paragraph, session_text_offset, resolution.metadata['id'])
-            annotations.append(para_annotation)
-            annotations += make_paragraph_line_annotations(paragraph, session_text_offset, line_index)
-            session_text_offset += len(paragraph.text)
-            session_text += paragraph.text
-            resolution_anno['paragraphs'].append(paragraph.metadata['id'])
-        resolution_anno['end_offset'] = session_text_offset
-    annotations += get_scan_annotations(annotations, session)
-    session_text_doc = {
-        'metadata': session.metadata,
-        'text': session_text,
-        "annotations": sort_annotations(annotations)
-    }
-    session_text_doc['metadata']['scan_versions'] = session.scan_versions
-    return session_text_doc
-
-
-def get_scan_annotations(annotations: List[Dict[str, any]],
-                         session: Session) -> List[Dict[str, any]]:
-    scan_annotations = []
-    line_annotations = [anno for anno in annotations if anno['type'] == 'line']
-    scan_lines = defaultdict(list)
-    for line_anno in line_annotations:
-        scan_lines[line_anno['metadata']['scan_id']].append(line_anno)
-    for scan_id in scan_lines:
-        urls = make_scan_urls(inventory_num=session.metadata['inventory_num'], scan_id=scan_id)
-        scan_anno = {
-            'id': scan_id,
-            'type': 'scan',
-            'start_offset': scan_lines[scan_id][0]['start_offset'],
-            'end_offset': scan_lines[scan_id][-1]['end_offset'],
-            'metadata': {
-                'iiif_info_url': urls['iiif_info_url'],
-                'iiif_url': urls['iiif_url'],
-                'filepath': urls['jpg_filepath']
-            }
-        }
-        scan_annotations.append(scan_anno)
-    return scan_annotations
-
-
-def sort_annotations(annotations: List[Dict[str, any]]) -> List[Dict[str, any]]:
-    order = {
-        'scan': 0,
-        'attendance_list': 1,
-        'resolution': 1,
-        'paragraph': 2,
-        'text_region': 3,
-        'line': 4,
-        'attendant': 5
-    }
-    return sorted(annotations, key=lambda x: (x['start_offset'], order[x['type']]))
 
 
 def configure_resolution_searchers():
