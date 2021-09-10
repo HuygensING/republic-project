@@ -7,3 +7,5 @@ __pycache__
 nohup*
 *.iml
 .idea/*
+Naamloos*
+*.log

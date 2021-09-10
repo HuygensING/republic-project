@@ -15,9 +15,9 @@ fuzzysearch_config = {
     "char_match_threshold": 0.8,
     "ngram_threshold": 0.6,
     "levenshtein_threshold": 0.5,
-    "ignorecase": False,
-    "ngram_size": 2,
-    "skip_size": 2,
+    "ignorecase": True,
+    "ngram_size": 3,
+    "skip_size": 1,
 }
 
 resumption_searcher = FuzzyPhraseSearcher(config=fuzzysearch_config)
@@ -41,7 +41,7 @@ resumption[1]["variants"].extend(mrge)
 # ]
 # samenv.extend(extra)
 
-phrase_model = PhraseModel(resumption)
+phrase_model = PhraseModel(resumption, config=fuzzysearch_config)
 # phrase_model.add_variants(variants)
 resumption_searcher.index_phrase_model(phrase_model=phrase_model)
 
@@ -467,6 +467,15 @@ class Variant(object):
         self.score = rec[2]
         self.heer = heer
         self.heerid = idnr
+
+    def __str__(self):
+        return self.form
+
+    def __iter__(self):
+        return iter(self.form)
+
+    def __len__(self):
+        return len(self.form)
 
     def __repr__(self):
         return self.form

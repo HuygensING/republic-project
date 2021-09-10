@@ -4,6 +4,7 @@ import json
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
 from republic.analyser.attendance_lists.pattern_finders import *
 from republic.analyser.attendance_lists.parse_delegates import *
+from republic.analyser.attendance_lists.searchers import make_junksweeper
 from republic.helper.similarity_match import FuzzyKeywordGrouper
 from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from republic.helper.utils import reverse_dict
@@ -15,12 +16,12 @@ def start_logger(outdir, year):
 
 
 fuzzysearch_config = {
-    "char_match_threshold": 0.7,
-    "ngram_threshold": 0.5,
+    "char_match_threshold": 0.8,
+    "ngram_threshold": 0.6,
     "levenshtein_threshold": 0.5,
     "ignorecase": False,
-    "ngram_size": 2,
-    "skip_size": 2,
+    "ngram_size": 3,
+    "skip_size": 1,
 }
 
 # we define a number of data sources at the module level
@@ -156,16 +157,23 @@ class RunAll(object):
         print("2.find provincial extraordinaris gedeputeerden")
         ps = province_searcher(presentielijsten=self.searchobs)
 
-    def find_unmarked_text(self):
+    def find_unmarked_text(self, sweep=True):
         print("3. finding unmarked text")
         unmarked = make_groslijst(presentielijsten=self.searchobs)
         c = Counter(unmarked)
         tussenkeys = FuzzyKeywordGrouper(keyword_list=list(c.keys()))
         dralist = tussenkeys.vars2graph()
-        unmarked_text = sweep_list(dralist, junksweeper=self.junksweeper)
+        if sweep:
+            unmarked_text = sweep_list(dralist, junksweeper=self.junksweeper)
+        else:
+            unmarked_text = dralist
         return unmarked_text
 
     def gather_found_delegates(self):
+        """try to find delegates in all as yet unmarked text.
+        All identified delegates are collected in self.all_matched
+        All unidentified keywords are left in self.unmatched for further processing
+        """
         deputies = self.find_unmarked_text()
         # existing_herensearcher = FuzzyKeywordSearcher(config=fuzzysearch_config)
         # existing_herensearcher.index_keywords(self.pm_heren)
@@ -190,8 +198,20 @@ class RunAll(object):
                     all_matched[key] = d[key]
                 else:
                     all_matched[key]['variants'].extend(d[key]['variants'])
-        print(f"total {len(all_matched)} found")
+        print(f"total {len(all_matched)} found ")
         self.all_matched = all_matched
+        self.unmatched = new_found_delegates['unmatched']
+        self.moregentlemen = [MatchHeer(all_matched[d]) for d in all_matched.keys() if
+                              type(d) == int]  # strange keys sneak in
+        #patch up the dataframe for further matching
+        framed_gtlm = pd.DataFrame(self.moregentlemen)
+        framed_gtlm.rename(columns={0: 'gentleobject'}, inplace=True)
+        framed_gtlm['variants'] = framed_gtlm.gentleobject.apply(lambda x: [e.form for e in x.variants['general']])
+        framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
+        framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
+        framed_gtlm['name'] = framed_gtlm.gentleobject.apply(lambda x: x.name)
+        framed_gtlm['found_in'] = self.year
+        self.framed_gtlm = framed_gtlm
 
     def identify_delegates(self):
         """make search objects from matched delegates that are in self.all_matched"""
@@ -202,59 +222,57 @@ class RunAll(object):
         for key in self.all_matched:
             kw = self.all_matched[key]
             variants = kw.get('variants')
+            variants = [v[1] for v in variants]
             keyword = kw.get('m_kw')
             id = kw.get('id')
             label = kw.get('name')
             if keyword != '':
                 phrase = {'phrase':keyword, 'label': f"{label}({id})", 'variants': variants}
                 phrases.append(phrase)
-        phrase_model = PhraseModel(phrases=phrases)
+        phrase_model = PhraseModel(phrases=phrases, config=fuzzysearch_config)
         matchsearch.index_phrase_model(phrase_model=phrase_model)
         return matchsearch
 
     def verify_matches(self):
+        """We try to turn the delegates that are collected in self.all_matched into text annotations
+         all delegates have been identified (not necessarily correctly though)
+         and the dictionary contains a number of variants. These _should_ be a good point of departure"""
         all_matched = self.all_matched
 
         print("5. verifying matches")
         # for T in self.searchobs:
         #     ob = self.searchobs[T].matched_text
-        delresults = Counter()
-        for T in self.searchobs.keys():
-            searchob = self.searchobs[T]
-            result = get_delegates_from_spans(searchob.matched_text)
-            try:
-                id = result['delegate']['id']
-                if id:
-                    delresults.update([id])
-            except KeyError:
-                pass
-        self.moregentlemen = [MatchHeer(all_matched[d]) for d in all_matched.keys() if
-                              type(d) == int]  # strange keys sneak in
-        framed_gtlm = pd.DataFrame(self.moregentlemen)
-        framed_gtlm.rename(columns={0: 'gentleobject'}, inplace=True)
-        framed_gtlm['vs'] = framed_gtlm.gentleobject.apply(lambda x: [e for e in x.variants['general']])
-        framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
-        framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
-        framed_gtlm['name'] = framed_gtlm.gentleobject.apply(lambda x: x.name)
-        framed_gtlm['found_in'] = self.year
+        # delegate_results = Counter()
+        # for T in self.searchobs:
+        #     searchob = self.searchobs[T]
+        #     result = get_delegates_from_spans(searchob.matched_text)
+        #     try:
+        #         id = result['delegate']['id']
+        #         if id:
+        #             delegate_results.update([id])
+        #     except KeyError:
+        #         pass
+
 
         # framed_gtlm.to_pickle('sheets/framed_gtlm.pickle')
         matchsearch = self.identify_delegates()
-        print("verifying spans")
+        print("6. verifying spans")
         for T in self.searchobs:
             searchob = self.searchobs[T]
             try:
-                mo = MatchAndSpan(searchob.matched_text, junksweeper=junksweeper, previously_matched=self.found_delegates,
-                              match_search=matchsearch)
+                mo = MatchAndSpan(searchob.matched_text,
+                                  junksweeper=self.junksweeper,
+                                  previously_matched=self.framed_gtlm,
+                                  match_search=matchsearch)
             except TypeError:
                 print (T, searchob.matched_text.item)
                 raise
-            delegates2spans(searchob, framed_gtlm=framed_gtlm)
+            delegates2spans(searchob, framed_gtlm=self.framed_gtlm)
         print("updating merged delegates database")
-        merged_deps = pd.merge(left=framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id",
+        merged_deps = pd.merge(left=self.framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id",
                                how="left")
         serializable_df = merged_deps[['ref_id', 'geboortejaar', 'sterfjaar', 'colleges', 'functions',
-                                       'period', 'sg', 'was_gedeputeerde', 'p_interval', 'h_life', 'vs', 'name_x',
+                                       'period', 'sg', 'was_gedeputeerde', 'p_interval', 'h_life', 'variants', 'name_x',
                                        'found_in', ]]
         serializable_df.rename(columns={'name_x': 'name',
                                         'vs': 'variants',
@@ -262,7 +280,7 @@ class RunAll(object):
                                         "p_interval": "period_active",
                                         "sg": "active_stgen"}, inplace=True)
         self.serializable_df = serializable_df
-        print("6. finished to attendance lists and found database")
+        print("7. finished to attendance lists and found database")
 
 
 def year_output(year, searchobs):
