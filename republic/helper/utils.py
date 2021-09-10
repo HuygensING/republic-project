@@ -138,12 +138,13 @@ def reverse_dict(d):
     return {svalue: key for key, value in d.items() for svalue in value}
 
 
-def levenst_vals(x, txt):
-    scores= [score_levenshtein_similarity_ratio(i.form,txt) for i in x if len(i.form)>1]
-    if max(scores) > 0.8:
-        return max(scores)
-    else:
-        return None
+def levenst_vals(x, txt, threshold=0.8):
+    scores= [score_levenshtein_similarity_ratio(i, txt) for i in x if len(i)>2 and score_levenshtein_similarity_ratio(i,txt) > 0.5]
+    result = False
+    if len(scores) > 0:
+        if max(scores) > threshold:
+            result = True
+    return result
 
 # def marker(text='', item=None, keywords=[], searcher=None, itemtype='', color='black'):
 #     kw_searcher = searcher

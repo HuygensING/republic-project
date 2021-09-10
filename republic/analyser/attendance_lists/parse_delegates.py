@@ -1,18 +1,16 @@
 from collections import defaultdict, Counter
 import networkx as nx
+import logging
 #from scipy.special import softmax
 from numpy import argmax
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 from fuzzy_search.fuzzy_string import score_levenshtein_distance, score_levenshtein_similarity_ratio
-from .searchers import nm_to_delen, herensearcher, make_junksweeper
+from .searchers import nm_to_delen, herensearcher
 from ...helper.utils import *
 from ...model.republic_attendancelist_models import *
-from ...data.delegate_database import get_raa_db,ekwz
+from ...data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from .identify import *
-
-
-abbreviated_delegates = get_raa_db()
 
 
 transposed_graph = reverse_dict(ekwz)
@@ -45,58 +43,58 @@ def get_delegates_from_spans(ob):
 
 
 
+def matchwithlist(x, input):
+    res = [i for i in input if score_levenshtein_similarity_ratio(x, i) > 0.6]
+    if len(res) > 0:
+        return True
+    else:
+        return False
 
 def find_delegates(input=[],
                    matchfnd=None,
-                   df=None,
-                   previously_matched=None,
-                   year=None):
-    """
-    - input is grouped delegates
-    - output is matched delegates and unmatched
-    """
-    #matched_heren = defaultdict(list)
+                   df=abbreviated_delegates,
+                   previously_matched=found_delegates,
+                   year: int = 0):
     matched_deputies = defaultdict(list)
     unmatched_deputies = []
     for herengroup in input:
-        # we add the whole group to recognized if one name has a result
+        # we add the whole group to recognized if at least one name has a result
         recognized_group = []
         keyword_counter = Counter()
         in_matched = False
-        for heer in herengroup: # we try to fuzzymatch the whole group and give the string a score
+        for heer in herengroup:  # we try to fuzzymatch the whole group and give the string a score
             rslt = matchfnd.match_candidates(heer=heer)
             if rslt:
-                in_matched = True
-                match_kw = getattr(rslt,'match_keyword')
-                match_distance = getattr(rslt,'levenshtein_distance')
-                recognized_group.append((heer, match_kw, match_distance))
-                keyword_counter.update([match_kw])
-            else:
-                recognized_group.append((heer, '', 0.0))
-        if in_matched == True: # if there is at least one match, proceed
-            kw = keyword_counter.most_common()[0][0]
-            rec = previously_matched.loc[previously_matched.name == kw]
-            #ncol = 'proposed_delegate'
-            ncol = 'name'
+                match_kw = getattr(rslt, 'match_keyword')
+                # print(match_kw)
+                if match_kw is not '':
+                    in_matched = True
+                    match_distance = getattr(rslt, 'levenshtein_distance')
+                    recognized_group.append((heer, match_kw, match_distance))
+                    keyword_counter.update([match_kw])
+        if in_matched:
+            kw = keyword_counter.most_common(10)[0][0]
+            rec = previously_matched.loc[previously_matched.variants.apply(lambda x: matchwithlist(kw, x))]
             if len(rec) == 0:
                 rec = iterative_search(name=kw, year=year, df=df)
-                ncol = 'name'
-            drec = rec.to_dict(orient="records")[0]
-            m_id = drec['id']
-#             if m_id == 'matched':
-#                 print(rec, kw)
-            name = drec[ncol]
-            score = drec.get('score') or 0.0
-            matched_deputies[m_id] = {'id': m_id,
-                                      'm_kw':kw,
-                                      'score':score,
-                                      'name':name,
-                                      'variants':recognized_group}
+            if len(rec) > 0:
+                drec = rec.to_dict(orient="records")[0]
+                m_id = drec['id']
+                #             if m_id == 'matched':
+                #                 print(rec, kw)
+                name = drec['name']
+                score = drec.get('score') or 0.0
+                matched_deputies[m_id] = {'id': m_id,
+                                          'm_kw': kw,
+                                          'score': score,
+                                          'name': name,
+                                          'variants': recognized_group}
+            else:
+                unmatched_deputies.append(recognized_group)
         else:
-            unmatched_deputies.append(herengroup) # non-matched deputy-groups are also returned
-    return({"matched":matched_deputies,
-            "unmatched":unmatched_deputies})
-
+            unmatched_deputies.append(herengroup)
+    return ({"matched": matched_deputies,
+             "unmatched": unmatched_deputies})
 
 class FndMatch(object):
     def __init__(self,
@@ -118,10 +116,10 @@ class FndMatch(object):
     def match_candidates(self, heer=str):
         found_heer = Heer()
         try:
-            candidates = self.searcher.find_matches(text=heer, use_word_boundaries=False, include_variants=True)
+            candidates = self.searcher.find_matches(text=heer, include_variants=True)
             if candidates:
                 # sort the best candidate
-                candidate = max(candidates, key=lambda x: x.levenshtein_distance)
+                candidate = max(candidates, key=lambda x: x.levenshtein_similarity)
                 levenshtein_similarity = candidate.levenshtein_similarity
                 searchterm = candidate.phrase.exact_string
                 n_candidates = self.rev_graph.get(searchterm) or []
@@ -178,7 +176,6 @@ class FndMatch(object):
             return True
 
 
-
 class MatchAndSpan(object):
     def __init__(self,
                  ob,
@@ -186,42 +183,61 @@ class MatchAndSpan(object):
                  previously_matched=None,
                  match_search=None):
         self.ob = ob
-        txt = self.ob.get_unmatched_text()
+        self.txt_fragments = self.ob.get_unmatched_text()
         self.maintext = self.ob.item
         self.matchres = {}
         self.search_results = {}
         self.previously_matched = previously_matched
         self.match_search = match_search
-        unmarked_text = ''.join(ob.get_unmatched_text())
-        splittekst = re.split(pattern="\s", string=unmarked_text)
-        for s in splittekst:
+        self.junksweeper = junksweeper
+        self.txt_to_fragments()
+        self.match2span()
+
+
+    def txt_to_fragments(self):
+        ut = ''.join(self.txt_fragments)
+        st = re.sub(r"([A-Z]{1,20})", r" \1", ut)
+        splittekst = [x for x in re.split('\s|,|\.', st) if x != '']
+        self.nwsplit = []
+        van = ''
+        for item in splittekst:
+            if van != '':
+                item = ' '.join((van, item))
+            if len(item) == 3 and score_levenshtein_similarity_ratio(item.lower(), 'van') > 0.5:
+                van = item
+                continue
+            else:
+                van = ''
+            self.nwsplit.append(item)
+        # splittekst = re.split(pattern="\s", string=unmarked_text)
+        for s in self.nwsplit:  # splittekst
             try:
-                if len(s) > 2 and len(junksweeper.find_matches(s, include_variants=True)) == 0:
+                if len(s) > 2:# and len(self.junksweeper.find_matches(s, include_variants=True)) == 0:
                     sr = self.match_unmarked(s)
                     if sr:
                         self.search_results.update(sr)
             except ValueError:
-                pass # this sometimes happens if fuzzysearcher gets confused by our matches
-        self.match2span()
+                pass  # this sometimes happens if fuzzysearcher gets confused by our matches
 
     def match_unmarked(self, unmarked_text):
         s = unmarked_text
-        mtch = self.previously_matched.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s) > 0.6)
+
+        mtch = self.previously_matched.variants.apply(lambda x: levenst_vals(x, s))
+        #nmtch = self.previously_matched.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s) > 0.6)
         tussenr = self.previously_matched.loc[mtch]
         try:
             if len(tussenr) > 0:
-                tussenr['score'] = tussenr.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s))
-                matchname = tussenr.loc[tussenr.score == tussenr.score.max()]
-                nm = matchname.name.iat[0]
-                idnr = matchname.id.iat[0]
-                score = tussenr.score.max()
+                matchname = tussenr
+                nm = matchname.name
+                idnr = tussenr.ref_id
+                score = max(tussenr.variants, key=lambda x: score_levenshtein_similarity_ratio(x, s))
                 self.search_results[s] = {'match_term': nm, 'match_string': s, 'score': score}
             else:
                 # matchname = iterative_search(
-                search_result = self.match_search.find_matches(s, include_variants=True, use_word_boundaries=False)
+                search_result = self.match_search.find_matches(s, include_variants=True)
                 if len(search_result) > 0:
                     self.search_results[s] = max(search_result,
-                                                 key=lambda x: x['levenshtein_distance'])
+                                                 key=lambda x: x.levenshtein_similarity)
 
         except (TypeError, AttributeError):
             print(tussenr)
@@ -290,20 +306,18 @@ def dedup_candidates2(proposed_candidates=[], dayinterval=pd.Interval, df=pd.Dat
         res = res.loc[res.sg == True]
     return res
 
+
 def delegates2spans(searchob, framed_gtlm):
     spans = searchob.matched_text.spans
     for span in spans:
         txt = searchob.matched_text.item[span.begin:span.end]
-        msk = framed_gtlm.vs.apply(lambda x: levenst_vals(x, txt))
+        msk = framed_gtlm.variants.apply(lambda x: levenst_vals(x, txt))
         mres = framed_gtlm.loc[msk==msk.max()]
         if len(mres)>0:
-    #     if len(mres)>0:
-    #         setattr(span, 'delegate_id', mres.uuid.iat[0])
-    #         setattr(span, 'delegate_name', mres.name.iat[0])
-        #print(kand, all_matched[kand])
             span.set_pattern(txt)
-        if len(mres)>0:
             span.set_delegate(delegate_id=mres.ref_id.iat[0], delegate_name=mres.name.iat[0])
+        else:
+            logging.info(f"not found {searchob}, {span}, {txt}")
 
 
 def match_previous(heer, res=pd.DataFrame, existing_herensearcher=herensearcher):

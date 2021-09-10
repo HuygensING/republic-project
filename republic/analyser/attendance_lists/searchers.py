@@ -10,8 +10,8 @@ fuzzysearch_config = {
     "ngram_threshold": 0.6,
     "levenshtein_threshold": 0.5,
     "ignorecase": False,
-    "ngram_size": 2,
-    "skip_size": 2,
+    "ngram_size": 3,
+    "skip_size": 1,
 }
 
 
@@ -52,9 +52,9 @@ def make_junksweeper(ekwz):
     provincies = ['Holland', 'Zeeland', 'West-Vriesland', 'Gelderland', 'Overijssel', 'Utrecht', 'Friesland']
     months = month_names_early + month_names_late
     indexkeywords = months + provincies
-    junksweeper = FuzzyPhraseSearcher(fuzzysearch_config)
+    junksweeper = FuzzyPhraseSearcher(config=fuzzysearch_config)
     variants = [{'phrase': k, 'variants': v} for k, v in ekwz.items()]
-    phrase_model = PhraseModel(model=variants, )
+    phrase_model = PhraseModel(model=variants, config=fuzzysearch_config)
     phrase_model.add_phrases(indexkeywords)
     junksweeper.index_phrase_model(phrase_model=phrase_model)
     return junksweeper
