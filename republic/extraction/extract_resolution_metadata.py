@@ -26,7 +26,8 @@ class VariableMatcher:
 
     def infix_variable_group(self, prev_group_label: str, curr_group_label: str) -> Union[None, List[str]]:
         group_labels = [element.label for element in self.template.root_element.elements]
-        infix_start = group_labels.index(prev_group_label) + 1
+        # print('group_labels:', group_labels)
+        infix_start = group_labels.index(prev_group_label) + 1 if prev_group_label else 0
         infix_end = group_labels.index(curr_group_label)
         return group_labels[infix_start:infix_end] if infix_end > infix_start else None
 
@@ -41,17 +42,23 @@ class VariableMatcher:
         prev_element_match = None
         prev_group_label = None
         extended_elements = []
+        # print(template_match)
         for element_match in template_match.element_matches:
             curr_group_label = element_match['label_groups'][0]
+            # print('current group:', curr_group_label)
             if len(element_match["phrase_matches"]) == 0:
                 continue
             for phrase_match in element_match["phrase_matches"]:
                 phrase_start = phrase_match.offset
+                # print('\tphrase match:', phrase_match.offset, phrase_match.string)
                 if self.within_variable_length_threshold(prev_phrase_match, phrase_match):
                     prev_end = 0 if not prev_phrase_match else prev_phrase_match.end
                     variable_entity_string = paragraph.text[prev_end:phrase_start].strip()
                     variable_match = make_variable_phrase_match(variable_entity_string, prev_end,
                                                                 phrase_start, paragraph.metadata['id'])
+                    # print('prev_group_label:', prev_group_label)
+                    # print('curr_group_label:', curr_group_label)
+                    # print('has_variable:', self.has_variable)
                     if prev_group_label != curr_group_label and prev_group_label in self.has_variable:
                         variable_element = copy.deepcopy(prev_element_match)
                     elif curr_group_label in self.has_variable:
@@ -59,6 +66,7 @@ class VariableMatcher:
                     elif self.infix_variable_group(prev_group_label, curr_group_label):
                         variable_element = copy.deepcopy(element_match)
                         label = self.infix_variable_group(prev_group_label, curr_group_label)[0]
+                        # print('infix variable label:', label)
                         variable_element['label_groups'] = [label]
                     else:
                         print('SKIPPING VARIABLE PASSAGE:')
@@ -108,10 +116,20 @@ def add_evidence_matches(phrase_matches: List[PhraseMatch], resolution: Resoluti
 def filter_matches(phrase_matches: List[PhraseMatch]) -> List[PhraseMatch]:
     filtered_matches = []
     phrase_matches.sort(key=lambda match: match.offset)
+    longest_opening = None
     for phrase_match in phrase_matches:
-        if phrase_match != phrase_matches[0] and phrase_match.offset < phrase_matches[0].end \
-                and phrase_matches[0].has_label('proposition_opening'):
-            continue
+        if phrase_match.has_label('proposition_opening'):
+            # print('prop opening match:', phrase_match.variant.phrase_string)
+            if longest_opening is None:
+                longest_opening = phrase_match
+                # print('first longest opening match:', longest_opening.variant.phrase_string)
+            elif phrase_match.offset == longest_opening.offset and phrase_match.end > longest_opening.end:
+                longest_opening = phrase_match
+                # print('new longest opening match:', longest_opening.variant.phrase_string)
+    for phrase_match in phrase_matches:
+        if phrase_match.has_label('proposition_opening'):
+            if phrase_match != longest_opening:
+                continue
         if phrase_match.has_label('proposition_verb') or phrase_match.has_label('person_name_prefix'):
             if phrase_match.levenshtein_similarity and phrase_match.levenshtein_similarity <= 0.8:
                 continue
@@ -136,21 +154,46 @@ def make_variable_phrase_match(string: str, offset: int, end: int, text_id: str)
 
 
 def generate_resolution_metadata(phrase_matches: List[PhraseMatch], resolution: Resolution,
-                                 opening_searcher: FuzzyTemplateSearcher,
-                                 variable_matcher: VariableMatcher) -> Union[None, Dict[str, List[dict]]]:
+                                 opening_searchers: List[FuzzyTemplateSearcher],
+                                 variable_matchers: List[VariableMatcher]) -> Union[None, Dict[str, List[dict]]]:
     metadata = defaultdict(list)
-    template_matches = opening_searcher.find_template_matches(phrase_matches)
-    if len(template_matches) == 0:
+    extended_elements = None
+    variable_matcher = None
+    longest_template_length = 0
+    longest_template_match = None
+    for phrase_match in phrase_matches:
+        print(phrase_match.offset, phrase_match.phrase.phrase_string, phrase_match.string, phrase_match.phrase.label)
+    for oi, opening_searcher in enumerate(opening_searchers):
+        # print(opening_searcher.name)
+        template_matches = opening_searcher.find_template_matches(phrase_matches)
+        if len(template_matches) == 0:
+            continue
+        template_match = template_matches[0]
+        first_ele = template_match.element_matches[0]
+        start = first_ele['phrase_matches'][0].offset
+        last_ele = template_match.element_matches[-1]
+        end = last_ele['phrase_matches'][-1].offset + len(last_ele['phrase_matches'][-1].string)
+        if end - start > longest_template_length:
+            longest_template_length = end - start
+            longest_template_match = template_match
+            variable_matcher = variable_matchers[oi]
+        # print(start, end)
+    extended_elements = variable_matcher.add_variable_phrases(longest_template_match, resolution.paragraphs[0])
+    if len(extended_elements) == 0:
         return None
-    template_match = template_matches[0]
+    # template_match = template_matches[0]
     # print(template_match.template)
     prev_phrase_match = None
-    extended_elements = variable_matcher.add_variable_phrases(template_match, resolution.paragraphs[0])
+    # extended_elements = variable_matcher.add_variable_phrases(template_match, resolution.paragraphs[0])
     # print()
     for element_match in extended_elements:
         # print(element_match['label'])
-        # for match in element_match['phrase_matches']:
-        #     print(match.offset, match.string)
+        # if element_match['label'] == 'proposition_opening':
+        #     for match in element_match['phrase_matches']:
+        #         metadata['proposition_type'] = match.phrase.metadata['proposition_type']
+                # print('match label:', match.label)
+                # print('match phrase label:', match.phrase.metadata['proposition_type'])
+            # print(match.offset, match.string)
         group_label = element_match['label_groups'][0]
         if len(element_match["phrase_matches"]) == 0:
             continue
@@ -224,16 +267,21 @@ def add_resolutions_metadata(es: Elasticsearch, resolutions: List[Resolution], c
 
 
 def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyPhraseSearcher,
-                            opening_searcher: FuzzyTemplateSearcher,
-                            variable_matcher: VariableMatcher) -> Union[None, Resolution]:
+                            opening_searchers: List[FuzzyTemplateSearcher],
+                            variable_matchers: List[VariableMatcher]) -> Union[None, Resolution]:
     resolution = copy.deepcopy(resolution)
     opening_paragraph = resolution.paragraphs[0]
     proposition_text = get_resolution_proposition_text(resolution)
     doc = {'id': opening_paragraph.metadata['id'], 'text': proposition_text}
+    print('proposition_text;', proposition_text)
     phrase_matches = proposition_searcher.find_matches(doc)
+    # for phrase_match in phrase_matches:
+    #     print('\tpre-filter:', phrase_match.variant.phrase_string)
     phrase_matches = filter_matches(phrase_matches)
+    # for phrase_match in phrase_matches:
+    #     print('\tpost-filter:', phrase_match.variant.phrase_string)
     try:
-        metadata = generate_resolution_metadata(phrase_matches, resolution, opening_searcher, variable_matcher)
+        metadata = generate_resolution_metadata(phrase_matches, resolution, opening_searchers, variable_matchers)
         # for key in metadata:
             # print(metadata[key])
             # for element in metadata[key]:
@@ -243,7 +291,8 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
         print(f'Resolution paragraph {opening_paragraph.metadata["id"]}:\n\t', opening_paragraph.text, '\n')
         for match in phrase_matches:
             print(match.phrase.phrase_string, '\t', match.string, '\t', match.label, '\t', match.levenshtein_similarity)
-        return resolution
+        raise
+        # return resolution
     # print(json.dumps(metadata, indent=4))
     if metadata:
         # evidence = [element['evidence'] for group in metadata for element in metadata[group] if 'evidence' in element]
@@ -268,6 +317,10 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
                     }
             # group_info = {element['element_label']: element['phrase'] for element in metadata[metadata_group]}
             resolution.metadata[metadata_group] = group_info
+    if resolution.metadata['proposition_type'] is None:
+        for phrase_match in phrase_matches:
+            if phrase_match.has_label('proposition_opening'):
+                resolution.metadata['proposition_type'] = phrase_match.phrase.metadata['proposition_type']
 
     # print('resolution metadata:')
     # print(json.dumps(resolution.metadata, indent=2))
@@ -276,12 +329,21 @@ def add_resolution_metadata(resolution: Resolution, proposition_searcher: FuzzyP
 
 def get_resolution_proposition_text(resolution: Resolution) -> str:
     proposition_end = len(resolution.paragraphs[0].text)
+    min_end = 0
     for pm in resolution.evidence:
-        # print(pm.offset, pm.label, pm.levenshtein_similarity)
-        if pm.has_label('proposition_verb') and pm.levenshtein_similarity > 0.7:
+        if resolution.paragraphs[0].text[pm.offset:pm.end] != pm.string:
+            print('invalid phrase match')
+            continue
+        # print('min_end:', min_end)
+        # print(pm.variant.phrase_string, pm.string, pm.end, pm.label_list)
+        if pm.has_label('proposition_opening'):
+            min_end = pm.end + 5
+        if pm.has_label('proposition_verb') and pm.levenshtein_similarity > 0.7 and pm.end > min_end:
             proposition_end = pm.end
             break
+    # print('proposition_end:', proposition_end)
     proposition_text = resolution.paragraphs[0].text[:proposition_end]
+    # print('proposition_text', proposition_text, '\n')
     return proposition_text
 
 
@@ -298,15 +360,21 @@ def generate_proposition_searchers(searcher_config: Dict[str, any] = None):
             'skip_size': 1
         }
     phrases = [phrase for phrase_set in rps for phrase in rps[phrase_set]]
-    return generate_template_searchers(opening_templates[0], phrases, searcher_config)
+    return generate_template_searchers(opening_templates, phrases, searcher_config)
 
 
-def generate_template_searchers(template: Dict[str, any], phrases: List[Dict[str, any]],
-                                searcher_config: dict) -> Tuple[FuzzyPhraseSearcher, FuzzyTemplateSearcher, VariableMatcher]:
+def generate_template_searchers(templates: List[Dict[str, any]], phrases: List[Dict[str, any]],
+                                searcher_config: dict) -> Tuple[FuzzyPhraseSearcher, List[FuzzyTemplateSearcher],
+                                                                List[VariableMatcher]]:
     proposition_searcher = FuzzyPhraseSearcher(searcher_config)
     proposition_phrase_model = PhraseModel(model=phrases, config=searcher_config)
     proposition_searcher.index_phrase_model(proposition_phrase_model)
-    opening_template = FuzzyTemplate(proposition_phrase_model, template)
-    template_searcher = FuzzyTemplateSearcher(opening_template, searcher_config)
-    variable_matcher = VariableMatcher(6, 100, template_searcher.template)
-    return proposition_searcher, template_searcher, variable_matcher
+    template_searchers = []
+    variable_matchers = []
+    for template in templates:
+        opening_template = FuzzyTemplate(proposition_phrase_model, template)
+        template_searcher = FuzzyTemplateSearcher(opening_template, searcher_config)
+        template_searcher.name = template['label']
+        template_searchers.append(template_searcher)
+        variable_matchers.append(VariableMatcher(6, 100, template_searcher.template))
+    return proposition_searcher, template_searchers, variable_matchers

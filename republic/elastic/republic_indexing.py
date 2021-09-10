@@ -448,6 +448,8 @@ def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
             # continue
         new_resolution = add_resolution_metadata(resolution, proposition_searcher,
                                                  template_searcher, variable_matcher)
+        if 'proposition_type' not in new_resolution.metadata or new_resolution.metadata['proposition_type'] is None:
+            new_resolution.metadata['proposition_type'] = 'unknown'
         if not new_resolution:
             no_new += 1
             continue
