@@ -1222,7 +1222,10 @@ misc = [
 provinces = [
     {
         'phrase': ' van Holland en Westvriesland',
-        'label': 'of_province'
+        'label': 'of_province',
+        'variants': [
+            'van Hollandt ende West - Vrieslandt'
+        ]
     },
     {
         'phrase': ' van Stad en Lande',

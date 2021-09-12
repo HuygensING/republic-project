@@ -8,7 +8,9 @@ from fuzzy_search.fuzzy_match import PhraseMatch
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
-from republic.extraction.extract_resolution_metadata import generate_proposition_searchers, add_resolution_metadata
+from republic.extraction.extract_resolution_metadata import generate_proposition_searchers
+from republic.extraction.extract_resolution_metadata import add_resolution_metadata
+from republic.extraction.extract_resolution_metadata import get_paragraph_phrase_matches
 from republic.model.physical_document_model import StructureDoc, parse_derived_coords, json_to_pagexml_scan
 from republic.model.physical_document_model import PageXMLPage
 from settings import text_repo_url
@@ -428,7 +430,8 @@ def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
 
 
 def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
-    proposition_searcher, template_searcher, variable_matcher = generate_proposition_searchers()
+    prop_searchers = generate_proposition_searchers()
+    # proposition_searcher, template_searcher, variable_matcher = generate_proposition_searchers()
     skip_formulas = {
         'heeft aan haar Hoog Mog. voorgedragen',
         'heeft ter Vergadering gecommuniceert ',
@@ -451,8 +454,9 @@ def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
             print(resolution.evidence[0])
             print()
             # continue
-        new_resolution = add_resolution_metadata(resolution, proposition_searcher,
-                                                 template_searcher, variable_matcher)
+        phrase_matches = get_paragraph_phrase_matches(es, resolution, inv_config)
+        new_resolution = add_resolution_metadata(resolution, phrase_matches,
+                                                 prop_searchers['template'], prop_searchers['variable'])
         if 'proposition_type' not in new_resolution.metadata or new_resolution.metadata['proposition_type'] is None:
             new_resolution.metadata['proposition_type'] = 'unknown'
         if not new_resolution:
