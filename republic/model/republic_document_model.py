@@ -366,14 +366,17 @@ def parse_phrase_match(match: Union[PhraseMatch, dict]) -> PhraseMatch:
     if isinstance(match, PhraseMatch):
         return match
     match_phrase = Phrase(match['phrase'])
+    if 'metadata' in match:
+        match_phrase.metadata = match['metadata']
     match_variant = Phrase(match['variant'])
     if 'text_id' not in match:
         match['text_id'] = None
     if 'match_scores' not in match:
         match['match_scores'] = None
     try:
-        match_object = PhraseMatch(match_phrase, match_variant, match['string'], match_offset=match['offset'],
-                                   text_id=match['text_id'], match_scores=match['match_scores'])
+        match_object = PhraseMatch(match_phrase, match_variant, match['string'],
+                                   match_offset=match['offset'], text_id=match['text_id'],
+                                   match_scores=match['match_scores'], match_label=match['label'])
     except ValueError:
         print(match)
         raise

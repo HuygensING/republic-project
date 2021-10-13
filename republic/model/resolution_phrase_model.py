@@ -46,6 +46,10 @@ proposition_opening_phrases = [
     {
         'phrase': 'hebben ter Vergaderinge voorgedragen ',
         'label': 'proposition_opening',
+        'distractors': [
+            'heeft ter Vergaderinge ingebraght',
+            'heeft ter Vergaderinge gecommuniceert',
+        ],
         'proposition_type': 'oral',
         'max_offset': 500
     },
@@ -65,7 +69,7 @@ proposition_opening_phrases = [
         'phrase': 'hebben ter Vergaderinge ingebragt en laaten leezen de Resolutie',
         'label': 'proposition_opening',
         'variants': [
-            'heeft ter Vergaderinge ingebragt en laaten leezen de Resolutie van '
+            'heeft ter Vergaderinge ingebragt en laaten leezen de Resolutie '
         ],
         'proposition_type': 'resolution',
         'max_offset': 500
@@ -74,12 +78,6 @@ proposition_opening_phrases = [
         'phrase': 'hebben ter Vergaderinge ingebraght',
         'label': 'proposition_opening',
         'proposition_type': 'document',
-        'max_offset': 500
-    },
-    {
-        'phrase': 'hebben ter Vergaderinge voorgedragen',
-        'label': 'proposition_opening',
-        'proposition_type': 'oral',
         'max_offset': 500
     },
     {
@@ -131,7 +129,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Instructie van ',
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
-        'proposition_type': "declaratie",
+        'proposition_type': 'declaratie',
         'max_offset': 10
     },
     {
@@ -141,7 +139,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Declaratie van ',
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
-        'proposition_type': "instructie",
+        'proposition_type': 'instructie',
         'max_offset': 10
     },
     {
@@ -157,7 +155,7 @@ proposition_opening_phrases = [
     {
         'phrase': 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
         'label': ['proposition_opening', 'proposition_type:pasport'],
-        'proposition_type': "pasport",
+        'proposition_type': 'pasport',
         'max_offset': 10
     },
     {
@@ -170,6 +168,18 @@ proposition_opening_phrases = [
         'phrase': 'OP den differente gereezen voor de',
         'label': 'proposition_opening',
         'proposition_type': 'differente',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'BY resumptie gedelibereert zynde op een Missive ',
+        'label': 'proposition_opening',
+        'proposition_type': 'missive',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'BY resumptie gedelibereert zynde op het geproponeerde ',
+        'label': 'proposition_opening',
+        'proposition_type': 'oral',
         'max_offset': 10
     },
     {
@@ -262,6 +272,10 @@ proposition_verbs = [
     },
     {
         'phrase': "hebbende",
+        'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
+    },
+    {
+        'phrase': "raeckende",
         'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
     },
     {
@@ -435,6 +449,10 @@ organisation_phrases = [
             'haar Hoog Mog.',
             'haar Ho. Mo.'
         ]
+    },
+    {
+        'phrase': 'De Heeren Gedeputeerden van de Provincie',
+        'label': ['organisation', 'states', 'province'],
     },
     {
         'phrase': 'de Heeren Staaten van de Provincie',
@@ -1204,7 +1222,10 @@ misc = [
 provinces = [
     {
         'phrase': ' van Holland en Westvriesland',
-        'label': 'of_province'
+        'label': 'of_province',
+        'variants': [
+            'van Hollandt ende West - Vrieslandt'
+        ]
     },
     {
         'phrase': ' van Stad en Lande',
