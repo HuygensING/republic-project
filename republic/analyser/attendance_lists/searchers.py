@@ -41,7 +41,7 @@ def make_herensearcher(keywords=herenkeywords):
                           'ngram_size': 2,
                           'skip_size': 2}
     herensearcher = FuzzyPhraseSearcher(config=fuzzysearch_config)
-    variants = [{'phrase': k, 'variants': v} for k, v in keywords.items()]
+    variants = [{'phrase': k, 'label':k, 'variants': v} for k, v in keywords.items()]
     phrase_model = PhraseModel(model=variants)
     herensearcher.index_phrase_model(phrase_model=phrase_model)
     return herensearcher
@@ -53,7 +53,7 @@ def make_junksweeper(ekwz):
     months = month_names_early + month_names_late
     indexkeywords = months + provincies
     junksweeper = FuzzyPhraseSearcher(config=fuzzysearch_config)
-    variants = [{'phrase': k, 'variants': v} for k, v in ekwz.items()]
+    variants = [{'phrase': k, 'label':'junk', 'variants': v} for k, v in ekwz.items()]
     phrase_model = PhraseModel(model=variants, config=fuzzysearch_config)
     phrase_model.add_phrases(indexkeywords)
     junksweeper.index_phrase_model(phrase_model=phrase_model)

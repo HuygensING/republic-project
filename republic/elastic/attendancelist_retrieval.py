@@ -27,11 +27,11 @@ def get_presentielijsten(year: str = '0', index: str = 'session_text', es: objec
     presentielijsten = {}
     results = es.search(index=index, body=prs_body)
     for ob in results['hits']['hits']:
-      try:
+      #try:
         mt = TextWithMetadata(ob)
         presentielijsten[mt.id] = mt
-      except AttributeError:
-        print(ob)
+      # except AttributeError:
+      #   print(ob)
     return presentielijsten
 
 

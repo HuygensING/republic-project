@@ -70,7 +70,8 @@ def make_president_searcher():
            'PRAESEN','PRAES']
     pvs = ekwz['PRASENTIBUS'] + pvs
     variants = [{'phrase': 'PRAESIDE Den Heere', 'label':'president', 'variants': vs},
-                {'phrase': 'PRAESENTIBUS', 'label':'presentibus', "variants": pvs}]
+                {'phrase': 'PRAESENTIBUS', 'label':'presentibus', 'variants': pvs},
+                ]
     phrase_model = PhraseModel(model=variants)
     #phrase_model.add_phrase(phrase='Den Heere', label)
     president_searcher.index_phrase_model(phrase_model=phrase_model)
@@ -83,7 +84,7 @@ def get_president(ob, pat, ps, txt, debug=True):
     end = 0
     prez = ''
     prae = ''
-    matches = ps.find_matches(text=txt)#, include_variants=True, use_word_boundaries=False)
+    matches = ps.find_matches(text=txt, include_variants=True, use_word_boundaries=False)
     presidents = [m for m in matches if m.label == 'president']
     president = best_match(presidents)
     if president:
@@ -134,7 +135,8 @@ def make_province_searcher(config):
     basephrase = [{'phrase':"extraordinaris Gedeputeerden uyt de provincie van",
                   'label':'extraordinaris',
                   'variants':[]}]
-    prefix = [{'phrase':'met een', 'label':'prefix','variants':['met twee', 'met drie', 'een ', 'twee ', 'drie']}]
+    prefix = [{'phrase':'met een', 'label':'prefix','variants':['met twee', 'met drie', 'een ', 'twee ', 'drie'
+                                                                'vier', 'vijf']}]
     provinces = [{'phrase': "Gelderlandt",'label':'province',
                  'variants':["Hollandt ende West-Vrieslandt",
                  "Utrecht",
@@ -142,7 +144,23 @@ def make_province_searcher(config):
                  "Overijssel",
                  "Groningen",
                  "Zeelandt"]}]
-    phrases = basephrase + prefix + provinces
+    rps = ['Raadtpenslonaris',
+          'Raadtpenfionaris',
+          'Raudtpensionaris',
+          'Raaadtpensionaris',
+          'Raadtpensonaris',
+          'Raadtpensienaris',
+          'Raaatpensionaris',
+          'Raadtpensionaris']
+
+    raadp = [{'phrase': 'Raadtpensionaris', 'label': 'raadpensionaris', 'variants': rps}]
+    hrn = [{'phrase':'Den Heere', 'label': 'heere', 'variants':['Den Heere',
+                                                                'De Heeren'
+                                                                'Den Heeren',
+                                                                'De Heer']}]
+    nihil = [{'phrase':'Nihil actum est', 'label': 'nihil', 'variants':['Nihil actum est',
+                                                                        'Nibil actum est']}]
+    phrases = basephrase + prefix + provinces + raadp + hrn + nihil
     pmodel = PhraseModel(model=phrases, config=config)
     #print(phrases, phrase_model)
     pr_searcher.index_phrase_model(phrase_model=pmodel)
@@ -167,11 +185,16 @@ def province_searcher(presentielijsten, config=fuzzysearch_config):
     pr_searcher = make_province_searcher(config)
     for T in presentielijsten.keys():
         itm = presentielijsten[T]
+        itm.matched_text
         txt = itm.text
         mt = itm.matched_text
         provs = pr_searcher.find_matches(text=txt, include_variants=True)
-        results = match_prov(provs)
-        for item in results:
+        rresult = [p for p in provs if p.label in ['raadpensionaris', 'heere', 'nihil']]
+        for i in rresult:
+            span = (i.offset, i.offset+len(i.string))
+            mt.set_span(span, i.label)
+        presults = match_prov(provs)
+        for item in presults:
             span = (item[0], item[1])
             mt.set_span(span, "province")
 

@@ -135,6 +135,7 @@ class FuzzyKeywordGrouper(object):
         close_distance_keywords = defaultdict(list)
         for index, keyword1 in enumerate(self.keyword_list):
             string1 = get_keyword_string(keyword1).lower()
+            close_distance_keywords[keyword1] = []
             for keyword2 in self.keyword_list[index + 1:]:
                 string2 = get_keyword_string(keyword2).lower()
                 if abs(len(string1) - len(string2)) > max_length_difference: continue
@@ -182,6 +183,7 @@ class FuzzyKeywordGrouper(object):
                 G_differentiated.add_edge(node, nod)
         cl = (G_differentiated.subgraph(c).copy() for c in nx.connected_components(G_differentiated))
         cc = [list(c) for c in list(cl)]
+
         return cc
 
     def __call__(self):

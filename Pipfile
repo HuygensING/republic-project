@@ -21,6 +21,8 @@ fastparquet = "*"
 networkx = "*"
 urllib3 = ">=1.26.5"
 numpy = "==1.21"
+#jupyter = "*"
+jupyterlab = ">=3.0"
 
 [requires]
 python_version = "3.8"

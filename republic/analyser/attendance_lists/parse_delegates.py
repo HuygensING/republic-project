@@ -67,7 +67,7 @@ def find_delegates(input=[],
             if rslt:
                 match_kw = getattr(rslt, 'match_keyword')
                 # print(match_kw)
-                if match_kw is not '':
+                if match_kw != '':
                     in_matched = True
                     match_distance = getattr(rslt, 'levenshtein_distance')
                     recognized_group.append((heer, match_kw, match_distance))
@@ -312,7 +312,7 @@ def delegates2spans(searchob, framed_gtlm):
     for span in spans:
         txt = searchob.matched_text.item[span.begin:span.end]
         msk = framed_gtlm.variants.apply(lambda x: levenst_vals(x, txt))
-        mres = framed_gtlm.loc[msk==msk.max()]
+        mres = framed_gtlm.loc[msk==True]
         if len(mres)>0:
             span.set_pattern(txt)
             span.set_delegate(delegate_id=mres.ref_id.iat[0], delegate_name=mres.name.iat[0])

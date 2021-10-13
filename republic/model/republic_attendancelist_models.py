@@ -1,10 +1,12 @@
 import itertools
 import json
 import logging
+import re
 import pandas as pd
 #from ..fuzzy.fuzzy_keyword_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
 #from scipy.special import softmax
 from numpy import argmax
 from .republic_phrase_model import resolution_phrase_model
@@ -30,6 +32,7 @@ mrge = []
 for g in yesterdays:
     mrge.append(searchstring.format(g=g))
 resumption[1]["variants"].extend(mrge)
+resumption[1]["label"] = "resumption"
 # extra = [
 #     'Raefslitien oilteren geno-hen ',
 #     'Resolutien voorlede Sa-B DD erdagh genoomen ',
@@ -63,11 +66,13 @@ class TextWithMetadata(object):
         self.volgnr = int(volgnr)
         md = metadata.get('session_date')
         self.id = metadata.get('id')
+        self.resumptionpattern = None
         if md:
             self.meeting_date = md
         self.text = self.find_preslst_text(searchob=searchobject)
         self.matched_text = MatchedText(self.text)
         self.matched_text.para_id = self.id
+        self.set_resumption()
         # self.delegates = {'president': None,
         #                   'provinces': None,
         #                   'delegates': []}
@@ -81,47 +86,35 @@ class TextWithMetadata(object):
         TODO: change to paragraph texts
         """
         result = {"text": ""}  # , "coords": []}
-        # lines = []
-        # columns = searchob['_source']['columns']
-        # result = {"lines": [], "coords": []}
-        # for column in columns:
-        #     for tr in column['textregions']:
-        #         meetinglines = tr['lines']
-        #         for line in meetinglines:
-        #             txt = line['text']
-        #             lineid = line['metadata']['id']
-        #             if txt:
-        #                 resumptie = keywsearcher.find_candidates_new(txt,
-        #                                             include_variants=True)
-        #                 if resumptie:
-        #                     return result
-        #                 else:
-        #                     result["coords"].append(line['coords'])
-        #                     result["lines"].append({'lineid':lineid,
-        #                                             'txt': txt or ''})
-        #             if len(result["lines"]) > 30:
-        #                 return result
-
-        # al = [p for p in searchob['_source']['annotations'] if p['type'] == 'attendance_list'][0] # there should be only one
-
         al = [p for p in searchob['_source']['annotations'] if 'attendance_list' in p['id']][0]
         txt = searchob['_source']['text']
         start = al['start_offset']
         end = al['end_offset']
         text = txt[start:end]
         self.resumptionstart = 0
-        res = resumption_searcher.find_matches(text, include_variants=True, use_word_boundaries=False)
-        if res:
-            softscore = [score_match(match) for match in res]
+        resumptionpat = resumption_searcher.find_matches(text, include_variants=True, use_word_boundaries=False)
+        if resumptionpat:
+            softscore = [score_match(match) for match in resumptionpat]
             i = argmax(softscore)
-            newend = res[i].offset
+            rsmpt = resumptionpat[i]
+            newend = rsmpt.offset
             text = text[:newend]
-            self.resumptionstart = newend
+            self.resumptionpattern = rsmpt
         if len(text) > 850: # something went wrong in the session matching, let's truncate the text
             message = f"Too long text: {self.meeting_date} - length: {len(text)}. Scan: {self.scan}. Text truncated"
             logging.info(message)
             text = text[:850]
         return text
+
+    def set_resumption(self):
+        rsmpt = self.resumptionpattern
+        if rsmpt:
+            resumptionspan = (rsmpt.offset, rsmpt.offset+len(rsmpt.string))
+            self.matched_text.set_span(resumptionspan,
+                                   clas=getattr(rsmpt, "label") or '',
+                                   pattern=getattr(rsmpt, "string") or '',
+                                   score=getattr(rsmpt, "levenshtein_similarity") or 0.0)
+
 
     def make_url(self):
         """should we make the url not so hard-coded?"""
@@ -448,13 +441,18 @@ class Heer(object):
 
     def serialize(self):
         result = {'match_keyword': self.match_keyword,
-                  'levenshtein_distance': self.levenshtein_distance,
+                  'levenshtein_similarity': self.levenshtein_distance,
                   'proposed_delegate': self.proposed_delegate,
                   'p_id': self.id,
                   'score': self.score,
                   'probably_junk': self.probably_junk
                   }
         return result
+
+
+    def __repr__(self):
+        return f"{self.proposed_delegate} ({self.id})"
+
 
 
 import uuid
