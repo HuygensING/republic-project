@@ -91,7 +91,7 @@ export default class IdentifierUtil {
     const setNo = IdentifierUtil.inventaris2set(inventaris);
     const seriesNo = IdentifierUtil.archief2series(archief);
     const found = docImgSets.filter(set => {
-      let groups = set.uri.match(/.*\/statengeneraal\/(.*)\/([0-9]{4})/);
+      let groups = set.uri.match(/.*\/statengeneraal\/(.*)\/([0-9]{1,4})/);
       if (!groups) {
         return false;
       }
