@@ -2,6 +2,7 @@
 **/.idea/*
 **/node_modules/*
 **/.env*
+!**/.env.example
 **/*.csv
 **/*.log
 **/.DS_Store

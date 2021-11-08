@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.8'
 
 services:
 
@@ -6,8 +6,9 @@ services:
     container_name: importer
     build: .
     volumes:
+      - ./tmp:/pim-tr-import/tmp
       - ./types.csv:/pim-tr-import/types.csv
-      - ./external-identifiers-all-210329.csv:/pim-tr-import/external-identifiers.csv
+      - ./external-identifiers.csv:/pim-tr-import/external-identifiers.csv
       - ./import.log:/pim-tr-import/import.log
     environment:
       GOOGLE_AUTHORIZATION: ${GOOGLE_AUTHORIZATION}
@@ -17,12 +18,12 @@ services:
       TMP: './tmp'
       TR: 'http://tr_textrepo:8080'
       TYPE_CSV: './types.csv'
-      CACHE: 250
+      CACHE: 250 # PIM files (buffer PIM json files, that can contain multiple TR files, each with a different type)
     command: ./import.sh
     networks:
       - textrepo_network
 
 networks:
   textrepo_network:
-    external:
-      name: pim-tr-import-install_textrepo_network
+    external: true
+    name: textrepo_network
