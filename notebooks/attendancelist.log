@@ -1,0 +1,1795 @@
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:7.164s]
+INFO:root:year: 1730, nr of attendancelists 21
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:7.610s]
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.051s]
+INFO:root:van Rechteren
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Borsselen
+INFO:root:van lsselmuden
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:van Berchuys
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque ValueError
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.098s]
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:7.967s]
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:7.878s]
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.450s]
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.285s]
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.296s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van WY assenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaais van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:van Renswoude
+INFO:root:van Renswoude
+INFO:root:e van Glinstra
+INFO:root:uan Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:Veneris den 27 Januaritnoemden Conigh in te gaan met den eer1730 sten Junii van het selve jaar in plaatse van DREAES IDE Junii seventien hondert aght en twintigh Den Heere van Glinstra om dat hy Suppliant in de voorschreve Re
+INFO:root:van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren PRAEZES
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Tamminga
+INFO:root:re van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:e van Glinstra
+INFO:root:Van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:vun Rechteren
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:e van Blocklandt
+INFO:root:vanden Born
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:an Borsselen
+INFO:root:e van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Zaatrs van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:re Zaats van Amerongen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaars van HAmerongen
+INFO:root:de Kempenaar
+INFO:root:de Kempendar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:van Rechteren
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berghuis
+INFO:root:Jovis den 18 Mey1730 Zynde HemelvaartsdaghNihil actum est Veneris den 19 Mey1730 DIAERE Essen Di 55 Den Heere van Berghuys
+INFO:root:van Berghuys
+INFO:root:van Lynden
+INFO:root:van Lynden PRAISENTI
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:re van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:Becker
+INFO:root:Becker
+INFO:root:Jovis den 15 Juniischen Keyser geschreven te Pera van Constantinopolen den derden Mey laatstleden 1730 geaddresseert aan den Griffier Fagel  houPRADSTDE dende een omstandigh relaas van het geene Den Heere Becker aldaar gepasseert was in opsicht van het
+INFO:root:Becker
+INFO:root:vander Waayen
+INFO:root:vander Weaayen
+INFO:root:1730 Requeste als antidotaal ter Griffie sal werden geseponeert om t sijner tydt te dienen sulcks PRAEYDE en daar het behoort Den Heere vander Wiaayen
+INFO:root:vander Waayen
+INFO:root:e vander Jlaaayen
+INFO:root:vander Waayen
+INFO:root:van lsselmuden
+INFO:root:van lselmuden Po
+INFO:root:Queisen
+INFO:root:e Queisen
+INFO:root:Queisen
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:re van Lynden
+INFO:root:van Lynden
+INFO:root:vun Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e Bout
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Haarsoilte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Berghuys
+INFO:root:e van Berghuys
+INFO:root:van Berghuys
+INFO:root:e van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berchuys
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Kempenaer
+INFO:root:e de Kempenaer
+INFO:root:de Kempenaar
+INFO:root:de Kempenaer
+INFO:root:vander Waayen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:vander Steen DRAZES
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Marck
+INFO:root:e vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Noey
+INFO:root:MNoey
+INFO:root:Mey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan ViscontiPRAEZES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconii
+INFO:root:de Milan Visconti PRAEZES
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Jassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:e van Borsselen
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:re de Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen PRAESEB
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:van lysselmuden
+INFO:root:van Isselmuden
+INFO:root:vun lsselmuden
+INFO:root:MNoey ValueError
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque ValueError
+INFO:root:Mey ValueError
+INFO:root:GelderDE ValueError
+INFO:root:Gelderle ValueError
+INFO:root:MNoey ValueError
+INFO:root:Pan ValueError
+INFO:root:aldaar ValueError
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.531s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van WY assenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaais van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:van Renswoude
+INFO:root:van Renswoude
+INFO:root:e van Glinstra
+INFO:root:uan Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:Veneris den 27 Januaritnoemden Conigh in te gaan met den eer1730 sten Junii van het selve jaar in plaatse van DREAES IDE Junii seventien hondert aght en twintigh Den Heere van Glinstra om dat hy Suppliant in de voorschreve Re
+INFO:root:van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren PRAEZES
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Tamminga
+INFO:root:re van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:e van Glinstra
+INFO:root:Van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:vun Rechteren
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:e van Blocklandt
+INFO:root:vanden Born
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:an Borsselen
+INFO:root:e van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Zaatrs van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:re Zaats van Amerongen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaars van HAmerongen
+INFO:root:de Kempenaar
+INFO:root:de Kempendar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:van Rechteren
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berghuis
+INFO:root:Jovis den 18 Mey1730 Zynde HemelvaartsdaghNihil actum est Veneris den 19 Mey1730 DIAERE Essen Di 55 Den Heere van Berghuys
+INFO:root:van Berghuys
+INFO:root:van Lynden
+INFO:root:van Lynden PRAISENTI
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:re van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:Becker
+INFO:root:Becker
+INFO:root:Jovis den 15 Juniischen Keyser geschreven te Pera van Constantinopolen den derden Mey laatstleden 1730 geaddresseert aan den Griffier Fagel  houPRADSTDE dende een omstandigh relaas van het geene Den Heere Becker aldaar gepasseert was in opsicht van het
+INFO:root:Becker
+INFO:root:vander Waayen
+INFO:root:vander Weaayen
+INFO:root:1730 Requeste als antidotaal ter Griffie sal werden geseponeert om t sijner tydt te dienen sulcks PRAEYDE en daar het behoort Den Heere vander Wiaayen
+INFO:root:vander Waayen
+INFO:root:e vander Jlaaayen
+INFO:root:vander Waayen
+INFO:root:van lsselmuden
+INFO:root:van lselmuden Po
+INFO:root:Queisen
+INFO:root:e Queisen
+INFO:root:Queisen
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:re van Lynden
+INFO:root:van Lynden
+INFO:root:vun Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e Bout
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Haarsoilte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Berghuys
+INFO:root:e van Berghuys
+INFO:root:van Berghuys
+INFO:root:e van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berchuys
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Kempenaer
+INFO:root:e de Kempenaer
+INFO:root:de Kempenaar
+INFO:root:de Kempenaer
+INFO:root:vander Waayen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:vander Steen DRAZES
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Marck
+INFO:root:e vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Noey
+INFO:root:MNoey
+INFO:root:Mey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan ViscontiPRAEZES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconii
+INFO:root:de Milan Visconti PRAEZES
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Jassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:e van Borsselen
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:re de Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen PRAESEB
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:van lysselmuden
+INFO:root:van Isselmuden
+INFO:root:vun lsselmuden
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.825s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van WY assenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaais van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:van Renswoude
+INFO:root:van Renswoude
+INFO:root:e van Glinstra
+INFO:root:uan Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:Veneris den 27 Januaritnoemden Conigh in te gaan met den eer1730 sten Junii van het selve jaar in plaatse van DREAES IDE Junii seventien hondert aght en twintigh Den Heere van Glinstra om dat hy Suppliant in de voorschreve Re
+INFO:root:van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren PRAEZES
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Tamminga
+INFO:root:re van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:e van Glinstra
+INFO:root:Van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:vun Rechteren
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:e van Blocklandt
+INFO:root:vanden Born
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:an Borsselen
+INFO:root:e van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Zaatrs van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:re Zaats van Amerongen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaars van HAmerongen
+INFO:root:de Kempenaar
+INFO:root:de Kempendar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:van Rechteren
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berghuis
+INFO:root:Jovis den 18 Mey1730 Zynde HemelvaartsdaghNihil actum est Veneris den 19 Mey1730 DIAERE Essen Di 55 Den Heere van Berghuys
+INFO:root:van Berghuys
+INFO:root:van Lynden
+INFO:root:van Lynden PRAISENTI
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:re van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:Becker
+INFO:root:Becker
+INFO:root:Jovis den 15 Juniischen Keyser geschreven te Pera van Constantinopolen den derden Mey laatstleden 1730 geaddresseert aan den Griffier Fagel  houPRADSTDE dende een omstandigh relaas van het geene Den Heere Becker aldaar gepasseert was in opsicht van het
+INFO:root:Becker
+INFO:root:vander Waayen
+INFO:root:vander Weaayen
+INFO:root:1730 Requeste als antidotaal ter Griffie sal werden geseponeert om t sijner tydt te dienen sulcks PRAEYDE en daar het behoort Den Heere vander Wiaayen
+INFO:root:vander Waayen
+INFO:root:e vander Jlaaayen
+INFO:root:vander Waayen
+INFO:root:van lsselmuden
+INFO:root:van lselmuden Po
+INFO:root:Queisen
+INFO:root:e Queisen
+INFO:root:Queisen
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:re van Lynden
+INFO:root:van Lynden
+INFO:root:vun Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e Bout
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Haarsoilte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Berghuys
+INFO:root:e van Berghuys
+INFO:root:van Berghuys
+INFO:root:e van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berchuys
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Kempenaer
+INFO:root:e de Kempenaer
+INFO:root:de Kempenaar
+INFO:root:de Kempenaer
+INFO:root:vander Waayen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:vander Steen DRAZES
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Marck
+INFO:root:e vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Noey
+INFO:root:MNoey
+INFO:root:Mey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan ViscontiPRAEZES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconii
+INFO:root:de Milan Visconti PRAEZES
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Jassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:e van Borsselen
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:re de Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen PRAESEB
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:van lysselmuden
+INFO:root:van Isselmuden
+INFO:root:vun lsselmuden
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.328s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van WY assenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaais van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:van Renswoude
+INFO:root:van Renswoude
+INFO:root:e van Glinstra
+INFO:root:uan Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:Veneris den 27 Januaritnoemden Conigh in te gaan met den eer1730 sten Junii van het selve jaar in plaatse van DREAES IDE Junii seventien hondert aght en twintigh Den Heere van Glinstra om dat hy Suppliant in de voorschreve Re
+INFO:root:van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren PRAEZES
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Tamminga
+INFO:root:re van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:e van Glinstra
+INFO:root:Van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:vun Rechteren
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:e van Blocklandt
+INFO:root:vanden Born
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:an Borsselen
+INFO:root:e van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Zaatrs van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:re Zaats van Amerongen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaars van HAmerongen
+INFO:root:de Kempenaar
+INFO:root:de Kempendar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:van Rechteren
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berghuis
+INFO:root:Jovis den 18 Mey1730 Zynde HemelvaartsdaghNihil actum est Veneris den 19 Mey1730 DIAERE Essen Di 55 Den Heere van Berghuys
+INFO:root:van Berghuys
+INFO:root:van Lynden
+INFO:root:van Lynden PRAISENTI
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:re van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:Becker
+INFO:root:Becker
+INFO:root:Jovis den 15 Juniischen Keyser geschreven te Pera van Constantinopolen den derden Mey laatstleden 1730 geaddresseert aan den Griffier Fagel  houPRADSTDE dende een omstandigh relaas van het geene Den Heere Becker aldaar gepasseert was in opsicht van het
+INFO:root:Becker
+INFO:root:vander Waayen
+INFO:root:vander Weaayen
+INFO:root:1730 Requeste als antidotaal ter Griffie sal werden geseponeert om t sijner tydt te dienen sulcks PRAEYDE en daar het behoort Den Heere vander Wiaayen
+INFO:root:vander Waayen
+INFO:root:e vander Jlaaayen
+INFO:root:vander Waayen
+INFO:root:van lsselmuden
+INFO:root:van lselmuden Po
+INFO:root:Queisen
+INFO:root:e Queisen
+INFO:root:Queisen
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:re van Lynden
+INFO:root:van Lynden
+INFO:root:vun Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e Bout
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Haarsoilte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Berghuys
+INFO:root:e van Berghuys
+INFO:root:van Berghuys
+INFO:root:e van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berchuys
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Kempenaer
+INFO:root:e de Kempenaer
+INFO:root:de Kempenaar
+INFO:root:de Kempenaer
+INFO:root:vander Waayen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:vander Steen DRAZES
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Marck
+INFO:root:e vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Noey
+INFO:root:MNoey
+INFO:root:Mey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan ViscontiPRAEZES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconii
+INFO:root:de Milan Visconti PRAEZES
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Jassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:e van Borsselen
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:re de Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen PRAESEB
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:van lysselmuden
+INFO:root:van Isselmuden
+INFO:root:vun lsselmuden
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:8.841s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van WY assenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaais van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:van Renswoude
+INFO:root:van Renswoude
+INFO:root:e van Glinstra
+INFO:root:uan Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:Veneris den 27 Januaritnoemden Conigh in te gaan met den eer1730 sten Junii van het selve jaar in plaatse van DREAES IDE Junii seventien hondert aght en twintigh Den Heere van Glinstra om dat hy Suppliant in de voorschreve Re
+INFO:root:van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren PRAEZES
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Tamminga
+INFO:root:re van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:e van Glinstra
+INFO:root:Van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:vun Rechteren
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:e van Blocklandt
+INFO:root:vanden Born
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:an Borsselen
+INFO:root:e van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Zaatrs van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:re Zaats van Amerongen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaars van HAmerongen
+INFO:root:de Kempenaar
+INFO:root:de Kempendar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:van Rechteren
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berghuis
+INFO:root:Jovis den 18 Mey1730 Zynde HemelvaartsdaghNihil actum est Veneris den 19 Mey1730 DIAERE Essen Di 55 Den Heere van Berghuys
+INFO:root:van Berghuys
+INFO:root:van Lynden
+INFO:root:van Lynden PRAISENTI
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:re van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:Becker
+INFO:root:Becker
+INFO:root:Jovis den 15 Juniischen Keyser geschreven te Pera van Constantinopolen den derden Mey laatstleden 1730 geaddresseert aan den Griffier Fagel  houPRADSTDE dende een omstandigh relaas van het geene Den Heere Becker aldaar gepasseert was in opsicht van het
+INFO:root:Becker
+INFO:root:vander Waayen
+INFO:root:vander Weaayen
+INFO:root:1730 Requeste als antidotaal ter Griffie sal werden geseponeert om t sijner tydt te dienen sulcks PRAEYDE en daar het behoort Den Heere vander Wiaayen
+INFO:root:vander Waayen
+INFO:root:e vander Jlaaayen
+INFO:root:vander Waayen
+INFO:root:van lsselmuden
+INFO:root:van lselmuden Po
+INFO:root:Queisen
+INFO:root:e Queisen
+INFO:root:Queisen
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:re van Lynden
+INFO:root:van Lynden
+INFO:root:vun Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e Bout
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Haarsoilte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Berghuys
+INFO:root:e van Berghuys
+INFO:root:van Berghuys
+INFO:root:e van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berchuys
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Kempenaer
+INFO:root:e de Kempenaer
+INFO:root:de Kempenaar
+INFO:root:de Kempenaer
+INFO:root:vander Waayen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:vander Steen DRAZES
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Marck
+INFO:root:e vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Noey
+INFO:root:MNoey
+INFO:root:Mey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan ViscontiPRAEZES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconii
+INFO:root:de Milan Visconti PRAEZES
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Jassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:e van Borsselen
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:re de Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen PRAESEB
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:van lysselmuden
+INFO:root:van Isselmuden
+INFO:root:vun lsselmuden
+INFO:root:1730 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:9.054s]
+INFO:root:Too long text: 1730-01-27 - length: 1344. Scan: NL-HaNA_1.01.02_3785_0075. Text truncated
+INFO:root:Too long text: 1730-06-15 - length: 944. Scan: NL-HaNA_1.01.02_3785_0241. Text truncated
+INFO:root:year: 1730, nr of attendancelists 299
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van WY assenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaais van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:van Renswoude
+INFO:root:van Renswoude
+INFO:root:e van Glinstra
+INFO:root:uan Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:Veneris den 27 Januaritnoemden Conigh in te gaan met den eer1730 sten Junii van het selve jaar in plaatse van DREAES IDE Junii seventien hondert aght en twintigh Den Heere van Glinstra om dat hy Suppliant in de voorschreve Re
+INFO:root:van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren PRAEZES
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Tamminga
+INFO:root:re van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:Quint
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:van Glinstra
+INFO:root:e van Glinstra
+INFO:root:Van Glinstra
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:vun Rechteren
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:van Blocklandt
+INFO:root:e van Blocklandt
+INFO:root:vanden Born
+INFO:root:Lunae den 017 Apral1730PRAZEESZSIDIY Den Heere van Borsselen
+INFO:root:an Borsselen
+INFO:root:e van Borsselen
+INFO:root:van Borsselen
+INFO:root:e van Borsselen
+INFO:root:Zaatrs van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:re Zaats van Amerongen
+INFO:root:Jaats van Amerongen
+INFO:root:Zaats van Amerongen
+INFO:root:Zaars van HAmerongen
+INFO:root:de Kempenaar
+INFO:root:de Kempendar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:de Kempenaar
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Mercuri den 10 Mey voorlede Vrydagh genomen op de Reque
+INFO:root:van Rechteren
+INFO:root:ere van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berghuis
+INFO:root:Jovis den 18 Mey1730 Zynde HemelvaartsdaghNihil actum est Veneris den 19 Mey1730 DIAERE Essen Di 55 Den Heere van Berghuys
+INFO:root:van Berghuys
+INFO:root:van Lynden
+INFO:root:van Lynden PRAISENTI
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Wassenaer
+INFO:root:e van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:re van Borselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:Becker
+INFO:root:Becker
+INFO:root:Jovis den 15 Juniischen Keyser geschreven te Pera van Constantinopolen den derden Mey laatstleden 1730 geaddresseert aan den Griffier Fagel  houPRADSTDE dende een omstandigh relaas van het geene Den Heere Becker aldaar gepasseert was in opsicht van het
+INFO:root:Becker
+INFO:root:vander Waayen
+INFO:root:vander Weaayen
+INFO:root:1730 Requeste als antidotaal ter Griffie sal werden geseponeert om t sijner tydt te dienen sulcks PRAEYDE en daar het behoort Den Heere vander Wiaayen
+INFO:root:vander Waayen
+INFO:root:e vander Jlaaayen
+INFO:root:vander Waayen
+INFO:root:van lsselmuden
+INFO:root:van lselmuden Po
+INFO:root:Queisen
+INFO:root:e Queisen
+INFO:root:Queisen
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:re van Lynden
+INFO:root:van Lynden
+INFO:root:vun Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e Bout
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Haarsoilte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Haarsolte
+INFO:root:van Berghuys
+INFO:root:e van Berghuys
+INFO:root:van Berghuys
+INFO:root:e van Berchuys
+INFO:root:van Berghuys
+INFO:root:van Berchuys
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:Bout
+INFO:root:e de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti PRAEDES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Kempenaer
+INFO:root:e de Kempenaer
+INFO:root:de Kempenaar
+INFO:root:de Kempenaer
+INFO:root:vander Waayen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Steenbergen
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:van Berchuys
+INFO:root:vander Steen DRAZES
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Steen
+INFO:root:vander Marck
+INFO:root:e vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:vander Marck
+INFO:root:Noey
+INFO:root:MNoey
+INFO:root:Mey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:Noey
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan ViscontiPRAEZES
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconii
+INFO:root:de Milan Visconti PRAEZES
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden
+INFO:root:van Lynden PRAEZES
+INFO:root:van Lynden
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Wassenaer
+INFO:root:van Jassenaer
+INFO:root:van Wassenaer
+INFO:root:van Borsselen
+INFO:root:van Borsselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:van Borselen
+INFO:root:e van Borsselen
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:de Milan Visconti
+INFO:root:re de Milan Visconti
+INFO:root:vander Waayen
+INFO:root:vander Waayen
+INFO:root:vander Waayen PRAESEB
+INFO:root:e vander Waayen
+INFO:root:vander Waayen
+INFO:root:vunder Waayen
+INFO:root:van Jlsselmuden
+INFO:root:van lysselmuden
+INFO:root:van Isselmuden
+INFO:root:vun lsselmuden

@@ -17,18 +17,21 @@ proposition_opening_phrases = [
     {
         'phrase': 'ONtfangen een Missive van',
         'label': ['proposition_opening', 'proposition_from_correspondence', 'proposition_type:missive'],
+        'variants': [
+            'ONtfangen twee Missiven van '
+        ],
         'proposition_type': 'missive',
         'max_offset': 10
     },
     {
         'phrase': 'heeft ter Vergadering gecommuniceert ',
         'label': 'proposition_opening',
-        'variants': [
+        'distractors': [
             'heeft ter Vergaderinge ingebraght',
             'heeft ter Vergaderinge voorgedragen',
         ],
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'oral',
+        'max_offset': 500
     },
     {
         'phrase': 'heeft aan haar Hoog Mog. voorgedragen',
@@ -37,20 +40,45 @@ proposition_opening_phrases = [
             'heeft aan haar Hoog Mog. ingebraght',
             'heeft aan haar Hoog Mog. gecommuniceert',
         ],
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'oral',
+        'max_offset': 500
+    },
+    {
+        'phrase': 'hebben ter Vergaderinge voorgedragen ',
+        'label': 'proposition_opening',
+        'distractors': [
+            'heeft ter Vergaderinge ingebraght',
+            'heeft ter Vergaderinge gecommuniceert',
+        ],
+        'proposition_type': 'oral',
+        'max_offset': 500
+    },
+    {
+        'phrase': '  heeft ter Vergaderinge geëxhibeert een Pasport',
+        'label': 'proposition_opening',
+        'proposition_type': 'paspoort',
+        'max_offset': 500
+    },
+    {
+        'phrase': ' heeft ter Vergadering geëxhibeert een Missive van',
+        'label': 'proposition_opening',
+        'proposition_type': 'missive',
+        'max_offset': 500
+    },
+    {
+        'phrase': 'hebben ter Vergaderinge ingebragt en laaten leezen de Resolutie',
+        'label': 'proposition_opening',
+        'variants': [
+            'heeft ter Vergaderinge ingebragt en laaten leezen de Resolutie '
+        ],
+        'proposition_type': 'resolution',
+        'max_offset': 500
     },
     {
         'phrase': 'hebben ter Vergaderinge ingebraght',
         'label': 'proposition_opening',
-        'proposition_type': None,
-        'max_offset': 250
-    },
-    {
-        'phrase': 'hebben ter Vergaderinge voorgedragen',
-        'label': 'proposition_opening',
-        'proposition_type': None,
-        'max_offset': 250
+        'proposition_type': 'document',
+        'max_offset': 500
     },
     {
         'phrase': 'IS ter Vergaderinge gelesen de Requeste van ',
@@ -101,7 +129,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Instructie van ',
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
-        'proposition_type': "declaratie",
+        'proposition_type': 'declaratie',
         'max_offset': 10
     },
     {
@@ -111,7 +139,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Declaratie van ',
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
-        'proposition_type': "instructie",
+        'proposition_type': 'instructie',
         'max_offset': 10
     },
     {
@@ -127,61 +155,76 @@ proposition_opening_phrases = [
     {
         'phrase': 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
         'label': ['proposition_opening', 'proposition_type:pasport'],
-        'proposition_type': "pasport",
+        'proposition_type': 'pasport',
         'max_offset': 10
     },
     {
         'phrase': 'OP het geproponeerde door',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'unknown',
         'max_offset': 10
     },
     {
         'phrase': 'OP den differente gereezen voor de',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'differente',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'BY resumptie gedelibereert zynde op een Missive ',
+        'label': 'proposition_opening',
+        'proposition_type': 'missive',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'BY resumptie gedelibereert zynde op het geproponeerde ',
+        'label': 'proposition_opening',
+        'proposition_type': 'oral',
         'max_offset': 10
     },
     {
         'phrase': 'BY Resumtie gedelibereert zynde',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'unknown',
         'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van versoek van',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Antwoord van',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van versoek om',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Duplicq van',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van Replicq op',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
-        'phrase': 'DE Conclusie van Eisch in Revisie van',
+        'phrase': 'DE Conclusie van Eisch',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'variants': [
+            'DE Conclusie van eisen'
+        ],
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
@@ -193,13 +236,13 @@ proposition_opening_phrases = [
     {
         'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'presentatie',
         'max_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde ter Vergaderinge gedaan',
         'label': 'proposition_opening',
-        'proposition_type': None,
+        'proposition_type': 'presentatie',
         'max_offset': 10
     },
     {
@@ -229,6 +272,10 @@ proposition_verbs = [
     },
     {
         'phrase': "hebbende",
+        'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
+    },
+    {
+        'phrase': "raeckende",
         'label': ['proposition_verb', 'proposition_opening_end_verb', 'proposition_body'],
     },
     {
@@ -273,6 +320,9 @@ proposition_verbs = [
     {
         'phrase': 'aanneemende',
         'label': ['proposition_verb', 'claim', 'proposition_body'],
+        'distractors': [
+            'waarneemende'
+        ]
     },
     {
         'phrase': 'sustineeren',
@@ -305,7 +355,47 @@ proposition_closing_phrases = [
 decision_phrases = [
     {
         'phrase': 'WAAR op geen resolutie is gevallen.',
-        'label': 'no_decision'
+        'label': ['no_decision', 'resolution_decision'],
+        'variants': [
+            "Waer op geen resolutie is gevallen",
+            "WAAR op geen resolutie voor alsnoch is gevallen",
+            "Waer op geen resolutie voor alsnoch is gevallen",
+        ],
+    },
+    {
+        'phrase': 'is goedgevonden ende verstaan',
+        'label': 'resolution_decision',
+        'variants': [
+            "IS naar voorgaande deliberatie goedgevonden ende verstaan",
+        ]
+    },
+    {
+        'phrase': 'de voorfchreve Missive copielijck overgenomen',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'waar by goedgevonden is',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'gehouden voor gecommiteert',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'WAAR op gedelibereert en in achtinge genomen zynde',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'WAAR op gedelibereert zijnde',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'WAAR op gedelibereert',
+        'label': 'resolution_decision',
+    },
+    {
+        'phrase': 'voor de genomen moeyte bedanckt',  # should probably move somewhere else
+        'label': 'resolution_decision',
     },
     {
         "phrase": "En sal Extract van deese haar Hoog Mogende Resolutie gesonden worden aan",
@@ -361,6 +451,10 @@ organisation_phrases = [
         ]
     },
     {
+        'phrase': 'De Heeren Gedeputeerden van de Provincie',
+        'label': ['organisation', 'states', 'province'],
+    },
+    {
         'phrase': 'de Heeren Staaten van de Provincie',
         'label': ['organisation', 'states', 'province'],
     },
@@ -371,6 +465,10 @@ organisation_phrases = [
     {
         'phrase': 'den Raad van Staate',
         'label': ['organisation', 'council_of_states'],
+    },
+    {
+        'phrase': 'Raad der Stad',
+        'label': ['organisation', 'city_council'],
     },
     {
         'phrase': 'den Eerste Raad',
@@ -391,6 +489,10 @@ organisation_phrases = [
     {
         'phrase': 'by den Ryksdag',
         'label': ['organisation', 'german', 'political']
+    },
+    {
+        'phrase': 'by het Department van',
+        'label': ['organisation_relation', 'person_role'],
     },
     {
         'phrase': 'de Booden en Posten van',
@@ -494,6 +596,174 @@ location_phrases = [
         'phrase': 'Pruissen',
         'label': ['location', 'region'],
     },
+    {
+        'phrase': 'Londen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Parys',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Brussel',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Weenen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Franckfort',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Regensburgh',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Berlyn',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Hamburg',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Stockholm',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Lissabon',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Keulen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Madrid',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'St. Petersburg',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Koppenhagen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Rotterdam',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Mentz',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Amsterdam',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Dresden',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Middelburg',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Venlo',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Groningen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Dantzig',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': "'s Hertogenbosch",
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Livorno',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Turin',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Utrecht',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Munster',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Maastricht',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Manheim',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Arnhem',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Algiers',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Barcelona',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Enckhuisen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Goedesberg by Bonn',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Harlingen',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Leyden',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Maltha',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Paramaribo',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Waalwyk',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Eyndhoven',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Dordrecht',
+        'label': ['location', 'region'],
+    },
+    {
+        'phrase': 'Stad en Lande',
+        'label': ['location', 'region'],
+    },
 
 ]
 
@@ -513,6 +783,22 @@ person_role_phrases = [
     },
     {
         'phrase': 'Burger',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'den Resident',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'Huisvrouw',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'Weduwe',
+        'label': ['citizen', 'person_role']
+    },
+    {
+        'phrase': 'Weduwnaar',
         'label': ['citizen', 'person_role']
     },
     {
@@ -577,6 +863,10 @@ person_role_phrases = [
     {
         'phrase': 'Generaal Major',
         'label': ['person_role', 'general_major', 'domain:military'],
+    },
+    {
+        'phrase': 'Lieutenant',
+        'label': ['person_role', 'lieutenant', 'domain:military'],
     },
     {
         'phrase': 'de Kinderen van ',
@@ -645,7 +935,17 @@ person_role_phrases = [
         'role': 'captain_of_company'
     },
     {
-        'phrase': 'van Balliuw, Burgermeester en Scheepenen',
+        'phrase': 'Balliuw',
+        'label': ['person_role', 'representative', 'magistrate'],
+        'role': 'magistrate_single'
+    },
+    {
+        'phrase': 'Burgemeester',
+        'label': ['person_role', 'representative', 'magistrate'],
+        'role': 'magistrate_single'
+    },
+    {
+        'phrase': 'Scheepenen',
         'label': ['person_role', 'representative', 'magistrate'],
         'role': 'magistrate_multi'
     },
@@ -696,6 +996,41 @@ person_role_phrases = [
     {
         'phrase': 'Ambassadeur',
         'label': ['person_role', 'ambassador', 'representative'],
+    },
+    {
+        'phrase': 'Schipper',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Leverancier',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Drossard',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Regent',
+        'label': ['person_role', 'merchant'],
+        'variants': ['Regenten']
+    },
+    {
+        'phrase': 'Boekhouder',
+        'label': ['person_role', 'merchant'],
+    },
+    {
+        'phrase': 'Koopman',
+        'label': ['person_role', 'merchant'],
+        'variants': [
+            'Koopvrouw'
+        ]
+    },
+    {
+        'phrase': 'Kooplieden',
+        'label': ['person_role', 'merchant', 'merchant_multi'],
+        'variants': [
+            'Koopluyden'
+        ]
     },
     {
         'phrase': 'Arbeidsman',
@@ -856,7 +1191,6 @@ misc = [
             "de gewoonlijke Nieuwejaars-Gifte van",
         ]
     },
-
     {
         'phrase': 'den Handel in',
         'label': ['trade', 'trade_relation'],
@@ -866,7 +1200,10 @@ misc = [
     },
     {
         'phrase': 'de Vaart en Handel op de West-indien',
-        'label': ['topic', 'topic:trade', 'domain:maritime']
+        'label': ['topic', 'topic:trade', 'domain:maritime'],
+        'variants': [
+            'den Westindische Handel'
+        ]
     },
     {
         'phrase': 'tot de saaken van',
@@ -885,7 +1222,10 @@ misc = [
 provinces = [
     {
         'phrase': ' van Holland en Westvriesland',
-        'label': 'of_province'
+        'label': 'of_province',
+        'variants': [
+            'van Hollandt ende West - Vrieslandt'
+        ]
     },
     {
         'phrase': ' van Stad en Lande',
@@ -911,6 +1251,14 @@ provinces = [
         'phrase': ' van Vriesland',
         'label': 'of_province'
     },
+]
+
+
+known_persons = [
+    {
+        'phrase': 'Fagel',
+        'label': ['person_name', 'griffier_name']
+    }
 ]
 
 opening_formulas = [

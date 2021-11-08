@@ -396,22 +396,32 @@ def retrieve_pagexml_sessions(es: Elasticsearch, inv_num: int, config: dict) -> 
 
 
 def retrieve_sessions_by_query(es: Elasticsearch, query: dict, config: dict) -> List[Session]:
-    response = es.search(index=config['session_index'], body=query)
+    response = es.search(index=config['session_lines_index'], body=query)
     if response['hits']['total']['value'] == 0:
         return []
     else:
         docs = [hit['_source'] for hit in response['hits']['hits']]
-        return [session_from_json(doc) for doc in docs]
+        return [json_to_republic_session(doc) for doc in docs]
 
 
-def retrieve_session_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
+def retrieve_session_text_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
+    session_index = 'session_text'
+    return retrieve_session_by_date(es, date, session_index)
+
+
+def retrieve_session_lines_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
+    session_index = 'session_lines'
+    return retrieve_session_by_date(es, date, session_index)
+
+
+def retrieve_session_by_date(es: Elasticsearch, date: Union[str, RepublicDate], session_index: str) -> Union[None, Session]:
     if isinstance(date, RepublicDate):
         doc_id = f'session-{date.isoformat()}-num-1'
     else:
         doc_id = f'session-{date}-num-1'
-    if es.exists(index=config["session_index"], doc_type=config["session_doc_type"], id=doc_id):
-        response = es.get(index=config["session_index"], doc_type=config["session_doc_type"], id=doc_id)
-        return session_from_json(response['_source'])
+    if es.exists(index=session_index, id=doc_id):
+        response = es.get(index=session_index, id=doc_id)
+        return json_to_republic_session(response['_source'])
     else:
         return None
 
@@ -442,7 +452,16 @@ def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
 
 
 def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):
-    query = {'query': {'match': {'metadata.inventory_num': inv_config['inventory_num']}}}
+    query = {
+        'query': {
+             'bool': {
+                 'must': [
+                     {'match': {'metadata.inventory_num': inv_config['inventory_num']}},
+                     {'match': {'metadata.type': 'resolution'}}
+                 ]
+             }
+         }
+     }
     for resolution in scroll_resolutions_by_query(es, query, inv_config, scroll='20m'):
         yield resolution
 

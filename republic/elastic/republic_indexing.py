@@ -8,7 +8,9 @@ from fuzzy_search.fuzzy_match import PhraseMatch
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
-from republic.extraction.extract_resolution_metadata import generate_proposition_searchers, add_resolution_metadata
+from republic.extraction.extract_resolution_metadata import generate_proposition_searchers
+from republic.extraction.extract_resolution_metadata import add_resolution_metadata
+from republic.extraction.extract_resolution_metadata import get_paragraph_phrase_matches
 from republic.model.physical_document_model import StructureDoc, parse_derived_coords, json_to_pagexml_scan
 from republic.model.physical_document_model import PageXMLPage
 from settings import text_repo_url
@@ -21,7 +23,7 @@ import republic.model.resolution_phrase_model as rpm
 from republic.model.republic_date import RepublicDate, make_republic_date
 from republic.model.republic_document_model import Session, get_session_resolutions, get_session_scans_version
 from republic.model.republic_document_model import Resolution, configure_resolution_searchers
-from republic.model.republic_document_model import make_session_text_version
+from republic.model.republic_text_annotation_model import make_session_text_version
 from republic.config.republic_config import set_config_inventory_num
 from republic.elastic.republic_retrieving import create_es_scan_doc, create_es_page_doc
 from republic.helper.metadata_helper import get_per_page_type_index
@@ -59,7 +61,7 @@ def add_pagexml_page_types(es: Elasticsearch, inv_config: dict) -> None:
 
 def delete_es_index(es: Elasticsearch, index: str):
     if es.indices.exists(index=index):
-        print('exists, deleting')
+        print(f' index{index} exists, deleting')
         es.indices.delete(index=index)
 
 
@@ -300,10 +302,10 @@ def index_sessions_inventory_old(es: Elasticsearch, inv_num: int, inv_config: di
             if session.metadata['date_shift_status'] == 'quarantined':
                 quarantine_index = inv_config['session_index'] + '_quarantine'
                 es.index(index=quarantine_index, doc_type=inv_config['session_doc_type'],
-                         id=session.metadata['id'], body=session.json(with_columns=True, with_scan_versions=True))
+                         id=session.metadata['id'], body=session.json)
             else:
                 es.index(index=inv_config['session_index'], doc_type=inv_config['session_doc_type'],
-                         id=session.metadata['id'], body=session.json(with_columns=True, with_scan_versions=True))
+                         id=session.metadata['id'], body=session.json)
         except RequestError:
             print('skipping doc')
             continue
@@ -380,14 +382,15 @@ def index_inventory_resolutions(es: Elasticsearch, inv_config: dict):
             }
         }
     }
-    for hit in rep_es.scroll_hits(es, query, index=inv_config['session_index'], doc_type="session", size=2):
-        print(hit['_id'])
-        session_json = hit['_source']
-        session = Session(session_json['metadata'], columns=session_json['columns'],
-                          scan_versions=session_json['scan_versions'])
+    print(query)
+    print(inv_config['session_lines_index'])
+    for session in rep_es.retrieve_inventory_sessions_with_lines(es, inv_config['inventory_num'], inv_config):
+        print(session.id)
+        # print(session.metadata)
         for resolution in get_session_resolutions(session, opening_searcher, verb_searcher):
             add_timestamp(resolution)
-            es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json())
+            print('\t', resolution.id, resolution.paragraphs[0].text[:60])
+            es.index(index=inv_config['resolution_index'], id=resolution.metadata['id'], body=resolution.json)
 
 
 def index_session_resolutions(es: Elasticsearch, session: Session, opening_searcher: FuzzyPhraseSearcher,
@@ -407,47 +410,77 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
     :type config: dict
     """
     add_timestamp(resolution)
-    resolution_json = resolution.json() if isinstance(resolution, Resolution) else resolution
+    resolution_json = resolution.json if isinstance(resolution, Resolution) else resolution
     es.index(index=config['resolution_index'], id=resolution_json['metadata']['id'], body=resolution_json)
 
 
 def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):
     searcher = make_resolution_phrase_model_searcher()
+    print(searcher.config)
     for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
         print('indexing phrase matches for resolution', resolution.metadata['id'])
+        num_paras = len(resolution.paragraphs)
+        num_matches = 0
         for paragraph in resolution.paragraphs:
             doc = {'id': paragraph.metadata['id'], 'text': paragraph.text}
             for match in searcher.find_matches(doc):
-                index_resolution_phrase_match(es, match, inv_config)
+                index_resolution_phrase_match(es, match, resolution, inv_config)
+                num_matches += 1
+        print(f'\tparagraphs: {num_paras}\tnum matches: {num_matches}')
 
 
 def index_inventory_resolution_metadata(es: Elasticsearch, inv_config: dict):
-    proposition_searcher, template_searcher, variable_matcher = generate_proposition_searchers()
+    prop_searchers = generate_proposition_searchers()
+    # proposition_searcher, template_searcher, variable_matcher = generate_proposition_searchers()
     skip_formulas = {
         'heeft aan haar Hoog Mog. voorgedragen',
         'heeft ter Vergadering gecommuniceert ',
-        'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
-        'hebben ter Vergaderinge ingebraght',
-        'hebben ter Vergaderinge voorgedragen'
+        # 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
+        # 'hebben ter Vergaderinge ingebraght',
+        # 'hebben ter Vergaderinge voorgedragen'
     }
-    for resolution in rep_es.scroll_inventory_resolutions(es, inv_config):
+    no_evidence = 0
+    attendance = 0
+    no_new = 0
+    for ri, resolution in enumerate(rep_es.scroll_inventory_resolutions(es, inv_config)):
+        if resolution.metadata['type'] == 'attendance_list':
+            attendance += 1
+            continue
+        if len(resolution.evidence) == 0:
+            print('resolution without evidence:', resolution.metadata)
         if resolution.evidence[0].phrase.phrase_string in skip_formulas:
-            continue
-        new_resolution = add_resolution_metadata(resolution, proposition_searcher,
-                                                 template_searcher, variable_matcher)
+            print(resolution.id)
+            print(resolution.paragraphs[0].text)
+            print(resolution.evidence[0])
+            print()
+            # continue
+        phrase_matches = get_paragraph_phrase_matches(es, resolution, inv_config)
+        new_resolution = add_resolution_metadata(resolution, phrase_matches,
+                                                 prop_searchers['template'], prop_searchers['variable'])
+        if 'proposition_type' not in new_resolution.metadata or new_resolution.metadata['proposition_type'] is None:
+            new_resolution.metadata['proposition_type'] = 'unknown'
         if not new_resolution:
+            no_new += 1
             continue
-        print('indexing metadata for resolution', resolution.metadata['id'])
         # print(new_resolution.metadata)
+        if (ri+1) % 10 == 0:
+            print(ri+1, 'resolutions parsed\t', attendance, 'attendance lists\t', no_new, 'non-metadata')
         index_resolution_metadata(es, new_resolution, inv_config)
 
 
-def index_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, PhraseMatch], config: dict):
+def index_resolution_phrase_match(es: Elasticsearch, phrase_match: Union[dict, PhraseMatch],
+                                  resolution: Resolution, config: dict):
     # make sure match object is json dictionary
     match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
     # generate stable id based on match offset, end and text_id
     match_json['id'] = make_hash_id(match_json)
+    match_json['metadata'] = phrase_match.phrase.metadata
+    match_json['metadata']['id'] = match_json['id']
+    match_json['metadata']['resolution_id'] = resolution.id
+    match_json['metadata']['session_id'] = resolution.metadata['session_id']
+    match_json['metadata']['paragraph_id'] = phrase_match.text_id
     add_timestamp(match_json)
+    # print(json.dumps(match_json, indent=2))
     es.index(index=config['phrase_match_index'], id=match_json['id'], body=match_json)
 
 
@@ -466,9 +499,12 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     resolution_phrase_searcher_config = {
         'filter_distractors': True,
         'include_variants': True,
+        'use_word_boundaries': True,
         'max_length_variance': 3,
         'levenshtein_threshold': 0.7,
-        'char_match_threshold': 0.7
+        'char_match_threshold': 0.7,
+        'ngram_size': 3,
+        'skip_size': 1
     }
     resolution_phrase_searcher = FuzzyPhraseSearcher(resolution_phrase_searcher_config)
 
@@ -477,12 +513,17 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
               rpm.location_phrases + rpm.esteem_titles + rpm.person_role_phrases + rpm.military_phrases + \
               rpm.misc + rpm.provinces + rpm.proposition_opening_phrases
 
-    phrases = rpm.proposition_opening_phrases
-    for phrase in phrases:
-        if 'max_offset' in phrase:
-            del phrase['max_offset']
+    phrases = []
+    for set_name in rpm.resolution_phrase_sets:
+        print('adding phrases from set', set_name)
+        phrases += rpm.resolution_phrase_sets[set_name]
+    # phrases = rpm.proposition_opening_phrases
+    # for phrase in phrases:
+    #     if 'max_offset' in phrase:
+    #         del phrase['max_offset']
+    print(f'building phrase model for {len(phrases)} resolution phrases')
 
-    resolution_phrase_phrase_model = PhraseModel(model=phrases)
+    resolution_phrase_phrase_model = PhraseModel(model=phrases, config=resolution_phrase_searcher_config)
     resolution_phrase_searcher.index_phrase_model(resolution_phrase_phrase_model)
     return resolution_phrase_searcher
 
@@ -502,8 +543,10 @@ def index_split_resolutions(es: Elasticsearch, split_resolutions: Dict[str, any]
 
 def index_resolution_metadata(es: Elasticsearch, resolution: Resolution, config: dict):
     metadata_doc = {
-        'metadata': resolution.metadata,
+        'metadata': copy.deepcopy(resolution.metadata),
         'evidence': [pm.json() for pm in resolution.evidence]
     }
+    metadata_doc['metadata']['id'] = metadata_doc['metadata']['id'] + '-metadata'
     add_timestamp(metadata_doc)
-    es.index(index=config['resolution_metadata_index'], id=resolution.metadata['id'], body=metadata_doc)
+    print('indexing metadata for resolution', metadata_doc['metadata']['id'])
+    es.index(index=config['resolution_metadata_index'], id=metadata_doc['metadata']['id'], body=metadata_doc)

@@ -1,34 +1,32 @@
 from typing import Dict, List, Union
 from collections import Counter
 import copy
+import re
 
 import numpy as np
 
 from republic.helper.metadata_helper import make_iiif_region_url
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
-from republic.parser.pagexml.test_republic_pagexml_assertions import test_republic_pagexml_assertions
-from republic.model.physical_document_model import Coords, parse_derived_coords, PhysicalStructureDoc
-from republic.model.physical_document_model import PageXMLTextRegion, PageXMLColumn, PageXMLScan, PageXMLPage
-from republic.model.physical_document_model import PageXMLTextLine, PageXMLDoc
+import republic.model.physical_document_model as pdm
 
 
-def parse_republic_pagexml_file(pagexml_file: str) -> PageXMLScan:
+def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
     try:
         scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file)
         metadata = file_parser.get_republic_scan_metadata(pagexml_file)
         for field in metadata:
             scan_doc.metadata[field] = metadata[field]
         if 'coords' not in scan_doc:
-            scan_doc.coords = parse_derived_coords(scan_doc.text_regions)
+            scan_doc.coords = pdm.parse_derived_coords(scan_doc.text_regions)
         return scan_doc
     except (AssertionError, KeyError, TypeError, ValueError):
         print(f"Error parsing file {pagexml_file}")
         raise
 
 
-def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
-                     pagexml_data: Union[str, None] = None) -> PageXMLScan:
+def get_scan_pagexml(pagexml_file: str,
+                     pagexml_data: Union[str, None] = None) -> pdm.PageXMLScan:
     # print('Parsing file', pagexml_file)
     try:
         scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
@@ -38,7 +36,7 @@ def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
         raise
     if not scan_doc.coords and scan_doc.text_regions:
         # add scan coordinates if they're not in the XML
-        scan_doc.coords = parse_derived_coords(scan_doc.text_regions)
+        scan_doc.coords = pdm.parse_derived_coords(scan_doc.text_regions)
     for text_region in scan_doc.text_regions:
         if text_region.types.intersection({'date', 'page-number'}):
             text_region.add_type(['header', 'extra'])
@@ -64,19 +62,19 @@ def get_scan_pagexml(pagexml_file: str, inventory_config: dict,
     return scan_doc
 
 
-def is_even_side(item: PhysicalStructureDoc) -> bool:
+def is_even_side(item: pdm.PhysicalStructureDoc) -> bool:
     return item.coords.right < 2500
 
 
-def is_odd_side(item: PhysicalStructureDoc) -> bool:
+def is_odd_side(item: pdm.PhysicalStructureDoc) -> bool:
     return item.coords.left > 2200 and item.coords.right > 2500
 
 
-def is_extra_side(item: PhysicalStructureDoc) -> bool:
+def is_extra_side(item: pdm.PhysicalStructureDoc) -> bool:
     return item.coords.right > 4900 and item.coords.left > 4700
 
 
-def initialize_pagexml_page(scan_doc: PageXMLScan, side: str) -> PageXMLPage:
+def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str) -> pdm.PageXMLPage:
     """Initialize a pagexml page type document based on the scan metadata."""
     metadata = copy.copy(scan_doc.metadata)
     if 'doc_type' in metadata:
@@ -93,13 +91,13 @@ def initialize_pagexml_page(scan_doc: PageXMLScan, side: str) -> PageXMLPage:
         metadata['page_num'] = scan_doc.metadata['scan_num'] * 2 - 2
         metadata['id'] = f"{scan_doc.metadata['id']}-page-{metadata['page_num']}-extra"
     metadata['scan_id'] = scan_doc.metadata['id']
-    page_doc = PageXMLPage(doc_id=metadata['id'], metadata=metadata, text_regions=[])
+    page_doc = pdm.PageXMLPage(doc_id=metadata['id'], metadata=metadata, text_regions=[])
     page_doc.set_parent(scan_doc)
     return page_doc
 
 
-def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
-    pages: List[PageXMLPage] = []
+def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
+    pages: List[pdm.PageXMLPage] = []
     if not scan_doc.text_regions:
         return pages
     page_odd = initialize_pagexml_page(scan_doc, 'odd')
@@ -126,10 +124,10 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
             else:
                 # The text region crosses the page boundary. Split the lines into new text regions per
                 # page, and create new text regions
-                odd_region = PageXMLTextRegion(lines=odd_lines, coords=parse_derived_coords(odd_lines),
-                                               metadata=text_region.metadata)
-                even_region = PageXMLTextRegion(lines=even_lines, coords=parse_derived_coords(even_lines),
-                                                metadata=text_region.metadata)
+                odd_region = pdm.PageXMLTextRegion(lines=odd_lines, coords=pdm.parse_derived_coords(odd_lines),
+                                                   metadata=text_region.metadata)
+                even_region = pdm.PageXMLTextRegion(lines=even_lines, coords=pdm.parse_derived_coords(even_lines),
+                                                    metadata=text_region.metadata)
                 page_even.add_child(even_region)
                 # print("stats after adding child", page_even.stats)
                 page_odd.add_child(odd_region)
@@ -146,10 +144,10 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
             else:
                 # The text region crosses the page boundary. Split the text_regions into new text regions per
                 # page, and create new text regions
-                odd_region = PageXMLTextRegion(text_regions=odd_text_regions, metadata=text_region.metadata,
-                                               coords=parse_derived_coords(odd_text_regions))
-                even_region = PageXMLTextRegion(text_regions=even_text_regions, metadata=text_region.metadata,
-                                                coords=parse_derived_coords(even_text_regions))
+                odd_region = pdm.PageXMLTextRegion(text_regions=odd_text_regions, metadata=text_region.metadata,
+                                                   coords=pdm.parse_derived_coords(odd_text_regions))
+                even_region = pdm.PageXMLTextRegion(text_regions=even_text_regions, metadata=text_region.metadata,
+                                                    coords=pdm.parse_derived_coords(even_text_regions))
                 page_even.add_child(even_region)
                 # print("stats after adding child", page_even.stats)
                 page_odd.add_child(odd_region)
@@ -157,9 +155,9 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
     for page_doc in [page_even, page_odd]:
         if not page_doc.coords:
             if len(page_doc.columns):
-                page_doc.coords = parse_derived_coords(page_doc.columns)
+                page_doc.coords = pdm.parse_derived_coords(page_doc.columns)
             elif len(page_doc.text_regions):
-                page_doc.coords = parse_derived_coords(page_doc.text_regions)
+                page_doc.coords = pdm.parse_derived_coords(page_doc.text_regions)
             if page_doc.coords:
                 page_doc.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'],
                                                                              page_doc.coords)
@@ -169,7 +167,7 @@ def split_scan_pages(scan_doc: PageXMLScan) -> List[PageXMLPage]:
     return pages
 
 
-def derive_pagexml_page_iiif_url(jpg_url: str, coords: Coords) -> str:
+def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords) -> str:
     region = {
         'left': coords.left - 100,
         'top': coords.top - 100,
@@ -179,7 +177,7 @@ def derive_pagexml_page_iiif_url(jpg_url: str, coords: Coords) -> str:
     return make_iiif_region_url(jpg_url, region)
 
 
-def coords_overlap(item1: PhysicalStructureDoc, item2: PhysicalStructureDoc) -> int:
+def coords_overlap(item1: pdm.PhysicalStructureDoc, item2: pdm.PhysicalStructureDoc) -> int:
     left = item1.coords.left if item1.coords.left > item2.coords.left else item2.coords.left
     right = item1.coords.right if item1.coords.right < item2.coords.right else item2.coords.right
     # overlap must be positive, else there is no overlap
@@ -203,7 +201,7 @@ def get_median_normal_line_score(scores, default):
         raise
 
 
-def set_line_alignment(column: PageXMLColumn):
+def set_line_alignment(column: pdm.PageXMLColumn):
     lines = [line for text_region in column.text_regions for line in text_region.lines]
     lefts = [line.coords.left for line in lines]
     rights = [line.coords.right for line in lines]
@@ -238,7 +236,7 @@ def set_line_alignment(column: PageXMLColumn):
 #################################################
 
 
-def compute_pixel_dist(lines: List[PageXMLTextLine]) -> Counter:
+def compute_pixel_dist(lines: List[pdm.PageXMLTextLine]) -> Counter:
     """Count how many lines are above each horizontal pixel coordinate."""
     pixel_dist = Counter()
     for line in lines:
@@ -271,7 +269,7 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
     return gap_pixel_intervals
 
 
-def find_column_gaps(lines: List[PageXMLTextLine], config: Dict[str, any]):
+def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any]):
     gap_pixel_freq_threshold = int(len(lines) / 2 * config["column_gap"]["gap_pixel_freq_ratio"])
     gap_pixel_dist = compute_pixel_dist(lines)
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config)
@@ -287,7 +285,7 @@ def within_column(line, column_range):
 
 def split_lines_on_column_gaps(page_doc, config: Dict[str, any]):
     column_ranges = find_column_gaps(page_doc.extra[0].lines, config)
-    columns = [[] for i in range(len(column_ranges)+1)]
+    columns = [[] for _ in range(len(column_ranges)+1)]
     extra = []
     for line in page_doc.extra[0].lines:
         print(line.coords.left, line.coords.right)
@@ -304,7 +302,7 @@ def split_lines_on_column_gaps(page_doc, config: Dict[str, any]):
     return columns, extra
 
 
-def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
+def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
     column_metadata = {
         'page_id': page_doc.metadata['id'],
         'scan_id': page_doc.metadata['scan_id'],
@@ -312,9 +310,9 @@ def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
     }
     extra_metadata = copy.deepcopy(column_metadata)
     extra_metadata['type'] = 'header'
-    columns: List[PageXMLColumn] = []
-    extra_text_regions: List[PageXMLTextRegion] = []
-    text_regions: List[PageXMLTextRegion] = []
+    columns: List[pdm.PageXMLColumn] = []
+    extra_text_regions: List[pdm.PageXMLTextRegion] = []
+    text_regions: List[pdm.PageXMLTextRegion] = []
     for text_region in page_doc.text_regions:
         text_regions += [text_region] if text_region.lines else text_region.text_regions
     text_regions.sort(key=lambda x: x.coords.top)
@@ -322,6 +320,8 @@ def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
         if text_region.lines and text_region.coords.width > 1200:
             # Wide text_regions are part of the header
             extra_text_regions += [text_region]
+            text_region.main_type = 'extra'
+            text_region.add_type('extra')
             continue
         # check if this text region overlaps with an existing column
         overlapping_column = None
@@ -336,11 +336,11 @@ def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
         # if there is an overlapping column, add this text region
         if overlapping_column:
             overlapping_column.text_regions += [text_region]
-            overlapping_column.coords = parse_derived_coords(overlapping_column.text_regions)
+            overlapping_column.coords = pdm.parse_derived_coords(overlapping_column.text_regions)
         # if no, create a new column for this text region
         else:
-            column = PageXMLColumn(coords=parse_derived_coords([text_region]), metadata=column_metadata,
-                                   text_regions=[text_region])
+            column = pdm.PageXMLColumn(coords=pdm.parse_derived_coords([text_region]), metadata=column_metadata,
+                                       text_regions=[text_region])
             columns += [column]
     for column in columns:
         if not column.coords:
@@ -354,22 +354,20 @@ def split_column_regions(page_doc: PageXMLPage) -> PageXMLPage:
         set_line_alignment(column)
         column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], column.coords)
     if extra_text_regions:
-        extra_coords = parse_derived_coords(extra_text_regions)
-        extra = PageXMLTextRegion(metadata=extra_metadata, coords=extra_coords, text_regions=extra_text_regions)
+        extra_coords = pdm.parse_derived_coords(extra_text_regions)
+        extra = pdm.PageXMLTextRegion(metadata=extra_metadata, coords=extra_coords, text_regions=extra_text_regions)
         extra.main_type = 'extra'
         extra.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], extra.coords)
         extra.set_derived_id(extra.metadata['scan_id'])
-    else:
-        extra = None
-    new_page = PageXMLPage(doc_id=page_doc.id, doc_type=page_doc.type, coords=page_doc.coords,
-                           metadata=page_doc.metadata, columns=columns, extra=extra_text_regions)
+    new_page = pdm.PageXMLPage(doc_id=page_doc.id, doc_type=page_doc.type, coords=page_doc.coords,
+                               metadata=page_doc.metadata, columns=columns, extra=extra_text_regions)
     new_page.set_parent(page_doc.parent)
     return new_page
 
 
-def set_document_children_derived_ids(doc: PageXMLDoc, scan_id: str):
+def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
     doc.set_parentage()
-    doc_text_regions: List[PageXMLDoc] = []
+    doc_text_regions: List[pdm.PageXMLDoc] = []
     if hasattr(doc, 'text_regions'):
         doc_text_regions += doc.text_regions
     if hasattr(doc, 'columns'):
@@ -424,7 +422,7 @@ def set_document_children_derived_ids(doc: PageXMLDoc, scan_id: str):
                 line.set_derived_id(scan_id)
 
 
-def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
+def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
     split_columns = True
     for text_region in scan_doc.text_regions:
         if text_region.has_type('main'):
@@ -441,9 +439,9 @@ def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
                     page.add_child(text_region, as_extra=True)
                 else:
                     # turn the text region into a column
-                    column = PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
-                                           text_regions=text_region.text_regions,
-                                           lines=text_region.lines)
+                    column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
+                                               text_regions=text_region.text_regions,
+                                               lines=text_region.lines)
                     column.set_derived_id(scan_doc.id)
                     column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                column.coords)
@@ -478,3 +476,262 @@ def split_pagexml_scan(scan_doc: PageXMLScan) -> List[PageXMLPage]:
                 line.set_derived_id(scan_doc.id)
     # print([column.parent.id for page in pages for column in page.columns])
     return pages
+
+
+def column_bounding_box_surrounds_lines(column: pdm.PageXMLColumn) -> bool:
+    """Check if the column coordinates contain the coordinate
+    boxes of the column lines."""
+    for line in column.get_lines():
+        if not elements_overlap(column, line, threshold=0.6):
+            return False
+    return True
+
+
+def is_text_column(column: pdm.PageXMLColumn) -> bool:
+    """Check if there is at least one alpha-numeric word on the page."""
+    # num_chars = 0
+    num_alpha_words = 0
+    for line in column.get_lines():
+        if line.text:
+            try:
+                words = [word for word in re.split(r'\W+', line.text.strip()) if len(word) > 1]
+            except re.error:
+                print(line.text)
+                raise
+            num_alpha_words += len(words)
+            # num_chars += len(line.text)
+    # return num_chars >= 20
+    return num_alpha_words > 0
+
+
+def is_full_text_column(column: pdm.PageXMLColumn, num_page_cols: int = 2) -> bool:
+    """Check if a page column is a full-text column (running from top to bottom of page)."""
+    between_cols_margin = 300 * (num_page_cols - 1)
+    page_text_width = 2000
+    full_column_text_width = (page_text_width - between_cols_margin) / num_page_cols
+    if column.coords.width < full_column_text_width - 80:
+        # narrow column is not a normal text column
+        return False
+    if column.coords.height > 2500:
+        # full page-height column
+        return True
+    if column.coords.height / column.stats['lines'] > 100:
+        # lines are far apart, probably something wrong
+        return False
+    if column.coords.width > 700 and column.stats['lines'] > 30:
+        return True
+
+
+def is_noise_column(column: pdm.PageXMLColumn) -> bool:
+    """Check if columns contains only very short lines."""
+    for line in column.get_lines():
+        if line.text and len(line.text) > 3:
+            return False
+    return True
+
+
+def elements_overlap(element1: pdm.PageXMLDoc, element2: pdm.PageXMLDoc,
+                     threshold: float = 0.5) -> bool:
+    """Check if two elements have overlapping coordinates."""
+    v_overlap = pdm.vertical_overlap(element1.coords, element2.coords)
+    h_overlap = pdm.horizontal_overlap(element1.coords, element2.coords)
+    if v_overlap / element1.coords.height > threshold:
+        if h_overlap / element1.coords.width > threshold:
+            return True
+    if v_overlap / element2.coords.height > threshold:
+        if h_overlap / element2.coords.width > threshold:
+            return True
+    else:
+        return False
+
+
+def is_header_footer_column(column: pdm.PageXMLColumn) -> bool:
+    """Check if a column is a header or footer."""
+    if column.coords.top <= 600:
+        if column.coords.bottom > 600:
+            # column is too low for top margin header
+            return False
+    if column.coords.bottom >= 3200:
+        if column.coords.top < 3200:
+            # column is too high for bottom margin footer
+            return False
+    if is_text_column(column):
+        return False
+    if column.stats['lines'] > 4:
+        return False
+    if column.coords.width > 500 and column.coords.height > 150:
+        return False
+    return True
+
+
+def has_overlapping_columns(page: pdm.PageXMLPage) -> bool:
+    """Determine whether a page has columns that
+    mostly overlap with each other"""
+    for ci, curr_column in enumerate(page.columns):
+        if ci == len(page.columns) - 1:
+            break
+        for next_column in page.columns[ci+1:]:
+            if elements_overlap(curr_column, next_column, threshold=0.8):
+                print('Overlapping columns!')
+                print('\t', curr_column.coords.box)
+                print('\t', next_column.coords.box)
+    return False
+
+
+def merge_columns(column1: pdm.PageXMLColumn, column2: pdm.PageXMLColumn,
+                  doc_id: str, metadata: dict) -> pdm.PageXMLColumn:
+    """Merge two columns into one, sorting lines by baseline height."""
+    merged_lines = column1.get_lines() + column2.get_lines()
+    sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
+    merged_coords = pdm.parse_derived_coords(sorted_lines)
+    merged_col = pdm.PageXMLColumn(doc_id=doc_id, doc_type='index_column',
+                                   metadata=metadata, coords=merged_coords,
+                                   lines=merged_lines)
+    return merged_col
+
+
+def has_text_columns(page: pdm.PageXMLPage, num_page_cols: int = 2) -> bool:
+    for column in page.columns:
+        if is_full_text_column(column, num_page_cols=num_page_cols):
+            return True
+    return False
+
+
+def determine_column_type(column: pdm.PageXMLColumn) -> str:
+    """Determine whether a column is a full-text column, margin column
+    or extra text column."""
+    if is_full_text_column(column):
+        return 'full_text'
+    elif is_text_column(column):
+        return 'extra_text'
+    elif is_header_footer_column(column):
+        return 'header_footer'
+    elif is_noise_column(column):
+        return 'noise_column'
+    else:
+        print('Bounding box:', column.coords.box)
+        print('Stats:', column.stats)
+        num_chars = 0
+        for line in column.get_lines():
+            print(line.coords.box, line.text)
+            num_chars += len(line.text)
+        print('num_chars:', num_chars)
+        raise TypeError('unknown column type')
+
+
+def get_page_full_text_columns(page: pdm.PageXMLPage) -> List[pdm.PageXMLColumn]:
+    """Return the full-text columns of a page. Merge any overlapping extra
+    columns into the full-text columns."""
+    full_text_columns = []
+    extra_columns = []
+    for column in page.columns:
+        try:
+            column_type = determine_column_type(column)
+        except TypeError:
+            column_type = None
+        if column_type == 'full_text':
+            full_text_columns.append(column)
+        elif column_type == 'margin':
+            continue
+        elif column_type == 'extra_text':
+            extra_columns.append(column)
+        else:
+            continue
+    merged_columns = []
+    for full_text_col in full_text_columns:
+        for extra_col in extra_columns:
+            if elements_overlap(extra_col, full_text_col):
+                # merge columns into new full_text_col
+                # make sure multiple merges into the same full text
+                # columns are cumulative
+                full_text_col = merge_columns(extra_col, full_text_col,
+                                              full_text_col.id, full_text_col.metadata)
+        # keep tracked of the new merged columns
+        merged_columns.append(full_text_col)
+    return merged_columns
+
+
+def make_derived_column(lines: List[pdm.PageXMLTextLine], metadata: dict, page_id: str) -> pdm.PageXMLColumn:
+    """Make a new PageXMLColumn based on a set of lines, column metadata and a page_id."""
+    coords = pdm.parse_derived_coords(lines)
+    column = pdm.PageXMLColumn(metadata=metadata, coords=coords, lines=lines)
+    column.set_derived_id(page_id)
+    return column
+
+
+def is_title_page(page: pdm.PageXMLPage) -> bool:
+    """Check whether a page is a Republic title page."""
+    # title pages are always on the right side of the scan
+    # and have an uneven page number
+    if page.metadata['page_num'] % 2 == 0:
+        return False
+    num_title_lines = 0
+    for line in page.get_lines():
+        if line.coords.left < 3500 and line.coords.right > 3600:
+            if line.coords.width / len(line.text) > 30:
+                num_title_lines += 1
+    return num_title_lines > 2
+
+
+def parse_title_page_columns(page: pdm.PageXMLPage) -> pdm.PageXMLPage:
+    extra_columns = page.extra
+    text_columns = []
+    for column in page.columns:
+        if not is_text_column(column):
+            extra_columns.append(column)
+            continue
+        if column.stats['lines'] < 10:
+            extra_columns.append(column)
+            continue
+        if column.coords.width < 1000:
+            text_columns.append(column)
+            continue
+        # print('column:', column.id)
+        # print('column:', column.coords.box)
+        # print('column:', column.stats)
+        lines = sorted(column.get_lines(), key=lambda line: line.coords.y)
+        last_title_line_index = -1
+        for li, line in enumerate(lines):
+            # print(f"{line.coords.y}\t{line.coords.left}, {line.coords.right}\t{line.text}")
+            if line.coords.left < 3400 and line.coords.right > 3600:
+                # print(f"TITLE: {line.coords.y}\t{line.coords.left}, {line.coords.right}\t{line.text}")
+                last_title_line_index = li
+        title_lines = lines[:last_title_line_index+1]
+        if len(title_lines) > 0:
+            title_column = make_derived_column(title_lines, column.metadata, page.id)
+            extra_columns.append(title_column)
+        body_lines = lines[last_title_line_index+1:]
+        # print('total lines:', len(lines))
+        # print('title lines:', len(title_lines))
+        # print('body lines:', len(body_lines))
+        left_col_lines, right_col_lines = [], []
+        for line in body_lines:
+            if line.coords.right < 3600:
+                left_col_lines.append(line)
+            elif line.coords.left > 3400 and line.coords.right >= 3600:
+                right_col_lines.append(line)
+            else:
+                print(line.coords.box)
+                print(line.text)
+                raise TypeError('cannot select appropriate column')
+        # print('left_col lines:', len(left_col_lines))
+        # print('right_col lines:', len(right_col_lines))
+        if len(left_col_lines) > 0:
+            left_column = make_derived_column(left_col_lines, column.metadata, page.metadata['scan_id'])
+            text_columns.append(left_column)
+        if len(right_col_lines) > 0:
+            right_column = make_derived_column(right_col_lines, column.metadata, page.metadata['scan_id'])
+            text_columns.append(right_column)
+    new_page_coords = pdm.parse_derived_coords(extra_columns + text_columns)
+    new_page = pdm.PageXMLPage(metadata=page.metadata, coords=new_page_coords, columns=text_columns,
+                               text_regions=page.text_regions, extra=extra_columns)
+    new_page.set_derived_id(page.metadata['scan_id'])
+    # print(new_page.stats)
+    # print('num extra:', len(new_page.extra), len(extra_columns))
+    # print('num text_regions:', len(page.text_regions))
+    # print('num columns:', len(new_page.columns), len(text_columns))
+    # for col in text_columns:
+    #     print('text col:', col.id)
+    # for col in new_page.columns:
+    #     print('page col:', col.id, col.stats)
+    return new_page

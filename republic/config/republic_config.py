@@ -175,6 +175,10 @@ base_config = {
     'lemma_doc_type': 'lemma',
     'page_doc_type': 'page',
     'scan_doc_type': 'scan',
+    'scan_index': 'scans',
+    'page_index': 'pages',
+    'session_lines_index': 'session_lines',
+    'session_text_index': 'session_text',
     'paragraph_doc_type': 'paragraph',
     # width numbers are pixel width
     'tiny_word_width': 15,

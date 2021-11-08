@@ -1,9 +1,12 @@
 
 .ipynb_checkpoints
 settings.py
+snippets
 __pycache__
 
 *.pcl
 nohup*
 *.iml
 .idea/*
+Naamloos*
+*.log
