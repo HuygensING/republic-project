@@ -25,7 +25,7 @@ tail -f import.log
 ```
 
 Note: the leading space before the Google token export is intentional and prevents Bash from storing this line in your history.
-See `HISTCONTROL` and `ignorespace`
+(see `HISTCONTROL` and `ignorespace` in Bash manual.)
 
 ## Check contents match
 
