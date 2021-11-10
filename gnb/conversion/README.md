@@ -1,30 +1,13 @@
 # GNB xml -> elastic conversion
 Conversion of GNB xml files and mysql database to elasticsearch indices
 
+## Data
+
+Add source xml files to `./data`
+Note: `XmlResolutionConverter` expects source xml path to contain `resoluties_staten_generaal`:
+
 ## .env
-The Importer expects a number environment variables to be set.
-Below an example .env file with those env vars, including some example values:
-
-```
-# make sure glob contains 'resoluties_staten_generaal':
-export XML_GLOB=./data/resoluties_staten_generaal_1626-1630/16*/**/*.xml
-
-# Elasticsearch api version to use:
-export ES_VERSION=7.x
-
-# Host of elasticsearch:
-export ES_HOST=localhost:9200
-
-# Index names:
-export RESOLUTION_INDEX=gnb-resolutions
-export PERSON_INDEX=gnb-people
-
-# Mysql host, user, password and database:
-export MYSQL_CONNECTION=mysql://root:example@localhost:3306/statengeneraal
-
-# Date format used in resolution and people indices:
-export DATE_FORMAT=YYYY-MM-DD
-```
+Copy `.env.example` to `.env`
 
 ## Start containers
 Run:
