@@ -19,10 +19,13 @@ Modify docker-compose.yml:
 ## Import
 Run:
 ```
-export GOOGLE_AUTHORIZATION='Google <token>'
+ export GOOGLE_AUTHORIZATION='Google <token>'
 docker-compose up --build -d
 tail -f import.log
 ```
+
+Note: the leading space before the Google token export is intentional and prevents Bash from storing this line in your history.
+See `HISTCONTROL` and `ignorespace`
 
 ## Check contents match
 
