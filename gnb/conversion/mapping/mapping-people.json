@@ -1,0 +1,126 @@
+{
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "mentionedCount": {
+        "type": "integer"
+      },
+      "attendantCount": {
+        "type": "integer"
+      },
+      "metadata": {
+        "properties": {
+          "indexedOn": {
+            "type": "date"
+          }
+        }
+      },
+      "searchName": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "familyName": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "firstNames": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "nameType": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "prepositions": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "interpositions": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "postpositions": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "quality": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "functions": {
+        "type": "nested",
+        "properties": {
+          "id": {
+            "type": "long"
+          },
+          "start": {
+            "type": "date",
+            "format": "yyyy-MM-dd"
+          },
+          "end": {
+            "type": "date",
+            "format": "yyyy-MM-dd"
+          },
+          "name": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "category": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
