@@ -41,3 +41,26 @@ docker commit elastic gnb-elastic:$TAG
 docker save -o ~/data/gnb/gnb-elastic-$TAG.tar gnb-elastic:$TAG
 ```
 
+## Conversion log
+
+### gnb-elastic-20210311.tar
+- add gnb-people mentionedCount and attendantCount to simplify people queries
+- add gnb-people searchName
+
+### gnb-elastic-20210305.tar
+Includes:
+- gnb-people: functions.category string, people.functions.category string
+- gnb-resolutions: metadata.resolution follow number, people.president boolean
+
+### gnb-elastic-20210111.tar
+Scripts: ~/workspace/gnb/conversion
+Versie gebruikt voor demo op 2021-02-03.
+
+### statengeneraal20210105.sql
+Includes function categories.
+
+To fix `Unknown collation: 'utf8mb4_0900_ai_ci'`, run:
+```
+sed -i '' 's/utf8mb4_0900_ai_ci/utf8mb4_unicode_ci/g' data/statengeneraal20210105-fix.sql
+```
+Source: https://github.com/drud/ddev/issues/1902#issuecomment-546654862
