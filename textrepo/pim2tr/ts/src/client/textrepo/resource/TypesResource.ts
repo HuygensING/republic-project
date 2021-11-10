@@ -20,7 +20,7 @@ export default class TypesResource {
 
     public async create(type: TextRepoType) {
         const url = this.host + this.endpoint;
-        return await RestUtil.postResource(url, type);
+        return RestUtil.postResource(url, type);
     }
 
 }

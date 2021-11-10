@@ -24,6 +24,6 @@ export default class TasksResource {
     const formData = new FormData();
     formData.append('contents', contents, {filename: `${externalId}-${typeName}.xml`});
 
-    return await RestUtil.postFormData(url, formData);
+    return RestUtil.postFormData(url, formData);
   }
 }

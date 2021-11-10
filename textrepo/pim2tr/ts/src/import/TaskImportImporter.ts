@@ -173,7 +173,7 @@ export default class TaskImportImporter {
   private async getAndCachePimVersions(pimImageUuid: string): Promise<any[]> {
     let cache: string = await TmpUtil.getCache(pimImageUuid);
     if (cache) {
-      return await JSON.parse(cache);
+      return JSON.parse(cache);
     }
     let uncached = await this.pimClient.documentImageTranscriptions.getAll(pimImageUuid);
     await TmpUtil.setCache(pimImageUuid, JSON.stringify(uncached));

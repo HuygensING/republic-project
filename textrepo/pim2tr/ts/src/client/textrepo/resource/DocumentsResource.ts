@@ -25,7 +25,7 @@ export default class DocumentsResource {
         Object.keys(params).forEach(p => url.searchParams.append(p, params[p]))
         const response = await fetch(url);
         await RestUtil.checkOk(url.toString(), response);
-        return await response.json();
+        return response.json();
     }
 
     public async delete(docId: string) : Promise<boolean> {
