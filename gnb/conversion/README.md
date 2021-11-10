@@ -1,11 +1,11 @@
-# GNB xml -> elastic conversion
+# GNB conversion
 Conversion of GNB xml files and mysql database to elasticsearch indices
 
 ## Data
 
-Add source xml files to `./data`
-Add source mysql db to `./data`
-Note: `XmlResolutionConverter` expects source xml path to contain `resoluties_staten_generaal`.
+- Add source xml files to `./data`
+- Add source mysql db to `./data`
+- Note: `XmlResolutionConverter` expects source xml path to contain `resoluties_staten_generaal`.
 
 ## .env
 - Copy `.env.example` to `.env`
@@ -34,6 +34,7 @@ npm run conversion
 ```
 
 ## Create new image
+Run:
 ```
 TAG=<tag>
 docker-compose stop
