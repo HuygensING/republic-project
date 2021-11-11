@@ -2,7 +2,7 @@
 
 log_status() {
   if [[ ! -f "$1" ]];
-    then echo 'usage: ./to-watch.sh <log-file>'; return;
+    then echo 'usage: ./log-status.sh <log-file>'; return;
   fi
 
   docker stats importer --no-stream
