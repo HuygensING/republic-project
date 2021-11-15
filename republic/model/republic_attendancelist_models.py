@@ -1,6 +1,7 @@
 import itertools
 import json
 import logging
+from collections import UserString
 import re
 import pandas as pd
 #from ..fuzzy.fuzzy_keyword_searcher import FuzzyPhraseSearcher
@@ -166,7 +167,7 @@ class TypedFragment(object):
         self.begin = fragment[0]
         self.end = fragment[1]
         self.idnr = 0
-        self.pattern = ""
+        self.pattern = pattern
         self.delegate_id = 0
         self.delegate_name = ""
         self.delegate_gewest = ""
@@ -512,3 +513,18 @@ def fill_heer(proposed_delegate):
         except (KeyError, IndexError):
             result[key] = pd.nan
     return result
+
+
+
+
+
+class StringWithContext(UserString):
+    def __init__(self, item='', reference=None):
+        self.data = item
+        self.references = []
+
+    def set_reference(self, reference):
+        self.references.append(reference)
+
+    def get_references(self):
+        return self.references
