@@ -16977,3 +16977,280 @@ INFO:root:van Rechteren
 INFO:root:van Rechteren
 INFO:root:van Rechteren
 INFO:root:van Zamminga DD
+INFO:root:1742 Finished
+INFO:root:1743 Started
+INFO:elasticsearch:POST https://annotation.republic-caf.diginfra.org:443/elasticsearch/session_text/_search [status:200 request:7.415s]
+INFO:root:Too long text: 1743-05-15 - length: 947. Scan: NL-HaNA_1.01.02_3798_0169. Text truncated
+INFO:root:Too long text: 1743-06-22 - length: 1221. Scan: NL-HaNA_1.01.02_3798_0205. Text truncated
+INFO:root:Too long text: 1743-06-25 - length: 1153. Scan: NL-HaNA_1.01.02_3798_0207. Text truncated
+INFO:root:Too long text: 1743-09-14 - length: 1018. Scan: NL-HaNA_1.01.02_3798_0285. Text truncated
+INFO:root:Too long text: 1743-10-08 - length: 1040. Scan: NL-HaNA_1.01.02_3798_0307. Text truncated
+INFO:root:Too long text: 1743-10-15 - length: 1050. Scan: NL-HaNA_1.01.02_3798_0312. Text truncated
+INFO:root:Too long text: 1743-10-19 - length: 1122. Scan: NL-HaNA_1.01.02_3798_0315. Text truncated
+INFO:root:Too long text: 1743-10-31 - length: 1208. Scan: NL-HaNA_1.01.02_3798_0324. Text truncated
+INFO:root:Too long text: 1743-11-16 - length: 1354. Scan: NL-HaNA_1.01.02_3798_0338. Text truncated
+INFO:root:Too long text: 1743-12-05 - length: 1147. Scan: NL-HaNA_1.01.02_3798_0357. Text truncated
+INFO:root:year: 1743, nr of attendancelists 296
+INFO:root:HDEVWV1743Den Heere van Tummingavintie van GelderlandHoorn DBEESEVANDEOVEEBEINUVVEEENDBDXLBEERENORSEEEEEESEN ENENDERVERBENIGOOE NEVERDLANDENDe anno 1743
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:van JYederen
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:e Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentindk
+INFO:root:re Bentinck
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Bureux
+INFO:root:re de Milan Visconti
+INFO:root:e van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:e van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Zamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:e van Welderen
+INFO:root:van Jelderen
+INFO:root:van Welderen
+INFO:root:Bentinék
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bauteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:de Milan Visconti
+INFO:root:de MilanVisconti
+INFO:root:zan Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Heiden
+INFO:root:van Heiden
+INFO:root:van Heiden
+INFO:root:van Heiden
+INFO:root:van Heiden
+INFO:root:van Heiden
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:re van Welderen
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:van Groenendyck
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Bulteux PRAESEB
+INFO:root:Buieun
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:Mercurii den 15 Mey rustende en van der selver weedervaaren rapport te doen en sullen de opgemelde 1743 Heeren Burgermeesteren der voorschreeve PRAESIDE Stad van de komste der gemelde Heeren Den Heere van Haaren haar Hoogh Mogende Gedeputeerden by
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:e van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Zamminga
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:van TammingaPoRVES
+INFO:root:van Tamminga
+INFO:root:van Tamminga
+INFO:root:e van Heeckeren tot den Brantzenborgh
+INFO:root:van Heeckeren tot den Brantxzenborgb
+INFO:root:van Heeckeren tot den Brantzenborgh
+INFO:root:van Heeckeren tot den Brantzenborgh
+INFO:root:re van Heeckeren tot den Brautzenborgh
+INFO:root:BentinckPRAESEB
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:van Meel
+INFO:root:van Meel
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Sabbathi den 22 Junyen twintighsten de zaack aan den Minister 1743 hadde voorgedraagen die hem te antwoord hadde gegeeven dav den Koningh in die PRAESIDE zaacken interest hebbende de Boecken eerst Den Heere Buteux moesten werden geëxamineert en nader
+INFO:root:e van Utenhove van Bottesiein
+INFO:root:Martis den 25 Juny schreeve Reqdueste gestelt zal werden in1743 handen van de Heeren van Heeckeren tot PRAESTODE den Brantzenborgh en andere haar HooghDen Heere van Utenbove van Bottestein Mogende Gedeputeerden tot de Militaire zaaken om te viliteeren examineeren en
+INFO:root:re van Utenhove van Bouttestein
+INFO:root:van Utenhove van Bottestein
+INFO:root:van Utenhove van Bottestein
+INFO:root:van Utenhove van Botiessein
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:e van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:van MWielderen
+INFO:root:van Welderen
+INFO:root:e van Heeckeren tot den Brantzenborgh
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Bureux
+INFO:root:Buieux
+INFO:root:re Burteux
+INFO:root:Buteux
+INFO:root:de Milan Visconti
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:Sloet tot Warmelo
+INFO:root:Sdoet tot Warmelo
+INFO:root:Sloet tot JVarmelo
+INFO:root:Sloel tot Warmelo
+INFO:root:Oabbathi den 31 Augusty1743PRAEZESITIDE Den Heere Sloet tot Warmelo
+INFO:root:e Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:van Randwyck
+INFO:root:van Randwyck
+INFO:root:van Randwyck
+INFO:root:van Randwyck
+INFO:root:van Randwyck resolutie is gevallen
+INFO:root:e Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Buteux
+INFO:root:Martis den 24 September holm den dertienden deeser loopende
+INFO:root:e Buteux
+INFO:root:Busteux
+INFO:root:Burenx
+INFO:root:Buteux
+INFO:root:van Utenhove tot Bottestein
+INFO:root:van Utenhove tot Bottestein
+INFO:root:van Utenbove tot Bottestein
+INFO:root:van Utenbove tot Bottestein
+INFO:root:van Utenhove tot Botiestein
+INFO:root:van Utenbove tot Botienstein
+INFO:root:Vegilin
+INFO:root:Vegilin
+INFO:root:Vegilin
+INFO:root:Vegilin
+INFO:root:Vegilin
+INFO:root:Vegilin
+INFO:root:Sloet tot Lyndenborst
+INFO:root:Martis den 15 Octoberom na expiratie van de gerequireerde ses 1743 weecken het commando van het GuarniPRAESIDE soen van Venlo te moogen overgeeven aan Den Heere Sboet tot Lyndenborlit den oudften Officier zynde den Lieutenant
+INFO:root:Mercurii den 16 October Keyserlijcke Majesteyt geschreven te St Petersburgh den tienden der voorleede
+INFO:root:Sloet tot Lyndenborst
+INFO:root:Sloet tot Lyndenborst
+INFO:root:Oabbathi den 19 Octoben Officier te Hulst houdende dat hy Suppliant het commando ter Plaatse voorschree1743 ve seedert den vyfden Augusty laatstleedem PRAESIDE hadde waargenoomen van voorncemen was om sigh voor eenigen tyd uyt de Den Heere Ssoet tot Lyndenborst voornoemde Plaats te absenteeren ver
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacias
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:van Heeckeren tot Enghuysen
+INFO:root:van Heeckeren tot EngbuyJen
+INFO:root:Jovis den 31 October den Raad van Staate en des GeneraliteytsReeckenkamer om te strecken tot der zel1743 ver narightinge PRAESIDEIS ter Vergaderinge geleesen de Requeste Den Heere van Heeckeren tot EnghuyJende Compagnie van den Generaal Major Kretschmar houdende dat hy Suppliantvan Leendert Scboenmaacker Soldaat in het Regiment Guardes te voet onder De Heeren drie extraordinaris Gedepuland teerden uyt de Provintie van Gelder
+INFO:root:van Heeckeren tot EnghuyJen
+INFO:root:van Heeckeren tot Engbuysen
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:van Groenendyck
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:Buteux
+INFO:root:e Buteux
+INFO:root:Buteux
+INFO:root:Sabbathi den 16 Novembervoorschreeve Requeste gevoeght  tot nog1743 toe sommige refractaire Ingeseetenen der PRAESIDE voorsz Heerlijkheyt niet hadden kunnen werDen Heere Buteux den gebraght tot nakoominge en observan
+INFO:root:de Milan Visconti
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:vun Haaren
+INFO:root:e van Haaren
+INFO:root:van Haaren
+INFO:root:van Haaren
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:Jovis den 5 December boom daar Schipper op was Marinus Smul 1743 en te Zierickzee thuyshoorende  het onPRAESIDE geluck hadden gehad op hunne te rughDen Heere van Rechteren reyse door een Salcesche Rover te werden genoomen en orpgebraght en dat sy na
+INFO:root:van Rechteren
+INFO:root:van Rechteren
+INFO:root:e Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:Gerlacius
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:van Yelderen
+INFO:root:van Welderen
+INFO:root:van Welderen
+INFO:root:Bentinck
+INFO:root:Bentinck
+INFO:root:ere Bentinck
+INFO:root:e van Wassenaer
+INFO:root:Buteux
+INFO:root:Buteux
