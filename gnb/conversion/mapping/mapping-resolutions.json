@@ -1,0 +1,90 @@
+{
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "metadata": {
+        "properties": {
+          "meeting": {
+            "properties": {
+              "date": {
+                "type": "date",
+                "format": "yyyy-MM-dd"
+              }
+            }
+          },
+          "indexedOn": {
+            "type": "date"
+          },
+          "resolution": {
+            "type": "integer"
+          },
+          "source": {
+            "type": "keyword"
+          }
+        }
+      },
+      "people": {
+        "type": "nested",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "keyword"
+          },
+          "president": {
+            "type": "boolean"
+          },
+          "province": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      },
+      "resolution": {
+        "properties": {
+          "postprandum": {
+            "type": "boolean"
+          },
+          "plainText": {
+            "type": "text"
+          },
+          "originalXml": {
+            "type": "text"
+          }
+        }
+      },
+      "annotations": {
+        "type": "nested",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "keyword"
+          },
+          "value": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

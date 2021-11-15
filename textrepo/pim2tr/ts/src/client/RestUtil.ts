@@ -7,7 +7,7 @@ export default class RestUtil {
     public static async postResource(url: string, resource: TextRepoModel) {
         const response = await RestUtil.postAsJson(url, resource);
         await RestUtil.checkOk(url, response);
-        return await response.json();
+        return response.json();
     }
 
     public static async postFormData(url: string, formData: FormData) {
@@ -20,7 +20,7 @@ export default class RestUtil {
         const response = await fetch(url, requestOptions);
 
         await RestUtil.checkOk(url, response);
-        return await response.json();
+        return response.json();
     }
 
     public static async put(url: string, body: string, mimetype: string) {
@@ -30,7 +30,7 @@ export default class RestUtil {
             headers: {'content-type': mimetype}
         });
         await RestUtil.checkOk(url, response);
-        return await response.json();
+        return response.json();
     }
 
     private static async postAsJson(url: string, resource: any) {

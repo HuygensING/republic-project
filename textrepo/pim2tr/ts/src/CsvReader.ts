@@ -11,7 +11,7 @@ export default class CsvReader {
 
     public async read() {
         const parser = parse({columns: true});
-        return await getStream.array(fs.createReadStream(this.path).pipe(parser));
+        return getStream.array(fs.createReadStream(this.path).pipe(parser));
     }
 
 }

@@ -1,15 +1,14 @@
 # PIM -> TextRepo
 
-Import PIM files and metadata into the Text Repository
-- The environment is configured using environment variables
+Import Pergamon Images (PIM) files and metadata into the Text Repository (TR)
+- The environment is configured in docker-compose.yml
 - Types and records are imported from a csv file
+- The Google auth token can be found as a header in images.diginfra.net/pim requests, after logging in
 
-
-## First time
-Add files:
+## Preparation
+Remove `.example` postfix from:
 - types.csv
 - external-identifiers.csv
-- .env
 
 Modify docker-compose.yml:
 - network 
@@ -17,12 +16,16 @@ Modify docker-compose.yml:
 - env vars
 - command (`create-all`, `delete-all`)
 
+## Import
 Run:
 ```
  export GOOGLE_AUTHORIZATION='Google <token>'
 docker-compose up --build -d
 tail -f import.log
 ```
+
+Note: the leading space before the Google token export is intentional and prevents Bash from storing this line in your history.
+(see `HISTCONTROL` and `ignorespace` in Bash manual.)
 
 ## Check contents match
 

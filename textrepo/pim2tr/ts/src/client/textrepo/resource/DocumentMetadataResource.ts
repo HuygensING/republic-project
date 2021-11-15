@@ -12,7 +12,7 @@ export default class DocumentMetadataResource {
         const url = this.host + this.endpoint
             .replace('{id}', id)
             .replace('{key}', key);
-        return await RestUtil.put(url, value, 'text/plain');
+        return RestUtil.put(url, value, 'text/plain');
     }
 
 }

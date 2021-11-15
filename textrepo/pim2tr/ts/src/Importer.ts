@@ -70,6 +70,7 @@ class Importer {
 
     const records = await CsvUtil.getRecords<CsvIdentifierRecord>(Config.SUBSET_CSV);
     console.log(`Records to process: ${JSON.stringify(records.map(i => i.identifier))}`);
+    records.filter(r => r)
 
     let recordCount = 0;
     for (const record of records) {
