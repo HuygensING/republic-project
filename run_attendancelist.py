@@ -99,7 +99,7 @@ def prepare_found_delegates(framed_gtlm, found_delegates, year):
     return framed_gtlm
 
 
-def run(year=0, outdir='', verbose=True):
+def run(year=0, outdir='', tofile=True, verbose=True):
     runner = RunAll(year=year)
     if verbose:
         print("- gathering attendance lists")
@@ -122,12 +122,15 @@ def run(year=0, outdir='', verbose=True):
         print("- running delegates_from_fragments")
 
     runner.delegates_from_fragments()
-    outname = f'{outdir}/{year}_out.json'
-    if verbose:
-        print(f"- saving results to {outname}")
     yout = year_output(year, runner.searchobs)
-    with open(outname, 'w') as fout:
-        json.dump(fp=fout, obj=yout)
+    if tofile is True:
+        outname = f'{outdir}/{year}_out.json'
+        if verbose:
+            print(f"- saving results to {outname}")
+        with open(outname, 'w') as fout:
+            json.dump(fp=fout, obj=yout)
+    else:
+        return yout
     # if verbose == True:
     #    print("saving found delegates")
     # save_db(runner.found_delegates)
