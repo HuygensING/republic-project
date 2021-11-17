@@ -460,7 +460,16 @@ def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
     if response['hits']['total']['value'] == 0:
         return []
     else:
-        return [json_to_republic_resolution(hit['_source']) for hit in response['hits']['hits']]
+        resolutions = []
+        for hit in response['hits']['hits']:
+            doc = hit['_source']
+            if 'attendance_list' in doc['type']:
+                res = rdm.json_to_republic_attendance_list(doc)
+            else:
+                res = rdm.json_to_republic_resolution(doc)
+            resolutions.append(res)
+        return resolutions
+        # return [json_to_republic_resolution(hit['_source']) for hit in response['hits']['hits']]
 
 
 def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):
