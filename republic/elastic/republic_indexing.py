@@ -30,6 +30,7 @@ from republic.helper.metadata_helper import get_per_page_type_index
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from republic.helper.annotation_helper import make_hash_id
 import republic.elastic.republic_retrieving as rep_es
+import run_attendancelist
 
 
 def add_timestamp(doc: Union[Dict[str, any], StructureDoc]) -> None:
@@ -413,6 +414,16 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
     add_timestamp(resolution)
     resolution_json = resolution.json if isinstance(resolution, Resolution) else resolution
     es.index(index=config['resolution_index'], id=resolution_json['metadata']['id'], body=resolution_json)
+
+
+def index_attendance_list_spans(es, year, config):
+    att_spans_year = run_attendancelist.run(year, outdir=None, verbose=True, tofile=False)
+    for span_list in att_spans_year:
+        att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
+        att_list = rep_es.retrieve_attendance_list_by_id(es, att_id, config)
+        att_list.attendance_spans = span_list["spans"]
+        print(att_list.id)
+        es.index(index=config["resolution_index"], id=att_list.id, body=att_list.json)
 
 
 def index_resolution_phrase_matches(es: Elasticsearch, inv_config: dict):

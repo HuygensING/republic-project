@@ -166,6 +166,11 @@ def do_resolution_metadata_indexing(inv_num, inv_config, year):
     rep_indexing.index_inventory_resolution_metadata(es_anno, inv_config)
 
 
+def do_inventory_attendance_list_indexing(inv_num, inv_config, year):
+    print(f"Indexing attendance lists with spans for inventory {inv_num} (year {year})...")
+    rep_indexing.index_attendance_list_spans(es_anno, year, inv_config)
+
+
 def process_inventory_hocr(inv_num, inv_config):
     year = inv_config["year"]
     #do_downloading(inv_num, inv_config, year)

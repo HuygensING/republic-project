@@ -120,7 +120,8 @@ class RepublicParagraph(RepublicDoc):
             "text_region_ids": list(self.text_region_ids),
             "text": self.text,
             "line_ranges": self.line_ranges,
-            "scan_versions": self.scan_versions
+            "scan_versions": self.scan_versions,
+            "stats": self.stats
         }
         if include_text_regions:
             json_data["text_regions"] = self.text_regions
@@ -160,6 +161,14 @@ class RepublicParagraph(RepublicDoc):
             if line_range["start"] <= match.offset < line_range["end"]:
                 match_lines.append(self.lines[line_range["line_index"]])
         return match_lines
+
+    @property
+    def stats(self) -> dict:
+        stats_json = {
+            "words": len(re.split(r'\W+', self.text.strip())),
+            "lines": len(self.line_ranges)
+        }
+        return stats_json
 
 
 def lines_to_paragraph_text(lines: List[dict], line_break_chars: str = '-',
@@ -400,7 +409,8 @@ class AttendanceList(ResolutionElementDoc):
                  lines: List[PageXMLTextLine] = None,
                  text_regions: List[PageXMLTextRegion] = None,
                  paragraphs: List[RepublicParagraph] = None,
-                 evidence: Union[List[dict], List[PhraseMatch]] = None):
+                 evidence: Union[List[dict], List[PhraseMatch]] = None,
+                 attendance_spans: List[dict] = None):
         """An attendance list has textual content."""
         if not metadata:
             metadata = {}
@@ -413,9 +423,16 @@ class AttendanceList(ResolutionElementDoc):
         self.scan_versions = scan_versions if scan_versions else []
         self.session_date: Union[RepublicDate, None] = None
         self.text_region_ids: Set[str] = set()
+        self.attendance_spans: List[dict] = attendance_spans if attendance_spans is not None else []
 
     def __repr__(self):
         return f"AttendanceList({json.dumps(self.json, indent=4)}"
+
+    @property
+    def json(self) -> dict:
+        json_doc = super().json
+        json_doc["attedance_spans"] = self.attendance_spans
+        return json_doc
 
 
 class Resolution(ResolutionElementDoc):
@@ -484,11 +501,12 @@ def json_to_republic_attendance_list(attendance_json: dict) -> AttendanceList:
         paragraphs.append(paragraph)
     text_regions, lines, evidence = json_to_physical_elements(attendance_json)
     scan_versions = attendance_json["scan_versions"] if "scan_versions" in attendance_json else None
+    attendance_spans = attendance_json["attendance_spans"] if "attendance_spans" in attendance_json else None
     return AttendanceList(doc_id=attendance_json['id'], doc_type=attendance_json['type'],
                           metadata=attendance_json['metadata'],
                           paragraphs=paragraphs, text_regions=text_regions,
-                          lines=lines,
-                          scan_versions=scan_versions)
+                          lines=lines, scan_versions=scan_versions,
+                          evidence=evidence, attendance_spans=attendance_spans)
 
 
 def json_to_republic_resolution_paragraph(paragraph_json: dict) -> RepublicParagraph:

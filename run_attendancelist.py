@@ -13,7 +13,7 @@ from republic.helper.similarity_match import FuzzyKeywordGrouper
 from republic.helper.utils import reverse_dict
 from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from republic.data.stopwords import stopwords
-from run_attendancelist import junksweeper
+# from run_attendancelist import junksweeper
 
 
 
