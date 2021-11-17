@@ -483,11 +483,12 @@ def json_to_republic_attendance_list(attendance_json: dict) -> AttendanceList:
         paragraph = json_to_republic_resolution_paragraph(paragraph_json)
         paragraphs.append(paragraph)
     text_regions, lines, evidence = json_to_physical_elements(attendance_json)
+    scan_versions = attendance_json["scan_versions"] if "scan_versions" in attendance_json else None
     return AttendanceList(doc_id=attendance_json['id'], doc_type=attendance_json['type'],
                           metadata=attendance_json['metadata'],
                           paragraphs=paragraphs, text_regions=text_regions,
                           lines=lines,
-                          scan_versions=attendance_json['scan_versions'])
+                          scan_versions=scan_versions)
 
 
 def json_to_republic_resolution_paragraph(paragraph_json: dict) -> RepublicParagraph:

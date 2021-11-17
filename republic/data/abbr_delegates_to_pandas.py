@@ -3,7 +3,7 @@ import ast
 import pkg_resources
 
 EXCEL_FILE = pkg_resources.resource_filename(__name__, 'csvs/abbreviated_delegates.xlsx')
-PICKLE_FILE = pkg_resources.resource_filename(__name__, 'csvs/abbreviated_delegates.pickle')
+PICKLE_FILE = pkg_resources.resource_filename(__name__, 'csvs/abbreviated_delegates.parquet')
 
 def abbreviated_delegates_from_excel(save=True):
     abbreviated_delegates = pd.read_excel(EXCEL_FILE)
@@ -16,5 +16,5 @@ def abbreviated_delegates_from_excel(save=True):
         abbreviated_delegates[interval] = nii
     #abbreviated_delegates['period'] = abbreviated_delegates['p_interval'].apply(lambda x: pd.PeriodIndex([f"01-01-{x.left}",f"31-12-{x.right}"], freq="D"))
     if save is True:
-        abbreviated_delegates.to_pickle(PICKLE_FILE)
+        abbreviated_delegates.to_parquet(PICKLE_FILE)
     return abbreviated_delegates

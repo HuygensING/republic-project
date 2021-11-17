@@ -15,6 +15,7 @@ from republic.model.physical_document_model import PageXMLScan, PageXMLPage
 from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
 from republic.model.republic_document_model import json_to_republic_resolution, Resolution, parse_phrase_matches
 from republic.model.republic_document_model import json_to_republic_session
+import republic.model.republic_document_model as rdm
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -434,6 +435,17 @@ def retrieve_resolution_by_id(es: Elasticsearch, resolution_id: str, config: dic
         return None
 
 
+def retrieve_resolutions_by_session_id(es: Elasticsearch, session_id: str, config: dict) -> List[Resolution]:
+    query = {
+        'query': {
+            'match': {
+                'metadata.session_id.keyword': session_id
+            }
+        }
+    }
+    return retrieve_resolutions_by_query(es, query, config)
+
+
 def scroll_resolutions_by_query(es: Elasticsearch, query: dict,
                                 config: dict, scroll: str = '1m') -> Generator[Resolution, None, None]:
     for hit in scroll_hits(es, query, index=config['resolution_index'],
@@ -448,7 +460,16 @@ def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
     if response['hits']['total']['value'] == 0:
         return []
     else:
-        return [json_to_republic_resolution(hit['_source']) for hit in response['hits']['hits']]
+        resolutions = []
+        for hit in response['hits']['hits']:
+            doc = hit['_source']
+            if 'attendance_list' in doc['type']:
+                res = rdm.json_to_republic_attendance_list(doc)
+            else:
+                res = rdm.json_to_republic_resolution(doc)
+            resolutions.append(res)
+        return resolutions
+        # return [json_to_republic_resolution(hit['_source']) for hit in response['hits']['hits']]
 
 
 def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):
@@ -464,6 +485,20 @@ def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):
      }
     for resolution in scroll_resolutions_by_query(es, query, inv_config, scroll='20m'):
         yield resolution
+
+
+def retrieve_attendance_list_by_id(es: Elasticsearch, att_id: str, config: dict) -> rdm.AttendanceList:
+    if es.exists(index=config["resolution_index"], id=att_id):
+        response = es.get(index=config["resolution_index"], id=att_id)
+        return rdm.json_to_republic_attendance_list(response["_source"])
+    else:
+        raise ValueError(f"No attendance list exists with id {att_id}")
+
+
+def retrieve_attendance_lists_by_query(es: Elasticsearch, query: dict,
+                                       config: dict) -> List[rdm.AttendanceList]:
+    response = es.search(index=config['resolution_index'], body=query)
+    return [rdm.json_to_republic_attendance_list(hit['_source']) for hit in response['hits']['hits']]
 
 
 def scroll_phrase_matches_by_query(es: Elasticsearch, query: dict,

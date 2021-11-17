@@ -248,7 +248,8 @@ def index_inventory_sessions_with_lines(es_anno: Elasticsearch, inv_num: int, co
 def index_inventory_sessions_with_text(es_anno: Elasticsearch, inv_num: int, config: dict) -> None:
     from collections import Counter
     for mi, session in enumerate(rep_es.retrieve_inventory_sessions_with_lines(es_anno, inv_num, config)):
-        session_text_doc = make_session_text_version(session)
+        resolutions = rep_es.retrieve_resolutions_by_session_id(es_anno, session.id, config)
+        session_text_doc = make_session_text_version(session, resolutions)
         session_text_doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
         type_freq = Counter([anno['type'] for anno in session_text_doc['annotations']])
         for anno_type, freq in type_freq.most_common():

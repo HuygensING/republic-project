@@ -1,13 +1,22 @@
 import logging
 import os
 import json
+from numpy import argmax
+import itertools
+import regex
+from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
 from republic.analyser.attendance_lists.pattern_finders import *
 from republic.analyser.attendance_lists.parse_delegates import *
 from republic.analyser.attendance_lists.searchers import make_junksweeper
 from republic.helper.similarity_match import FuzzyKeywordGrouper
-from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from republic.helper.utils import reverse_dict
+from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+from republic.data.stopwords import stopwords
+from run_attendancelist import junksweeper
+
+
+
 
 def start_logger(outdir, year):
     print(f"logging to {os.path.join(outdir, 'attendancelist.log')}")
@@ -90,7 +99,7 @@ def prepare_found_delegates(framed_gtlm, found_delegates, year):
     return framed_gtlm
 
 
-def run(year=0, outdir='', verbose=True):
+def run(year=0, outdir='', tofile=True, verbose=True):
     runner = RunAll(year=year)
     if verbose:
         print("- gathering attendance lists")
@@ -100,21 +109,28 @@ def run(year=0, outdir='', verbose=True):
     if verbose:
         print("- running initial find")
     runner.initial_find()
+    # if verbose:
+    #     print("- running gather_found_delegates")
+    # runner.gather_found_delegates()
+    # if verbose:
+    #     print("- running identification")
+    # runner.identify_delegates()
+    # if verbose:
+    #     print("- running verification")
+    # runner.verify_matches()
     if verbose:
-        print("- running gather_found_delegates")
-    runner.gather_found_delegates()
-    if verbose:
-        print("- running identification")
-    runner.identify_delegates()
-    if verbose:
-        print("- running verification")
-    runner.verify_matches()
-    outname = f'{outdir}/{year}_out.json'
-    if verbose:
-        print(f"- saving results to {outname}")
+        print("- running delegates_from_fragments")
+
+    runner.delegates_from_fragments()
     yout = year_output(year, runner.searchobs)
-    with open(outname, 'w') as fout:
-        json.dump(fp=fout, obj=yout)
+    if tofile is True:
+        outname = f'{outdir}/{year}_out.json'
+        if verbose:
+            print(f"- saving results to {outname}")
+        with open(outname, 'w') as fout:
+            json.dump(fp=fout, obj=yout)
+    else:
+        return yout
     # if verbose == True:
     #    print("saving found delegates")
     # save_db(runner.found_delegates)
@@ -168,6 +184,9 @@ class RunAll(object):
         else:
             unmarked_text = dralist
         return unmarked_text
+
+
+
 
     def gather_found_delegates(self):
         """try to find delegates in all as yet unmarked text.
@@ -281,6 +300,15 @@ class RunAll(object):
                                         "sg": "active_stgen"}, inplace=True)
         self.serializable_df = serializable_df
         print("7. finished to attendance lists and found database")
+
+    def delegates_from_fragments(self):
+        self.fragmentsearcher = DelegatesFromFragments(searchobs=self.searchobs,
+                                                  year=self.year,
+                                                  junksweeper=junksweeper,
+                                                  found=found_delegates,
+                                                  df=abbreviated_delegates)
+        self.fragmentsearcher.run()
+        reverse_references(self.fragmentsearcher.xgroups, self.fragmentsearcher.match_records)
 
 
 def year_output(year, searchobs):

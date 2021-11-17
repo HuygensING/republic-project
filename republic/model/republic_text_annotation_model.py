@@ -56,6 +56,10 @@ def make_paragraph_line_annotations(paragraph: RepublicParagraph, doc_text_offse
 
 def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int,
                               parent_id: str) -> Dict[str, any]:
+    if "start_offset" in paragraph.metadata:
+        start_offset = paragraph.metadata["start_offset"]
+    else:
+        start_offset = doc_text_offset
     return {
         'id': paragraph.id,
         'type': 'paragraph',
@@ -64,15 +68,16 @@ def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int
             'num_lines': len(paragraph.line_ranges),
             'num_words': len(re.split(r'\W+', paragraph.text))
         },
-        'start_offset': doc_text_offset,
-        'end_offset': doc_text_offset + len(paragraph.text),
+        'start_offset': start_offset,
+        'end_offset': start_offset + len(paragraph.text)
     }
 
 
 def make_resolution_annotation(resolution: Resolution, doc_text_offset: int, parent_id: str):
+    res_type = 'attendance_list' if 'attendance_list' in resolution.type else 'resolution'
     resolution_anno = {
         'id': resolution.metadata['id'],
-        'type': 'resolution',
+        'type': res_type,
         'metadata': resolution.metadata,
         'paragraphs': [],
         'start_offset': doc_text_offset
@@ -81,7 +86,7 @@ def make_resolution_annotation(resolution: Resolution, doc_text_offset: int, par
     return resolution_anno
 
 
-def make_session_text_version(session: Session):
+def make_session_text_version(session: Session, resolutions: List[Resolution] = None):
     session.scan_versions = get_session_scans_version(session)
     annotations = []
     line_index = {
@@ -90,7 +95,9 @@ def make_session_text_version(session: Session):
     session_text_offset = 0
     session_text = ''
     opening_searcher, verb_searcher = configure_resolution_searchers()
-    resolutions = get_session_resolutions(session, opening_searcher, verb_searcher)
+    if not resolutions:
+        resolutions = get_session_resolutions(session, opening_searcher, verb_searcher)
+    resolutions = sorted(resolutions, key=lambda x: x.paragraphs[0].metadata["start_offset"])
     for resolution in resolutions:
         resolution_anno = make_resolution_annotation(resolution, session_text_offset,
                                                      session.metadata['id'])
@@ -139,12 +146,15 @@ def get_scan_annotations(annotations: List[Dict[str, any]],
 
 def sort_annotations(annotations: List[Dict[str, any]]) -> List[Dict[str, any]]:
     order = {
-        'scan': 0,
-        'attendance_list': 1,
-        'resolution': 1,
-        'paragraph': 2,
-        'text_region': 3,
-        'line': 4,
-        'attendant': 5
+        "scan": 0,
+        "attendance_list": 1,
+        "resolution": 1,
+        "paragraph": 2,
+        "text_region": 3,
+        "line": 4,
+        "attendant": 5,
+        "proposition_type": 6,
+        "proposer_role": 7,
+        "Proposer_location": 8
     }
-    return sorted(annotations, key=lambda x: (x['start_offset'], order[x['type']]))
+    return sorted(annotations, key=lambda x: (x["start_offset"], order[x["type"]]))
