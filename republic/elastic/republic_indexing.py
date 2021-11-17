@@ -417,7 +417,7 @@ def index_resolution(es: Elasticsearch, resolution: Union[dict, Resolution], con
 
 
 def index_attendance_list_spans(es, year, config):
-    att_spans_year = run_attendancelist.run(year, outdir=None, verbose=True, tofile=False)
+    att_spans_year = run_attendancelist.run(es, year, outdir=None, verbose=True, tofile=False)
     for span_list in att_spans_year:
         att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
         att_list = rep_es.retrieve_attendance_list_by_id(es, att_id, config)

@@ -210,6 +210,8 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_step):
         do_resolution_phrase_match_indexing(inv_num, inv_config, year)
     if indexing_step == "resolution_metadata":
         do_resolution_metadata_indexing(inv_num, inv_config, year)
+    if indexing_step == "attendance_list_spans":
+        do_inventory_attendance_list_indexing(inv_num, inv_config, year)
 
 
 def process_inventories(inv_years, ocr_type, indexing_step):

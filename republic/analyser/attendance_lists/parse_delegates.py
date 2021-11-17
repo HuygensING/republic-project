@@ -1,18 +1,24 @@
 from collections import defaultdict, Counter
+import itertools
+import re
+
 import networkx as nx
+import pandas as pd
 import logging
 import regex
-#from scipy.special import softmax
 from numpy import argmax
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
-from fuzzy_search.fuzzy_string import score_levenshtein_distance, score_levenshtein_similarity_ratio
+from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
+
 from .searchers import nm_to_delen, herensearcher, junksweeper
-from ...helper.utils import *
-from ...model.republic_attendancelist_models import *
+from ...helper.utils import reverse_dict, levenst_vals, score_match
+from ...model.republic_attendancelist_models import StringWithContext, Heer
 from ...data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from ...helper.similarity_match import FuzzyKeywordGrouper
-from .identify import *
+from .identify import iterative_search
+
+# repress the warnings from pandas
+pd.set_option('mode.chained_assignment', None)
 
 numpat = re.compile('[0-9]{2,}')
 
@@ -37,6 +43,7 @@ def fndmatch(heer='',
         result = result.heer.serialize()
     return result
 
+
 def get_delegates_from_spans(ob):
     result = {}
     for s in ob.spans:
@@ -45,13 +52,13 @@ def get_delegates_from_spans(ob):
     return result
 
 
-
 def matchwithlist(x, input):
     res = [i for i in input if score_levenshtein_similarity_ratio(x, i) > 0.6]
     if len(res) > 0:
         return True
     else:
         return False
+
 
 class DelegatesFromFragments(object):
     def __init__(self,
@@ -67,7 +74,16 @@ class DelegatesFromFragments(object):
         self.df = df
         self.found = found
         self.xgroups = {}
-
+        self.noresultscounter = None
+        self.r_cons = None
+        self.origkeys = None
+        self.consolidated_groups = None
+        self.consolidated_counter = None
+        self.suspected_items = None
+        self.keyframe = None
+        self.def_keys_with_subPatterns = None
+        self.match_records = None
+        self.suspects = None
 
     def obs_to_fragments(self):
         """this collects spans without a tag from the searchobjects (=attendance lists)
@@ -75,7 +91,7 @@ class DelegatesFromFragments(object):
         for ob in self.searchobs:
             so = self.searchobs[ob].matched_text
             jitems = ';'.join(so.get_unmatched_text())
-            items = [item.strip() for item in re.split('[;,\.]+', jitems) if
+            items = [item.strip() for item in re.split(r'[;,\.]+', jitems) if
                      item.strip() != '' and len(item.strip()) > 2]
             for item in items:
                 contextitem = StringWithContext(item)
@@ -96,7 +112,6 @@ class DelegatesFromFragments(object):
             nkey = self.r_cons.get(key) or key
             self.consolidated_counter[nkey] += self.noresultscounter[key]
 
-
     def counter_to_delegates(self):
         """we try to split concatenated names"""
         self.groups_to_counter()
@@ -105,7 +120,6 @@ class DelegatesFromFragments(object):
         to_compare = list(itertools.product(list(self.consolidated_groups.keys()), singlekeys))
         scores2 = []
         for key, cand in to_compare:  # itertools.combinations(list(consolidated_groups.keys()), 2):
-            literal = False
             sc = name_matcher(key, cand, threshold=0.7)
             key, cand = sorted([key, cand], key=lambda x: len(x))
             if sc:
@@ -122,7 +136,8 @@ class DelegatesFromFragments(object):
         ks = [key for key in self.consolidated_groups.keys() if key not in self.suspected_items]
         both_keys = self.keyframe.loc[self.keyframe.trailing_pattern.isin(ks)]
         self.def_keys_with_subPatterns = [{'key': x[0], x[1]: x[1], x[2]: x[2]} for x in
-                                 both_keys[['orig_key', 'sub_pattern1', 'trailing_pattern']].to_records(index=False)]
+                                          both_keys[['orig_key', 'sub_pattern1', 'trailing_pattern']].to_records(
+                                              index=False)]
         grkeyframe = self.keyframe.groupby('orig_key')
         for group in grkeyframe.groups:
             subfr = grkeyframe.get_group(group)
@@ -145,7 +160,6 @@ class DelegatesFromFragments(object):
                               subfr.trailing_pattern.iloc[0]: subfr.trailing_pattern.iloc[0]}
                     self.def_keys_with_subPatterns.append(result)
 
-
     def groups_to_references(self):
         self.consolidated_counter = defaultdict(int)
         for key in self.noresultscounter:
@@ -153,7 +167,7 @@ class DelegatesFromFragments(object):
             self.consolidated_counter[nkey] += self.noresultscounter[key]
         nwrecords = defaultdict(list)
         quarantine = []
-        #nokeys = [str(n) for n in self.noresults]
+        # nokeys = [str(n) for n in self.noresults]
         for record in self.def_keys_with_subPatterns:
             for i in record:
                 if i == 'key':
@@ -186,7 +200,7 @@ class DelegatesFromFragments(object):
             else:
                 rejected_keys.append(item)
         self.suspects = sieve_keys(self.xgroups, js=self.js)
-        self.identify_delegates(self.xgroups,self.suspects)
+        self.identify_delegates(self.xgroups, self.suspects)
 
     def identify_delegates(self, xgroups, suspects):
         fndmatch = FndMatch(year=self.year,
@@ -205,8 +219,7 @@ class DelegatesFromFragments(object):
         self.obs_to_fragments()
         self.counter_to_delegates()
         self.groups_to_references()
-        reverse_references(self.xgroups,self.match_records)
-
+        reverse_references(self.xgroups, self.match_records)
 
 
 def find_delegates(input=[],
@@ -243,11 +256,13 @@ def find_delegates(input=[],
                 #                 print(rec, kw)
                 name = drec['name']
                 score = drec.get('score') or 0.0
-                matched_deputies[m_id] = {'id': m_id,
-                                          'm_kw': kw,
-                                          'score': score,
-                                          'name': name,
-                                          'variants': recognized_group}
+                matched_deputies[m_id] = {
+                    'id': m_id,
+                    'm_kw': kw,
+                    'score': score,
+                    'name': name,
+                    'variants': recognized_group
+                }
             else:
                 unmatched_deputies.append(recognized_group)
         else:
@@ -258,13 +273,13 @@ def find_delegates(input=[],
 
 class FndMatch(object):
     def __init__(self,
-                 year=0,
-                 searcher=FuzzyPhraseSearcher,
-                 junksearcher=FuzzyPhraseSearcher,
+                 year: int,
+                 searcher: FuzzyPhraseSearcher,
+                 junksearcher: FuzzyPhraseSearcher,
                  # patterns=list,
-                 register=dict,
-                 rev_graph=dict,
-                 df=pd.DataFrame):
+                 register: dict = None,
+                 rev_graph: dict = None,
+                 df: pd.DataFrame = None):
         self.year = year
         self.searcher = searcher
         self.junksearcher = junksearcher
@@ -273,7 +288,7 @@ class FndMatch(object):
         self.rev_graph = rev_graph
         self.df = df
 
-    def match_candidates(self, heer=str):
+    def match_candidates(self, heer: str):
         found_heer = Heer()
         try:
             candidates = self.searcher.find_matches(text=heer, include_variants=True)
@@ -303,7 +318,7 @@ class FndMatch(object):
 
         return found_heer
 
-    def composite_name(self, candidates=[], heer='', searchterm=str):
+    def composite_name(self, candidates: list, heer: str, searchterm: str):
         dayinterval = pd.Interval(self.year, self.year, closed="both")
         candidate = dedup_candidates(proposed_candidates=candidates,
                                      register=self.register,
@@ -347,12 +362,12 @@ class MatchAndSpan(object):
         self.maintext = self.ob.item
         self.matchres = {}
         self.search_results = {}
+        self.nwsplit = []
         self.previously_matched = previously_matched
         self.match_search = match_search
         self.junksweeper = junksweeper
         self.txt_to_fragments()
         self.match2span()
-
 
     def txt_to_fragments(self):
         ut = ''.join(self.txt_fragments)
@@ -372,7 +387,7 @@ class MatchAndSpan(object):
         # splittekst = re.split(pattern="\s", string=unmarked_text)
         for s in self.nwsplit:  # splittekst
             try:
-                if len(s) > 2:# and len(self.junksweeper.find_matches(s, include_variants=True)) == 0:
+                if len(s) > 2:  # and len(self.junksweeper.find_matches(s, include_variants=True)) == 0:
                     sr = self.match_unmarked(s)
                     if sr:
                         self.search_results.update(sr)
@@ -383,7 +398,7 @@ class MatchAndSpan(object):
         s = unmarked_text
 
         mtch = self.previously_matched.variants.apply(lambda x: levenst_vals(x, s))
-        #nmtch = self.previously_matched.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s) > 0.6)
+        # nmtch = self.previously_matched.name.apply(lambda x: score_levenshtein_similarity_ratio(x, s) > 0.6)
         tussenr = self.previously_matched.loc[mtch]
         try:
             if len(tussenr) > 0:
@@ -410,7 +425,7 @@ class MatchAndSpan(object):
             span = (begin, end)
             result = self.search_results[ri]
             comp = [s for s in self.ob.spans if not set(range(s.begin, s.end)).isdisjoint(span)]
-            if comp != []:
+            if len(comp) > 0:
                 for cs in comp:
                     if not set(range(cs.begin, cs.end)).issubset(span):
                         try:
@@ -422,18 +437,18 @@ class MatchAndSpan(object):
                 self.ob.set_span(span, clas='delegate')
 
 
-def dedup_candidates(proposed_candidates=[],
-                     searcher=FuzzyPhraseSearcher,
-                     register=dict,
-                     dayinterval=pd.Interval,
-                     df=pd.DataFrame,
-                     searchterm=''):
+def dedup_candidates(proposed_candidates: list,
+                     searcher: FuzzyPhraseSearcher,
+                     register: dict,
+                     dayinterval: pd.Interval,
+                     df: pd.DataFrame,
+                     searchterm: str):
     scores = {}
     for d in proposed_candidates:
         prts = nm_to_delen(d)
         for p in prts:
             if p != searchterm:
-                score = searcher.find_matches(text=p, include_variants=True,use_word_boundaries=False)
+                score = searcher.find_matches(text=p, include_variants=True, use_word_boundaries=False)
                 if len(score) > 1:
                     n = argmax(score_match(score))
                     score = score[n]
@@ -441,29 +456,29 @@ def dedup_candidates(proposed_candidates=[],
                     try:
                         scores[d] = (score.levenshtein_similarity, p)
                     except:
-                        print (score)
+                        print(score)
     if not scores:
         candidate = proposed_candidates
     else:
         candidate = [max(scores)]
         register[p] = scores[candidate[0]][1]
     result = dedup_candidates2(proposed_candidates=candidate, dayinterval=dayinterval, df=df)
-    if len( result) == 0:
-        candidate = pd.DataFrame() # searchterm
+    if len(result) == 0:
+        candidate = pd.DataFrame()  # searchterm
     return result
 
 
-def dedup_candidates2(proposed_candidates=[], dayinterval=pd.Interval, df=pd.DataFrame):
+def dedup_candidates2(proposed_candidates: list, dayinterval: pd.Interval, df: pd.DataFrame):
     if type(proposed_candidates) == str:
         proposed_candidates = [proposed_candidates]
     nlst = proposed_candidates
     res = df.loc[df.name.isin(proposed_candidates)]
-    if len(res)>1:
+    if len(res) > 1:
         res = res[res.h_life.apply(lambda x: x.overlaps(dayinterval))]
-    if len(res)>1:
+    if len(res) > 1:
         res = res[res.p_interval.apply(lambda x: x.overlaps(dayinterval))]
-    if len(res)>1:
-        res = res.loc[res.sg == True]
+    if len(res) > 1:
+        res = res.loc[res.sg is True]
     return res
 
 
@@ -472,15 +487,15 @@ def delegates2spans(searchob, framed_gtlm):
     for span in spans:
         txt = searchob.matched_text.item[span.begin:span.end]
         msk = framed_gtlm.variants.apply(lambda x: levenst_vals(x, txt))
-        mres = framed_gtlm.loc[msk==True]
-        if len(mres)>0:
+        mres = framed_gtlm.loc[msk is True]
+        if len(mres) > 0:
             span.set_pattern(txt)
             span.set_delegate(delegate_id=mres.ref_id.iat[0], delegate_name=mres.name.iat[0])
         else:
             logging.info(f"not found {searchob}, {span}, {txt}")
 
 
-def match_previous(heer, res=pd.DataFrame, existing_herensearcher=herensearcher):
+def match_previous(heer, res: pd.DataFrame, existing_herensearcher=herensearcher):
     result = pd.DataFrame()
     r = existing_herensearcher.find_candidates(text=heer)
     if len(r) > 0:
@@ -488,10 +503,11 @@ def match_previous(heer, res=pd.DataFrame, existing_herensearcher=herensearcher)
     return result
 
 
-def name_matcher(naam1,naam2, threshold):
+def name_matcher(naam1, naam2, threshold):
     result = False
     n1, n2 = sorted([naam1, naam2], key=lambda x: len(x))
-    pat = regex.compile('(?P<otherpart>.*)(?P<namepart>' + regex.escape(n1) + '){e<=2}' + '(?P<lastpart>.*)', flags=regex.BESTMATCH)
+    pat = regex.compile('(?P<otherpart>.*)(?P<namepart>' + regex.escape(n1) + '){e<=2}' + '(?P<lastpart>.*)',
+                        flags=regex.BESTMATCH)
     r = pat.search(n2)
     if r:
         np = r.groupdict()['namepart']
@@ -501,40 +517,47 @@ def name_matcher(naam1,naam2, threshold):
             result['similarity'] = s
     return result
 
+
 vanpat = re.compile('vande[rn]?|([d|t]+e?[rn]?)\s+|van', re.I)
 
+
 def is_namepart(phrase, found):
-    result = {}
-    result['phrase'] = phrase
-    result['contained'] = False
-    result['exactname'] = False
+    result = {'phrase': phrase, 'contained': False, 'exactname': False}
     match = found.variants.apply(lambda x: levenst_vals(x, phrase))
     matchname = list(found.loc[match].name)[0]
     refid = list(found.loc[match].ref_id)[0]
     result['matchname'] = matchname
     result['id'] = refid
-    #searchpat = [x.strip() for x in vanpat.split(phrase) if x and x.strip() !='']
+    # searchpat = [x.strip() for x in vanpat.split(phrase) if x and x.strip() !='']
     searchpat = [x.strip() for x in prefixpat.split(phrase) if x and x.strip() != '']
     for p in searchpat:
         if p in matchname:
             result['exactname'] = True
-            if len(phrase)<len(matchname):
+            if len(phrase) < len(matchname):
                 result['contained'] = True
     return result
+
 
 def levntest(x, lijst):
     result = 0
     for z in lijst:
         r = score_levenshtein_similarity_ratio(x, z)
-        if r> result:
+        if r > result:
             result = r
     return result
 
-def rate_match(key, match):
-    return match.levenshtein_similarity * len(match.string)/len(key)
 
-prefixpat = re.compile(r"à\b|\bà\b|\bd\'\b|\bde\b|\bden\b|\bder\b|\bdes\b|\bdi\b|\ben\b|\bhet\b|\bin 't\b|\bla\b|\bla\b|\ble\b|of|van|\bten\b|\bthoe\b|\btot\b|\b't\b|\bHeeren\b|\bvan\b|\bmet\b|\bHolland", flags =  re.I)
-           #r'\b|\b'.join(stopwords), flags =  re.I)
+def rate_match(key, match):
+    return match.levenshtein_similarity * len(match.string) / len(key)
+
+
+prefixpat = re.compile(
+    r"à\b|\bà\b|\bd\'\b|\bde\b|\bden\b|\bder\b|\bdes\b|\bdi\b|\ben\b|\bhet\b|\bin 't\b|\bla\b|\bla\b|\ble\b|of|van|\bten\b|\bthoe\b|\btot\b|\b't\b|\bHeeren\b|\bvan\b|\bmet\b|\bHolland",
+    flags=re.I)
+
+
+# r'\b|\b'.join(stopwords), flags =  re.I)
+
 
 def match_ppat(x):
     result = False
@@ -542,12 +565,13 @@ def match_ppat(x):
         result = True
     return result
 
+
 def looks_like_a_name(pat):
     if pat == '':
         return False
     r = False
     pats = pat.split(' ')
-    pats = [pat for pat in pats if not prefixpat.search(pat)  ]
+    pats = [pat for pat in pats if not prefixpat.search(pat)]
     # starts with a prefix
     # if prefix:
     #     pats = pats[1:]
@@ -559,17 +583,19 @@ def looks_like_a_name(pat):
             break
     return r
 
+
 def good_key(pat):
     r = True
-    #print(pat, r)
+    # print(pat, r)
     if itj(pat):
-        #print('junk',pat,r)
+        # print('junk',pat,r)
         r = False
     else:
         if not looks_like_a_name(pat):
-            #print('name',pat,r)
+            # print('name',pat,r)
             r = False
     return r
+
 
 def is_this_junk(pat, js=junksweeper, sweep=False):
     suspect = False
@@ -584,10 +610,12 @@ def is_this_junk(pat, js=junksweeper, sweep=False):
             suspect = True
     return suspect
 
+
 itj = is_this_junk
 
+
 def sieve_keys(xgroups, js):
-    js = js# run_attendancelist.junksweeper
+    js = js  # run_attendancelist.junksweeper
     suspects = []
     pat_nonstring = re.compile("\w+[0-9\(\)]+\w+")
     for k in xgroups:
@@ -604,8 +632,9 @@ def sieve_keys(xgroups, js):
                     if k != key:
                         key = k
                     suspects.append(key)
-            #print(key, bestjmatch.string, check)
+            # print(key, bestjmatch.string, check)
         return suspects
+
 
 # def make_span(keyword):
 #     r = match_from_dict(keyword, founddb=found, fndmatch=fndmatch)
@@ -644,10 +673,6 @@ def reverse_references(xgroups, match_records):
                             score=levenst_vals(r.get('pattern'), p),
                             delegate_name=r.get('proposed_delegate'),
                             delegate_id=r.get('p_id'))
-
-
-
-
 
 
 def match_from_dict(pattern, founddb=found_delegates, df=abbreviated_delegates,

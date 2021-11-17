@@ -13,3 +13,5 @@ openpyxl~=3.0.5
 scipy~=1.5.2
 scikit-learn>=0.24.1
 sparse_dot_topn~=0.3.1
+fastparquet="*"
+networkx="*"

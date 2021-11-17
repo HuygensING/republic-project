@@ -1,21 +1,23 @@
-import logging
 import os
 import json
-from numpy import argmax
-import itertools
-import regex
-from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
+from collections import Counter
+from collections import defaultdict
+
+from elasticsearch import Elasticsearch
+import networkx as nx
+import pandas as pd
+import logging
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_phrase_model import PhraseModel
+
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
-from republic.analyser.attendance_lists.pattern_finders import *
-from republic.analyser.attendance_lists.parse_delegates import *
+from republic.analyser.attendance_lists.pattern_finders import province_searcher, president_searcher, make_groslijst
+from republic.model.republic_attendancelist_models import MatchHeer
+import republic.analyser.attendance_lists.parse_delegates as parse_delegates
 from republic.analyser.attendance_lists.searchers import make_junksweeper
 from republic.helper.similarity_match import FuzzyKeywordGrouper
 from republic.helper.utils import reverse_dict
 from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
-from republic.data.stopwords import stopwords
-# from run_attendancelist import junksweeper
-
-
 
 
 def start_logger(outdir, year):
@@ -39,7 +41,7 @@ fuzzysearch_config = {
 junksweeper = make_junksweeper(ekwz=ekwz)
 transposed_graph = reverse_dict(ekwz)
 keywords = list(abbreviated_delegates.name)
-kwrds = {key: nm_to_delen(key) for key in keywords}
+kwrds = {key: parse_delegates.nm_to_delen(key) for key in keywords}
 
 
 def sweep_list(dralist, junksweeper=junksweeper):
@@ -83,11 +85,10 @@ def list_tograph(inputlist: list):
     return g_heren
 
 
-matchfinder = FndMatch(year=0,
-                       rev_graph=transposed_graph,
-                       searcher=herensearcher,
-                       junksearcher=junksweeper,
-                       df=abbreviated_delegates)
+matchfinder = parse_delegates.FndMatch(year=0, rev_graph=transposed_graph,
+                                       searcher=parse_delegates.herensearcher,
+                                       junksearcher=junksweeper,
+                                       df=abbreviated_delegates)
 
 
 def prepare_found_delegates(framed_gtlm, found_delegates, year):
@@ -99,8 +100,8 @@ def prepare_found_delegates(framed_gtlm, found_delegates, year):
     return framed_gtlm
 
 
-def run(year=0, outdir='', tofile=True, verbose=True):
-    runner = RunAll(year=year)
+def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True):
+    runner = RunAll(es=es, year=year)
     if verbose:
         print("- gathering attendance lists")
     if len(runner.searchobs) == 0:
@@ -144,7 +145,8 @@ def run(year=0, outdir='', tofile=True, verbose=True):
 
 
 class RunAll(object):
-    def __init__(self,
+
+    def __init__(self, es: Elasticsearch,
                  year=0,
                  abbreviated_delegates=abbreviated_delegates,
                  kwrds=kwrds,
@@ -155,7 +157,7 @@ class RunAll(object):
                  ):
         start_logger(outdir, year)
         self.year = year
-        self.searchobs = make_presentielijsten(year=self.year)
+        self.searchobs = make_presentielijsten(es=es, year=self.year)
         logging.info(f'year: {year}, nr of attendancelists {len(self.searchobs)}')
         self.junksweeper = make_junksweeper(ekwz)
         self.abbreviated_delegates = abbreviated_delegates
@@ -163,7 +165,13 @@ class RunAll(object):
         self.pm_heren = list(found_delegates['name'].unique())
         self.matchfnd = matchfnd
         self.herenkeywords = kwrds
-
+        self.all_matched = None
+        self.unmatched = None
+        self.moregentlemen = None
+        self.presidents = None
+        self.framed_gtlm = None
+        self.fragmentsearcher = None
+        self.serializable_df = None
 
     def initial_find(self):
         print("1. finding presidents")
@@ -185,9 +193,6 @@ class RunAll(object):
             unmarked_text = dralist
         return unmarked_text
 
-
-
-
     def gather_found_delegates(self):
         """try to find delegates in all as yet unmarked text.
         All identified delegates are collected in self.all_matched
@@ -199,16 +204,16 @@ class RunAll(object):
         self.presidents = [p for p in self.presidents if len(p) > 0]
         connected_presidents = FuzzyKeywordGrouper(self.presidents).vars2graph()
         print("4. joining presidents and delegates")
-        found_presidents = find_delegates(input=connected_presidents,
-                                          matchfnd=self.matchfnd,
-                                          df=self.abbreviated_delegates,
-                                          previously_matched=self.found_delegates,
-                                          year=self.year)
-        new_found_delegates = find_delegates(input=deputies,
-                                             matchfnd=self.matchfnd,
-                                             df=self.abbreviated_delegates,
-                                             previously_matched=self.found_delegates,
-                                             year=self.year)
+        found_presidents = parse_delegates.find_delegates(input=connected_presidents,
+                                                          matchfnd=self.matchfnd,
+                                                          df=self.abbreviated_delegates,
+                                                          previously_matched=self.found_delegates,
+                                                          year=self.year)
+        new_found_delegates = parse_delegates.find_delegates(input=deputies,
+                                                             matchfnd=self.matchfnd,
+                                                             df=self.abbreviated_delegates,
+                                                             previously_matched=self.found_delegates,
+                                                             year=self.year)
 
         all_matched = {}
         for d in [found_presidents['matched'], new_found_delegates['matched']]:
@@ -222,7 +227,7 @@ class RunAll(object):
         self.unmatched = new_found_delegates['unmatched']
         self.moregentlemen = [MatchHeer(all_matched[d]) for d in all_matched.keys() if
                               type(d) == int]  # strange keys sneak in
-        #patch up the dataframe for further matching
+        # patch up the dataframe for further matching
         framed_gtlm = pd.DataFrame(self.moregentlemen)
         framed_gtlm.rename(columns={0: 'gentleobject'}, inplace=True)
         framed_gtlm['variants'] = framed_gtlm.gentleobject.apply(lambda x: [e.form for e in x.variants['general']])
@@ -246,7 +251,7 @@ class RunAll(object):
             id = kw.get('id')
             label = kw.get('name')
             if keyword != '':
-                phrase = {'phrase':keyword, 'label': f"{label}({id})", 'variants': variants}
+                phrase = {'phrase': keyword, 'label': f"{label}({id})", 'variants': variants}
                 phrases.append(phrase)
         phrase_model = PhraseModel(phrases=phrases, config=fuzzysearch_config)
         matchsearch.index_phrase_model(phrase_model=phrase_model)
@@ -279,14 +284,14 @@ class RunAll(object):
         for T in self.searchobs:
             searchob = self.searchobs[T]
             try:
-                mo = MatchAndSpan(searchob.matched_text,
-                                  junksweeper=self.junksweeper,
-                                  previously_matched=self.framed_gtlm,
-                                  match_search=matchsearch)
+                mo = parse_delegates.MatchAndSpan(searchob.matched_text,
+                                                  junksweeper=self.junksweeper,
+                                                  previously_matched=self.framed_gtlm,
+                                                  match_search=matchsearch)
             except TypeError:
                 print (T, searchob.matched_text.item)
                 raise
-            delegates2spans(searchob, framed_gtlm=self.framed_gtlm)
+            parse_delegates.delegates2spans(searchob, framed_gtlm=self.framed_gtlm)
         print("updating merged delegates database")
         merged_deps = pd.merge(left=self.framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id",
                                how="left")
@@ -302,13 +307,14 @@ class RunAll(object):
         print("7. finished to attendance lists and found database")
 
     def delegates_from_fragments(self):
-        self.fragmentsearcher = DelegatesFromFragments(searchobs=self.searchobs,
-                                                  year=self.year,
-                                                  junksweeper=junksweeper,
-                                                  found=found_delegates,
-                                                  df=abbreviated_delegates)
+        self.fragmentsearcher = parse_delegates.DelegatesFromFragments(searchobs=self.searchobs,
+                                                                       year=self.year,
+                                                                       junksweeper=junksweeper,
+                                                                       found=found_delegates,
+                                                                       df=abbreviated_delegates)
         self.fragmentsearcher.run()
-        reverse_references(self.fragmentsearcher.xgroups, self.fragmentsearcher.match_records)
+        parse_delegates.reverse_references(self.fragmentsearcher.xgroups,
+                                           self.fragmentsearcher.match_records)
 
 
 def year_output(year, searchobs):

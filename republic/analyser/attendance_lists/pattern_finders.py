@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 from ...config.republic_config import base_config
-from ...helper.utils import *
+from ...helper.utils import best_match
 from ...data.delegate_database import abbreviated_delegates, found_delegates, ekwz
 from .parse_delegates import FndMatch, fndmatch, match_previous
 from .identify import iterative_search
