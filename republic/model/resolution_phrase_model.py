@@ -154,8 +154,8 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
-        'label': ['proposition_opening', 'proposition_type:pasport'],
-        'proposition_type': 'pasport',
+        'label': ['proposition_opening', 'proposition_type:paspoort'],
+        'proposition_type': 'paspoort',
         'max_offset': 10
     },
     {
@@ -879,6 +879,9 @@ person_role_phrases = [
     {
         'phrase': 'Advocaaten van ',
         'label': ['person_role', 'lawyer', 'domain:law', 'representative_relation'],
+        'variants': [
+            'Advocaat voor'
+        ]
     },
     {
         'phrase': 'Stadhouder van ',
@@ -1161,7 +1164,7 @@ proposition_from_phrases = [
         ]
     },
     {
-        'phrase': 'geaddreffeert aan ',
+        'phrase': 'geaddresseert aan ',
         'label': 'addressed_to'
     },
 

@@ -60,13 +60,14 @@ def categorise_line_type(curr_line: dict,
     """
     if curr_line["type"] and next_line["type"]:
         return curr_line["type"], next_line["type"]
-    next_line["dist"] = next_line["line"].baseline.x - curr_line["line"].baseline.x
-    # print("next line dist:", next_line["dist"])
+    next_line["x_dist"] = next_line["line"].baseline.x - curr_line["line"].baseline.x
+    next_line["y_dist"] = next_line["line"].baseline.y - curr_line["line"].baseline.y
+    # print("next line dist:", next_line["x_dist"])
     if curr_line["type"] is None and is_page_ref_line(curr_line["line"].text):
         curr_line["type"] = 'continuation'
     if next_line["type"] is None and is_page_ref_line(next_line["line"].text):
         next_line["type"] = 'continuation'
-    if next_line["dist"] < -200:
+    if next_line["x_dist"] < -200:
         if curr_line["type"] and curr_line["type"] != "anomaly":
             # the current line is a normal line, so next must be anomaly
             return curr_line["type"], "anomaly"
@@ -76,9 +77,9 @@ def categorise_line_type(curr_line: dict,
         else:
             # one of the lines is an anomaly but we don't know which one
             return None, None
-    elif -200 <= next_line["dist"] < -140:
+    elif -200 <= next_line["x_dist"] < -140:
         return "repeat_lemma", "lemma"
-    elif -140 <= next_line["dist"] < -110:
+    elif -140 <= next_line["x_dist"] < -110:
         if curr_line["type"] == "continuation":
             return "continuation", "repeat_lemma"
         elif next_line["type"] == "continuation":
@@ -86,7 +87,7 @@ def categorise_line_type(curr_line: dict,
         else:
             return curr_line["type"], next_line["type"]
             # return "continuation", "lemma"
-    elif -110 <= next_line["dist"] < -70:
+    elif -110 <= next_line["x_dist"] < -70:
         if curr_line["anomaly_left_side"]:
             return "repeat_lemma", "lemma"
         elif curr_line["type"] == "repeat_lemma":
@@ -99,23 +100,29 @@ def categorise_line_type(curr_line: dict,
             return "repeat_lemma", "continuation"
         else:
             return curr_line["type"], next_line["type"]
-    elif -70 <= next_line["dist"] < -25:
+    elif -70 <= next_line["x_dist"] < -25:
         if curr_line["type"] == "repeat_lemma":
             return "repeat_lemma", "continuation"
         elif curr_line["type"] == "continuation":
             return "continuation", "lemma"
         else:
             return curr_line['type'], next_line['type']
-    elif -25 <= next_line["dist"] < 25:
+    elif -25 <= next_line["x_dist"] < 25:
+        if abs(next_line['x_dist']) < 20:
+            if curr_line['line'].coords.w > 800 and next_line['line'].coords.w < 700:
+                if curr_line['type'] is None:
+                    return "continuation", "continuation"
+                else:
+                    return curr_line['type'], "continuation"
         same_type = curr_line["type"] if curr_line["type"] else next_line["type"]
         return same_type, same_type
-    elif 25 <= next_line["dist"] < 70:
+    elif 25 <= next_line["x_dist"] < 70:
         if curr_line["type"] == "continuation":
             next_line["anomaly_left_side"] = True
             return "continuation", "repeat_lemma"
         else:
             return "lemma", "continuation"
-    elif 70 <= next_line["dist"] < 110:
+    elif 70 <= next_line["x_dist"] < 110:
         if curr_line["type"] == "continuation":
             return "continuation", "repeat_lemma"
         elif curr_line["type"] == "lemma":
@@ -127,7 +134,7 @@ def categorise_line_type(curr_line: dict,
         else:
             return curr_line['type'], next_line['type']
             # return "continuation", "repeat_lemma"
-    elif 110 <= next_line["dist"] < 140:
+    elif 110 <= next_line["x_dist"] < 140:
         if curr_line["type"] == "continuation":
             return "continuation", "repeat_lemma"
         elif curr_line["type"] == "repeat_lemma":
@@ -139,7 +146,7 @@ def categorise_line_type(curr_line: dict,
         else:
             return curr_line['type'], next_line['type']
             # return "continuation", "repeat_lemma"
-    elif 140 <= next_line["dist"] <= 200:
+    elif 140 <= next_line["x_dist"] <= 200:
         if curr_line["type"] == "continuation":
             return "continuation", "repeat_lemma"
         elif curr_line["type"] == "repeat_lemma":
@@ -149,7 +156,7 @@ def categorise_line_type(curr_line: dict,
         elif next_line["type"] == "lemma":
             return "non_index_line", "lemma"
         return "lemma", "repeat_lemma"
-    elif next_line["dist"] > 200:
+    elif next_line["x_dist"] > 200:
         if curr_line["type"] and curr_line["type"] != "anomaly":
             # the current line is a normal line, so next must be anomaly
             return curr_line["type"], "anomaly"
@@ -160,7 +167,7 @@ def categorise_line_type(curr_line: dict,
             # one of the lines is an anomaly but we don't know which one
             return None, None
     else:
-        raise ValueError('Unexpected distance value:', next_line["dist"])
+        raise ValueError('Unexpected distance value:', next_line["x_dist"])
 
 
 def get_indent(line_type: str) -> str:
@@ -191,7 +198,8 @@ def get_neighbour_votes(curr_index: int, lines: List[dict]) -> Counter:
 
 def categorise_index_lines(lines: List[pdm.PageXMLTextLine]) -> List[dict]:
     """Determine the line types of a list of PageXMLTextLines."""
-    lines = [{"line": line, "type": None, "dist": None, "anomaly_left_side": False} for line in lines]
+    lines = [{"line": line, "type": None, "x_dist": None,
+        "y_dist": None, "anomaly_left_side": False} for line in lines]
     type_votes = defaultdict(Counter)
     for curr_index in range(len(lines)):
         start = curr_index - 5 if curr_index >= 5 else 0
@@ -262,7 +270,11 @@ def get_index_lines(column: pdm.PageXMLColumn) -> List[pdm.PageXMLTextLine]:
     # for line in sorted(column.get_lines(), key=lambda x: x.baseline.y):
     for line in pdm.horizontally_merge_lines(column.get_lines()):
         dist = line.baseline.x - column_left
+        if line.baseline.bottom < 450 and len(line.text) < 5:
+            # This is likely part of the I N D E X header
+            continue
         if line.text is None:
+            # Skip empty lines
             line.add_type('empty_line')
             continue
         if 300 < dist < 500:
@@ -327,6 +339,10 @@ def parse_inventory_index_pages(pages: List[pdm.PageXMLPage]) -> List[dict]:
                 if entry['lemma'] is not None:
                     entries.append(entry)
                 lemma_info = parse_lemma_line(line)
+                if lemma_info['main_term'] in {'.', ':', '-'}:
+                    # print([lemma_info['main_term'], lemma_info['full_term'], entry['lemma']])
+                    lemma_info['full_term'] = entry['lemma']
+                    lemma_info['main_term'] = entry['main_lemma']
                 entry = initialise_index_entry(lemma=lemma_info['full_term'],
                                                main_term=lemma_info['main_term'])
             entry['lines'].append(line)
