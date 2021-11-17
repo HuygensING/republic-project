@@ -1,31 +1,35 @@
 # GNB conversion
 Conversion of GNB xml files and mysql database to elasticsearch indices
 
-## Data
+## Prepare
+
+### Data
 
 - Add source xml files to `./data`
 - Add source mysql db to `./data`
 - Note: `XmlResolutionConverter` expects source xml path to contain `resoluties_staten_generaal`.
 
-## .env
+### .env
 - Copy `.env.example` to `.env`
 - Modify `XML_GLOB`
 
-## Start containers
+## Convert
+
+### 1. Start containers
 Run:
 ```
 docker-compose up
 ```
 
-## Prepare mysql and elasticsearch
+### 2. Populate mysql and elasticsearch
 Run:
 ```
-docker exec -i db mysql -uroot -pexample mysql < ~/data/gnb/<dump>.sql 
+docker exec -i db mysql -uroot -pexample mysql < statengeneraal<version>.sql 
 curl -X PUT 'localhost:9200/gnb-resolutions' -H content-type:application/json -d "@mapping/mapping-resolutions.json" | jq
 curl -X PUT 'localhost:9200/gnb-people' -H content-type:application/json -d "@mapping/mapping-people.json" | jq
 ```
 
-## Convert xml into elasticsearch gnb index
+### 3. Convert xml into elasticsearch gnb index
 Run:
 ```
 npm install
@@ -33,16 +37,19 @@ source .env
 npm run conversion
 ```
 
-## Create new image
+### 4. Create new image
 Run:
 ```
-TAG=<tag>
+TAG=registry.diginfra.net/gnb/gnb-elastic:<tag>
 docker-compose stop
-docker commit elastic gnb-elastic:$TAG
-docker save -o ~/data/gnb/gnb-elastic-$TAG.tar gnb-elastic:$TAG
+docker commit elastic $TAG
+docker push $TAG
 ```
 
 ## Conversion log
+
+### registry.diginfra.net/gnb/gnb-elastic:20210311
+- registry copy of gnb-elastic-20210311.tar (also tagged as `latest`)
 
 ### gnb-elastic-20210311.tar
 - add gnb-people mentionedCount and attendantCount to simplify people queries
