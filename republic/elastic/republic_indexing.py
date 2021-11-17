@@ -422,7 +422,6 @@ def index_attendance_list_spans(es, year, config):
         att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
         att_list = rep_es.retrieve_attendance_list_by_id(es, att_id, config)
         att_list.attendance_spans = span_list["spans"]
-        print(att_list.id)
         es.index(index=config["resolution_index"], id=att_list.id, body=att_list.json)
 
 
