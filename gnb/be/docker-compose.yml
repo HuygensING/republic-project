@@ -3,7 +3,7 @@ version: '3.1'
 
 services:
   es:
-    image: gnb-elastic:20210311
+    image: registry.diginfra.net/gnb/gnb-elastic:latest
     environment:
       - "http.cors.allow-origin=/https?:\/\/localhost(:[0-9]+)?/"
       - "http.cors.enabled=true"

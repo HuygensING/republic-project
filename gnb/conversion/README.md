@@ -1,7 +1,7 @@
 # GNB conversion
 Conversion of GNB xml files and mysql database to elasticsearch indices
 
-## Preparation
+## Prepare
 
 ### Data
 
@@ -21,10 +21,10 @@ Run:
 docker-compose up
 ```
 
-### 2. Prepare mysql and elasticsearch
+### 2. Populate mysql and elasticsearch
 Run:
 ```
-docker exec -i db mysql -uroot -pexample mysql < statengeneraal20210105-fix.sql 
+docker exec -i db mysql -uroot -pexample mysql < statengeneraal<version>.sql 
 curl -X PUT 'localhost:9200/gnb-resolutions' -H content-type:application/json -d "@mapping/mapping-resolutions.json" | jq
 curl -X PUT 'localhost:9200/gnb-people' -H content-type:application/json -d "@mapping/mapping-people.json" | jq
 ```
@@ -40,13 +40,16 @@ npm run conversion
 ### 4. Create new image
 Run:
 ```
-TAG=registry.diginfra.net/vlb/gnb-elastic:latest
+TAG=registry.diginfra.net/gnb/gnb-elastic:<tag>
 docker-compose stop
-docker commit elastic 
-docker save -o ~/data/gnb/gnb-elastic-$TAG.tar gnb-elastic:$TAG
+docker commit elastic $TAG
+docker push $TAG
 ```
 
 ## Conversion log
+
+### registry.diginfra.net/gnb/gnb-elastic:20210311
+- registry copy of gnb-elastic-20210311.tar (also tagged as `latest`)
 
 ### gnb-elastic-20210311.tar
 - add gnb-people mentionedCount and attendantCount to simplify people queries

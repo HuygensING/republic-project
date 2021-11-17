@@ -2,6 +2,6 @@
 
 ## Development
 
-- Load: `docker load < gnb-elastic-<tag>.tar`
+- Optional: Change `es` image in `docker-compose.yml` 
 - Run: `docker-compose up` 
 
