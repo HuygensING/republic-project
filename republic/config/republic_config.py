@@ -4,6 +4,15 @@ from typing import Union
 from republic.model.inventory_mapping import get_inventory_by_num
 
 
+def get_base_config(inventory_num: int = None, ocr_type: str = "pagexml"):
+    config = copy.deepcopy(base_config)
+    set_inventory_indexes(ocr_type, config)
+    if inventory_num:
+        set_inventory_metadata(inventory_num, config)
+        set_inventory_period_elements(inventory_num, config)
+    return config
+
+
 def set_config_inventory_num(inventory_num: int, ocr_type: str,
                              default_config: Union[None, dict] = None,
                              base_dir: Union[None, str] = None) -> dict:

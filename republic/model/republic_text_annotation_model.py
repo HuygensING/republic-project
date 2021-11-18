@@ -4,6 +4,7 @@ import re
 
 from republic.model.physical_document_model import PageXMLTextLine, parse_derived_coords
 from republic.model.republic_document_model import RepublicParagraph, Resolution, Session
+import republic.model.republic_document_model as rdm
 from republic.model.republic_document_model import get_session_scans_version, get_session_resolutions
 from republic.model.republic_document_model import configure_resolution_searchers
 from republic.helper.metadata_helper import make_scan_urls
@@ -73,6 +74,31 @@ def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int
     }
 
 
+def make_attendance_span_annotations(attendance_list: rdm.AttendanceList) -> List[dict]:
+    annotations = []
+    att_num = 0
+    print('\tadding spans')
+    for span in attendance_list.attendance_spans:
+        annotation = {
+            "id": f"{attendance_list.id}-attendant-{att_num}",
+            "type": "attendant",
+            "start_offset": span["offset"],
+            "end_offset": span["end"],
+            "metadata": {
+                "class": span["class"],
+                "pattern": span["pattern"],
+                "parent_id": attendance_list.id,
+                "delegate_id": span["delegate_id"],
+                "delegate_name": span["delegate_name"],
+                "delegate_score": span["delegate_score"],
+            }
+        }
+        annotations.append(annotation)
+        att_num += 1
+    print('\t', len(annotations))
+    return annotations
+
+
 def make_resolution_annotation(resolution: Resolution, doc_text_offset: int, parent_id: str):
     res_type = 'attendance_list' if 'attendance_list' in resolution.type else 'resolution'
     resolution_anno = {
@@ -99,6 +125,7 @@ def make_session_text_version(session: Session, resolutions: List[Resolution] = 
         resolutions = get_session_resolutions(session, opening_searcher, verb_searcher)
     resolutions = sorted(resolutions, key=lambda x: x.paragraphs[0].metadata["start_offset"])
     for resolution in resolutions:
+        print(resolution.id, type(resolution))
         resolution_anno = make_resolution_annotation(resolution, session_text_offset,
                                                      session.metadata['id'])
         annotations.append(resolution_anno)
@@ -110,6 +137,8 @@ def make_session_text_version(session: Session, resolutions: List[Resolution] = 
             session_text += paragraph.text
             resolution_anno['paragraphs'].append(paragraph.metadata['id'])
         resolution_anno['end_offset'] = session_text_offset
+        if isinstance(resolution, rdm.AttendanceList):
+            annotations += make_attendance_span_annotations(resolution)
     annotations += get_scan_annotations(annotations, session)
     session_text_doc = {
         'metadata': session.metadata,

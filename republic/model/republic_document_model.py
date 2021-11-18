@@ -431,7 +431,7 @@ class AttendanceList(ResolutionElementDoc):
     @property
     def json(self) -> dict:
         json_doc = super().json
-        json_doc["attedance_spans"] = self.attendance_spans
+        json_doc["attendance_spans"] = self.attendance_spans
         return json_doc
 
 
@@ -502,6 +502,7 @@ def json_to_republic_attendance_list(attendance_json: dict) -> AttendanceList:
     text_regions, lines, evidence = json_to_physical_elements(attendance_json)
     scan_versions = attendance_json["scan_versions"] if "scan_versions" in attendance_json else None
     attendance_spans = attendance_json["attendance_spans"] if "attendance_spans" in attendance_json else None
+    print(len(attendance_spans), atte)
     return AttendanceList(doc_id=attendance_json['id'], doc_type=attendance_json['type'],
                           metadata=attendance_json['metadata'],
                           paragraphs=paragraphs, text_regions=text_regions,
