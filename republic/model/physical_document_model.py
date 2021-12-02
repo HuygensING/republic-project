@@ -1033,6 +1033,10 @@ def horizontal_group_lines(lines: List[PageXMLTextLine]) -> List[List[PageXMLTex
         return []
     # First, sort lines vertically
     vertically_sorted = [line for line in sorted(lines, key=lambda line: line.coords.top) if line.text is not None]
+    if len(vertically_sorted) == 0:
+        for line in lines:
+            print(line.coords.box, line.text)
+        return []
     # Second, group adjacent lines in vertical line stack
     horizontally_grouped_lines = [[vertically_sorted[0]]]
     rest_lines = vertically_sorted[1:]

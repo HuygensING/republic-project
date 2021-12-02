@@ -89,3 +89,53 @@ def get_per_page_type_index(inv_metadata):
 def get_scan_id(inventory_metadata, scan_num):
     scan_num_str = (4 - len(str(scan_num))) * "0" + str(scan_num)
     return f'{inventory_metadata["series_name"]}_{inventory_metadata["inventory_num"]}_{scan_num_str}'
+
+
+def index_intervention_page_nums(inv_metadata):
+    intervene = {
+        "inc": {},
+        "skip": {},
+        "no_num": {},
+        "type": {}
+    }
+    if inv_metadata["page_num_interventions"] is None:
+        return intervene
+    for intervention in inv_metadata["page_num_interventions"]:
+        page_num = intervention["page_num_offset"]
+        if intervention["intervention_type"] == "increment":
+            intervene["inc"][page_num] = intervention["text_page_num_increment"]
+        elif intervention["intervention_type"] == "skip":
+            for page_num in range(intervention["page_num_offset"], intervention["page_num_end"] + 1):
+                intervene["skip"][page_num] = True
+                intervene["type"][page_num] = intervention["problem_type"]
+        elif intervention["intervention_type"] == "no_page_num":
+            for page_num in range(intervention["page_num_offset"], intervention["page_num_end"] + 1):
+                intervene["no_num"][page_num] = True
+                intervene["type"][page_num] = intervention["problem_type"]
+    return intervene
+
+
+def map_text_page_nums(inv_metadata: dict) -> Dict[int, Dict[str, Union[int, str]]]:
+    text_page_num_map = {}
+    if "sections" not in inv_metadata:
+        return text_page_num_map
+    res_sections = [section for section in inv_metadata["sections"] if section["page_type"] == "resolution_page"]
+    intervene = index_intervention_page_nums(inv_metadata)
+    for section in res_sections:
+        if "text_page_num" not in section:
+            # skip section if we don't know text page numbers yet
+            continue
+        text_page_num = section["text_page_num"]
+        for page_num in range(section["start"], section["end"]+1):
+            problem = intervene["type"][page_num] if page_num in intervene["type"] else None
+            if page_num in intervene["inc"]:
+                text_page_num += intervene["inc"][page_num]
+            if page_num in intervene["skip"]:
+                curr_page_num = None
+            elif page_num in intervene["no_num"]:
+                curr_page_num = None
+            else:
+                curr_page_num = text_page_num
+            text_page_num += 1
+            text_page_num_map[page_num] = {"text_page_num": curr_page_num, "problem": problem}
+    return text_page_num_map

@@ -2,14 +2,13 @@ from typing import Union, List, Dict, Generator
 from elasticsearch import Elasticsearch
 import json
 import copy
-from collections import defaultdict
 
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
-from republic.helper.metadata_helper import get_scan_id, get_per_page_type_index
-from republic.model.republic_session import Session, session_from_json
+from republic.helper.metadata_helper import get_scan_id
+from republic.model.republic_session import Session
 from republic.model.republic_date import RepublicDate
 from republic.model.physical_document_model import PageXMLScan, PageXMLPage
 from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
@@ -295,12 +294,14 @@ def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
                                         page_num_end: int, config: dict,
                                         use_scroll: bool = False) -> Union[List[PageXMLPage], None]:
     """Retrieve a range of Republic PageXML pages based on page number"""
-    match_fields = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
+    bool_elements = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
     if 'inventory_num' in config:
-        match_fields += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
+        bool_elements += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
     elif 'year' in config:
-        match_fields += [{'match': {'year': config['year']}}]
-    query = make_bool_query(match_fields)
+        bool_elements += [{'match': {'year': config['year']}}]
+    else:
+        raise KeyError('No "inventory_num" or "year" in config')
+    query = make_bool_query(bool_elements)
     pages = retrieve_pages_by_query(es, query, config, use_scroll=use_scroll)
     if len(pages) == 0:
         return None
@@ -575,12 +576,7 @@ def retrieve_date_num_sessions(es, session_date, config):
 
 def retrieve_resolutions_by_session_date(es, session_date, config):
     query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 1000}
-    resolutions = retrieve_resolutions_by_query(es, query, config)
-    session_resolutions = defaultdict(list)
-    for resolution in resolutions:
-        session_id = resolution.metadata['id'].split('-resolution-')[0]
-        session_resolutions[session_id].append(resolution)
-    return session_resolutions
+    return retrieve_resolutions_by_query(es, query, config)
 
 
 def retrieve_resolutions_by_session_id(es, session_id, config):
