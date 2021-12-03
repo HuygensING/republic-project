@@ -178,14 +178,14 @@ base_config = {
     'year': None,
     'inventory_num': None,
     'base_dir': None,
+    'ocr_type': 'pagexml',
     'inventory_index': 'republic_inventory',
     'inventory_doc_type': 'inventory',
     'lemma_index': 'republic_lemma',
     'lemma_doc_type': 'lemma',
-    'page_doc_type': 'page',
-    'scan_doc_type': 'scan',
     'scan_index': 'scans',
     'page_index': 'pages',
+    'resolution_index': 'resolutions',
     'session_lines_index': 'session_lines',
     'session_text_index': 'session_text',
     'paragraph_doc_type': 'paragraph',
@@ -253,4 +253,17 @@ base_config = {
 column_config = {
     'avg_char_width': 20,
     'word_conf_threshold': 10,
+}
+
+fuzzy_search_config = {
+    "default": {
+        'filter_distractors': True,
+        'include_variants': True,
+        'use_word_boundaries': True,
+        'max_length_variance': 3,
+        'levenshtein_threshold': 0.7,
+        'char_match_threshold': 0.7,
+        'ngram_size': 3,
+        'skip_size': 1
+    }
 }
