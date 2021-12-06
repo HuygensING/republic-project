@@ -78,6 +78,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
     del session_metadata['evidence']
     text_region_lines = defaultdict(list)
     text_regions: List[PageXMLTextRegion] = []
+    scan_version = {}
     for line in session_lines:
         text_region_id = line.metadata['column_id']
         text_region_lines[text_region_id].append(line)
@@ -91,15 +92,20 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         # structure, especially the printed page number needed for linking to locators
         # in the index pages.
         source_page = text_region_lines[text_region_id][0].parent.parent
+        scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
         text_region.metadata['page_id'] = source_page.id
         text_region.metadata['page_num'] = source_page.metadata['page_num']
         text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
         text_regions.append(text_region)
-    session = Session(metadata=session_metadata, text_regions=text_regions, evidence=evidence)
+    for scan_id in scan_version:
+        scan_version[scan_id]['scan_id'] = scan_id
+    session = Session(metadata=session_metadata, text_regions=text_regions,
+                      evidence=evidence, scan_versions=list(scan_version.values()))
     # session.add_page_text_region_metadata(column_metadata)
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
     session_info['num_lines'] = len(session_lines)
+    print('this sessions contains elements from the following scans:', session.scan_versions)
     if session.date.is_rest_day() or not session_searcher.has_session_date_match():
         return session
     # Check if the next session date is more than 1 workday ahead
