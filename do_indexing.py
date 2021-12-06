@@ -129,7 +129,7 @@ def do_page_type_indexing_pagexml(inv_num: int, year: int):
 def do_session_lines_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
-    pages = rep_es.retrieve_inventory_pages(inv_num)
+    pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_num, inv_metadata)):
         print('session received from get_sessions:', session.id)
@@ -237,7 +237,7 @@ def process_inventory_pagexml(inv_num, inv_config, indexing_type):
         do_page_indexing_pagexml(inv_num, year)
     if indexing_type == "page_types":
         do_page_type_indexing_pagexml(inv_num, year)
-    if indexing_type == "session-lines":
+    if indexing_type == "session_lines":
         do_session_lines_indexing(inv_num, year)
     if indexing_type == "session_text":
         do_session_text_indexing(inv_num, year)
