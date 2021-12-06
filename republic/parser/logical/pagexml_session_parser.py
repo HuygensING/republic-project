@@ -105,7 +105,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
     session_info['num_lines'] = len(session_lines)
-    print('this sessions contains elements from the following scans:', session.scan_versions)
+    # print('this sessions contains elements from the following scans:', session.scan_versions)
     if session.date.is_rest_day() or not session_searcher.has_session_date_match():
         return session
     # Check if the next session date is more than 1 workday ahead
