@@ -1,15 +1,16 @@
 from typing import Dict, List, Set, Union, Tuple
 from collections import defaultdict
 import copy
+
 from elasticsearch import Elasticsearch
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_template_searcher import FuzzyTemplateSearcher, FuzzyTemplate, TemplateMatch
 
 from republic.model.republic_document_model import parse_phrase_match, PhraseMatch, RepublicParagraph, Resolution
-from fuzzy_search.fuzzy_template_searcher import FuzzyTemplateSearcher, FuzzyTemplate, TemplateMatch
 from republic.model.resolution_templates import opening_templates
 from republic.model.resolution_phrase_model import resolution_phrase_sets as rps
-import republic.elastic.republic_elasticsearch as rep_es
+from republic.elastic.republic_elasticsearch import RepublicElasticsearch
 
 
 class VariableMatcher:
@@ -92,11 +93,11 @@ class VariableMatcher:
         return extended_elements
 
 
-def get_paragraph_phrase_matches(es: Elasticsearch, resolution: Resolution,
-                                 config: Dict[str, any]) -> List[PhraseMatch]:
+def get_paragraph_phrase_matches(rep_es: RepublicElasticsearch,
+                                 resolution: Resolution) -> List[PhraseMatch]:
     opening_para = resolution.paragraphs[0]
     para_id = opening_para.metadata['id']
-    phrase_matches = rep_es.retrieve_phrase_matches_by_paragraph_id(es, para_id, config)
+    phrase_matches = rep_es.retrieve_phrase_matches_by_paragraph_id(para_id)
     # extra_matches = add_evidence_matches(phrase_matches, resolution.evidence)
     return phrase_matches
 

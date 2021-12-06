@@ -1,7 +1,6 @@
 import os
 import requests
 from typing import Dict, Union
-from elasticsearch import Elasticsearch
 
 from republic.model.inventory_mapping import get_inventory_by_num
 
@@ -26,24 +25,24 @@ def get_inventory_data(url: str) -> Union[bytes, None]:
         return None
 
 
-def store_inventory_data(inventory_data: bytes, inventory_num: int, ocr_type: str, inventory_config: dict):
-    out_file = get_output_filename(inventory_num, ocr_type, inventory_config)
+def store_inventory_data(inventory_data: bytes, inventory_num: int, ocr_type: str, download_dir: str):
+    out_file = get_output_filename(inventory_num, ocr_type, download_dir)
     print(f'\tStoring inventory {inventory_num} {ocr_type} data to {out_file}')
     with open(out_file, 'wb') as fh:
         fh.write(inventory_data)
 
 
-def get_output_filename(inventory_num: int, ocr_type: str, inventory_config: dict) -> str:
+def get_output_filename(inventory_num: int, ocr_type: str, download_dir: str) -> str:
     data_dir = None
     if ocr_type == "hocr" or ocr_type == "pagexml":
-        data_dir = os.path.join(inventory_config["base_dir"], ocr_type)
+        data_dir = os.path.join(download_dir, ocr_type)
     if data_dir:
         return os.path.join(data_dir, f"{inventory_num}.zip")
     else:
         ValueError("Unknown data type. Must be either 'hocr' or 'pagexml'.")
 
 
-def download_inventory(es: Elasticsearch, inventory_num: int, ocr_type: str, inventory_config: dict):
+def download_inventory(inventory_num: int, ocr_type: str, download_dir: str):
     inventory_info = get_inventory_by_num(inventory_num)
     uuid = inventory_info['inventory_uuid']
     try:
@@ -59,4 +58,4 @@ def download_inventory(es: Elasticsearch, inventory_num: int, ocr_type: str, inv
         raise ValueError("Unknown data type. Must be either 'hocr' or 'pagexml'.")
     inventory_data = get_inventory_data(url)
     if inventory_data:
-        store_inventory_data(inventory_data, inventory_num, ocr_type, inventory_config)
+        store_inventory_data(inventory_data, inventory_num, ocr_type, download_dir)

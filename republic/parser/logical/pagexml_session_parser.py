@@ -9,7 +9,7 @@ from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
-from republic.model.physical_document_model import sort_lines_in_reading_order
+from republic.helper.pagexml_helper import sort_lines_in_reading_order
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
@@ -86,6 +86,14 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         coords = parse_derived_coords(text_region_lines[text_region_id])
         text_region = PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
                                         coords=coords, lines=text_region_lines[text_region_id])
+        # We're going from physical to logical structure here, so add a trace to the
+        # logical structure elements about where they come from in the physical
+        # structure, especially the printed page number needed for linking to locators
+        # in the index pages.
+        source_page = text_region_lines[text_region_id][0].parent.parent
+        text_region.metadata['page_id'] = source_page.id
+        text_region.metadata['page_num'] = source_page.metadata['page_num']
+        text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
         text_regions.append(text_region)
     session = Session(metadata=session_metadata, text_regions=text_regions, evidence=evidence)
     # session.add_page_text_region_metadata(column_metadata)
@@ -179,13 +187,13 @@ def get_columns_metadata(sorted_pages: List[PageXMLPage]) -> Dict[str, dict]:
     return column_metadata
 
 
-def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
+def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
                  inv_metadata: dict) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - check for large date jumps and short session docs
     column_metadata = get_columns_metadata(sorted_pages)
     current_date = initialize_inventory_date(inv_metadata)
-    session_searcher = SessionSearcher(inv_config['inventory_num'], current_date,
+    session_searcher = SessionSearcher(inv_num, current_date,
                                        session_phrase_model, window_size=30)
     session_metadata = session_searcher.parse_session_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
@@ -265,7 +273,7 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_config: dict,
             # if session_doc.metadata['num_lines'] == 0:
             if session_doc.num_lines == 0:
                 # A session with no lines only happens at the beginning
-                # Don't generate a doc and sets the already shifted date back by 1 day
+                # Don't generate a doc and set the already shifted date back by 1 day
                 # Also, reset the session counter
                 session_searcher.sessions[session_doc.metadata['session_date']] = []
                 date = session_searcher.current_date

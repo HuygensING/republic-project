@@ -4,9 +4,9 @@ from typing import Union
 from republic.model.inventory_mapping import get_inventory_by_num
 
 
-def get_base_config(inventory_num: int = None, ocr_type: str = "pagexml"):
+def get_base_config(inventory_num: int = None):
     config = copy.deepcopy(base_config)
-    set_inventory_indexes(ocr_type, config)
+    set_inventory_indexes(config)
     if inventory_num:
         set_inventory_metadata(inventory_num, config)
         set_inventory_period_elements(inventory_num, config)
@@ -21,7 +21,7 @@ def set_config_inventory_num(inventory_num: int, ocr_type: str,
     config = copy.deepcopy(default_config)
     set_inventory_base_dir(ocr_type, base_dir, config)
     set_inventory_metadata(inventory_num, config)
-    set_inventory_indexes(ocr_type, config)
+    set_inventory_indexes(config)
     set_inventory_period_elements(inventory_num, config)
     return config
 
@@ -43,7 +43,7 @@ def set_inventory_metadata(inventory_num: int, config: dict) -> None:
     config['inventory_num'] = inventory_num
 
 
-def set_inventory_indexes(ocr_type: str, config: dict) -> None:
+def set_inventory_indexes(config: dict) -> None:
     # config['page_index'] = f'{ocr_type}_pages'
     # config['scan_index'] = f'{ocr_type}_scans'
     config['page_index'] = 'pages'

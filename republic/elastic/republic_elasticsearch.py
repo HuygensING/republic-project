@@ -1,24 +1,30 @@
+import copy
+
 import settings as settings
+
+from elasticsearch import Elasticsearch
+
 # import retrieval and indexing functions so they cna be imported from a single module
-from republic.elastic.republic_retrieving import *
-from republic.elastic.republic_indexing import *
+from republic.config.republic_config import base_config
+from republic.elastic.republic_retrieving import Retriever
+from republic.elastic.republic_indexing import Indexer
 
 
-def initialize_es(host_type: str = 'internal', timeout: int = 10) -> Elasticsearch:
-    republic_config = set_elasticsearch_config(host_type)
-    es_config = republic_config['elastic_config']
+def initialize_es_anno(host_type: str = 'internal', timeout: int = 10) -> Elasticsearch:
+    api_config = set_elasticsearch_config(host_type)
+    es_config = api_config['elastic_config']
     if es_config['url_prefix']:
-        es_republic = Elasticsearch([{'host': es_config['host'],
-                                      'port': es_config['port'],
-                                      'scheme': es_config['scheme'],
-                                      'url_prefix': es_config['url_prefix']}],
-                                    timeout=timeout)
+        es_anno = Elasticsearch([{'host': es_config['host'],
+                                  'port': es_config['port'],
+                                  'scheme': es_config['scheme'],
+                                  'url_prefix': es_config['url_prefix']}],
+                                timeout=timeout)
     else:
-        es_republic = Elasticsearch([{'host': es_config['host'],
-                                      'port': es_config['port'],
-                                      'scheme': es_config['scheme']}],
-                                    timeout=timeout)
-    return es_republic
+        es_anno = Elasticsearch([{'host': es_config['host'],
+                                  'port': es_config['port'],
+                                  'scheme': es_config['scheme']}],
+                                timeout=timeout)
+    return es_anno
 
 
 def initialize_es_text_repo(timeout: int = 10):
@@ -34,6 +40,21 @@ def text_repo_es_config():
         'url_prefix': settings.text_repo_url_prefix
     }
     return es_config
+
+
+class RepublicElasticsearch(Retriever, Indexer):
+
+    def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict):
+        super().__init__(es_anno, es_text, config)
+
+
+def initialize_es(host_type: str = "external", timeout: int = 10,
+                  config: dict = None) -> RepublicElasticsearch:
+    es_anno = initialize_es_anno(host_type=host_type, timeout=timeout)
+    es_text = initialize_es_text_repo(timeout=timeout)
+    if config is None:
+        config = copy.deepcopy(base_config)
+    return RepublicElasticsearch(es_anno, es_text, config)
 
 
 def set_elasticsearch_config(host_type: str = 'internal'):

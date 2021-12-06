@@ -1,6 +1,8 @@
 from typing import List
 
-from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
+
+import republic.model.resolution_phrase_model as rpm
 
 
 def same_column(line1: dict, line2: dict) -> bool:
@@ -70,22 +72,22 @@ def find_paragraph_starts(meeting: dict) -> iter:
             yield line
 
 
-def find_resolution_starts(meeting: dict, resolution_searcher: FuzzyKeywordSearcher) -> iter:
+def find_resolution_starts(meeting: dict, resolution_searcher: FuzzyPhraseSearcher) -> iter:
     meeting_lines = meeting['meeting_lines']
     for li, line in enumerate(meeting['meeting_lines']):
         if is_paragraph_start(line, meeting_lines):
-            opening_matches = resolution_searcher.find_candidates(line['text'])
+            opening_matches = resolution_searcher.find_candidates(line['text'], use_word_boundaries=False)
             if len(opening_matches) > 0:
                 yield line
 
 
-def make_resolution_text(meeting: dict, resolution_searcher: FuzzyKeywordSearcher) -> iter:
+def make_resolution_text(meeting: dict, resolution_searcher: FuzzyPhraseSearcher) -> iter:
     text = ''
     for line in meeting['meeting_lines']:
         if not line['text']:
             continue
         if is_paragraph_start(line, meeting['meeting_lines']):
-            opening_matches = resolution_searcher.find_candidates(line['text'])
+            opening_matches = resolution_searcher.find_candidates(line['text'], use_word_boundaries=False)
             if len(opening_matches) > 0:
                 yield text
                 text = ''
@@ -95,3 +97,40 @@ def make_resolution_text(meeting: dict, resolution_searcher: FuzzyKeywordSearche
             text += line['text'] + ' '
     if len(text) > 0:
         yield text
+
+
+def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
+    resolution_phrase_searcher_config = {
+        'filter_distractors': True,
+        'include_variants': True,
+        'use_word_boundaries': True,
+        'max_length_variance': 3,
+        'levenshtein_threshold': 0.7,
+        'char_match_threshold': 0.7,
+        'ngram_size': 3,
+        'skip_size': 1
+    }
+    resolution_phrase_searcher = FuzzyPhraseSearcher(resolution_phrase_searcher_config)
+
+    '''
+    phrases = rpm.proposition_reason_phrases + rpm.proposition_closing_phrases + rpm.decision_phrases + \
+              rpm.resolution_link_phrases + rpm.prefix_phrases + rpm.organisation_phrases + \
+              rpm.location_phrases + rpm.esteem_titles + rpm.person_role_phrases + rpm.military_phrases + \
+              rpm.misc + rpm.provinces + rpm.proposition_opening_phrases
+    '''
+
+    phrases = []
+    for set_name in rpm.resolution_phrase_sets:
+        print('adding phrases from set', set_name)
+        phrases += rpm.resolution_phrase_sets[set_name]
+    # phrases = rpm.proposition_opening_phrases
+    # for phrase in phrases:
+    #     if 'max_offset' in phrase:
+    #         del phrase['max_offset']
+    print(f'building phrase model for {len(phrases)} resolution phrases')
+
+    resolution_phrase_phrase_model = PhraseModel(model=phrases, config=resolution_phrase_searcher_config)
+    resolution_phrase_searcher.index_phrase_model(resolution_phrase_phrase_model)
+    return resolution_phrase_searcher
+
+

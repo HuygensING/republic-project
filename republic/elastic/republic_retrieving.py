@@ -1,84 +1,39 @@
 from typing import Union, List, Dict, Generator
 from elasticsearch import Elasticsearch
-import json
-import copy
 
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
 from republic.helper.metadata_helper import get_scan_id
-from republic.model.republic_session import Session
+import republic.helper.pagexml_helper as pagexml
 from republic.model.republic_date import RepublicDate
-from republic.model.physical_document_model import PageXMLScan, PageXMLPage
-from republic.model.physical_document_model import json_to_pagexml_scan, json_to_pagexml_page
-from republic.model.republic_document_model import json_to_republic_resolution, Resolution, parse_phrase_matches
-from republic.model.republic_document_model import json_to_republic_session
 import republic.model.republic_document_model as rdm
+import republic.model.physical_document_model as pdm
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
-def scroll_hits(es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
-                size: int = 100, scroll: str = '2m') -> iter:
-    response = es.search(index=index, doc_type=doc_type, scroll=scroll, size=size, body=query)
-    sid = response['_scroll_id']
-    scroll_size = response['hits']['total']
-    print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))
-    if type(scroll_size) == dict:
-        scroll_size = scroll_size['value']
-    # Start scrolling
-    while scroll_size > 0:
-        for hit in response['hits']['hits']:
-            yield hit
-        response = es.scroll(scroll_id=sid, scroll=scroll)
-        # Update the scroll ID
-        sid = response['_scroll_id']
-        # Get the number of results that we returned in the last scroll
-        scroll_size = len(response['hits']['hits'])
-        # Do something with the obtained page
-    # remove scroll context
-    es.clear_scroll(scroll_id=sid)
+def get_docs(response: Dict[str, any]) -> List[dict]:
+    if response['hits']['total']['value'] == 0:
+        return []
+    else:
+        return [hit['_source'] for hit in response['hits']['hits']]
 
 
-def create_es_scan_doc(scan_doc: dict) -> dict:
-    doc = copy.deepcopy(scan_doc)
-    if 'lines' in doc:
-        doc['lines'] = json.dumps(doc['lines'])
-    return doc
+def extract_hits(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> List[Dict[str, any]]:
+    if isinstance(hits, dict) and 'hits' in hits:
+        if hits['hits']['total']['value'] == 0:
+            return []
+        hits = hits['hits']['hits']
+    return hits
 
 
-def create_es_page_doc(page_doc: dict) -> dict:
-    doc = copy.deepcopy(page_doc)
-    for column_hocr in doc['columns']:
-        if 'lines' in column_hocr:
-            column_hocr['lines'] = json.dumps(column_hocr['lines'])
-    return doc
+def parse_hits_as_scans(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> List[pdm.PageXMLScan]:
+    return [pagexml.json_to_pagexml_scan(hit['_source']) for hit in extract_hits(hits)]
 
 
-def parse_es_scan_doc(scan_doc: dict) -> dict:
-    if 'lines' in scan_doc:
-        scan_doc['lines'] = json.loads(scan_doc['lines'])
-    return scan_doc
-
-
-def parse_es_page_doc(page_doc: dict) -> dict:
-    for column_hocr in page_doc['columns']:
-        if 'lines' in column_hocr:
-            if isinstance(column_hocr['lines'], str):
-                column_hocr['lines'] = json.loads(column_hocr['lines'])
-    return page_doc
-
-
-def create_es_index_lemma_doc(lemma: str, lemma_index: dict, config: dict):
-    return {
-        'lemma': lemma,
-        'inventory_num': config['inventory_num'],
-        'lemma_entries': lemma_index[lemma]
-    }
-
-
-def parse_hits_as_pages(hits: dict) -> List[PageXMLPage]:
-    return [json_to_pagexml_page(hit['_source']) for hit in hits]
+def parse_hits_as_pages(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> List[pdm.PageXMLPage]:
+    return [pagexml.json_to_pagexml_page(hit['_source']) for hit in extract_hits(hits)]
 
 
 def make_bool_query(match_fields, size: int = 10000) -> dict:
@@ -185,410 +140,339 @@ def get_tesseract_versions_by_external_id(external_id: str, text_repo: TextRepo)
     return [version for version in versions_info['items'] if is_tesseract_version(version, text_repo)]
 
 
-def retrieve_inventory_metadata(es: Elasticsearch, inventory_num: int, config):
-    if not es.exists(index=config['inventory_index'], doc_type=config['inventory_doc_type'], id=inventory_num):
-        raise ValueError('No inventory metadata available for inventory num {}'.format(inventory_num))
-    response = es.get(index=config['inventory_index'], doc_type=config['inventory_doc_type'], id=inventory_num)
-    return response['_source']
+def select_year_inv(year: int = None, inventory_num: int = None) -> Dict[str, Dict[str, int]]:
+    if year is None and inventory_num is None:
+        raise ValueError('must use either "year" or "inventory_num"')
+    if inventory_num is not None:
+        return {'match': {'metadata.inventory_num': inventory_num}}
+    elif year is not None:
+        return {'match': {'metadata.year': year}}
 
 
-def retrieve_inventory_hocr_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
-    response = es.search(index=config['scan_index'], body=query)
-    if response['hits']['total'] == 0:
-        return []
-    return [parse_es_scan_doc(hit['_source']) for hit in response['hits']['hits']]
+class Retriever:
 
+    def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict):
+        self.es_anno = es_anno
+        self.es_text = es_text
+        self.config = config
 
-def retrieve_inventory_scans(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
-    return retrieve_scans_by_query(es, query, config)
+    def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
+                    size: int = 100, scroll: str = '2m') -> iter:
+        response = es.search(index=index, doc_type=doc_type, scroll=scroll, size=size, body=query)
+        sid = response['_scroll_id']
+        scroll_size = response['hits']['total']
+        print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))
+        if type(scroll_size) == dict:
+            scroll_size = scroll_size['value']
+        # Start scrolling
+        while scroll_size > 0:
+            for hit in response['hits']['hits']:
+                yield hit
+            response = es.scroll(scroll_id=sid, scroll=scroll)
+            # Update the scroll ID
+            sid = response['_scroll_id']
+            # Get the number of results that we returned in the last scroll
+            scroll_size = len(response['hits']['hits'])
+            # Do something with the obtained page
+        # remove scroll context
+        self.es_anno.clear_scroll(scroll_id=sid)
 
+    def retrieve_inventory_metadata(self, inventory_num: int) -> Dict[str, any]:
+        if not self.es_anno.exists(index=self.config['inventory_index'],
+                                   doc_type=self.config['inventory_doc_type'], id=inventory_num):
+            raise ValueError('No inventory metadata available for inventory num {}'.format(inventory_num))
+        response = self.es_anno.get(index=self.config['inventory_index'],
+                                    doc_type=self.config['inventory_doc_type'], id=inventory_num)
+        return response['_source']
 
-def retrieve_inventory_pages(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
-    return retrieve_pages_by_query(es, query, config)
+    def retrieve_inventory_scans(self, inventory_num: int) -> list:
+        query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
+        return self.retrieve_scans_by_query(query)
 
+    def retrieve_inventory_pages(self, inventory_num: int) -> list:
+        query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
+        return self.retrieve_pages_by_query(query)
 
-def retrieve_scan_by_id(es: Elasticsearch, scan_id: str, config) -> Union[dict, None]:
-    if not es.exists(index=config['scan_index'], doc_type=config['scan_doc_type'], id=scan_id):
-        return None
-    response = es.get(index=config['scan_index'], doc_type=config['scan_doc_type'], id=scan_id)
-    if '_source' in response:
-        scan_doc = parse_es_scan_doc(response['_source'])
-        return scan_doc
-    else:
-        return None
+    def retrieve_scan_by_id(self, scan_id: str) -> Union[pdm.PageXMLScan, None]:
+        if not self.es_anno.exists(index=self.config['scan_index'],
+                                   doc_type=self.config['scan_doc_type'], id=scan_id):
+            return None
+        response = self.es_anno.get(index=self.config['scan_index'],
+                                    doc_type=self.config['scan_doc_type'], id=scan_id)
+        return pagexml.json_to_pagexml_scan(response['_source'])
 
+    def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
+        response = self.es_anno.search(index=self.config['scan_index'], body=query)
+        return parse_hits_as_scans(response)
 
-def retrieve_scans_by_query(es: Elasticsearch, query: dict, config) -> List[PageXMLScan]:
-    response = es.search(index=config['scan_index'], body=query)
-    if response['hits']['total']['value'] == 0:
-        return []
-    else:
-        return [json_to_pagexml_scan(hit['_source']) for hit in response['hits']['hits']]
+    def retrieve_text_repo_scans_by_inventory(self,
+                                              inventory_num: int) -> Generator[pdm.PageXMLScan, None, None]:
+        text_repo = TextRepo(text_repo_url)
+        query = make_text_repo_inventory_query(inventory_num)
+        for hi, hit in enumerate(self.scroll_hits(self.es_text, query, index='file', size=2)):
+            doc = hit['_source']
+            versions = get_tesseract_versions(doc)
+            if len(versions) == 0:
+                continue
+                # raise ValueError(f"Document has no versions: {doc['doc']['externalId']}")
+            version = select_latest_tesseract_version(versions)
+            scan_pagexml = text_repo.get_content_by_version_id(version['id'])
+            filename = f"{doc['doc']['externalId']}.xml"
+            scan_doc = pagexml_parser.get_scan_pagexml(filename, self.config, pagexml_data=scan_pagexml)
+            scan_doc.metadata['textrepo_version'] = version
+            yield scan_doc
 
+    def retrieve_page_by_id(self, page_id: str) -> Union[pdm.PageXMLPage, None]:
+        if not self.es_anno.exists(index=self.config['page_index'], id=page_id):
+            return None
+        response = self.es_anno.get(index=self.config['page_index'], id=page_id)
+        return pagexml.json_to_pagexml_page(response['_source'])
 
-def retrieve_scans_pagexml_from_text_repo_by_inventory(es_text: Elasticsearch,
-                                                       inventory_num: int , config: Dict[str, any]):
-    text_repo = TextRepo(text_repo_url)
-    query = make_text_repo_inventory_query(inventory_num)
-    for hi, hit in enumerate(scroll_hits(es_text, query, index='file', size=2)):
-        doc = hit['_source']
-        versions = get_tesseract_versions(doc)
-        if len(versions) == 0:
-            continue
-            # raise ValueError(f"Document has no versions: {doc['doc']['externalId']}")
-        version = select_latest_tesseract_version(versions)
-        pagexml = text_repo.get_content_by_version_id(version['id'])
-        filename = f"{doc['doc']['externalId']}.xml"
-        scan_doc = pagexml_parser.get_scan_pagexml(filename, config, pagexml_data=pagexml)
-        scan_doc.metadata['textrepo_version'] = version
-        yield scan_doc
-
-
-def retrieve_page_by_id(es: Elasticsearch, page_id: str, config) -> Union[PageXMLPage, None]:
-    if not es.exists(index=config['page_index'], id=page_id):
-        return None
-    response = es.get(index=config['page_index'], id=page_id)
-    if '_source' in response:
-        page_doc = json_to_pagexml_page(response['_source'])
-        return page_doc
-    else:
-        return None
-
-
-def retrieve_pages_by_query(es: Elasticsearch,
-                            query: dict, config: dict,
-                            use_scroll: bool = False) -> List[PageXMLPage]:
-    hits = []
-    if use_scroll:
-        for hit in scroll_hits(es, query, config['page_index'], '_doc', size=10):
+    def retrieve_pages_by_query(self, query: dict) -> List[pdm.PageXMLPage]:
+        hits = []
+        for hit in self.scroll_hits(self.es_anno, query, self.config['page_index'], '_doc', size=10):
             hits += [hit]
-            # if len(hits) % 100 == 0:
-            #     print(len(hits), 'hits scrolled')
-    else:
-        response = es.search(index=config['page_index'], body=query)
-        if response['hits']['total'] == 0:
-            return []
-        hits = response['hits']['hits']
-    return parse_hits_as_pages(hits)
+        return parse_hits_as_pages(hits)
 
+    def retrieve_page_by_page_number(self, page_num: int, year: int = None,
+                                     inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
+        match_fields = [
+            {'match': {'metadata.page_num': page_num}},
+            select_year_inv(year=year, inventory_num=inventory_num)
+        ]
+        query = make_bool_query(match_fields)
+        pages = self.retrieve_pages_by_query(query)
+        return None if len(pages) == 0 else pages[0]
 
-def retrieve_page_by_page_number(es: Elasticsearch, page_num: int,
-                                 config: dict) -> Union[PageXMLPage, None]:
-    match_fields = [{'match': {'metadata.page_num': page_num}}]
-    if 'inventory_num' in config:
-        match_fields += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
-    elif 'year' in config:
-        match_fields += [{'match': {'metadata.year': config['year']}}]
-    query = make_bool_query(match_fields)
-    pages = retrieve_pages_by_query(es, query, config)
-    if len(pages) == 0:
-        return None
-    else:
-        return pages[0]
-
-
-def retrieve_pages_by_page_number_range(es: Elasticsearch, page_num_start: int,
-                                        page_num_end: int, config: dict,
-                                        use_scroll: bool = False) -> Union[List[PageXMLPage], None]:
-    """Retrieve a range of Republic PageXML pages based on page number"""
-    bool_elements = [{'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}}]
-    if 'inventory_num' in config:
-        bool_elements += [{'match': {'metadata.inventory_num': config['inventory_num']}}]
-    elif 'year' in config:
-        bool_elements += [{'match': {'year': config['year']}}]
-    else:
-        raise KeyError('No "inventory_num" or "year" in config')
-    query = make_bool_query(bool_elements)
-    pages = retrieve_pages_by_query(es, query, config, use_scroll=use_scroll)
-    if len(pages) == 0:
-        return None
-    else:
+    def retrieve_pages_by_page_number_range(self, page_num_start: int, page_num_end: int, year: int = None,
+                                            inventory_num: int = None) -> Union[List[pdm.PageXMLPage], None]:
+        """Retrieve a range of Republic PageXML pages based on page number"""
+        bool_elements = [
+            {'range': {'metadata.page_num': {'gte': page_num_start, 'lte': page_num_end}}},
+            select_year_inv(year=year, inventory_num=inventory_num)
+        ]
+        query = make_bool_query(bool_elements)
+        pages = self.retrieve_pages_by_query(query)
         return sorted(pages, key=lambda x: x.metadata['page_num'])
 
+    def retrieve_pages_by_type(self, page_type: str, inventory_num: int) -> List[pdm.PageXMLPage]:
+        query = make_page_type_query(page_type, inventory_num=inventory_num)
+        return self.retrieve_pages_by_query(query)
 
-def retrieve_pages_by_type(es: Elasticsearch, page_type: str, inventory_num: int,
-                           config: dict, use_scroll: bool = True) -> List[PageXMLPage]:
-    query = make_page_type_query(page_type, inventory_num=inventory_num)
-    return retrieve_pages_by_query(es, query, config, use_scroll=use_scroll)
+    def retrieve_pages_by_number_of_columns(self, num_columns_min: int,
+                                            num_columns_max: int, inventory_config: dict) -> list:
+        query = make_column_query(num_columns_min, num_columns_max, inventory_config['inventory_num'])
+        return self.retrieve_pages_by_query(query)
 
+    def retrieve_title_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+        return self.retrieve_pages_by_type('title_page', inventory_num)
 
-def retrieve_pages_by_number_of_columns(es: Elasticsearch, num_columns_min: int,
-                                        num_columns_max: int, inventory_config: dict) -> list:
-    query = make_column_query(num_columns_min, num_columns_max, inventory_config['inventory_num'])
-    return retrieve_pages_by_query(es, query, inventory_config)
+    def retrieve_index_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+        pages = self.retrieve_pages_by_type('index_page', inventory_num)
+        return sorted(pages, key=lambda page: page.metadata['page_num'])
 
+    def retrieve_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+        pages = self.retrieve_pages_by_type('resolution_page', inventory_num)
+        return sorted(pages, key=lambda page: page.metadata['page_num'])
 
-def retrieve_title_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
-    return retrieve_pages_by_type(es, 'title_page', inventory_num, config)
+    def retrieve_pagexml_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+        try:
+            resolution_start, resolution_end = self.get_pagexml_resolution_page_range(inventory_num)
+        except TypeError:
+            return []
+        return self.retrieve_pages_by_page_number_range(resolution_start, resolution_end)
 
+    def retrieve_respect_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+        return self.retrieve_pages_by_type('respect_page', inventory_num)
 
-def retrieve_index_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
-    pages = retrieve_pages_by_type(es, 'index_page', inventory_num, config, use_scroll=True)
-    return sorted(pages, key=lambda page: page.metadata['page_num'])
+    def retrieve_paragraph_by_type_page_number(self, page_number: int, year: int = None,
+                                               inventory_num: int = None) -> list:
+        match_fields = [
+            {'match': {'metadata.type_page_num': page_number}},
+            {'match': {'metadata.inventory_year': select_year_inv(year, inventory_num)}}
+        ]
+        query = make_bool_query(match_fields)
+        return self.retrieve_paragraph_by_query(query)
 
+    def retrieve_paragraphs_by_inventory(self, inventory_num: int) -> list:
+        match_fields = [
+            {'match': {'metadata.inventory_num': inventory_num}}
+        ]
+        query = make_bool_query(match_fields)
+        return self.retrieve_paragraph_by_query(query)
 
-def retrieve_resolution_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
-    pages = retrieve_pages_by_type(es, 'resolution_page', inventory_num, config, use_scroll=True)
-    return sorted(pages, key=lambda page: page.metadata['page_num'])
+    def retrieve_paragraph_by_query(self, query: dict):
+        response = self.es_anno.search(index=self.config['paragraph_index'],
+                                       doc_type=self.config['paragraph_doc_type'],
+                                       body=query)
+        return [hit['_source'] for hit in response['hits']['hits']] if 'hits' in response['hits'] else []
 
+    def retrieve_inventory_sessions_with_lines(self, inventory_num: int) -> Generator[rdm.Session, None, None]:
+        query = make_inventory_query(inventory_num=inventory_num, size=1000)
+        for hit in self.scroll_hits(self.es_anno, query, self.config['session_lines_index'],
+                                    size=2, scroll='10m'):
+            session = rdm.json_to_republic_session(hit['_source'])
+            yield session
 
-def retrieve_pagexml_resolution_pages(es: Elasticsearch, inv_num: int,
-                                      inv_config: dict, use_scroll=False) -> List[PageXMLPage]:
-    try:
-        resolution_start, resolution_end = get_pagexml_resolution_page_range(es, inv_num, inv_config)
-    except TypeError:
-        return []
-    return retrieve_pages_by_page_number_range(es, resolution_start, resolution_end, inv_config, use_scroll=use_scroll)
-
-
-def retrieve_respect_pages(es: Elasticsearch, inventory_num: int, config: dict) -> List[PageXMLPage]:
-    return retrieve_pages_by_type(es, 'respect_page', inventory_num, config)
-
-
-def retrieve_paragraph_by_type_page_number(es: Elasticsearch, page_number: int, config: dict) -> list:
-    match_fields = [
-        {'match': {'metadata.type_page_num': page_number}},
-        {'match': {'metadata.inventory_year': config['year']}}
-    ]
-    query = make_bool_query(match_fields)
-    response = es.search(index=config['paragraph_index'], doc_type=config['paragraph_doc_type'], body=query)
-    if response['hits']['total'] == 0:
-        return []
-    else:
-        return [hit['_source'] for hit in response['hits']['hits']]
-
-
-def retrieve_paragraphs_by_inventory(es: Elasticsearch, inventory_num: int, config: dict) -> list:
-    match_fields = [
-        {'match': {'metadata.inventory_num': inventory_num}}
-    ]
-    query = make_bool_query(match_fields)
-    response = es.search(index=config['paragraph_index'], doc_type=config['paragraph_doc_type'], body=query)
-    if response['hits']['total'] == 0:
-        return []
-    else:
-        return [hit['_source'] for hit in response['hits']['hits']]
-
-
-def retrieve_inventory_sessions_with_lines(es: Elasticsearch, inv_num: int,
-                                           config: dict) -> Generator[Session, None, None]:
-    query = make_inventory_query(inventory_num=inv_num, size=1000)
-    for hit in scroll_hits(es, query, config['session_lines_index'], size=2, scroll='10m'):
-        session = json_to_republic_session(hit['_source'])
-        yield session
-
-
-def retrieve_pagexml_sessions(es: Elasticsearch, inv_num: int, config: dict) -> List[dict]:
-    query = {
-        "query": {
-            "match": {
-                "inventory_num": inv_num
-            }
-        },
-        "size": 1000
-    }
-    response = es.search(index=config['session_index'], doc_type=config['session_doc_type'], body=query)
-    if response['hits']['total']['value'] == 0:
-        return []
-    else:
-        return [hit['_source'] for hit in response['hits']['hits']]
-
-
-def retrieve_sessions_by_query(es: Elasticsearch, query: dict, config: dict) -> List[Session]:
-    response = es.search(index=config['session_lines_index'], body=query)
-    if response['hits']['total']['value'] == 0:
-        return []
-    else:
-        docs = [hit['_source'] for hit in response['hits']['hits']]
-        return [json_to_republic_session(doc) for doc in docs]
-
-
-def retrieve_session_text_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
-    session_index = 'session_text'
-    return retrieve_session_by_date(es, date, session_index)
-
-
-def retrieve_session_lines_by_date(es: Elasticsearch, date: Union[str, RepublicDate], config: dict) -> Union[None, Session]:
-    session_index = 'session_lines'
-    return retrieve_session_by_date(es, date, session_index)
-
-
-def retrieve_session_by_date(es: Elasticsearch, date: Union[str, RepublicDate], session_index: str) -> Union[None, Session]:
-    if isinstance(date, RepublicDate):
-        doc_id = f'session-{date.isoformat()}-num-1'
-    else:
-        doc_id = f'session-{date}-num-1'
-    if es.exists(index=session_index, id=doc_id):
-        response = es.get(index=session_index, id=doc_id)
-        return json_to_republic_session(response['_source'])
-    else:
-        return None
-
-
-def retrieve_resolution_by_id(es: Elasticsearch, resolution_id: str, config: dict) -> Union[Resolution, None]:
-    if es.exists(index=config['resolution_index'], id=resolution_id):
-        response = es.get(index=config['resolution_index'], id=resolution_id)
-        return json_to_republic_resolution(response['_source'])
-    else:
-        return None
-
-
-def retrieve_resolutions_by_session_id(es: Elasticsearch, session_id: str, config: dict) -> List[Resolution]:
-    query = {
-        'query': {
-            'match': {
-                'metadata.session_id.keyword': session_id
-            }
-        }
-    }
-    return retrieve_resolutions_by_query(es, query, config)
-
-
-def scroll_resolutions_by_query(es: Elasticsearch, query: dict,
-                                config: dict, scroll: str = '1m') -> Generator[Resolution, None, None]:
-    for hit in scroll_hits(es, query, index=config['resolution_index'],
-                           doc_type="_doc", size=10, scroll=scroll):
-        resolution_json = hit['_source']
-        yield json_to_republic_resolution(resolution_json)
-
-
-def retrieve_resolutions_by_query(es: Elasticsearch, query: dict,
-                                  config: dict) -> List[Resolution]:
-    response = es.search(index=config['resolution_index'], doc_type="_doc", body=query)
-    if response['hits']['total']['value'] == 0:
-        return []
-    else:
-        resolutions = []
-        for hit in response['hits']['hits']:
-            doc = hit['_source']
-            if 'attendance_list' in doc['type']:
-                res = rdm.json_to_republic_attendance_list(doc)
-            else:
-                res = rdm.json_to_republic_resolution(doc)
-            resolutions.append(res)
-        return resolutions
-        # return [json_to_republic_resolution(hit['_source']) for hit in response['hits']['hits']]
-
-
-def scroll_inventory_resolutions(es: Elasticsearch, inv_config: dict):
-    query = {
-        'query': {
-             'bool': {
-                 'must': [
-                     {'match': {'metadata.inventory_num': inv_config['inventory_num']}},
-                     {'match': {'metadata.type': 'resolution'}}
-                 ]
-             }
-         }
-     }
-    for resolution in scroll_resolutions_by_query(es, query, inv_config, scroll='20m'):
-        yield resolution
-
-
-def retrieve_attendance_list_by_id(es: Elasticsearch, att_id: str, config: dict) -> rdm.AttendanceList:
-    if es.exists(index=config["resolution_index"], id=att_id):
-        response = es.get(index=config["resolution_index"], id=att_id)
-        return rdm.json_to_republic_attendance_list(response["_source"])
-    else:
-        raise ValueError(f"No attendance list exists with id {att_id}")
-
-
-def retrieve_attendance_lists_by_query(es: Elasticsearch, query: dict,
-                                       config: dict) -> List[rdm.AttendanceList]:
-    response = es.search(index=config['resolution_index'], body=query)
-    return [rdm.json_to_republic_attendance_list(hit['_source']) for hit in response['hits']['hits']]
-
-
-def scroll_phrase_matches_by_query(es: Elasticsearch, query: dict,
-                                   config: dict, size: int = 100,
-                                   scroll: str = '1m') -> Generator[PhraseMatch, None, None]:
-    for hit in scroll_hits(es, query, index=config['phrase_match_index'],
-                           doc_type="_doc", size=size, scroll=scroll):
-        match_json = hit['_source']
-        yield parse_phrase_matches([match_json])[0]
-
-
-def retrieve_phrase_matches_by_query(es: Elasticsearch, query: dict,
-                                     config: dict) -> List[PhraseMatch]:
-    response = es.search(index=config['phrase_match_index'], doc_type="_doc", body=query)
-    if response['hits']['total']['value'] == 0:
-        return []
-    else:
-        return parse_phrase_matches([hit['_source'] for hit in response['hits']['hits']])
-
-
-def retrieve_phrase_matches_by_paragraph_id(es: Elasticsearch, paragraph_id: str,
-                                            config: dict) -> List[PhraseMatch]:
-    query = {'query': {'match': {'text_id.keyword': paragraph_id}}, 'size': 1000}
-    phrase_matches = retrieve_phrase_matches_by_query(es, query, config)
-    # sort matches by order of occurrence in the text
-    return sorted(phrase_matches, key=lambda x: x.offset)
-
-
-def parse_latest_version(es, text_repo, scan_num, inventory_metadata, inventory_config, ignore_version: bool = False):
-    doc_id = get_scan_id(inventory_metadata, scan_num)
-    try:
-        version_info = text_repo.get_last_version_info(doc_id, file_type=inventory_config['ocr_type'])
-        if not version_info:
-            return None
-        if not ignore_version and es.exists(index=inventory_config["scan_index"], id=doc_id):
-            response = es.get(index=inventory_config["scan_index"], id=doc_id)
-            indexed_scan = response["_source"]
-            if indexed_scan["version"]["id"] == version_info["id"]:
-                # this version is already indexed
-                return None
-        pagexml = text_repo.get_last_version_content(doc_id, inventory_config['ocr_type'])
-        file_extension = '.hocr' if inventory_config['ocr_type'] == 'hocr' else '.page.xml'
-        scan_doc = pagexml_parser.get_scan_pagexml(doc_id + file_extension, inventory_config, pagexml_data=pagexml)
-        scan_doc.metadata["version"] = version_info
-        return scan_doc
-    except ValueError:
-        print('missing scan:', doc_id)
-        return None
-
-
-def get_pagexml_resolution_page_range(es: Elasticsearch, inv_num: int, inv_config: dict) -> Union[None, tuple]:
-    inv_metadata = retrieve_inventory_metadata(es, inv_num, inv_config)
-    try:
-        offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
-        resolution_start = 0
-        for offset in inv_metadata['type_page_num_offsets']:
-            if offset['page_type'] == 'resolution_page':
-                resolution_start = offset['page_num_offset']
-        if resolution_start != offsets[-1]:
-            next_section_offset = offsets[offsets.index(resolution_start) + 1]
-            resolution_end = next_section_offset - 1
+    def retrieve_pagexml_sessions(self, inventory_num: int) -> List[dict]:
+        query = make_inventory_query(inventory_num, size=1000)
+        response = self.es_anno.search(index=self.config['session_index'],
+                                       doc_type=self.config['session_doc_type'],
+                                       body=query)
+        if response['hits']['total']['value'] == 0:
+            return []
         else:
-            resolution_end = inv_metadata['num_pages'] - 1
-        return resolution_start, resolution_end
-    except IndexError:
-        return None
+            return [hit['_source'] for hit in response['hits']['hits']]
 
+    def retrieve_sessions_by_query(self, query: dict) -> List[rdm.Session]:
+        response = self.es_anno.search(index=self.config['session_lines_index'], body=query)
+        if response['hits']['total']['value'] == 0:
+            return []
+        else:
+            docs = [hit['_source'] for hit in response['hits']['hits']]
+            return [rdm.json_to_republic_session(doc) for doc in docs]
 
-def retrieve_date_num_sessions(es, session_date, config):
-    query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 0}
-    response = es.search(index=config['session_index'], body=query)
-    return response['hits']['total']['value']
+    def retrieve_session_text_by_date(self, date: Union[str, RepublicDate]) -> Union[None, rdm.Session]:
+        session_index = 'session_text'
+        return self.retrieve_session_by_date(date, session_index)
 
+    def retrieve_session_lines_by_date(self, date: Union[str, RepublicDate]) -> Union[None, rdm.Session]:
+        session_index = 'session_lines'
+        return self.retrieve_session_by_date(date, session_index)
 
-def retrieve_resolutions_by_session_date(es, session_date, config):
-    query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 1000}
-    return retrieve_resolutions_by_query(es, query, config)
+    def retrieve_session_by_date(self, date: Union[str, RepublicDate],
+                                 session_index: str) -> Union[None, rdm.Session]:
+        date_string = date.isoformat() if isinstance(date, RepublicDate) else date
+        doc_id = f'session-{date_string}-num-1'
+        if self.es_anno.exists(index=session_index, id=doc_id):
+            response = self.es_anno.get(index=session_index, id=doc_id)
+            return rdm.json_to_republic_session(response['_source'])
+        else:
+            return None
 
+    def retrieve_resolution_by_id(self, resolution_id: str) -> Union[rdm.Resolution, None]:
+        if self.es_anno.exists(index=self.config['resolution_index'], id=resolution_id):
+            response = self.es_anno.get(index=self.config['resolution_index'], id=resolution_id)
+            return rdm.json_to_republic_resolution(response['_source'])
+        else:
+            return None
 
-def retrieve_resolutions_by_session_id(es, session_id, config):
-    query = {'query': {'match': {'metadata.session_id.keyword': session_id}}, 'size': 1000}
-    return retrieve_resolutions_by_query(es, query, config)
+    def scroll_resolutions_by_query(self, query: dict,
+                                    scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
+        for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolution_index'],
+                                    doc_type="_doc", size=10, scroll=scroll):
+            yield rdm.json_to_republic_resolution(hit['_source'])
 
+    def retrieve_resolutions_by_query(self, query: dict) -> List[rdm.Resolution]:
+        response = self.es_anno.search(index=self.config['resolution_index'], doc_type="_doc", body=query)
+        if response['hits']['total']['value'] == 0:
+            return []
+        else:
+            docs = [hit['_source'] for hit in response['hits']['hits']]
+            resolutions = []
+            for doc in docs:
+                res = rdm.json_to_republic_attendance_list(doc) if 'attendance_list' in doc \
+                    else rdm.json_to_republic_resolution(doc)
+                resolutions.append(res)
+            return resolutions
 
-def retrieve_session_phrase_matches(es, session_resolutions, config):
-    paragraph_ids = [paragraph.metadata['id'] for resolution in session_resolutions
-                     for paragraph in resolution.paragraphs]
-    phrase_matches = []
-    for para_id in paragraph_ids:
-        query = {'query': {'match': {'text_id.keyword': para_id}}, 'size': 1000}
-        phrase_matches += retrieve_phrase_matches_by_query(es, query, config)
-    return phrase_matches
+    def scroll_inventory_resolutions(self, inventory_num: int) -> Generator[rdm.Resolution, None, None]:
+        query = make_bool_query([
+            {'match': {'metadata.inventory_num': inventory_num}},
+            {'match': {'metadata.type': 'resolution'}}
+        ])
+        for resolution in self.scroll_resolutions_by_query(query, scroll='20m'):
+            yield resolution
+
+    def retrieve_attendance_list_by_id(self, att_id: str) -> rdm.AttendanceList:
+        if self.es_anno.exists(index=self.config["resolution_index"], id=att_id):
+            response = self.es_anno.get(index=self.config["resolution_index"], id=att_id)
+            return rdm.json_to_republic_attendance_list(response["_source"])
+        else:
+            raise ValueError(f"No attendance list exists with id {att_id}")
+
+    def retrieve_attendance_lists_by_query(self, query: dict) -> List[rdm.AttendanceList]:
+        response = self.es_anno.search(index=self.config['resolution_index'], body=query)
+        return [rdm.json_to_republic_attendance_list(hit['_source']) for hit in response['hits']['hits']]
+
+    def scroll_phrase_matches_by_query(self, query: dict, size: int = 100,
+                                       scroll: str = '1m') -> Generator[PhraseMatch, None, None]:
+        for hit in self.scroll_hits(self.es_anno, query, index=self.config['phrase_match_index'],
+                                    doc_type="_doc", size=size, scroll=scroll):
+            match_json = hit['_source']
+            yield rdm.parse_phrase_matches([match_json])[0]
+
+    def retrieve_phrase_matches_by_query(self, query: dict) -> List[PhraseMatch]:
+        response = self.es_anno.search(index=self.config['phrase_match_index'], doc_type="_doc", body=query)
+        if response['hits']['total']['value'] == 0:
+            return []
+        else:
+            return rdm.parse_phrase_matches([hit['_source'] for hit in response['hits']['hits']])
+
+    def retrieve_phrase_matches_by_paragraph_id(self, paragraph_id: str) -> List[PhraseMatch]:
+        query = {'query': {'match': {'text_id.keyword': paragraph_id}}, 'size': 1000}
+        phrase_matches = self.retrieve_phrase_matches_by_query(query)
+        # sort matches by order of occurrence in the text
+        return sorted(phrase_matches, key=lambda x: x.offset)
+
+    def parse_latest_version(self, text_repo, scan_num,
+                             inventory_metadata, ignore_version: bool = False):
+        doc_id = get_scan_id(inventory_metadata, scan_num)
+        try:
+            version_info = text_repo.get_last_version_info(doc_id, file_type=self.config['ocr_type'])
+            if not version_info:
+                return None
+            if not ignore_version and self.es_anno.exists(index=self.config["scan_index"], id=doc_id):
+                response = self.es_anno.get(index=self.config["scan_index"], id=doc_id)
+                indexed_scan = response["_source"]
+                if indexed_scan["version"]["id"] == version_info["id"]:
+                    # this version is already indexed
+                    return None
+            scan_pagexml = text_repo.get_last_version_content(doc_id, self.config['ocr_type'])
+            file_extension = '.hocr' if self.config['ocr_type'] == 'hocr' else '.page.xml'
+            scan_doc = pagexml_parser.get_scan_pagexml(doc_id + file_extension,
+                                                       self.config, pagexml_data=scan_pagexml)
+            scan_doc.metadata["version"] = version_info
+            return scan_doc
+        except ValueError:
+            print('missing scan:', doc_id)
+            return None
+
+    def get_pagexml_resolution_page_range(self, inv_num: int) -> Union[None, tuple]:
+        inv_metadata = self.retrieve_inventory_metadata(inv_num)
+        try:
+            offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
+            resolution_start = 0
+            for offset in inv_metadata['type_page_num_offsets']:
+                if offset['page_type'] == 'resolution_page':
+                    resolution_start = offset['page_num_offset']
+            if resolution_start != offsets[-1]:
+                next_section_offset = offsets[offsets.index(resolution_start) + 1]
+                resolution_end = next_section_offset - 1
+            else:
+                resolution_end = inv_metadata['num_pages'] - 1
+            return resolution_start, resolution_end
+        except IndexError:
+            return None
+
+    def retrieve_date_num_sessions(self, session_date):
+        query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 0}
+        response = self.es_anno.search(index=self.config['session_index'], body=query)
+        return response['hits']['total']['value']
+
+    def retrieve_resolutions_by_session_date(self, session_date):
+        query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 1000}
+        return self.retrieve_resolutions_by_query(query)
+
+    def retrieve_resolutions_by_session_id(self, session_id):
+        query = {'query': {'match': {'metadata.session_id.keyword': session_id}}, 'size': 1000}
+        return self.retrieve_resolutions_by_query(query)
+
+    def retrieve_session_phrase_matches(self, session_resolutions):
+        paragraph_ids = [paragraph.metadata['id'] for resolution in session_resolutions
+                         for paragraph in resolution.paragraphs]
+        phrase_matches = []
+        for para_id in paragraph_ids:
+            query = {'query': {'match': {'text_id.keyword': para_id}}, 'size': 1000}
+            phrase_matches += self.retrieve_phrase_matches_by_query(query)
+        return phrase_matches

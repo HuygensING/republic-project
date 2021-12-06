@@ -7,21 +7,17 @@ import json
 from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
 import republic.model.physical_document_model as pdm
-from republic.model.physical_document_model import LogicalStructureDoc, PageXMLTextLine, PageXMLWord
-from republic.model.physical_document_model import PageXMLTextRegion
-from republic.model.physical_document_model import same_column, json_to_pagexml_text_region
-from republic.model.physical_document_model import json_to_pagexml_line
-from republic.model.physical_document_model import line_ends_with_word_break
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
+import republic.helper.pagexml_helper as pagexml
 import republic.model.resolution_phrase_model as rpm
 
 
-class RepublicDoc(LogicalStructureDoc):
+class RepublicDoc(pdm.LogicalStructureDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Union[None, Dict] = None,
-                 lines: List[PageXMLTextLine] = None,
-                 text_regions: List[PageXMLTextRegion] = None):
+                 lines: List[pdm.PageXMLTextLine] = None,
+                 text_regions: List[pdm.PageXMLTextRegion] = None):
         super().__init__(doc_id=doc_id, doc_type='republic_doc', metadata=metadata,
                          lines=lines, text_regions=text_regions)
         self.main_type = "republic_doc"
@@ -39,8 +35,8 @@ class RepublicDoc(LogicalStructureDoc):
             text_region.metadata['iiif_url'] = make_iiif_region_url(urls['jpg_url'], text_region.coords.box,
                                                                     add_margin=100)
 
-    def get_lines(self) -> List[PageXMLTextLine]:
-        lines: List[PageXMLTextLine] = []
+    def get_lines(self) -> List[pdm.PageXMLTextLine]:
+        lines: List[pdm.PageXMLTextLine] = []
         if self.text_regions:
             for text_region in self.text_regions:
                 lines += text_region.get_lines()
@@ -49,7 +45,7 @@ class RepublicDoc(LogicalStructureDoc):
         return lines
 
     def get_words(self):
-        words: List[PageXMLWord] = []
+        words: List[pdm.PageXMLWord] = []
         if self.text_regions:
             for text_region in self.text_regions:
                 words += text_region.get_words()
@@ -85,7 +81,7 @@ class RepublicDoc(LogicalStructureDoc):
 class RepublicParagraph(RepublicDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None,
-                 lines: List[PageXMLTextLine] = None, text_regions: List[PageXMLTextRegion] = None,
+                 lines: List[pdm.PageXMLTextLine] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
                  metadata: dict = None,
                  scan_versions: List[Dict[str, any]] = None, text: str = None, text_region_ids: List[str] = None,
                  line_ranges: List[Dict[str, any]] = None, word_freq_counter: Counter = None):
@@ -141,7 +137,7 @@ class RepublicParagraph(RepublicDoc):
                 line_text = line.text[:-2]
             elif line.text[-1] == "-":
                 line_text = line.text[:-1]
-            elif line_ends_with_word_break(line, next_line, word_freq_counter):
+            elif pagexml.line_ends_with_word_break(line, next_line, word_freq_counter):
                 line_text = re.split(r"\W+$", line.text)[0]
             elif (li + 1) == len(self.lines):
                 line_text = line.text
@@ -154,7 +150,7 @@ class RepublicParagraph(RepublicDoc):
             self.text += line_text
             self.line_ranges.append(line_range)
 
-    def get_match_lines(self, match: PhraseMatch) -> List[PageXMLTextLine]:
+    def get_match_lines(self, match: PhraseMatch) -> List[pdm.PageXMLTextLine]:
         # part_of_match = False
         match_lines = []
         for line_range in self.line_ranges:
@@ -266,8 +262,8 @@ class ResolutionElementDoc(RepublicDoc):
 class Session(ResolutionElementDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Dict = None,
-                 paragraphs: List[RepublicParagraph] = None, text_regions: List[PageXMLTextRegion] = None,
-                 lines: List[PageXMLTextLine] = None,
+                 paragraphs: List[RepublicParagraph] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
+                 lines: List[pdm.PageXMLTextLine] = None,
                  scan_versions: List[dict] = None, evidence: List[PhraseMatch] = None, **kwargs):
         """A meeting session occurs on a specific day, with a president and attendants,
         and has textual content in the form of
@@ -406,8 +402,8 @@ class AttendanceList(ResolutionElementDoc):
     def __init__(self,
                  doc_id: str = None, doc_type: str = None,
                  metadata: dict = None, scan_versions: dict = None,
-                 lines: List[PageXMLTextLine] = None,
-                 text_regions: List[PageXMLTextRegion] = None,
+                 lines: List[pdm.PageXMLTextLine] = None,
+                 text_regions: List[pdm.PageXMLTextRegion] = None,
                  paragraphs: List[RepublicParagraph] = None,
                  evidence: Union[List[dict], List[PhraseMatch]] = None,
                  attendance_spans: List[dict] = None):
@@ -441,8 +437,8 @@ class Resolution(ResolutionElementDoc):
                  doc_id: str = None, doc_type: str = None,
                  metadata: dict = None,
                  scan_versions: dict = None,
-                 lines: List[PageXMLTextLine] = None,
-                 text_regions: List[PageXMLTextRegion] = None,
+                 lines: List[pdm.PageXMLTextLine] = None,
+                 text_regions: List[pdm.PageXMLTextRegion] = None,
                  paragraphs: List[RepublicParagraph] = None,
                  evidence: Union[List[dict], List[PhraseMatch]] = None):
         """A resolution has textual content of the resolution, as well as an
@@ -537,9 +533,9 @@ def json_to_republic_resolution(resolution_json: dict) -> Resolution:
 
 def json_to_physical_elements(republic_json: dict):
     text_regions = republic_json['text_regions'] if 'text_regions' in republic_json else []
-    text_regions = [json_to_pagexml_text_region(tr_json) for tr_json in text_regions]
+    text_regions = [pagexml.json_to_pagexml_text_region(tr_json) for tr_json in text_regions]
     lines = republic_json['lines'] if 'lines' in republic_json else []
-    lines = [json_to_pagexml_line(line_json) for line_json in lines]
+    lines = [pagexml.json_to_pagexml_line(line_json) for line_json in lines]
     evidence = republic_json['evidence'] if 'evidence' in republic_json else []
     try:
         evidence = parse_phrase_matches(evidence)
@@ -676,7 +672,39 @@ def get_paragraphs(doc: RepublicDoc, prev_line: Union[None, dict] = None,
         return get_paragraphs_with_vertical_space(doc, prev_line=prev_line, word_freq_counter=word_freq_counter)
 
 
-def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, PageXMLTextLine] = None,
+def make_paragraph(doc: RepublicDoc, doc_text_offset: int, paragraph_id: str,
+                   para_lines: List[pdm.PageXMLTextLine],
+                   word_freq_counter: Counter) -> RepublicParagraph:
+    metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
+    paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
+                                  word_freq_counter=word_freq_counter)
+    paragraph.metadata["start_offset"] = doc_text_offset
+    return paragraph
+
+
+def is_paragraph_boundary(prev_line, line, next_line) -> bool:
+    if prev_line and pdm.same_column(line, prev_line):
+        if line.is_next_to(prev_line):
+            # print("SAME HEIGHT", prev_line['text'], '\t', line['text'])
+            return False
+        elif line.coords.left > prev_line.coords.left + 20:
+            # this line is left indented w.r.t. the previous line
+            # so is the start of a new paragraph
+            return True
+        elif line.coords.left - prev_line.coords.left < 20:
+            if line.coords.right > prev_line.coords.right + 40:
+                # this line starts at the same horizontal level as the previous line
+                # but the previous line ends early, so is the end of a paragraph.
+                return True
+            else:
+                return False
+    elif next_line and pdm.same_column(line, next_line):
+        if line.coords.left > next_line.coords.left + 20:
+            return True
+    return False
+
+
+def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
                                word_freq_counter: Counter = None) -> List[RepublicParagraph]:
     paragraphs: List[RepublicParagraph] = []
     generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
@@ -685,43 +713,13 @@ def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, PageXMLT
     lines = [line for line in doc.get_lines()]
     for li, line in enumerate(lines):
         next_line = lines[li + 1] if len(lines) > (li + 1) else None
-        if prev_line and same_column(line, prev_line):
-            if line.is_next_to(prev_line):
-                # print("SAME HEIGHT", prev_line['text'], '\t', line['text'])
-                pass
-            elif line.coords.left > prev_line.coords.left + 20:
-                # this line is left indented w.r.t. the previous line
-                # so is the start of a new paragraph
-                if len(para_lines) > 0:
-                    metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                    paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                                  word_freq_counter=word_freq_counter)
-                    paragraph.metadata["start_offset"] = doc_text_offset
-                    doc_text_offset += len(paragraph.text)
-                    paragraphs.append(paragraph)
-                para_lines = []
-            elif line.coords.left - prev_line.coords.left < 20:
-                if line.coords.right > prev_line.coords.right + 40:
-                    # this line starts at the same horizontal level as the previous line
-                    # but the previous line ends early, so is the end of a paragraph.
-                    if len(para_lines) > 0:
-                        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                        paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                                      word_freq_counter=word_freq_counter)
-                        paragraph.metadata["start_offset"] = doc_text_offset
-                        doc_text_offset += len(paragraph.text)
-                        paragraphs.append(paragraph)
-                    para_lines = []
-        elif next_line and same_column(line, next_line):
-            if line.coords.left > next_line.coords.left + 20:
-                if len(para_lines) > 0:
-                    metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                    paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                                  word_freq_counter=word_freq_counter)
-                    paragraph.metadata["start_offset"] = doc_text_offset
-                    doc_text_offset += len(paragraph.text)
-                    paragraphs.append(paragraph)
-                para_lines = []
+        if is_paragraph_boundary(prev_line, line, next_line):
+            if len(para_lines) > 0:
+                paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
+                                           para_lines, word_freq_counter)
+                doc_text_offset += len(paragraph.text)
+                paragraphs.append(paragraph)
+            para_lines = []
         para_lines.append(line)
         if not line.text or len(line.text) == 1:
             continue
@@ -732,10 +730,8 @@ def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, PageXMLT
             # word_counts = [word_freq_counter[word] for word in words if word != ""]
         prev_line = line
     if len(para_lines) > 0:
-        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-        paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                      word_freq_counter=word_freq_counter)
-        paragraph.metadata["start_offset"] = doc_text_offset
+        paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
+                                   para_lines, word_freq_counter)
         doc_text_offset += len(paragraph.text)
         paragraphs.append(paragraph)
     return paragraphs
@@ -754,10 +750,8 @@ def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, 
         #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
         if is_resolution_gap(prev_line, line):
             if len(para_lines) > 0:
-                metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-                paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                              word_freq_counter=word_freq_counter)
-                paragraph.metadata['start_offset'] = doc_text_offset
+                paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
+                                           para_lines, word_freq_counter)
                 doc_text_offset += len(paragraph.text)
                 # print('appending paragraph:', paragraph.id)
                 # print(paragraph.text)
