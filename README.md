@@ -17,3 +17,37 @@ Project website: [https://republic.huygens.knaw.nl](https://republic.huygens.kna
 - [Parsing HTR/OCR output files](./docs/pagexml_scans.md)
 - [Using phrase models and fuzzy search](./docs/phrase_models.md)
 
+
+### Usage
+
+Retrieving documents from the different indexes:
+
+```python
+
+from republic.elastic.republic_elasticsearch import initialize_es
+
+# initialise a RepublicElasticsearch instance that contains a
+# config dictionary telling it what all the ES indexes are.
+rep_es = initialize_es(host_type="external")
+
+# Retrieve metadata for an inventory number
+inv_num = 3820
+inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+
+# Retrieve a page by its ID:
+page = rep_es.retrieve_page_by_id('NL-HaNA_1.01.02_3820_0079-page-157')
+
+# Retrieve all pages with resolutions for an inventory
+inv_num = 3820
+pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
+
+# Retrieve all sessions (line-based versions) for an inventory
+inv_num = 3820
+sessions = rep_es.retrieve_inventory_sessions_with_lines(inv_num)
+
+# Retrieve all resolutions for an inventory
+inv_num = 3820
+resolutions = rep_es.retrieve_inventory_resolutions(inv_num)
+
+
+```

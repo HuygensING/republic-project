@@ -271,7 +271,7 @@ class Retriever:
         pages = self.retrieve_pages_by_type('index_page', inventory_num)
         return sorted(pages, key=lambda page: page.metadata['page_num'])
 
-    def retrieve_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+    def retrieve_inventory_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
         pages = self.retrieve_pages_by_type('resolution_page', inventory_num)
         return sorted(pages, key=lambda page: page.metadata['page_num'])
 

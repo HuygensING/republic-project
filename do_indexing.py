@@ -116,7 +116,7 @@ def do_page_type_indexing_pagexml(inv_num: int, year: int):
         if offset["page_type"] == "resolution_page":
             resolution_page_offset = offset["page_num_offset"]
     print(inv_num, "resolution_page_offset:", resolution_page_offset)
-    pages = rep_es.retrieve_resolution_pages(inv_num)
+    pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     for page in sorted(pages, key=lambda x: x["metadata"]["page_num"]):
         type_page_num = page.metadata["page_num"] - resolution_page_offset + 1
         if type_page_num <= 0:
