@@ -76,9 +76,11 @@ def do_scan_indexing_pagexml(inv_num: int, year: int):
         rep_es.index_scan(scan)
 
 
-def do_page_indexing_pagexml(inv_num: int, year: int):
-    print(f"Indexing pagexml pages for inventory {inv_num} (year {year})...")
+def do_page_indexing_pagexml(inv_num: int, year: int = None):
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    if year is None:
+        year = inv_metadata["year"]
+    print(f"Indexing pagexml pages for inventory {inv_num} (year {year})...")
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
@@ -126,9 +128,11 @@ def do_page_type_indexing_pagexml(inv_num: int, year: int):
         rep_es.index_page(page)
 
 
-def do_session_lines_indexing(inv_num: int, year: int):
-    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+def do_session_lines_indexing(inv_num: int, year: int = None):
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    if year is None:
+        year = inv_metadata["year"]
+    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_num, inv_metadata)):
