@@ -5,8 +5,9 @@ import re
 from republic.model.physical_document_model import PageXMLTextLine, parse_derived_coords
 from republic.model.republic_document_model import RepublicParagraph, Resolution, Session
 import republic.model.republic_document_model as rdm
-from republic.model.republic_document_model import get_session_scans_version, get_session_resolutions
-from republic.model.republic_document_model import configure_resolution_searchers
+from republic.parser.logical.pagexml_session_parser import get_session_scans_version
+from republic.parser.logical.pagexml_resolution_parser import get_session_resolutions
+from republic.parser.logical.pagexml_resolution_parser import configure_resolution_searchers
 from republic.helper.metadata_helper import make_scan_urls
 
 
