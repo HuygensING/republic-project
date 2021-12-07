@@ -142,7 +142,8 @@ def get_resolution_text_page_nums(res_doc: Union[rdm.Resolution, rdm.AttendanceL
     text_page_nums = set()
     for para in res_doc.paragraphs:
         for text_page_num in para.metadata["text_page_num"]:
-            text_page_nums.add(text_page_num)
+            if isinstance(text_page_num, int):
+                text_page_nums.add(text_page_num)
     return sorted(list(text_page_nums))
 
 
@@ -229,18 +230,23 @@ def get_paragraphs(session: rdm.Session, prev_line: Union[None, dict] = None,
             yield paragraph
     else:
         text_page_num_map = {}
+        page_num_map = {}
         for tr in session.text_regions:
             if "text_page_num" not in tr.metadata:
                 print("MISSING text_page_num in session", session.id)
-            text_page_num_map[tr.id] = tr.metadata["text_page_num"]
+            if tr.metadata["text_page_num"] is not None:
+                text_page_num_map[tr.id] = tr.metadata["text_page_num"]
+            page_num_map[tr.id] = tr.metadata["page_num"]
         if 1705 <= session.date.date.year < 1711:
             paragraphs = get_paragraphs_with_indent(session, prev_line=prev_line,
                                                     word_freq_counter=word_freq_counter,
-                                                    text_page_num_map=text_page_num_map)
+                                                    text_page_num_map=text_page_num_map,
+                                                    page_num_map=page_num_map)
         elif session.date.date.year >= 1711:
             paragraphs = get_paragraphs_with_vertical_space(session, prev_line=prev_line,
                                                             word_freq_counter=word_freq_counter,
-                                                            text_page_num_map=text_page_num_map)
+                                                            text_page_num_map=text_page_num_map,
+                                                            page_num_map=page_num_map)
         else:
             paragraphs = []
         for paragraph in paragraphs:
@@ -282,7 +288,8 @@ def is_paragraph_boundary(prev_line, line, next_line) -> bool:
 
 def get_paragraphs_with_indent(doc: rdm.RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
                                word_freq_counter: Counter = None,
-                               text_page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
+                               text_page_num_map: Dict[str, int] = None,
+                               page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
     paragraphs: List[rdm.RepublicParagraph] = []
     generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
     para_lines = []
@@ -291,6 +298,7 @@ def get_paragraphs_with_indent(doc: rdm.RepublicDoc, prev_line: Union[None, pdm.
     for li, line in enumerate(lines):
         if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
             line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]
+        line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
         next_line = lines[li + 1] if len(lines) > (li + 1) else None
         if is_paragraph_boundary(prev_line, line, next_line):
             if len(para_lines) > 0:
@@ -318,7 +326,8 @@ def get_paragraphs_with_indent(doc: rdm.RepublicDoc, prev_line: Union[None, pdm.
 
 def get_paragraphs_with_vertical_space(doc: rdm.RepublicDoc, prev_line: Union[None, dict] = None,
                                        word_freq_counter: Counter = None,
-                                       text_page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
+                                       text_page_num_map: Dict[str, int] = None,
+                                       page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
     para_lines = []
     paragraphs = []
     doc_text_offset = 0
@@ -328,6 +337,7 @@ def get_paragraphs_with_vertical_space(doc: rdm.RepublicDoc, prev_line: Union[No
     for li, line in enumerate(lines):
         if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
             line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]
+        line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
         # if prev_line:
         #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
         if is_resolution_gap(prev_line, line):

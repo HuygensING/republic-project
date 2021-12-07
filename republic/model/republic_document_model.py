@@ -88,6 +88,7 @@ class RepublicParagraph(RepublicDoc):
             self.id = self.metadata['id']
         self.line_ranges = line_ranges if line_ranges else []
         self.text_page_nums: List[int] = []
+        self.page_nums: List[int] = []
         self.text = text if text else ""
         self.text_region_ids: Set[str] = set()
         if doc_type:
@@ -146,22 +147,27 @@ class RepublicParagraph(RepublicDoc):
             line_range = {
                 "start": len(self.text), "end": len(self.text + line_text),
                 "line_id": line.id,
-                "text_page_num": line.metadata["text_page_num"]
+                "text_page_num": line.metadata["text_page_num"],
+                "page_num": line.metadata["page_num"]
             }
             self.text += line_text
             self.line_ranges.append(line_range)
 
     def set_text_page_nums(self):
         text_page_nums = set()
+        page_nums = set()
         if len(self.lines) > 0:
             for line in self.lines:
-                if "text_page_num" in line.metadata:
+                if "text_page_num" in line.metadata and line.metadata["text_page_num"]:
                     text_page_nums.add(line.metadata["text_page_num"])
+                page_nums.add(line.metadata["page_num"])
         if len(self.line_ranges) > 0:
             for line_range in self.line_ranges:
-                if "text_page_num" in line_range:
+                if "text_page_num" in line_range and line_range["text_page_num"]:
                     text_page_nums.add(line_range["text_page_num"])
+                page_nums.add(line_range["page_num"])
         self.metadata["text_page_num"] = sorted(list(text_page_nums))
+        self.metadata["page_num"] = sorted(list(page_nums))
 
     def get_match_lines(self, match: PhraseMatch) -> List[pdm.PageXMLTextLine]:
         # part_of_match = False
