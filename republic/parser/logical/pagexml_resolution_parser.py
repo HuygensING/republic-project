@@ -138,6 +138,14 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     return resolution_phrase_searcher
 
 
+def get_resolution_text_page_nums(res_doc: Union[rdm.Resolution, rdm.AttendanceList]) -> List[int]:
+    text_page_nums = set()
+    for para in res_doc.paragraphs:
+        for text_page_num in para.metadata["text_page_num"]:
+            text_page_nums.add(text_page_num)
+    return sorted(list(text_page_nums))
+
+
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher) -> Generator[rdm.Resolution, None, None]:
     resolution = None
@@ -155,10 +163,12 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
             # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if len(opening_matches) > 0:
             if attendance_list:
+                attendance_list.metadata["text_page_num"] = get_resolution_text_page_nums(attendance_list)
                 yield attendance_list
                 attendance_list = None
             resolution_number += 1
             if resolution:
+                resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata)
@@ -176,6 +186,7 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
         session_offset += len(paragraph.text)
     if resolution:
+        resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
         yield resolution
 
 
