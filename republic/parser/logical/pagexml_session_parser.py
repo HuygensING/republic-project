@@ -79,6 +79,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
     text_region_lines = defaultdict(list)
     text_regions: List[PageXMLTextRegion] = []
     scan_version = {}
+    session_text_page_nums = set()
     for line in session_lines:
         text_region_id = line.metadata['column_id']
         text_region_lines[text_region_id].append(line)
@@ -96,11 +97,13 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         text_region.metadata['page_id'] = source_page.id
         text_region.metadata['page_num'] = source_page.metadata['page_num']
         text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
+        session_text_page_nums.add(source_page.metadata['text_page_num'])
         text_regions.append(text_region)
     for scan_id in scan_version:
         scan_version[scan_id]['scan_id'] = scan_id
     session = Session(metadata=session_metadata, text_regions=text_regions,
                       evidence=evidence, scan_versions=list(scan_version.values()))
+    session.metadata["text_page_num"] = sorted(list(session_text_page_nums))
     # session.add_page_text_region_metadata(column_metadata)
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
