@@ -262,7 +262,7 @@ if __name__ == "__main__":
     argv = sys.argv[1:]
     try:
         # Define the getopt parameters
-        opts, args = getopt.getopt(argv, 's:e:i:', ['foperand', 'soperand'])
+        opts, args = getopt.getopt(argv, 's:e:i:n:', ['foperand', 'soperand'])
         start, end, indexing_step, num_processes = None, None, None, None
         for opt, arg in opts:
             if opt == '-n':
@@ -274,13 +274,13 @@ if __name__ == "__main__":
             if opt == '-i':
                 indexing_step = arg
         if not start or not end or not indexing_step or not num_processes:
-            print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step>')
+            print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
             sys.exit(2)
         years = [year for year in range(start, end+1)]
         tasks = [{"year": year, "type": indexing_step} for year in range(start, end+1)]
     except getopt.GetoptError:
         # Print something useful
-        print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step>')
+        print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
         sys.exit(2)
     print(f'indexing {indexing_step} for years', years)
     pool = multiprocessing.Pool(processes=num_processes)
