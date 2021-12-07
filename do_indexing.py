@@ -155,9 +155,12 @@ def do_resolution_indexing(inv_num: int, year: int):
     opening_searcher, verb_searcher = resolution_parser.configure_resolution_searchers()
     for session in rep_es.retrieve_inventory_sessions_with_lines(inv_num):
         print(session.id)
-        for resolution in resolution_parser.get_session_resolutions(session, opening_searcher,
-                                                                    verb_searcher):
-            rep_es.index_resolution(resolution)
+        try:
+            for resolution in resolution_parser.get_session_resolutions(session, opening_searcher,
+                                                                        verb_searcher):
+                rep_es.index_resolution(resolution)
+        except KeyError:
+            pass
 
 
 def do_resolution_phrase_match_indexing(inv_num: int, year: int):

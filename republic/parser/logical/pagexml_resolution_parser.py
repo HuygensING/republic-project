@@ -230,6 +230,8 @@ def get_paragraphs(session: rdm.Session, prev_line: Union[None, dict] = None,
     else:
         text_page_num_map = {}
         for tr in session.text_regions:
+            if "text_page_num" not in tr.metadata:
+                print("MISSING text_page_num in session", session.id)
             text_page_num_map[tr.id] = tr.metadata["text_page_num"]
         if 1705 <= session.date.date.year < 1711:
             paragraphs = get_paragraphs_with_indent(session, prev_line=prev_line,
