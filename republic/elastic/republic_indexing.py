@@ -116,7 +116,7 @@ class Indexer:
                        doc_body=inventory_metadata)
 
     def index_session_with_lines(self, session: rdm.Session):
-        self.index_doc(index=self.config['session_text_index'],
+        self.index_doc(index=self.config['session_lines_index'],
                        doc_id=session.id,
                        doc_body=session.json)
 
