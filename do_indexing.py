@@ -1,9 +1,9 @@
+from typing import Dict, Union
+import multiprocessing
 import os
 
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 
-
-from republic.config.republic_config import base_config, set_config_inventory_num
 import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
@@ -29,10 +29,7 @@ if not host_type:
     host_type = "external"
 print('host_type:', host_type)
 
-es_anno = republic_elasticsearch.initialize_es_anno(host_type=host_type)
-es_tr = republic_elasticsearch.initialize_es_text_repo()
-
-rep_es = republic_elasticsearch.RepublicElasticsearch(es_anno, es_tr, base_config)
+rep_es = republic_elasticsearch.initialize_es(host_type=host_type)
 
 default_ocr_type = "pagexml"
 base_dir = "/data/republic/"
@@ -65,8 +62,9 @@ def index_session_resolutions(session: rdm.Session,
         rep_es.index_resolution(resolution)
 
 
-def do_downloading(inv_num: int, ocr_type: str, year: int):
+def do_downloading(inv_num: int, year: int):
     print(f"Downloading pagexml zip file for inventory {inv_num} (year {year})...")
+    ocr_type = "pagexml"
     downloader.download_inventory(inv_num, ocr_type, base_dir)
 
 
@@ -76,11 +74,9 @@ def do_scan_indexing_pagexml(inv_num: int, year: int):
         rep_es.index_scan(scan)
 
 
-def do_page_indexing_pagexml(inv_num: int, year: int = None):
-    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
-    if year is None:
-        year = inv_metadata["year"]
+def do_page_indexing_pagexml(inv_num: int, year: int):
     print(f"Indexing pagexml pages for inventory {inv_num} (year {year})...")
+    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
@@ -130,11 +126,9 @@ def do_page_type_indexing_pagexml(inv_num: int, year: int):
         rep_es.index_page(page)
 
 
-def do_session_lines_indexing(inv_num: int, year: int = None):
-    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
-    if year is None:
-        year = inv_metadata["year"]
+def do_session_lines_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
     pages = [page for page in pages if "skip_page" not in page.metadata or page.metadata["skip_page"] is False]
@@ -232,42 +226,32 @@ def do_inventory_attendance_list_indexing(inv_num: int, year: int):
         rep_es.index_attendance_list(att_list)
 
 
-def process_inventory_pagexml(inv_num, inv_config, indexing_type):
-    year = inv_config["year"]
-    if indexing_type == "download":
-        do_downloading(inv_num, inv_config, year)
-    if indexing_type == "scans_pages":
-        do_scan_indexing_pagexml(inv_num, year)
-        do_page_indexing_pagexml(inv_num, year)
-    if indexing_type == "scans":
-        do_scan_indexing_pagexml(inv_num, year)
-    if indexing_type == "pages":
-        do_page_indexing_pagexml(inv_num, year)
-    if indexing_type == "page_types":
-        do_page_type_indexing_pagexml(inv_num, year)
-    if indexing_type == "session_lines":
-        do_session_lines_indexing(inv_num, year)
-    if indexing_type == "session_text":
-        do_session_text_indexing(inv_num, year)
-    if indexing_type == "resolutions":
-        do_resolution_indexing(inv_num, year)
-    if indexing_type == "phrase_matches":
-        do_resolution_phrase_match_indexing(inv_num, year)
-    if indexing_type == "resolution_metadata":
-        do_resolution_metadata_indexing(inv_num, year)
-    if indexing_type == "attendance_list_spans":
-        do_inventory_attendance_list_indexing(inv_num, year)
-
-
-def process_inventories(inv_years, ocr_type, indexing_type):
-    for inv_map in get_inventories_by_year(inv_years):
-        inv_num = inv_map["inventory_num"]
-        inv_config = set_config_inventory_num(inv_num, ocr_type, base_config, base_dir=base_dir)
-        if ocr_type == "hocr":
-            # process_inventory_hocr(inv_num, inv_config, indexing_type)
-            pass
-        elif ocr_type == "pagexml":
-            process_inventory_pagexml(inv_num, inv_config, indexing_type)
+def process_inventory(task: Dict[str, Union[str, int]]):
+    for inv_map in get_inventories_by_year(task["year"]):
+        task["inv_num"] = inv_map["inventory_num"]
+        if task["type"] == "download":
+            do_downloading(task["inv_num"], task["year"])
+        if task["type"] == "scans_pages":
+            do_scan_indexing_pagexml(task["inv_num"], task["year"])
+            do_page_indexing_pagexml(task["inv_num"], task["year"])
+        if task["type"] == "scans":
+            do_scan_indexing_pagexml(task["inv_num"], task["year"])
+        if task["type"] == "pages":
+            do_page_indexing_pagexml(task["inv_num"], task["year"])
+        if task["type"] == "page_types":
+            do_page_type_indexing_pagexml(task["inv_num"], task["year"])
+        if task["type"] == "session_lines":
+            do_session_lines_indexing(task["inv_num"], task["year"])
+        if task["type"] == "session_text":
+            do_session_text_indexing(task["inv_num"], task["year"])
+        if task["type"] == "resolutions":
+            do_resolution_indexing(task["inv_num"], task["year"])
+        if task["type"] == "phrase_matches":
+            do_resolution_phrase_match_indexing(task["inv_num"], task["year"])
+        if task["type"] == "resolution_metadata":
+            do_resolution_metadata_indexing(task["inv_num"], task["year"])
+        if task["type"] == "attendance_list_spans":
+            do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
 
 
 if __name__ == "__main__":
@@ -279,22 +263,25 @@ if __name__ == "__main__":
     try:
         # Define the getopt parameters
         opts, args = getopt.getopt(argv, 's:e:i:', ['foperand', 'soperand'])
-        start, end, indexing_step = None, None, None
+        start, end, indexing_step, num_processes = None, None, None, None
         for opt, arg in opts:
+            if opt == '-n':
+                num_processes = int(arg)
             if opt == '-s':
                 start = int(arg)
             if opt == '-e':
                 end = int(arg)
             if opt == '-i':
                 indexing_step = arg
-        if not start or not end or not indexing_step:
+        if not start or not end or not indexing_step or not num_processes:
             print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step>')
             sys.exit(2)
         years = [year for year in range(start, end+1)]
-
+        tasks = [{"year": year, "type": indexing_step} for year in range(start, end+1)]
     except getopt.GetoptError:
         # Print something useful
         print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step>')
         sys.exit(2)
     print(f'indexing {indexing_step} for years', years)
-    process_inventories(years, default_ocr_type, indexing_step)
+    pool = multiprocessing.Pool(processes=num_processes)
+    pool.map(process_inventory, tasks)
