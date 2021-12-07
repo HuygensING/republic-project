@@ -127,15 +127,21 @@ def map_text_page_nums(inv_metadata: dict) -> Dict[int, Dict[str, Union[int, str
             continue
         text_page_num = section["text_page_num"]
         for page_num in range(section["start"], section["end"]+1):
+            skip = False
             problem = intervene["type"][page_num] if page_num in intervene["type"] else None
             if page_num in intervene["inc"]:
                 text_page_num += intervene["inc"][page_num]
             if page_num in intervene["skip"]:
                 curr_page_num = None
+                skip = True
             elif page_num in intervene["no_num"]:
                 curr_page_num = None
             else:
                 curr_page_num = text_page_num
             text_page_num += 1
-            text_page_num_map[page_num] = {"text_page_num": curr_page_num, "problem": problem}
+            text_page_num_map[page_num] = {
+                "text_page_num": curr_page_num,
+                "problem": problem,
+                "skip": skip
+            }
     return text_page_num_map

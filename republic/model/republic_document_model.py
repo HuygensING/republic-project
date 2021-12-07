@@ -1,16 +1,13 @@
 from collections import Counter
-from typing import Dict, Generator, List, Set, Union
-import copy
+from typing import Dict, List, Set, Union
 import re
 import json
 
 from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
 import republic.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 import republic.helper.pagexml_helper as pagexml
-import republic.model.resolution_phrase_model as rpm
 
 
 class RepublicDoc(pdm.LogicalStructureDoc):
@@ -90,6 +87,7 @@ class RepublicParagraph(RepublicDoc):
         if not self.id and 'id' in self.metadata:
             self.id = self.metadata['id']
         self.line_ranges = line_ranges if line_ranges else []
+        self.text_page_nums: List[int] = []
         self.text = text if text else ""
         self.text_region_ids: Set[str] = set()
         if doc_type:
@@ -100,7 +98,9 @@ class RepublicParagraph(RepublicDoc):
             self.text_region_ids = {text_region.metadata['id'] for text_region in self.text_regions}
         if not text:
             self.set_text(word_freq_counter)
-        self.metadata["type"] = "republic_paragraph"
+        if len(self.text_page_nums) == 0:
+            self.set_text_page_nums()
+        self.add_type("republic_paragraph")
         self.scan_versions = scan_versions
         self.evidence: List[PhraseMatch] = []
 
@@ -145,10 +145,23 @@ class RepublicParagraph(RepublicDoc):
                 line_text = line.text + " "
             line_range = {
                 "start": len(self.text), "end": len(self.text + line_text),
-                "line_id": line.id
+                "line_id": line.id,
+                "text_page_num": line.metadata["text_page_num"]
             }
             self.text += line_text
             self.line_ranges.append(line_range)
+
+    def set_text_page_nums(self):
+        text_page_nums = set()
+        if len(self.lines) > 0:
+            for line in self.lines:
+                if "text_page_num" in line.metadata:
+                    text_page_nums.add(line.metadata["text_page_num"])
+        if len(self.line_ranges) > 0:
+            for line_range in self.line_ranges:
+                if "text_page_num" in line_range:
+                    text_page_nums.add(line_range["text_page_num"])
+        self.metadata["text_page_num"] = sorted(list(text_page_nums))
 
     def get_match_lines(self, match: PhraseMatch) -> List[pdm.PageXMLTextLine]:
         # part_of_match = False
@@ -319,18 +332,6 @@ class Session(ResolutionElementDoc):
                     stats[field] += resolution_stats[field]
             stats['resolutions'] = len(self.resolutions)
         return stats
-
-    def get_paragraphs(self, use_indent=False,
-                       use_vertical_space=True) -> Generator[RepublicParagraph, None, None]:
-        if self.paragraphs:
-            for paragraph in self.paragraphs:
-                yield paragraph
-        else:
-            if 1705 <= self.date.date.year < 1711:
-                use_indent = True
-            for paragraph in get_paragraphs(self, use_indent=use_indent, use_vertical_space=use_vertical_space):
-                paragraph.metadata['doc_id'] = self.metadata['id']
-                yield paragraph
 
 
 def get_proposition_type_from_evidence(evidence: List[PhraseMatch]) -> Union[None, str]:
@@ -584,251 +585,4 @@ def check_special_column_for_bleed_through(column: dict, word_freq_counter: Coun
                 line['metadata']['is_bleed_through'] = True
             else:
                 line['metadata']['is_bleed_through'] = False
-            # print('BLOOD THROUGH?', line['metadata']['is_bleed_through'], line['text'])
-
-
-def get_session_resolutions(session: Session, opening_searcher: FuzzyPhraseSearcher,
-                            verb_searcher: FuzzyPhraseSearcher) -> Generator[Resolution, None, None]:
-    resolution = None
-    resolution_number = 0
-    attendance_list = None
-    generate_id = running_id_generator(session.metadata['id'], '-resolution-')
-    session_offset = 0
-    print('fuzzy searcher version:', opening_searcher.__version__)
-    for paragraph in session.get_paragraphs():
-        # print('get_session_resolutions - paragraph:\n', paragraph.text, '\n')
-        opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
-        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
-        for match in opening_matches + verb_matches:
-            match.text_id = paragraph.metadata['id']
-            # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
-        if len(opening_matches) > 0:
-            if attendance_list:
-                yield attendance_list
-                attendance_list = None
-            resolution_number += 1
-            if resolution:
-                yield resolution
-            metadata = get_base_metadata(session, generate_id(), 'resolution')
-            metadata['session_date'] = session.metadata['session_date']
-            metadata['session_id'] = session.metadata['id']
-            metadata['session_num'] = session.metadata['session_num']
-            metadata['inventory_num'] = session.metadata['inventory_num']
-            metadata['president'] = session.metadata['president']
-            metadata['session_year'] = session.metadata['session_year']
-            metadata['session_month'] = session.metadata['session_month']
-            metadata['session_day'] = session.metadata['session_day']
-            metadata['session_weekday'] = session.metadata['session_weekday']
-            resolution = Resolution(doc_id=metadata['id'], metadata=metadata)
-            # print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
-        if resolution:
-            resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
-        elif attendance_list:
-            attendance_list.add_paragraph(paragraph, matches=[])
-        else:
-            metadata = get_base_metadata(session, session.metadata['id'] + '-attendance_list',
-                                         'attendance_list')
-            metadata['session_date'] = session.metadata['session_date']
-            metadata['session_id'] = session.metadata['id']
-            metadata['session_num'] = session.metadata['session_num']
-            metadata['inventory_num'] = session.metadata['inventory_num']
-            metadata['president'] = session.metadata['president']
-            attendance_list = AttendanceList(doc_id=metadata['id'], metadata=metadata)
-            # print('\tCreating new attedance list with number:', 1, attendance_list.metadata['id'])
-            attendance_list.add_paragraph(paragraph, matches=[])
-        # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
-        session_offset += len(paragraph.text)
-    if resolution:
-        yield resolution
-
-
-def running_id_generator(base_id: str, suffix: str, count: int = 0):
-    """Returns an ID generator based on running numbers."""
-
-    def generate_id():
-        nonlocal count
-        count += 1
-        return f'{base_id}{suffix}{count}'
-
-    return generate_id
-
-
-def get_base_metadata(source_doc: RepublicDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int]]:
-    """Return a dictionary with basic metadata for a structure document."""
-    return {
-        'inventory_num': source_doc.metadata['inventory_num'],
-        'source_id': source_doc.metadata['id'],
-        'type': doc_type,
-        'id': doc_id
-    }
-
-
-def get_paragraphs(doc: RepublicDoc, prev_line: Union[None, dict] = None,
-                   use_indent: bool = False, use_vertical_space: bool = True,
-                   word_freq_counter: Counter = None) -> List[RepublicParagraph]:
-    if use_indent:
-        return get_paragraphs_with_indent(doc, prev_line=prev_line, word_freq_counter=word_freq_counter)
-    elif use_vertical_space:
-        return get_paragraphs_with_vertical_space(doc, prev_line=prev_line, word_freq_counter=word_freq_counter)
-
-
-def make_paragraph(doc: RepublicDoc, doc_text_offset: int, paragraph_id: str,
-                   para_lines: List[pdm.PageXMLTextLine],
-                   word_freq_counter: Counter) -> RepublicParagraph:
-    metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
-    paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                  word_freq_counter=word_freq_counter)
-    paragraph.metadata["start_offset"] = doc_text_offset
-    return paragraph
-
-
-def is_paragraph_boundary(prev_line, line, next_line) -> bool:
-    if prev_line and pdm.same_column(line, prev_line):
-        if line.is_next_to(prev_line):
-            # print("SAME HEIGHT", prev_line['text'], '\t', line['text'])
-            return False
-        elif line.coords.left > prev_line.coords.left + 20:
-            # this line is left indented w.r.t. the previous line
-            # so is the start of a new paragraph
-            return True
-        elif line.coords.left - prev_line.coords.left < 20:
-            if line.coords.right > prev_line.coords.right + 40:
-                # this line starts at the same horizontal level as the previous line
-                # but the previous line ends early, so is the end of a paragraph.
-                return True
-            else:
-                return False
-    elif next_line and pdm.same_column(line, next_line):
-        if line.coords.left > next_line.coords.left + 20:
-            return True
-    return False
-
-
-def get_paragraphs_with_indent(doc: RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
-                               word_freq_counter: Counter = None) -> List[RepublicParagraph]:
-    paragraphs: List[RepublicParagraph] = []
-    generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
-    para_lines = []
-    doc_text_offset = 0
-    lines = [line for line in doc.get_lines()]
-    for li, line in enumerate(lines):
-        next_line = lines[li + 1] if len(lines) > (li + 1) else None
-        if is_paragraph_boundary(prev_line, line, next_line):
-            if len(para_lines) > 0:
-                paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
-                                           para_lines, word_freq_counter)
-                doc_text_offset += len(paragraph.text)
-                paragraphs.append(paragraph)
-            para_lines = []
-        para_lines.append(line)
-        if not line.text or len(line.text) == 1:
-            continue
-        if prev_line and line.is_next_to(prev_line):
-            continue
-        # if prev_line and line.text and line.is_next_to(prev_line):
-            # words = re.split(r"\W+", line.text)
-            # word_counts = [word_freq_counter[word] for word in words if word != ""]
-        prev_line = line
-    if len(para_lines) > 0:
-        paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
-                                   para_lines, word_freq_counter)
-        doc_text_offset += len(paragraph.text)
-        paragraphs.append(paragraph)
-    return paragraphs
-
-
-def get_paragraphs_with_vertical_space(doc: RepublicDoc, prev_line: Union[None, dict] = None,
-                                       word_freq_counter: Counter = None) -> List[RepublicParagraph]:
-    para_lines = []
-    paragraphs = []
-    doc_text_offset = 0
-    generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
-    lines = [line for line in doc.get_lines()]
-    # print('getting paragraphs with vertical space')
-    for li, line in enumerate(lines):
-        # if prev_line:
-        #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
-        if is_resolution_gap(prev_line, line):
-            if len(para_lines) > 0:
-                paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
-                                           para_lines, word_freq_counter)
-                doc_text_offset += len(paragraph.text)
-                # print('appending paragraph:', paragraph.id)
-                # print(paragraph.text)
-                # print()
-                paragraphs.append(paragraph)
-            para_lines = []
-        para_lines.append(line)
-        if not line.text or len(line.text) == 1:
-            continue
-        if prev_line and line.is_next_to(prev_line):
-            continue
-        prev_line = line
-    if len(para_lines) > 0:
-        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-        paragraph = RepublicParagraph(lines=para_lines, metadata=metadata,
-                                      word_freq_counter=word_freq_counter)
-        paragraph.metadata['start_offset'] = doc_text_offset
-        doc_text_offset += len(paragraph.text)
-        paragraphs.append(paragraph)
-    return paragraphs
-
-
-def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine) -> bool:
-    if not prev_line:
-        return False
-    # Resolution start line has big capital with low bottom.
-    # If gap between box bottoms is small, this is no resolution gap.
-    if -20 < line.coords.bottom - prev_line.coords.bottom < 80:
-        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
-        return False
-    # If this line starts with a big capital, this is a resolution gap.
-    if pdm.line_starts_with_big_capital(line):
-        # print('is_resolution_gap: True, line starts with capital')
-        return True
-    # If the previous line has no big capital starting a resolution,
-    # and it has a large vertical gap with the current line,
-    # this is resolution gap.
-    if not pdm.line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
-        # print('is_resolution_gap: True', line.coords.bottom - prev_line.coords.bottom)
-        return True
-    else:
-        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
-        return False
-
-
-def get_session_scans_version(session: Session) -> List:
-    scans_version = {}
-    for line in session.lines:
-        scans_version[line.metadata['doc_id']] = copy.copy(line.metadata['scan_version'])
-        scans_version[line.metadata['doc_id']]['doc_id'] = line.metadata['doc_id']
-    # print("session scans versions:", scans_version)
-    return list(scans_version.values())
-
-
-def configure_resolution_searchers():
-    opening_searcher_config = {
-        "char_match_threshold": 0.7,
-        "ngram_threshold": 0.6,
-        "levenshtein_threshold": 0.7,
-        'filter_distractors': True,
-        'include_variants': True,
-        'ngram_size': 3,
-        'skip_size': 1,
-        'max_length_variance': 3
-    }
-    opening_searcher = FuzzyPhraseSearcher(opening_searcher_config)
-    opening_phrase_model = PhraseModel(model=rpm.proposition_opening_phrases, config=opening_searcher_config)
-    opening_searcher.index_phrase_model(opening_phrase_model)
-    verb_searcher_config = {
-        "char_match_threshold": 0.7,
-        "ngram_threshold": 0.6,
-        "levenshtein_threshold": 0.7,
-        'ngram_size': 3,
-        'skip_size': 1,
-        'max_length_variance': 1
-    }
-    verb_searcher = FuzzyPhraseSearcher(verb_searcher_config)
-    verb_phrase_model = PhraseModel(model=rpm.proposition_verbs, config=verb_searcher_config)
-    verb_searcher.index_phrase_model(verb_phrase_model)
-    return opening_searcher, verb_searcher
+            # print('BLEED THROUGH?', line['metadata']['is_bleed_through'], line['text'])

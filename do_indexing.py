@@ -61,7 +61,7 @@ def has_sections(inv_num: int):
 def index_session_resolutions(session: rdm.Session,
                               opening_searcher: FuzzyPhraseSearcher,
                               verb_searcher: FuzzyPhraseSearcher) -> None:
-    for resolution in rdm.get_session_resolutions(session, opening_searcher, verb_searcher):
+    for resolution in resolution_parser.get_session_resolutions(session, opening_searcher, verb_searcher):
         rep_es.index_resolution(resolution)
 
 
@@ -89,11 +89,13 @@ def do_page_indexing_pagexml(inv_num: int, year: int = None):
             if page.metadata['page_num'] in text_page_num_map:
                 page_num = page.metadata['page_num']
                 page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
+                page.metadata['skip_page'] = text_page_num_map[page_num]['skip_page']
                 if text_page_num_map[page_num]['problem'] is not None:
                     page.metadata['problem'] = text_page_num_map[page_num]['problem']
             if page.metadata['page_num'] not in page_type_index:
                 page.add_type("empty_page")
                 page.metadata['type'] = [ptype for ptype in page.type]
+                page.metadata['skip_page'] = True
                 print("page without page_num:", page.id)
                 print("\tpage stats:", page.stats)
             else:
@@ -135,6 +137,7 @@ def do_session_lines_indexing(inv_num: int, year: int = None):
     print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
+    pages = [page for page in pages if "skip_page" not in page.metadata or page.metadata["skip_page"] is False]
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_num, inv_metadata)):
         print('session received from get_sessions:', session.id)
         date_string = None
@@ -142,7 +145,7 @@ def do_session_lines_indexing(inv_num: int, year: int = None):
             if match.has_label('session_date'):
                 date_string = match.string
         print('\tdate string:', date_string)
-        rep_es.es_anno.index(index='session_lines', id=session.id, body=session.json)
+        rep_es.index_session_with_lines(session)
 
 
 def do_session_text_indexing(inv_num: int, year: int):
@@ -155,10 +158,11 @@ def do_session_text_indexing(inv_num: int, year: int):
 
 def do_resolution_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML resolutions for inventory {inv_num} (year {year})...")
-    opening_searcher, verb_searcher = rdm.configure_resolution_searchers()
+    opening_searcher, verb_searcher = resolution_parser.configure_resolution_searchers()
     for session in rep_es.retrieve_inventory_sessions_with_lines(inv_num):
         print(session.id)
-        for resolution in rdm.get_session_resolutions(session, opening_searcher, verb_searcher):
+        for resolution in resolution_parser.get_session_resolutions(session, opening_searcher,
+                                                                    verb_searcher):
             rep_es.index_resolution(resolution)
 
 
