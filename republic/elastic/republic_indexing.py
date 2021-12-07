@@ -87,7 +87,7 @@ def add_missing_dates(prev_date: RepublicDate, session: rdm.Session):
         missing_session.metadata['num_columns'] = len(missing_session.columns)
         missing_session.metadata['num_lines'] = num_lines
         missing_session.metadata['num_words'] = num_words
-        missing_session.scan_versions = rdm.get_session_scans_version(missing_session)
+        missing_session.scan_versions = session_parser.get_session_scans_version(missing_session)
         session_parser.clean_lines(missing_session.lines, clean_copy=False)
         print('missing session:', missing_session.id)
         yield missing_session
@@ -114,6 +114,11 @@ class Indexer:
         self.index_doc(index=self.config['inventory_index'],
                        doc_id=inventory_metadata['inventory_num'],
                        doc_body=inventory_metadata)
+
+    def index_session_with_lines(self, session: rdm.Session):
+        self.index_doc(index=self.config['session_text_index'],
+                       doc_id=session.id,
+                       doc_body=session.json)
 
     def index_session_with_text(self, session_text_doc: dict):
         self.index_doc(index=self.config['session_text_index'],

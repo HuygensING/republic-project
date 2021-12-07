@@ -300,3 +300,12 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
     session_metadata['num_lines'] = len(session_lines)
     # after processing all lines in the inventory, create a session doc from the remaining lines
     yield generate_session_doc(session_metadata, session_lines, session_searcher, column_metadata)
+
+
+def get_session_scans_version(session: Session) -> List:
+    scans_version = {}
+    for line in session.lines:
+        scans_version[line.metadata['doc_id']] = copy.copy(line.metadata['scan_version'])
+        scans_version[line.metadata['doc_id']]['doc_id'] = line.metadata['doc_id']
+    # print("session scans versions:", scans_version)
+    return list(scans_version.values())
