@@ -92,22 +92,20 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         # logical structure elements about where they come from in the physical
         # structure, especially the printed page number needed for linking to locators
         # in the index pages.
-        source_page = text_region_lines[text_region_id][0].parent.parent
-        if "textrepo_version" not in source_page.metadata:
-            print("MISSING textrepo_version for page", source_page.id)
-        else:
+        parent = text_region_lines[text_region_id][0].parent
+        while "resolution_page" not in parent.type and parent.parent:
+            parent = parent.parent
+        if parent:
+            source_page = parent
             scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
-        text_region.metadata['page_id'] = source_page.id
-        if "page_num" not in source_page.metadata:
-            print("MISSING page_num for page", source_page.id)
-        else:
+            text_region.metadata['page_id'] = source_page.id
             text_region.metadata['page_num'] = source_page.metadata['page_num']
-        if "text_page_num" not in source_page.metadata:
-            print("MISSING text_page_num for page", source_page.id)
-        else:
-            text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
-        if isinstance(source_page.metadata["text_page_num"], int):
-            session_text_page_nums.add(source_page.metadata['text_page_num'])
+            if "text_page_num" not in source_page.metadata:
+                print("MISSING text_page_num for page", source_page.id)
+            else:
+                text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
+                if isinstance(source_page.metadata["text_page_num"], int):
+                    session_text_page_nums.add(source_page.metadata['text_page_num'])
         text_regions.append(text_region)
     for scan_id in scan_version:
         scan_version[scan_id]['scan_id'] = scan_id
