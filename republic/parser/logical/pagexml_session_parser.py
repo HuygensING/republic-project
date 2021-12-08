@@ -93,7 +93,10 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         # structure, especially the printed page number needed for linking to locators
         # in the index pages.
         source_page = text_region_lines[text_region_id][0].parent.parent
-        scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
+        if "textrepo_version" not in source_page.metadata:
+            print("MISSING textrepo_version for page", source_page.id)
+        else:
+            scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
         text_region.metadata['page_id'] = source_page.id
         text_region.metadata['page_num'] = source_page.metadata['page_num']
         text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
