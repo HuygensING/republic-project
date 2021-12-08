@@ -96,9 +96,9 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
         text_region.metadata['page_id'] = source_page.id
         text_region.metadata['page_num'] = source_page.metadata['page_num']
+        text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
         if isinstance(source_page.metadata["text_page_num"], int):
-            text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
-        session_text_page_nums.add(source_page.metadata['text_page_num'])
+            session_text_page_nums.add(source_page.metadata['text_page_num'])
         text_regions.append(text_region)
     for scan_id in scan_version:
         scan_version[scan_id]['scan_id'] = scan_id
