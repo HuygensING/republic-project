@@ -98,8 +98,14 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         else:
             scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
         text_region.metadata['page_id'] = source_page.id
-        text_region.metadata['page_num'] = source_page.metadata['page_num']
-        text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
+        if "page_num" not in source_page.metadata:
+            print("MISSING page_num for page", source_page.id)
+        else:
+            text_region.metadata['page_num'] = source_page.metadata['page_num']
+        if "text_page_num" not in source_page.metadata:
+            print("MISSING text_page_num for page", source_page.id)
+        else:
+            text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
         if isinstance(source_page.metadata["text_page_num"], int):
             session_text_page_nums.add(source_page.metadata['text_page_num'])
         text_regions.append(text_region)
