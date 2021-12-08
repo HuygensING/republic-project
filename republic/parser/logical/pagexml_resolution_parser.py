@@ -154,7 +154,6 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
     attendance_list = None
     generate_id = running_id_generator(session.metadata['id'], '-resolution-')
     session_offset = 0
-    print('fuzzy searcher version:', opening_searcher.__version__)
     for paragraph in get_paragraphs(session):
         # print('get_session_resolutions - paragraph:\n', paragraph.text, '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
