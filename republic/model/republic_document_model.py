@@ -147,7 +147,7 @@ class RepublicParagraph(RepublicDoc):
             line_range = {
                 "start": len(self.text), "end": len(self.text + line_text),
                 "line_id": line.id,
-                "text_page_num": line.metadata["text_page_num"],
+                "text_page_num": line.metadata["text_page_num"] if "text_page_num" in line.metadata else None,
                 "page_num": line.metadata["page_num"]
             }
             self.text += line_text
@@ -530,7 +530,12 @@ def json_to_republic_resolution_paragraph(paragraph_json: dict) -> RepublicParag
 def json_to_republic_resolution(resolution_json: dict) -> Resolution:
     paragraphs = []
     for paragraph_json in resolution_json['paragraphs']:
-        paragraph = json_to_republic_resolution_paragraph(paragraph_json)
+        try:
+            paragraph = json_to_republic_resolution_paragraph(paragraph_json)
+        except KeyError:
+            print(resolution_json["metadata"])
+            print(paragraph_json["metadata"])
+            raise
         paragraphs.append(paragraph)
     text_regions, lines, evidence = json_to_physical_elements(resolution_json)
     return Resolution(doc_id=resolution_json['id'], doc_type=resolution_json['type'],

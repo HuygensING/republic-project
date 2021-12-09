@@ -30,27 +30,49 @@ proposition_opening_phrases = [
             'heeft ter Vergaderinge ingebraght',
             'heeft ter Vergaderinge voorgedragen',
         ],
-        'proposition_type': 'oral',
+        'proposition_type': 'voordracht',
         'max_offset': 500
     },
     {
         'phrase': 'heeft aan haar Hoog Mog. voorgedragen',
         'label': 'proposition_opening',
         'variants': [
+            'heeft ter Vergaderinge voorgedraagen',
             'heeft aan haar Hoog Mog. ingebraght',
             'heeft aan haar Hoog Mog. gecommuniceert',
         ],
-        'proposition_type': 'oral',
+        'proposition_type': 'voordracht',
+        'max_offset': 500
+    },
+    {
+        'phrase': 'hebben ter Vergaderinge wederom voorgedraagen en vernieuwt, de Propositien',
+        'label': 'proposition_opening',
+        'proposition_type': 'voordracht',
+        'max_offset': 500
+    },
+    {
+        'phrase': 'in gevolge en tot voldoeninge van der selver Resolutie commissoriaal van den',
+        'label': 'proposition_opening',
+        'proposition_type': 'speciaal',
+        'max_offset': 500
+    },
+    {
+        'phrase': ' hebben ter Vergaderinge wederom ',
+        'label': 'proposition_opening',
+        'proposition_type': 'onbekend',
         'max_offset': 500
     },
     {
         'phrase': 'hebben ter Vergaderinge voorgedragen ',
         'label': 'proposition_opening',
+        'variants': [
+            'hebben ter Vergaderinge wederom voorgedragen '
+        ],
         'distractors': [
             'heeft ter Vergaderinge ingebraght',
             'heeft ter Vergaderinge gecommuniceert',
         ],
-        'proposition_type': 'oral',
+        'proposition_type': 'voordracht',
         'max_offset': 500
     },
     {
@@ -69,7 +91,8 @@ proposition_opening_phrases = [
         'phrase': 'hebben ter Vergaderinge ingebragt en laaten leezen de Resolutie',
         'label': 'proposition_opening',
         'variants': [
-            'heeft ter Vergaderinge ingebragt en laaten leezen de Resolutie '
+            'heeft ter Vergaderinge ingebragt en laaten leezen de Resolutie ',
+            'hebben ter Vergaderinge voortgebraght en laaten leesen der selver Resolutie'
         ],
         'proposition_type': 'resolution',
         'max_offset': 500
@@ -83,6 +106,9 @@ proposition_opening_phrases = [
     {
         'phrase': 'IS ter Vergaderinge gelesen de Requeste van ',
         'label': ['proposition_opening', 'proposition_type:requeste'],
+        'variants': [
+            'IS ter Vergaderinge geëxhibeert een Resolutie van'
+        ],
         'distractors': [
             'IS ter Vergaderinge gelesen de Memorie van ',
             'IS ter Vergaderinge gelesen het Advies van ',
@@ -159,9 +185,21 @@ proposition_opening_phrases = [
         'max_offset': 10
     },
     {
+        'phrase': 'OP de Memorie van ',
+        'label': 'proposition_opening',
+        'proposition_type': 'memorie',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'OP de Requeste van ',
+        'label': 'proposition_opening',
+        'proposition_type': 'request',
+        'max_offset': 10
+    },
+    {
         'phrase': 'OP het geproponeerde door',
         'label': 'proposition_opening',
-        'proposition_type': 'unknown',
+        'proposition_type': 'onbekend',
         'max_offset': 10
     },
     {
@@ -179,13 +217,13 @@ proposition_opening_phrases = [
     {
         'phrase': 'BY resumptie gedelibereert zynde op het geproponeerde ',
         'label': 'proposition_opening',
-        'proposition_type': 'oral',
+        'proposition_type': 'voordracht',
         'max_offset': 10
     },
     {
         'phrase': 'BY Resumtie gedelibereert zynde',
         'label': 'proposition_opening',
-        'proposition_type': 'unknown',
+        'proposition_type': 'onbekend',
         'max_offset': 10
     },
     {
