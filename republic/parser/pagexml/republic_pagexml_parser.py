@@ -336,10 +336,12 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
                     # section closing line with box overlapping separator box
                     extra_lines.append(line)
                 else:
-                    print('ERROR SEPARATING LINES:')
-                    print('column separator box:', column_separator.coords.box)
-                    print('line box:', line.coords.box)
-                    raise ValueError('cannot sort line to left or right of separator')
+                    extra_lines.append(line)
+                    print('MOVING TO EXTRA', line.id, '\t', line.text)
+                    # print('ERROR SEPARATING LINES:')
+                    # print('column separator box:', column_separator.coords.box)
+                    # print('line box:', line.coords.box)
+                    # raise ValueError('cannot sort line to left or right of separator')
             left_coords = pdm.parse_derived_coords(left_lines)
             left_tr = pdm.PageXMLTextRegion(lines=left_lines, coords=left_coords, metadata=tr.metadata)
             left_tr.set_derived_id(tr.parent.id)
