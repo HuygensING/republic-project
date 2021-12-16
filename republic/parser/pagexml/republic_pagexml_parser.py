@@ -329,6 +329,8 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
                     extra_lines.append(line)
                 elif line.coords.top > column_separator.coords.bottom:
                     extra_lines.append(line)
+                elif line.coords.bottom < 450 and line.coords.top > column_separator.coords.top:
+                    extra_lines.append(line)
                 else:
                     print('ERROR SEPARATING LINES:')
                     print('column separator box:', column_separator.coords.box)
