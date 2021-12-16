@@ -342,7 +342,6 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
                     # print('column separator box:', column_separator.coords.box)
                     # print('line box:', line.coords.box)
                     # raise ValueError('cannot sort line to left or right of separator')
-            print('left:', len(left_lines), '\tright:', len(right_lines))
             if len(left_lines) > 0:
                 left_coords = pdm.parse_derived_coords(left_lines)
                 left_tr = pdm.PageXMLTextRegion(lines=left_lines, coords=left_coords, metadata=tr.metadata)

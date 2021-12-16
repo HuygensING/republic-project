@@ -200,8 +200,10 @@ class Retriever:
         return pagexml.json_to_pagexml_scan(response['_source'])
 
     def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
-        response = self.es_anno.search(index=self.config['scan_index'], body=query)
-        return parse_hits_as_scans(response)
+        for hit in self.scroll_hits(self.es_anno, query, self.config['scan_index'], size=2, scroll='5m'):
+            yield pagexml.json_to_pagexml_scan(hit['_source'])
+        # response = self.es_anno.search(index=self.config['scan_index'], body=query)
+        # return parse_hits_as_scans(response)
 
     def retrieve_text_repo_scans_by_inventory(self,
                                               inventory_num: int) -> Generator[pdm.PageXMLScan, None, None]:
