@@ -319,12 +319,16 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
             continue
         column_separator = get_column_separator(tr, separators)
         if column_separator is not None:
-            left_lines, right_lines = [], []
+            left_lines, right_lines, extra_lines = [], [], []
             for line in tr.lines:
                 if line.coords.right < column_separator.coords.right + 20:
                     left_lines.append(line)
                 elif line.coords.left > column_separator.coords.left - 20:
                     right_lines.append(line)
+                elif line.coords.bottom < column_separator.coords.top:
+                    extra_lines.append(line)
+                elif line.coords.top > column_separator.coords.bottom:
+                    extra_lines.append(line)
                 else:
                     print('ERROR SEPARATING LINES:')
                     print('column separator box:', column_separator.coords.box)
@@ -340,6 +344,15 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
             left_tr.type = tr.type
             right_tr.type = tr.type
             split_regions.append(right_tr)
+            if len(extra_lines) > 0:
+                extra_coords = pdm.parse_derived_coords(extra_lines)
+                extra_tr = pdm.PageXMLTextRegion(lines=extra_lines, coords=extra_coords, metadata=tr.metadata)
+                extra_tr.set_derived_id(tr.parent.id)
+                split_regions.append(extra_tr)
+                extra_tr.add_type('extra')
+                if extra_tr.has_type('main'):
+                    extra_tr.remove_type('main')
+                split_regions.append(extra_tr)
         else:
             split_regions.append(tr)
     return split_regions
