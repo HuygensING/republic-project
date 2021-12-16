@@ -293,6 +293,22 @@ def split_lines_on_column_gaps(page_doc, config: Dict[str, any]):
     return columns, extra
 
 
+def get_column_separator(text_region: pdm.PageXMLTextRegion,
+                         separators: List[pdm.PageXMLTextRegion]) -> Union[pdm.PageXMLTextRegion, None]:
+    column_separator = None
+    for separator in separators:
+        sep_left = separator.coords.left - 20
+        sep_right = separator.coords.right + 20
+        if text_region.coords.left < sep_left and text_region.coords.right > sep_right:
+            bottom = min(text_region.coords.bottom, separator.coords.bottom)
+            top = max(text_region.coords.top, separator.coords.top)
+            overlap = bottom - top
+            if overlap / text_region.coords.height > 0.7:
+                column_separator = separator
+                break
+    return column_separator
+
+
 def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.PageXMLTextRegion]:
     # ignore really short vertical separators as they are probably not real separators
     separators = [tr for tr in text_regions if tr.has_type('separator') if tr.coords.h > 100]
@@ -301,19 +317,13 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
         if tr.has_type('extra'):
             split_regions.append(tr)
             continue
-        column_separator = None
-        for separator in separators:
-            if tr.coords.left < separator.coords.left and tr.coords.right > separator.coords.right:
-                overlap = min(tr.coords.bottom, separator.coords.bottom) - max(tr.coords.top, separator.coords.top)
-                if overlap / tr.coords.height > 0.7:
-                    column_separator = separator
-                    break
+        column_separator = get_column_separator(tr, separators)
         if column_separator is not None:
             left_lines, right_lines = [], []
             for line in tr.lines:
-                if line.coords.right < column_separator.coords.right:
+                if line.coords.right < column_separator.coords.right + 20:
                     left_lines.append(line)
-                elif line.coords.left > column_separator.coords.left:
+                elif line.coords.left > column_separator.coords.left - 20:
                     right_lines.append(line)
                 else:
                     print('ERROR SEPARATING LINES:')
