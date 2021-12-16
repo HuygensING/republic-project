@@ -342,16 +342,19 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
                     # print('column separator box:', column_separator.coords.box)
                     # print('line box:', line.coords.box)
                     # raise ValueError('cannot sort line to left or right of separator')
-            left_coords = pdm.parse_derived_coords(left_lines)
-            left_tr = pdm.PageXMLTextRegion(lines=left_lines, coords=left_coords, metadata=tr.metadata)
-            left_tr.set_derived_id(tr.parent.id)
-            split_regions.append(left_tr)
-            right_coords = pdm.parse_derived_coords(right_lines)
-            right_tr = pdm.PageXMLTextRegion(lines=right_lines, coords=right_coords, metadata=tr.metadata)
-            right_tr.set_derived_id(tr.parent.id)
-            left_tr.type = tr.type
-            right_tr.type = tr.type
-            split_regions.append(right_tr)
+            print('left:', len(left_lines), '\tright:', len(right_lines))
+            if len(left_lines) > 0:
+                left_coords = pdm.parse_derived_coords(left_lines)
+                left_tr = pdm.PageXMLTextRegion(lines=left_lines, coords=left_coords, metadata=tr.metadata)
+                left_tr.set_derived_id(tr.parent.id)
+                split_regions.append(left_tr)
+                left_tr.type = tr.type
+            if len(right_lines) > 0:
+                right_coords = pdm.parse_derived_coords(right_lines)
+                right_tr = pdm.PageXMLTextRegion(lines=right_lines, coords=right_coords, metadata=tr.metadata)
+                right_tr.set_derived_id(tr.parent.id)
+                right_tr.type = tr.type
+                split_regions.append(right_tr)
             if len(extra_lines) > 0:
                 extra_coords = pdm.parse_derived_coords(extra_lines)
                 extra_tr = pdm.PageXMLTextRegion(lines=extra_lines, coords=extra_coords, metadata=tr.metadata)
