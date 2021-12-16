@@ -88,6 +88,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         coords = parse_derived_coords(text_region_lines[text_region_id])
         text_region = PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
                                         coords=coords, lines=text_region_lines[text_region_id])
+        text_region.set_derived_id(text_region.metadata['scan_id'])
         # We're going from physical to logical structure here, so add a trace to the
         # logical structure elements about where they come from in the physical
         # structure, especially the printed page number needed for linking to locators

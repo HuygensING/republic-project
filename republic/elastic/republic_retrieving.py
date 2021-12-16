@@ -194,11 +194,9 @@ class Retriever:
         return self.retrieve_pages_by_query(query)
 
     def retrieve_scan_by_id(self, scan_id: str) -> Union[pdm.PageXMLScan, None]:
-        if not self.es_anno.exists(index=self.config['scan_index'],
-                                   doc_type=self.config['scan_doc_type'], id=scan_id):
+        if not self.es_anno.exists(index=self.config['scan_index'], id=scan_id):
             return None
-        response = self.es_anno.get(index=self.config['scan_index'],
-                                    doc_type=self.config['scan_doc_type'], id=scan_id)
+        response = self.es_anno.get(index=self.config['scan_index'], id=scan_id)
         return pagexml.json_to_pagexml_scan(response['_source'])
 
     def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
