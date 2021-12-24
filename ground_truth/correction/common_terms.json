@@ -1,0 +1,328 @@
+[
+    {
+        "term": "mogende",
+        "singular": "mogende",
+        "plural": "mogende"
+    },
+    {
+        "term": "missive",
+        "singular": "missive",
+        "plural": ["missiven", "missives"]
+    },
+    {
+        "term": "resolutie",
+        "singular": "resolutie",
+        "plural": ["resolutien", "resoluties"]
+    },
+    {
+        "term": "houdende",
+        "singular": "houdende",
+        "plural": "houdende"
+    },
+    {
+        "term": "voorschreve",
+        "singular": "voorschreve",
+        "plural": "voorschreve"
+    },
+    {
+        "term": "requeste",
+        "singular": "requeste",
+        "plural": ["requesten", "requestes"]
+    },
+    {
+        "term": "ontfangen",
+        "singular": "ontfangen",
+        "plural": "ontfangen"
+    },
+    {
+        "term": "gedelibereert",
+        "singular": "gedelibereert",
+        "plural": "gedelibereert"
+    },
+    {
+        "term": "vergaderinge",
+        "singular": "vergaderinge",
+        "plural": "vergaderingen"
+    },
+    {
+        "term": "gemelde",
+        "singular": "gemelde",
+        "plural": "gemelde"
+    },
+    {
+        "term": "verstaan",
+        "singular": "verstaan",
+        "plural": "verstaan"
+    },
+    {
+        "term": "gedeputeerden",
+        "singular": "gedeputeerde",
+        "plural": "gedeputeerden"
+    },
+    {
+        "term": "suppliant",
+        "singular": "suppliant",
+        "plural": ["supplianten", "suppliants"]
+    },
+    {
+        "term": "loopende",
+        "singular": "loopende",
+        "plural": "loopende"
+    },
+    {
+        "term": "geschreven",
+        "singular": "geschreven",
+        "plural": "geschreven"
+    },
+    {
+        "term": "voorschreeve",
+        "singular": "voorschreeve",
+        "plural": "voorschreeve",
+        "variant_of": "voorschreve"
+    },
+    {
+        "term": "provincie",
+        "singular": "provincie",
+        "plural": ["provincien", "provincies"]
+    },
+    {
+        "term": "gevallen",
+        "singular": "gevallen",
+        "plural": "gevallen"
+    },
+    {
+        "term": "goedgevonden",
+        "singular": "goedgevonden",
+        "plural": "goedgevonden"
+    },
+    {
+        "term": "advertentie",
+        "singular": "advertentie",
+        "plural": "advertenties"
+    },
+    {
+        "term": "extraordinaris",
+        "singular": "extraordinaris",
+        "plural": "extraordinaris"
+    },
+    {
+        "term": "supplianten",
+        "singular": "suppliant",
+        "plural": ["supplianten", "suppliants"]
+    },
+    {
+        "term": "gelieven",
+        "singular": "gelieven",
+        "plural": "gelieven"
+    },
+    {
+        "term": "twintighsten",
+        "singular": "twintighsten",
+        "plural": "twintighsten"
+    },
+    {
+        "term": "deselve",
+        "singular": "deselve",
+        "plural": "deselve"
+    },
+    {
+        "term": "honderd",
+        "singular": "honderd",
+        "plural": "honderden"
+    },
+    {
+        "term": "hondert",
+        "singular": "hondert",
+        "plural": "hondert",
+        "variant_of": "hondert"
+    },
+    {
+        "term": "guldens",
+        "singular": "gulden",
+        "plural": "guldens"
+    },
+    {
+        "term": "hebbende",
+        "singular": "hebbende",
+        "plural": "hebbende"
+    },
+    {
+        "term": "rapport",
+        "singular": "rapport",
+        "plural": "rapporten"
+    },
+    {
+        "term": "versoeckende",
+        "singular": "versoeckende",
+        "plural": "versoeckende"
+    },
+    {
+        "term": "majesteyt",
+        "singular": "majesteyt",
+        "plural": "majesteyten"
+    },
+    {
+        "term": "gesonden",
+        "singular": "gesonden",
+        "plural": "gesonden"
+    },
+    {
+        "term": "geschreeven",
+        "singular": "geschreeven",
+        "plural": "geschreeven",
+        "variant_of": "geschreven"
+    },
+    {
+        "term": "verstaen",
+        "singular": "verstaen",
+        "plural": "verstaen"
+    },
+    {
+        "term": "goetgevonden",
+        "singular": "goetgevonden",
+        "plural": "goetgevonden",
+        "variant_of": "goedgevonden"
+    },
+    {
+        "term": "gevolge",
+        "singular": "gevolge",
+        "plural": "gevolgen"
+    },
+    {
+        "term": "voornoemde",
+        "singular": "voornoemde",
+        "plural": "voornoemden"
+    },
+    {
+        "term": "gemelden",
+        "singular": "gemelden",
+        "plural": "gemelden",
+        "variant_of": "gemelde"
+    },
+    {
+        "term": "gecommitteerden",
+        "singular": "gecommitteerde",
+        "plural": "gecommitteerden"
+    },
+    {
+        "term": "geresumeert",
+        "singular": "geresumeert",
+        "plural": "geresumeert"
+    },
+    {
+        "term": "collegie",
+        "singular": "collegie",
+        "plural": ["collegien", "collegies"]
+    },
+    {
+        "term": "staaten",
+        "singular": ["staate", "staat"],
+        "plural": "staaten"
+    },
+    {
+        "term": "gelesen",
+        "singular": "gelesen",
+        "plural": "gelesen"
+    },
+    {
+        "term": "generaal",
+        "singular": "generaal",
+        "plural": "generaals"
+    },
+    {
+        "term": "volgens",
+        "singular": "volgens",
+        "plural": "volgens"
+    },
+    {
+        "term": "pasport",
+        "singular": "pasport",
+        "plural": "pasporten"
+    },
+    {
+        "term": "goederen",
+        "singular": "goederen",
+        "plural": "goederen"
+    },
+    {
+        "term": "voldoeninge",
+        "singular": "voldoeninge",
+        "plural": "voldoeninge"
+    },
+    {
+        "term": "geweest",
+        "singular": "geweest",
+        "plural": "geweest"
+    },
+    {
+        "term": "deliberatie",
+        "singular": "deliberatie",
+        "plural": ["deliberatien", "deliberaties"]
+    },
+    {
+        "term": "amsterdam",
+        "singular": "amsterdam",
+        "plural": "amsterdam"
+    },
+    {
+        "term": "geleesen",
+        "singular": "geleesen",
+        "plural": "geleesen",
+        "variant_of": "gelesen"
+    },
+    {
+        "term": "geaddresseert",
+        "singular": "geaddresseert",
+        "plural": "geaddresseert"
+    },
+    {
+        "term": "gedeputeerde",
+        "singular": "gedeputeerde",
+        "plural": "gedeputeerden"
+    },
+    {
+        "term": "memorie",
+        "singular": "memorie",
+        "plural": ["memorien", "memories"]
+    },
+    {
+        "term": "koningh",
+        "singular": "koningh",
+        "plural": "koninghen"
+    },
+    {
+        "term": "griffier",
+        "singular": "griffier",
+        "plural": "griffiers"
+    },
+    {
+        "term": "neevens",
+        "singular": "neevens",
+        "plural": "neevens"
+    },
+    {
+        "term": "resident",
+        "singular": "resident",
+        "plural": "residenten"
+    },
+    {
+        "term": "omtrent",
+        "singular": "omtrent",
+        "plural": "omtrent"
+    },
+    {
+        "term": "seeventien",
+        "singular": "seeventien",
+        "plural": "seeventien"
+    },
+    {
+        "term": "behoeve",
+        "singular": "behoeve",
+        "plural": "behoeve"
+    },
+    {
+        "term": "gesteld",
+        "singular": "gesteld",
+        "plural": "gesteld"
+    }
+]
