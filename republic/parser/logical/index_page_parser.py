@@ -513,6 +513,8 @@ def parse_reference(entry: Dict[str, any], page_num_map: Dict[int, str]):
         "text_page_nums": []
     }
     for line in reference["sub_lemma"]:
+        # Add a preceding whitespace for lines that start with a page locator
+        line = ' ' + line
         for match in re.finditer(r' (\d+)\.', line):
             text_page_num = int(match.group(1))
             locator = {
