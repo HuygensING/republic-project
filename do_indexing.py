@@ -29,7 +29,7 @@ if not host_type:
     host_type = "external"
 print('host_type:', host_type)
 
-rep_es = republic_elasticsearch.initialize_es(host_type=host_type)
+rep_es = republic_elasticsearch.initialize_es(host_type=host_type, timeout=60)
 
 default_ocr_type = "pagexml"
 base_dir = "/data/republic/"
@@ -80,18 +80,22 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
-        pages = pagexml_parser.split_pagexml_scan(scan)
+        try:
+            pages = pagexml_parser.split_pagexml_scan(scan)
+        except BaseException:
+            print(scan.id)
+            raise
         for page in pages:
             if page.metadata['page_num'] in text_page_num_map:
                 page_num = page.metadata['page_num']
                 page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
-                page.metadata['skip_page'] = text_page_num_map[page_num]['skip_page']
+                page.metadata['skip'] = text_page_num_map[page_num]['skip']
                 if text_page_num_map[page_num]['problem'] is not None:
                     page.metadata['problem'] = text_page_num_map[page_num]['problem']
             if page.metadata['page_num'] not in page_type_index:
                 page.add_type("empty_page")
                 page.metadata['type'] = [ptype for ptype in page.type]
-                page.metadata['skip_page'] = True
+                page.metadata['skip'] = True
                 print("page without page_num:", page.id)
                 print("\tpage stats:", page.stats)
             else:
@@ -101,6 +105,7 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
                 for page_type in page_types:
                     page.add_type(page_type)
                 page.metadata['type'] = [ptype for ptype in page.type]
+            print('indexing page with id', page.id)
             rep_es.index_page(page)
         if (si+1) % 100 == 0:
             print(si+1, "scans processed")
@@ -131,7 +136,7 @@ def do_session_lines_indexing(inv_num: int, year: int):
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
-    pages = [page for page in pages if "skip_page" not in page.metadata or page.metadata["skip_page"] is False]
+    pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_num, inv_metadata)):
         print('session received from get_sessions:', session.id)
         date_string = None
@@ -153,14 +158,26 @@ def do_session_text_indexing(inv_num: int, year: int):
 def do_resolution_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML resolutions for inventory {inv_num} (year {year})...")
     opening_searcher, verb_searcher = resolution_parser.configure_resolution_searchers()
+    has_error = False
+    errors = []
     for session in rep_es.retrieve_inventory_sessions_with_lines(inv_num):
         print(session.id)
+        if "index_timestamp" not in session.metadata:
+            rep_es.es_anno.delete(index="session_lines", id=session.id)
+            print("DELETING SESSION WIHT ID", session.id)
+            continue
         try:
             for resolution in resolution_parser.get_session_resolutions(session, opening_searcher,
                                                                         verb_searcher):
                 rep_es.index_resolution(resolution)
-        except KeyError:
-            pass
+        except (TypeError, KeyError) as err:
+            has_error = True
+            errors.append(err)
+            # pass
+            raise
+    print(f"finished indexing resolutions of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
+    for err in errors:
+        print(err)
 
 
 def do_resolution_phrase_match_indexing(inv_num: int, year: int):
@@ -255,6 +272,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
             do_resolution_metadata_indexing(task["inv_num"], task["year"])
         if task["type"] == "attendance_list_spans":
             do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
+        print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
 
 
 if __name__ == "__main__":
@@ -286,5 +304,5 @@ if __name__ == "__main__":
         print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
         sys.exit(2)
     print(f'indexing {indexing_step} for years', years)
-    pool = multiprocessing.Pool(processes=num_processes)
-    pool.map(process_inventory, tasks)
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        pool.map(process_inventory, tasks)
