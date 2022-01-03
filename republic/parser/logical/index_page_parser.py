@@ -499,19 +499,19 @@ def parse_reference(entry: Dict[str, any], page_num_map: Dict[int, str]):
     reference = {
         "id": make_hash_id(','.join([line.id for line in entry["lines"]])),
         "metadata": {
+            "inventory_num": entry["inventory_num"],
+            "year": entry["year"],
             "page_id": list(page_ids),
             "scan_id": list(scan_ids),
             "iiif_urls": urls,
         },
-        "locators": []
+        "lemma": entry["lemma"],
+        "main_term": entry["main_term"],
+        "locators": [],
+        "sub_lemma": [line.text for line in entry["lines"]],
+        "lines": [line.id for line in entry["lines"]],
+        "text_page_nums": []
     }
-    for key in entry:
-        if key == "lines":
-            reference["sub_lemma"] = [line.text for line in entry["lines"]]
-            reference["lines"] = [line.id for line in entry["lines"]]
-        else:
-            reference[key] = entry[key]
-    reference["text_page_nums"] = []
     for line in reference["sub_lemma"]:
         for match in re.finditer(r' (\d+)\.', line):
             text_page_num = int(match.group(1))
