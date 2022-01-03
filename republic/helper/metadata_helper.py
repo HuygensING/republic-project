@@ -60,11 +60,20 @@ def make_iiif_region_url(jpg_url: str,
     return jpg_url + f"/{region}/full/0/default.jpg"
 
 
-def coords_to_iiif_url(scan_id, coords, margin=100):
+def coords_to_iiif_url(scan_id: str,
+                       coords: Union[List[int], Dict[str, int]], margin=100):
+    if isinstance(coords, dict):
+        coords = [coords["x"], coords["y"], coords["w"], coords["h"]]
     coords_string = f"{coords[0]-margin},{coords[1]-margin},{coords[2]+2*margin},{coords[3]+2*margin}"
     base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
     inv_num = scan_id_to_inv_num(scan_id)
     return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/full/0/default.jpg"
+
+
+def page_num_to_page_id(page_num: int, inv_num: int) -> str:
+    scan_num = int((page_num + 1) / 2) if page_num % 2 == 1 else int((page_num + 2) / 2)
+    scan_id = f'NL-HaNA_1.01.02_{inv_num}_{format_scan_number(scan_num)}'
+    return f'{scan_id}-page-{page_num}'
 
 
 def scan_id_to_inv_num(scan_id: str) -> int:

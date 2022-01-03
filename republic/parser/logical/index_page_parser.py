@@ -8,6 +8,7 @@ import republic.model.physical_document_model as pdm
 import republic.parser.pagexml.republic_pagexml_parser as page_parser
 import republic.helper.pagexml_helper as page_helper
 from republic.helper.annotation_helper import make_hash_id
+from republic.helper.metadata_helper import coords_to_iiif_url
 
 
 def categorise_line_dist(lines: List[dict]):
@@ -473,9 +474,31 @@ def parse_lemma_line(line: pdm.PageXMLTextLine) -> Dict[str, Union[str, List[str
     return lemma
 
 
-def parse_reference(entry):
+def get_reference_iiif_urls(entry):
+    urls = []
+    column_lines = defaultdict(list)
+    for line in entry["lines"]:
+        column_id = line.id.split('-line-')[0]
+        column_lines[column_id].append(line)
+    for column_id in column_lines:
+        coords = pdm.parse_derived_coords(column_lines[column_id])
+        scan_id = column_id.split('-column-')[0]
+        # coords = [int(coord) for coord in line_id.split('-')[-4:]]
+        url = coords_to_iiif_url(scan_id, coords.box)
+        urls.append(url)
+    return urls
+
+
+def parse_reference(entry: Dict[str, any], page_num_map: Dict[int, str]):
+    urls = get_reference_iiif_urls(entry)
+    page_ids = {line.metadata["page_id"] for line in entry["lines"]}
+    scan_ids = {line.metadata["scan_id"] for line in entry["lines"]}
     reference = {
-        "id": make_hash_id(','.join([line.id for line in entry["lines"]]))
+        "id": make_hash_id(','.join([line.id for line in entry["lines"]])),
+        "page_id": list(page_ids),
+        "scan_id": list(scan_ids),
+        "iiif_urls": urls,
+        "locators": []
     }
     for key in entry:
         if key == "lines":
@@ -487,5 +510,10 @@ def parse_reference(entry):
     for line in reference["sub_lemma"]:
         if m := re.search(r' (\d+)\.', line):
             text_page_num = int(m.group(1))
+            locator = {
+                "text_page_num": text_page_num,
+                "page_id": page_num_map[text_page_num] if text_page_num in page_num_map else None
+            }
+            reference["locators"].append(locator)
             reference["text_page_nums"].append(text_page_num)
     return reference

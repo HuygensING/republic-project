@@ -9,6 +9,7 @@ import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
+from republic.helper.metadata_helper import page_num_to_page_id
 
 from republic.model.inventory_mapping import get_inventories_by_year
 from republic.model.republic_text_annotation_model import make_session_text_version
@@ -250,13 +251,22 @@ def do_inventory_attendance_list_indexing(inv_num: int, year: int):
 
 def do_inventory_lemma_reference_indexing(inv_num: int, year: int) -> None:
     print(f"Indexing lemma references for inventory {inv_num} (year {year})...")
+    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    text_page_num_map = map_text_page_nums(inv_metadata)
+    page_num_map = {}
+    for page_num in text_page_num_map:
+        page_info = text_page_num_map[page_num]
+        if "text_page_num" not in page_info or page_info["text_page_num"] is None:
+            continue
+        page_num_map[page_info["text_page_num"]] = page_num_to_page_id(page_num, inv_num)
     pages = rep_es.retrieve_index_pages(inv_num)
     entries = index_parser.parse_inventory_index_pages(pages)
     start_time = time.time()
+    ei = 0
     for ei, entry in enumerate(entries):
-        reference = index_parser.parse_reference(entry)
+        reference = index_parser.parse_reference(entry, page_num_map)
         rep_es.index_lemma_reference(reference)
-        if (ei+1) % 1000 == 0:
+        if (ei+1) % 100 == 0:
             print(f'{ei+1} or {len(entries)} lemma references indexed, in {time.time() - start_time: .2f} seconds')
     print(f'{ei+1} or {len(entries)} lemma references indexed, in {time.time() - start_time: .2f} seconds')
 
