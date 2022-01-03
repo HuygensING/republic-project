@@ -6,6 +6,8 @@ import numpy as np
 
 import republic.model.physical_document_model as pdm
 import republic.parser.pagexml.republic_pagexml_parser as page_parser
+import republic.helper.pagexml_helper as page_helper
+from republic.helper.annotation_helper import make_hash_id
 
 
 def categorise_line_dist(lines: List[dict]):
@@ -16,7 +18,7 @@ def categorise_line_dist(lines: List[dict]):
         for prev_index in range(start, curr_index):
             prev_line = lines[prev_index]
             line_dist = abs(curr_line["line"].baseline.x - prev_line["line"].baseline.x)
-            norm_dist = int(line_dist/5) * 5
+            norm_dist = int(line_dist / 5) * 5
             dist_freq.update([norm_dist])
             # print(line_dist, norm_dist)
     print('num dists:', sum(dist_freq.values()))
@@ -199,7 +201,7 @@ def get_neighbour_votes(curr_index: int, lines: List[dict]) -> Counter:
 def categorise_index_lines(lines: List[pdm.PageXMLTextLine]) -> List[dict]:
     """Determine the line types of a list of PageXMLTextLines."""
     lines = [{"line": line, "type": None, "x_dist": None,
-        "y_dist": None, "anomaly_left_side": False} for line in lines]
+              "y_dist": None, "anomaly_left_side": False} for line in lines]
     type_votes = defaultdict(Counter)
     for curr_index in range(len(lines)):
         start = curr_index - 5 if curr_index >= 5 else 0
@@ -268,7 +270,7 @@ def get_index_lines(column: pdm.PageXMLColumn) -> List[pdm.PageXMLTextLine]:
         column_left = median_line_left
     # print('get_lines:', len(column.get_lines()))
     # for line in sorted(column.get_lines(), key=lambda x: x.baseline.y):
-    for line in pdm.horizontally_merge_lines(column.get_lines()):
+    for line in page_helper.horizontally_merge_lines(column.get_lines()):
         dist = line.baseline.x - column_left
         if line.baseline.bottom < 450 and len(line.text) < 5:
             # This is likely part of the I N D E X header
@@ -291,7 +293,6 @@ def get_index_lines(column: pdm.PageXMLColumn) -> List[pdm.PageXMLTextLine]:
 
 def parse_inventory_index_page(page: pdm.PageXMLPage) -> Generator[pdm.PageXMLTextLine, None, None]:
     """Return a list of lines with index line types for a given index page."""
-    rows = []
     # process the columns from left to right
     full_text_columns = page_parser.get_page_full_text_columns(page)
     for column in sorted(full_text_columns, key=lambda x: x.coords.x):
@@ -311,19 +312,28 @@ def parse_inventory_index_page(page: pdm.PageXMLPage) -> Generator[pdm.PageXMLTe
             yield line
 
 
-def initialise_index_entry(lemma: str = None, lines: List[pdm.PageXMLTextLine] = None,
-                           main_term: str = None):
+def initialise_index_entry(lemma: str = None,
+                           lines: List[pdm.PageXMLTextLine] = None,
+                           main_term: str = None,
+                           inventory_num: int = None,
+                           year: int = None,
+                           scan_id: str = None) -> Dict[str, any]:
     return {
         'lemma': lemma,
         'lines': lines if lines else [],
-        'main_term': main_term
+        'main_term': main_term,
+        "inventory_num": inventory_num,
+        "year": year,
+        "scan_id": scan_id
     }
 
 
 def parse_inventory_index_pages(pages: List[pdm.PageXMLPage]) -> List[dict]:
     """Parse the index entries from a list of index pages."""
     entries = []
-    entry = initialise_index_entry()
+    entry = initialise_index_entry(inventory_num=pages[0].metadata["inventory_num"],
+                                   year=pages[0].metadata["inventory_year"],
+                                   scan_id=pages[0].metadata["scan_id"])
     for page in pages:
         if page_parser.is_title_page(page):
             print('TITLE PAGE:', page.id)
@@ -334,7 +344,10 @@ def parse_inventory_index_pages(pages: List[pdm.PageXMLPage]) -> List[dict]:
                     entries.append(entry)
                     # reuse the lemma from the previous entry
                 entry = initialise_index_entry(lemma=entry['lemma'],
-                                               main_term=entry['main_term'])
+                                               main_term=entry['main_term'],
+                                               inventory_num=page.metadata["inventory_num"],
+                                               year=page.metadata["inventory_year"],
+                                               scan_id=page.metadata["scan_id"])
             if line.has_type('lemma'):
                 if entry['lemma'] is not None:
                     entries.append(entry)
@@ -342,9 +355,15 @@ def parse_inventory_index_pages(pages: List[pdm.PageXMLPage]) -> List[dict]:
                 if lemma_info['main_term'] in {'.', ':', '-'}:
                     # print([lemma_info['main_term'], lemma_info['full_term'], entry['lemma']])
                     lemma_info['full_term'] = entry['lemma']
-                    lemma_info['main_term'] = entry['main_lemma']
+                    if "main_term" not in entry:
+                        print("entry without main_term on page:", page.id)
+                        print(entry)
+                    lemma_info['main_term'] = entry['main_term']
                 entry = initialise_index_entry(lemma=lemma_info['full_term'],
-                                               main_term=lemma_info['main_term'])
+                                               main_term=lemma_info['main_term'],
+                                               inventory_num=page.metadata["inventory_num"],
+                                               year=page.metadata["inventory_year"],
+                                               scan_id=page.metadata["scan_id"])
             entry['lines'].append(line)
     return entries
 
@@ -452,3 +471,16 @@ def parse_lemma_line(line: pdm.PageXMLTextLine) -> Dict[str, Union[str, List[str
             break
     lemma['full_term'] = ' '.join(lemma['all_terms'])
     return lemma
+
+
+def parse_reference(entry):
+    reference = {
+        "id": make_hash_id(','.join([line.id for line in entry["lines"]]))
+    }
+    for key in entry:
+        if key == "lines":
+            reference["sub_lemma"] = [line.text for line in entry["lines"]]
+            reference["lines"] = [line.id for line in entry["lines"]]
+        else:
+            reference[key] = entry[key]
+    return reference

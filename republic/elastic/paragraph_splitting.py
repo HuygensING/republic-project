@@ -11,7 +11,7 @@ import republic.model.resolution_phrase_model as rpm
 import republic.elastic.republic_retrieving as rep_es
 from republic.model.physical_document_model import parse_derived_coords
 from republic.model.republic_document_model import RepublicParagraph, Resolution, RepublicDoc
-from republic.helper.annotation_helper import make_hash_id
+from republic.helper.annotation_helper import make_match_hash_id
 
 MINIMUM_RESOLUTION_LENGTH = 150
 
@@ -475,7 +475,7 @@ def validate_split(es: Elasticsearch, resolution_updates: Dict[str, any], config
                 raise ValueError(f'invalid sequence of paragraph numbers: prev num {prev_para_num}, curr num: {para_num}')
             prev_para_num = para_num
     for match in resolution_updates['remove_matches']:
-        match_id = make_hash_id(match)
+        match_id = make_match_hash_id(match)
         if not es.exists(index=config['phrase_match_index'], id=match_id):
             message = f'unknown phrase match id {match_id} (text id: {match.text_id}, phrase match cannot be removed'
             raise ValueError(message)

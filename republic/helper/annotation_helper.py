@@ -5,12 +5,16 @@ from fuzzy_search.fuzzy_match import PhraseMatch
 from republic.model.republic_document_model import Resolution
 
 
-def make_hash_id(match: Union[dict, PhraseMatch]):
+def make_hash_id(text: str):
+    return hashlib.md5(text.encode()).hexdigest()
+
+
+def make_match_hash_id(match: Union[dict, PhraseMatch]):
     if isinstance(match, PhraseMatch):
-        return hashlib.md5(f"{match.text_id}-{match.offset}-{match.end}".encode()).hexdigest()
+        return make_hash_id(f"{match.text_id}-{match.offset}-{match.end}")
     else:
         match_end = match['offset'] + len(match['string'])
-        return hashlib.md5(f"{match['text_id']}-{match['offset']}-{match_end}".encode()).hexdigest()
+        return make_hash_id(f"{match['text_id']}-{match['offset']}-{match_end}")
 
 
 def make_swao_anno(match: PhraseMatch, resolution: Resolution) -> dict:

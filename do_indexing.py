@@ -1,6 +1,7 @@
 from typing import Dict, Union
 import multiprocessing
 import os
+import time
 
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 
@@ -16,6 +17,7 @@ import republic.model.republic_document_model as rdm
 import republic.parser.logical.pagexml_session_parser as session_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as resolution_parser
+import republic.parser.logical.index_page_parser as index_parser
 
 import run_attendancelist
 
@@ -153,6 +155,7 @@ def do_session_text_indexing(inv_num: int, year: int):
 def do_resolution_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML resolutions for inventory {inv_num} (year {year})...")
     opening_searcher, verb_searcher = resolution_parser.configure_resolution_searchers()
+    print('fuzzy searcher version:', opening_searcher.__version__)
     for session in rep_es.retrieve_inventory_sessions_with_lines(inv_num):
         print(session.id)
         try:
@@ -229,6 +232,19 @@ def do_inventory_attendance_list_indexing(inv_num: int, year: int):
         rep_es.index_attendance_list(att_list)
 
 
+def do_inventory_lemma_reference_indexing(inv_num: int, year: int) -> None:
+    print(f"Indexing lemma references for inventory {inv_num} (year {year})...")
+    pages = rep_es.retrieve_index_pages(inv_num)
+    entries = index_parser.parse_inventory_index_pages(pages)
+    start_time = time.time()
+    for ei, entry in enumerate(entries):
+        reference = index_parser.parse_reference(entry)
+        rep_es.index_lemma_reference(reference)
+        if (ei+1) % 1000 == 0:
+            print(f'{ei+1} or {len(entries)} lemma references indexed, in {time.time() - start_time: .2f} seconds')
+    print(f'{ei+1} or {len(entries)} lemma references indexed, in {time.time() - start_time: .2f} seconds')
+
+
 def process_inventory(task: Dict[str, Union[str, int]]):
     for inv_map in get_inventories_by_year(task["year"]):
         task["inv_num"] = inv_map["inventory_num"]
@@ -255,6 +271,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
             do_resolution_metadata_indexing(task["inv_num"], task["year"])
         if task["type"] == "attendance_list_spans":
             do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
+        if task["type"] == "lemma_references":
+            do_inventory_lemma_reference_indexing(task["inv_num"], task["year"])
 
 
 if __name__ == "__main__":

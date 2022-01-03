@@ -106,6 +106,18 @@ def make_range_query(field: str, start: int, end: int):
     }
 
 
+def make_text_page_num_query(page_num: str):
+    return {
+        "query": {
+            "bool": {
+                "must": {
+                    "match": {"metadata.text_page_num": page_num}
+                }
+            }
+        }
+    }
+
+
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
@@ -244,6 +256,16 @@ class Retriever:
         pages = self.retrieve_pages_by_query(query)
         return None if len(pages) == 0 else pages[0]
 
+    def retrieve_page_by_text_page_number(self, text_page_num: int, year: int = None,
+                                          inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
+        match_fields = [
+            {'match': {'metadata.text_page_num': text_page_num}},
+            select_year_inv(year=year, inventory_num=inventory_num)
+        ]
+        query = make_bool_query(match_fields)
+        pages = self.retrieve_pages_by_query(query)
+        return None if len(pages) == 0 else pages[0]
+
     def retrieve_pages_by_page_number_range(self, page_num_start: int, page_num_end: int, year: int = None,
                                             inventory_num: int = None) -> Union[List[pdm.PageXMLPage], None]:
         """Retrieve a range of Republic PageXML pages based on page number"""
@@ -356,6 +378,16 @@ class Retriever:
             return rdm.json_to_republic_resolution(response['_source'])
         else:
             return None
+
+    def retrieve_resolutions_by_text_page_number(self, text_page_num: int, year: int = None,
+                                                 inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
+        match_fields = [
+            {'match': {'metadata.text_page_num': text_page_num}},
+            select_year_inv(year=year, inventory_num=inventory_num)
+        ]
+        query = make_bool_query(match_fields)
+        pages = self.retrieve_resolutions_by_query(query)
+        return None if len(pages) == 0 else pages[0]
 
     def scroll_resolutions_by_query(self, query: dict,
                                     scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
