@@ -498,9 +498,11 @@ def parse_reference(entry: Dict[str, any], page_num_map: Dict[int, str]):
     scan_ids = {line.metadata["scan_id"] for line in entry["lines"]}
     reference = {
         "id": make_hash_id(','.join([line.id for line in entry["lines"]])),
-        "page_id": list(page_ids),
-        "scan_id": list(scan_ids),
-        "iiif_urls": urls,
+        "metadata": {
+            "page_id": list(page_ids),
+            "scan_id": list(scan_ids),
+            "iiif_urls": urls,
+        },
         "locators": []
     }
     for key in entry:
