@@ -483,4 +483,9 @@ def parse_reference(entry):
             reference["lines"] = [line.id for line in entry["lines"]]
         else:
             reference[key] = entry[key]
+    reference["text_page_nums"] = []
+    for line in reference["sub_lemma"]:
+        if m := re.search(r' (\d+)\.', line):
+            text_page_num = int(m.group(1))
+            reference["text_page_nums"].append(text_page_num)
     return reference
