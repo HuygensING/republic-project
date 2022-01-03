@@ -5,8 +5,56 @@ import os
 import re
 import pickle
 import unicodedata
+import math
 
+from fuzzy_search.fuzzy_string import text2skipgrams
 from nltk.tokenize import sent_tokenize
+from elasticsearch import Elasticsearch
+
+
+def make_term_query(term: str) -> Dict[str, any]:
+    return {
+        'query': {
+            'bool': {
+                'must': [
+                    {'match': {'paragraphs.text': term}},
+                    {'match': {'type': 'resolution'}}
+                ]
+            }
+        },
+        'aggs': {
+            'doc_types': {
+                'terms': {'field': 'type.keyword'}
+            }
+        }
+    }
+
+
+def find_term_in_context(es: Elasticsearch, term: str,
+                         num_hits: int = 10, context_size: int = 3):
+    query = make_term_query(term)
+    query['size'] = num_hits
+    response = es.search(index='resolutions', body=query)
+    pre_regex = r'(\w+\W+){,' + f'{context_size}' + r'}\b('
+    post_regex = r')\b(\W+\w+){,' + f'{context_size}' + '}'
+    pre_width = context_size * 10
+    contexts = []
+    for hit in response['hits']['hits']:
+        doc = hit['_source']
+        for para in doc['paragraphs']:
+            for match in re.finditer(pre_regex + term + post_regex, para['text'], re.IGNORECASE):
+                main = match.group(2)
+                pre, post = match.group(0).split(main, 1)
+                context = {
+                    'term': term,
+                    'term_match': main,
+                    'pre': pre,
+                    'post': post,
+                    'context': f"{pre: >{pre_width}}{main}{post}",
+                    'para': para
+                }
+                contexts.append(context)
+    return contexts
 
 
 def get_word_freq_filename(period: Dict[str, any], word_freq_type: str, data_dir: str) -> str:
@@ -91,11 +139,11 @@ def replace_ae(word):
 
 
 def replace_gh(word):
-    parts = word.split('gh')
     if word.lower() in {'vught'}:
         return word
-    if word.lower() in {'dight'}:
-        return 'dicht'
+    if word.lower() in {'dight', 'sigh'}:
+        return word.replace('gh', 'ch')
+    parts = word.split('gh')
     rewrite_word = ''
     for pi, curr_part in enumerate(parts[:-1]):
         next_part = parts[pi + 1]
@@ -131,15 +179,228 @@ def replace_gh(word):
     return rewrite_word
 
 
-def normalise_spelling(word):
+def replace_ey(word):
+    if word.startswith('Ey'):
+        word = 'Ei' + word[2:]
+    parts = word.split('ey')
+    rewrite_word = ''
+    exceptions = {"Hoey", "Bey", "Dey", "Peyrou", "Beyer", "Orkney"}
+    if word in exceptions:
+        return word
+    for pi, curr_part in enumerate(parts[:-1]):
+        rewrite_word += curr_part
+        if len(parts) > pi + 1 and len(parts[pi + 1]) > 0:
+            next_part = parts[pi + 1]
+            if len(next_part) >= 2 and next_part[:2] in {'ck'}:
+                if len(curr_part) >= 1 and curr_part[-1] in {'t'}:
+                    rewrite_word += 'e'
+                else:
+                    rewrite_word += 'ei'
+            elif len(curr_part) >= 1 and curr_part[-1:] in {'l', 'o'}:
+                rewrite_word += 'ei'
+            elif len(next_part) > 0 and next_part[0] in {'c', 'd', 'g', 'k', 'l', 'm', 'n', 's', 't', 'z'}:
+                rewrite_word += 'ei'
+            else:
+                rewrite_word += 'ey'
+        else:
+            rewrite_word += 'ei'
+    rewrite_word += parts[-1]
+    return rewrite_word
+
+
+def replace_uy(word):
+    exceptions = {'Huy', 'Guy', 'Tuyl', 'Stuyling', 'celuy', 'Vauguyon', 'Uytters'}
+    if word in exceptions:
+        return word
+    if word[:2] == 'Uy':
+        if word in {'Uytrecht', 'Uytregt'}:
+            return 'Utrecht'
+        else:
+            word = 'Ui' + word[2:]
+    parts = word.split('uy')
+    rewrite_word = ''
+    for pi, curr_part in enumerate(parts[:-1]):
+        rewrite_word += curr_part
+        if len(parts) > pi + 1 and len(parts[pi + 1]) > 0:
+            next_part = parts[pi + 1]
+            if len(curr_part) >= 3 and curr_part.endswith('app'):
+                rewrite_word += 'uy'
+            elif len(next_part) > 0 and next_part[0] in {'r'}:
+                rewrite_word += 'uu'
+            elif len(next_part) > 1 and next_part[:2] in {'cl'}:
+                rewrite_word += 'uy'
+            elif next_part.startswith('k') or next_part.startswith('ck'):
+                if len(curr_part) > 0 and curr_part[-1] in {'c', 'k', 'C', 'K'}:
+                    rewrite_word += 'uy'
+                else:
+                    rewrite_word += 'ui'
+            else:
+                rewrite_word += 'ui'
+        else:
+            rewrite_word += 'ui'
+    rewrite_word += parts[-1]
+    return rewrite_word
+
+
+def replace_y(word):
+    if word[0] == 'Y':
+        capital_y = True
+        word = 'y' + word[1:]
+    else:
+        capital_y = False
+    parts = word.split('y')
+    rewrite_word = ''
+    exceptions = {
+        'Haye', 'Hoey', 'Meyerye', 'Dey', 'Bey', 'Pays', 'payer', 'Bayreuth', 'Jacoby',
+        'York', 'york'
+    }
+    if word in exceptions:
+        return word
+    for pi, curr_part in enumerate(parts[:-1]):
+        rewrite_word += curr_part
+        curr_part = curr_part.lower()
+        if len(curr_part) >= 1 and curr_part[-1] in {'u', 'e'}:
+            # if 'ey' and 'uy' are not replaced, don't replace 'y' now
+            rewrite_word += 'y'
+        elif rewrite_word in {'Baronn'}:
+            # Baronnye -> Baronnie
+            rewrite_word += 'i'
+        elif rewrite_word in {'Jul', 'Jun'}:
+            # Juny/July -> Juni/Juli
+            rewrite_word += 'i'
+        elif len(curr_part) >= 3 and curr_part[-3:] in {'hoo', 'koo', 'doo', 'moo', 'noo', 'foo'}:
+            # hooy, kooy, dooyen, mooy, nooyt, fooy -> hooi, kooi, dooien, mooi, nooit, fooi
+            rewrite_word += 'i'
+        elif len(curr_part) >= 4 and curr_part[-4:] in {'troo'}:
+            # trooy -> trooi (octrooy -> octrooi)
+            rewrite_word += 'i'
+        elif pi == 0 and curr_part == '' and len(parts[pi + 1]) > 0 and parts[pi + 1].startswith('e'):
+            # ye -> ie (yemand -> iemand)
+            rewrite_word += 'i'
+        elif pi == 0 and curr_part == '' and len(parts[pi+1]) > 0 and parts[pi+1].startswith('r'):
+            # yr -> ier (Yrland -> Ierland, Yrssche -> Ierssche)
+            rewrite_word += 'ie'
+        elif curr_part.endswith('o') or curr_part.endswith('on'):
+            rewrite_word += 'y'
+        elif len(parts) > pi + 1 and len(parts[pi + 1]) > 0:
+            next_part = parts[pi + 1]
+            # print('rewrite_word:', rewrite_word, 'next_part:', next_part)
+            if curr_part.endswith('a') and next_part.startswith('r'):
+                # ayr -> air
+                rewrite_word += 'i'
+            elif next_part.startswith('ork'):
+                # york -> york (york, new york, newyork)
+                rewrite_word += 'y'
+            elif len(curr_part) >= 2 and curr_part[-2:] in {'pl', 'Pl'} and next_part.startswith('m'):
+                # Plym -> Plym (Plymouth
+                rewrite_word += 'y'
+            elif curr_part.endswith('g') and next_part.startswith('p'):
+                # gyp -> gyp (Egypten)
+                rewrite_word += 'y'
+            elif curr_part.endswith('e'):
+                if next_part.startswith('er'):
+                    # eyer -> eier
+                    rewrite_word += 'y'
+                else:
+                    # ey -> ei
+                    # should never be reached as replace_ey already changes
+                    rewrite_word += 'i'
+            elif curr_part.endswith('r') and next_part.startswith('e'):
+                # rye -> rie (artillerye -> artillerie)
+                rewrite_word += 'i'
+            elif curr_part.endswith('aa'):
+                rewrite_word += 'i'
+            elif curr_part.endswith('a'):
+                rewrite_word += 'y'
+            else:
+                rewrite_word += 'ij'
+        elif len(parts[pi+1]) == 0 and len(curr_part) >= 3 and curr_part[-3:] in {'lar', 'nar', 'tar', 'ist'}:
+            rewrite_word += 'ie'
+        elif len(parts[pi+1]) == 0 and len(curr_part) >= 3 and curr_part[-3:] in {'uar', 'ust'}:
+            rewrite_word += 'y'
+        elif len(parts[pi+1]) == 0 and len(curr_part) >= 2 and curr_part[-3:] in {'ar'}:
+            rewrite_word += 'y'
+        elif curr_part.endswith('er'):
+            rewrite_word += 'ij'
+        elif curr_part.endswith('nn') or curr_part.endswith('rr') or curr_part.endswith('ic'):
+            rewrite_word += 'y'
+        elif curr_part.endswith('aa'):
+            rewrite_word += 'i'
+        elif curr_part.endswith('a'):
+            rewrite_word += 'y'
+        elif curr_part.endswith('b'):
+            rewrite_word += 'ij'
+        elif rewrite_word in {'h', 's', 'z', 'H', 'S', 'Z'}:
+            # hy, sy, zy, Hy, Sy, Zy -> hij, sij, zij, Hij, Sij, Zij
+            rewrite_word += 'ij'
+        else:
+            rewrite_word += 'y'
+    rewrite_word += parts[-1]
+    if capital_y is True:
+        if rewrite_word.startswith('ij'):
+            rewrite_word = 'IJ' + rewrite_word[2:]
+        elif rewrite_word.startswith('i'):
+            rewrite_word = 'I' + rewrite_word[1:]
+        elif rewrite_word.startswith('y'):
+            rewrite_word = 'Y' + rewrite_word[1:]
+        else:
+            raise ValueError(f'original word started with Y but rewrite word {rewrite_word} '
+                             f'starts with unexpected character')
+    return rewrite_word
+
+
+def replace_t(word):
+    exceptions = {'wordt', 'vindt'}
+    if word in exceptions:
+        return word
+    if word == 'duisent':
+        return 'duizend'
+    if word.endswith('dt'):
+        word = word[:-2] + 'd'
+    if word.endswith('heit'):
+        word = word[:-1] + 'd'
+    return word
+
+
+def normalise_spelling(word: str) -> str:
     replace_word = word
     if 'ck' in replace_word:
         replace_word = replace_ck(replace_word)
-    if 'ae' in replace_word:
+    if 'ae' in replace_word.lower():
         replace_word = replace_ae(replace_word)
     if 'gh' in replace_word:
         replace_word = replace_gh(replace_word)
+    if 'uy' in replace_word.lower():
+        replace_word = replace_uy(replace_word)
+    if 'ey' in replace_word.lower():
+        replace_word = replace_ey(replace_word)
+    if 'y' in replace_word.lower():
+        replace_word = replace_y(replace_word)
+    if replace_word.lower().endswith('t'):
+        replace_word = replace_t(replace_word)
     return replace_word
+
+
+def normalise_word(orig_word: str, rewrite_dict: Dict[str, any] = None, to_ascii: bool = False) -> str:
+    copy_word = orig_word
+    if to_ascii:
+        copy_word = unicode_to_ascii(copy_word)
+    if rewrite_dict is not None and copy_word.lower() in rewrite_dict:
+        norm_word = normalise_spelling(rewrite_dict[copy_word.lower()]['most_similar_term'])
+        if orig_word.isupper():
+            norm_word = norm_word.upper()
+        elif orig_word[0].isupper():
+            norm_word = norm_word.title()
+    else:
+        if orig_word[0].isupper():
+            copy_word = copy_word.title()
+        norm_word = normalise_spelling(copy_word)
+    if orig_word.isupper():
+        return norm_word.upper()
+    elif orig_word[0].isupper():
+        return norm_word.title()
+    else:
+        return norm_word
 
 
 def sent_to_vocab(sents: List[List[str]], min_freq: int = 5):
@@ -171,7 +432,8 @@ class ResolutionSentences:
                  fields: str = 'text',
                  to_ascii: bool = False,
                  rewrite_dict: dict = None,
-                 normalise: bool = False
+                 normalise: bool = False,
+                 include_punct: bool = False
                  ):
         self.res_files = res_files if isinstance(res_files, list) else [res_files]
         self.lowercase = lowercase
@@ -181,6 +443,8 @@ class ResolutionSentences:
         self.to_ascii = to_ascii
         self.normalise = normalise
         self.rewrite_dict = rewrite_dict
+        self.include_punct = include_punct
+        self.split_regex = r'\b' if include_punct else r'\W+'
 
     def __iter__(self):
         for si, sent in enumerate(self.read_sentences()):
@@ -191,7 +455,7 @@ class ResolutionSentences:
 
     def word_tokenize(self, sent):
         sent = sent.lower() if self.lowercase else sent
-        return [word for word in re.split(r"\W+", sent.strip()) if word != '']
+        return [word for word in re.split(self.split_regex, sent.strip()) if word != '']
 
     def read_sentences(self):
         for para in read_resolution_paragraphs(self.res_files):
@@ -199,7 +463,7 @@ class ResolutionSentences:
                 if self.to_ascii:
                     sent = unicode_to_ascii(sent)
                 words = self.word_tokenize(sent)
-                if self.rewrite_dict:
+                if self.normalise or self.rewrite_dict:
                     # print('rewriting')
                     words = [self.rewrite_word(word) for word in words]
                 yield {
@@ -255,7 +519,8 @@ def read_rewrite_dictionary(dict_file: str, include_uncertain: bool = False) -> 
 
 class TermDictionary:
 
-    def __init__(self, term_dict: Dict[str, any] = None, dict_file: str = None):
+    def __init__(self, term_dict: Dict[str, any] = None, dict_file: str = None,
+                 ngram_length: int = 2, skip_length: int = 0):
         self.term_cats = defaultdict(set)
         self.cat_terms = defaultdict(set)
         self.cat_has = defaultdict(set)
@@ -264,6 +529,9 @@ class TermDictionary:
         self.leaf_cats = set()
         self.lower_of = defaultdict(set)
         self.title_of = defaultdict(set)
+        self.ngram_length = ngram_length
+        self.skip_length = skip_length
+        self.skip_sim: SkipgramSimilarity = None
         if dict_file is not None:
             term_dict = read_republic_term_dictionary(dict_file)
         if term_dict is not None:
@@ -285,21 +553,30 @@ class TermDictionary:
         self.term_cats = defaultdict(set)
         self.cat_terms = defaultdict(set)
         self.add_term_dict(term_dict, silent=silent)
+        self._index_term_skips()
+
+    def _index_term_skips(self):
+        self.skip_sim = SkipgramSimilarity(ngram_length=self.ngram_length,
+                                           skip_length=self.skip_length,
+                                           terms=list(self.term_cats.keys()))
 
     def add_term_dict(self, term_dict: Dict[str, any], silent: bool = False) -> None:
         for main_cat in term_dict:
             self.add_main_cat(main_cat)
+            # print(f'adding main_cat {main_cat}')
             if isinstance(term_dict[main_cat], dict):
                 for sub_cat in term_dict[main_cat]:
                     self.add_sub_cat(sub_cat, main_cat)
+                    # print(f'adding sub_cat {sub_cat} in main_cat {main_cat}')
                     for term in term_dict[main_cat][sub_cat]:
+                        # print(f'adding term {term} to sub_cat {sub_cat}')
                         self.add_term(term, sub_cat)
             else:
                 self.add_main_cat(main_cat)
                 for term in term_dict[main_cat]:
                     self.add_term(term, main_cat)
         if silent is False:
-            print(f'dictionary now has {len(self.main_cats)} main categories,'
+            print(f'dictionary now has {len(self.main_cats)} main categories, '
                   f'{len(self.leaf_cats)} leaf categories and {len(self.term_cats)} terms')
 
     def get_term(self, term: str, ignorecase: bool = False) -> Union[str, None]:
@@ -323,14 +600,17 @@ class TermDictionary:
 
     def has_term(self, term: str, ignorecase: bool = False) -> bool:
         dict_term = self.get_term(term, ignorecase=ignorecase)
-        return dict_term is None
+        return dict_term is not None
 
-    def get_term_cats(self, term: str, ignorecase: bool = False) -> Set:
+    def get_term_cats(self, term: str, ignorecase: bool = False,
+                      leaf_cats_only: bool = False) -> Set:
         dict_term = self.get_term(term, ignorecase=ignorecase)
         if dict_term is None:
             return set()
+        elif leaf_cats_only:
+            return {cat for cat in self.term_cats[dict_term] if cat in self.leaf_cats}
         else:
-            return self.term_cats[term]
+            return self.term_cats[dict_term]
 
     def get_cat_terms(self, cat: str) -> Set:
         return self.cat_terms[cat] if cat in self.cat_terms else set()
@@ -348,11 +628,13 @@ class TermDictionary:
             if self.cat_of[sub_cat] != main_cat:
                 raise KeyError(f'sub_cat {sub_cat} is already under {self.cat_of[sub_cat]}')
             else:
+                # print(f'sub_cat {sub_cat} is already assigned to {self.cat_of[sub_cat]}')
                 return None
         if main_cat in self.leaf_cats:
             # if main_cat had no previous sub_cats, it is still in leaf cats
             self.leaf_cats.remove(main_cat)
         self.cat_has[main_cat].add(sub_cat)
+        self.cat_of[sub_cat] = main_cat
         self.leaf_cats.add(sub_cat)
 
     def add_term(self, term: str, cat: str) -> None:
@@ -364,8 +646,11 @@ class TermDictionary:
         self.cat_terms[cat].add(term)
         if cat in self.cat_of:
             main_cat = self.cat_of[cat]
+            # print(f'cat {cat} is a sub_cat of {main_cat}')
             self.term_cats[term].add(main_cat)
             self.cat_terms[main_cat].add(term)
+        # else:
+            # print(f'cat {cat} is not a sub_cat')
 
     def remove_term(self, term: str) -> None:
         if term not in self.term_cats:
@@ -437,3 +722,82 @@ def read_republic_term_dictionary(dict_file: str) -> Dict[str, any]:
 def write_republic_term_dictionary(term_dict, dict_file: str) -> None:
     with open(dict_file, 'wt') as fh:
         return json.dump(term_dict, fh)
+
+
+def vector_length(skipgram_freq):
+    return math.sqrt(sum([skipgram_freq[skip] ** 2 for skip in skipgram_freq]))
+
+
+class SkipgramSimilarity:
+
+    def __init__(self, ngram_length: int = 3, skip_length: int = 0, terms: List[str] = None,
+                 max_length_diff: int = 2):
+        self.ngram_length = ngram_length
+        self.skip_length = skip_length
+        self.vocab = {}
+        self.vocab_map = {}
+        self.vector_length = {}
+        self.max_length_diff = max_length_diff
+        self.skipgram_index = defaultdict(lambda: defaultdict(Counter))
+        if terms is not None:
+            self.index_terms(terms)
+
+    def _reset_index(self):
+        self.vocab = {}
+        self.vocab_map = {}
+        self.vector_length = {}
+        self.skipgram_index = defaultdict(lambda: defaultdict(Counter))
+
+    def index_terms(self, terms: List[str], reset_index: bool = True):
+        if reset_index is True:
+            self._reset_index()
+        for term in terms:
+            if term in self.vocab:
+                continue
+            self._index_term(term)
+
+    def _term_to_skip(self, term):
+        skip_gen = text2skipgrams(term, ngram_size=self.ngram_length, skip_size=self.skip_length)
+        return Counter([skip.string for skip in skip_gen])
+
+    def _index_term(self, term: str):
+        term_id = len(self.vocab)
+        self.vocab[term] = term_id
+        self.vocab_map[term_id] = term
+        skipgram_freq = self._term_to_skip(term)
+        self.vector_length[term_id] = vector_length(skipgram_freq)
+        for skipgram in skipgram_freq:
+            # print(skip.string)
+            self.skipgram_index[skipgram][len(term)][term_id] = skipgram_freq[skipgram]
+
+    def _get_term_vector_length(self, term, skipgram_freq):
+        if term not in self.vocab:
+            return vector_length(skipgram_freq)
+        else:
+            term_id = self.vocab[term]
+            return self.vector_length[term_id]
+
+    def _compute_dot_product(self, term):
+        skipgram_freq = self._term_to_skip(term)
+        term_vl = self._get_term_vector_length(term, skipgram_freq)
+        print(term, 'vl:', term_vl)
+        dot_product = defaultdict(int)
+        for skipgram in skipgram_freq:
+            for term_length in range(len(term) - self.max_length_diff, len(term) + self.max_length_diff + 1):
+                for term_id in self.skipgram_index[skipgram][term_length]:
+                    dot_product[term_id] += skipgram_freq[skipgram] * self.skipgram_index[skipgram][term_length][
+                        term_id]
+                    # print(term_id, self.vocab_map[term_id], dot_product[term_id])
+        for term_id in dot_product:
+            dot_product[term_id] = dot_product[term_id] / (term_vl * self.vector_length[term_id])
+        return dot_product
+
+    def rank_similar(self, term: str, top_n: int = 10):
+        dot_product = self._compute_dot_product(term)
+        top_terms = []
+        for term_id in sorted(dot_product, key=lambda t: dot_product[t], reverse=True):
+            term = self.vocab_map[term_id]
+            top_terms.append((term, dot_product[term_id]))
+            if len(top_terms) == top_n:
+                break
+        return top_terms

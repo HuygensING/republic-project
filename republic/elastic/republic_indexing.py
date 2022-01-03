@@ -10,7 +10,7 @@ import republic.model.republic_document_model as rdm
 import republic.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import get_per_page_type_index
-from republic.helper.annotation_helper import make_hash_id
+from republic.helper.annotation_helper import make_match_hash_id
 
 
 def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
@@ -153,7 +153,7 @@ class Indexer:
         # make sure match object is json dictionary
         match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
         # generate stable id based on match offset, end and text_id
-        match_json['id'] = make_hash_id(match_json)
+        match_json['id'] = make_match_hash_id(match_json)
         match_json['metadata'] = phrase_match.phrase.metadata
         match_json['metadata']['id'] = match_json['id']
         match_json['metadata']['resolution_id'] = resolution.id
@@ -164,6 +164,11 @@ class Indexer:
         self.index_doc(index=self.config['phrase_match_index'],
                        doc_id=match_json['id'],
                        doc_body=match_json)
+
+    def index_lemma_reference(self, lemma_reference):
+        self.es_anno.index(index=self.config['lemma_index'],
+                           id=lemma_reference["id"],
+                           body=lemma_reference)
 
     def add_pagexml_page_types(self, inv_metadata: dict,
                                pages: List[pdm.PageXMLPage]) -> None:
@@ -177,7 +182,7 @@ class Indexer:
         # make sure match object is json dictionary
         match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
         # generate stable id based on match offset, end and text_id
-        match_json['id'] = make_hash_id(match_json)
+        match_json['id'] = make_match_hash_id(match_json)
         if self.es_anno.exists(index=self.config['phrase_match_index'], id=match_json['id']):
             self.es_anno.delete(index=self.config['phrase_match_index'], id=match_json['id'])
         else:

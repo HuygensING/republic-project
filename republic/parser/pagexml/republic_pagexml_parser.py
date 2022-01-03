@@ -5,7 +5,6 @@ import re
 
 import numpy as np
 
-from republic.config.republic_config import base_config
 from republic.helper.metadata_helper import make_iiif_region_url
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
@@ -437,7 +436,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
 
 
 def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
-    doc.set_parentage()
+    pdm.set_parentage(doc)
     doc_text_regions: List[pdm.PageXMLDoc] = []
     if hasattr(doc, 'text_regions'):
         doc_text_regions += doc.text_regions
