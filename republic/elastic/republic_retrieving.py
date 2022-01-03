@@ -380,14 +380,13 @@ class Retriever:
             return None
 
     def retrieve_resolutions_by_text_page_number(self, text_page_num: int, year: int = None,
-                                                 inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
+                                                 inventory_num: int = None) -> List[rdm.Resolution]:
         match_fields = [
             {'match': {'metadata.text_page_num': text_page_num}},
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
         query = make_bool_query(match_fields)
-        pages = self.retrieve_resolutions_by_query(query)
-        return None if len(pages) == 0 else pages[0]
+        return self.retrieve_resolutions_by_query(query)
 
     def scroll_resolutions_by_query(self, query: dict,
                                     scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
@@ -446,6 +445,18 @@ class Retriever:
         phrase_matches = self.retrieve_phrase_matches_by_query(query)
         # sort matches by order of occurrence in the text
         return sorted(phrase_matches, key=lambda x: x.offset)
+
+    def retrieve_lemma_references_by_query(self, query: Dict[str, any]) -> List[Dict[str, any]]:
+        response = self.es_anno.search(index=self.config["lemma_index"], body=query)
+        if "hits" in response["hits"]:
+            docs = [hit["_source"] for hit in response["hits"]["hits"]]
+        else:
+            docs = []
+        return docs
+
+    def retrieve_lemma_references_by_lemma(self, lemma: str) -> List[Dict[str, any]]:
+        query = {"query": {"match": {"lemma.keyword": lemma}}}
+        return self.retrieve_lemma_references_by_query(query)
 
     def parse_latest_version(self, text_repo, scan_num,
                              inventory_metadata, ignore_version: bool = False):

@@ -60,6 +60,17 @@ def make_iiif_region_url(jpg_url: str,
     return jpg_url + f"/{region}/full/0/default.jpg"
 
 
+def coords_to_iiif_url(scan_id, coords, margin=100):
+    coords_string = f"{coords[0]-margin},{coords[1]-margin},{coords[2]+2*margin},{coords[3]+2*margin}"
+    base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
+    inv_num = scan_id_to_inv_num(scan_id)
+    return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/full/0/default.jpg"
+
+
+def scan_id_to_inv_num(scan_id: str) -> int:
+    return int(scan_id.split('_')[2])
+
+
 def format_scan_number(scan_num: int) -> str:
     add_zeroes = 4 - len(str(scan_num))
     return "0" * add_zeroes + str(scan_num)
