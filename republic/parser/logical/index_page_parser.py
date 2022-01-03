@@ -1,3 +1,4 @@
+import string
 from collections import defaultdict, Counter
 from typing import Dict, List, Set, Tuple, Union, Generator
 import re
@@ -471,6 +472,8 @@ def parse_lemma_line(line: pdm.PageXMLTextLine) -> Dict[str, Union[str, List[str
         if end_lemma:
             break
     lemma['full_term'] = ' '.join(lemma['all_terms'])
+    # remove trailing periods and commas
+    lemma['full_term'] = lemma['full_term'].strip(string.punctuation)
     return lemma
 
 
@@ -508,8 +511,8 @@ def parse_reference(entry: Dict[str, any], page_num_map: Dict[int, str]):
             reference[key] = entry[key]
     reference["text_page_nums"] = []
     for line in reference["sub_lemma"]:
-        if m := re.search(r' (\d+)\.', line):
-            text_page_num = int(m.group(1))
+        for match in re.finditer(r' (\d+)\.', line):
+            text_page_num = int(match.group(1))
             locator = {
                 "text_page_num": text_page_num,
                 "page_id": page_num_map[text_page_num] if text_page_num in page_num_map else None

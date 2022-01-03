@@ -166,9 +166,9 @@ class Indexer:
                        doc_body=match_json)
 
     def index_lemma_reference(self, lemma_reference):
-        self.es_anno.index(index=self.config['lemma_index'],
-                           id=lemma_reference["id"],
-                           body=lemma_reference)
+        self.index_doc(index=self.config['lemma_index'],
+                       doc_id=lemma_reference["id"],
+                       doc_body=lemma_reference)
 
     def add_pagexml_page_types(self, inv_metadata: dict,
                                pages: List[pdm.PageXMLPage]) -> None:
