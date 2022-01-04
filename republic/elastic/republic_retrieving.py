@@ -1,6 +1,7 @@
 from typing import Union, List, Dict, Generator
-from elasticsearch import Elasticsearch
+import re
 
+from elasticsearch import Elasticsearch
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 from settings import text_repo_url
@@ -44,6 +45,19 @@ def make_bool_query(match_fields, size: int = 10000) -> dict:
             }
         },
         'size': size
+    }
+
+
+def make_paragraph_term_query(term: str) -> Dict[str, any]:
+    return {
+        'query': {
+            'bool': {
+                'must': [
+                    {'match': {'paragraphs.text': term}},
+                    {'match': {'type': 'resolution'}}
+                ]
+            }
+        }
     }
 
 
@@ -228,9 +242,10 @@ class Retriever:
                 continue
                 # raise ValueError(f"Document has no versions: {doc['doc']['externalId']}")
             version = select_latest_tesseract_version(versions)
+            print(version["createdAt"])
             scan_pagexml = text_repo.get_content_by_version_id(version['id'])
             filename = f"{doc['doc']['externalId']}.xml"
-            scan_doc = pagexml_parser.get_scan_pagexml(filename, self.config, pagexml_data=scan_pagexml)
+            scan_doc = pagexml_parser.get_scan_pagexml(filename, pagexml_data=scan_pagexml)
             scan_doc.metadata['textrepo_version'] = version
             yield scan_doc
 
@@ -458,6 +473,12 @@ class Retriever:
         query = {"query": {"match": {"lemma.keyword": lemma}}}
         return self.retrieve_lemma_references_by_query(query)
 
+    def retrieve_lemma_reference_by_id(self, ref_id: str) -> Union[None, Dict[str, any]]:
+        if self.es_anno.exists(index=self.config["lemma_index"], id=ref_id):
+            return self.es_anno.get(index=self.config["lemma_index"], id=ref_id)
+        else:
+            return None
+
     def parse_latest_version(self, text_repo, scan_num,
                              inventory_metadata, ignore_version: bool = False):
         doc_id = get_scan_id(inventory_metadata, scan_num)
@@ -480,6 +501,43 @@ class Retriever:
         except ValueError:
             print('missing scan:', doc_id)
             return None
+
+    def find_term_in_context(self, term: str,
+                             num_hits: int = 10,
+                             context_size: int = 3,
+                             index: str = "resolutions"):
+        query = make_paragraph_term_query(term)
+        query['size'] = num_hits
+        response = self.es_anno.search(index=index, body=query)
+        pre_regex = r'(\w+\W+){,' + f'{context_size}' + r'}\b('
+        post_regex = r')\b(\W+\w+){,' + f'{context_size}' + '}'
+        pre_width = context_size * 10
+        contexts = []
+        for hit in response['hits']['hits']:
+            doc = hit['_source']
+            for para in doc['paragraphs']:
+                for match in re.finditer(pre_regex + term + post_regex, para['text'], re.IGNORECASE):
+                    main = match.group(2)
+                    pre, post = match.group(0).split(main, 1)
+                    context = {
+                        'term': term,
+                        'term_match': main,
+                        'pre': pre,
+                        'post': post,
+                        'context': f"{pre: >{pre_width}}{main}{post}",
+                        'para_id': para["id"]
+                    }
+                    contexts.append(context)
+        return contexts
+
+    def print_term_in_context(self, term: str, num_hits: int = 10, context_size: int = 5):
+        prev_id = None
+        for context in self.find_term_in_context(term, num_hits=num_hits,
+                                                 context_size=context_size):
+            if context['para_id'] != prev_id:
+                print('\n', context['para_id'])
+            print(context['context'])
+            prev_id = context['para_id']
 
     def get_pagexml_resolution_page_range(self, inv_num: int) -> Union[None, tuple]:
         inv_metadata = self.retrieve_inventory_metadata(inv_num)

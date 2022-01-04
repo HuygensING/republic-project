@@ -1,6 +1,4 @@
 from typing import Dict, List, Union
-import time
-import gzip
 import requests
 
 
@@ -31,7 +29,7 @@ class TextRepo:
         self.documents_url = api_url + '/rest/documents'
         self.get_types()
 
-    def get_types(self) -> None:
+    def get_types(self) -> List[Dict[str, str]]:
         """Check TextRepo for the available file types and their IDs."""
         data: List[Dict[str, str]] = make_request(self.api_url + '/rest/types')
         for type_info in data:

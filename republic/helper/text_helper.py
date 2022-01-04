@@ -12,51 +12,6 @@ from nltk.tokenize import sent_tokenize
 from elasticsearch import Elasticsearch
 
 
-def make_term_query(term: str) -> Dict[str, any]:
-    return {
-        'query': {
-            'bool': {
-                'must': [
-                    {'match': {'paragraphs.text': term}},
-                    {'match': {'type': 'resolution'}}
-                ]
-            }
-        },
-        'aggs': {
-            'doc_types': {
-                'terms': {'field': 'type.keyword'}
-            }
-        }
-    }
-
-
-def find_term_in_context(es: Elasticsearch, term: str,
-                         num_hits: int = 10, context_size: int = 3):
-    query = make_term_query(term)
-    query['size'] = num_hits
-    response = es.search(index='resolutions', body=query)
-    pre_regex = r'(\w+\W+){,' + f'{context_size}' + r'}\b('
-    post_regex = r')\b(\W+\w+){,' + f'{context_size}' + '}'
-    pre_width = context_size * 10
-    contexts = []
-    for hit in response['hits']['hits']:
-        doc = hit['_source']
-        for para in doc['paragraphs']:
-            for match in re.finditer(pre_regex + term + post_regex, para['text'], re.IGNORECASE):
-                main = match.group(2)
-                pre, post = match.group(0).split(main, 1)
-                context = {
-                    'term': term,
-                    'term_match': main,
-                    'pre': pre,
-                    'post': post,
-                    'context': f"{pre: >{pre_width}}{main}{post}",
-                    'para': para
-                }
-                contexts.append(context)
-    return contexts
-
-
 def get_word_freq_filename(period: Dict[str, any], word_freq_type: str, data_dir: str) -> str:
     filename = f'period_word_freq-{word_freq_type}-{period["period_start"]}-{period["period_end"]}.pcl'
     return os.path.join(data_dir, filename)
