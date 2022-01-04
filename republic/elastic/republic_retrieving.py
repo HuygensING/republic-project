@@ -1,6 +1,7 @@
 from typing import Union, List, Dict, Generator
 import re
 
+import elasticsearch
 from elasticsearch import Elasticsearch
 from fuzzy_search.fuzzy_match import PhraseMatch
 
@@ -201,7 +202,12 @@ class Retriever:
             scroll_size = len(response['hits']['hits'])
             # Do something with the obtained page
         # remove scroll context
-        self.es_anno.clear_scroll(scroll_id=sid)
+        try:
+            self.es_anno.clear_scroll(scroll_id=sid)
+        except elasticsearch.ElasticsearchException:
+            print('WARNING: no scroll id found when clearing scroll at end of scroll with query:')
+            print(query)
+            pass
 
     def retrieve_inventory_metadata(self, inventory_num: int) -> Dict[str, any]:
         if not self.es_anno.exists(index=self.config['inventory_index'],
@@ -242,7 +248,6 @@ class Retriever:
                 continue
                 # raise ValueError(f"Document has no versions: {doc['doc']['externalId']}")
             version = select_latest_tesseract_version(versions)
-            print(version["createdAt"])
             scan_pagexml = text_repo.get_content_by_version_id(version['id'])
             filename = f"{doc['doc']['externalId']}.xml"
             scan_doc = pagexml_parser.get_scan_pagexml(filename, pagexml_data=scan_pagexml)
