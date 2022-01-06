@@ -297,9 +297,9 @@ def process_inventory(task: Dict[str, Union[str, int]]):
             do_resolution_metadata_indexing(task["inv_num"], task["year"])
         if task["type"] == "attendance_list_spans":
             do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
-        print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
         if task["type"] == "lemma_references":
             do_inventory_lemma_reference_indexing(task["inv_num"], task["year"])
+        print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
 
 
 if __name__ == "__main__":
