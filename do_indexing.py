@@ -10,6 +10,7 @@ import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.metadata_helper import page_num_to_page_id
+from republic.helper.model_loader import load_line_break_detector
 
 from republic.model.inventory_mapping import get_inventories_by_year
 from republic.model.republic_text_annotation_model import make_session_text_version
@@ -17,7 +18,7 @@ import republic.model.republic_document_model as rdm
 
 import republic.parser.logical.pagexml_session_parser as session_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
-import republic.parser.logical.pagexml_resolution_parser as resolution_parser
+import republic.parser.logical.pagexml_resolution_parser as res_parser
 import republic.parser.logical.index_page_parser as index_parser
 
 import run_attendancelist
@@ -61,7 +62,7 @@ def has_sections(inv_num: int):
 def index_session_resolutions(session: rdm.Session,
                               opening_searcher: FuzzyPhraseSearcher,
                               verb_searcher: FuzzyPhraseSearcher) -> None:
-    for resolution in resolution_parser.get_session_resolutions(session, opening_searcher, verb_searcher):
+    for resolution in res_parser.get_session_resolutions(session, opening_searcher, verb_searcher):
         rep_es.index_resolution(resolution)
 
 
@@ -160,8 +161,9 @@ def do_session_text_indexing(inv_num: int, year: int):
 
 def do_resolution_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML resolutions for inventory {inv_num} (year {year})...")
-    opening_searcher, verb_searcher = resolution_parser.configure_resolution_searchers()
+    opening_searcher, verb_searcher = res_parser.configure_resolution_searchers()
     has_error = False
+    line_break_detector = load_line_break_detector()
     errors = []
     for session in rep_es.retrieve_inventory_sessions_with_lines(inv_num):
         print(session.id)
@@ -170,8 +172,9 @@ def do_resolution_indexing(inv_num: int, year: int):
             print("DELETING SESSION WIHT ID", session.id)
             continue
         try:
-            for resolution in resolution_parser.get_session_resolutions(session, opening_searcher,
-                                                                        verb_searcher):
+            for resolution in res_parser.get_session_resolutions(session, opening_searcher,
+                                                                 verb_searcher,
+                                                                 line_break_detector=line_break_detector):
                 rep_es.index_resolution(resolution)
         except (TypeError, KeyError) as err:
             has_error = True
@@ -185,7 +188,7 @@ def do_resolution_indexing(inv_num: int, year: int):
 
 def do_resolution_phrase_match_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML resolution phrase matches for inventory {inv_num} (year {year})...")
-    searcher = resolution_parser.make_resolution_phrase_model_searcher()
+    searcher = res_parser.make_resolution_phrase_model_searcher()
     for resolution in rep_es.scroll_inventory_resolutions(inv_num):
         print('indexing phrase matches for resolution', resolution.metadata['id'])
         num_paras = len(resolution.paragraphs)

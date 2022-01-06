@@ -401,8 +401,8 @@ def sort_lines_in_reading_order(doc: pdm.PageXMLDoc) -> Generator[pdm.PageXMLTex
     for text_region in sort_regions_in_reading_order(doc):
         if text_region.main_type == 'column':
             text_region.metadata['column_id'] = text_region.id
-        if 'column_id' not in text_region.metadata:
-            raise KeyError(f'missing column id: {text_region.metadata}')
+        #if 'column_id' not in text_region.metadata:
+        #    raise KeyError(f'missing column id: {text_region.metadata}')
         for line in text_region.lines:
             if line.metadata is None:
                 line.metadata = {'id': line.id, 'type': ['pagexml', 'line'], 'parent_id': text_region.id}

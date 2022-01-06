@@ -61,13 +61,41 @@ def make_iiif_region_url(jpg_url: str,
 
 
 def coords_to_iiif_url(scan_id: str,
-                       coords: Union[List[int], Dict[str, int]], margin=100):
-    if isinstance(coords, dict):
-        coords = [coords["x"], coords["y"], coords["w"], coords["h"]]
-    coords_string = f"{coords[0]-margin},{coords[1]-margin},{coords[2]+2*margin},{coords[3]+2*margin}"
+                       coords: Union[List[int], Dict[str, int]] = None, margin=100):
     base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
     inv_num = scan_id_to_inv_num(scan_id)
-    return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/full/0/default.jpg"
+    if isinstance(coords, dict):
+        coords = [coords["x"], coords["y"], coords["w"], coords["h"]]
+    if isinstance(coords, list):
+        coords_string = f"{coords[0]-margin},{coords[1]-margin},{coords[2]+2*margin},{coords[3]+2*margin}"
+        return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/full/0/default.jpg"
+    else:
+        return f"{base_url}{inv_num}/{scan_id}.jpg/full/full/0/default.jpg"
+
+
+def doc_id_to_iiif_url(doc_id: str):
+    coord_types = {'column', 'text_region', 'line'}
+    coords = None
+    page_num = None
+    is_coord_type = None
+    for coord_type in coord_types:
+        if f'-{coord_type}-' in doc_id:
+            is_coord_type = coord_type
+    if is_coord_type:
+        scan_id, type_coords = doc_id.split(f'-{is_coord_type}-')
+        coords = [int(coord) for coord in type_coords.split('-')]
+    if '-page-' in doc_id:
+        scan_id, page_num = doc_id.split(f'-page-')
+    else:
+        scan_id = doc_id
+    if coords is not None:
+        return coords_to_iiif_url(scan_id, coords)
+    if page_num is not None:
+        x = 2400 if int(page_num) % 2 == 1 else 0
+        coords = [x, 0, 2500, 3500]
+        return coords_to_iiif_url(scan_id, coords, margin=0)
+    else:
+        return coords_to_iiif_url(scan_id)
 
 
 def page_num_to_page_id(page_num: int, inv_num: int) -> str:
