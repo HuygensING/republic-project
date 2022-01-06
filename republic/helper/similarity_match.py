@@ -1,6 +1,5 @@
 from typing import List, Dict, Union
-import re
-from collections import defaultdict, Counter
+from collections import defaultdict
 import networkx as nx
 from ..fuzzy.fuzzy_keyword import Keyword
 
@@ -68,11 +67,9 @@ pairs = {('s', 'f'): 0.2,
          ('u', 'ù'): 0.1}
 
 
-
-
-
 # this is copied from the (old) fuzzy keyword searcher (for now).
 # Depending on the way we code this, it should either be moved, replaced or or removed
+
 
 def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[None, int] = None):
     """Calculate Levenshtein distance between two string. Beyond the
@@ -95,6 +92,7 @@ def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[No
         distances = distances_
     return distances[-1]
 
+
 def score_char_overlap(term1: int, term2: str) -> int:
     """Count the number of overlapping character tokens in two strings."""
     num_char_matches = 0
@@ -103,6 +101,7 @@ def score_char_overlap(term1: int, term2: str) -> int:
             term1 = term1.replace(char, "", 1)
             num_char_matches += 1
     return num_char_matches
+
 
 def get_keyword_string(keyword):
     if isinstance(keyword, str):
@@ -122,6 +121,7 @@ def confuse_distance(c1, c2):
         return pairs[(c2, c1)]
     else:
         return 1
+
 
 class FuzzyKeywordGrouper(object):
     def __init__(self, keyword_list: List[str]):
@@ -148,7 +148,6 @@ class FuzzyKeywordGrouper(object):
                     close_distance_keywords[keyword1].append(keyword2)
                     close_distance_keywords[keyword2].append(keyword1)
         return close_distance_keywords
-
 
     def find_closer_terms(self, candidate, keyword, close_terms):
         closer_terms = {}

@@ -44,6 +44,138 @@ def unicode_to_ascii(s):
     )
 
 
+def is_confuse_pair(c1, c2):
+    if (c1, c2) in pairs["unidirectional"] or (c1, c2) in pairs["bidirectional"]:
+        return True
+    elif (c2, c1) in pairs["bidirectional"]:
+        return True
+    else:
+        return False
+
+
+def confuse_distance(c1: str, c2: str) -> Union[int, float]:
+    if (c1, c2) in pairs["unidirectional"]:
+        return pairs["unidirectional"][(c1, c2)]
+    elif (c1, c2) in pairs["bidirectional"]:
+        return pairs["bidirectional"][(c1, c2)]
+    elif (c2, c1) in pairs["bidirectional"]:
+        return pairs["bidirectional"][(c2, c1)]
+    elif (not c1.isupper() and c2.isupper()) or (c1.isupper() and not c2.isupper()):
+        # An uppercase character is rarely recognised as a different lowercase
+        # character, unless it is in the pairs matrix
+        return 2
+    else:
+        return 1
+
+
+def score_levenshtein_distance_ratio(term1, term2):
+    max_distance = max(len(term1), len(term2))
+    distance = score_levenshtein_distance(term1, term2)
+    return 1 - distance / max_distance
+
+
+def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[None, int] = None):
+    """Calculate Levenshtein distance between two string. Beyond the
+    normal algorithm, a confusion matrix can be used to get non-binary
+    scores for common confusion pairs.
+    To use the confusion matrix, config the searcher with use_confuse=True"""
+    if len(s1) > len(s2):
+        s1, s2 = s2, s1
+    if not max_distance:
+        max_distance = len(s1)
+    distances = range(len(s1) + 1)
+    for i2, c2 in enumerate(s2):
+        distances_ = [i2 + 1]
+        for i1, c1 in enumerate(s1):
+            if c1 == c2:
+                distances_.append(distances[i1])
+            else:
+                dist = confuse_distance(c1, c2) if use_confuse else 1
+                distances_.append(dist + min((distances[i1], distances[i1 + 1], distances_[-1])))
+        distances = distances_
+    return distances[-1]
+
+
+pairs = {
+    "unidirectional": {
+        # common variants lower case
+        ('f', 's'): 0.5,
+        ('l', 's'): 0.5,
+        ('t', 's'): 0.5,
+        ('c', 'k'): 0.5,
+        ('t', 'd'): 0.5,
+        ('l', 'I'): 0.5,
+    },
+    "bidirectional": {
+        # common confusions lower case
+        ('j', 'i'): 0.5,
+        ('p', 'd'): 0.5,
+        ('r', 'i'): 0.5,
+        ('r', 't'): 0.5,
+        ('r', 'n'): 0.5,
+        ('e', 'c'): 0.5,
+        ('a', 'e'): 0.5,
+        ('a', 'c'): 0.5,
+        ('o', 'c'): 0.5,
+        ('y', 'i'): 0.5,
+        ('l', 'i'): 0.5,
+        # common variants upper case
+        ('C', 'K'): 0.5,
+        # common confusions upper case
+        ('I', 'l'): 0.5,
+        ('J', 'T'): 0.5,
+        ('P', 'F'): 0.5,
+        ('P', 'T'): 0.5,
+        ('T', 'F'): 0.5,
+        ('I', 'L'): 0.5,
+        ('B', '8'): 0.5,
+        # lower case vs. upper case
+        ('a', 'A'): 0.1,
+        ('b', 'B'): 0.1,
+        ('c', 'C'): 0.1,
+        ('d', 'D'): 0.1,
+        ('e', 'E'): 0.1,
+        ('f', 'F'): 0.1,
+        ('g', 'G'): 0.1,
+        ('h', 'H'): 0.1,
+        ('i', 'I'): 0.1,
+        ('j', 'J'): 0.1,
+        ('k', 'K'): 0.1,
+        ('l', 'L'): 0.1,
+        ('m', 'M'): 0.1,
+        ('n', 'N'): 0.1,
+        ('o', 'O'): 0.1,
+        ('p', 'P'): 0.1,
+        ('q', 'Q'): 0.1,
+        ('r', 'R'): 0.1,
+        ('s', 'S'): 0.1,
+        ('t', 'T'): 0.1,
+        ('u', 'U'): 0.1,
+        ('v', 'V'): 0.1,
+        ('w', 'W'): 0.1,
+        ('x', 'X'): 0.1,
+        ('y', 'Y'): 0.1,
+        ('z', 'Z'): 0.1,
+        # diacritic vs. no diacritic
+        ('e', 'é'): 0.1,
+        ('e', 'ë'): 0.1,
+        ('e', 'è'): 0.1,
+        ('a', 'ä'): 0.1,
+        ('a', 'á'): 0.1,
+        ('a', 'à'): 0.1,
+        ('i', 'ï'): 0.1,
+        ('i', 'í'): 0.1,
+        ('i', 'ì'): 0.1,
+        ('o', 'ó'): 0.1,
+        ('o', 'ö'): 0.1,
+        ('o', 'ò'): 0.1,
+        ('u', 'ú'): 0.1,
+        ('u', 'ü'): 0.1,
+        ('u', 'ù'): 0.1,
+    }
+}
+
+
 def replace_ck(word):
     vowels = {'a', 'e', 'i', 'o', 'u'}  # 'y' is a diphthong
     parts = word.split('ck')
@@ -735,7 +867,7 @@ class SkipgramSimilarity:
     def _compute_dot_product(self, term):
         skipgram_freq = self._term_to_skip(term)
         term_vl = self._get_term_vector_length(term, skipgram_freq)
-        print(term, 'vl:', term_vl)
+        # print(term, 'vl:', term_vl)
         dot_product = defaultdict(int)
         for skipgram in skipgram_freq:
             for term_length in range(len(term) - self.max_length_diff, len(term) + self.max_length_diff + 1):

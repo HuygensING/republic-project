@@ -55,34 +55,6 @@ def score_ngram_overlap_ratio(term1, term2, ngram_size):
     return overlap / max_overlap
 
 
-def score_levenshtein_distance_ratio(term1, term2):
-    max_distance = max(len(term1), len(term2))
-    distance = score_levenshtein_distance(term1, term2)
-    return 1 - distance / max_distance
-
-
-def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[None, int] = None):
-    """Calculate Levenshtein distance between two string. Beyond the
-    normal algorithm, a confusion matrix can be used to get non-binary
-    scores for common confusion pairs.
-    To use the confusion matrix, config the searcher with use_confuse=True"""
-    if len(s1) > len(s2):
-        s1, s2 = s2, s1
-    if not max_distance:
-        max_distance = len(s1)
-    distances = range(len(s1) + 1)
-    for i2, c2 in enumerate(s2):
-        distances_ = [i2 + 1]
-        for i1, c1 in enumerate(s1):
-            if c1 == c2:
-                distances_.append(distances[i1])
-            else:
-                dist = confuse_distance(c1, c2) if use_confuse else 1
-                distances_.append(dist + min((distances[i1], distances[i1 + 1], distances_[-1])))
-        distances = distances_
-    return distances[-1]
-
-
 def score_char_overlap(term1: str, term2: str) -> int:
     """Count the number of overlapping character tokens in two strings."""
     num_char_matches = 0

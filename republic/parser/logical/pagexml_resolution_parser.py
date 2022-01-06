@@ -7,6 +7,7 @@ import republic.model.resolution_phrase_model as rpm
 import republic.model.republic_document_model as rdm
 import republic.model.physical_document_model as pdm
 import republic.helper.pagexml_helper as pagexml
+from republic.helper.paragraph_helper import LineBreakDetector
 
 
 def same_column(line1: dict, line2: dict) -> bool:
@@ -148,13 +149,17 @@ def get_resolution_text_page_nums(res_doc: Union[rdm.Resolution, rdm.AttendanceL
 
 
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
-                            verb_searcher: FuzzyPhraseSearcher) -> Generator[rdm.Resolution, None, None]:
+                            verb_searcher: FuzzyPhraseSearcher,
+                            word_freq_counter: Counter = None,
+                            line_break_detector: LineBreakDetector = None) -> Generator[rdm.Resolution, None, None]:
     resolution = None
     resolution_number = 0
     attendance_list = None
     generate_id = running_id_generator(session.metadata['id'], '-resolution-')
     session_offset = 0
-    for paragraph in get_paragraphs(session):
+    para_generator = ParagraphGenerator(word_freq_counter=word_freq_counter,
+                                        line_break_detector=line_break_detector)
+    for paragraph in para_generator.get_paragraphs(session):
         # print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
@@ -222,47 +227,6 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
     return metadata
 
 
-def get_paragraphs(session: rdm.Session, prev_line: Union[None, dict] = None,
-                   word_freq_counter: Counter = None) -> Generator[rdm.RepublicParagraph, None, None]:
-    if session.paragraphs:
-        for paragraph in session.paragraphs:
-            yield paragraph
-    else:
-        text_page_num_map = {}
-        page_num_map = {}
-        for tr in session.text_regions:
-            if "text_page_num" not in tr.metadata:
-                print("MISSING text_page_num in session", session.id)
-            if tr.metadata["text_page_num"] is not None:
-                text_page_num_map[tr.id] = tr.metadata["text_page_num"]
-            page_num_map[tr.id] = tr.metadata["page_num"]
-        if 1705 <= session.date.date.year < 1711:
-            paragraphs = get_paragraphs_with_indent(session, prev_line=prev_line,
-                                                    word_freq_counter=word_freq_counter,
-                                                    text_page_num_map=text_page_num_map,
-                                                    page_num_map=page_num_map)
-        elif session.date.date.year >= 1711:
-            paragraphs = get_paragraphs_with_vertical_space(session, prev_line=prev_line,
-                                                            word_freq_counter=word_freq_counter,
-                                                            text_page_num_map=text_page_num_map,
-                                                            page_num_map=page_num_map)
-        else:
-            paragraphs = []
-        for paragraph in paragraphs:
-            paragraph.metadata['doc_id'] = session.metadata['id']
-            yield paragraph
-
-
-def make_paragraph(doc: rdm.RepublicDoc, doc_text_offset: int, paragraph_id: str,
-                   para_lines: List[pdm.PageXMLTextLine],
-                   word_freq_counter: Counter) -> rdm.RepublicParagraph:
-    metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
-    paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
-                                      word_freq_counter=word_freq_counter)
-    paragraph.metadata["start_offset"] = doc_text_offset
-    return paragraph
-
-
 def is_paragraph_boundary(prev_line, line, next_line) -> bool:
     if prev_line and pdm.same_column(line, prev_line):
         if line.is_next_to(prev_line):
@@ -285,84 +249,126 @@ def is_paragraph_boundary(prev_line, line, next_line) -> bool:
     return False
 
 
-def get_paragraphs_with_indent(doc: rdm.RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
-                               word_freq_counter: Counter = None,
-                               text_page_num_map: Dict[str, int] = None,
-                               page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
-    paragraphs: List[rdm.RepublicParagraph] = []
-    generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
-    para_lines = []
-    doc_text_offset = 0
-    lines = [line for line in doc.get_lines()]
-    for li, line in enumerate(lines):
-        if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
-            line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]
-        line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
-        next_line = lines[li + 1] if len(lines) > (li + 1) else None
-        if is_paragraph_boundary(prev_line, line, next_line):
-            if len(para_lines) > 0:
-                paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
-                                           para_lines, word_freq_counter)
-                doc_text_offset += len(paragraph.text)
-                paragraphs.append(paragraph)
-            para_lines = []
-        para_lines.append(line)
-        if not line.text or len(line.text) == 1:
-            continue
-        if prev_line and line.is_next_to(prev_line):
-            continue
-        # if prev_line and line.text and line.is_next_to(prev_line):
-        # words = re.split(r"\W+", line.text)
-        # word_counts = [word_freq_counter[word] for word in words if word != ""]
-        prev_line = line
-    if len(para_lines) > 0:
-        paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
-                                   para_lines, word_freq_counter)
-        doc_text_offset += len(paragraph.text)
-        paragraphs.append(paragraph)
-    return paragraphs
+class ParagraphGenerator:
 
+    def __init__(self, word_freq_counter: Counter = None,
+                 line_break_detector: LineBreakDetector = None):
+        self.wfc = word_freq_counter
+        self.lbd = line_break_detector
 
-def get_paragraphs_with_vertical_space(doc: rdm.RepublicDoc, prev_line: Union[None, dict] = None,
-                                       word_freq_counter: Counter = None,
-                                       text_page_num_map: Dict[str, int] = None,
-                                       page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
-    para_lines = []
-    paragraphs = []
-    doc_text_offset = 0
-    generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
-    lines = [line for line in doc.get_lines()]
-    # print('getting paragraphs with vertical space')
-    for li, line in enumerate(lines):
-        if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
-            line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]
-        line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
-        # if prev_line:
-        #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
-        if is_resolution_gap(prev_line, line):
-            if len(para_lines) > 0:
-                paragraph = make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
-                                           para_lines, word_freq_counter)
-                doc_text_offset += len(paragraph.text)
-                # print('appending paragraph:', paragraph.id)
-                # print(paragraph.text)
-                # print()
-                paragraphs.append(paragraph)
-            para_lines = []
-        para_lines.append(line)
-        if not line.text or len(line.text) == 1:
-            continue
-        if prev_line and line.is_next_to(prev_line):
-            continue
-        prev_line = line
-    if len(para_lines) > 0:
-        metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+    def get_paragraphs(self, session: rdm.Session,
+                       prev_line: Union[None, dict] = None) -> Generator[rdm.RepublicParagraph, None, None]:
+        if session.paragraphs:
+            for paragraph in session.paragraphs:
+                yield paragraph
+        else:
+            text_page_num_map = {}
+            page_num_map = {}
+            for tr in session.text_regions:
+                if "text_page_num" not in tr.metadata:
+                    print("MISSING text_page_num in session", session.id)
+                if tr.metadata["text_page_num"] is not None:
+                    text_page_num_map[tr.id] = tr.metadata["text_page_num"]
+                page_num_map[tr.id] = tr.metadata["page_num"]
+            if 1705 <= session.date.date.year < 1711:
+                paragraphs = self.get_paragraphs_with_indent(session, prev_line=prev_line,
+                                                             text_page_num_map=text_page_num_map,
+                                                             page_num_map=page_num_map)
+            elif session.date.date.year >= 1711:
+                paragraphs = self.get_paragraphs_with_vertical_space(session, prev_line=prev_line,
+                                                                     text_page_num_map=text_page_num_map,
+                                                                     page_num_map=page_num_map)
+            else:
+                paragraphs = []
+            for paragraph in paragraphs:
+                paragraph.metadata['doc_id'] = session.metadata['id']
+                yield paragraph
+
+    def make_paragraph(self, doc: rdm.RepublicDoc, doc_text_offset: int, paragraph_id: str,
+                       para_lines: List[pdm.PageXMLTextLine]) -> rdm.RepublicParagraph:
+        metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
         paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
-                                          word_freq_counter=word_freq_counter)
-        paragraph.metadata['start_offset'] = doc_text_offset
-        doc_text_offset += len(paragraph.text)
-        paragraphs.append(paragraph)
-    return paragraphs
+                                          word_freq_counter=self.wfc,
+                                          line_break_detector=self.lbd)
+        paragraph.metadata["start_offset"] = doc_text_offset
+        return paragraph
+
+    def get_paragraphs_with_indent(self, doc: rdm.RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
+                                   text_page_num_map: Dict[str, int] = None,
+                                   page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
+        paragraphs: List[rdm.RepublicParagraph] = []
+        generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
+        para_lines = []
+        doc_text_offset = 0
+        lines = [line for line in doc.get_lines()]
+        for li, line in enumerate(lines):
+            if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
+                line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]
+            line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
+            next_line = lines[li + 1] if len(lines) > (li + 1) else None
+            if is_paragraph_boundary(prev_line, line, next_line):
+                if len(para_lines) > 0:
+                    paragraph = self.make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
+                                                    para_lines)
+                    doc_text_offset += len(paragraph.text)
+                    paragraphs.append(paragraph)
+                para_lines = []
+            para_lines.append(line)
+            if not line.text or len(line.text) == 1:
+                continue
+            if prev_line and line.is_next_to(prev_line):
+                continue
+            # if prev_line and line.text and line.is_next_to(prev_line):
+            # words = re.split(r"\W+", line.text)
+            # word_counts = [word_freq_counter[word] for word in words if word != ""]
+            prev_line = line
+        if len(para_lines) > 0:
+            paragraph = self.make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
+                                            para_lines)
+            doc_text_offset += len(paragraph.text)
+            paragraphs.append(paragraph)
+        return paragraphs
+
+    def get_paragraphs_with_vertical_space(self, doc: rdm.RepublicDoc, prev_line: Union[None, dict] = None,
+                                           text_page_num_map: Dict[str, int] = None,
+                                           page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
+        para_lines = []
+        paragraphs = []
+        doc_text_offset = 0
+        generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
+        lines = [line for line in doc.get_lines()]
+        # print('getting paragraphs with vertical space')
+        for li, line in enumerate(lines):
+            if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
+                line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]
+            line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
+            # if prev_line:
+            #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
+            if is_resolution_gap(prev_line, line):
+                if len(para_lines) > 0:
+                    paragraph = self.make_paragraph(doc, doc_text_offset,
+                                                    generate_paragraph_id(), para_lines)
+                    doc_text_offset += len(paragraph.text)
+                    # print('appending paragraph:', paragraph.id)
+                    # print(paragraph.text)
+                    # print()
+                    paragraphs.append(paragraph)
+                para_lines = []
+            para_lines.append(line)
+            if not line.text or len(line.text) == 1:
+                continue
+            if prev_line and line.is_next_to(prev_line):
+                continue
+            prev_line = line
+        if len(para_lines) > 0:
+            metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
+            paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
+                                              word_freq_counter=self.wfc,
+                                              line_break_detector=self.lbd)
+            paragraph.metadata['start_offset'] = doc_text_offset
+            doc_text_offset += len(paragraph.text)
+            paragraphs.append(paragraph)
+        return paragraphs
 
 
 def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine) -> bool:
