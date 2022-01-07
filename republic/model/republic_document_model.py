@@ -7,7 +7,6 @@ from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
 import republic.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
-import republic.helper.paragraph_helper as para_helper
 import republic.helper.pagexml_helper as pagexml
 
 
@@ -76,39 +75,13 @@ class RepublicDoc(pdm.LogicalStructureDoc):
         }
 
 
-def make_line_text(line: pdm.PageXMLTextLine, do_merge: bool,
-                   end_word: str, merge_word: str) -> str:
-    line_text = line.text
-    if len(line_text) >= 2 and line_text.endswith('--'):
-        # remove the redundant hyphen
-        line_text = line_text[:-1]
-    if do_merge:
-        if line_text[-1] == '-' and merge_word.startswith(end_word) is False:
-            # the merge word does not contain a hyphen, so remove it from the line
-            # before adding it to the text
-            line_text = line_text[:-1]
-        else:
-            # the line contains no hyphen or the merge word contains the hyphen as
-            # well, so leave it in.
-            line_text = line.text
-    else:
-        # no need to meed so add line with trailing whitespace
-        if line_text[-1] == '-' and len(line_text) >= 2 and line_text[-2] != ' ':
-            # the hyphen at the end is trailing, so disconnect it from the preceding word
-            line_text = line_text[:-1] + ' - '
-        else:
-            line_text = line_text + ' '
-    return line_text
-
-
 class RepublicParagraph(RepublicDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None,
                  lines: List[pdm.PageXMLTextLine] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
                  metadata: dict = None,
                  scan_versions: List[Dict[str, any]] = None, text: str = None, text_region_ids: List[str] = None,
-                 line_ranges: List[Dict[str, any]] = None, word_freq_counter: Counter = None,
-                 line_break_detector: para_helper.LineBreakDetector = None):
+                 line_ranges: List[Dict[str, any]] = None):
         super().__init__(doc_id=doc_id, doc_type='resolution_paragraph', lines=lines,
                          text_regions=text_regions, metadata=metadata)
         if not self.id and 'id' in self.metadata:
@@ -124,13 +97,6 @@ class RepublicParagraph(RepublicDoc):
             self.text_region_ids = set(text_region_ids)
         else:
             self.text_region_ids = {text_region.metadata['id'] for text_region in self.text_regions}
-        if not text:
-            if line_break_detector is not None:
-                # use the more recent line break detector
-                self.make_paragraph_text(line_break_detector)
-            else:
-                # use the old and less accurate word freq counter
-                self.set_text(word_freq_counter)
         if len(self.text_page_nums) == 0:
             self.set_text_page_nums()
         self.add_type("republic_paragraph")
@@ -155,72 +121,6 @@ class RepublicParagraph(RepublicDoc):
         if include_text_regions:
             json_data["text_regions"] = self.text_regions
         return json_data
-
-    def make_line_range(self, line: pdm.PageXMLTextLine, line_text: str) -> Dict[str, any]:
-        return {
-            "start": len(self.text), "end": len(self.text + line_text),
-            "line_id": line.id,
-            "text_page_num": line.metadata["text_page_num"] if "text_page_num" in line.metadata else None,
-            "page_num": line.metadata["page_num"]
-        }
-
-    def make_paragraph_text(self, lbd: para_helper.LineBreakDetector):
-        self.line_ranges = []
-        prev_line = self.lines[0]
-        prev_words = para_helper.get_line_words(prev_line.text)
-        self.text = ''
-        if len(self.lines) > 1:
-            for curr_line in self.lines[1:]:
-                curr_words = para_helper.get_line_words(curr_line.text)
-                do_merge, merge_word = para_helper.determine_line_break(lbd, curr_words, prev_words)
-                prev_line_text = make_line_text(prev_line, do_merge, prev_words[-1], merge_word)
-                line_range = self.make_line_range(prev_line, prev_line_text)
-                self.line_ranges.append(line_range)
-                self.text += prev_line_text
-                prev_words = curr_words
-                prev_line = curr_line
-        # add the last line (without adding trailing whitespace)
-        line_range = self.make_line_range(prev_line, prev_line.text)
-        self.line_ranges.append(line_range)
-        self.text += prev_line.text
-        return self.text
-
-    def set_text(self, word_freq_counter: Counter = None):
-        self.line_ranges = []
-        for li, line in enumerate(self.lines):
-            if line.text is None:
-                continue
-            elif "is_bleed_through" in line.metadata and line.metadata["is_bleed_through"]:
-                continue
-            elif len(line.text) == 1:
-                continue
-            next_line = self.lines[li + 1] if len(self.lines) > li + 1 else None
-            if len(line.text) > 2 and line.text[-2] == "-" and not line.text[-1].isalpha():
-                # there is a line-break hyphen preceded by some other non-alpha char.
-                # remove both and don't add whitespace at the end to concatenate next line.
-                line_text = line.text[:-2]
-            elif line.text[-1] == "-":
-                # there is a line-break hyphen, so don't add whitespace
-                # at the end to concatenate next line.
-                line_text = line.text[:-1]
-            elif pagexml.line_ends_with_word_break(line, next_line, word_freq_counter):
-                # last word and next line first word are less frequent than their merge
-                # remove all non-alpha characters at the end and don't add whitespace
-                line_text = re.split(r"\W+$", line.text)[0]
-            elif (li + 1) == len(self.lines):
-                # last line in the paragraph, don't add whitespace.
-                line_text = line.text
-            else:
-                # regular line, so add whitespace
-                line_text = line.text + " "
-            line_range = {
-                "start": len(self.text), "end": len(self.text + line_text),
-                "line_id": line.id,
-                "text_page_num": line.metadata["text_page_num"] if "text_page_num" in line.metadata else None,
-                "page_num": line.metadata["page_num"]
-            }
-            self.text += line_text
-            self.line_ranges.append(line_range)
 
     def set_text_page_nums(self):
         text_page_nums = set()
@@ -253,26 +153,6 @@ class RepublicParagraph(RepublicDoc):
             "lines": len(self.line_ranges)
         }
         return stats_json
-
-
-def lines_to_paragraph_text(lines: List[dict], line_break_chars: str = '-',
-                            term_freq: Counter = None):
-    if term_freq:
-        raise ValueError('term frequency handling is not yet implemented!')
-    paragraph_text = ''
-    line_ranges = []
-    for line in lines:
-        if line['text'][-1] in line_break_chars:
-            line_text = line['text'][:-1]
-        else:
-            line_text = line['text'] + ' '
-        line_range = {
-            "start": len(paragraph_text), "end": len(paragraph_text + line_text),
-            'line_id': line['metadata']['id']
-        }
-        line_ranges.append(line_range)
-        paragraph_text += line_text
-    return {'paragraph_text': paragraph_text, 'line_ranges': line_ranges}
 
 
 class ResolutionElementDoc(RepublicDoc):

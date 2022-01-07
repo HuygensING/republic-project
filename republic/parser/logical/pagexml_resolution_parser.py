@@ -1,5 +1,4 @@
-from typing import Dict, Generator, List, Union
-from collections import Counter
+from typing import Dict, Generator, List, Tuple, Union
 
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
 
@@ -8,6 +7,7 @@ import republic.model.republic_document_model as rdm
 import republic.model.physical_document_model as pdm
 import republic.helper.pagexml_helper as pagexml
 from republic.helper.paragraph_helper import LineBreakDetector
+import republic.helper.paragraph_helper as para_helper
 
 
 def same_column(line1: dict, line2: dict) -> bool:
@@ -86,24 +86,6 @@ def find_resolution_starts(meeting: dict, resolution_searcher: FuzzyPhraseSearch
                 yield line
 
 
-def make_resolution_text(meeting: dict, resolution_searcher: FuzzyPhraseSearcher) -> iter:
-    text = ''
-    for line in meeting['meeting_lines']:
-        if not line['text']:
-            continue
-        if is_paragraph_start(line, meeting['meeting_lines']):
-            opening_matches = resolution_searcher.find_candidates(line['text'], use_word_boundaries=False)
-            if len(opening_matches) > 0:
-                yield text
-                text = ''
-        if line['text'][-1] == '-':
-            text += line['text'][:-1]
-        else:
-            text += line['text'] + ' '
-    if len(text) > 0:
-        yield text
-
-
 def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     resolution_phrase_searcher_config = {
         'filter_distractors': True,
@@ -150,15 +132,13 @@ def get_resolution_text_page_nums(res_doc: Union[rdm.Resolution, rdm.AttendanceL
 
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher,
-                            word_freq_counter: Counter = None,
                             line_break_detector: LineBreakDetector = None) -> Generator[rdm.Resolution, None, None]:
     resolution = None
     resolution_number = 0
     attendance_list = None
     generate_id = running_id_generator(session.metadata['id'], '-resolution-')
     session_offset = 0
-    para_generator = ParagraphGenerator(word_freq_counter=word_freq_counter,
-                                        line_break_detector=line_break_detector)
+    para_generator = ParagraphGenerator(line_break_detector=line_break_detector)
     for paragraph in para_generator.get_paragraphs(session):
         # print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
@@ -249,11 +229,43 @@ def is_paragraph_boundary(prev_line, line, next_line) -> bool:
     return False
 
 
+def make_line_text(line: pdm.PageXMLTextLine, do_merge: bool,
+                   end_word: str, merge_word: str) -> str:
+    line_text = line.text
+    if len(line_text) >= 2 and line_text.endswith('--'):
+        # remove the redundant hyphen
+        line_text = line_text[:-1]
+    if do_merge:
+        if line_text[-1] == '-' and merge_word.startswith(end_word) is False:
+            # the merge word does not contain a hyphen, so remove it from the line
+            # before adding it to the text
+            line_text = line_text[:-1]
+        else:
+            # the line contains no hyphen or the merge word contains the hyphen as
+            # well, so leave it in.
+            line_text = line.text
+    else:
+        # no need to meed so add line with trailing whitespace
+        if line_text[-1] == '-' and len(line_text) >= 2 and line_text[-2] != ' ':
+            # the hyphen at the end is trailing, so disconnect it from the preceding word
+            line_text = line_text[:-1] + ' - '
+        else:
+            line_text = line_text + ' '
+    return line_text
+
+
+def make_line_range(text: str, line: pdm.PageXMLTextLine, line_text: str) -> Dict[str, any]:
+    return {
+        "start": len(text), "end": len(text + line_text),
+        "line_id": line.id,
+        "text_page_num": line.metadata["text_page_num"] if "text_page_num" in line.metadata else None,
+        "page_num": line.metadata["page_num"]
+    }
+
+
 class ParagraphGenerator:
 
-    def __init__(self, word_freq_counter: Counter = None,
-                 line_break_detector: LineBreakDetector = None):
-        self.wfc = word_freq_counter
+    def __init__(self, line_break_detector: LineBreakDetector = None):
         self.lbd = line_break_detector
 
     def get_paragraphs(self, session: rdm.Session,
@@ -287,11 +299,33 @@ class ParagraphGenerator:
     def make_paragraph(self, doc: rdm.RepublicDoc, doc_text_offset: int, paragraph_id: str,
                        para_lines: List[pdm.PageXMLTextLine]) -> rdm.RepublicParagraph:
         metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
+        text, line_ranges = self.make_paragraph_text(para_lines)
         paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
-                                          word_freq_counter=self.wfc,
-                                          line_break_detector=self.lbd)
+                                          text=text, line_ranges=line_ranges)
         paragraph.metadata["start_offset"] = doc_text_offset
         return paragraph
+
+    def make_paragraph_text(self, lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
+        text = ''
+        line_ranges = []
+        prev_line = lines[0]
+        prev_words = para_helper.get_line_words(prev_line.text)
+        if len(lines) > 1:
+            for curr_line in lines[1:]:
+                curr_words = para_helper.get_line_words(curr_line.text)
+                do_merge, merge_word = para_helper.determine_line_break(self.lbd,
+                                                                        curr_words, prev_words)
+                prev_line_text = make_line_text(prev_line, do_merge, prev_words[-1], merge_word)
+                line_range = make_line_range(text, prev_line, prev_line_text)
+                line_ranges.append(line_range)
+                text += prev_line_text
+                prev_words = curr_words
+                prev_line = curr_line
+        # add the last line (without adding trailing whitespace)
+        line_range = make_line_range(text, prev_line, prev_line.text)
+        line_ranges.append(line_range)
+        text += prev_line.text
+        return text, line_ranges
 
     def get_paragraphs_with_indent(self, doc: rdm.RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
                                    text_page_num_map: Dict[str, int] = None,
@@ -318,9 +352,6 @@ class ParagraphGenerator:
                 continue
             if prev_line and line.is_next_to(prev_line):
                 continue
-            # if prev_line and line.text and line.is_next_to(prev_line):
-            # words = re.split(r"\W+", line.text)
-            # word_counts = [word_freq_counter[word] for word in words if word != ""]
             prev_line = line
         if len(para_lines) > 0:
             paragraph = self.make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
@@ -361,11 +392,8 @@ class ParagraphGenerator:
                 continue
             prev_line = line
         if len(para_lines) > 0:
-            metadata = get_base_metadata(doc, generate_paragraph_id(), "resolution_paragraph")
-            paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
-                                              word_freq_counter=self.wfc,
-                                              line_break_detector=self.lbd)
-            paragraph.metadata['start_offset'] = doc_text_offset
+            paragraph = self.make_paragraph(doc, doc_text_offset, generate_paragraph_id(),
+                                            para_lines)
             doc_text_offset += len(paragraph.text)
             paragraphs.append(paragraph)
         return paragraphs
