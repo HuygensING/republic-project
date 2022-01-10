@@ -219,12 +219,8 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
     gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
-    prev_page_id = None
     session_lines: List[PageXMLTextLine] = []
     for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
-        if line.metadata["page_id"] != prev_page_id:
-            print('processing lines from page', line.metadata["page_id"])
-            prev_page_id = line.metadata["page_id"]
         # before modifying, make sure we're working on a copy
         # remove all word-level objects, as we only need the text
         line.words = []

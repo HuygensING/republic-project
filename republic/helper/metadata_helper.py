@@ -73,7 +73,7 @@ def coords_to_iiif_url(scan_id: str,
         return f"{base_url}{inv_num}/{scan_id}.jpg/full/full/0/default.jpg"
 
 
-def doc_id_to_iiif_url(doc_id: str):
+def doc_id_to_iiif_url(doc_id: str, margin: int = 100):
     coord_types = {'column', 'text_region', 'line'}
     coords = None
     page_num = None
@@ -84,16 +84,16 @@ def doc_id_to_iiif_url(doc_id: str):
     if is_coord_type:
         scan_id, type_coords = doc_id.split(f'-{is_coord_type}-')
         coords = [int(coord) for coord in type_coords.split('-')]
-    if '-page-' in doc_id:
+    elif '-page-' in doc_id:
         scan_id, page_num = doc_id.split(f'-page-')
     else:
         scan_id = doc_id
     if coords is not None:
-        return coords_to_iiif_url(scan_id, coords)
+        return coords_to_iiif_url(scan_id, coords, margin=margin)
     if page_num is not None:
         x = 2400 if int(page_num) % 2 == 1 else 0
         coords = [x, 0, 2500, 3500]
-        return coords_to_iiif_url(scan_id, coords, margin=0)
+        return coords_to_iiif_url(scan_id, coords, margin=margin)
     else:
         return coords_to_iiif_url(scan_id)
 

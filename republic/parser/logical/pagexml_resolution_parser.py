@@ -8,6 +8,7 @@ import republic.model.physical_document_model as pdm
 import republic.helper.pagexml_helper as pagexml
 from republic.helper.paragraph_helper import LineBreakDetector
 import republic.helper.paragraph_helper as para_helper
+from republic.helper.metadata_helper import doc_id_to_iiif_url
 
 
 def same_column(line1: dict, line2: dict) -> bool:
@@ -299,10 +300,19 @@ class ParagraphGenerator:
     def make_paragraph(self, doc: rdm.RepublicDoc, doc_text_offset: int, paragraph_id: str,
                        para_lines: List[pdm.PageXMLTextLine]) -> rdm.RepublicParagraph:
         metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
+        text_region_ids = []
+        for line in para_lines:
+            if line.metadata["parent_id"] not in text_region_ids:
+                text_region_ids.append(line.metadata["parent_id"])
         text, line_ranges = self.make_paragraph_text(para_lines)
         paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
                                           text=text, line_ranges=line_ranges)
         paragraph.metadata["start_offset"] = doc_text_offset
+        paragraph.metadata["iiif_url"] = []
+        for text_region_id in text_region_ids:
+            paragraph.metadata["iiif_url"].append(doc_id_to_iiif_url(text_region_id))
+        if len(paragraph.metadata["iiif_url"]) == 1:
+            paragraph.metadata["iiif_url"] = paragraph.metadata["iiif_url"][0]
         return paragraph
 
     def make_paragraph_text(self, lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
