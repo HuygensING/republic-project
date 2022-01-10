@@ -214,11 +214,15 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
     session_searcher = SessionSearcher(inv_num, current_date,
                                        session_phrase_model, window_size=30)
     session_metadata = session_searcher.parse_session_metadata(None)
-    gated_window = GatedWindow(window_size=10, open_threshold=400, shut_threshold=400)
+    gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
+    prev_page_id = None
     session_lines: List[PageXMLTextLine] = []
     for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
+        if line.metadata["page_id"] != prev_page_id:
+            print('processing lines from page', line.metadata["page_id"])
+            prev_page_id = line.metadata["page_id"]
         # before modifying, make sure we're working on a copy
         # remove all word-level objects, as we only need the text
         line.words = []
@@ -242,12 +246,12 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
             # print(li, check_line.text)
         # Keep sliding until the first line in the sliding window has matches
         # last_line = session_searcher.sliding_window[-1]
-        # if not last_line:
-        #     print(None)
-        # else:
-        #     print(li - 40, last_line['text_string'], [match['match_string'] for match in last_line['matches']])
         if not session_searcher.sliding_window[0] or len(session_searcher.sliding_window[0]['matches']) == 0:
             continue
+        # if not check_line:
+        #     print(li - 40, None)
+        # else:
+        #     print(li - 40, check_line.text)
         # get the session opening elements found in the lines of the sliding window
         session_opening_elements = session_searcher.get_session_opening_elements()
         # print(session_opening_elements)

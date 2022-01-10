@@ -68,8 +68,6 @@ def sweep_list(dralist, junksweeper=junksweeper):
                 rawres.append(t)
         except ValueError:
             pass
-
-
     return rawres
 
 
