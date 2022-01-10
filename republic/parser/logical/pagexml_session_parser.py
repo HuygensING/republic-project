@@ -10,6 +10,7 @@ from republic.model.republic_session import SessionSearcher, calculate_work_day_
 from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
 from republic.helper.pagexml_helper import sort_lines_in_reading_order
+from republic.helper.metadata_helper import doc_id_to_iiif_url
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
@@ -89,6 +90,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         text_region = PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
                                         coords=coords, lines=text_region_lines[text_region_id])
         text_region.set_derived_id(text_region.metadata['scan_id'])
+        text_region.metadata["iiif_url"] = doc_id_to_iiif_url(text_region.id)
         # We're going from physical to logical structure here, so add a trace to the
         # logical structure elements about where they come from in the physical
         # structure, especially the printed page number needed for linking to locators
