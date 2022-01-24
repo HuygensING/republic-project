@@ -138,6 +138,8 @@ def do_page_type_indexing_pagexml(inv_num: int, year: int):
 def do_session_lines_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    if "period_start" not in inv_metadata:
+        return None
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
     pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
