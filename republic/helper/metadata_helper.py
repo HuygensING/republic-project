@@ -148,7 +148,7 @@ def index_intervention_page_nums(inv_metadata):
         "no_num": {},
         "type": {}
     }
-    if inv_metadata["page_num_interventions"] is None:
+    if "page_num_interventions" not in inv_metadata or inv_metadata["page_num_interventions"] is None:
         return intervene
     for intervention in inv_metadata["page_num_interventions"]:
         page_num = intervention["page_num_offset"]
