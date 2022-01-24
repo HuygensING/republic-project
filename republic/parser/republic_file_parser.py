@@ -1,9 +1,8 @@
 import os
 import glob
 import xmltodict
-from typing import Union, List, Dict
-from collections import defaultdict
-from republic.model.inventory_mapping import inventory_mapping, get_inventory_by_num
+from typing import Union, List, Tuple
+from republic.model.inventory_mapping import get_inventory_by_num, read_inventory_metadata
 from republic.helper.metadata_helper import format_scan_number, make_scan_urls
 from republic.parser.hocr.generic_hocr_parser import make_hocr_doc
 from republic.parser.hocr.republic_index_page_parser import count_page_ref_lines
@@ -47,7 +46,7 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
     urls = make_scan_urls(inv_info, scan_num=scan_num)
     return {
         'series_name': inv_info['series_name'],
-        'series_uuid': inv_info['series_uuid'],
+        'series_uuid': inv_info['series_uuid'] if 'series_uuid' in inv_info else None,
         'inventory_uuid': inv_info['inventory_uuid'],
         'inventory_num': inv_num,
         'inventory_year': inv_info['year'],
@@ -126,18 +125,22 @@ def get_inventory_num(fname: str) -> int:
     return int(fname_parts[2].split("_")[1])
 
 
-def get_inventory_period(fname: str) -> Union[str, None]:
+def get_inventory_period(fname: str) -> Union[Tuple[int, int], None]:
     inventory_num = get_inventory_num(fname)
-    for inventory_map in inventory_mapping:
+    inventory_metadata = read_inventory_metadata()
+    for inventory_map in inventory_metadata:
         if inventory_num == inventory_map["inventory_num"]:
-            return inventory_map["period"]
+            if "period_start" not in inventory_map:
+                print(inventory_num, inventory_map)
+            return inventory_map["period_start"], inventory_map["period_end"]
     else:
         return None
 
 
 def get_inventory_year(fname: str) -> Union[int, None]:
     inventory_num = get_inventory_num(fname)
-    for inventory in inventory_mapping:
+    inventory_metadata = read_inventory_metadata()
+    for inventory in inventory_metadata:
         if inventory_num == inventory["inventory_num"]:
             return inventory["year"]
     else:
@@ -198,14 +201,18 @@ def get_scan_info(fname: str, root_dir: str) -> dict:
 
 
 def get_scan_info_column(fname: str, root_dir: str) -> dict:
+    inv_period = get_inventory_period(fname)
     return {
         "scan_num": get_scan_num(fname),
         "scan_column": get_column_num(fname),
         "scan_num_column_num": get_scan_num(fname) + 0.1 * get_column_num(fname),
         "inventory_num": get_inventory_num(fname),
         "inventory_year": get_inventory_year(fname),
-        "inventory_period": get_inventory_period(fname),
-        "page_id": "inventory-{}-scan-{}-page-{}".format(get_inventory_num(fname), get_scan_num(fname), get_scan_page_num(fname)),
+        'inventory_period_start': inv_period[0],
+        'inventory_period_end': inv_period[1],
+        "page_id": "inventory-{}-scan-{}-page-{}".format(get_inventory_num(fname),
+                                                         get_scan_num(fname),
+                                                         get_scan_page_num(fname)),
         "page_num": get_scan_page_num(fname),
         "page_side": get_page_side(fname),
         "slant": get_scan_slant(fname),
@@ -215,11 +222,13 @@ def get_scan_info_column(fname: str, root_dir: str) -> dict:
 
 
 def get_scan_info_double_page(fname: str, root_dir: str) -> dict:
+    inv_period = get_inventory_period(fname)
     return {
         "scan_num": get_scan_num(fname),
         "inventory_num": get_inventory_num(fname),
         "inventory_year": get_inventory_year(fname),
-        "inventory_period": get_inventory_period(fname),
+        'inventory_period_start': inv_period[0],
+        'inventory_period_end': inv_period[1],
         "filepath": os.path.join(root_dir, fname)
     }
 
@@ -235,12 +244,3 @@ def make_page_info(scan_file: dict) -> dict:
         "page_side": scan_file["page_side"],
         "columns": []
     }
-
-
-def gather_page_columns(scan_files: list) -> defaultdict:
-    page_info = defaultdict(list)
-    for scan_file in scan_files:
-        if scan_file["page_id"] not in page_info:
-            page_info[scan_file["page_id"]] = make_page_info(scan_file)
-        page_info[scan_file["page_id"]]["columns"] += [scan_file]
-    return page_info

@@ -169,7 +169,7 @@ def do_resolution_indexing(inv_num: int, year: int):
         print(session.id)
         if "index_timestamp" not in session.metadata:
             rep_es.es_anno.delete(index="session_lines", id=session.id)
-            print("DELETING SESSION WIHT ID", session.id)
+            print("DELETING SESSION WITH ID", session.id)
             continue
         try:
             for resolution in res_parser.get_session_resolutions(session, opening_searcher,

@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 from collections import Counter
 import copy
 import re
@@ -29,7 +29,6 @@ def get_scan_pagexml(pagexml_file: str,
                      pagexml_data: Union[str, None] = None) -> pdm.PageXMLScan:
     try:
         scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
-        scan_doc.reading_order = {}
     except (AssertionError, KeyError, TypeError):
         print('Error parsing file', pagexml_file)
         raise
@@ -49,28 +48,66 @@ def get_scan_pagexml(pagexml_file: str,
     scan_doc.id = metadata['id']
     for field in metadata:
         scan_doc.metadata[field] = metadata[field]
-    if scan_doc.coords.right == 0:
-        scan_doc.metadata['scan_type'] = ['empty_scan']
-    elif scan_doc.coords.right < 2500:
-        scan_doc.metadata['scan_type'] = ['single_page']
-    elif scan_doc.coords.right < 4900:
-        scan_doc.metadata['scan_type'] = ['double_page']
-    else:
-        scan_doc.metadata['scan_type'] = ['special_page']
+    set_scan_type(scan_doc)
     set_document_children_derived_ids(scan_doc, scan_doc.id)
     return scan_doc
 
 
+def set_scan_type(scan: pdm.PageXMLScan) -> None:
+    inv_num = scan.metadata["inventory_num"]
+    if 3096 <= inv_num <= 3348:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    elif 3760 <= inv_num <= 3864:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "printed"
+        scan.metadata["normal_odd_end"] = 4900
+        scan.metadata["normal_even_end"] = 2500
+    elif 4542 <= inv_num <= 4797:
+        scan.metadata["resolution_type"] = "secreet"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    else:
+        raise ValueError(f'Unknown REPUBLIC inventory number: {inv_num}')
+    if scan.coords.right == 0:
+        scan.metadata['scan_type'] = ['empty_scan']
+    elif scan.coords.right < scan.metadata["normal_even_end"]:
+        scan.metadata['scan_type'] = ['single_page']
+    elif scan.coords.right < scan.metadata["normal_odd_end"]:
+        scan.metadata['scan_type'] = ['double_page']
+    else:
+        scan.metadata['scan_type'] = ['special_page']
+
+
+def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
+    odd_end, even_end = 4900, 2500
+    if "normal_odd_end" in item.metadata:
+        odd_end = item.metadata["normal_odd_end"]
+    elif item.parent and "normal_odd_end" in item.parent.metadata:
+        odd_end = item.parent.metadata["normal_odd_end"]
+    if "normal_even_end" in item.metadata:
+        even_end = item.metadata["normal_even_end"]
+    elif item.parent and "normal_even_end" in item.parent.metadata:
+        even_end = item.parent.metadata["normal_even_end"]
+    return odd_end, even_end
+
+
 def is_even_side(item: pdm.PhysicalStructureDoc) -> bool:
-    return item.coords.right < 2500
+    odd_end, even_end = get_page_split_widths(item)
+    return item.coords.right < even_end
 
 
 def is_odd_side(item: pdm.PhysicalStructureDoc) -> bool:
-    return item.coords.left > 2200 and item.coords.right > 2500
+    odd_end, even_end = get_page_split_widths(item)
+    return item.coords.left > even_end - 300 and item.coords.right > even_end
 
 
 def is_extra_side(item: pdm.PhysicalStructureDoc) -> bool:
-    return item.coords.right > 4900 and item.coords.left > 4700
+    odd_end, even_end = get_page_split_widths(item)
+    return item.coords.right > odd_end and item.coords.left > odd_end - 200
 
 
 def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str) -> pdm.PageXMLPage:
@@ -102,43 +139,71 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
     page_odd = initialize_pagexml_page(scan_doc, 'odd')
     page_even = initialize_pagexml_page(scan_doc, 'even')
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
+    tr_id_map = {}
     for text_region in scan_doc.text_regions:
         text_region.metadata['scan_id'] = scan_doc.id
         if text_region.metadata and 'type' in text_region.metadata:
+            # print("DECIDING EVEN/ODD SIDE")
             if is_even_side(text_region):
+                # print("EVEN:", text_region.id)
                 page_even.add_child(text_region)
             elif is_odd_side(text_region):
+                # print("ODD:", text_region.id)
                 page_odd.add_child(text_region)
+            else:
+                print("UNKNOWN:", text_region.id, text_region.stats)
+                odd_end, even_end = get_page_split_widths(text_region)
+                print(text_region.parent.metadata["normal_odd_end"])
+                print(odd_end, even_end)
+                print(text_region.coords.box)
+                for line in text_region.lines:
+                    print(line.coords.x, line.coords.y, line.text)
         elif text_region.lines:
+            # print("TEXTREGION HAS NO TYPE:")
             even_lines = [line for line in text_region.lines if is_even_side(line)]
             odd_lines = [line for line in text_region.lines if is_odd_side(line)]
             if len(even_lines) == 0:
+                # print("NO EVEN, MOVE TR TO ODD")
                 page_odd.add_child(text_region)
             elif len(odd_lines) == 0:
+                # print("NO ODD, MOVE TR TO EVEN")
                 page_even.add_child(text_region)
             else:
                 # The text region crosses the page boundary. Split the lines into new text regions per
                 # page, and create new text regions
+                # print("SPLIT LINES")
                 odd_region = pdm.PageXMLTextRegion(lines=odd_lines, coords=pdm.parse_derived_coords(odd_lines),
                                                    metadata=text_region.metadata)
                 even_region = pdm.PageXMLTextRegion(lines=even_lines, coords=pdm.parse_derived_coords(even_lines),
                                                     metadata=text_region.metadata)
+                # print("ODD REGION", odd_region.id, odd_region.stats)
+                # print("EVEN REGION", even_region.id, even_region.stats)
+                tr_id_map[even_region.id] = text_region.id
+                tr_id_map[odd_region.id] = text_region.id
                 page_even.add_child(even_region)
                 page_odd.add_child(odd_region)
         elif text_region.text_regions:
+            # print("TEXTREGION HAS TEXTREGIONS:")
             even_text_regions = [text_region for text_region in text_region.text_regions if is_even_side(text_region)]
             odd_text_regions = [text_region for text_region in text_region.text_regions if is_odd_side(text_region)]
             if len(even_text_regions) == 0:
+                # print("NO EVEN, MOVE TR TO ODD")
                 page_odd.add_child(text_region)
             elif len(odd_text_regions) == 0:
+                # print("NO ODD, MOVE TR TO EVEN")
                 page_even.add_child(text_region)
             else:
                 # The text region crosses the page boundary. Split the text_regions into new text regions per
                 # page, and create new text regions
+                # print("SPLIT TEXTREGION")
                 odd_region = pdm.PageXMLTextRegion(text_regions=odd_text_regions, metadata=text_region.metadata,
                                                    coords=pdm.parse_derived_coords(odd_text_regions))
                 even_region = pdm.PageXMLTextRegion(text_regions=even_text_regions, metadata=text_region.metadata,
                                                     coords=pdm.parse_derived_coords(even_text_regions))
+                # print("ODD REGION", odd_region.id, odd_region.stats)
+                # print("EVEN REGION", even_region.id, even_region.stats)
+                tr_id_map[even_region.id] = text_region.id
+                tr_id_map[odd_region.id] = text_region.id
                 page_even.add_child(even_region)
                 page_odd.add_child(odd_region)
     for page_doc in [page_even, page_odd]:
@@ -152,8 +217,25 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                                                                              page_doc.coords)
             else:
                 page_doc.metadata['iiif_url'] = scan_doc.metadata['iiif_url']
+        if scan_doc.reading_order:
+            # if the scan has a reading order, adopt it for the individual pages
+            copy_reading_order(scan_doc, page_doc, tr_id_map)
         pages += [page_doc]
     return pages
+
+
+def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,
+                       tr_id_map: Dict[str, str] = None):
+    order_number = {}
+    if hasattr(sub_doc, "text_regions"):
+        for tr in sub_doc.text_regions:
+            if tr_id_map and tr.id in tr_id_map:
+                order_number[tr.id] = super_doc.reading_order_number[tr_id_map[tr.id]]
+            else:
+                order_number[tr.id] = super_doc.reading_order_number[tr.id]
+        for ti, tr_id in enumerate(sorted(order_number, key=lambda t: order_number[t])):
+            sub_doc.reading_order_number[tr_id] = ti + 1
+            sub_doc.reading_order[ti + 1] = tr_id
 
 
 def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords) -> str:
@@ -386,8 +468,14 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
         # text_regions += [text_region] if text_region.lines else text_region.text_regions
     text_regions.sort(key=lambda x: x.coords.top)
     text_regions = split_merged_regions(text_regions)
+    # remove the text_regions as direct descendants of page
+    page_doc.text_regions = []
     for text_region in text_regions:
-        if text_region.lines and text_region.coords.width > 1200:
+        if page_doc.metadata["text_type"] == "printed":
+            max_column_width = 1200
+        else:
+            max_column_width = 2200
+        if text_region.lines and text_region.coords.width > max_column_width:
             # Wide text_regions are part of the header
             text_region.main_type = 'extra'
             text_region.add_type('extra')
@@ -422,6 +510,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
         column.metadata = column_metadata
         column.set_derived_id(column.metadata['scan_id'])
         set_line_alignment(column)
+        copy_reading_order(page_doc, column)
         column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], column.coords)
     if extra_text_regions:
         extra_coords = pdm.parse_derived_coords(extra_text_regions)
@@ -430,14 +519,22 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
         extra.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], extra.coords)
         extra.set_derived_id(extra.metadata['scan_id'])
     new_page = pdm.PageXMLPage(doc_id=page_doc.id, doc_type=page_doc.type, coords=page_doc.coords,
-                               metadata=page_doc.metadata, columns=columns, extra=extra_text_regions)
+                               metadata=page_doc.metadata, columns=columns, extra=extra_text_regions,
+                               reading_order=page_doc.reading_order)
     new_page.set_parent(page_doc.parent)
     return new_page
 
 
+def swap_reading_order_ids(doc: pdm.PageXMLDoc, text_region: pdm.PageXMLTextRegion,
+                           old_id: str) -> None:
+    doc.reading_order_number[text_region.id] = doc.reading_order_number[old_id]
+    del doc.reading_order_number[old_id]
+    doc.reading_order[doc.reading_order_number[text_region.id]] = text_region.id
+
+
 def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
     pdm.set_parentage(doc)
-    doc_text_regions: List[pdm.PageXMLDoc] = []
+    doc_text_regions: List[pdm.PageXMLTextRegion] = []
     if hasattr(doc, 'text_regions'):
         doc_text_regions += doc.text_regions
     if hasattr(doc, 'columns'):
@@ -449,7 +546,12 @@ def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
             text_region.set_derived_id(scan_id)
         if 'scan_id' not in text_region.metadata:
             text_region.metadata['scan_id'] = scan_id
+        old_id = text_region.id
         text_region.set_derived_id(scan_id)
+        if doc.reading_order and old_id in doc.reading_order_number:
+            if old_id == text_region.id:
+                continue
+            swap_reading_order_ids(doc, text_region, old_id)
         if text_region.has_type('column'):
             id_field = 'column_id'
         elif text_region.has_type('header'):

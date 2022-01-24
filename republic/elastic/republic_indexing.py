@@ -16,6 +16,8 @@ from republic.helper.annotation_helper import make_match_hash_id
 def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     if isinstance(doc, pdm.StructureDoc):
         doc.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+    elif "metadata" not in doc and "inventory_uuid" in doc:
+        doc["index_timestamp"] = datetime.datetime.now().isoformat()
     else:
         doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
 
@@ -111,6 +113,8 @@ class Indexer:
         self.index_doc(index=self.config['page_index'], doc_id=page.id, doc_body=page.json)
 
     def index_inventory_metadata(self, inventory_metadata: dict):
+        if "created" in inventory_metadata:
+            inventory_metadata["updated"] = datetime.datetime.now().isoformat()
         self.index_doc(index=self.config['inventory_index'],
                        doc_id=inventory_metadata['inventory_num'],
                        doc_body=inventory_metadata)

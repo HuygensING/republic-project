@@ -134,6 +134,30 @@ def same_column(line1: PageXMLDoc, line2: PageXMLDoc) -> bool:
         return horizontal_overlap(line1.coords, line2.coords) > (line1.coords.w / 2)
 
 
+def is_vertically_overlapping(region1: PageXMLTextRegion, region2: PageXMLTextRegion) -> bool:
+    v_overlap = vertical_overlap(region1.coords, region2.coords)
+    return v_overlap / min(region1.coords.height, region2.coords.height) > 0.5
+
+
+def is_horizontally_overlapping(region1: PageXMLTextRegion, region2: PageXMLTextRegion) -> bool:
+    h_overlap = horizontal_overlap(region1.coords, region2.coords)
+    return h_overlap / min(region1.coords.width, region2.coords.width) > 0.5
+
+
+def is_below(region1: PageXMLTextRegion, region2: PageXMLTextRegion, margin: int = 20) -> bool:
+    if is_horizontally_overlapping(region1, region2):
+        return region1.coords.top > region2.coords.bottom - margin
+    else:
+        return False
+
+
+def is_next_to(region1: PageXMLTextRegion, region2: PageXMLTextRegion, margin: int = 20) -> bool:
+    if is_vertically_overlapping(region1, region2):
+        return region1.coords.left > region2.coords.right - margin
+    else:
+        return False
+
+
 def parse_derived_coords(document_list: list) -> Coords:
     """Derive scan coordinates for a composite document based on the list of documents it contains.
     A convex hull is drawn around all points of all contained documents."""
@@ -180,6 +204,7 @@ class StructureDoc:
         self.main_type = 'doc'
         self.metadata = metadata if metadata else {}
         self.reading_order: Dict[int, str] = reading_order if reading_order else {}
+        self.reading_order_number = {}
         self.parent: Union[StructureDoc, None] = None
 
     def set_parent(self, parent: StructureDoc):
@@ -200,8 +225,8 @@ class StructureDoc:
         if isinstance(self.type, str):
             self.type = [self.type]
         for doc_type in doc_types:
-            if doc_type not in self.type:
-                self.type.append(doc_type)
+            if doc_type in self.type:
+                self.type.remove(doc_type)
         if len(self.type) == 1:
             self.type = self.type[0]
 
@@ -336,6 +361,21 @@ class PageXMLTextLine(PageXMLDoc):
         if doc_type:
             self.add_type(doc_type)
 
+    def __lt__(self, other: PageXMLTextLine):
+        """For sorting text lines. Assumptions: reading from left to right,
+        top to bottom. If two lines are horizontally overlapping, sort from
+        top to bottom, even if the upper lines is more horizontally indented."""
+        if other == self:
+            return False
+        if horizontal_overlap(self.coords, other.coords):
+            return self.is_below(other) is False
+        elif vertical_overlap(self.coords, other.coords):
+            return self.coords.left < other.coords.left
+        elif self.coords.left < other.coords.left:
+            return True
+        else:
+            return self.coords.top < other.coords.top
+
     @property
     def json(self) -> Dict[str, any]:
         doc_json = super().json
@@ -418,10 +458,24 @@ class PageXMLTextRegion(PageXMLDoc):
         self.text_regions: List[PageXMLTextRegion] = text_regions if text_regions else []
         self.lines: List[PageXMLTextLine] = lines if lines else []
         self.orientation: Union[None, float] = orientation
+        self.reading_order_number = {}
         if self.reading_order:
             self.set_text_regions_in_reader_order()
         if doc_type:
             self.add_type(doc_type)
+
+    def __lt__(self, other: PageXMLTextRegion):
+        """For sorting text regions. Assumptions: reading from left to right,
+        top to bottom. If two regions are horizontally overlapping, sort from
+        top to bottom, even if the upper region is more horizontally indented."""
+        if other == self:
+            return False
+        if is_horizontally_overlapping(self, other):
+            print("self and other horizontally overlap", self.coords.top, other.coords.top)
+            return self.coords.top < other.coords.top
+        else:
+            print("self and other do not horizontally overlap", self.coords.left, other.coords.top)
+            return self.coords.left < other.coords.left
 
     def add_child(self, child: PageXMLDoc):
         child.set_parent(self)
@@ -457,6 +511,9 @@ class PageXMLTextRegion(PageXMLDoc):
         return [tr_map[tr_id] for tr_id in tr_ids if tr_id in tr_map]
 
     def set_text_regions_in_reader_order(self):
+        for order_number in self.reading_order:
+            text_region_id = self.reading_order[order_number]
+            self.reading_order_number[text_region_id] = order_number
         self.text_regions = self.get_text_regions_in_reading_order()
 
     def get_inner_text_regions(self) -> List[PageXMLTextRegion]:
@@ -473,23 +530,23 @@ class PageXMLTextRegion(PageXMLDoc):
     def get_lines(self) -> List[PageXMLTextLine]:
         lines: List[PageXMLTextLine] = []
         if self.text_regions:
-            for text_region in self.text_regions:
-                lines += text_region.get_lines()
+            if self.reading_order:
+                for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t.id]):
+                    lines += tr.get_lines()
+            else:
+                for text_region in sorted(self.text_regions):
+                    lines += text_region.get_lines()
         if self.lines:
             lines += self.lines
         return lines
 
     def get_words(self):
         words: List[PageXMLWord] = []
-        if self.text_regions:
-            for text_region in self.text_regions:
-                words += text_region.get_words()
-        if self.lines:
-            for line in self.lines:
-                if line.words:
-                    words += line.words
-                elif line.text:
-                    words += line.text.split(' ')
+        for line in self.get_lines():
+            if line.words:
+                words += line.words
+            elif line.text:
+                words += line.text.split(' ')
         return words
 
     @property
@@ -528,10 +585,10 @@ class PageXMLColumn(PageXMLTextRegion):
     @property
     def json(self) -> Dict[str, any]:
         doc_json = super().json
-        if self.lines:
-            doc_json['lines'] = [line.json for line in self.lines]
-        if self.text_regions:
-            doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
+        # if self.lines:
+        #     doc_json['lines'] = [line.json for line in self.lines]
+        # if self.text_regions:
+        #     doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
         doc_json['stats'] = self.stats
         return doc_json
 
@@ -560,12 +617,20 @@ class PageXMLPage(PageXMLTextRegion):
 
     def get_lines(self):
         lines = []
-        # First, add lines from columns
         if self.columns:
-            for column in self.columns:
+            # First, add lines from columns
+            for column in sorted(self.columns):
                 lines += column.get_lines()
-        # Second, add lines from text_regions
-        lines += super().get_lines()
+            # Second, add lines from text_regions
+            for tr in self.extra:
+                lines += tr.get_lines()
+        elif self.text_regions:
+            if self.reading_order:
+                for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t]):
+                    lines += tr.get_lines()
+            else:
+                for tr in sorted(self.text_regions):
+                    lines += tr.get_lines()
         return lines
 
     def add_child(self, child: PageXMLDoc, as_extra: bool = False):
@@ -585,10 +650,10 @@ class PageXMLPage(PageXMLTextRegion):
     @property
     def json(self) -> Dict[str, any]:
         doc_json = super().json
-        if self.lines:
-            doc_json['lines'] = [line.json for line in self.lines]
-        if self.text_regions:
-            doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
+        # if self.lines:
+        #    doc_json['lines'] = [line.json for line in self.lines]
+        # if self.text_regions:
+        #     doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
         if self.columns:
             doc_json['columns'] = [column.json for column in self.columns]
         if self.extra:
@@ -598,13 +663,19 @@ class PageXMLPage(PageXMLTextRegion):
 
     @property
     def stats(self):
-        stats = super().stats
-        for column in self.columns:
-            column_stats = column.stats
-            for field in ['lines', 'words']:
-                stats[field] += column_stats[field]
-        stats['columns'] = len(self.columns)
-        stats['extra'] = len(self.extra)
+        """Pages diverge from other types since they have columns and extra
+        text regions, or plain text regions, so have their own way of calculating
+        stats."""
+        lines = self.get_lines()
+        stats = {
+            "words": sum([len(line.get_words()) for line in lines]),
+            "lines": len(lines)
+        }
+        if self.columns:
+            stats['columns'] = len(self.columns)
+            stats['extra'] = len(self.extra)
+        elif self.text_regions:
+            stats['text_regions'] = len(self.text_regions)
         return stats
 
 
@@ -639,10 +710,10 @@ class PageXMLScan(PageXMLTextRegion):
     @property
     def json(self) -> Dict[str, any]:
         doc_json = super().json
-        if self.lines:
-            doc_json['lines'] = [line.json for line in self.lines]
-        if self.text_regions:
-            doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
+        # if self.lines:
+        #     doc_json['lines'] = [line.json for line in self.lines]
+        # if self.text_regions:
+        #     doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
         if self.columns:
             doc_json['columns'] = [line.json for line in self.columns]
         if self.pages:

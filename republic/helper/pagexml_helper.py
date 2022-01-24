@@ -295,7 +295,8 @@ def print_textregion_stats(text_region: pdm.PageXMLTextRegion) -> None:
     print("--------------------------------------\n")
 
 
-def pretty_print_textregion(text_region: pdm.PageXMLTextRegion, print_stats: bool = False) -> None:
+def pretty_print_textregion(text_region: pdm.PageXMLTextRegion, print_stats: bool = False,
+                            min_text_region_lines: int = 1) -> None:
     """Pretty print the text of a text region, using indentation and
     vertical space based on the average character width and average
     distance between lines. If no corresponding images of the pdm.PageXML
@@ -306,37 +307,42 @@ def pretty_print_textregion(text_region: pdm.PageXMLTextRegion, print_stats: boo
     :type text_region: pdm.PageXMLTextRegion
     :param print_stats: flag to print text_region statistics if set to True
     :type print_stats: bool
+    :param min_text_region_lines: minimum number of lines in an inner
+     text region to print the regions content
+    :type min_text_region_lines: int
     """
     if print_stats:
         print_textregion_stats(text_region)
     avg_line_distance = get_textregion_avg_line_distance(text_region)
     avg_char_width = get_textregion_avg_char_width(text_region)
     for ti, tr in enumerate(text_region.get_inner_text_regions()):
-        if len(tr.lines) < 2:
+        if len(tr.lines) < min_text_region_lines:
             continue
-        for li, curr_line in enumerate(tr.lines[:-1]):
-            next_line = tr.lines[li + 1]
+        for li, curr_line in enumerate(tr.lines):
             left_indent = (curr_line.coords.left - tr.coords.left)
             if left_indent > 0 and avg_char_width > 0:
                 preceding_whitespace = " " * int(float(left_indent) / avg_char_width)
             else:
                 preceding_whitespace = ""
-            distances = compute_baseline_distances(curr_line.baseline, next_line.baseline)
             if curr_line.text is None:
                 print()
             else:
                 print(preceding_whitespace, curr_line.text)
-            if np.median(distances) > avg_line_distance * 1.2:
-                print()
+            if li < len(tr.lines) - 1:
+                next_line = tr.lines[li + 1]
+                distances = compute_baseline_distances(curr_line.baseline, next_line.baseline)
+                if np.median(distances) > avg_line_distance * 1.2:
+                    print()
+        print('\n')
     print()
 
 
 def sort_regions_in_reading_order(doc: pdm.PageXMLDoc) -> List[pdm.PageXMLTextRegion]:
     doc_text_regions: List[pdm.PageXMLTextRegion] = []
-    if doc.reading_order and hasattr(doc, 'text_regions'):
+    if doc.reading_order and hasattr(doc, 'text_regions') and doc.text_regions:
         text_region_ids = [region for _index, region in sorted(doc.reading_order.items(), key=lambda x: x[0])]
-        return [tr for tr in sorted(doc.text_regions, key=lambda x: text_region_ids.index(x))]
-    if hasattr(doc, 'columns') and doc.columns:
+        return [tr for tr in sorted(doc.text_regions, key=lambda x: text_region_ids.index(x.id))]
+    if hasattr(doc, 'columns') and sorted(doc.columns):
         doc_text_regions = doc.columns
     elif hasattr(doc, 'text_regions') and doc.text_regions:
         doc_text_regions = doc.text_regions

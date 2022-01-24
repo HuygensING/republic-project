@@ -136,7 +136,7 @@ def make_text_page_num_query(page_num: str):
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None,
                          size: int = 10000) -> dict:
-    match_fields = [{'match': {'metadata.type': page_type}}]
+    match_fields = [{'match': {'type': page_type}}]
     if inventory_num:
         match_fields += [{'match': {'metadata.inventory_num': inventory_num}}]
     if year:

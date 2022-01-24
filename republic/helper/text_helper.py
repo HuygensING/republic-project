@@ -2,6 +2,7 @@ from typing import Dict, List, Set, Union
 from collections import Counter, defaultdict
 import json
 import os
+import gzip
 import re
 import pickle
 import unicodedata
@@ -9,7 +10,87 @@ import math
 
 from fuzzy_search.fuzzy_string import text2skipgrams
 from nltk.tokenize import sent_tokenize
-from elasticsearch import Elasticsearch
+
+
+class ResolutionSentences:
+
+    def __init__(self, res_files,
+                 lowercase: bool = True,
+                 fields: str = 'text',
+                 to_ascii: bool = False,
+                 rewrite_dict: dict = None,
+                 normalise: bool = False,
+                 include_punct: bool = False,
+                 split_pattern: str = None
+                 ):
+        self.res_files = res_files if isinstance(res_files, list) else [res_files]
+        self.lowercase = lowercase
+        if fields not in ['text', 'all']:
+            raise ValueError('fields must be "text" or "all"')
+        self.fields = fields
+        self.to_ascii = to_ascii
+        self.normalise = normalise
+        self.rewrite_dict = rewrite_dict
+        self.include_punct = include_punct
+        if split_pattern is None:
+            # by default use all characters from string.punctuation, except
+            # the hyphen, as we want to keep hyphenated words as one.
+            split_chars = r'[\!"#$%&\'\(\)\*\+,\./:;<=>?@\[\\\]^\_`{|}~ ]+'
+            split_pattern = re.compile(split_chars)
+        self.split_regex = r'\b' if include_punct else split_pattern
+
+    def __iter__(self):
+        for si, sent in enumerate(self.read_sentences()):
+            if self.fields == 'text':
+                yield sent['words']
+            else:
+                yield sent
+
+    def word_tokenize(self, sent):
+        sent = sent.lower() if self.lowercase else sent
+        return [word for word in re.split(self.split_regex, sent.strip()) if word != '']
+
+    def read_sentences(self):
+        for para in read_resolution_paragraphs(self.res_files):
+            for si, sent in enumerate(sent_tokenize(para['text'])):
+                if self.to_ascii:
+                    sent = unicode_to_ascii(sent)
+                words = self.word_tokenize(sent)
+                if self.normalise or self.rewrite_dict:
+                    # print('rewriting')
+                    words = [self.rewrite_word(word) for word in words]
+                yield {
+                    "resolution_id": para["resolution_id"],
+                    "paragraph_id": para["paragraph_id"],
+                    "sentence_num": si + 1,
+                    "text": sent,
+                    "words": words
+                }
+
+    def rewrite_word(self, word):
+        if word in self.rewrite_dict:
+            word = self.rewrite_dict[word]['most_similar_term']
+        if self.normalise:
+            return normalise_spelling(word)
+        else:
+            return word
+
+
+def calculate_word_freq(res_sents: ResolutionSentences) -> Counter:
+    word_freq = Counter()
+    for si, sent in enumerate(res_sents):
+        word_freq.update(sent)
+    return word_freq
+
+
+def save_word_freq(word_freq: Counter, word_freq_file: str) -> None:
+    with open(word_freq_file, 'wb') as fh:
+        pickle.dump(word_freq, fh)
+
+
+def load_word_freq(word_freq_file: str) -> Counter:
+    with open(word_freq_file, 'rb') as fh:
+        return pickle.load(fh)
 
 
 def get_word_freq_filename(period: Dict[str, any], word_freq_type: str, data_dir: str) -> str:
@@ -501,8 +582,9 @@ def sent_to_vocab(sents: List[List[str]], min_freq: int = 5):
 
 def read_resolution_paragraphs(res_files):
     for res_file in res_files:
+        opener = gzip.open if res_file.endswith('.gz') else open
         print('parsing file', res_file)
-        with open(res_file, 'rt') as fh:
+        with opener(res_file, 'rt') as fh:
             for line in fh:
                 parts = line.strip().split('\t')
                 if len(parts) == 2:
@@ -510,64 +592,6 @@ def read_resolution_paragraphs(res_files):
                 elif len(parts) == 3:
                     res_id, para_id, para_text = parts
                     yield {'resolution_id': res_id, 'paragraph_id': para_id, 'text': para_text}
-
-
-class ResolutionSentences:
-
-    def __init__(self, res_files,
-                 lowercase: bool = True,
-                 fields: str = 'text',
-                 to_ascii: bool = False,
-                 rewrite_dict: dict = None,
-                 normalise: bool = False,
-                 include_punct: bool = False
-                 ):
-        self.res_files = res_files if isinstance(res_files, list) else [res_files]
-        self.lowercase = lowercase
-        if fields not in ['text', 'all']:
-            raise ValueError('fields must be "text" or "all"')
-        self.fields = fields
-        self.to_ascii = to_ascii
-        self.normalise = normalise
-        self.rewrite_dict = rewrite_dict
-        self.include_punct = include_punct
-        self.split_regex = r'\b' if include_punct else r'\W+'
-
-    def __iter__(self):
-        for si, sent in enumerate(self.read_sentences()):
-            if self.fields == 'text':
-                yield sent['words']
-            else:
-                yield sent
-
-    def word_tokenize(self, sent):
-        sent = sent.lower() if self.lowercase else sent
-        return [word for word in re.split(self.split_regex, sent.strip()) if word != '']
-
-    def read_sentences(self):
-        for para in read_resolution_paragraphs(self.res_files):
-            for si, sent in enumerate(sent_tokenize(para['text'])):
-                if self.to_ascii:
-                    sent = unicode_to_ascii(sent)
-                words = self.word_tokenize(sent)
-                if self.normalise or self.rewrite_dict:
-                    # print('rewriting')
-                    words = [self.rewrite_word(word) for word in words]
-                yield {
-                    "resolution_id": para["resolution_id"],
-                    "paragraph_id": para["paragraph_id"],
-                    "sentence_num": si + 1,
-                    "text": sent,
-                    "words": words
-                }
-
-    def rewrite_word(self, word):
-        if word in self.rewrite_dict:
-            word = self.rewrite_dict[word]['most_similar_term']
-        if self.normalise:
-            return normalise_spelling(word)
-        else:
-            return word
 
 
 def read_rewrite_dictionary(dict_file: str, include_uncertain: bool = False) -> Dict[str, any]:
