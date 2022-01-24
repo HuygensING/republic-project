@@ -471,10 +471,10 @@ class PageXMLTextRegion(PageXMLDoc):
         if other == self:
             return False
         if is_horizontally_overlapping(self, other):
-            print("self and other horizontally overlap", self.coords.top, other.coords.top)
+            # print("self and other horizontally overlap", self.coords.top, other.coords.top)
             return self.coords.top < other.coords.top
         else:
-            print("self and other do not horizontally overlap", self.coords.left, other.coords.top)
+            # print("self and other do not horizontally overlap", self.coords.left, other.coords.top)
             return self.coords.left < other.coords.left
 
     def add_child(self, child: PageXMLDoc):

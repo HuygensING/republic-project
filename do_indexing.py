@@ -100,8 +100,8 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
                 page.add_type("empty_page")
                 page.metadata['type'] = [ptype for ptype in page.type]
                 page.metadata['skip'] = True
-                print("page without page_num:", page.id)
-                print("\tpage stats:", page.stats)
+                # print("page without page_num:", page.id)
+                # print("\tpage stats:", page.stats)
             else:
                 page_types = page_type_index[page.metadata['page_num']]
                 if isinstance(page_types, str):
