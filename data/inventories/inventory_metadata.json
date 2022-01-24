@@ -13515,6 +13515,7 @@
         "inventory_uuid": "a8e4c2c7-08d2-488e-8eb3-6fbbfbf59e21",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
+        "year": 1651,
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -13789,6 +13790,7 @@
         "inventory_uuid": "77e45a13-e2f1-4ce5-8ac3-4914770d35ad",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
+        "year": 1787,
         "series_name": "NL-HaNA_1.01.02"
     },
     {

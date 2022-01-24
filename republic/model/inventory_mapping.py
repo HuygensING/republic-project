@@ -23,7 +23,8 @@ def get_inventories_by_year(inventory_years: Union[int, List[int]]) -> list:
     inventory_metadata = read_inventory_metadata()
     if isinstance(inventory_years, int):
         inventory_years = [inventory_years]
-    return [inv_map for inv_map in inventory_metadata if inv_map["year"] in inventory_years]
+    inventories = [inv for inv in inventory_metadata if "year" in inv]
+    return [inv_map for inv_map in inventories if inv_map["year"] in inventory_years]
 
 
 def get_inventory_by_date(date: Union[str, RepublicDate]) -> dict:
