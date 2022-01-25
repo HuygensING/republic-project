@@ -53,6 +53,16 @@ participant_list_phrases = [
     "PRAESENTIBUS",
 ]
 
+week_day_names_handwritten = [
+    "Lunæ",
+    "Martis",
+    "Mercurii",
+    "Jovis",
+    "Veneris",
+    "Sabbathi",
+    "Dominica"
+]
+
 week_day_names = [
     "Lunae",
     "Martis",
@@ -173,7 +183,7 @@ spelling_variants = {
 session_phrase_model = [
     {
         'phrase': 'Extract uyt de Resolutien',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1603, 'end_year': 1796,
         'label': 'extract',
         'variants': [
             'Extract uyt het Resolutie-',
@@ -188,7 +198,7 @@ session_phrase_model = [
     },
     {
         'phrase': 'Nihil actum est',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1603, 'end_year': 1796,
         'label': 'rest_day'
     },
     {
@@ -214,6 +224,18 @@ session_phrase_model = [
         ],
     },
     {
+        'phrase': 'Præside,',
+        'variants': ['Praeside'],
+        'start_year': 1603, 'end_year': 1680,
+        'label': 'presiding'
+    },
+    {
+        'phrase': 'Præsentibus,',
+        'variants': ['praesentibus'],
+        'start_year': 1603, 'end_year': 1680,
+        'label': 'attending'
+    },
+    {
         'phrase': 'PRAESIDE,',
         'variants': ['P R AE S I D E,'],
         'start_year': 1703, 'end_year': 1796,
@@ -228,12 +250,12 @@ session_phrase_model = [
     {
         'phrase': 'Den Heere',
         'variants': ['De Heer'],
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1603, 'end_year': 1796,
         'label': 'president'
     },
     {
         'phrase': 'De Heeren',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1603, 'end_year': 1796,
         'label': 'attendants'
     },
     {
@@ -253,7 +275,7 @@ session_phrase_model = [
             'DE Resolutien voorleede ',
             'DE Resolutien gisteren ge-',
         ],
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1603, 'end_year': 1796,
         'label': 'reviewed'
     },
 ]

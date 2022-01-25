@@ -4,18 +4,43 @@ import copy
 
 from republic.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
 from republic.model.physical_document_model import parse_derived_coords
+import republic.model.physical_document_model as pdm
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
 from republic.helper.pagexml_helper import sort_lines_in_reading_order
+import republic.helper.pagexml_helper as pagexml_helper
 from republic.helper.metadata_helper import doc_id_to_iiif_url
+import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
     year, month, day = [int(part) for part in inv_metadata['period_start'].split('-')]
     return RepublicDate(year, month, day)
+
+
+def stream_handwritten_page_lines(page: PageXMLPage) -> Generator[PageXMLTextLine, None, None]:
+    trs = [tr for column in page.columns for tr in column.text_regions]
+    for tr in page.extra:
+        if tr.has_type('date'):
+            add_column = False
+            for column in page.columns:
+                if pdm.is_horizontally_overlapping(tr, column) and tr not in column.text_regions:
+                    # print("adding extra tr to column")
+                    column.text_regions.append(tr)
+                    add_column = True
+                    trs.append(tr)
+                    for line in tr.lines:
+                        line.metadata["column_id"] = column.id
+            # if not add_column:
+            #     print("TR:", tr.id)
+            #     for col in page.columns:
+            #         print("\tCOL:", col.id)
+    for tr in sorted(trs):
+        for line in tr.lines:
+            yield line
 
 
 def stream_resolution_page_lines(pages: List[PageXMLPage]) -> Generator[PageXMLTextLine, None, None]:
@@ -24,10 +49,14 @@ def stream_resolution_page_lines(pages: List[PageXMLPage]) -> Generator[PageXMLT
     Assumption: lines are returned in reading order."""
     pages = sorted(pages, key=lambda x: x.metadata['page_num'])
     for page in pages:
-        if not page.columns:
+        if "text_type" in page.metadata and page.metadata["text_type"] == "handwritten":
+            for line in stream_handwritten_page_lines(page):
+                yield line
+        elif not page.columns:
             continue
-        for line in sort_lines_in_reading_order(page):
-            yield line
+        else:
+            for line in sort_lines_in_reading_order(page):
+                yield line
 
 
 def score_session_opening_elements(session_opening_elements: Dict[str, int], num_elements_threshold: int) -> float:
@@ -82,6 +111,9 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
     scan_version = {}
     session_text_page_nums = set()
     for line in session_lines:
+        if "column_id" not in line.metadata:
+            print(line.id, line.parent.id, line.parent.type)
+            print(line.parent.parent.id)
         text_region_id = line.metadata['column_id']
         text_region_lines[text_region_id].append(line)
     for text_region_id in text_region_lines:
@@ -100,11 +132,13 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
             parent = parent.parent
         if parent:
             source_page = parent
-            scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
+            if "textrepo_version" in source_page.metadata:
+                scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
             text_region.metadata['page_id'] = source_page.id
             text_region.metadata['page_num'] = source_page.metadata['page_num']
             if "text_page_num" not in source_page.metadata:
-                print("MISSING text_page_num for page", source_page.id)
+                pass
+                # print("MISSING text_page_num for page", source_page.id)
             else:
                 text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
                 if isinstance(source_page.metadata["text_page_num"], int):
@@ -203,7 +237,10 @@ def get_columns_metadata(sorted_pages: List[PageXMLPage]) -> Dict[str, dict]:
                 raise KeyError('column is missing page_id')
             column_id = column.id
             column_metadata[column_id] = copy.deepcopy(column.metadata)
-            column_metadata['textrepo_version'] = page.metadata['textrepo_version']
+            if "textrepo_version" in page.metadata:
+                column_metadata['textrepo_version'] = page.metadata['textrepo_version']
+            else:
+                column_metadata['textrepo_version'] = None
     return column_metadata
 
 
@@ -257,6 +294,8 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
         if len(session_opening_elements.items()) == 0 or min(session_opening_elements.values()) != 0:
             # move to next line if first session opening element is not in the first line of the sliding window
             continue
+        # for window_line in session_searcher.sliding_window:
+        #     print(window_line["text"])
         if 'extract' in session_opening_elements:
             # what follows in the sliding window is an extract from earlier days, which looks
             # like a session opening but isn't. Reset the sliding window

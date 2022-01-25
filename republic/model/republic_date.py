@@ -7,6 +7,7 @@ import copy
 
 from republic.model.republic_phrase_model import month_names_late, month_names_early
 from republic.model.republic_phrase_model import holiday_phrases, week_day_names
+from republic.model.republic_phrase_model import week_day_names_handwritten
 
 
 exception_dates = {
@@ -96,7 +97,8 @@ exception_dates = {
 
 class RepublicDate:
 
-    def __init__(self, year: int = None, month: int = None, day: int = None, date_string: str = None):
+    def __init__(self, year: int = None, month: int = None, day: int = None,
+                 date_string: str = None, text_type: str = "printed"):
         """A Republic date extends the regular datetime.date object with names
         for weekday and month, a date string as used in the session openings,
         and methods for checking whether the current date is a work day, a rest
@@ -119,7 +121,11 @@ class RepublicDate:
         self.year = date.year
         self.month = date.month
         self.day = date.day
-        self.day_name = week_day_names[self.date.weekday()]
+        self.text_type = text_type
+        if self.text_type == "handwritten":
+            self.day_name = week_day_names_handwritten[self.date.weekday()]
+        else:
+            self.day_name = week_day_names[self.date.weekday()]
         self.month_name = month_names_early[self.month - 1] if self.year <= 1750 else month_names_late[self.month - 1]
         self.date_string = f"{self.day_name} den {self.day} {self.month_name}"
         self.date_year_string = f"{self.date_string} {self.year}."

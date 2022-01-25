@@ -36,7 +36,12 @@ def get_scan_pagexml(pagexml_file: str,
         # add scan coordinates if they're not in the XML
         scan_doc.coords = pdm.parse_derived_coords(scan_doc.text_regions)
     for text_region in scan_doc.text_regions:
-        if text_region.types.intersection({'date', 'page-number'}):
+        if "text_type" in scan_doc.metadata \
+                and scan_doc.metadata["text_type"] == "handwritten" \
+                and text_region.has_type('date') \
+                and len(' '.join([line.text for line in text_region.lines])) > 15:
+            text_region.add_type(['main'])
+        elif text_region.types.intersection({'date', 'page-number'}):
             text_region.add_type(['header', 'extra'])
         elif text_region.types.intersection({'catch-word', 'signature-mark'}):
             text_region.add_type(['footer', 'extra'])
@@ -316,7 +321,7 @@ def compute_pixel_dist(lines: List[pdm.PageXMLTextLine]) -> Counter:
     """Count how many lines are above each horizontal pixel coordinate."""
     pixel_dist = Counter()
     for line in lines:
-        pixel_dist.update([pixel for pixel in range(line.coords.left, line.coords.right+1)])
+        pixel_dist.update([pixel for pixel in range(line.coords.left, line.coords.right + 1)])
     return pixel_dist
 
 
@@ -331,7 +336,7 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
         return gap_pixel_intervals
     curr_interval = new_gap_pixel_interval(common_pixels[0])
     for curr_index, curr_pixel in enumerate(common_pixels[:-1]):
-        next_pixel = common_pixels[curr_index+1]
+        next_pixel = common_pixels[curr_index + 1]
         if next_pixel - curr_pixel < 100:
             curr_interval["end"] = next_pixel
         else:
@@ -361,7 +366,7 @@ def within_column(line, column_range):
 
 def split_lines_on_column_gaps(page_doc, config: Dict[str, any]):
     column_ranges = find_column_gaps(page_doc.extra[0].lines, config)
-    columns = [[] for _ in range(len(column_ranges)+1)]
+    columns = [[] for _ in range(len(column_ranges) + 1)]
     extra = []
     for line in page_doc.extra[0].lines:
         index = None
@@ -744,7 +749,7 @@ def has_overlapping_columns(page: pdm.PageXMLPage) -> bool:
     for ci, curr_column in enumerate(page.columns):
         if ci == len(page.columns) - 1:
             break
-        for next_column in page.columns[ci+1:]:
+        for next_column in page.columns[ci + 1:]:
             if elements_overlap(curr_column, next_column, threshold=0.8):
                 print('Overlapping columns!')
                 print('\t', curr_column.coords.box)
@@ -865,11 +870,11 @@ def parse_title_page_columns(page: pdm.PageXMLPage) -> pdm.PageXMLPage:
         for li, line in enumerate(lines):
             if line.coords.left < 3400 and line.coords.right > 3600:
                 last_title_line_index = li
-        title_lines = lines[:last_title_line_index+1]
+        title_lines = lines[:last_title_line_index + 1]
         if len(title_lines) > 0:
             title_column = make_derived_column(title_lines, column.metadata, page.id)
             extra_columns.append(title_column)
-        body_lines = lines[last_title_line_index+1:]
+        body_lines = lines[last_title_line_index + 1:]
         left_col_lines, right_col_lines = [], []
         for line in body_lines:
             if line.coords.right < 3600:
