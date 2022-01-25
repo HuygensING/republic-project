@@ -3,6 +3,7 @@ import multiprocessing
 import os
 import time
 
+from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 
 import republic.download.republic_data_downloader as downloader
@@ -150,7 +151,13 @@ def do_session_lines_indexing(inv_num: int, year: int):
             if match.has_label('session_date'):
                 date_string = match.string
         print('\tdate string:', date_string)
-        rep_es.index_session_with_lines(session)
+        try:
+            rep_es.index_session_with_lines(session)
+        except ElasticsearchException as error:
+            print(session.id)
+            print(session.stats)
+            print(error)
+            continue
 
 
 def do_session_text_indexing(inv_num: int, year: int):
