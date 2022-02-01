@@ -331,9 +331,10 @@ class ParagraphGenerator:
                 do_merge, merge_word = para_helper.determine_line_break(self.lbd,
                                                                         curr_words, prev_words)
                 prev_line_text = make_line_text(prev_line, do_merge, prev_words[-1], merge_word)
-                line_range = make_line_range(text, prev_line, prev_line_text)
-                line_ranges.append(line_range)
-                text += prev_line_text
+                if prev_line.text is not None:
+                    line_range = make_line_range(text, prev_line, prev_line_text)
+                    line_ranges.append(line_range)
+                    text += prev_line_text
                 prev_words = curr_words
                 prev_line = curr_line
         # add the last line (without adding trailing whitespace)
