@@ -230,6 +230,7 @@ class ResolutionElementDoc(RepublicDoc):
 class Session(ResolutionElementDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Dict = None,
+                 session_type: str = "ordinaris",
                  paragraphs: List[RepublicParagraph] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
                  lines: List[pdm.PageXMLTextLine] = None,
                  scan_versions: List[dict] = None, evidence: List[PhraseMatch] = None, **kwargs):
@@ -240,11 +241,12 @@ class Session(ResolutionElementDoc):
                          text_regions=text_regions, lines=lines, evidence=evidence, **kwargs)
         self.session_date = RepublicDate(date_string=metadata['session_date'])
         self.main_type = "session"
+        self.session_type = session_type
         if doc_type:
             self.add_type(doc_type)
         self.date = self.session_date
         if not doc_id:
-            self.id = f"session-{self.session_date.as_date_string()}-num-1"
+            self.id = f"session-{self.session_date.as_date_string()}-{self.session_type}-num-1"
             self.metadata['id'] = self.id
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
