@@ -147,7 +147,9 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         for match in opening_matches + verb_matches:
             match.text_id = paragraph.metadata['id']
             # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
-        if len(opening_matches) > 0:
+        if len(opening_matches) > 0 and opening_matches[0].has_label('reviewed'):
+            paragraph.add_type('reviewed')
+        elif len(opening_matches) > 0:
             if attendance_list:
                 attendance_list.metadata["text_page_num"] = get_resolution_text_page_nums(attendance_list)
                 yield attendance_list
@@ -378,7 +380,20 @@ class ParagraphGenerator:
         paragraphs = []
         doc_text_offset = 0
         generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
-        lines = [line for line in doc.get_lines()]
+        if isinstance(doc, rdm.Session) and doc.date.date.year < 1705:
+            resolution_gap = 120
+            margin_trs = []
+            body_trs = []
+            for tr in doc.text_regions:
+                left_margin = 800 if tr.metadata['page_num'] % 2 == 0 else 3100
+                if tr.coords.x < left_margin and tr.coords.width < 1000:
+                    margin_trs.append(tr)
+                else:
+                    body_trs.append(tr)
+            lines = [line for tr in body_trs for line in tr.lines]
+        else:
+            resolution_gap = 80
+            lines = [line for line in doc.get_lines()]
         # print('getting paragraphs with vertical space')
         for li, line in enumerate(lines):
             if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
@@ -386,7 +401,7 @@ class ParagraphGenerator:
             line.metadata["page_num"] = page_num_map[line.metadata["parent_id"]]
             # if prev_line:
             #     print(prev_line.coords.top, prev_line.coords.bottom, line.coords.top, line.coords.bottom, line.text)
-            if is_resolution_gap(prev_line, line):
+            if is_resolution_gap(prev_line, line, resolution_gap):
                 if len(para_lines) > 0:
                     paragraph = self.make_paragraph(doc, doc_text_offset,
                                                     generate_paragraph_id(), para_lines)
@@ -410,12 +425,12 @@ class ParagraphGenerator:
         return paragraphs
 
 
-def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine) -> bool:
+def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine, resolution_gap: int) -> bool:
     if not prev_line:
         return False
     # Resolution start line has big capital with low bottom.
     # If gap between box bottoms is small, this is no resolution gap.
-    if -20 < line.coords.bottom - prev_line.coords.bottom < 80:
+    if -20 < line.coords.bottom - prev_line.coords.bottom < resolution_gap:
         # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
         return False
     # If this line starts with a big capital, this is a resolution gap.

@@ -18,7 +18,8 @@ proposition_opening_phrases = [
         'phrase': 'ONtfangen een Missive van',
         'label': ['proposition_opening', 'proposition_from_correspondence', 'proposition_type:missive'],
         'variants': [
-            'ONtfangen twee Missiven van '
+            'ONtfangen twee Missiven van ',
+            'Ontfangen een missive vanden '
         ],
         'proposition_type': 'missive',
         'max_offset': 10
@@ -144,6 +145,9 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'OP de Requeste van ',
+        'variants': [
+            'Opde requeste van '
+        ],
         'label': ['proposition_opening', 'proposition_type:requeste'],
         'proposition_type': 'requeste',
         'max_offset': 10
@@ -227,6 +231,12 @@ proposition_opening_phrases = [
         'max_offset': 10
     },
     {
+        'phrase': 'De requeste van ',
+        'label': 'proposition_opening',
+        'proposition_type': 'requeste',
+        'max_offset': 2
+    },
+    {
         'phrase': 'DE Conclusie van versoek van',
         'label': 'proposition_opening',
         'proposition_type': 'conclusie',
@@ -288,6 +298,26 @@ proposition_opening_phrases = [
         'label': 'proposition_opening',
         'proposition_type': 'rapport',
         'max_offset': 10
+    },
+    {
+        'phrase': 'DE Resolutien gisteren genomen',
+        'variants': [
+            'DE Resolutien eergisteren genomen',
+            'DE Resolutien voorleede ',
+            'DE Resolutien gisteren ge-',
+        ],
+        'start_year': 1705, 'end_year': 1796,
+        'label': 'reviewed'
+    },
+    {
+        'phrase': 'De resolutien gisteren genomen',
+        'variants': [
+            'De resolutien eergisteren genomen',
+            'De resolutien voorleden ',
+            'De resolutien gisteren ge-',
+        ],
+        'start_year': 1603, 'end_year': 1704,
+        'label': 'reviewed'
     },
 ]
 

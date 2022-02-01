@@ -275,7 +275,17 @@ session_phrase_model = [
             'DE Resolutien voorleede ',
             'DE Resolutien gisteren ge-',
         ],
-        'start_year': 1603, 'end_year': 1796,
+        'start_year': 1705, 'end_year': 1796,
+        'label': 'reviewed'
+    },
+    {
+        'phrase': 'De resolutien gisteren genomen',
+        'variants': [
+            'De resolutien eergisteren genomen',
+            'De resolutien voorleden ',
+            'De resolutien gisteren ge-',
+        ],
+        'start_year': 1603, 'end_year': 1704,
         'label': 'reviewed'
     },
 ]
