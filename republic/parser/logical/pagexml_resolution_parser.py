@@ -322,9 +322,11 @@ class ParagraphGenerator:
         text = ''
         line_ranges = []
         prev_line = lines[0]
-        prev_words = para_helper.get_line_words(prev_line.text)
+        prev_words = para_helper.get_line_words(prev_line.text) if prev_line.text else []
         if len(lines) > 1:
             for curr_line in lines[1:]:
+                if curr_line.text is None:
+                    continue
                 curr_words = para_helper.get_line_words(curr_line.text)
                 do_merge, merge_word = para_helper.determine_line_break(self.lbd,
                                                                         curr_words, prev_words)
