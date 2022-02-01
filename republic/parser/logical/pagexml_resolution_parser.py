@@ -279,7 +279,8 @@ class ParagraphGenerator:
             page_num_map = {}
             for tr in session.text_regions:
                 if "text_page_num" not in tr.metadata:
-                    print("MISSING text_page_num in session", session.id)
+                    # print("MISSING text_page_num in session", session.id)
+                    pass
                 elif tr.metadata["text_page_num"] is not None:
                     text_page_num_map[tr.id] = tr.metadata["text_page_num"]
                 page_num_map[tr.id] = tr.metadata["page_num"]
@@ -287,7 +288,7 @@ class ParagraphGenerator:
                 paragraphs = self.get_paragraphs_with_indent(session, prev_line=prev_line,
                                                              text_page_num_map=text_page_num_map,
                                                              page_num_map=page_num_map)
-            elif session.date.date.year >= 1711:
+            elif session.date.date.year < 1705 or session.date.date.year >= 1711:
                 paragraphs = self.get_paragraphs_with_vertical_space(session, prev_line=prev_line,
                                                                      text_page_num_map=text_page_num_map,
                                                                      page_num_map=page_num_map)
