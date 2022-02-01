@@ -338,9 +338,10 @@ class ParagraphGenerator:
                 prev_words = curr_words
                 prev_line = curr_line
         # add the last line (without adding trailing whitespace)
-        line_range = make_line_range(text, prev_line, prev_line.text)
-        line_ranges.append(line_range)
-        text += prev_line.text
+        if prev_line.text is not None:
+            line_range = make_line_range(text, prev_line, prev_line.text)
+            line_ranges.append(line_range)
+            text += prev_line.text
         return text, line_ranges
 
     def get_paragraphs_with_indent(self, doc: rdm.RepublicDoc, prev_line: Union[None, pdm.PageXMLTextLine] = None,
