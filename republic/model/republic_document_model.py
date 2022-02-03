@@ -428,10 +428,14 @@ class Resolution(ResolutionElementDoc):
         self.text_region_ids: Set[str] = set()
         if self.evidence:
             if self.metadata['proposition_type']:
+                print("resolution metadata has proposition_type:", self.metadata['proposition_type'])
                 self.proposition_type = self.metadata['proposition_type']
             else:
                 self.proposition_type = get_proposition_type_from_evidence(self.evidence)
                 self.metadata['proposition_type'] = self.proposition_type
+                print("resolution metadata received proposition_type:", self.metadata['proposition_type'])
+        else:
+            print("resolution has no evidence")
 
     def __repr__(self):
         return f"Resolution({json.dumps(self.json, indent=4)}"
