@@ -156,6 +156,7 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
                 attendance_list = None
             resolution_number += 1
             if resolution:
+                resolution.set_proposition_type()
                 resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')

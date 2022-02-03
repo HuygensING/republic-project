@@ -426,15 +426,18 @@ class Resolution(ResolutionElementDoc):
         self.proposer: Union[None, str, List[str]] = None
         self.session_date: Union[RepublicDate, None] = None
         self.text_region_ids: Set[str] = set()
+        self.set_proposition_type()
+
+    def __repr__(self):
+        return f"Resolution({json.dumps(self.json, indent=4)}"
+
+    def set_proposition_type(self):
         if self.evidence:
             if self.metadata['proposition_type']:
                 self.proposition_type = self.metadata['proposition_type']
             else:
                 self.proposition_type = get_proposition_type_from_evidence(self.evidence)
                 self.metadata['proposition_type'] = self.proposition_type
-
-    def __repr__(self):
-        return f"Resolution({json.dumps(self.json, indent=4)}"
 
 
 def json_to_republic_doc(json_doc: dict) -> RepublicDoc:
