@@ -434,14 +434,10 @@ class Resolution(ResolutionElementDoc):
     def set_proposition_type(self):
         if self.evidence:
             if self.metadata['proposition_type']:
-                print("resolution metadata has proposition_type:", self.metadata['proposition_type'])
                 self.proposition_type = self.metadata['proposition_type']
             else:
                 self.proposition_type = get_proposition_type_from_evidence(self.evidence)
                 self.metadata['proposition_type'] = self.proposition_type
-                print("resolution metadata received proposition_type:", self.metadata['proposition_type'])
-        else:
-            print("resolution has no evidence")
 
 
 def json_to_republic_doc(json_doc: dict) -> RepublicDoc:
