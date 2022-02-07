@@ -1,5 +1,13 @@
 # REPUBLIC Project
 
+- [Documentation](#documentation)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Using code in jupyter notebooks](#running-republic-code-from-jupyter-notebooks)
+
+
+### The REPUBLIC project
+
 Code for Huygens ING project REPUBLIC (REsolutions PUBlished In a Compuational Environment). The project creates an online computational platform to access the Resolutions of the Dutch States General.
 
 The Resolutions of the Dutch States General (1576-1796) constitute an archival series that covers more than two centuries of continuous decision making and consists of more than 500,000 pages, handwritten and printed resolutions, in separate, chronologically ordered series.
@@ -23,7 +31,7 @@ Start by cloning the code base:
 git clone git@github.com:HuygensING/republic-project.git
 ```
 
-Next, creating a settings.py file with pointers to the various elasticsearch instances and databases. Copy the `settings-example.py` file and fill in the correct details:
+Next, creating a settings.py file with pointers to the various elasticsearch instances and databases. Copy the `settings-example.py` file and fill in the correct details (ask Marijn for details):
 ```shell
 copy settings-example.py settings.py
 ```
@@ -68,4 +76,19 @@ inv_num = 3820
 resolutions = rep_es.retrieve_inventory_resolutions(inv_num)
 
 
+```
+
+### Running REPUBLIC code from jupyter notebooks
+
+If you want to use any of the packages in notebooks in the `notebook` directory, you need to add the path to repository directory to your PATH variable:
+```python
+# This is needed to add the repo dir to the path so jupyter
+# can load the republic modules directly from the notebooks
+import os
+import sys
+repo_name = 'republic-project'
+repo_dir = os.path.split(os.getcwd())[0].split(repo_name)[0] + repo_name
+print(repo_dir)
+if repo_dir not in sys.path:
+    sys.path.append(repo_dir)
 ```
