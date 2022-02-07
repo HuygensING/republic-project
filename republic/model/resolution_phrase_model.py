@@ -67,7 +67,8 @@ proposition_opening_phrases = [
         'phrase': 'hebben ter Vergaderinge voorgedragen ',
         'label': 'proposition_opening',
         'variants': [
-            'hebben ter Vergaderinge wederom voorgedragen '
+            'hebben ter Vergaderinge wederom voorgedragen ',
+            'hebben ter Vergaderinge bekent gemaeckt'
         ],
         'distractors': [
             'heeft ter Vergaderinge ingebraght',
@@ -139,6 +140,9 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'IS gehoort het rapport van ',
+        'variants': [
+            'Is gehoort het rapport vande '
+        ],
         'label': ['proposition_opening', 'proposition_type:rapport'],
         'proposition_type': 'rapport',
         'max_offset': 10
@@ -146,7 +150,7 @@ proposition_opening_phrases = [
     {
         'phrase': 'OP de Requeste van ',
         'variants': [
-            'Opde requeste van '
+            'Op de requeste van '
         ],
         'label': ['proposition_opening', 'proposition_type:requeste'],
         'proposition_type': 'requeste',

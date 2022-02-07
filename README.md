@@ -1,8 +1,6 @@
 # REPUBLIC Project
 
-Code for Huygens ING project REPUBLIC (REsolutions PUBlished In a  
-Compuational Environment). The project creates an online computational  
-platform to access the Resolutions of the Dutch States General.
+Code for Huygens ING project REPUBLIC (REsolutions PUBlished In a Compuational Environment). The project creates an online computational platform to access the Resolutions of the Dutch States General.
 
 The Resolutions of the Dutch States General (1576-1796) constitute an archival series that covers more than two centuries of continuous decision making and consists of more than 500,000 pages, handwritten and printed resolutions, in separate, chronologically ordered series.
 
@@ -16,6 +14,26 @@ Project website: [https://republic.huygens.knaw.nl](https://republic.huygens.kna
 
 - [Parsing HTR/OCR output files](./docs/pagexml_scans.md)
 - [Using phrase models and fuzzy search](./docs/phrase_models.md)
+
+
+### Installation
+
+Start by cloning the code base:
+```shell
+git clone git@github.com:HuygensING/republic-project.git
+```
+
+Next, creating a settings.py file with pointers to the various elasticsearch instances and databases. Copy the `settings-example.py` file and fill in the correct details:
+```shell
+copy settings-example.py settings.py
+```
+
+Then, set up the virtual environment, installl required packages and fire up jupyter notebook:
+```shell
+pipenv --python 3.8
+pipenv install -dev
+pipenv run jupyter notebook
+```
 
 
 ### Usage

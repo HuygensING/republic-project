@@ -211,10 +211,12 @@ class Retriever:
 
     def retrieve_inventory_metadata(self, inventory_num: int) -> Dict[str, any]:
         if not self.es_anno.exists(index=self.config['inventory_index'],
-                                   doc_type=self.config['inventory_doc_type'], id=inventory_num):
+                                   doc_type=self.config['inventory_doc_type'],
+                                   id=str(inventory_num)):
             raise ValueError('No inventory metadata available for inventory num {}'.format(inventory_num))
         response = self.es_anno.get(index=self.config['inventory_index'],
-                                    doc_type=self.config['inventory_doc_type'], id=inventory_num)
+                                    doc_type=self.config['inventory_doc_type'],
+                                    id=str(inventory_num))
         return response['_source']
 
     def retrieve_inventory_scans(self, inventory_num: int) -> list:
@@ -406,7 +408,7 @@ class Retriever:
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
         query = make_bool_query(match_fields)
-        return self.retrieve_resolutions_by_query(query)
+        return self.retrieve_resolutions_by_query(query, size=1000)
 
     def scroll_resolutions_by_query(self, query: dict,
                                     scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
@@ -414,8 +416,11 @@ class Retriever:
                                     doc_type="_doc", size=10, scroll=scroll):
             yield rdm.json_to_republic_resolution(hit['_source'])
 
-    def retrieve_resolutions_by_query(self, query: dict) -> List[rdm.Resolution]:
-        response = self.es_anno.search(index=self.config['resolution_index'], doc_type="_doc", body=query)
+    def retrieve_resolutions_by_query(self, query: dict, size: int = 10, aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
+        if "query" in query:
+            response = self.es_anno.search(index=self.config['resolution_index'], body=query)
+        else:
+            response = self.es_anno.search(index=self.config['resolution_index'], query=query, aggs=aggs, size=size)
         if response['hits']['total']['value'] == 0:
             return []
         else:
@@ -507,38 +512,50 @@ class Retriever:
             print('missing scan:', doc_id)
             return None
 
-    def find_term_in_context(self, term: str,
+    def keyword_in_context(self, term: str,
                              num_hits: int = 10,
                              context_size: int = 3,
-                             index: str = "resolutions"):
+                             index: str = "resolutions",
+                             filters: List[Dict[str,any]] = None):
         query = make_paragraph_term_query(term)
+        if filters is not None:
+            query["query"]["bool"]["must"] += filters
         query['size'] = num_hits
         response = self.es_anno.search(index=index, body=query)
         pre_regex = r'(\w+\W+){,' + f'{context_size}' + r'}\b('
         post_regex = r')\b(\W+\w+){,' + f'{context_size}' + '}'
-        pre_width = context_size * 10
-        contexts = []
+        pre_width = 5 + context_size * 10
+        results = []
         for hit in response['hits']['hits']:
             doc = hit['_source']
+            res_start_offset = doc['paragraphs'][0]['metadata']['start_offset']
             for para in doc['paragraphs']:
+                para_offset = para['metadata']['start_offset'] - res_start_offset
                 for match in re.finditer(pre_regex + term + post_regex, para['text'], re.IGNORECASE):
                     main = match.group(2)
                     pre, post = match.group(0).split(main, 1)
-                    context = {
+                    if context_size > 6:
+                        context = f"{pre}{main}{post}"
+                    else:
+                        context = f"{pre: >{pre_width}}{main}{post}"
+                    result = {
                         'term': term,
                         'term_match': main,
                         'pre': pre,
                         'post': post,
-                        'context': f"{pre: >{pre_width}}{main}{post}",
-                        'para_id': para["id"]
+                        'context': context,
+                        'para_offset': match.span()[0],
+                        'para_id': para["id"],
+                        'resolution_id': doc["id"],
+                        'resolution_offset': match.span()[0] + para_offset
                     }
-                    contexts.append(context)
-        return contexts
+                    results.append(result)
+        return results
 
     def print_term_in_context(self, term: str, num_hits: int = 10, context_size: int = 5):
         prev_id = None
-        for context in self.find_term_in_context(term, num_hits=num_hits,
-                                                 context_size=context_size):
+        for context in self.keyword_in_context(term, num_hits=num_hits,
+                                               context_size=context_size):
             if context['para_id'] != prev_id:
                 print('\n', context['para_id'])
             print(context['context'])
@@ -568,11 +585,11 @@ class Retriever:
 
     def retrieve_resolutions_by_session_date(self, session_date):
         query = {'query': {'match': {'metadata.session_date': str(session_date)}}, 'size': 1000}
-        return self.retrieve_resolutions_by_query(query)
+        return self.retrieve_resolutions_by_query(query, size=1000)
 
     def retrieve_resolutions_by_session_id(self, session_id):
         query = {'query': {'match': {'metadata.session_id.keyword': session_id}}, 'size': 1000}
-        return self.retrieve_resolutions_by_query(query)
+        return self.retrieve_resolutions_by_query(query, size=1000)
 
     def retrieve_session_phrase_matches(self, session_resolutions):
         paragraph_ids = [paragraph.metadata['id'] for resolution in session_resolutions
