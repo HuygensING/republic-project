@@ -1,26 +1,46 @@
 from elasticsearch import Elasticsearch
+import elasticsearch
 from ..model.republic_attendancelist_models import TextWithMetadata
+
+
+es_api_version = elasticsearch.__version__
 
 
 def make_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_text'):
     return get_presentielijsten(es=es, year=year, index=index)
 
 
+def query_es(es: Elasticsearch, index, query, size=10, sort=None, aggs=None):
+    if es_api_version[0] <= 7 and es_api_version[1] < 15:
+        body = {
+            "query": {
+                query
+            },
+        }
+        if size:
+            body["size"] = size
+        if sort:
+            body["sort"] = sort
+        if aggs:
+            body["sort"] = aggs
+        return es.search(index=index, body=body)
+    else:
+        return es.search(index=index, query=query, size=size, sort=sort, aggs=aggs)
+
+
 def get_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_text'):
-    prs_body = {
-        "query": {
-            "bool": {
-                "must": [
-                    {"term": {"annotations.metadata.type.keyword": "attendance_list"}},
-                    {"term": {"metadata.session_year": year}}]
-            }
-        },
-        "size": 5000,
-        "sort": ["_id"],
+    query = {
+        "bool": {
+            "must": [
+                {"term": {"annotations.metadata.type.keyword": "attendance_list"}},
+                {"term": {"metadata.session_year": year}}]
+        }
     }
+    size = 5000
+    sort = ["_id"]
+    results = query_es(es, index, query, size=size, sort=sort)
 
     presentielijsten = {}
-    results = es.search(index=index, body=prs_body)
     for ob in results['hits']['hits']:
         mt = TextWithMetadata(ob)
         presentielijsten[mt.id] = mt
@@ -28,7 +48,7 @@ def get_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_tex
 
 
 def get_nihil_actum(es: Elasticsearch, index='republic_paragraphs'):
-    na_body = {"query": {
+    query = {
         "bool": {
             "must": [
                 {
@@ -37,14 +57,11 @@ def get_nihil_actum(es: Elasticsearch, index='republic_paragraphs'):
                     }
                 }
             ],
-
         }
-    },
-        "size": 5000,
-        "sort": ["metadata.meeting_date"],
     }
-
-    na_results = es.search(index=index, body=na_body)
+    size = 5000
+    sort = ["metadata.meeting_date"]
+    na_results = query_es(es, index, query, size=size, sort=sort)
     nihil_actum = {}
     for ob in na_results["hits"]["hits"]:
         if ob['_source']['metadata']['paragraph_id']:

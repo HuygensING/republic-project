@@ -1,5 +1,6 @@
 from typing import Dict, Union
 import multiprocessing
+import subprocess
 import os
 import time
 
@@ -24,6 +25,11 @@ import republic.parser.logical.index_page_parser as index_parser
 
 import run_attendancelist
 
+
+# Get the Git repository commit hash for keeping provenance
+completed_process = subprocess.run(["git", "rev-parse", "HEAD"], encoding='utf-8', stdout=subprocess.PIPE)
+if completed_process is not None:
+    commit_version = completed_process.stdout.strip()
 
 host_type = os.environ.get('REPUBLIC_HOST_TYPE')
 print('host type form environment:', host_type)
@@ -254,6 +260,8 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
 def do_inventory_attendance_list_indexing(inv_num: int, year: int):
     print(f"Indexing attendance lists with spans for inventory {inv_num} (year {year})...")
     att_spans_year = run_attendancelist.run(rep_es.es_anno, year, outdir=None, verbose=True, tofile=False)
+    if att_spans_year is None:
+        return None
     for span_list in att_spans_year:
         att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
         att_list = rep_es.retrieve_attendance_list_by_id(att_id)
@@ -261,17 +269,17 @@ def do_inventory_attendance_list_indexing(inv_num: int, year: int):
         rep_es.index_attendance_list(att_list)
 
 
-def do_inventory_lemma_reference_indexing(inv_num: int, year: int) -> None:
-    print(f"Indexing lemma references for inventory {inv_num} (year {year})...")
-    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+def do_inventory_lemma_reference_indexing(task) -> None:
+    print(f"Indexing lemma references for inventory {task['inv_num']} year {task['year']})...")
+    inv_metadata = rep_es.retrieve_inventory_metadata(task['inv_num'])
     text_page_num_map = map_text_page_nums(inv_metadata)
     page_num_map = {}
     for page_num in text_page_num_map:
         page_info = text_page_num_map[page_num]
         if "text_page_num" not in page_info or page_info["text_page_num"] is None:
             continue
-        page_num_map[page_info["text_page_num"]] = page_num_to_page_id(page_num, inv_num)
-    pages = rep_es.retrieve_index_pages(inv_num)
+        page_num_map[page_info["text_page_num"]] = page_num_to_page_id(page_num, task['inv_num'])
+    pages = rep_es.retrieve_index_pages(task['inv_num'])
     entries = index_parser.parse_inventory_index_pages(pages)
     start_time = time.time()
     ei = 0
@@ -337,7 +345,7 @@ if __name__ == "__main__":
             print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
             sys.exit(2)
         years = [year for year in range(start, end+1)]
-        tasks = [{"year": year, "type": indexing_step} for year in range(start, end+1)]
+        tasks = [{"year": year, "type": indexing_step, "commit": commit_version} for year in range(start, end+1)]
     except getopt.GetoptError:
         # Print something useful
         print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')

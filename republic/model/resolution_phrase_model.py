@@ -1,3 +1,14 @@
+import json
+
+
+def read_republic_term_dict(dict_file: str = None):
+    """Read a JSON formatted term dictionary from file"""
+    if dict_file is None:
+        dict_file = "../../data/phrase_lists/republic-term-dictionary.json"
+    with open(dict_file, 'rt') as fh:
+        return json.load(fh)
+
+
 keyword_dicts = [
     {
         'phrase': 'de Provincie van Holland en Westvriesland',

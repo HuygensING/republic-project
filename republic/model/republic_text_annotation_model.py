@@ -126,7 +126,7 @@ def make_session_text_version(session: Session, resolutions: List[Resolution] = 
         resolutions = get_session_resolutions(session, opening_searcher, verb_searcher)
     resolutions = sorted(resolutions, key=lambda x: x.paragraphs[0].metadata["start_offset"])
     for resolution in resolutions:
-        print(resolution.id, type(resolution))
+        # print(resolution.id, type(resolution))
         resolution_anno = make_resolution_annotation(resolution, session_text_offset,
                                                      session.metadata['id'])
         annotations.append(resolution_anno)

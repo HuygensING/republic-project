@@ -3,6 +3,7 @@ import copy
 import re
 from typing import Union, Dict, List
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 import republic.parser.logical.pagexml_session_parser as session_parser
@@ -104,7 +105,14 @@ class Indexer:
 
     def index_doc(self, index: str, doc_id: str, doc_body: dict):
         add_timestamp(doc_body)
-        self.es_anno.index(index=index, id=doc_id, body=doc_body)
+        try:
+            if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
+                self.es_anno.index(index=index, id=doc_id, body=doc_body)
+            else:
+                self.es_anno.index(index=index, id=doc_id, document=doc_body)
+        except ElasticsearchException:
+            print(f"Error indexing document {doc_id}")
+            raise
 
     def index_scan(self, scan: pdm.PageXMLScan):
         self.index_doc(index=self.config['scan_index'], doc_id=scan.id, doc_body=scan.json)

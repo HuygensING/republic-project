@@ -265,30 +265,85 @@ def skip_resolution(resolution: Resolution, phrase_matches: List[PhraseMatch],
     return skip
 
 
-def add_resolutions_metadata(es: Elasticsearch, resolutions: List[Resolution], config: dict,
-                             opening_searcher: FuzzyTemplateSearcher):
-    variable_matcher = VariableMatcher(6, 100, opening_searcher.template)
-    skip_formulas = {
-        'heeft aan haar Hoog Mog. voorgedragen',
-        'heeft ter Vergadering gecommuniceert ',
-        'ZYnde ter Vergaderinge geëxhibeert vier Pasporten van',
-        'hebben ter Vergaderinge ingebraght',
-        'hebben ter Vergaderinge voorgedragen'
-    }
-    metadata_docs = []
-    for resolution in resolutions:
-        phrase_matches = get_paragraph_phrase_matches(es, resolution, config)
-        if skip_resolution(resolution, phrase_matches, skip_formulas):
-            continue
-        resolution = add_resolution_metadata(resolution, phrase_matches, opening_searcher, variable_matcher)
-        if not resolution:
-            continue
-        metadata_doc = {
-            'metadata': resolution.metadata,
-            'evidence': [pm.json() for pm in resolution.evidence]
-        }
-        metadata_docs.append(metadata_doc)
-    return metadata_docs
+def get_proposition_origin(resolution_metadata):
+    if "proposition_origin" not in resolution_metadata["metadata"]:
+        return "unidentified"
+    proposition_origin = resolution_metadata["metadata"]["proposition_origin"]
+    if proposition_origin is None:
+        return "unidentified"
+    elif "location" in proposition_origin:
+        if isinstance(proposition_origin["location"], dict):
+            return proposition_origin["location"]["text"]
+        else:
+            return [location["text"] for location in proposition_origin["location"]]
+    else:
+        return "unidentified"
+
+
+def clean_role(roles):
+    clean_roles = []
+    if isinstance(roles, str):
+        roles = [roles]
+    for role in roles:
+        role = role.strip()
+        if role.endswith(" van") or role.endswith(" uit"):
+            role = role[:-4]
+        if role.startswith("den ") or role.startswith("van "):
+            role = role[4:]
+        clean_roles.append(role)
+    return clean_roles[0] if len(clean_roles) == 1 else clean_roles
+
+
+def get_proposer_role(resolution_metadata):
+    proposer = resolution_metadata["metadata"]["proposer"]
+    if proposer is None:
+        return "unidentified"
+    elif "person_role" not in proposer:
+        return "unidentified"
+    if isinstance(proposer["person_role"], dict):
+        return clean_role(proposer["person_role"]["text"])
+    else:
+        return [clean_role(role["text"]) for role in proposer["person_role"]]
+
+
+def get_proposer_location(resolution_metadata):
+    proposer = resolution_metadata["metadata"]["proposer"]
+    if proposer is None:
+        return "unidentified"
+    elif "location" not in proposer:
+        return "unidentified"
+    if isinstance(proposer["location"], dict):
+        return proposer["location"]["text"]
+    else:
+        return [role["text"] for role in proposer["location"]]
+
+
+def get_proposer_organisation(resolution_metadata):
+    proposer = resolution_metadata["metadata"]["proposer"]
+    if proposer is None:
+        return "unidentified"
+    elif "organisation" not in proposer:
+        return "unidentified"
+    if isinstance(proposer["organisation"], dict):
+        return proposer["organisation"]["text"]
+    else:
+        return [role["text"] for role in proposer["organisation"]]
+
+
+def add_proposer_metadata(resolution, resolution_metadata):
+    metadata = copy.deepcopy(resolution.metadata)
+    person_loc = get_proposer_location(resolution_metadata)
+    person_org = get_proposer_organisation(resolution_metadata)
+    metadata["proposition_origin"] = person_loc
+    metadata["proposition_organisation"] = person_org
+    metadata["proposer_role"] = get_proposer_role(resolution_metadata)
+    proposition_origin = get_proposition_origin(resolution_metadata)
+    if proposition_origin != "unidentified":
+        metadata["proposition_origin"] = proposition_origin
+    for field in resolution_metadata:
+        if field == "proposition_type":
+            metadata["proposition_type"] = resolution_metadata["metadata"]["proposition_type"]
+    return metadata
 
 
 def add_resolution_metadata(resolution: Resolution, phrase_matches: List[PhraseMatch],
@@ -351,7 +406,7 @@ def add_resolution_metadata(resolution: Resolution, phrase_matches: List[PhraseM
                 for label in phrase_match.label_list:
                     if label.startswith('proposition_type'):
                         resolution.metadata['proposition_type'] = label.split(':')[1]
-
+    resolution.metadata = add_proposer_metadata(resolution, resolution.metadata)
     # print('resolution metadata:')
     # print(json.dumps(resolution.metadata, indent=2))
     return resolution

@@ -3,6 +3,7 @@ import re
 
 import elasticsearch
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_match import PhraseMatch
 
 from settings import text_repo_url
@@ -195,7 +196,13 @@ class Retriever:
         while scroll_size > 0:
             for hit in response['hits']['hits']:
                 yield hit
-            response = es.scroll(scroll_id=sid, scroll=scroll)
+            try:
+                response = es.scroll(scroll_id=sid, scroll=scroll)
+            except ElasticsearchException:
+                print("retrieval failed for query:")
+                print(query)
+                print("last successful hit:", response["hits"]["hits"][0]["_id"])
+                raise
             # Update the scroll ID
             sid = response['_scroll_id']
             # Get the number of results that we returned in the last scroll
