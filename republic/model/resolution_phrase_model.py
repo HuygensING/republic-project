@@ -76,7 +76,7 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'hebben ter Vergaderinge voorgedragen ',
-        'label': 'proposition_opening',
+        'label': ['proposition_opening', 'proposition_type:voordracht'],
         'variants': [
             'hebben ter Vergaderinge wederom voorgedragen ',
             'hebben ter Vergaderinge bekent gemaeckt'
@@ -90,7 +90,7 @@ proposition_opening_phrases = [
     },
     {
         'phrase': '  heeft ter Vergaderinge geëxhibeert een Pasport',
-        'label': 'proposition_opening',
+        'label': ['proposition_opening', 'proposition_type:paspoort'],
         'proposition_type': 'paspoort',
         'max_offset': 500
     },

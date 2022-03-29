@@ -117,8 +117,15 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     #         del phrase['max_offset']
     print(f'building phrase model for {len(phrases)} resolution phrases')
 
-    resolution_phrase_phrase_model = PhraseModel(model=phrases, config=resolution_phrase_searcher_config)
-    resolution_phrase_searcher.index_phrase_model(resolution_phrase_phrase_model)
+    resolution_phrase_model = PhraseModel(model=phrases, config=resolution_phrase_searcher_config)
+    resolution_phrase_searcher.index_phrase_model(resolution_phrase_model)
+    for phrase in resolution_phrase_searcher.phrases:
+        if phrase.has_label('proposition_opening'):
+            custom = resolution_phrase_model.custom[phrase.phrase_string]
+            if 'proposition_type' in custom:
+                label_set = phrase.label_set
+                label_set.add(f"proposition_type:{custom['proposition_type']}")
+                phrase.label = list(label_set)
     return resolution_phrase_searcher
 
 
