@@ -535,6 +535,8 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
     # remove the text_regions as direct descendants of page
     page_doc.text_regions = []
     for text_region in text_regions:
+        if "text_type" not in page_doc.metadata:
+            set_scan_type(page_doc)
         if page_doc.metadata["text_type"] == "printed":
             max_column_width = 1200
         else:
