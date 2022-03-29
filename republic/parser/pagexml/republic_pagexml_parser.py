@@ -255,7 +255,7 @@ def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,
             else:
                 # If for some reason a text region is not in the reading order list
                 # just add it to the end of the reading order
-                super_doc.reading_order_number[tr.id] - len(super_doc.reading_order_number) + 1
+                super_doc.reading_order_number[tr.id] = len(super_doc.reading_order_number) + 1
                 order_number[tr.id] = super_doc.reading_order_number[tr.id]
         for ti, tr_id in enumerate(sorted(order_number, key=lambda t: order_number[t])):
             sub_doc.reading_order_number[tr_id] = ti + 1
