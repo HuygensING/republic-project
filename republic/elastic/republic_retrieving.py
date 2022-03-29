@@ -186,7 +186,7 @@ class Retriever:
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
                     size: int = 100, scroll: str = '2m') -> iter:
-        response = es.search(index=index, doc_type=doc_type, scroll=scroll, size=size, body=query)
+        response = es.search(index=index, scroll=scroll, size=size, body=query)
         sid = response['_scroll_id']
         scroll_size = response['hits']['total']
         print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))
