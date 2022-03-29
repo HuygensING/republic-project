@@ -535,8 +535,15 @@ class PageXMLTextRegion(PageXMLDoc):
         lines: List[PageXMLTextLine] = []
         if self.text_regions:
             if self.reading_order:
-                for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t.id]):
-                    lines += tr.get_lines()
+                try:
+                    for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t.id]):
+                        lines += tr.get_lines()
+                except KeyError:
+                    print("In", self.id, self.type)
+                    print("One of the text regions is not in the reading_order_number list")
+                    for tr in self.text_regions:
+                        print(tr.id, "is in reading_order_number:", tr.id in self.reading_order_number)
+                    raise
             else:
                 for text_region in sorted(self.text_regions):
                     lines += text_region.get_lines()
