@@ -134,14 +134,18 @@ def same_column(line1: PageXMLDoc, line2: PageXMLDoc) -> bool:
         return horizontal_overlap(line1.coords, line2.coords) > (line1.coords.w / 2)
 
 
-def is_vertically_overlapping(region1: PageXMLTextRegion, region2: PageXMLTextRegion) -> bool:
+def is_vertically_overlapping(region1: PageXMLDoc,
+                              region2: PageXMLDoc,
+                              threshold: float = 0.5) -> bool:
     v_overlap = vertical_overlap(region1.coords, region2.coords)
-    return v_overlap / min(region1.coords.height, region2.coords.height) > 0.5
+    return v_overlap / min(region1.coords.height, region2.coords.height) > threshold
 
 
-def is_horizontally_overlapping(region1: PageXMLTextRegion, region2: PageXMLTextRegion) -> bool:
+def is_horizontally_overlapping(region1: PageXMLDoc,
+                                region2: PageXMLDoc,
+                                threshold: float = 0.5) -> bool:
     h_overlap = horizontal_overlap(region1.coords, region2.coords)
-    return h_overlap / min(region1.coords.width, region2.coords.width) > 0.5
+    return h_overlap / min(region1.coords.width, region2.coords.width) > threshold
 
 
 def is_below(region1: PageXMLTextRegion, region2: PageXMLTextRegion, margin: int = 20) -> bool:

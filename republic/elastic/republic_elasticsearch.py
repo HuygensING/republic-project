@@ -56,7 +56,12 @@ def initialize_es(host_type: str = "external", timeout: int = 10,
     if config is None:
         config = copy.deepcopy(base_config)
     config["commit_version"] = commit_version
-    config["prov_host_url"] = settings.prov_host_url
+    if hasattr(settings, "prov_host_url"):
+        config["prov_host_url"] = settings.prov_host_url
+    else:
+        print("settings.py is missing a prov_host_url variable. Consider adding "
+              "a line 'prov_host_url = None' to your settings.py")
+        config["prov_host_url"] = None
     config["es_api_version"] = elasticsearch.__version__
     return RepublicElasticsearch(es_anno, es_text, config)
 

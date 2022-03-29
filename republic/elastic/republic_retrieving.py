@@ -218,11 +218,9 @@ class Retriever:
 
     def retrieve_inventory_metadata(self, inventory_num: int) -> Dict[str, any]:
         if not self.es_anno.exists(index=self.config['inventory_index'],
-                                   doc_type=self.config['inventory_doc_type'],
                                    id=str(inventory_num)):
             raise ValueError('No inventory metadata available for inventory num {}'.format(inventory_num))
         response = self.es_anno.get(index=self.config['inventory_index'],
-                                    doc_type=self.config['inventory_doc_type'],
                                     id=str(inventory_num))
         return response['_source']
 

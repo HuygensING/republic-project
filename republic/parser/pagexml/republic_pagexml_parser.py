@@ -102,7 +102,7 @@ def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
 
 def is_even_side(item: pdm.PhysicalStructureDoc) -> bool:
     odd_end, even_end = get_page_split_widths(item)
-    return item.coords.right < even_end
+    return item.coords.left < even_end - 100 and item.coords.right < even_end
 
 
 def is_odd_side(item: pdm.PhysicalStructureDoc) -> bool:
@@ -145,6 +145,7 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
     page_even = initialize_pagexml_page(scan_doc, 'even')
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     tr_id_map = {}
+    undecided = []
     for text_region in scan_doc.text_regions:
         text_region.metadata['scan_id'] = scan_doc.id
         if text_region.metadata and 'type' in text_region.metadata:
@@ -156,13 +157,7 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 # print("ODD:", text_region.id)
                 page_odd.add_child(text_region)
             else:
-                print("UNKNOWN:", text_region.id, text_region.stats)
-                odd_end, even_end = get_page_split_widths(text_region)
-                print(text_region.parent.metadata["normal_odd_end"])
-                print(odd_end, even_end)
-                print(text_region.coords.box)
-                for line in text_region.lines:
-                    print(line.coords.x, line.coords.y, line.text)
+                undecided.append(text_region)
         elif text_region.lines:
             # print("TEXTREGION HAS NO TYPE:")
             even_lines = [line for line in text_region.lines if is_even_side(line)]
@@ -217,15 +212,30 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 page_doc.coords = pdm.parse_derived_coords(page_doc.columns)
             elif len(page_doc.text_regions):
                 page_doc.coords = pdm.parse_derived_coords(page_doc.text_regions)
-            if page_doc.coords:
-                page_doc.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'],
-                                                                             page_doc.coords)
-            else:
-                page_doc.metadata['iiif_url'] = scan_doc.metadata['iiif_url']
+        decided = []
+        for undecided_tr in undecided:
+            if pdm.is_horizontally_overlapping(undecided_tr, page_doc):
+                print("Adding undecided textregion to page", page_doc.id)
+                page_doc.add_child(undecided_tr)
+                decided.append(undecided_tr)
+        undecided = [tr for tr in undecided if tr not in decided]
+        if page_doc.coords:
+            page_doc.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'],
+                                                                         page_doc.coords)
+        else:
+            page_doc.metadata['iiif_url'] = scan_doc.metadata['iiif_url']
         if scan_doc.reading_order:
             # if the scan has a reading order, adopt it for the individual pages
             copy_reading_order(scan_doc, page_doc, tr_id_map)
         pages += [page_doc]
+    for undecided_tr in undecided:
+        print("UNKNOWN:", undecided_tr.id, undecided_tr.stats)
+        odd_end, even_end = get_page_split_widths(undecided_tr)
+        # print(undecided_tr.parent.metadata)
+        print("odd end:", odd_end, "\teven end:", even_end)
+        print(undecided_tr.coords.box)
+        for line in undecided_tr.lines:
+            print(line.coords.x, line.coords.y, line.text)
     return pages
 
 
@@ -330,21 +340,27 @@ def new_gap_pixel_interval(pixel: int) -> dict:
 
 
 def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config: dict) -> list:
-    common_pixels = sorted([pixel for pixel, freq in pixel_dist.items() if freq > freq_threshold])
+    common_pixels = sorted([pixel for pixel, freq in pixel_dist.items() if freq >= freq_threshold])
+    # print("common_pixels:", common_pixels)
     gap_pixel_intervals = []
     if len(common_pixels) == 0:
         return gap_pixel_intervals
     curr_interval = new_gap_pixel_interval(common_pixels[0])
+    # print("curr_interval:", curr_interval)
+    prev_interval_end = 0
     for curr_index, curr_pixel in enumerate(common_pixels[:-1]):
         next_pixel = common_pixels[curr_index + 1]
-        if next_pixel - curr_pixel < 100:
+        # print("curr:", curr_pixel, "next:", next_pixel, "start:", curr_interval["start"], "end:", curr_interval["end"], "prev_end:", prev_interval_end)
+        if next_pixel - curr_pixel < config["column_gap"]["gap_threshold"]:
             curr_interval["end"] = next_pixel
         else:
-            if curr_interval["end"] - curr_interval["start"] < config["column_gap"]["gap_threshold"]:
+            # if curr_interval["end"] - curr_interval["start"] < config["column_gap"]["gap_threshold"]:
+            if curr_interval["start"] - prev_interval_end < config["column_gap"]["gap_threshold"]:
                 # print("skipping interval:", curr_interval, "\tcurr_pixel:", curr_pixel, "next_pixel:", next_pixel)
                 continue
             # print("adding interval:", curr_interval, "\tcurr_pixel:", curr_pixel, "next_pixel:", next_pixel)
             gap_pixel_intervals += [curr_interval]
+            prev_interval_end = curr_interval["end"]
             curr_interval = new_gap_pixel_interval(next_pixel)
     gap_pixel_intervals += [curr_interval]
     return gap_pixel_intervals
@@ -352,30 +368,73 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
 
 def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any]):
     gap_pixel_freq_threshold = int(len(lines) / 2 * config["column_gap"]["gap_pixel_freq_ratio"])
+    # print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
+    # print("freq_threshold:", gap_pixel_freq_threshold)
     gap_pixel_dist = compute_pixel_dist(lines)
+    # print("gap_pixel_dist:", gap_pixel_dist)
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config)
     return gap_pixel_intervals
 
 
-def within_column(line, column_range):
+def within_column(line, column_range, overlap_threshold: float = 0.5):
     start = max([line.coords.left, column_range["start"]])
     end = min([line.coords.right, column_range["end"]])
     overlap = end - start if end > start else 0
-    return overlap / line.coords.width > 0.5
+    return overlap / line.coords.width > overlap_threshold
 
 
-def split_lines_on_column_gaps(page_doc, config: Dict[str, any]):
-    column_ranges = find_column_gaps(page_doc.extra[0].lines, config)
-    columns = [[] for _ in range(len(column_ranges) + 1)]
-    extra = []
-    for line in page_doc.extra[0].lines:
+def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[str, any],
+                               overlap_threshold: float = 0.5):
+    column_ranges = find_column_gaps(text_region.lines, config)
+    # print(column_ranges)
+    column_ranges = [col_range for col_range in column_ranges if col_range["end"] - col_range["start"] >= 20]
+    column_lines = [[] for _ in range(len(column_ranges) + 1)]
+    extra_lines = []
+    for line in text_region.lines:
         index = None
         for column_range in column_ranges:
-            if within_column(line, column_range):
+            if within_column(line, column_range, overlap_threshold=overlap_threshold):
                 index = column_ranges.index(column_range)
-                columns[index].append(line)
+                column_lines[index].append(line)
         if index is None:
-            extra.append(line)
+            extra_lines.append(line)
+    columns = []
+    for lines in column_lines:
+        if len(lines) == 0:
+            continue
+        coords = pdm.parse_derived_coords(lines)
+        column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=coords,
+                                   lines=lines)
+        if text_region.parent and text_region.parent.id:
+            column.set_derived_id(text_region.parent.id)
+        else:
+            column.set_derived_id(text_region.id)
+        columns.append(column)
+    # column range may have expanded with lines partially overlapping initial range
+    # check which extra lines should be added to columns
+    non_col_lines = []
+    # print("NUM COLUMNS:", len(columns))
+    # print("EXTRA LINES BEFORE:", len(extra_lines))
+    for line in extra_lines:
+        is_column_line = False
+        for column in columns:
+            # print("EXTRA LINE CHECKING OVERLAP:", line.coords.left, line.coords.right, column.coords.left, column.coords.right)
+            if pdm.is_horizontally_overlapping(line, column):
+                column.lines.append(line)
+                is_column_line = True
+        if is_column_line is False:
+            non_col_lines.append(line)
+    extra_lines = non_col_lines
+    # print("EXTRA LINES AFTER:", len(extra_lines))
+    extra = None
+    if len(extra_lines) > 0:
+        coords = pdm.parse_derived_coords(extra_lines)
+        extra = pdm.PageXMLTextRegion(metadata=text_region.metadata, coords=coords,
+                                      lines=extra_lines)
+        if text_region.parent and text_region.parent.id:
+            extra.set_derived_id(text_region.parent.id)
+        else:
+            extra.set_derived_id(text_region.id)
     return columns, extra
 
 
