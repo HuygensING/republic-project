@@ -144,6 +144,10 @@ def is_vertically_overlapping(region1: PageXMLDoc,
 def is_horizontally_overlapping(region1: PageXMLDoc,
                                 region2: PageXMLDoc,
                                 threshold: float = 0.5) -> bool:
+    if region1.coords is None:
+        raise ValueError(f"No coords for {region1.id}")
+    elif region2.coords is None:
+        raise ValueError(f"No coords for {region2.id}")
     h_overlap = horizontal_overlap(region1.coords, region2.coords)
     return h_overlap / min(region1.coords.width, region2.coords.width) > threshold
 
