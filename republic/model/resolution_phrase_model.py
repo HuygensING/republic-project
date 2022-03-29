@@ -212,7 +212,7 @@ proposition_opening_phrases = [
     {
         'phrase': 'OP de Requeste van ',
         'label': 'proposition_opening',
-        'proposition_type': 'request',
+        'proposition_type': 'requeste',
         'max_offset': 10
     },
     {
