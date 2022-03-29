@@ -157,6 +157,9 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 # print("ODD:", text_region.id)
                 page_odd.add_child(text_region)
             else:
+                if text_region.coords is None:
+                    lines = text_region.get_lines()
+                    text_region.coords = pdm.parse_derived_coords(lines)
                 undecided.append(text_region)
         elif text_region.lines:
             # print("TEXTREGION HAS NO TYPE:")
@@ -242,12 +245,18 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
 def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,
                        tr_id_map: Dict[str, str] = None):
     order_number = {}
+    extra_trs = 0
     if hasattr(sub_doc, "text_regions"):
         for tr in sub_doc.text_regions:
             if tr_id_map and tr.id in tr_id_map:
                 order_number[tr.id] = super_doc.reading_order_number[tr_id_map[tr.id]]
-            else:
+            elif tr.id in super_doc.reading_order_number:
                 order_number[tr.id] = super_doc.reading_order_number[tr.id]
+            else:
+                # If for some reason a text region is not in the reading order list
+                # just add it to the end of the reading order
+                extra_trs += 1
+                order_number[tr.id] = len(super_doc.reading_order_number) + extra_trs
         for ti, tr_id in enumerate(sorted(order_number, key=lambda t: order_number[t])):
             sub_doc.reading_order_number[tr_id] = ti + 1
             sub_doc.reading_order[ti + 1] = tr_id
