@@ -501,6 +501,8 @@ def json_to_pagexml_text_region(json_doc: dict) -> pdm.PageXMLTextRegion:
 def json_to_pagexml_column(json_doc: dict) -> pdm.PageXMLColumn:
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
+    # for tr in text_regions:
+    #     print("IN COLUMN", tr.id, tr.stats)
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
     reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
 
@@ -508,6 +510,7 @@ def json_to_pagexml_column(json_doc: dict) -> pdm.PageXMLColumn:
                                coords=pdm.Coords(json_doc['coords']), text_regions=text_regions, lines=lines,
                                reading_order=reading_order)
     pdm.set_parentage(column)
+    # print("IN COLUMN", column.id, column.stats)
     return column
 
 
@@ -515,6 +518,8 @@ def json_to_pagexml_page(json_doc: dict) -> pdm.PageXMLPage:
     extra = [json_to_pagexml_text_region(text_region) for text_region in json_doc['extra']] \
         if 'extra' in json_doc else []
     columns = [json_to_pagexml_column(column) for column in json_doc['columns']] if 'columns' in json_doc else []
+    # for col in columns:
+    #     print("IN PAGE", col.id, col.stats)
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []

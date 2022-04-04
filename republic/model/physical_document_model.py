@@ -508,17 +508,25 @@ class PageXMLTextRegion(PageXMLDoc):
     
     def get_text_regions_in_reading_order(self):
         if not self.reading_order:
-            return self.text_regions
+            return sorted(self.text_regions)
         tr_ids = {region_id for _index, region_id in sorted(self.reading_order.items(), key=lambda x: x[0])}
         tr_map = {}
         for text_region in self.text_regions:
             if text_region.id not in tr_ids:
                 print("reading order:", self.reading_order)
-                raise KeyError(f"text_region with id {text_region.id} is not listed in reading_order")
+                print(f"text_region with id {text_region.id} is not listed in reading_order")
+                # raise KeyError(f"text_region with id {text_region.id} is not listed in reading_order")
             tr_map[text_region.id] = text_region
         return [tr_map[tr_id] for tr_id in tr_ids if tr_id in tr_map]
 
     def set_text_regions_in_reader_order(self):
+        for tr in self.text_regions:
+            if tr.id not in self.reading_order_number:
+                self.reading_order = None
+        if self.reading_order is None:
+            self.reading_order = {}
+            for ti, tr in enumerate(sorted(self.text_regions)):
+                self.reading_order[ti] = tr.id
         for order_number in self.reading_order:
             text_region_id = self.reading_order[order_number]
             self.reading_order_number[text_region_id] = order_number

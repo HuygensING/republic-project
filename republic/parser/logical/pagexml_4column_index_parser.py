@@ -1,5 +1,6 @@
 import copy
 from typing import Dict, List, Tuple, Union
+from collections import defaultdict
 import re
 
 import republic.parser.pagexml.republic_pagexml_parser as page_parser
@@ -13,7 +14,7 @@ day_dito_pattern = r"^(\d+) (dito|ditto)\S{,2}$"
 
 
 def move_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], target_type: str,
-               target_docs: pdm.List[pdm.PageXMLTextRegion]) -> None:
+               target_docs: pdm.List[pdm.PageXMLTextRegion], debug: bool = False) -> None:
     print("MOVING LINES")
     for target_doc in target_docs:
         print(target_type, target_doc.coords.left, target_doc.coords.right)
@@ -33,7 +34,8 @@ def move_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], target_type: st
                 #     print("target type:", target_type, "doc:", target_doc.id)
                 if pdm.is_horizontally_overlapping(line, target_doc): # and line.coords.top > target_doc.coords.top:
                     # pdm.is_vertically_overlapping(line, target_doc):
-                    # print(f"{li} moving line from {line_type} to {target_type}: {line.coords.x: >6}{line.coords.y: >6}\t{line.text}")
+                    if debug:
+                        print(f"{li} moving line from {line_type} to {target_type}: {line.coords.x: >6}{line.coords.y: >6}\t{line.text}")
                     line_types[target_type].append(line)
                     if line not in line_types[line_type]:
                         print("trying to remove line", li, line.text)
@@ -45,7 +47,7 @@ def move_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], target_type: st
             #     print(f"{li} keeping line in {line_type}: {line.coords.x: >6}{line.coords.y: >6}\t{line.text}")
 
 
-def filter_header_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]]) -> None:
+def filter_header_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], debug: bool = False) -> None:
     # Step 1a: make header box
     coords = pdm.parse_derived_coords(line_types["header"])
     header = pdm.PageXMLTextRegion("header", coords=coords)
@@ -60,18 +62,20 @@ def filter_header_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]]) -> Non
             if pdm.is_vertically_overlapping(line, header) or line.coords.bottom < header.coords.bottom:
                 line_types["header"].append(line)
                 line_types[line_type].remove(line)
-                # print(f"moving line from {line_type} to header: {line.coords.x: >6}{line.coords.y: >6}\t{line.text}")
+                if debug:
+                    print(f"moving line from {line_type} to header: {line.coords.x: >6}{line.coords.y: >6}\t{line.text}")
 
 
 def filter_target_type_lines(page_id: str, target_type: str,
                              line_types: Dict[str, List[pdm.PageXMLTextLine]],
-                             config: Dict[str, any], overlap_threshold: float = 0.1) -> None:
+                             config: Dict[str, any], overlap_threshold: float = 0.1,
+                             debug: bool = False) -> None:
     # print("FILTERING FOR TARGET", target_type)
     try:
         temp_coords = pdm.parse_derived_coords(line_types[target_type])
     except IndexError as err:
         config = copy.deepcopy(config)
-        config["column_gap"]["gap_pixel_freq_ratio"] = 0.5
+        config["column_gap"]["gap_pixel_freq_ratio"] = 0.25
         temp_coords = pdm.parse_derived_coords(line_types[target_type])
 
     temp_tr = pdm.PageXMLTextRegion(coords=temp_coords, lines=line_types[target_type])
@@ -90,10 +94,10 @@ def filter_target_type_lines(page_id: str, target_type: str,
     # for column in columns:
     #     print(f"\t{target_type}:", column.id, column.stats)
     # Step 2b: move lines from main_term to sub_lemma boxes
-    move_lines(line_types, target_type, columns)
+    move_lines(line_types, target_type, columns, debug=debug)
 
 
-def classify_lines(page_doc: pdm.PageXMLTextRegion) -> Dict[str, List[pdm.PageXMLTextLine]]:
+def classify_lines(page_doc: pdm.PageXMLTextRegion, debug: bool = False) -> Dict[str, List[pdm.PageXMLTextLine]]:
     trs = page_doc.text_regions
     if hasattr(page_doc, "columns"):
         trs += page_doc.columns
@@ -109,10 +113,12 @@ def classify_lines(page_doc: pdm.PageXMLTextRegion) -> Dict[str, List[pdm.PageXM
         "sub_lemma": [],
         "date_locator": [],
         "page_locator": [],
-        "double_col": []
+        "double_col": [],
+        "unknown": []
     }
     for line in set(lines):
         if line.text is None:
+            # print("SKIPPING NONE-TEXT LINE")
             continue
         if re.match(r"^[A-Z]\.$", line.text) and line.coords.y < 450:
             line_types["header"].append(line)
@@ -130,10 +136,11 @@ def classify_lines(page_doc: pdm.PageXMLTextRegion) -> Dict[str, List[pdm.PageXM
             line_types["sub_lemma"].append(line)
         else:
             line_types["main_term"].append(line)
-    # for line_type in line_types:
-    #     print(line_type, len(line_types[line_type]))
-    #     for line in sorted(line_types[line_type], key=lambda x: x.coords.y):
-    #         print(line_type, line.coords.left, line.coords.right, line.coords.bottom, line.text)
+    if debug:
+        for line_type in line_types:
+            print(line_type, len(line_types[line_type]))
+            for line in sorted(line_types[line_type], key=lambda x: x.coords.y):
+                print(line_type, line.coords.left, line.coords.right, line.coords.bottom, line.text)
     return line_types
 
 
@@ -141,7 +148,7 @@ def split_double_col_lines(line_types, config):
     trs = []
     print("SPLITTING DOUBLE COL LINES")
     for line_type in line_types:
-        if line_type == "header" or line_type == "double_col":
+        if line_type in {"header", "double_col", "unknown"}:
             continue
         coords = pdm.parse_derived_coords(line_types[line_type])
         temp_tr = pdm.PageXMLTextRegion(coords=coords, lines=line_types[line_type])
@@ -234,15 +241,110 @@ def check_main_sub_lemma_overlap(line_types: Dict[str, List[pdm.PageXMLTextLine]
         print(pdm.horizontal_overlap(main_col.coords, sub_col.coords))
 
 
+def move_unknowns_from_page(line_types: Dict[str, List[pdm.PageXMLTextLine]],
+                            config: Dict[str, any], debug: bool = False):
+    if debug:
+        print("MOVING UNKNOWS FROM PAGE")
+    all_cols = []
+    main_coords = pdm.parse_derived_coords(line_types["main_term"])
+    main_tr = pdm.PageXMLTextRegion(coords=main_coords, lines=line_types["main_term"])
+    main_cols, main_extra = page_parser.split_lines_on_column_gaps(main_tr, config)
+    # for col in main_cols:
+    #     col.add_type('main_term')
+    #     all_cols.append(col)
+    # if main_extra:
+    #     main_extra.add_type('main_term')
+    #     all_cols.append(main_extra)
+    sub_coords = pdm.parse_derived_coords(line_types["sub_lemma"])
+    sub_tr = pdm.PageXMLTextRegion(coords=sub_coords, lines=line_types["sub_lemma"])
+    sub_cols, sub_extra = page_parser.split_lines_on_column_gaps(sub_tr, config)
+    for col in sub_cols:
+        col.add_type('sub_lemma')
+        all_cols.append(col)
+    if sub_extra:
+        sub_extra.add_type('sub_lemma')
+        all_cols.append(sub_extra)
+    date_coords = pdm.parse_derived_coords(line_types["date_locator"])
+    date_tr = pdm.PageXMLTextRegion(coords=date_coords, lines=line_types["date_locator"])
+    date_cols, date_extra = page_parser.split_lines_on_column_gaps(date_tr, config)
+    for col in date_cols:
+        col.add_type('date_locator')
+        all_cols.append(col)
+    if date_extra:
+        date_extra.add_type('date_locator')
+        all_cols.append(date_extra)
+    page_coords = pdm.parse_derived_coords(line_types["page_locator"])
+    page_tr = pdm.PageXMLTextRegion(coords=page_coords, lines=line_types["page_locator"])
+    page_cols, page_extra = page_parser.split_lines_on_column_gaps(page_tr, config, debug=False)
+    for col in page_cols:
+        col.add_type('page_locator')
+        # print("PAGE COL:", col.id)
+        all_cols.append(col)
+    if page_extra:
+        page_extra.add_type('page_locator')
+        # print("PAGE EXTRA:", page_extra.id)
+        all_cols.append(page_extra)
+    all_cols = sorted(all_cols, key=lambda x: x.coords.left)
+    if debug:
+        for ci, col in enumerate(all_cols):
+            print("\t", ci, "of", len(all_cols), col.id, col.type)
+    first_col = all_cols[0]
+    if 'sub_lemma' not in first_col.type:
+        print("FIRST COLUMN IS NOT SUB_LEMMA:", first_col.type)
+        # remove the first column from the list
+        all_cols = all_cols[1:]
+        if 'page_locator' in first_col.type:
+            line_types["unknown"] = first_col.lines
+            for line in first_col.lines:
+                line_types["page_locator"].remove(line)
+                print("\tMOVING LINE FROM PAGE TO UNKNOWN:", line.coords.left, line.coords.right, line.text)
+
+
+def move_unknowns_to_correct_column(line_types: Dict[str, List[pdm.PageXMLTextLine]],
+                                    config: Dict[str, any], debug: bool = False):
+    cols = defaultdict(list)
+    for line_type in ['main_term', 'sub_lemma', 'date_locator', 'page_locator']:
+        type_coords = pdm.parse_derived_coords(line_types[line_type])
+        type_tr = pdm.PageXMLTextRegion(coords=type_coords, lines=line_types[line_type])
+        type_cols, type_extra = page_parser.split_lines_on_column_gaps(type_tr, config)
+        cols[line_type] = type_cols
+        if type_extra:
+            cols[line_type].append(type_extra)
+    unknown_lines = line_types["unknown"]
+    for line in unknown_lines:
+        found_col = False
+        for line_type in cols:
+            for col in cols[line_type]:
+                if pdm.is_horizontally_overlapping(line, col):
+                    if debug:
+                        print("MOVING LINE FROM UNKNOWN TO", line_type.upper())
+                    line_types[line_type].append(line)
+                    line_types["unknown"].remove(line)
+                    found_col = True
+                break
+        if found_col is False:
+            print("NO CORRECT COLUMN FOUND FOR UNKNOWN:", line.coords.left, line.coords.right, line.text)
+
+
 def classify_and_filter_lines(page: pdm.PageXMLPage,
-                              config: Dict[str, any]) -> Dict[str, List[pdm.PageXMLTextLine]]:
-    line_types = classify_lines(page)
-    filter_header_lines(line_types)
+                              config: Dict[str, any],
+                              debug: bool = False) -> Dict[str, List[pdm.PageXMLTextLine]]:
+    line_types = classify_lines(page, debug=debug)
+    if debug:
+        print(f"PAGE HAS {len(page.get_lines())} LINES")
+        print(f"LINE_TYPES HAS {len([l for t in line_types for l in line_types[t]])} LINES")
+    filter_header_lines(line_types, debug=debug)
+    config = copy.deepcopy(config)
+    config["column_gap"]["gap_pixel_freq_ratio"] = 0.25
+    filter_target_type_lines(page.id, "sub_lemma", line_types, config, overlap_threshold=0.7, debug=debug)
+    # check for lines incorrectly moved to page col
+    move_unknowns_from_page(line_types, config, debug=debug)
     # First, filter page and date, so main_term has only overlap with
     # sub_lemma left
-    filter_target_type_lines(page.id, "page_locator", line_types, config)
-    filter_target_type_lines(page.id, "date_locator", line_types, config)
-    filter_target_type_lines(page.id, "sub_lemma", line_types, config, overlap_threshold=0.5)
+    config["column_gap"]["gap_pixel_freq_ratio"] = 0.75
+    filter_target_type_lines(page.id, "page_locator", line_types, config, debug=debug)
+    filter_target_type_lines(page.id, "date_locator", line_types, config, debug=debug)
+    filter_target_type_lines(page.id, "sub_lemma", line_types, config, overlap_threshold=0.5, debug=debug)
     # Second, check if there are merged lines overlapping main_term and sub_lemma
     # check_main_sub_lemma_overlap(line_types, config)
     # for line_type in line_types:
@@ -253,6 +355,7 @@ def classify_and_filter_lines(page: pdm.PageXMLPage,
     # print("after filtering:")
     # for line_type in line_types:
     #     print(line_type, len(line_types[line_type]))
+    move_unknowns_to_correct_column(line_types, config, debug=debug)
     return line_types
 
 
@@ -265,7 +368,7 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
     # All content of page is copied to new columns
     lines, words = 0, 0
     for line_type in line_types:
-        if line_type == "double_col":
+        if line_type == "double_col" or line_type == "unknown":
             continue
         if line_type == "header":
             coords = pdm.parse_derived_coords(line_types[line_type])
@@ -276,6 +379,7 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
             extra.append(tr)
             lines += tr.stats["lines"]
             words += tr.stats["words"]
+            # print(f"HEADER HAS {tr.stats['words']} WORDS")
         else:
             temp_coords = pdm.parse_derived_coords(line_types[line_type])
             temp_tr = pdm.PageXMLTextRegion(coords=temp_coords, lines=line_types[line_type])
@@ -303,6 +407,7 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
                 column.add_type(f"{line_type}_column")
                 lines += column.stats["lines"]
                 words += column.stats["words"]
+                # print(f"COLUMN HAS {column.stats['words']} WORDS", column.type)
                 index_columns.append(column)
             if temp_extra is not None:
                 # print(temp_tr.stats)

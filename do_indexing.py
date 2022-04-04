@@ -87,7 +87,11 @@ def do_scan_indexing_pagexml(inv_num: int, year: int):
 
 def do_page_indexing_pagexml(inv_num: int, year: int):
     print(f"Indexing pagexml pages for inventory {inv_num} (year {year})...")
-    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    try:
+        inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    except ValueError:
+        print(f"Skipping page indexing for inventory {inv_num} (year {year}), no inventory metadata")
+        return None
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):

@@ -222,6 +222,8 @@ def parse_pagexml_json(scan_json: dict) -> PageXMLScan:
     scan_json = scan_json['PcGts']['Page']
     if scan_json['@imageWidth'] != '0' and scan_json['@imageHeight'] != '0':
         coords = parse_page_image_size(scan_json)
+        metadata["scan_height"] = coords.height
+        metadata["scan_width"] = coords.width
     if 'TextRegion' in scan_json:
         if isinstance(scan_json['TextRegion'], list):
             text_regions = parse_textregion_list(scan_json['TextRegion'])

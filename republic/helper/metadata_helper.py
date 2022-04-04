@@ -67,7 +67,9 @@ def coords_to_iiif_url(scan_id: str,
     if isinstance(coords, dict):
         coords = [coords["x"], coords["y"], coords["w"], coords["h"]]
     if isinstance(coords, list):
-        coords_string = f"{coords[0]-margin},{coords[1]-margin},{coords[2]+2*margin},{coords[3]+2*margin}"
+        x = coords[0] - margin if coords[0] > margin else 0
+        y = coords[1] - margin if coords[1] > margin else 0
+        coords_string = f"{x},{y},{coords[2]+2*margin},{coords[3]+2*margin}"
         return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/full/0/default.jpg"
     else:
         return f"{base_url}{inv_num}/{scan_id}.jpg/full/full/0/default.jpg"

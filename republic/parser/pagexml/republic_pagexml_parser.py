@@ -79,9 +79,9 @@ def set_scan_type(scan: pdm.PageXMLScan) -> None:
         raise ValueError(f'Unknown REPUBLIC inventory number: {inv_num}')
     if scan.coords.right == 0:
         scan.metadata['scan_type'] = ['empty_scan']
-    elif scan.coords.right < scan.metadata["normal_even_end"]:
+    elif scan.coords.right <= scan.metadata["normal_even_end"]:
         scan.metadata['scan_type'] = ['single_page']
-    elif scan.coords.right < scan.metadata["normal_odd_end"]:
+    elif scan.coords.right <= scan.metadata["normal_odd_end"]:
         scan.metadata['scan_type'] = ['double_page']
     else:
         scan.metadata['scan_type'] = ['special_page']
@@ -89,13 +89,29 @@ def set_scan_type(scan: pdm.PageXMLScan) -> None:
 
 def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
     odd_end, even_end = 4900, 2500
-    if "normal_odd_end" in item.metadata:
+    if "scan_width" in item.metadata:
+        # use scan width if it's available
+        odd_end = item.metadata["scan_width"]
+    elif "scan_width" in item.parent.metadata:
+        # check if scan width is available on parent
+        odd_end = item.parent.metadata["scan_width"]
+    elif "normal_odd_end" in item.metadata:
+        # otherwise, default to expected size
         odd_end = item.metadata["normal_odd_end"]
     elif item.parent and "normal_odd_end" in item.parent.metadata:
+        # if this item has no normal info, check its parent
         odd_end = item.parent.metadata["normal_odd_end"]
-    if "normal_even_end" in item.metadata:
+    if "scan_width" in item.metadata:
+        # use half of scan width (plus a small margin) if it's available
+        even_end = item.metadata["scan_width"] / 2 + 100
+    elif "scan_width" in item.parent.metadata:
+        # check if scan width is available on parent
+        even_end = item.parent.metadata["scan_width"] / 2 + 100
+    elif "normal_even_end" in item.metadata:
+        # otherwise, default to expected size
         even_end = item.metadata["normal_even_end"]
     elif item.parent and "normal_even_end" in item.parent.metadata:
+        # if this item has no normal info, check its parent
         even_end = item.parent.metadata["normal_even_end"]
     return odd_end, even_end
 
@@ -375,12 +391,15 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
     return gap_pixel_intervals
 
 
-def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any]):
+def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any],
+                     debug: bool = False):
     gap_pixel_freq_threshold = int(len(lines) / 2 * config["column_gap"]["gap_pixel_freq_ratio"])
-    # print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
-    # print("freq_threshold:", gap_pixel_freq_threshold)
+    if debug:
+        print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
+        print("freq_threshold:", gap_pixel_freq_threshold)
     gap_pixel_dist = compute_pixel_dist(lines)
-    # print("gap_pixel_dist:", gap_pixel_dist)
+    if debug:
+        print("gap_pixel_dist:", gap_pixel_dist)
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config)
     return gap_pixel_intervals
 
@@ -393,9 +412,10 @@ def within_column(line, column_range, overlap_threshold: float = 0.5):
 
 
 def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[str, any],
-                               overlap_threshold: float = 0.5):
-    column_ranges = find_column_gaps(text_region.lines, config)
-    # print(column_ranges)
+                               overlap_threshold: float = 0.5, debug: bool = False):
+    column_ranges = find_column_gaps(text_region.lines, config, debug=debug)
+    if debug:
+        print("COLUMN RANGES:", column_ranges)
     column_ranges = [col_range for col_range in column_ranges if col_range["end"] - col_range["start"] >= 20]
     column_lines = [[] for _ in range(len(column_ranges) + 1)]
     extra_lines = []
@@ -422,8 +442,9 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
     # column range may have expanded with lines partially overlapping initial range
     # check which extra lines should be added to columns
     non_col_lines = []
-    # print("NUM COLUMNS:", len(columns))
-    # print("EXTRA LINES BEFORE:", len(extra_lines))
+    if debug:
+        print("NUM COLUMNS:", len(columns))
+        print("EXTRA LINES BEFORE:", len(extra_lines))
     for line in extra_lines:
         is_column_line = False
         for column in columns:

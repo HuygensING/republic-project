@@ -267,9 +267,9 @@ class Retriever:
         response = self.es_anno.get(index=self.config['page_index'], id=page_id)
         return pagexml.json_to_pagexml_page(response['_source'])
 
-    def retrieve_pages_by_query(self, query: dict) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_query(self, query: dict, size: int = 10) -> List[pdm.PageXMLPage]:
         hits = []
-        for hit in self.scroll_hits(self.es_anno, query, self.config['page_index'], '_doc', size=10):
+        for hit in self.scroll_hits(self.es_anno, query, self.config['page_index'], '_doc', size=size):
             hits += [hit]
         return parse_hits_as_pages(hits)
 
