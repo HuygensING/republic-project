@@ -149,6 +149,12 @@ def is_horizontally_overlapping(region1: PageXMLDoc,
     elif region2.coords is None:
         raise ValueError(f"No coords for {region2.id}")
     h_overlap = horizontal_overlap(region1.coords, region2.coords)
+    if region1.coords.width == 0 and region2.coords.width == 0:
+        return False
+    elif region1.coords.width == 0:
+        return region2.coords.left <= region1.coords.left <= region2.coords.right
+    elif region2.coords.width == 0:
+        return region1.coords.left <= region2.coords.left <= region1.coords.right
     return h_overlap / min(region1.coords.width, region2.coords.width) > threshold
 
 
@@ -505,7 +511,7 @@ class PageXMLTextRegion(PageXMLDoc):
             doc_json['orientation'] = self.orientation
         doc_json['stats'] = self.stats
         return doc_json
-    
+
     def get_text_regions_in_reading_order(self):
         if not self.reading_order:
             return sorted(self.text_regions)
