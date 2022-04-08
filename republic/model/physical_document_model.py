@@ -171,6 +171,29 @@ def is_next_to(region1: PageXMLTextRegion, region2: PageXMLTextRegion, margin: i
     else:
         return False
 
+def horizontal_distance(doc1: PageXMLDoc, doc2: PageXMLDoc):
+    if doc1.coords.right < doc2.coords.left:
+        # doc1 is to the left of doc2
+        return doc2.coords.left - doc1.coords.right
+    elif doc1.coords.left > doc2.coords.right:
+        # doc1 is to the right of doc2
+        return doc1.coords.left - doc2.coords.right
+    else:
+        # doc1 and doc2 horizontally overlap
+        return 0
+
+
+def vertical_distance(doc1: PageXMLDoc, doc2: PageXMLDoc):
+    if doc1.coords.bottom < doc2.coords.top:
+        # doc1 is above doc2
+        return doc2.coords.top - doc1.coords.bottom
+    elif doc1.coords.top > doc2.coords.bottom:
+        # doc1 is below doc2
+        return doc1.coords.top - doc2.coords.bottom
+    else:
+        # doc1 and doc2 vertically overlap
+        return 0
+
 
 def parse_derived_coords(document_list: list) -> Coords:
     """Derive scan coordinates for a composite document based on the list of documents it contains.

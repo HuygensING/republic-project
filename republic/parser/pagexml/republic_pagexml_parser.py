@@ -1,5 +1,6 @@
 from typing import Dict, List, Tuple, Union
 from collections import Counter
+from collections import defaultdict
 import copy
 import re
 
@@ -9,6 +10,7 @@ from republic.helper.metadata_helper import make_iiif_region_url
 import republic.parser.republic_file_parser as file_parser
 import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
 import republic.model.physical_document_model as pdm
+from republic.config.republic_config import base_config
 
 
 def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
@@ -58,7 +60,7 @@ def get_scan_pagexml(pagexml_file: str,
     return scan_doc
 
 
-def set_scan_type(scan: pdm.PageXMLScan) -> None:
+def set_scan_type(scan: pdm.PageXMLDoc) -> None:
     inv_num = scan.metadata["inventory_num"]
     if 3096 <= inv_num <= 3348:
         scan.metadata["resolution_type"] = "ordinaris"
@@ -163,14 +165,16 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
     tr_id_map = {}
     undecided = []
     for text_region in scan_doc.text_regions:
+        if text_region.has_type('main') and text_region.has_type('extra'):
+            text_region.remove_type('extra')
         text_region.metadata['scan_id'] = scan_doc.id
         if text_region.metadata and 'type' in text_region.metadata:
             # print("DECIDING EVEN/ODD SIDE")
             if is_even_side(text_region):
-                # print("EVEN:", text_region.id)
+                # print("\tEVEN:", text_region.id, text_region.type)
                 page_even.add_child(text_region)
             elif is_odd_side(text_region):
-                # print("ODD:", text_region.id)
+                # print("\tODD:", text_region.id, text_region.type)
                 page_odd.add_child(text_region)
             else:
                 if text_region.coords is None:
@@ -242,6 +246,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 decided.append(undecided_tr)
             if pdm.is_horizontally_overlapping(undecided_tr, page_doc):
                 print("Adding undecided textregion to page", page_doc.id)
+                print("\tundecided textregion coords:", undecided_tr.coords.box)
+                print("\tundecided textregion stats:", undecided_tr.stats)
                 page_doc.add_child(undecided_tr)
                 decided.append(undecided_tr)
         undecided = [tr for tr in undecided if tr not in decided]
@@ -418,6 +424,22 @@ def within_column(line, column_range, overlap_threshold: float = 0.5):
     return overlap / line.coords.width > overlap_threshold
 
 
+def find_overlapping_columns(columns: List[pdm.PageXMLColumn]):
+    columns.sort()
+    merge_sets = []
+    for ci, curr_col in enumerate(columns[:-1]):
+        next_col = columns[ci+1]
+        if pdm.is_horizontally_overlapping(curr_col, next_col):
+            for merge_set in merge_sets:
+                if curr_col in merge_set:
+                    merge_set.append(next_col)
+                    break
+            else:
+                merge_sets.append([curr_col, next_col])
+    return merge_sets
+
+
+
 def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[str, any],
                                overlap_threshold: float = 0.5, debug: bool = False):
     column_ranges = find_column_gaps(text_region.lines, config, debug=debug)
@@ -429,6 +451,8 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
     for line in text_region.lines:
         index = None
         for column_range in column_ranges:
+            if line.coords.width == 0:
+                print("ZERO WIDTH LINE:", line.coords.x, line.coords.y, line.text)
             if within_column(line, column_range, overlap_threshold=overlap_threshold):
                 index = column_ranges.index(column_range)
                 column_lines[index].append(line)
@@ -449,6 +473,18 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
     # column range may have expanded with lines partially overlapping initial range
     # check which extra lines should be added to columns
     non_col_lines = []
+    merge_sets = find_overlapping_columns(columns)
+    merge_cols = {col for merge_set in merge_sets for col in merge_set}
+    non_overlapping_cols = [col for col in columns if col not in merge_cols]
+    for merge_set in merge_sets:
+        print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
+        merged_col = merge_columns(merge_set, "temp_id", merge_set[0].metadata)
+        if text_region.parent and text_region.parent.id:
+            merged_col.set_derived_id(text_region.parent.id)
+        else:
+            merged_col.set_derived_id(text_region.id)
+        non_overlapping_cols.append(merged_col)
+    columns = non_overlapping_cols
     if debug:
         print("NUM COLUMNS:", len(columns))
         print("EXTRA LINES BEFORE:", len(extra_lines))
@@ -550,7 +586,7 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
     return split_regions
 
 
-def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
+def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = base_config) -> pdm.PageXMLPage:
     column_metadata = {
         'page_id': page_doc.metadata['id'],
         'scan_id': page_doc.metadata['scan_id'],
@@ -561,9 +597,26 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
     columns: List[pdm.PageXMLColumn] = []
     extra_text_regions: List[pdm.PageXMLTextRegion] = []
     text_regions: List[pdm.PageXMLTextRegion] = []
+    if "text_type" not in page_doc.metadata:
+        set_scan_type(page_doc)
+    if page_doc.metadata["text_type"] == "printed":
+        max_column_width = 1200
+    else:
+        max_column_width = 2200
     for text_region in page_doc.text_regions:
         if len(text_region.text_regions) > 0:
             text_regions += text_region.text_regions
+        elif text_region.lines and text_region.coords.width > max_column_width:
+            config["column_gap"]["gap_pixel_freq_ratio"] = 0.5
+            cols, extra = split_lines_on_column_gaps(text_region, config)
+            text_regions += cols
+            for col in cols:
+                col.set_parent(page_doc)
+                col.set_derived_id(page_doc.id)
+            if extra:
+                extra.set_parent(page_doc)
+                extra.set_derived_id(page_doc.id)
+                text_regions.append(extra)
         else:
             text_regions.append(text_region)
         # text_regions += [text_region] if text_region.lines else text_region.text_regions
@@ -572,12 +625,6 @@ def split_column_regions(page_doc: pdm.PageXMLPage) -> pdm.PageXMLPage:
     # remove the text_regions as direct descendants of page
     page_doc.text_regions = []
     for text_region in text_regions:
-        if "text_type" not in page_doc.metadata:
-            set_scan_type(page_doc)
-        if page_doc.metadata["text_type"] == "printed":
-            max_column_width = 1200
-        else:
-            max_column_width = 2200
         if text_region.lines and text_region.coords.width > max_column_width:
             # Wide text_regions are part of the header
             text_region.main_type = 'extra'
@@ -711,10 +758,13 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
     else:
         for page in pages:
             for text_region in page.text_regions:
-                if not text_region.type or text_region.has_type('extra'):
+                if text_region.has_type('main') and text_region.has_type('extra'):
+                    text_region.remove_type('extra')
+                if not text_region.type or not text_region.has_type('main') or text_region.has_type('extra'):
                     text_region.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                     text_region.coords)
                     page.add_child(text_region, as_extra=True)
+                    print('adding tr as extra:', text_region.id)
                 else:
                     # turn the text region into a column
                     column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
@@ -723,6 +773,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                     column.set_derived_id(scan_doc.id)
                     column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                column.coords)
+                    print('adding tr as column:', text_region.id)
                     page.add_child(column)
             page.text_regions = []
     for page in pages:
@@ -855,10 +906,11 @@ def has_overlapping_columns(page: pdm.PageXMLPage) -> bool:
     return False
 
 
-def merge_columns(column1: pdm.PageXMLColumn, column2: pdm.PageXMLColumn,
+def merge_columns(columns: List[pdm.PageXMLColumn],
                   doc_id: str, metadata: dict) -> pdm.PageXMLColumn:
     """Merge two columns into one, sorting lines by baseline height."""
-    merged_lines = column1.get_lines() + column2.get_lines()
+    merged_lines = [line for col in columns for line in col.get_lines()]
+    merged_lines = list(set(merged_lines))
     sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
     merged_coords = pdm.parse_derived_coords(sorted_lines)
     merged_col = pdm.PageXMLColumn(doc_id=doc_id, doc_type='index_column',
