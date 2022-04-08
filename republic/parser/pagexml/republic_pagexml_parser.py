@@ -231,8 +231,15 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 page_doc.coords = pdm.parse_derived_coords(page_doc.columns)
             elif len(page_doc.text_regions):
                 page_doc.coords = pdm.parse_derived_coords(page_doc.text_regions)
+            else:
+                print("Empty page, no coords")
         decided = []
+        if page_doc.coords is None:
+            continue
         for undecided_tr in undecided:
+            if undecided_tr.coords is None:
+                print("Skipping undecided textregion without coords", page_doc.id)
+                decided.append(undecided_tr)
             if pdm.is_horizontally_overlapping(undecided_tr, page_doc):
                 print("Adding undecided textregion to page", page_doc.id)
                 page_doc.add_child(undecided_tr)
