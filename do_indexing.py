@@ -14,7 +14,7 @@ from republic.helper.metadata_helper import get_per_page_type_index, map_text_pa
 from republic.helper.metadata_helper import page_num_to_page_id
 from republic.helper.model_loader import load_line_break_detector
 
-from republic.model.inventory_mapping import get_inventories_by_year
+from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 import republic.model.republic_document_model as rdm
 
@@ -82,7 +82,10 @@ def do_downloading(inv_num: int, year: int):
 def do_scan_indexing_pagexml(inv_num: int, year: int):
     print(f"Indexing pagexml scans for inventory {inv_num} (year {year})...")
     for si, scan in enumerate(rep_es.retrieve_text_repo_scans_by_inventory(inv_num)):
-        rep_es.index_scan(scan)
+        try:
+            rep_es.index_scan(scan)
+        except ZeroDivisionError:
+            print("ZeroDivisionError for scan", scan.id)
 
 
 def do_page_indexing_pagexml(inv_num: int, year: int):
@@ -296,34 +299,32 @@ def do_inventory_lemma_reference_indexing(task) -> None:
 
 
 def process_inventory(task: Dict[str, Union[str, int]]):
-    for inv_map in get_inventories_by_year(task["year"]):
-        task["inv_num"] = inv_map["inventory_num"]
-        if task["type"] == "download":
-            do_downloading(task["inv_num"], task["year"])
-        if task["type"] == "scans_pages":
-            do_scan_indexing_pagexml(task["inv_num"], task["year"])
-            do_page_indexing_pagexml(task["inv_num"], task["year"])
-        if task["type"] == "scans":
-            do_scan_indexing_pagexml(task["inv_num"], task["year"])
-        if task["type"] == "pages":
-            do_page_indexing_pagexml(task["inv_num"], task["year"])
-        if task["type"] == "page_types":
-            do_page_type_indexing_pagexml(task["inv_num"], task["year"])
-        if task["type"] == "session_lines":
-            do_session_lines_indexing(task["inv_num"], task["year"])
-        if task["type"] == "session_text":
-            do_session_text_indexing(task["inv_num"], task["year"])
-        if task["type"] == "resolutions":
-            do_resolution_indexing(task["inv_num"], task["year"])
-        if task["type"] == "phrase_matches":
-            do_resolution_phrase_match_indexing(task["inv_num"], task["year"])
-        if task["type"] == "resolution_metadata":
-            do_resolution_metadata_indexing(task["inv_num"], task["year"])
-        if task["type"] == "attendance_list_spans":
-            do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
-        if task["type"] == "lemma_references":
-            do_inventory_lemma_reference_indexing(task["inv_num"], task["year"])
-        print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
+    if task["type"] == "download":
+        do_downloading(task["inv_num"], task["year"])
+    if task["type"] == "scans_pages":
+        do_scan_indexing_pagexml(task["inv_num"], task["year"])
+        do_page_indexing_pagexml(task["inv_num"], task["year"])
+    if task["type"] == "scans":
+        do_scan_indexing_pagexml(task["inv_num"], task["year"])
+    if task["type"] == "pages":
+        do_page_indexing_pagexml(task["inv_num"], task["year"])
+    if task["type"] == "page_types":
+        do_page_type_indexing_pagexml(task["inv_num"], task["year"])
+    if task["type"] == "session_lines":
+        do_session_lines_indexing(task["inv_num"], task["year"])
+    if task["type"] == "session_text":
+        do_session_text_indexing(task["inv_num"], task["year"])
+    if task["type"] == "resolutions":
+        do_resolution_indexing(task["inv_num"], task["year"])
+    if task["type"] == "phrase_matches":
+        do_resolution_phrase_match_indexing(task["inv_num"], task["year"])
+    if task["type"] == "resolution_metadata":
+        do_resolution_metadata_indexing(task["inv_num"], task["year"])
+    if task["type"] == "attendance_list_spans":
+        do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
+    if task["type"] == "lemma_references":
+        do_inventory_lemma_reference_indexing(task["inv_num"], task["year"])
+    print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
 
 
 if __name__ == "__main__":
@@ -348,12 +349,26 @@ if __name__ == "__main__":
         if not start or not end or not indexing_step or not num_processes:
             print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
             sys.exit(2)
-        years = [year for year in range(start, end+1)]
-        tasks = [{"year": year, "type": indexing_step, "commit": commit_version} for year in range(start, end+1)]
+        if start in range(1576, 1797):
+
+            years = [year for year in range(start, end+1)]
+            tasks = [{"year": year, "type": indexing_step, "commit": commit_version} for year in range(start, end+1)]
+            for task in tasks:
+                for inv_map in get_inventories_by_year(task["year"]):
+                    task["inv_num"] = inv_map["inventory_num"]
+            print(f'indexing {indexing_step} for years', years)
+        elif start in range(3760, 3865):
+            inv_nums = [inv_num for inv_num in range(start, end+1)]
+            tasks = [{"inv_num": inv_num, "type": indexing_step, "commit": commit_version} for inv_num in range(start, end+1)]
+            for task in tasks:
+                inv_map = get_inventory_by_num(task["inv_num"])
+                task["year"] = inv_map["year"]
+            print(f'indexing {indexing_step} for inventories', inv_nums)
+        else:
+            raise ValueError("Unknown start number, expecting 1576-1796 or 3760-3864")
     except getopt.GetoptError:
         # Print something useful
         print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
         sys.exit(2)
-    print(f'indexing {indexing_step} for years', years)
     with multiprocessing.Pool(processes=num_processes) as pool:
         pool.map(process_inventory, tasks)
