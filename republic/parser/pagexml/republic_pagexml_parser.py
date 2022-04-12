@@ -757,7 +757,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                     text_region.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                     text_region.coords)
                     page.add_child(text_region, as_extra=True)
-                    print('adding tr as extra:', text_region.id)
+                    # print('adding tr as extra:', text_region.id)
                 else:
                     # turn the text region into a column
                     column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
@@ -766,7 +766,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                     column.set_derived_id(scan_doc.id)
                     column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                column.coords)
-                    print('adding tr as column:', text_region.id)
+                    # print('adding tr as column:', text_region.id)
                     page.add_child(column)
             page.text_regions = []
     for page in pages:
