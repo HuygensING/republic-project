@@ -121,7 +121,9 @@ class Indexer:
         self.index_doc(index=self.config['page_index'], doc_id=page.id, doc_body=page.json)
 
     def index_inventory_metadata(self, inventory_metadata: dict):
-        if "created" in inventory_metadata:
+        if "created" not in inventory_metadata:
+            inventory_metadata["created"] = datetime.datetime.now().isoformat()
+        else:
             inventory_metadata["updated"] = datetime.datetime.now().isoformat()
         self.index_doc(index=self.config['inventory_index'],
                        doc_id=inventory_metadata['inventory_num'],

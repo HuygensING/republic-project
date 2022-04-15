@@ -542,9 +542,10 @@ class PageXMLTextRegion(PageXMLDoc):
         tr_map = {}
         for text_region in self.text_regions:
             if text_region.id not in tr_ids:
-                print("reading order:", self.reading_order)
-                print(f"text_region with id {text_region.id} is not listed in reading_order")
+                # print("reading order:", self.reading_order)
+                # print(f"text_region with id {text_region.id} is not listed in reading_order")
                 # raise KeyError(f"text_region with id {text_region.id} is not listed in reading_order")
+                pass
             tr_map[text_region.id] = text_region
         return [tr_map[tr_id] for tr_id in tr_ids if tr_id in tr_map]
 
@@ -580,8 +581,8 @@ class PageXMLTextRegion(PageXMLDoc):
                     for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t.id]):
                         lines += tr.get_lines()
                 except KeyError:
-                    print("In", self.id, self.type)
-                    print("One of the text regions is not in the reading_order_number list")
+                    # print("In", self.id, self.type)
+                    # print("One of the text regions is not in the reading_order_number list")
                     for tr in self.text_regions:
                         print(tr.id, "is in reading_order_number:", tr.id in self.reading_order_number)
                     for tr in self.text_regions:
@@ -678,8 +679,8 @@ class PageXMLPage(PageXMLTextRegion):
             for tr in self.extra:
                 lines += tr.get_lines()
         elif self.text_regions:
-            if self.reading_order:
-                for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t]):
+            if self.reading_order and len(self.text_regions) == len(self.reading_order):
+                for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t.id]):
                     lines += tr.get_lines()
             else:
                 for tr in sorted(self.text_regions):

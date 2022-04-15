@@ -21,9 +21,15 @@ def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
     return RepublicDate(year, month, day)
 
 
-def stream_handwritten_page_lines(page: PageXMLPage) -> Generator[PageXMLTextLine, None, None]:
-    trs = [tr for column in page.columns for tr in column.text_regions]
+def stream_handwritten_page_lines(page: PageXMLPage,
+                                  include_marginalia: bool = False) -> Generator[PageXMLTextLine, None, None]:
+    if include_marginalia:
+        trs = [tr for column in page.columns for tr in column.text_regions]
+    else:
+        trs = [tr for column in page.columns for tr in column.text_regions if not page.has_type('marginalia')]
     for tr in page.extra:
+        # make sure the session date is part of the column because the
+        # session parser needs it
         if tr.has_type('date'):
             add_column = False
             for column in page.columns:
