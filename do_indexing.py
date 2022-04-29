@@ -335,8 +335,8 @@ if __name__ == "__main__":
     argv = sys.argv[1:]
     try:
         # Define the getopt parameters
-        opts, args = getopt.getopt(argv, 's:e:i:n:', ['foperand', 'soperand'])
-        start, end, indexing_step, num_processes = None, None, None, None
+        opts, args = getopt.getopt(argv, 's:e:i:n:l:', ['foperand', 'soperand'])
+        start, end, indexing_step, num_processes, index_label = None, None, None, None, None
         for opt, arg in opts:
             if opt == '-n':
                 num_processes = int(arg)
@@ -346,9 +346,16 @@ if __name__ == "__main__":
                 end = int(arg)
             if opt == '-i':
                 indexing_step = arg
+            if opt == '-l':
+                index_label = arg
         if not start or not end or not indexing_step or not num_processes:
-            print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
+            print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes> -l <label_index_name>')
             sys.exit(2)
+        if index_label:
+            for key in rep_es.config:
+                if key.startswith(indexing_step) and key.endswith("_index"):
+                    rep_es.config[key] = f"{rep_es.config[key]}_{index_label}"
+                    print(key, rep_es.config[key])
         if start in range(1576, 1797):
 
             years = [year for year in range(start, end+1)]
@@ -357,7 +364,7 @@ if __name__ == "__main__":
                 for inv_map in get_inventories_by_year(task["year"]):
                     task["inv_num"] = inv_map["inventory_num"]
             print(f'indexing {indexing_step} for years', years)
-        elif start in range(3760, 3865):
+        elif start in range(3000, 3865):
             inv_nums = [inv_num for inv_num in range(start, end+1)]
             tasks = [{"inv_num": inv_num, "type": indexing_step, "commit": commit_version} for inv_num in range(start, end+1)]
             for task in tasks:

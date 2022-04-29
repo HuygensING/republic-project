@@ -115,10 +115,10 @@ class Indexer:
             raise
 
     def index_scan(self, scan: pdm.PageXMLScan):
-        self.index_doc(index=self.config['scan_index'], doc_id=scan.id, doc_body=scan.json)
+        self.index_doc(index=self.config['scans_index'], doc_id=scan.id, doc_body=scan.json)
 
     def index_page(self, page: pdm.PageXMLPage):
-        self.index_doc(index=self.config['page_index'], doc_id=page.id, doc_body=page.json)
+        self.index_doc(index=self.config['pages_index'], doc_id=page.id, doc_body=page.json)
 
     def index_inventory_metadata(self, inventory_metadata: dict):
         if "created" not in inventory_metadata:
@@ -141,12 +141,12 @@ class Indexer:
 
     def index_resolution(self, resolution: rdm.Resolution):
         print('\t', resolution.id, resolution.paragraphs[0].text[:60])
-        self.index_doc(index=self.config['resolution_index'],
+        self.index_doc(index=self.config['resolutions_index'],
                        doc_id=resolution.metadata['id'],
                        doc_body=resolution.json)
 
     def index_attendance_list(self, attendance_list: rdm.AttendanceList):
-        self.es_anno.index(index=self.config["resolution_index"],
+        self.es_anno.index(index=self.config["resolutions_index"],
                            id=attendance_list.id,
                            body=attendance_list.json)
 
@@ -175,7 +175,7 @@ class Indexer:
         match_json['metadata']['paragraph_id'] = phrase_match.text_id
         add_timestamp(match_json)
         # print(json.dumps(match_json, indent=2))
-        self.index_doc(index=self.config['phrase_match_index'],
+        self.index_doc(index=self.config['phrase_matches_index'],
                        doc_id=match_json['id'],
                        doc_body=match_json)
 
@@ -197,8 +197,8 @@ class Indexer:
         match_json = phrase_match.json() if isinstance(phrase_match, PhraseMatch) else phrase_match
         # generate stable id based on match offset, end and text_id
         match_json['id'] = make_match_hash_id(match_json)
-        if self.es_anno.exists(index=self.config['phrase_match_index'], id=match_json['id']):
-            self.es_anno.delete(index=self.config['phrase_match_index'], id=match_json['id'])
+        if self.es_anno.exists(index=self.config['phrase_matches_index'], id=match_json['id']):
+            self.es_anno.delete(index=self.config['phrase_matches_index'], id=match_json['id'])
         else:
             raise ValueError(f'unknown phrase match id {match_json["id"]}, phrase match cannot be removed')
 
