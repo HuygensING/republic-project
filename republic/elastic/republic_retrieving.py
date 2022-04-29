@@ -233,15 +233,15 @@ class Retriever:
         return self.retrieve_pages_by_query(query)
 
     def retrieve_scan_by_id(self, scan_id: str) -> Union[pdm.PageXMLScan, None]:
-        if not self.es_anno.exists(index=self.config['scan_index'], id=scan_id):
+        if not self.es_anno.exists(index=self.config['scans_index'], id=scan_id):
             return None
-        response = self.es_anno.get(index=self.config['scan_index'], id=scan_id)
+        response = self.es_anno.get(index=self.config['scans_index'], id=scan_id)
         return pagexml.json_to_pagexml_scan(response['_source'])
 
     def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
-        for hit in self.scroll_hits(self.es_anno, query, self.config['scan_index'], size=2, scroll='5m'):
+        for hit in self.scroll_hits(self.es_anno, query, self.config['scans_index'], size=2, scroll='5m'):
             yield pagexml.json_to_pagexml_scan(hit['_source'])
-        # response = self.es_anno.search(index=self.config['scan_index'], body=query)
+        # response = self.es_anno.search(index=self.config['scans_index'], body=query)
         # return parse_hits_as_scans(response)
 
     def retrieve_text_repo_scans_by_inventory(self,
@@ -262,14 +262,14 @@ class Retriever:
             yield scan_doc
 
     def retrieve_page_by_id(self, page_id: str) -> Union[pdm.PageXMLPage, None]:
-        if not self.es_anno.exists(index=self.config['page_index'], id=page_id):
+        if not self.es_anno.exists(index=self.config['pages_index'], id=page_id):
             return None
-        response = self.es_anno.get(index=self.config['page_index'], id=page_id)
+        response = self.es_anno.get(index=self.config['pages_index'], id=page_id)
         return pagexml.json_to_pagexml_page(response['_source'])
 
     def retrieve_pages_by_query(self, query: dict, size: int = 10) -> List[pdm.PageXMLPage]:
         hits = []
-        for hit in self.scroll_hits(self.es_anno, query, self.config['page_index'], '_doc', size=size):
+        for hit in self.scroll_hits(self.es_anno, query, self.config['pages_index'], '_doc', size=size):
             hits += [hit]
         return parse_hits_as_pages(hits)
 
