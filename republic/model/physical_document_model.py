@@ -583,8 +583,8 @@ class PageXMLTextRegion(PageXMLDoc):
                 except KeyError:
                     # print("In", self.id, self.type)
                     # print("One of the text regions is not in the reading_order_number list")
-                    for tr in self.text_regions:
-                        print(tr.id, "is in reading_order_number:", tr.id in self.reading_order_number)
+                    # for tr in self.text_regions:
+                    #     print(tr.id, "is in reading_order_number:", tr.id in self.reading_order_number)
                     for tr in self.text_regions:
                         lines += tr.get_lines()
             else:

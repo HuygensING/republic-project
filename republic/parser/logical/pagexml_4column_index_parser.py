@@ -538,6 +538,15 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
                     for line in temp_extra.lines:
                         print(f"\t{line_type}\t{line.coords.x: >6}{line.coords.y: >6}{line.coords.w: >6}\t{line.text}")
                 pass
+    # if there are remaining unknown lines, add
+    # them as a new extra text region
+    if len(line_types["unknown"]) > 0:
+        coords = pdm.parse_derived_coords(line_types["unknown"])
+        extra_tr = pdm.PageXMLTextRegion(coords=coords, lines=line_types["unknown"])
+        extra_tr.set_derived_id(page.id)
+        extra.append(extra_tr)
+        lines += extra_tr.stats["lines"]
+        words += extra_tr.stats["words"]
     if abs(words - page.stats["words"]) > 5 and len(line_types["double_col"]) > 0:
         print(f"page {page.id} has {page.stats['words']} words, while columns have {words} words")
         print(f"page {page.id} has {page.stats['lines']} lines, while columns have {lines} lines")

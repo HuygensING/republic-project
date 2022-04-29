@@ -161,6 +161,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
         return pages
     page_odd = initialize_pagexml_page(scan_doc, 'odd')
     page_even = initialize_pagexml_page(scan_doc, 'even')
+    # print("INITIAL EVEN:", page_even.stats)
+    # print("INITIAL ODD:", page_odd.stats)
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     tr_id_map = {}
     undecided = []
@@ -180,9 +182,38 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 if text_region.coords is None:
                     lines = text_region.get_lines()
                     text_region.coords = pdm.parse_derived_coords(lines)
-                undecided.append(text_region)
+                print('\tSPLITTING PAGE BOUNDARY OVERLAPPING REGION:', text_region.id, text_region.type)
+                config = copy.deepcopy(base_config)
+                config['column_gap']['gap_threshold'] = 10
+                config['column_gap']['gap_pixel_freq_ratio'] = 0.2
+                # print(config)
+                sub_trs, extra = split_lines_on_column_gaps(text_region, config=config, debug=False)
+                print('\t\tnumber of sub text regions:', len(sub_trs))
+                for sub_tr in sub_trs:
+                    if is_even_side(sub_tr):
+                        sub_tr.set_derived_id(page_even.id)
+                        sub_tr.set_parent(page_even)
+                        # print("BEFORE:", page_even.stats)
+                        page_even.add_child(sub_tr)
+                        # print("AFTER:", page_even.stats)
+                        print('\tSPLIT SUB TR EVEN:', sub_tr.id)
+                        # print(sub_tr.type)
+                        # print(sub_tr.stats)
+                    elif is_odd_side(sub_tr):
+                        # print("BEFORE:", page_odd.stats)
+                        page_odd.add_child(sub_tr)
+                        # print("AFTER:", page_odd.stats)
+                        sub_tr.set_derived_id(page_odd.id)
+                        sub_tr.set_parent(page_odd)
+                        print('\tSPLIT SUB TR ODD:', sub_tr.id)
+                        # print(sub_tr.type)
+                        # print(sub_tr.stats)
+                    else:
+                        print('\tUNDECIDED:', sub_tr.id, sub_tr.type)
+                        undecided.append(sub_tr)
+                # undecided.append(text_region)
         elif text_region.lines:
-            # print("TEXTREGION HAS NO TYPE:")
+            print("TEXTREGION HAS NO TYPE BUT HAS LINES:", text_region.id)
             even_lines = [line for line in text_region.lines if is_even_side(line)]
             odd_lines = [line for line in text_region.lines if is_odd_side(line)]
             if len(even_lines) == 0:
@@ -201,12 +232,16 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                                                     metadata=text_region.metadata)
                 # print("ODD REGION", odd_region.id, odd_region.stats)
                 # print("EVEN REGION", even_region.id, even_region.stats)
+                even_region.set_parent(page_even)
+                even_region.set_derived_id(page_even.id)
+                odd_region.set_parent(page_odd)
+                odd_region.set_derived_id(page_odd.id)
                 tr_id_map[even_region.id] = text_region.id
                 tr_id_map[odd_region.id] = text_region.id
                 page_even.add_child(even_region)
                 page_odd.add_child(odd_region)
         elif text_region.text_regions:
-            # print("TEXTREGION HAS TEXTREGIONS:")
+            print("TEXTREGION HAS TEXTREGIONS:", text_region.id)
             even_text_regions = [text_region for text_region in text_region.text_regions if is_even_side(text_region)]
             odd_text_regions = [text_region for text_region in text_region.text_regions if is_odd_side(text_region)]
             if len(even_text_regions) == 0:
@@ -463,9 +498,11 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
         if len(lines) == 0:
             continue
         coords = pdm.parse_derived_coords(lines)
-        column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=coords,
-                                   lines=lines)
+        column = pdm.PageXMLColumn(doc_type=copy.deepcopy(text_region.type),
+                                   metadata=copy.deepcopy(text_region.metadata),
+                                   coords=coords, lines=lines)
         if text_region.parent and text_region.parent.id:
+            column.set_parent(text_region.parent)
             column.set_derived_id(text_region.parent.id)
         else:
             column.set_derived_id(text_region.id)
@@ -603,7 +640,8 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         max_column_width = 1200
     else:
         max_column_width = 2200
-    for text_region in page_doc.text_regions:
+    trs = page_doc.text_regions + page_doc.columns
+    for text_region in trs:
         if len(text_region.text_regions) > 0:
             text_regions += text_region.text_regions
         elif text_region.lines and text_region.coords.width > max_column_width:
@@ -742,11 +780,13 @@ def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
                 line.set_derived_id(scan_id)
 
 
-def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
+def split_pagexml_scan(scan_doc: pdm.PageXMLScan, debug: bool = False) -> List[pdm.PageXMLPage]:
     split_columns = True
     has_wide_main = False
     for text_region in scan_doc.text_regions:
         if text_region.has_type('main') and text_region.coords.width > 1100:
+            if debug:
+                print('WIDE TEXT REGION:', text_region.id)
             has_wide_main = True
         if text_region.has_type('main'):
             split_columns = False
@@ -754,6 +794,8 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
         split_columns = True
     pages = split_scan_pages(scan_doc)
     if split_columns:
+        if debug is True:
+            print('Splitting page columns into narrower sub columns')
         pages = [split_column_regions(page_doc) for page_doc in pages]
     else:
         for page in pages:
@@ -764,7 +806,8 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                     text_region.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                     text_region.coords)
                     page.add_child(text_region, as_extra=True)
-                    # print('adding tr as extra:', text_region.id)
+                    if debug:
+                        print('adding tr as extra:', text_region.id)
                 else:
                     # turn the text region into a column
                     column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
@@ -773,12 +816,15 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                     column.set_derived_id(scan_doc.id)
                     column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                column.coords)
-                    # print('adding tr as column:', text_region.id)
+                    if debug:
+                        print('adding tr as column:', text_region.id)
                     page.add_child(column)
             page.text_regions = []
     for page in pages:
         for text_region in page.columns + page.extra:
             text_region.set_derived_id(scan_doc.id)
+            if debug:
+                print('setting derived ID:', text_region.id, 'with parent', scan_doc.id)
             if text_region.has_type('column'):
                 id_field = 'column_id'
             elif text_region.has_type('header'):
