@@ -99,7 +99,7 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
     text_page_num_map = map_text_page_nums(inv_metadata)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
         try:
-            pages = pagexml_parser.split_pagexml_scan(scan)
+            pages = pagexml_parser.split_pagexml_scan(scan, page_type_index)
         except BaseException:
             print(scan.id)
             raise

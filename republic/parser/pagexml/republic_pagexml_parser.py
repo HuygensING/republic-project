@@ -133,7 +133,8 @@ def is_extra_side(item: pdm.PhysicalStructureDoc) -> bool:
     return item.coords.right > odd_end and item.coords.left > odd_end - 200
 
 
-def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str) -> pdm.PageXMLPage:
+def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str,
+                            page_type_index: Dict[int, any]) -> pdm.PageXMLPage:
     """Initialize a pagexml page type document based on the scan metadata."""
     metadata = copy.copy(scan_doc.metadata)
     if 'doc_type' in metadata:
@@ -152,21 +153,53 @@ def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str) -> pdm.PageXML
     metadata['scan_id'] = scan_doc.metadata['id']
     page_doc = pdm.PageXMLPage(doc_id=metadata['id'], metadata=metadata, text_regions=[])
     page_doc.set_parent(scan_doc)
+    if page_type_index and metadata['page_num'] in page_type_index:
+        page_type = page_type_index[metadata['page_num']]
+        page_doc.add_type(page_type)
     return page_doc
 
 
-def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
+def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] = None,
+                     debug: bool = False) -> List[pdm.PageXMLPage]:
     pages: List[pdm.PageXMLPage] = []
     if not scan_doc.text_regions:
         return pages
-    page_odd = initialize_pagexml_page(scan_doc, 'odd')
-    page_even = initialize_pagexml_page(scan_doc, 'even')
+    page_odd = initialize_pagexml_page(scan_doc, 'odd', page_type_index)
+    page_even = initialize_pagexml_page(scan_doc, 'even', page_type_index)
+    config = copy.deepcopy(base_config)
+    if 3760 <= scan_doc.metadata['inventory_num'] <= 3864:
+        max_col_width = 1000
+        if scan_doc.metadata['inventory_num'] >= 3804:
+            if page_even.has_type('index_page') or page_odd.has_type('index_page'):
+                max_col_width = 500
+                config['column_gap']['gap_pixel_freq_ratio'] = 0.2
+                config['column_gap']['gap_threshold'] = 10
+    else:
+        max_col_width = 2200
     # print("INITIAL EVEN:", page_even.stats)
+    # print(page_even.type)
     # print("INITIAL ODD:", page_odd.stats)
+    # print(page_odd.type)
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     tr_id_map = {}
     undecided = []
-    for text_region in scan_doc.text_regions:
+    trs = []
+    for tr in scan_doc.text_regions:
+        if tr.parent is None:
+            print('MISSING PARENT:', tr.id)
+        if tr.coords.width > max_col_width:
+            cols, extra = split_lines_on_column_gaps(tr, config, debug=debug)
+            trs += cols
+            if extra:
+                trs.append(extra)
+        elif is_even_side(tr) or is_odd_side(tr):
+            trs.append(tr)
+        else:
+            cols, extra = split_lines_on_column_gaps(tr, config)
+            trs += cols
+            if extra:
+                trs.append(extra)
+    for text_region in trs:
         if text_region.has_type('main') and text_region.has_type('extra'):
             text_region.remove_type('extra')
         text_region.metadata['scan_id'] = scan_doc.id
@@ -183,9 +216,6 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                     lines = text_region.get_lines()
                     text_region.coords = pdm.parse_derived_coords(lines)
                 print('\tSPLITTING PAGE BOUNDARY OVERLAPPING REGION:', text_region.id, text_region.type)
-                config = copy.deepcopy(base_config)
-                config['column_gap']['gap_threshold'] = 10
-                config['column_gap']['gap_pixel_freq_ratio'] = 0.2
                 # print(config)
                 sub_trs, extra = split_lines_on_column_gaps(text_region, config=config, debug=False)
                 print('\t\tnumber of sub text regions:', len(sub_trs))
@@ -213,7 +243,7 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                         undecided.append(sub_tr)
                 # undecided.append(text_region)
         elif text_region.lines:
-            print("TEXTREGION HAS NO TYPE BUT HAS LINES:", text_region.id)
+            # print("TEXTREGION HAS NO TYPE BUT HAS LINES:", text_region.id)
             even_lines = [line for line in text_region.lines if is_even_side(line)]
             odd_lines = [line for line in text_region.lines if is_odd_side(line)]
             if len(even_lines) == 0:
@@ -241,7 +271,7 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 page_even.add_child(even_region)
                 page_odd.add_child(odd_region)
         elif text_region.text_regions:
-            print("TEXTREGION HAS TEXTREGIONS:", text_region.id)
+            # print("TEXTREGION HAS TEXTREGIONS:", text_region.id)
             even_text_regions = [text_region for text_region in text_region.text_regions if is_even_side(text_region)]
             odd_text_regions = [text_region for text_region in text_region.text_regions if is_odd_side(text_region)]
             if len(even_text_regions) == 0:
@@ -280,9 +310,9 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
                 print("Skipping undecided textregion without coords", page_doc.id)
                 decided.append(undecided_tr)
             if pdm.is_horizontally_overlapping(undecided_tr, page_doc):
-                print("Adding undecided textregion to page", page_doc.id)
-                print("\tundecided textregion coords:", undecided_tr.coords.box)
-                print("\tundecided textregion stats:", undecided_tr.stats)
+                # print("Adding undecided textregion to page", page_doc.id)
+                # print("\tundecided textregion coords:", undecided_tr.coords.box)
+                # print("\tundecided textregion stats:", undecided_tr.stats)
                 page_doc.add_child(undecided_tr)
                 decided.append(undecided_tr)
         undecided = [tr for tr in undecided if tr not in decided]
@@ -296,13 +326,14 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan) -> List[pdm.PageXMLPage]:
             copy_reading_order(scan_doc, page_doc, tr_id_map)
         pages += [page_doc]
     for undecided_tr in undecided:
-        print("UNKNOWN:", undecided_tr.id, undecided_tr.stats)
-        odd_end, even_end = get_page_split_widths(undecided_tr)
-        # print(undecided_tr.parent.metadata)
-        print("odd end:", odd_end, "\teven end:", even_end)
-        print(undecided_tr.coords.box)
-        for line in undecided_tr.lines:
-            print(line.coords.x, line.coords.y, line.text)
+        if debug:
+            print("UNKNOWN:", undecided_tr.id, undecided_tr.stats)
+            odd_end, even_end = get_page_split_widths(undecided_tr)
+            # print(undecided_tr.parent.metadata)
+            print("odd end:", odd_end, "\teven end:", even_end)
+            print(undecided_tr.coords.box)
+            for line in undecided_tr.lines:
+                print(line.coords.x, line.coords.y, line.text)
     return pages
 
 
@@ -441,7 +472,8 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
 
 def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any],
                      debug: bool = False):
-    gap_pixel_freq_threshold = int(len(lines) / 2 * config["column_gap"]["gap_pixel_freq_ratio"])
+    num_column_lines = len(lines) / 2 if len(lines) < 140 else 60
+    gap_pixel_freq_threshold = int(num_column_lines * config["column_gap"]["gap_pixel_freq_ratio"])
     if debug:
         print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
         print("freq_threshold:", gap_pixel_freq_threshold)
@@ -502,8 +534,8 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
                                    metadata=copy.deepcopy(text_region.metadata),
                                    coords=coords, lines=lines)
         if text_region.parent and text_region.parent.id:
-            column.set_parent(text_region.parent)
             column.set_derived_id(text_region.parent.id)
+            column.set_parent(text_region.parent)
         else:
             column.set_derived_id(text_region.id)
         columns.append(column)
@@ -514,10 +546,12 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
     merge_cols = {col for merge_set in merge_sets for col in merge_set}
     non_overlapping_cols = [col for col in columns if col not in merge_cols]
     for merge_set in merge_sets:
-        print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
+        if debug:
+            print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
         merged_col = merge_columns(merge_set, "temp_id", merge_set[0].metadata)
         if text_region.parent and text_region.parent.id:
             merged_col.set_derived_id(text_region.parent.id)
+            merged_col.set_parent(text_region.parent)
         else:
             merged_col.set_derived_id(text_region.id)
         non_overlapping_cols.append(merged_col)
@@ -543,6 +577,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
                                       lines=extra_lines)
         if text_region.parent and text_region.parent.id:
             extra.set_derived_id(text_region.parent.id)
+            extra.set_parent(text_region.parent)
         else:
             extra.set_derived_id(text_region.id)
     return columns, extra
@@ -645,8 +680,9 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         if len(text_region.text_regions) > 0:
             text_regions += text_region.text_regions
         elif text_region.lines and text_region.coords.width > max_column_width:
+            config = copy.deepcopy(config)
             config["column_gap"]["gap_pixel_freq_ratio"] = 0.5
-            cols, extra = split_lines_on_column_gaps(text_region, config)
+            cols, extra = split_lines_on_column_gaps(text_region, config, debug=False)
             text_regions += cols
             for col in cols:
                 col.set_parent(page_doc)
@@ -780,9 +816,11 @@ def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
                 line.set_derived_id(scan_id)
 
 
-def split_pagexml_scan(scan_doc: pdm.PageXMLScan, debug: bool = False) -> List[pdm.PageXMLPage]:
+def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any],
+                       debug: bool = False) -> List[pdm.PageXMLPage]:
     split_columns = True
     has_wide_main = False
+    # print("SCAN TYPE:", scan_doc.type)
     for text_region in scan_doc.text_regions:
         if text_region.has_type('main') and text_region.coords.width > 1100:
             if debug:
@@ -792,9 +830,16 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, debug: bool = False) -> List[p
             split_columns = False
     if has_wide_main:
         split_columns = True
-    pages = split_scan_pages(scan_doc)
+    pages = split_scan_pages(scan_doc, page_type_index)
+    if debug:
+        print('\n')
+        for page in pages:
+            print(page.id)
+            for tr in page.columns + page.extra + page.text_regions:
+                print(f"{tr.coords.x: >4}-{tr.coords.y: >4}\t{tr.coords.w}\t{tr.type}")
+        print('\n')
     if split_columns:
-        if debug is True:
+        if debug:
             print('Splitting page columns into narrower sub columns')
         pages = [split_column_regions(page_doc) for page_doc in pages]
     else:
