@@ -188,16 +188,31 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
         if tr.parent is None:
             print('MISSING PARENT:', tr.id)
         if tr.coords.width > max_col_width:
+            # print("SPLITTING COLUMN BECAUSE IT IS TOO WIDE")
             cols, extra = split_lines_on_column_gaps(tr, config, debug=debug)
+            # for col in cols:
+            #     print("COLUMN:", col.id)
+            #     for line in col.lines:
+            #         print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             trs += cols
             if extra:
+                # print("EXTRA:", extra.id)
+                # for line in extra.lines:
+                #     print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
                 trs.append(extra)
         elif is_even_side(tr) or is_odd_side(tr):
             trs.append(tr)
         else:
             cols, extra = split_lines_on_column_gaps(tr, config)
+            # for col in cols:
+            #     print("COLUMN:", col.id)
+            #     for line in col.lines:
+            #         print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             trs += cols
             if extra:
+                # print("EXTRA:", extra.id)
+                # for line in col.lines:
+                #     print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
                 trs.append(extra)
     for text_region in trs:
         if text_region.has_type('main') and text_region.has_type('extra'):
@@ -218,6 +233,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
                 print('\tSPLITTING PAGE BOUNDARY OVERLAPPING REGION:', text_region.id, text_region.type)
                 # print(config)
                 sub_trs, extra = split_lines_on_column_gaps(text_region, config=config, debug=False)
+                if extra:
+                    sub_trs += [extra]
                 print('\t\tnumber of sub text regions:', len(sub_trs))
                 for sub_tr in sub_trs:
                     if is_even_side(sub_tr):
@@ -478,8 +495,8 @@ def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any],
         print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
         print("freq_threshold:", gap_pixel_freq_threshold)
     gap_pixel_dist = compute_pixel_dist(lines)
-    if debug:
-        print("gap_pixel_dist:", gap_pixel_dist)
+    # if debug:
+    #     print("gap_pixel_dist:", gap_pixel_dist)
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config)
     return gap_pixel_intervals
 
@@ -525,6 +542,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
                 column_lines[index].append(line)
         if index is None:
             extra_lines.append(line)
+            # print(f"APPENDING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
     columns = []
     for lines in column_lines:
         if len(lines) == 0:
@@ -567,6 +585,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
                 column.lines.append(line)
                 is_column_line = True
         if is_column_line is False:
+            # print(f"APPENDING NON-COL LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             non_col_lines.append(line)
     extra_lines = non_col_lines
     # print("EXTRA LINES AFTER:", len(extra_lines))
@@ -580,6 +599,8 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
             extra.set_parent(text_region.parent)
         else:
             extra.set_derived_id(text_region.id)
+        # for line in extra.lines:
+        #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
     return columns, extra
 
 
@@ -830,7 +851,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
             split_columns = False
     if has_wide_main:
         split_columns = True
-    pages = split_scan_pages(scan_doc, page_type_index)
+    pages = split_scan_pages(scan_doc, page_type_index, debug=debug)
     if debug:
         print('\n')
         for page in pages:
