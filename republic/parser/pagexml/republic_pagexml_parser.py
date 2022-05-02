@@ -190,29 +190,33 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
         if tr.coords.width > max_col_width:
             # print("SPLITTING COLUMN BECAUSE IT IS TOO WIDE")
             cols, extra = split_lines_on_column_gaps(tr, config, debug=debug)
-            # for col in cols:
-            #     print("COLUMN:", col.id)
-            #     for line in col.lines:
-            #         print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+            if debug:
+                for col in cols:
+                    print("COLUMN:", col.id)
+                    for line in col.lines:
+                        print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             trs += cols
             if extra:
-                # print("EXTRA:", extra.id)
-                # for line in extra.lines:
-                #     print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+                if debug:
+                    print("EXTRA:", extra.id)
+                    for line in extra.lines:
+                        print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
                 trs.append(extra)
         elif is_even_side(tr) or is_odd_side(tr):
             trs.append(tr)
         else:
             cols, extra = split_lines_on_column_gaps(tr, config)
-            # for col in cols:
-            #     print("COLUMN:", col.id)
-            #     for line in col.lines:
-            #         print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+            if debug:
+                for col in cols:
+                    print("COLUMN:", col.id)
+                    for line in col.lines:
+                        print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             trs += cols
             if extra:
-                # print("EXTRA:", extra.id)
-                # for line in col.lines:
-                #     print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+                if debug:
+                    print("EXTRA:", extra.id)
+                    for line in col.lines:
+                        print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
                 trs.append(extra)
     for text_region in trs:
         if text_region.has_type('main') and text_region.has_type('extra'):
@@ -601,6 +605,17 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
             extra.set_derived_id(text_region.id)
         # for line in extra.lines:
         #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+        config = copy.deepcopy(config)
+        config["column_gap"]["gap_pixel_freq_ratio"] = 0.01
+        extra_cols, extra_extra = split_lines_on_column_gaps(extra, config)
+        if extra_extra:
+            extra_cols += [extra_extra]
+        for extra_col in extra_cols:
+            extra_col.set_parent(text_region.parent)
+            if text_region.parent:
+                extra_col.set_derived_id(text_region.parent.id)
+        columns += extra_cols
+        extra = None
     return columns, extra
 
 
