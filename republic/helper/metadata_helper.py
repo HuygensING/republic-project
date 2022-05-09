@@ -143,6 +143,24 @@ def get_scan_id(inventory_metadata, scan_num):
     return f'{inventory_metadata["series_name"]}_{inventory_metadata["inventory_num"]}_{scan_num_str}'
 
 
+def parse_scan_id(scan_id: str):
+    # example: NL-HaNA_1.01.02_3820_0079
+    try:
+        series_prefix, series_num, inventory_num, scan_num = scan_id.split('_')
+    except ValueError:
+        raise
+    if len(scan_num) != 4:
+        raise ValueError(f'Invalid scan id: {scan_id}')
+    return {
+        "series_prefix": series_prefix,
+        "series_num": series_num,
+        "series": f"{series_prefix}_{series_num}",
+        "inventory_num": int(inventory_num),
+        "scan_num": int(scan_num),
+        "scan_id": scan_id
+    }
+
+
 def index_intervention_page_nums(inv_metadata):
     intervene = {
         "inc": {},
