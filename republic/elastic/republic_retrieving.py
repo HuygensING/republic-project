@@ -400,8 +400,8 @@ class Retriever:
             return None
 
     def retrieve_resolution_by_id(self, resolution_id: str) -> Union[rdm.Resolution, None]:
-        if self.es_anno.exists(index=self.config['resolution_index'], id=resolution_id):
-            response = self.es_anno.get(index=self.config['resolution_index'], id=resolution_id)
+        if self.es_anno.exists(index=self.config['resolutions_index'], id=resolution_id):
+            response = self.es_anno.get(index=self.config['resolutions_index'], id=resolution_id)
             return rdm.json_to_republic_resolution(response['_source'])
         else:
             return None
@@ -417,15 +417,15 @@ class Retriever:
 
     def scroll_resolutions_by_query(self, query: dict,
                                     scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
-        for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolution_index'],
+        for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolutions_index'],
                                     doc_type="_doc", size=10, scroll=scroll):
             yield rdm.json_to_republic_resolution(hit['_source'])
 
     def retrieve_resolutions_by_query(self, query: dict, size: int = 10, aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
         if "query" in query:
-            response = self.es_anno.search(index=self.config['resolution_index'], body=query)
+            response = self.es_anno.search(index=self.config['resolutions_index'], body=query)
         else:
-            response = self.es_anno.search(index=self.config['resolution_index'], query=query, aggs=aggs, size=size)
+            response = self.es_anno.search(index=self.config['resolutions_index'], query=query, aggs=aggs, size=size)
         if response['hits']['total']['value'] == 0:
             return []
         else:
@@ -446,14 +446,14 @@ class Retriever:
             yield resolution
 
     def retrieve_attendance_list_by_id(self, att_id: str) -> rdm.AttendanceList:
-        if self.es_anno.exists(index=self.config["resolution_index"], id=att_id):
-            response = self.es_anno.get(index=self.config["resolution_index"], id=att_id)
+        if self.es_anno.exists(index=self.config["resolutions_index"], id=att_id):
+            response = self.es_anno.get(index=self.config["resolutions_index"], id=att_id)
             return rdm.json_to_republic_attendance_list(response["_source"])
         else:
             raise ValueError(f"No attendance list exists with id {att_id}")
 
     def retrieve_attendance_lists_by_query(self, query: dict) -> List[rdm.AttendanceList]:
-        response = self.es_anno.search(index=self.config['resolution_index'], body=query)
+        response = self.es_anno.search(index=self.config['resolutions_index'], body=query)
         return [rdm.json_to_republic_attendance_list(hit['_source']) for hit in response['hits']['hits']]
 
     def scroll_phrase_matches_by_query(self, query: dict, size: int = 100,
