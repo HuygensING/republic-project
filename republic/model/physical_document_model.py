@@ -3,6 +3,7 @@ from typing import Dict, List, Set, Tuple, Union
 from collections import defaultdict
 
 import numpy as np
+import scipy.spatial
 from scipy.spatial import ConvexHull
 
 

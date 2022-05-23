@@ -540,7 +540,10 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
         index = None
         for column_range in column_ranges:
             if line.coords.width == 0:
-                print("ZERO WIDTH LINE:", line.coords.x, line.coords.y, line.text)
+                if debug:
+                    print("ZERO WIDTH LINE:", line.coords.box, line.text)
+                continue
+
             if within_column(line, column_range, overlap_threshold=overlap_threshold):
                 index = column_ranges.index(column_range)
                 column_lines[index].append(line)
@@ -588,6 +591,9 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
             if pdm.is_horizontally_overlapping(line, column):
                 column.lines.append(line)
                 is_column_line = True
+                column.coords = pdm.parse_derived_coords(column.lines)
+                if text_region.parent:
+                    column.set_derived_id(text_region.parent.id)
         if is_column_line is False:
             # print(f"APPENDING NON-COL LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             non_col_lines.append(line)
@@ -595,7 +601,12 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion, config: Dict[
     # print("EXTRA LINES AFTER:", len(extra_lines))
     extra = None
     if len(extra_lines) > 0:
-        coords = pdm.parse_derived_coords(extra_lines)
+        try:
+            coords = pdm.parse_derived_coords(extra_lines)
+        except BaseException:
+            for line in extra_lines:
+                print(line.coords.box, line.text)
+            raise ValueError('Cannot generate column coords for extra lines')
         extra = pdm.PageXMLTextRegion(metadata=text_region.metadata, coords=coords,
                                       lines=extra_lines)
         if text_region.parent and text_region.parent.id:
