@@ -159,14 +159,12 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         elif len(opening_matches) > 0:
             if attendance_list:
                 attendance_list.metadata["text_page_num"] = get_resolution_text_page_nums(attendance_list)
-                print('yielding attendance_list')
                 yield attendance_list
                 attendance_list = None
             resolution_number += 1
             if resolution:
                 resolution.set_proposition_type()
                 resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
-                print('yielding resolution')
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
@@ -188,7 +186,6 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
     if resolution:
         resolution.set_proposition_type()
         resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
-        print('yielding resolution')
         yield resolution
 
 

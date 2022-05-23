@@ -434,7 +434,6 @@ class Resolution(ResolutionElementDoc):
         return f"Resolution({json.dumps(self.json, indent=4)}"
 
     def set_proposition_type(self):
-        print('setting proposition type')
         if self.evidence:
             if self.metadata['proposition_type']:
                 self.proposition_type = self.metadata['proposition_type']
