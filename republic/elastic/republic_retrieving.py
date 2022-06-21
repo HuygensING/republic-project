@@ -418,7 +418,7 @@ class Retriever:
     def scroll_resolutions_by_query(self, query: dict,
                                     scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
         for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolutions_index'],
-                                    doc_type="_doc", size=10, scroll=scroll):
+                                    size=10, scroll=scroll):
             yield rdm.json_to_republic_resolution(hit['_source'])
 
     def retrieve_resolutions_by_query(self, query: dict, size: int = 10, aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
@@ -453,18 +453,18 @@ class Retriever:
             raise ValueError(f"No attendance list exists with id {att_id}")
 
     def retrieve_attendance_lists_by_query(self, query: dict) -> List[rdm.AttendanceList]:
-        response = self.es_anno.search(index=self.config['resolutions_index'], body=query)
+        response = self.es_anno.search(index=self.config['resolutions_index'], query=query)
         return [rdm.json_to_republic_attendance_list(hit['_source']) for hit in response['hits']['hits']]
 
     def scroll_phrase_matches_by_query(self, query: dict, size: int = 100,
                                        scroll: str = '1m') -> Generator[PhraseMatch, None, None]:
-        for hit in self.scroll_hits(self.es_anno, query, index=self.config['phrase_match_index'],
-                                    doc_type="_doc", size=size, scroll=scroll):
+        for hit in self.scroll_hits(self.es_anno, query, index=self.config['phrase_matches_index'],
+                                    size=size, scroll=scroll):
             match_json = hit['_source']
             yield rdm.parse_phrase_matches([match_json])[0]
 
     def retrieve_phrase_matches_by_query(self, query: dict) -> List[PhraseMatch]:
-        response = self.es_anno.search(index=self.config['phrase_match_index'], doc_type="_doc", body=query)
+        response = self.es_anno.search(index=self.config['phrase_matches_index'], query=query)
         if response['hits']['total']['value'] == 0:
             return []
         else:
@@ -477,7 +477,7 @@ class Retriever:
         return sorted(phrase_matches, key=lambda x: x.offset)
 
     def retrieve_lemma_references_by_query(self, query: Dict[str, any]) -> List[Dict[str, any]]:
-        response = self.es_anno.search(index=self.config["lemma_index"], body=query)
+        response = self.es_anno.search(index=self.config["lemma_index"], query=query)
         if "hits" in response["hits"]:
             docs = [hit["_source"] for hit in response["hits"]["hits"]]
         else:

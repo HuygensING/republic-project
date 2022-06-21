@@ -266,9 +266,9 @@ def skip_resolution(resolution: Resolution, phrase_matches: List[PhraseMatch],
 
 
 def get_proposition_origin(resolution_metadata):
-    if "proposition_origin" not in resolution_metadata["metadata"]:
+    if "proposition_origin" not in resolution_metadata:
         return "unidentified"
-    proposition_origin = resolution_metadata["metadata"]["proposition_origin"]
+    proposition_origin = resolution_metadata["proposition_origin"]
     if proposition_origin is None:
         return "unidentified"
     elif "location" in proposition_origin:
@@ -295,7 +295,7 @@ def clean_role(roles):
 
 
 def get_proposer_role(resolution_metadata):
-    proposer = resolution_metadata["metadata"]["proposer"]
+    proposer = resolution_metadata["proposer"]
     if proposer is None:
         return "unidentified"
     elif "person_role" not in proposer:
@@ -307,7 +307,7 @@ def get_proposer_role(resolution_metadata):
 
 
 def get_proposer_location(resolution_metadata):
-    proposer = resolution_metadata["metadata"]["proposer"]
+    proposer = resolution_metadata["proposer"]
     if proposer is None:
         return "unidentified"
     elif "location" not in proposer:
@@ -319,7 +319,7 @@ def get_proposer_location(resolution_metadata):
 
 
 def get_proposer_organisation(resolution_metadata):
-    proposer = resolution_metadata["metadata"]["proposer"]
+    proposer = resolution_metadata["proposer"]
     if proposer is None:
         return "unidentified"
     elif "organisation" not in proposer:
@@ -342,7 +342,7 @@ def add_proposer_metadata(resolution, resolution_metadata):
         metadata["proposition_origin"] = proposition_origin
     for field in resolution_metadata:
         if field == "proposition_type":
-            metadata["proposition_type"] = resolution_metadata["metadata"]["proposition_type"]
+            metadata["proposition_type"] = resolution_metadata["proposition_type"]
     return metadata
 
 
