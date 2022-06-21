@@ -464,14 +464,15 @@ class Retriever:
             yield rdm.parse_phrase_matches([match_json])[0]
 
     def retrieve_phrase_matches_by_query(self, query: dict) -> List[PhraseMatch]:
-        response = self.es_anno.search(index=self.config['phrase_matches_index'], query=query)
+        print('query:', query)
+        response = self.es_anno.search(index=self.config['phrase_matches_index'], query=query, size=1000)
         if response['hits']['total']['value'] == 0:
             return []
         else:
             return rdm.parse_phrase_matches([hit['_source'] for hit in response['hits']['hits']])
 
     def retrieve_phrase_matches_by_paragraph_id(self, paragraph_id: str) -> List[PhraseMatch]:
-        query = {'query': {'match': {'text_id.keyword': paragraph_id}}, 'size': 1000}
+        query = {'match': {'text_id.keyword': paragraph_id}}
         phrase_matches = self.retrieve_phrase_matches_by_query(query)
         # sort matches by order of occurrence in the text
         return sorted(phrase_matches, key=lambda x: x.offset)
