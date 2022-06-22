@@ -244,10 +244,10 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
         if len(resolution.evidence) == 0:
             print('resolution without evidence:', resolution.metadata)
         if resolution.evidence[0].phrase.phrase_string in skip_formulas:
-            print(resolution.id)
-            print(resolution.paragraphs[0].text)
-            print(resolution.evidence[0])
-            print()
+            print('skip formula:', resolution.id)
+            # print(resolution.paragraphs[0].text)
+            # print(resolution.evidence[0])
+            # print()
             # continue
         phrase_matches = extract_res.get_paragraph_phrase_matches(rep_es, resolution)
         new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
