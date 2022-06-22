@@ -176,6 +176,7 @@ def do_session_lines_indexing(inv_num: int, year: int):
 def do_session_text_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
     for mi, session in enumerate(rep_es.retrieve_inventory_sessions_with_lines(inv_num)):
+        print('indexing session text for session', session.id)
         resolutions = rep_es.retrieve_resolutions_by_session_id(session.id)
         session_text_doc = make_session_text_version(session, resolutions)
         rep_es.index_session_with_text(session_text_doc)
