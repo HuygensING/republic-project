@@ -41,12 +41,9 @@ def parse_hits_as_pages(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> Li
 
 def make_bool_query(match_fields, size: int = 10000) -> dict:
     return {
-        'query': {
-            'bool': {
-                'must': match_fields
-            }
-        },
-        'size': size
+        'bool': {
+            'must': match_fields
+        }
     }
 
 
@@ -96,7 +93,9 @@ def make_inventory_query(inventory_num: int, size: int = 10):
 
 def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num: int) -> dict:
     match_fields = [
-        {'match': {'metadata.inventory_num': inventory_num}},
+        {
+            'match': {'metadata.inventory_num': inventory_num}
+        },
         {
             'range': {
                 'num_columns': {
@@ -186,7 +185,7 @@ class Retriever:
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
                     size: int = 100, scroll: str = '2m') -> iter:
-        response = es.search(index=index, scroll=scroll, size=size, body=query)
+        response = es.search(index=index, scroll=scroll, size=size, query=query)
         sid = response['_scroll_id']
         scroll_size = response['hits']['total']
         print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))

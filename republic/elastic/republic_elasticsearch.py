@@ -6,7 +6,7 @@ import elasticsearch
 from elasticsearch import Elasticsearch
 
 # import retrieval and indexing functions so they cna be imported from a single module
-from republic.config.republic_config import base_config
+from republic.config.republic_config import base_config, get_base_config
 from republic.elastic.republic_retrieving import Retriever
 from republic.elastic.republic_indexing import Indexer
 
@@ -54,7 +54,7 @@ def initialize_es(host_type: str = "external", timeout: int = 10,
     es_anno = initialize_es_anno(host_type=host_type, timeout=timeout)
     es_text = initialize_es_text_repo(timeout=timeout)
     if config is None:
-        config = copy.deepcopy(base_config)
+        config = get_base_config()
     config["commit_version"] = commit_version
     if hasattr(settings, "prov_host_url"):
         config["prov_host_url"] = settings.prov_host_url
