@@ -146,9 +146,9 @@ class Indexer:
                        doc_body=resolution.json)
 
     def index_attendance_list(self, attendance_list: rdm.AttendanceList):
-        self.es_anno.index(index=self.config["resolutions_index"],
-                           id=attendance_list.id,
-                           body=attendance_list.json)
+        self.index_doc(index=self.config["resolutions_index"],
+                       doc_id=attendance_list.id,
+                       doc_body=attendance_list.json)
 
     def index_resolution_metadata(self, resolution: rdm.Resolution):
         metadata_copy: Dict[str, any] = copy.deepcopy(resolution.metadata)
