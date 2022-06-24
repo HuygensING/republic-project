@@ -430,6 +430,8 @@ def get_resolution_proposition_text(resolution: Resolution, phrase_matches: List
     for pm in phrase_matches:
         if resolution.paragraphs[0].text[pm.offset:pm.end] != pm.string:
             print('invalid phrase match')
+            print('first para id:', resolution.paragraphs[0].id)
+            print('phrase match text id:', pm.text_id)
             continue
         # print('min_end:', min_end)
         # print(pm.variant.phrase_string, pm.string, pm.end, pm.label_list)
