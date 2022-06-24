@@ -463,7 +463,6 @@ class Retriever:
             yield rdm.parse_phrase_matches([match_json])[0]
 
     def retrieve_phrase_matches_by_query(self, query: dict) -> List[PhraseMatch]:
-        print('query:', query)
         response = self.es_anno.search(index=self.config['phrase_matches_index'], query=query, size=1000)
         if response['hits']['total']['value'] == 0:
             return []
