@@ -265,13 +265,13 @@ def skip_resolution(resolution: Resolution, phrase_matches: List[PhraseMatch],
     return skip
 
 
-def get_proposition_origin(resolution_metadata: Dict[str, any]) -> Dict[str, Union[str, List[str]]]:
+def get_proposition_origin(resolution_metadata: Dict[str, any]) -> Dict[str, any]:
     if "proposition_origin" not in resolution_metadata:
-        return {"location": "unidentified"}
+        return {"location": {"text": "unidentified"}}
         # return "unidentified"
     proposition_origin = resolution_metadata["proposition_origin"]
     if proposition_origin is None:
-        return {"location": "unidentified"}
+        return {"location": {"text": "unidentified"}}
         # return "unidentified"
     elif "location" in proposition_origin:
         return proposition_origin
@@ -282,7 +282,7 @@ def get_proposition_origin(resolution_metadata: Dict[str, any]) -> Dict[str, Uni
         #     return {"location": proposer["location"]}
         #     return [location["text"] for location in proposition_origin["location"]]
     else:
-        return {"location": "unidentified"}
+        return {"location": {"text": "unidentified"}}
         # return "unidentified"
 
 
@@ -312,19 +312,19 @@ def get_proposer_role(resolution_metadata):
         return [clean_role(role["text"]) for role in proposer["person_role"]]
 
 
-def get_proposer_location(resolution_metadata: Dict[str, any]) -> Dict[str, Union[str, List[str]]]:
+def get_proposer_location(resolution_metadata: Dict[str, any]) -> Dict[str, any]:
     proposer = resolution_metadata["proposer"]
     if proposer is None:
-        return {"location": "unidentified"}
+        return {"location": {"text": "unidentified"}}
         # return "unidentified"
     elif "location" not in proposer:
-        return {"location": "unidentified"}
+        return {"location": {"text": "unidentified"}}
         # return "unidentified"
     if isinstance(proposer["location"], dict):
-        return {"location": proposer["location"]}
+        return proposer["location"]
         # return proposer["location"]["text"]
     else:
-        return {"location": proposer["location"]}
+        return proposer["location"]
         # return [role["text"] for role in proposer["location"]]
 
 
