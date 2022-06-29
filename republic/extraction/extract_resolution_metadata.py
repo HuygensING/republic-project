@@ -265,19 +265,25 @@ def skip_resolution(resolution: Resolution, phrase_matches: List[PhraseMatch],
     return skip
 
 
-def get_proposition_origin(resolution_metadata):
+def get_proposition_origin(resolution_metadata: Dict[str, any]) -> Dict[str, any]:
     if "proposition_origin" not in resolution_metadata:
-        return "unidentified"
+        return {"location": {"text": "unidentified"}}
+        # return "unidentified"
     proposition_origin = resolution_metadata["proposition_origin"]
     if proposition_origin is None:
-        return "unidentified"
+        return {"location": {"text": "unidentified"}}
+        # return "unidentified"
     elif "location" in proposition_origin:
-        if isinstance(proposition_origin["location"], dict):
-            return proposition_origin["location"]["text"]
-        else:
-            return [location["text"] for location in proposition_origin["location"]]
+        return proposition_origin
+        # if isinstance(proposition_origin["location"], dict):
+        #     return {"location": proposition_origin["location"]}
+        #     return proposition_origin["location"]["text"]
+        # else:
+        #     return {"location": proposer["location"]}
+        #     return [location["text"] for location in proposition_origin["location"]]
     else:
-        return "unidentified"
+        return {"location": {"text": "unidentified"}}
+        # return "unidentified"
 
 
 def clean_role(roles):
@@ -306,16 +312,20 @@ def get_proposer_role(resolution_metadata):
         return [clean_role(role["text"]) for role in proposer["person_role"]]
 
 
-def get_proposer_location(resolution_metadata):
+def get_proposer_location(resolution_metadata: Dict[str, any]) -> Dict[str, any]:
     proposer = resolution_metadata["proposer"]
     if proposer is None:
-        return "unidentified"
+        return {"location": {"text": "unidentified"}}
+        # return "unidentified"
     elif "location" not in proposer:
-        return "unidentified"
+        return {"location": {"text": "unidentified"}}
+        # return "unidentified"
     if isinstance(proposer["location"], dict):
-        return proposer["location"]["text"]
+        return proposer["location"]
+        # return proposer["location"]["text"]
     else:
-        return [role["text"] for role in proposer["location"]]
+        return proposer["location"]
+        # return [role["text"] for role in proposer["location"]]
 
 
 def get_proposer_organisation(resolution_metadata):
@@ -420,6 +430,10 @@ def get_resolution_proposition_text(resolution: Resolution, phrase_matches: List
     for pm in phrase_matches:
         if resolution.paragraphs[0].text[pm.offset:pm.end] != pm.string:
             print('invalid phrase match')
+            print('first para id:', resolution.paragraphs[0].id)
+            print('phrase match text id:', pm.text_id)
+            print('phrase match string:', pm.string)
+            print('first para offset string:', resolution.paragraphs[0].text[pm.offset:pm.end])
             continue
         # print('min_end:', min_end)
         # print(pm.variant.phrase_string, pm.string, pm.end, pm.label_list)
