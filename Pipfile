@@ -24,6 +24,8 @@ numpy = "==1.21"
 #jupyter = "*"
 jupyterlab = ">=3.3"
 regex = "*"
+maturin = "*"
+analiticcl = "*"
 
 [requires]
 python_version = "3.8"
