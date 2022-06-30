@@ -1,13 +1,18 @@
 from typing import List, Union, Dict
 import json
+import os
 
 from republic.model.republic_date import RepublicDate, make_republic_date
-from settings import inventory_metadata_file
+import settings
 
 
 def read_inventory_metadata(metadata_file: str = None) -> List[Dict[str, any]]:
     if metadata_file is None:
-        metadata_file = inventory_metadata_file
+        dir_path, _filename = os.path.split(settings.__file__)
+        meta_file = settings.inventory_metadata_file
+        if meta_file.startswith('.'):
+            meta_file = meta_file[2:]
+        metadata_file = os.path.join(dir_path, 'data/inventories/inventory_metadata.json')
     with open(metadata_file, 'rt') as fh:
         return json.load(fh)
 
