@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-elasticsearch = "==7.6.0"
+elasticsearch = "==7.15.0"
 tqdm = "==4.48.2"
 xmltodict = "==0.12.0"
 requests = "==2.25.0"
@@ -26,6 +26,8 @@ jupyterlab = ">=3.3"
 regex = "*"
 maturin = "*"
 analiticcl = "*"
+langdetect = "*"
+nltk = "*"
 
 [requires]
 python_version = "3.8"

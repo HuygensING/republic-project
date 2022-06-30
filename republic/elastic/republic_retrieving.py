@@ -82,12 +82,9 @@ def make_text_repo_inventory_query(inventory_num):
 
 def make_inventory_query(inventory_num: int, size: int = 10):
     return {
-        'query': {
-            'match': {
-                'metadata.inventory_num': inventory_num
-            }
-        },
-        'size': size
+        'match': {
+            'metadata.inventory_num': inventory_num
+        }
     }
 
 
@@ -185,7 +182,10 @@ class Retriever:
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
                     size: int = 100, scroll: str = '2m') -> iter:
-        response = es.search(index=index, scroll=scroll, size=size, query=query)
+        if query is None:
+            response = es.search(index=index, scroll=scroll, size=size)
+        else:
+            response = es.search(index=index, scroll=scroll, size=size, query=query)
         sid = response['_scroll_id']
         scroll_size = response['hits']['total']
         print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))
@@ -356,17 +356,17 @@ class Retriever:
         return [hit['_source'] for hit in response['hits']['hits']] if 'hits' in response['hits'] else []
 
     def retrieve_inventory_sessions_with_lines(self, inventory_num: int) -> Generator[rdm.Session, None, None]:
-        query = make_inventory_query(inventory_num=inventory_num, size=1000)
+        query = make_inventory_query(inventory_num=inventory_num)
         for hit in self.scroll_hits(self.es_anno, query, self.config['session_lines_index'],
                                     size=2, scroll='10m'):
             session = rdm.json_to_republic_session(hit['_source'])
             yield session
 
     def retrieve_pagexml_sessions(self, inventory_num: int) -> List[dict]:
-        query = make_inventory_query(inventory_num, size=1000)
+        query = make_inventory_query(inventory_num)
         response = self.es_anno.search(index=self.config['session_index'],
                                        doc_type=self.config['session_doc_type'],
-                                       body=query)
+                                       query=query, size=1000)
         if response['hits']['total']['value'] == 0:
             return []
         else:
