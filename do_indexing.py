@@ -3,6 +3,7 @@ import multiprocessing
 import subprocess
 import os
 import time
+import json
 
 from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
@@ -260,9 +261,13 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
             no_new += 1
             continue
         # print(new_resolution.metadata)
-        if (ri+1) % 10 == 0:
+        if (ri+1) % 100 == 0:
             print(ri+1, 'resolutions parsed\t', attendance, 'attendance lists\t', no_new, 'non-metadata')
-        rep_es.index_resolution_metadata(new_resolution)
+        try:
+            rep_es.index_resolution_metadata(new_resolution)
+        except:
+            print('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, indent=4))
+            raise
 
 
 def do_inventory_attendance_list_indexing(inv_num: int, year: int):
