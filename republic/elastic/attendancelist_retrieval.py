@@ -29,10 +29,14 @@ def query_es(es: Elasticsearch, index, query, size=10, sort=None, aggs=None):
 
 
 def get_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_text'):
+    if index == 'resolutions':
+        type_field = 'metadata.type.keyword'
+    else:
+        type_field = 'annotations.metadata.type.keyword'
     query = {
         "bool": {
             "must": [
-                {"term": {"annotations.metadata.type.keyword": "attendance_list"}},
+                {"term": {type_field: "attendance_list"}},
                 {"term": {"metadata.session_year": year}}]
         }
     }
@@ -41,7 +45,8 @@ def get_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_tex
     results = query_es(es, index, query, size=size, sort=sort)
 
     presentielijsten = {}
-    for ob in results['hits']['hits']:
+    for hit in results['hits']['hits']:
+        ob = hit['_source']
         mt = TextWithMetadata(ob)
         presentielijsten[mt.id] = mt
     return presentielijsten
@@ -89,7 +94,8 @@ def simple_search(es: Elasticsearch, input_value: str):
         "sort": "_score"
     }
 
-    results: list = es.search(index="paragraph_index", body=body)
+    response = es.search(index="paragraph_index", body=body)
+    results: list = [hit for hit in response['hits']['hits']]
     return results
 
 

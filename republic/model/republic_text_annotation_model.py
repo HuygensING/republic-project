@@ -78,7 +78,7 @@ def make_paragraph_annotation(paragraph: RepublicParagraph, doc_text_offset: int
 def make_attendance_span_annotations(attendance_list: rdm.AttendanceList) -> List[dict]:
     annotations = []
     att_num = 0
-    print('\tadding spans')
+    # print('\tadding spans')
     for span in attendance_list.attendance_spans:
         annotation = {
             "id": f"{attendance_list.id}-attendant-{att_num}",
@@ -96,7 +96,7 @@ def make_attendance_span_annotations(attendance_list: rdm.AttendanceList) -> Lis
         }
         annotations.append(annotation)
         att_num += 1
-    print('\t', len(annotations))
+    # print('\t', len(annotations))
     return annotations
 
 

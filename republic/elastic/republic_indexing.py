@@ -156,7 +156,8 @@ class Indexer:
             'metadata': metadata_copy,
             'evidence': [pm.json() for pm in resolution.evidence]
         }
-        metadata_doc['metadata']['id'] = metadata_doc['metadata']['id'] + '-metadata'
+        if not metadata_doc['metadata']['id'].endswith('-metadata'):
+            metadata_doc['metadata']['id'] = metadata_doc['metadata']['id'] + '-metadata'
         print('indexing metadata for resolution', metadata_doc['metadata']['id'])
         self.index_doc(index=self.config['resolution_metadata_index'],
                        doc_id=metadata_doc['metadata']['id'],

@@ -203,7 +203,6 @@ def do_resolution_indexing(inv_num: int, year: int):
                                                                  line_break_detector=line_break_detector):
                 rep_es.index_resolution(resolution)
         except (TypeError, KeyError) as err:
-            has_error = True
             errors.append(err)
             # pass
             raise
@@ -267,6 +266,7 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
             print(ri+1, 'resolutions parsed\t', attendance, 'attendance lists\t', no_new, 'non-metadata')
         try:
             rep_es.index_resolution_metadata(new_resolution)
+            rep_es.index_resolution(new_resolution)
         except:
             print('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, indent=4))
             raise
@@ -278,23 +278,24 @@ def do_inventory_attendance_list_indexing(inv_num: int, year: int):
     if att_spans_year is None:
         return None
     for span_list in att_spans_year:
+        # print(span_list['metadata']['zittingsdag_id'])
         att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
         att_list = rep_es.retrieve_attendance_list_by_id(att_id)
         att_list.attendance_spans = span_list["spans"]
         rep_es.index_attendance_list(att_list)
 
 
-def do_inventory_lemma_reference_indexing(task) -> None:
-    print(f"Indexing lemma references for inventory {task['inv_num']} year {task['year']})...")
-    inv_metadata = rep_es.retrieve_inventory_metadata(task['inv_num'])
+def do_inventory_lemma_reference_indexing(inv_num: int, year: int) -> None:
+    print(f"Indexing lemma references for inventory {inv_num} year {year})...")
+    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
     text_page_num_map = map_text_page_nums(inv_metadata)
     page_num_map = {}
     for page_num in text_page_num_map:
         page_info = text_page_num_map[page_num]
         if "text_page_num" not in page_info or page_info["text_page_num"] is None:
             continue
-        page_num_map[page_info["text_page_num"]] = page_num_to_page_id(page_num, task['inv_num'])
-    pages = rep_es.retrieve_index_pages(task['inv_num'])
+        page_num_map[page_info["text_page_num"]] = page_num_to_page_id(page_num, inv_num)
+    pages = rep_es.retrieve_index_pages(inv_num)
     entries = index_parser.parse_inventory_index_pages(pages)
     start_time = time.time()
     ei = 0
@@ -309,36 +310,39 @@ def do_inventory_lemma_reference_indexing(task) -> None:
 def process_inventory(task: Dict[str, Union[str, int]]):
     if task["type"] == "download":
         do_downloading(task["inv_num"], task["year"])
-    if task["type"] == "scans_pages":
+    elif task["type"] == "scans_pages":
         do_scan_indexing_pagexml(task["inv_num"], task["year"])
         do_page_indexing_pagexml(task["inv_num"], task["year"])
-    if task["type"] == "scans":
+    elif task["type"] == "scans":
         do_scan_indexing_pagexml(task["inv_num"], task["year"])
-    if task["type"] == "pages":
+    elif task["type"] == "pages":
         do_page_indexing_pagexml(task["inv_num"], task["year"])
-    if task["type"] == "page_types":
+    elif task["type"] == "page_types":
         do_page_type_indexing_pagexml(task["inv_num"], task["year"])
-    if task["type"] == "session_lines":
+    elif task["type"] == "session_lines":
         do_session_lines_indexing(task["inv_num"], task["year"])
-    if task["type"] == "session_text":
+    elif task["type"] == "session_text":
         do_session_text_indexing(task["inv_num"], task["year"])
-    if task["type"] == "resolutions":
+    elif task["type"] == "resolutions":
         do_resolution_indexing(task["inv_num"], task["year"])
-    if task["type"] == "phrase_matches":
-        do_resolution_phrase_match_indexing(task["inv_num"], task["year"])
-    if task["type"] == "resolution_metadata":
+    elif task["type"] == "full_resolutions":
+        do_resolution_indexing(task["inv_num"], task["year"])
         do_resolution_metadata_indexing(task["inv_num"], task["year"])
-    if task["type"] == "attendance_list_spans":
         do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
-    if task["type"] == "lemma_references":
+    elif task["type"] == "phrase_matches":
+        do_resolution_phrase_match_indexing(task["inv_num"], task["year"])
+    elif task["type"] == "resolution_metadata":
+        do_resolution_metadata_indexing(task["inv_num"], task["year"])
+    elif task["type"] == "attendance_list_spans":
+        do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
+    elif task["type"] == "lemma_references":
         do_inventory_lemma_reference_indexing(task["inv_num"], task["year"])
+    else:
+        raise ValueError(f'Unknown task type {task["type"]}')
     print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
 
 
-if __name__ == "__main__":
-    import getopt
-    import sys
-
+def main():
     # Get the arguments from the command-line except the filename
     argv = sys.argv[1:]
     try:
@@ -392,3 +396,10 @@ if __name__ == "__main__":
         sys.exit(2)
     with multiprocessing.Pool(processes=num_processes) as pool:
         pool.map(process_inventory, tasks)
+
+
+if __name__ == "__main__":
+    import getopt
+    import sys
+    main()
+

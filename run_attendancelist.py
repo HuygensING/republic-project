@@ -155,7 +155,7 @@ class RunAll(object):
                  ):
         start_logger(outdir, year)
         self.year = year
-        self.searchobs = make_presentielijsten(es=es, year=self.year)
+        self.searchobs = make_presentielijsten(es=es, year=self.year, index='resolutions')
         logging.info(f'year: {year}, nr of attendancelists {len(self.searchobs)}')
         self.junksweeper = make_junksweeper(ekwz)
         self.abbreviated_delegates = abbreviated_delegates

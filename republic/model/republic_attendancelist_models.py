@@ -2,17 +2,15 @@ import itertools
 import json
 import logging
 from collections import UserString
-import re
+
 import pandas as pd
-#from ..fuzzy.fuzzy_keyword_searcher import FuzzyPhraseSearcher
+from numpy import argmax
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.fuzzy_phrase_model import PhraseModel
-from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
-#from scipy.special import softmax
-from numpy import argmax
+
+import republic.model.republic_document_model as rdm
 from .republic_phrase_model import resolution_phrase_model
 from ..helper.utils import score_match
-
 
 fuzzysearch_config = {
     "char_match_threshold": 0.8,
@@ -49,10 +47,12 @@ phrase_model = PhraseModel(resumption, config=fuzzysearch_config)
 # phrase_model.add_variants(variants)
 resumption_searcher.index_phrase_model(phrase_model=phrase_model)
 
+
 # we want this in an object so that we can store some metadata on it and retrieve them any time
 class TextWithMetadata(object):
+
     def __init__(self, searchobject):
-        metadata = searchobject['_source']['metadata']
+        metadata = searchobject['metadata']
         self.line_coords = []
         # lineob = self.find_preslst_text(searchob=searchobject)
         # if lineob:
@@ -61,7 +61,14 @@ class TextWithMetadata(object):
         #     self.text = " ".join([meetingline['txt'] for meetingline in self.meeting_lines])
         self.invnr = metadata['inventory_num']
         # the following assumes the attendance list is on the first scan, but should really check offsets
-        scan = [s for s in searchobject['_source']['annotations'] if s['type'] == 'scan'][0]['id']
+        if 'session' in searchobject['type']:
+            scan = [s for s in searchobject['annotations'] if s['type'] == 'scan'][0]['id']
+        elif 'attendance_list' in searchobject['type']:
+            first_line = searchobject['paragraphs'][0]['line_ranges'][0]
+            scan = first_line['line_id'].split('-line')[0]
+            # print('scan:', scan)
+        else:
+            raise TypeError('searchob must be session_text dictionary or attendance_list dictionary')
         self.scan = scan
         volgnr = scan.split('_')[-1]
         self.volgnr = int(volgnr)
@@ -73,6 +80,7 @@ class TextWithMetadata(object):
         self.text = self.find_preslst_text(searchob=searchobject)
         self.matched_text = MatchedText(self.text)
         self.matched_text.para_id = self.id
+        self.resumptionstart = None
         self.set_resumption()
         # self.delegates = {'president': None,
         #                   'provinces': None,
@@ -86,12 +94,18 @@ class TextWithMetadata(object):
 
         TODO: change to paragraph texts
         """
-        result = {"text": ""}  # , "coords": []}
-        al = [p for p in searchob['_source']['annotations'] if 'attendance_list' in p['id']][0]
-        txt = searchob['_source']['text']
-        start = al['start_offset']
-        end = al['end_offset']
-        text = txt[start:end]
+        if 'attendance_list' in searchob['type']:
+            # print('find_preslst_text from attendance_list')
+            text = '\n'.join([para['text'] for para in searchob['paragraphs']])
+        elif 'session' in searchob['type']:
+            # print('find_preslst_text from session')
+            al = [p for p in searchob['annotations'] if 'attendance_list' in p['id']][0]
+            txt = searchob['text']
+            start = al['start_offset']
+            end = al['end_offset']
+            text = txt[start:end]
+        else:
+            raise TypeError('searchob must be session_text dictionary or attendance_list dictionary')
         self.resumptionstart = 0
         resumptionpat = resumption_searcher.find_matches(text, include_variants=True, use_word_boundaries=False)
         if resumptionpat:
@@ -101,7 +115,7 @@ class TextWithMetadata(object):
             newend = rsmpt.offset
             text = text[:newend]
             self.resumptionpattern = rsmpt
-        if len(text) > 850: # something went wrong in the session matching, let's truncate the text
+        if len(text) > 850:  # something went wrong in the session matching, let's truncate the text
             message = f"Too long text: {self.meeting_date} - length: {len(text)}. Scan: {self.scan}. Text truncated"
             logging.info(message)
             text = text[:850]
@@ -110,16 +124,15 @@ class TextWithMetadata(object):
     def set_resumption(self):
         rsmpt = self.resumptionpattern
         if rsmpt:
-            resumptionspan = (rsmpt.offset, rsmpt.offset+len(rsmpt.string))
+            resumptionspan = (rsmpt.offset, rsmpt.offset + len(rsmpt.string))
             self.matched_text.set_span(resumptionspan,
-                                   clas=getattr(rsmpt, "label") or '',
-                                   pattern=getattr(rsmpt, "string") or '',
-                                   score=getattr(rsmpt, "levenshtein_similarity") or 0.0)
-
+                                       clas=getattr(rsmpt, "label") or '',
+                                       pattern=getattr(rsmpt, "string") or '',
+                                       score=getattr(rsmpt, "levenshtein_similarity") or 0.0)
 
     def make_url(self):
         """should we make the url not so hard-coded?"""
-        if self.line_coords != []:
+        if self.line_coords:
             x = min([c.get('left') or 0 for c in self.line_coords])
             w = max([c.get('width') or 0 for c in self.line_coords])
             y = min([c.get('top') or 0 for c in self.line_coords])
@@ -130,11 +143,11 @@ class TextWithMetadata(object):
     def get_meeting_date(self):
         return self.meeting_date
 
-    def set_txt(self, txt):
-        self.txt = txt
+    def set_text(self, text):
+        self.text = text
 
-    def get_txt(self):
-        return self.txt
+    def get_text(self):
+        return self.text
 
     def get_spans(self):
         return self.matched_text.spans
@@ -143,12 +156,16 @@ class TextWithMetadata(object):
         return self.matched_text.get_fragments()
 
     def to_dict(self):
+        if self.id.endswith('-attendance_list'):
+            session_id = self.id.replace('-attendance_list', '')
+        else:
+            session_id = self.id
         result = {"metadata": {
             "inventory_num": self.invnr,
             # "meeting_lines": self.meeting_lines,
             "coords": self.line_coords,
             "text": self.text,
-            "zittingsdag_id": self.id,
+            "zittingsdag_id": session_id,
             "url": self.make_url()},
             "spans": self.matched_text.to_dict()}
         return result
@@ -233,11 +250,11 @@ class MatchedText(object):
 
     def __init__(self,
                  item: str = '',
-                 mapcolors: dict = {}):
+                 mapcolors: dict = None):
         self.item = item
         self.spans = []
         self.delegates = []
-        if mapcolors != {}:
+        if mapcolors is not None:
             self.colormap = mapcolors
         else:
             self.colormap = self.mapcolors(colorschema=defaultcolormap)
@@ -260,11 +277,12 @@ class MatchedText(object):
             colorschema = defaultcolormap
         if colorschema:
             try:
-                self.colormap = {k[1]: schema[k[0]] for k in enumerate(self.get_types())}
+                return {k[1]: schema[k[0]] for k in enumerate(self.get_types())}
             except IndexError:  # too many types
                 print("too many types")
             except KeyError:
                 pass
+        return None
 
     def serialize(self):
         """serialize spans into marked item"""
@@ -308,7 +326,7 @@ class MatchedText(object):
         end = span[1]
         span_set = set(range(begin, end))
         comp = [s for s in self.spans if not set(range(s.begin, s.end)).isdisjoint(span_set)]
-        if comp != []:
+        if len(comp) > 0:
             for cs in comp:
                 if not set(range(cs.begin, cs.end)).issubset(span):
                     self.spans.remove(cs)
@@ -334,7 +352,7 @@ class MatchedText(object):
         txt = self.item
         begin = 0
         end = 0
-        if self.spans != []:
+        if len(self.spans) > 0:
             for i in self.spans:
                 begin = i.begin
                 if end < i.begin - 1:  # we need the intermediate text as well
@@ -450,10 +468,8 @@ class Heer(object):
                   }
         return result
 
-
     def __repr__(self):
         return f"{self.proposed_delegate} ({self.id})"
-
 
 
 import uuid
@@ -513,9 +529,6 @@ def fill_heer(proposed_delegate):
         except (KeyError, IndexError):
             result[key] = pd.nan
     return result
-
-
-
 
 
 class StringWithContext(UserString):
