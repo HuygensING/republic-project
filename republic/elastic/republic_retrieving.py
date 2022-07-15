@@ -431,7 +431,7 @@ class Retriever:
             docs = [hit['_source'] for hit in response['hits']['hits']]
             resolutions = []
             for doc in docs:
-                res = rdm.json_to_republic_attendance_list(doc) if 'attendance_list' in doc \
+                res = rdm.json_to_republic_attendance_list(doc) if 'attendance_list' in doc['type'] \
                     else rdm.json_to_republic_resolution(doc)
                 resolutions.append(res)
             return resolutions

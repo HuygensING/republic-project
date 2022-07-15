@@ -179,6 +179,8 @@ def do_session_text_indexing(inv_num: int, year: int):
     for mi, session in enumerate(rep_es.retrieve_inventory_sessions_with_lines(inv_num)):
         print('indexing session text for session', session.id)
         resolutions = rep_es.retrieve_resolutions_by_session_id(session.id)
+        # for res in resolutions:
+        #     print(res.id, res.metadata['type'])
         session_text_doc = make_session_text_version(session, resolutions)
         rep_es.index_session_with_text(session_text_doc)
 
@@ -364,11 +366,16 @@ if __name__ == "__main__":
                     print(key, rep_es.config[key])
         if start in range(1576, 1797):
 
-            years = [year for year in range(start, end+1)]
-            tasks = [{"year": year, "type": indexing_step, "commit": commit_version} for year in range(start, end+1)]
-            for task in tasks:
-                for inv_map in get_inventories_by_year(task["year"]):
-                    task["inv_num"] = inv_map["inventory_num"]
+            tasks = []
+            for year in range(start, end+1):
+                for inv_map in get_inventories_by_year(year):
+                    task = {
+                        'year': year,
+                        'type': indexing_step,
+                        'commit': commit_version,
+                        'inv_num': inv_map['inventory_num']
+                    }
+                    tasks.append(task)
             print(f'indexing {indexing_step} for years', years)
         elif start in range(3000, 3865):
             inv_nums = [inv_num for inv_num in range(start, end+1)]
