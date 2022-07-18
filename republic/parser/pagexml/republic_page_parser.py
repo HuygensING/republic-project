@@ -421,6 +421,12 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
             elif undecided_tr.coords.left > page_odd.metadata['normal_even_end']:
                 page_odd.add_child(undecided_tr)
                 decided.append(undecided_tr)
+            elif page_odd.metadata['normal_even_end'] - undecided_tr.coords.left < undecided_tr.coords.w:
+                page_odd.add_child(undecided_tr)
+                decided.append(undecided_tr)
+            else:
+                page_even.add_child(undecided_tr)
+                decided.append(undecided_tr)
         undecided = [tr for tr in undecided if tr not in decided]
     for undecided_tr in undecided:
         if debug:
