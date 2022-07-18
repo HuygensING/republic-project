@@ -55,7 +55,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
                 col.set_parent(page_doc)
                 col.set_derived_id(page_doc.id)
             if debug:
-                print(f'\tAFTER SPLITTING REGION IS {len(cols)} COLUMNS AND {1 if extra else 0} EXTRA')
+                print(f'\tAFTER SPLITTING REGION IS {len(cols)} COLUMNS')
         else:
             text_regions.append(text_region)
         # text_regions += [text_region] if text_region.lines else text_region.text_regions
@@ -229,7 +229,7 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
 
 def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXMLTextRegion],
                                  page_type_index: Dict[int, any], config: Dict[str, any],
-                                 debug: bool = False) -> list[pdm.PageXMLPage]:
+                                 debug: bool = False) -> List[pdm.PageXMLPage]:
     page_even = initialize_pagexml_page(scan_doc, 'even', page_type_index)
     page_odd = initialize_pagexml_page(scan_doc, 'odd', page_type_index)
     tr_id_map = {}
@@ -394,6 +394,8 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
             undecided_tr.metadata['normal_odd_end'] = page_odd.metadata['normal_odd_end']
             undecided_tr.metadata['normal_even_end'] = page_odd.metadata['normal_even_end']
     for page_doc in [page_even, page_odd]:
+        if page_doc.metadata['page_num'] not in page_type_index:
+            print('no page_type for page', page_doc.id)
         if 'title_page' in page_type_index[page_doc.metadata['page_num']]:
             separate_title_lines(page_doc, debug=debug)
         if not page_doc.coords:
@@ -469,6 +471,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     page_stats = combine_stats(pages)
     # print('page_stats:', page_stats)
     if page_stats['words'] != scan_stats['words']:
+        for page in pages:
+            print('stats for page', page.id, page.stats)
         raise ValueError(f'Unequal number of words in pages ({page_stats["words"]}) and scan ({scan_stats["words"]})')
     return pages
 
