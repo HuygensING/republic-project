@@ -48,6 +48,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
                 print(f'\tWIDE TEXT REGION {text_region.id}, SPLITTING')
             config = copy.deepcopy(config)
             config["column_gap"]["gap_pixel_freq_ratio"] = 0.5
+            # print('split_column_regions - column_gap:', config['column_gap'])
             cols = split_lines_on_column_gaps(text_region, config, debug=debug)
             text_regions += cols
             for col in cols:
@@ -114,31 +115,23 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
 
 
 def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
-    odd_end, even_end = 4900, 2500
-    if "scan_width" in item.metadata:
-        # use scan width if it's available
-        odd_end = item.metadata["scan_width"]
-    elif "scan_width" in item.parent.metadata:
-        # check if scan width is available on parent
-        odd_end = item.parent.metadata["scan_width"]
-    elif "normal_odd_end" in item.metadata:
-        # otherwise, default to expected size
-        odd_end = item.metadata["normal_odd_end"]
-    elif item.parent and "normal_odd_end" in item.parent.metadata:
-        # if this item has no normal info, check its parent
-        odd_end = item.parent.metadata["normal_odd_end"]
-    if "scan_width" in item.metadata:
-        # use half of scan width (plus a small margin) if it's available
-        even_end = item.metadata["scan_width"] / 2 + 100
-    elif "scan_width" in item.parent.metadata:
-        # check if scan width is available on parent
-        even_end = item.parent.metadata["scan_width"] / 2 + 100
-    elif "normal_even_end" in item.metadata:
-        # otherwise, default to expected size
-        even_end = item.metadata["normal_even_end"]
-    elif item.parent and "normal_even_end" in item.parent.metadata:
-        # if this item has no normal info, check its parent
-        even_end = item.parent.metadata["normal_even_end"]
+    # odd_end, even_end = 4900, 2500
+    scan_width = None
+    # use scan width if it's available
+    if 'scan_width' in item.metadata:
+        scan_width = item.metadata['scan_width']
+    elif item.parent and 'scan_width' in item.parent.metadata:
+        scan_width = item.parent.metadata['scan_width']
+    # otherwise, default to expected size
+    elif 'normal_odd_end' in item.metadata:
+        scan_width = item.metadata['normal_odd_end']
+    elif item.parent and 'normal_odd_end' in item.parent.metadata:
+        scan_width = item.parent.metadata['normal_odd_end']
+    odd_end = scan_width
+    if "normal_odd_end" in item.metadata and scan_width > item.metadata['normal_odd_end']:
+        even_end = item.metadata['normal_even_end']
+    else:
+        even_end = scan_width / 2 + 100
     return odd_end, even_end
 
 
@@ -219,6 +212,9 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
                 else:
                     print("SPLITTING COLUMN FOR SOME OTHER REASON", tr.id)
                 print(tr.stats)
+            config = copy.deepcopy(config)
+            config['column_gap']['gap_threshold'] = 20
+            config['column_gap']['gap_pixel_freq_ratio'] = 0.5
             cols = split_lines_on_column_gaps(tr, config, debug=debug)
             if debug:
                 for col in cols:
@@ -285,7 +281,8 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                         side = 'odd'
                         page = page_odd
                     else:
-                        print('\tUNDECIDED:', sub_tr.id, sub_tr.type)
+                        if debug:
+                            print('\tUNDECIDED:', sub_tr.id, sub_tr.type)
                         undecided.append(sub_tr)
                         append_count += 1
                         continue
@@ -372,7 +369,9 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
             print('APPEND_COUNT:', append_count)
     if debug:
         print('NUM UNDECIDED:', len(undecided))
-    assign_undecided(page_even, page_odd, undecided, page_type_index)
+        for tr in undecided:
+            print('\t', tr.id, tr.stats)
+    assign_undecided(page_even, page_odd, undecided, page_type_index, debug=debug)
     pages = []
     for page_doc in [page_even, page_odd]:
         if page_doc.coords:
@@ -390,6 +389,10 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
 def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
                      undecided: List[pdm.PageXMLTextRegion],
                      page_type_index: Dict[int, any], debug: bool = False):
+    if 'normal_odd_end' in page_odd.metadata:
+        for undecided_tr in undecided:
+            undecided_tr.metadata['normal_odd_end'] = page_odd.metadata['normal_odd_end']
+            undecided_tr.metadata['normal_even_end'] = page_odd.metadata['normal_even_end']
     for page_doc in [page_even, page_odd]:
         if 'title_page' in page_type_index[page_doc.metadata['page_num']]:
             separate_title_lines(page_doc, debug=debug)
@@ -413,10 +416,18 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
                 # print("\tundecided textregion stats:", undecided_tr.stats)
                 page_doc.add_child(undecided_tr)
                 decided.append(undecided_tr)
+            elif undecided_tr.coords.left > page_odd.metadata['normal_even_end']:
+                page_odd.add_child(undecided_tr)
+                decided.append(undecided_tr)
         undecided = [tr for tr in undecided if tr not in decided]
     for undecided_tr in undecided:
         if debug:
             print("UNKNOWN:", undecided_tr.id, undecided_tr.stats)
+            # print('\tpage_even metadata:', page_even.metadata)
+            # print('\tpage_odd metadata:', page_odd.metadata)
+            # print('\tundecided metadata:', undecided_tr.metadata)
+            undecided_tr.metadata['normal_odd_end'] = page_odd.metadata['normal_odd_end']
+            undecided_tr.metadata['normal_even_end'] = page_even.metadata['normal_even_end']
             odd_end, even_end = get_page_split_widths(undecided_tr)
             # print(undecided_tr.parent.metadata)
             print("odd end:", odd_end, "\teven end:", even_end)
