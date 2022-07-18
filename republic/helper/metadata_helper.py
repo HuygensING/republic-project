@@ -3,6 +3,7 @@ from typing import Dict, List, Union
 import numpy as np
 from settings import image_host_url
 from republic.model.inventory_mapping import get_inventory_by_num
+import republic.model.physical_document_model as pdm
 
 
 def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
@@ -127,7 +128,7 @@ def correct_section_types(inv_metadata):
 def get_per_page_type_index(inv_metadata: Dict[str, any]) -> Dict[int, Union[str, List[str]]]:
     if "num_pages" not in inv_metadata:
         return {}
-    page_type = {page_num: 'empty_page' for page_num in np.arange(inv_metadata['num_pages'])}
+    page_type = {page_num: 'empty_page' for page_num in np.arange(inv_metadata['num_pages'] + 1)}
     for page_num in inv_metadata['title_page_nums']:
         page_type[page_num] = 'title_page'
     for section in inv_metadata['sections']:

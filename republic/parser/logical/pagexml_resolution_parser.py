@@ -261,7 +261,7 @@ def running_id_generator(base_id: str, suffix: str, count: int = 0):
     return generate_id
 
 
-def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int]]:
+def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int, list]]:
     """Return a dictionary with basic metadata for a structure document."""
     metadata = {
         'inventory_num': source_doc.metadata['inventory_num'],
@@ -279,6 +279,7 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         metadata['session_month'] = source_doc.metadata['session_month']
         metadata['session_day'] = source_doc.metadata['session_day']
         metadata['session_weekday'] = source_doc.metadata['session_weekday']
+        metadata['page_ids'] = []
     return metadata
 
 
@@ -334,7 +335,7 @@ def make_line_range(text: str, line: pdm.PageXMLTextLine, line_text: str) -> Dic
         "start": len(text), "end": len(text + line_text),
         "line_id": line.id,
         "text_page_num": line.metadata["text_page_num"] if "text_page_num" in line.metadata else None,
-        "page_num": line.metadata["page_num"]
+        "page_num": line.metadata["page_num"],
     }
 
 
@@ -379,6 +380,8 @@ class ParagraphGenerator:
         for line in para_lines:
             if line.metadata["parent_id"] not in text_region_ids:
                 text_region_ids.append(line.metadata["parent_id"])
+                if line.metadata['page_id'] not in metadata['page_ids']:
+                    metadata['page_ids'].append(line.metadata['page_id'])
         text, line_ranges = self.make_paragraph_text(para_lines)
         paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
                                           text=text, line_ranges=line_ranges)

@@ -1,14 +1,14 @@
-import copy
-
-import settings as settings
+import requests
 
 import elasticsearch
 from elasticsearch import Elasticsearch
 
+from republic.helper.utils import make_provenance_data
 # import retrieval and indexing functions so they cna be imported from a single module
-from republic.config.republic_config import base_config, get_base_config
+from republic.config.republic_config import get_base_config
 from republic.elastic.republic_retrieving import Retriever
 from republic.elastic.republic_indexing import Indexer
+import settings as settings
 
 
 def initialize_es_anno(host_type: str = 'internal', timeout: int = 10) -> Elasticsearch:
@@ -45,8 +45,23 @@ def text_repo_es_config():
 
 class RepublicElasticsearch(Retriever, Indexer):
 
-    def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict):
+    def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict, host_type: str):
         super().__init__(es_anno, es_text, config)
+        self.es_text_config = text_repo_es_config()
+        self.es_anno_config = set_elasticsearch_config(host_type)
+
+    def post_provenance(self, source_ids: list[str], target_id, source_index: str,
+                        target_index: str, source_es_url: str = None):
+        data = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids, target_id=target_id,
+                                    source_index=source_index, target_index=target_index,
+                                    source_es_url=source_es_url)
+        print(data)
+        return None
+        response = requests.post(settings.prov_host_url, data=data,
+                                 headers={'Authorization': f'Basic: {settings.prov_api_key}'})
+        print(response.status_code)
+        if response.status_code == 200:
+            return None
 
 
 def initialize_es(host_type: str = "external", timeout: int = 10,
@@ -63,7 +78,7 @@ def initialize_es(host_type: str = "external", timeout: int = 10,
               "a line 'prov_host_url = None' to your settings.py")
         config["prov_host_url"] = None
     config["es_api_version"] = elasticsearch.__version__
-    return RepublicElasticsearch(es_anno, es_text, config)
+    return RepublicElasticsearch(es_anno, es_text, config, host_type)
 
 
 def set_elasticsearch_config(host_type: str = 'internal'):
@@ -76,7 +91,8 @@ def set_elasticsearch_config(host_type: str = 'internal'):
             'port': port,
             'scheme': scheme,
             'url_prefix': settings.anno_url_prefix if host_type == 'external' else '',
-            'url': f'{scheme}://{host}:{port}/' + f'{settings.anno_url_prefix}/' if host_type == 'external' else '',
+            # 'url': f'{scheme}://{host}:{port}/' + f'{settings.anno_url_prefix}/' if host_type == 'external' else '',
+            'url': f'{scheme}://{host}/' + f'{settings.anno_url_prefix}/' if host_type == 'external' else '',
         },
         'image_host': {
             'host_url': settings.image_host_url

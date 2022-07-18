@@ -224,11 +224,11 @@ class Retriever:
         return response['_source']
 
     def retrieve_inventory_scans(self, inventory_num: int) -> list:
-        query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
+        query = {'match': {'metadata.inventory_num': inventory_num}}
         return self.retrieve_scans_by_query(query)
 
     def retrieve_inventory_pages(self, inventory_num: int) -> list:
-        query = {'query': {'match': {'metadata.inventory_num': inventory_num}}, 'size': 10000}
+        query = {'match': {'metadata.inventory_num': inventory_num}}
         return self.retrieve_pages_by_query(query)
 
     def retrieve_scan_by_id(self, scan_id: str) -> Union[pdm.PageXMLScan, None]:
@@ -238,7 +238,8 @@ class Retriever:
         return pagexml.json_to_pagexml_scan(response['_source'])
 
     def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
-        for hit in self.scroll_hits(self.es_anno, query, self.config['scans_index'], size=2, scroll='5m'):
+        for hit in self.scroll_hits(self.es_anno, query, self.config['scans_index'],
+                                    size=2, scroll='5m'):
             yield pagexml.json_to_pagexml_scan(hit['_source'])
         # response = self.es_anno.search(index=self.config['scans_index'], body=query)
         # return parse_hits_as_scans(response)

@@ -670,16 +670,15 @@ class PageXMLPage(PageXMLTextRegion):
         if doc_type:
             self.add_type(doc_type)
 
-    def get_lines(self):
+    def get_lines(self, include_extra: bool = False):
         lines = []
-        if self.columns:
-            # First, add lines from columns
-            for column in sorted(self.columns):
-                lines += column.get_lines()
-            # Second, add lines from text_regions
+        # First, add lines from columns
+        for column in sorted(self.columns):
+            lines += column.get_lines()
+        # Second, add lines from text_regions
+        if include_extra or len(self.columns) == 0:
             for tr in self.extra:
                 lines += tr.get_lines()
-        elif self.text_regions:
             if self.reading_order and len(self.text_regions) == len(self.reading_order):
                 for tr in sorted(self.text_regions, key=lambda t: self.reading_order_number[t.id]):
                     lines += tr.get_lines()
@@ -705,14 +704,18 @@ class PageXMLPage(PageXMLTextRegion):
     @property
     def json(self) -> Dict[str, any]:
         doc_json = super().json
-        # if self.lines:
-        #    doc_json['lines'] = [line.json for line in self.lines]
-        # if self.text_regions:
-        #     doc_json['text_regions'] = [text_region.json for text_region in self.text_regions]
+        if self.lines:
+            doc_json['lines'] += [line.json for line in self.lines]
+        if self.text_regions:
+            doc_json['text_regions'] += [text_region.json for text_region in self.text_regions]
         if self.columns:
-            doc_json['columns'] = [column.json for column in self.columns]
+            if 'columns' not in doc_json:
+                doc_json['columns'] = []
+            doc_json['columns'] += [column.json for column in self.columns]
         if self.extra:
-            doc_json['extra'] = [text_region.json for text_region in self.extra]
+            if 'extra' not in doc_json:
+                doc_json['extra'] = []
+            doc_json['extra'] += [text_region.json for text_region in self.extra]
         doc_json['stats'] = self.stats
         return doc_json
 
@@ -721,7 +724,7 @@ class PageXMLPage(PageXMLTextRegion):
         """Pages diverge from other types since they have columns and extra
         text regions, or plain text regions, so have their own way of calculating
         stats."""
-        lines = self.get_lines()
+        lines = self.get_lines(include_extra=True)
         stats = {
             "words": sum([len(line.get_words()) for line in lines]),
             "lines": len(lines)
@@ -729,7 +732,7 @@ class PageXMLPage(PageXMLTextRegion):
         if self.columns:
             stats['columns'] = len(self.columns)
             stats['extra'] = len(self.extra)
-        elif self.text_regions:
+        if self.text_regions:
             stats['text_regions'] = len(self.text_regions)
         return stats
 

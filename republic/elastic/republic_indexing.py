@@ -1,7 +1,8 @@
+from typing import Union, Dict, List
 import datetime
 import copy
 import re
-from typing import Union, Dict, List
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_match import PhraseMatch
