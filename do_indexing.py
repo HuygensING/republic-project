@@ -326,6 +326,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["type"] == "resolutions":
         do_resolution_indexing(task["inv_num"], task["year"])
     elif task["type"] == "full_resolutions":
+        rep_es.config['resolutions_index'] = 'full_resolutions'
         do_resolution_indexing(task["inv_num"], task["year"])
         do_resolution_metadata_indexing(task["inv_num"], task["year"])
         do_inventory_attendance_list_indexing(task["inv_num"], task["year"])
