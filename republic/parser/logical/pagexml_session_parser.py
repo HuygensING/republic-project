@@ -116,6 +116,7 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
     text_regions: List[PageXMLTextRegion] = []
     scan_version = {}
     session_text_page_nums = set()
+    session_page_ids = set()
     for line in session_lines:
         if "column_id" not in line.metadata:
             print(line.id, line.parent.id, line.parent.type)
@@ -123,6 +124,12 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
         text_region_id = line.metadata['column_id']
         text_region_lines[text_region_id].append(line)
     for text_region_id in text_region_lines:
+        if text_region_id not in column_metadata:
+            for line in session_lines:
+                if line.metadata['column_id'] == text_region_id:
+                    print(text_region_id)
+                    print(line.metadata)
+                    print(line.text)
         metadata = column_metadata[text_region_id]
         coords = parse_derived_coords(text_region_lines[text_region_id])
         text_region = PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
@@ -149,12 +156,14 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
                 text_region.metadata['text_page_num'] = source_page.metadata['text_page_num']
                 if isinstance(source_page.metadata["text_page_num"], int):
                     session_text_page_nums.add(source_page.metadata['text_page_num'])
+                    session_page_ids.add(source_page.id)
         text_regions.append(text_region)
     for scan_id in scan_version:
         scan_version[scan_id]['scan_id'] = scan_id
     session = Session(metadata=session_metadata, text_regions=text_regions,
                       evidence=evidence, scan_versions=list(scan_version.values()))
     session.metadata["text_page_num"] = sorted(list(session_text_page_nums))
+    session.metadata["page_ids"] = sorted(list(session_page_ids))
     # session.add_page_text_region_metadata(column_metadata)
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]

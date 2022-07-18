@@ -1,12 +1,13 @@
 from typing import Dict, Union
 import multiprocessing
-import subprocess
 import os
 import time
 import json
 
 from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+
+from republic.helper.utils import get_commit_version
 
 import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
@@ -28,9 +29,7 @@ import run_attendancelist
 
 
 # Get the Git repository commit hash for keeping provenance
-completed_process = subprocess.run(["git", "rev-parse", "HEAD"], encoding='utf-8', stdout=subprocess.PIPE)
-if completed_process is not None:
-    commit_version = completed_process.stdout.strip()
+commit_version = get_commit_version()
 
 host_type = os.environ.get('REPUBLIC_HOST_TYPE')
 print('host type form environment:', host_type)
@@ -160,12 +159,14 @@ def do_session_lines_indexing(inv_num: int, year: int):
     pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_num, inv_metadata)):
         print('session received from get_sessions:', session.id)
+        source_ids = session.metadata['page_ids']
         date_string = None
         for match in session.evidence:
             if match.has_label('session_date'):
                 date_string = match.string
         print('\tdate string:', date_string)
         try:
+            rep_es.post_provenance(source_ids, session.id, 'pages', 'session_lines')
             rep_es.index_session_with_lines(session)
         except ElasticsearchException as error:
             print(session.id)

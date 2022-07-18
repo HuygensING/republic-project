@@ -1,7 +1,36 @@
+from typing import Dict
+import subprocess
+import datetime
+
 from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
 from numpy import argmax
 
 
+def get_commit_version():
+    # Get the Git repository commit hash for keeping provenance
+    completed_process = subprocess.run(["git", "rev-parse", "HEAD"], encoding='utf-8', stdout=subprocess.PIPE)
+    return completed_process.stdout.strip() if completed_process is not None else None
+
+
+def make_provenance_data(es_config, source_ids: list[str], target_id, source_index: str,
+                         target_index: str, source_es_url: str = None) -> Dict[str, any]:
+    if source_es_url is None:
+        source_es_url = es_config['elastic_config']['url']
+    target_es_url = es_config['elastic_config']['url']
+    source_urls = [f'{source_es_url}{source_index}/_doc/{source_id}' for source_id in source_ids]
+    target_url = f'{target_es_url}{target_index}/_doc/{target_id}'
+    commit_version = get_commit_version()
+    return {
+        'who': 'orcid:0000-0002-0301-2029',
+        'where': 'https://annotation.republic-caf.diginfra.org/',
+        'when': datetime.datetime.now().isoformat(),
+        'how': f'https://github.com/HuygensING/republic-project/commit/{commit_version}',
+        'why': f'deriving {source_index} from {target_index}',
+        'source': source_urls,
+        # 'source_rel': ['primary', 'primary'],
+        'target': [target_url],
+        # 'target_rel': ['primary'],
+    }
 
 
 def get_name_for_disambiguation(proposed, base_config, es=None, debug=False):

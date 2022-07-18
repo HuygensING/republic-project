@@ -337,6 +337,141 @@ def pretty_print_textregion(text_region: pdm.PageXMLTextRegion, print_stats: boo
     print()
 
 
+def set_scan_type(scan: pdm.PageXMLDoc) -> None:
+    inv_num = scan.metadata["inventory_num"]
+    if 3096 <= inv_num <= 3348:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    elif 3760 <= inv_num <= 3864:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "printed"
+        scan.metadata["normal_odd_end"] = 4900
+        scan.metadata["normal_even_end"] = 2500
+    elif 4542 <= inv_num <= 4797:
+        scan.metadata["resolution_type"] = "secreet"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    else:
+        raise ValueError(f'Unknown REPUBLIC inventory number: {inv_num}')
+    if scan.coords.right == 0:
+        scan.metadata['scan_type'] = ['empty_scan']
+    elif scan.coords.right <= scan.metadata["normal_even_end"]:
+        scan.metadata['scan_type'] = ['single_page']
+    elif scan.coords.right <= scan.metadata["normal_odd_end"]:
+        scan.metadata['scan_type'] = ['double_page']
+    else:
+        scan.metadata['scan_type'] = ['special_page']
+
+
+def coords_overlap(item1: pdm.PhysicalStructureDoc, item2: pdm.PhysicalStructureDoc) -> int:
+    left = item1.coords.left if item1.coords.left > item2.coords.left else item2.coords.left
+    right = item1.coords.right if item1.coords.right < item2.coords.right else item2.coords.right
+    # overlap must be positive, else there is no overlap
+    return right - left if right - left > 0 else 0
+
+
+def get_median_normal_line_score(scores, default):
+    median_score = np.median(scores)
+    normal_scores = [score for score in scores if abs(score - median_score) < 50]
+    if len(normal_scores) == 0:
+        if default == "min":
+            return min(scores)
+        else:
+            return max(scores)
+    try:
+        return int(np.median(normal_scores))
+    except ValueError:
+        print(scores)
+        print(median_score)
+        print(normal_scores)
+        raise
+
+
+def set_line_alignment(column: pdm.PageXMLColumn):
+    if column.stats['lines'] == 0:
+        return None
+    if len(column.lines) == 0:
+        lines = [line for text_region in column.text_regions for line in text_region.lines]
+    else:
+        lines = column.lines
+    lefts = [line.coords.left for line in lines]
+    rights = [line.coords.right for line in lines]
+    widths = [line.coords.width for line in lines]
+    lengths = [len(line.text) if line.text else 0 for line in lines]
+    column.metadata["median_normal_left"] = get_median_normal_line_score(lefts, "min")
+    column.metadata["median_normal_right"] = get_median_normal_line_score(rights, "max")
+    column.metadata["median_normal_width"] = get_median_normal_line_score(widths, "max")
+    column.metadata["median_normal_length"] = get_median_normal_line_score(lengths, "max")
+    for ti, tr in enumerate(column.text_regions):
+        for li, line in enumerate(tr.lines):
+            # line.metadata = {"id": column.metadata["id"] + f"-tr-{ti}-line-{li}"}
+            if line.coords.width < column.metadata["median_normal_width"] - 40:
+                line.metadata["line_width"] = "short"
+            else:
+                line.metadata["line_width"] = "full"
+            if line.coords.left > column.metadata["median_normal_left"] + 40:
+                line.metadata["left_alignment"] = "indent"
+            elif line.coords.left > column.metadata["median_normal_left"] + 20 \
+                    and line.metadata["line_width"] == "short":
+                line.metadata["left_alignment"] = "indent"
+            else:
+                line.metadata["left_alignment"] = "column"
+            if line.coords.right < column.metadata["median_normal_right"] - 40:
+                line.metadata["right_alignment"] = "indent"
+            else:
+                line.metadata["right_alignment"] = "column"
+
+
+def merge_columns(columns: List[pdm.PageXMLColumn],
+                  doc_id: str, metadata: dict) -> pdm.PageXMLColumn:
+    """Merge two columns into one, sorting lines by baseline height."""
+    merged_lines = [line for col in columns for line in col.get_lines()]
+    merged_lines = list(set(merged_lines))
+    sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
+    merged_coords = pdm.parse_derived_coords(sorted_lines)
+    merged_col = pdm.PageXMLColumn(doc_id=doc_id, doc_type='index_column',
+                                   metadata=metadata, coords=merged_coords,
+                                   lines=merged_lines)
+    return merged_col
+
+
+def elements_overlap(element1: pdm.PageXMLDoc, element2: pdm.PageXMLDoc,
+                     threshold: float = 0.5) -> bool:
+    """Check if two elements have overlapping coordinates."""
+    v_overlap = pdm.vertical_overlap(element1.coords, element2.coords)
+    h_overlap = pdm.horizontal_overlap(element1.coords, element2.coords)
+    if v_overlap / element1.coords.height > threshold:
+        if h_overlap / element1.coords.width > threshold:
+            return True
+    if v_overlap / element2.coords.height > threshold:
+        if h_overlap / element2.coords.width > threshold:
+            return True
+    else:
+        return False
+
+
+def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,
+                       tr_id_map: Dict[str, str] = None):
+    order_number = {}
+    if hasattr(sub_doc, "text_regions"):
+        for tr in sub_doc.text_regions:
+            if tr_id_map and tr.id in tr_id_map:
+                order_number[tr.id] = super_doc.reading_order_number[tr_id_map[tr.id]]
+            elif tr.id in super_doc.reading_order_number:
+                order_number[tr.id] = super_doc.reading_order_number[tr.id]
+            else:
+                # If for some reason a text region is not in the reading order list
+                # just add it to the end of the reading order
+                super_doc.reading_order_number[tr.id] = len(super_doc.reading_order_number) + 1
+                order_number[tr.id] = super_doc.reading_order_number[tr.id]
+        for ti, tr_id in enumerate(sorted(order_number, key=lambda t: order_number[t])):
+            sub_doc.reading_order_number[tr_id] = ti + 1
+            sub_doc.reading_order[ti + 1] = tr_id
+
+
 def sort_regions_in_reading_order(doc: pdm.PageXMLDoc) -> List[pdm.PageXMLTextRegion]:
     doc_text_regions: List[pdm.PageXMLTextRegion] = []
     if doc.reading_order and hasattr(doc, 'text_regions') and doc.text_regions:
@@ -405,15 +540,18 @@ def sort_lines_in_reading_order(doc: pdm.PageXMLDoc) -> Generator[pdm.PageXMLTex
     Reading order is: columns from left to right, text regions in columns from top to bottom,
     lines in text regions from top to bottom, and when (roughly) adjacent, from left to right."""
     for text_region in sort_regions_in_reading_order(doc):
+        # print('text_region', text_region.id)
         if text_region.main_type == 'column':
             text_region.metadata['column_id'] = text_region.id
-        #if 'column_id' not in text_region.metadata:
-        #    raise KeyError(f'missing column id: {text_region.metadata}')
+        # if 'column_id' not in text_region.metadata:
+        #     raise KeyError(f'missing column id: {text_region.metadata}')
         for line in text_region.lines:
             if line.metadata is None:
                 line.metadata = {'id': line.id, 'type': ['pagexml', 'line'], 'parent_id': text_region.id}
             if 'column_id' in text_region.metadata and 'column_id' not in line.metadata:
                 line.metadata['column_id'] = text_region.metadata['column_id']
+            if 'page_id' in text_region.metadata and 'page_id' not in line.metadata:
+                line.metadata['page_id'] = text_region.metadata['page_id']
         stacked_lines = horizontal_group_lines(text_region.lines)
         for lines in stacked_lines:
             for line in sorted(lines, key=lambda x: x.coords.left):
@@ -514,16 +652,19 @@ def json_to_pagexml_column(json_doc: dict) -> pdm.PageXMLColumn:
     return column
 
 
-def json_to_pagexml_page(json_doc: dict) -> pdm.PageXMLPage:
-    extra = [json_to_pagexml_text_region(text_region) for text_region in json_doc['extra']] \
-        if 'extra' in json_doc else []
+def json_to_base_elements(json_doc: dict):
     columns = [json_to_pagexml_column(column) for column in json_doc['columns']] if 'columns' in json_doc else []
-    # for col in columns:
-    #     print("IN PAGE", col.id, col.stats)
     text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
         if 'text_regions' in json_doc else []
     lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
     reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
+    return columns, text_regions, lines, reading_order
+
+
+def json_to_pagexml_page(json_doc: dict) -> pdm.PageXMLPage:
+    extra = [json_to_pagexml_text_region(text_region) for text_region in json_doc['extra']] \
+        if 'extra' in json_doc else []
+    columns, text_regions, lines, reading_order = json_to_base_elements(json_doc)
 
     coords = pdm.Coords(json_doc['coords']) if 'coords' in json_doc else None
     page = pdm.PageXMLPage(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
@@ -536,11 +677,7 @@ def json_to_pagexml_page(json_doc: dict) -> pdm.PageXMLPage:
 
 def json_to_pagexml_scan(json_doc: dict) -> pdm.PageXMLScan:
     pages = [json_to_pagexml_page(page) for page in json_doc['pages']] if 'pages' in json_doc else []
-    columns = [json_to_pagexml_column(column) for column in json_doc['columns']] if 'columns' in json_doc else []
-    text_regions = [json_to_pagexml_text_region(text_region) for text_region in json_doc['text_regions']] \
-        if 'text_regions' in json_doc else []
-    lines = [json_to_pagexml_line(line) for line in json_doc['lines']] if 'lines' in json_doc else []
-    reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
+    columns, text_regions, lines, reading_order = json_to_base_elements(json_doc)
 
     scan = pdm.PageXMLScan(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
                            coords=pdm.Coords(json_doc['coords']), pages=pages, columns=columns,
