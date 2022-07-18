@@ -195,6 +195,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                                debug: bool = False) -> List[pdm.PageXMLColumn]:
     column_ranges = find_column_gaps(text_region.lines, config, debug=debug)
     if debug:
+        print('split_lines_on_column_gaps - column_gap:', config['column_gap'])
         print("COLUMN RANGES:", column_ranges)
     column_ranges = [col_range for col_range in column_ranges if col_range["end"] - col_range["start"] >= 20]
     column_lines = [[] for _ in range(len(column_ranges))]
@@ -310,6 +311,8 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             print('SPLITTING EXTRA')
         extra_cols = split_lines_on_column_gaps(extra, config, debug=debug)
         for extra_col in extra_cols:
+            if debug:
+                print('\tEXTRA COL AFTER EXTRA SPLIT:', extra_col.stats)
             extra_col.set_parent(text_region.parent)
             if text_region.parent:
                 extra_col.set_derived_id(text_region.parent.id)
