@@ -1,9 +1,8 @@
-from typing import Dict
+from typing import Dict, List
 import subprocess
 import datetime
 
 from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
-from numpy import argmax
 
 
 def get_commit_version():
@@ -12,7 +11,7 @@ def get_commit_version():
     return completed_process.stdout.strip() if completed_process is not None else None
 
 
-def make_provenance_data(es_config, source_ids: list[str], target_id, source_index: str,
+def make_provenance_data(es_config, source_ids: List[str], target_id, source_index: str,
                          target_index: str, source_es_url: str = None) -> Dict[str, any]:
     if source_es_url is None:
         source_es_url = es_config['elastic_config']['url']
