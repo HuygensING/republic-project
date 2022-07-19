@@ -168,7 +168,7 @@ def do_session_lines_indexing(inv_num: int, year: int):
                 date_string = match.string
         print('\tdate string:', date_string)
         try:
-            prov_url = rep_es.post_provenance(source_ids, session.id, 'pages', 'session_lines')
+            prov_url = rep_es.post_provenance(source_ids, [session.id], 'pages', 'session_lines')
             session.metadata['prov_url'] = prov_url
             rep_es.index_session_with_lines(session)
         except ElasticsearchException as error:
