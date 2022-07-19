@@ -51,17 +51,17 @@ class RepublicElasticsearch(Retriever, Indexer):
         self.es_text_config = text_repo_es_config()
         self.es_anno_config = set_elasticsearch_config(host_type)
 
-    def post_provenance(self, source_ids: List[str], target_id, source_index: str,
+    def post_provenance(self, source_ids: List[str], target_ids: List[str], source_index: str,
                         target_index: str, source_es_url: str = None):
-        data = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids, target_id=target_id,
-                                    source_index=source_index, target_index=target_index,
-                                    source_es_url=source_es_url)
-        print(data)
-        return None
+        data = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids,
+                                    target_ids=target_ids, source_index=source_index,
+                                    target_index=target_index, source_es_url=source_es_url)
         response = requests.post(settings.prov_host_url, data=data,
                                  headers={'Authorization': f'Basic: {settings.prov_api_key}'})
-        print(response.status_code)
-        if response.status_code == 200:
+        if response.status_code == 201:
+            return f"{settings.prov_host_url}/{response.headers['Location'][1:]}"
+        if response.status_code != 201:
+            print('PROVENANCE SERVER ERROR', response.status_code, response.reason)
             return None
 
 

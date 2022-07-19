@@ -124,6 +124,8 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
                     page.add_type(page_type)
                 page.metadata['type'] = [ptype for ptype in page.type]
             print('indexing page with id', page.id)
+            prov_url = rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
+            page.metadata['provenance_url'] = prov_url
             rep_es.index_page(page)
         if (si+1) % 100 == 0:
             print(si+1, "scans processed")
@@ -166,7 +168,8 @@ def do_session_lines_indexing(inv_num: int, year: int):
                 date_string = match.string
         print('\tdate string:', date_string)
         try:
-            rep_es.post_provenance(source_ids, session.id, 'pages', 'session_lines')
+            prov_url = rep_es.post_provenance(source_ids, session.id, 'pages', 'session_lines')
+            session.metadata['prov_url'] = prov_url
             rep_es.index_session_with_lines(session)
         except ElasticsearchException as error:
             print(session.id)

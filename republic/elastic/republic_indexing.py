@@ -13,15 +13,27 @@ import republic.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import get_per_page_type_index
 from republic.helper.annotation_helper import make_match_hash_id
+from republic.helper.utils import get_iso_utc_timestamp, get_commit_version
 
 
 def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     if isinstance(doc, pdm.StructureDoc):
-        doc.metadata['index_timestamp'] = datetime.datetime.now().isoformat()
+        doc.metadata['index_timestamp'] = get_iso_utc_timestamp()
     elif "metadata" not in doc and "inventory_uuid" in doc:
-        doc["index_timestamp"] = datetime.datetime.now().isoformat()
+        # datetime.datetime.now().isoformat()
+        doc["index_timestamp"] = get_iso_utc_timestamp()
     else:
-        doc['metadata']['index_timestamp'] = datetime.datetime.now().isoformat()
+        doc['metadata']['index_timestamp'] = get_iso_utc_timestamp()
+
+
+def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
+    if isinstance(doc, pdm.StructureDoc):
+        doc.metadata['code_commit'] = get_commit_version()
+    elif "metadata" not in doc and "inventory_uuid" in doc:
+        # datetime.datetime.now().isoformat()
+        doc["code_commit"] = get_commit_version()
+    else:
+        doc['metadata']['code_commit'] = get_commit_version()
 
 
 def get_pagexml_page_type(page: Union[pdm.PageXMLPage, Dict[str, any]],
@@ -106,6 +118,7 @@ class Indexer:
 
     def index_doc(self, index: str, doc_id: str, doc_body: dict):
         add_timestamp(doc_body)
+        add_commit(doc_body)
         try:
             if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
                 self.es_anno.index(index=index, id=doc_id, body=doc_body)

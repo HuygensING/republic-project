@@ -6,15 +6,23 @@ from republic.model.republic_date import RepublicDate, make_republic_date
 import settings
 
 
+def get_metadata_filepath() -> str:
+    dir_path, _filename = os.path.split(settings.__file__)
+    return os.path.join(dir_path, 'data/inventories/inventory_metadata.json')
+
+
 def read_inventory_metadata(metadata_file: str = None) -> List[Dict[str, any]]:
     if metadata_file is None:
-        dir_path, _filename = os.path.split(settings.__file__)
-        meta_file = settings.inventory_metadata_file
-        if meta_file.startswith('.'):
-            meta_file = meta_file[2:]
-        metadata_file = os.path.join(dir_path, 'data/inventories/inventory_metadata.json')
+        metadata_file = get_metadata_filepath()
     with open(metadata_file, 'rt') as fh:
         return json.load(fh)
+
+
+def write_inventory_metadata(metadata: dict, metadata_file: str = None):
+    if metadata_file is None:
+        metadata_file = get_metadata_filepath()
+    with open(metadata_file, 'wt') as fh:
+        json.dump(metadata, fh, indent=4)
 
 
 def get_inventory_by_num(inventory_num: int) -> dict:
