@@ -458,10 +458,10 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
             odd_page_num = scan_doc.metadata['scan_num'] * 2 - 1
             if even_page_num not in page_type_index:
                 print(f'missing page_num for page {scan_doc.id}-page-{even_page_num}')
-                raise KeyError(f'missing page_num for page {scan_doc.id}-page-{even_page_num}')
+                raise KeyError(f'missing page_type for page {scan_doc.id}-page-{even_page_num}')
             if odd_page_num not in page_type_index:
                 print(f'missing page_num for page {scan_doc.id}-page-{odd_page_num}')
-                raise KeyError(f'missing page_num for page {scan_doc.id}-page-{odd_page_num}')
+                raise KeyError(f'missing page_type for page {scan_doc.id}-page-{odd_page_num}')
             if 'index_page' in page_type_index[even_page_num] or 'index_page' in page_type_index[odd_page_num]:
                 max_col_width = 500
                 config['column_gap']['gap_pixel_freq_ratio'] = 0.2
