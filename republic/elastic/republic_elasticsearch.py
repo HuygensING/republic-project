@@ -49,7 +49,7 @@ class RepublicElasticsearch(Retriever, Indexer):
     def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict, host_type: str):
         super().__init__(es_anno, es_text, config)
         self.es_text_config = text_repo_es_config()
-        self.es_anno_config = set_elasticsearch_config(host_type)
+        self.es_anno_config = set_elasticsearch_config('external')
 
     def post_provenance(self, source_ids: List[str], target_ids: List[str], source_index: str,
                         target_index: str, source_es_url: str = None,

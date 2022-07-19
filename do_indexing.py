@@ -257,6 +257,7 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
         if isinstance(new_resolution.metadata['prov_url'], str):
             new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
         new_resolution.metadata['prov_url'].append(prov_url)
+        print('\tadding resolution metadata for resolution', new_resolution.id)
         rep_es.index_resolution(new_resolution)
 
 
