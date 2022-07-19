@@ -13,7 +13,7 @@ import republic.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import get_per_page_type_index
 from republic.helper.annotation_helper import make_match_hash_id
-from republic.helper.utils import get_iso_utc_timestamp, get_commit_version
+from republic.helper.utils import get_iso_utc_timestamp, get_commit_url
 
 
 def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
@@ -28,12 +28,12 @@ def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
 
 def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     if isinstance(doc, pdm.StructureDoc):
-        doc.metadata['code_commit'] = get_commit_version()
+        doc.metadata['code_commit'] = get_commit_url()
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
-        doc["code_commit"] = get_commit_version()
+        doc["code_commit"] = get_commit_url()
     else:
-        doc['metadata']['code_commit'] = get_commit_version()
+        doc['metadata']['code_commit'] = get_commit_url()
 
 
 def get_pagexml_page_type(page: Union[pdm.PageXMLPage, Dict[str, any]],

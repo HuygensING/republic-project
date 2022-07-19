@@ -6,7 +6,7 @@ from ..model.republic_attendancelist_models import TextWithMetadata
 es_api_version = elasticsearch.__version__
 
 
-def make_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_text'):
+def make_presentielijsten(es: Elasticsearch, year: int, index: str):
     return get_presentielijsten(es=es, year=year, index=index)
 
 
@@ -28,15 +28,11 @@ def query_es(es: Elasticsearch, index, query, size=10, sort=None, aggs=None):
         return es.search(index=index, query=query, size=size, sort=sort, aggs=aggs)
 
 
-def get_presentielijsten(es: Elasticsearch, year: int, index: str = 'session_text'):
-    if index == 'resolutions':
-        type_field = 'metadata.type.keyword'
-    else:
-        type_field = 'annotations.metadata.type.keyword'
+def get_presentielijsten(es: Elasticsearch, year: int, index: str):
     query = {
         "bool": {
             "must": [
-                {"term": {type_field: "attendance_list"}},
+                {"term": {'metadata.type.keyword': "attendance_list"}},
                 {"term": {"metadata.session_year": year}}]
         }
     }

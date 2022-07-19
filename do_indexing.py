@@ -19,6 +19,7 @@ from republic.helper.model_loader import load_line_break_detector
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 import republic.model.republic_document_model as rdm
+import republic.model.resolution_phrase_model as rpm
 
 import republic.parser.logical.pagexml_session_parser as session_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
@@ -168,7 +169,8 @@ def do_session_lines_indexing(inv_num: int, year: int):
                 date_string = match.string
         print('\tdate string:', date_string)
         try:
-            prov_url = rep_es.post_provenance(source_ids, [session.id], 'pages', 'session_lines')
+            prov_url = rep_es.post_provenance(source_ids=source_ids, target_ids=[session.id],
+                                              source_index='pages', target_index='session_lines')
             session.metadata['prov_url'] = prov_url
             rep_es.index_session_with_lines(session)
         except ElasticsearchException as error:
@@ -205,6 +207,9 @@ def do_resolution_indexing(inv_num: int, year: int):
             for resolution in res_parser.get_session_resolutions(session, opening_searcher,
                                                                  verb_searcher,
                                                                  line_break_detector=line_break_detector):
+                prov_url = rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
+                                                  source_index='session_lines', target_index='resolutions')
+                resolution.metadata['prov_url'] = prov_url
                 rep_es.index_resolution(resolution)
         except (TypeError, KeyError) as err:
             errors.append(err)
@@ -232,7 +237,31 @@ def do_resolution_phrase_match_indexing(inv_num: int, year: int):
 
 
 def do_resolution_metadata_indexing(inv_num: int, year: int):
-    print(f"Indexing PageXML resolution phrase matches for inventory {inv_num} (year {year})...")
+    print(f"Indexing PageXML resolution metadata for inventory {inv_num} (year {year})...")
+    searcher = res_parser.make_resolution_phrase_model_searcher()
+    relative_path = rpm.__file__.split("republic-project/")[-1]
+    repo_url = 'https://github.com/HuygensING/republic-project'
+    phrase_file = f'{repo_url}/blob/{get_commit_version()}/{relative_path}'
+    prop_searchers = extract_res.generate_proposition_searchers()
+    for resolution in rep_es.scroll_inventory_resolutions(inv_num):
+        phrase_matches = extract_res.extract_paragraph_phrase_matches(resolution.paragraphs[0],
+                                                                      [searcher])
+        new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
+                                                             prop_searchers['template'],
+                                                             prop_searchers['variable'])
+        session_id = resolution.metadata['source_id']
+        prov_url = rep_es.post_provenance(source_ids=[session_id], target_ids=[resolution.id],
+                                          source_index='session_lines', target_index='resolutions',
+                                          source_external_urls=[phrase_file],
+                                          why='Enriching resolution with metadata derived from resolution phrases')
+        if isinstance(new_resolution.metadata['prov_url'], str):
+            new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
+        new_resolution.metadata['prov_url'].append(prov_url)
+        rep_es.index_resolution(new_resolution)
+
+
+def do_resolution_metadata_indexing_old(inv_num: int, year: int):
+    print(f"Indexing PageXML resolution metadata for inventory {inv_num} (year {year})...")
     prop_searchers = extract_res.generate_proposition_searchers()
     # proposition_searcher, template_searcher, variable_matcher = generate_proposition_searchers()
     skip_formulas = {
@@ -260,8 +289,6 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
         new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
                                                              prop_searchers['template'],
                                                              prop_searchers['variable'])
-        if 'proposition_type' not in new_resolution.metadata or new_resolution.metadata['proposition_type'] is None:
-            new_resolution.metadata['proposition_type'] = 'unknown'
         if not new_resolution:
             no_new += 1
             continue
@@ -278,7 +305,9 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
 
 def do_inventory_attendance_list_indexing(inv_num: int, year: int):
     print(f"Indexing attendance lists with spans for inventory {inv_num} (year {year})...")
-    att_spans_year = run_attendancelist.run(rep_es.es_anno, year, outdir=None, verbose=True, tofile=False)
+    att_spans_year = run_attendancelist.run(rep_es.es_anno, year, outdir=None,
+                                            verbose=True, tofile=False,
+                                            source_index=rep_es.config['resolutions_index'])
     if att_spans_year is None:
         return None
     for span_list in att_spans_year:

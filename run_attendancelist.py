@@ -98,8 +98,9 @@ def prepare_found_delegates(framed_gtlm, found_delegates, year):
     return framed_gtlm
 
 
-def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True):
-    runner = RunAll(es=es, year=year)
+def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
+        source_index: str = 'resolutions'):
+    runner = RunAll(es=es, year=year, source_index=source_index)
     if verbose:
         print("- gathering attendance lists")
     if len(runner.searchobs) == 0:
@@ -151,11 +152,12 @@ class RunAll(object):
                  found_delegates=found_delegates,
                  matchfnd=matchfinder,
                  ekwz=ekwz,
-                 outdir=''
+                 outdir='',
+                 source_index: str = 'resolutions'
                  ):
         start_logger(outdir, year)
         self.year = year
-        self.searchobs = make_presentielijsten(es=es, year=self.year, index='resolutions')
+        self.searchobs = make_presentielijsten(es=es, year=self.year, index=source_index)
         logging.info(f'year: {year}, nr of attendancelists {len(self.searchobs)}')
         self.junksweeper = make_junksweeper(ekwz)
         self.abbreviated_delegates = abbreviated_delegates

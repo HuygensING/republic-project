@@ -93,6 +93,15 @@ class VariableMatcher:
         return extended_elements
 
 
+def extract_paragraph_phrase_matches(paragraph: RepublicParagraph,
+                                     searchers: List[FuzzyPhraseSearcher]) -> List[PhraseMatch]:
+    matches = []
+    for searcher in searchers:
+        doc = {'id': paragraph.id, 'text': paragraph.text}
+        matches += searcher.find_matches(doc)
+    return matches
+
+
 def get_paragraph_phrase_matches(rep_es: RepublicElasticsearch,
                                  resolution: Resolution) -> List[PhraseMatch]:
     opening_para = resolution.paragraphs[0]
@@ -417,6 +426,8 @@ def add_resolution_metadata(resolution: Resolution, phrase_matches: List[PhraseM
                     if label.startswith('proposition_type'):
                         resolution.metadata['proposition_type'] = label.split(':')[1]
     resolution.metadata = add_proposer_metadata(resolution, resolution.metadata)
+    if 'proposition_type' not in resolution.metadata or resolution.metadata['proposition_type'] is None:
+        resolution.metadata['proposition_type'] = 'unknown'
     # print('resolution metadata:')
     # print(json.dumps(resolution.metadata, indent=2))
     return resolution

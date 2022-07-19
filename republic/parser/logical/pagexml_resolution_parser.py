@@ -140,6 +140,25 @@ def get_resolution_text_page_nums(res_doc: Union[rdm.Resolution, rdm.AttendanceL
     return sorted(list(text_page_nums))
 
 
+def get_resolution_page_nums(res_doc: Union[rdm.Resolution, rdm.AttendanceList]) -> List[int]:
+    page_nums = set()
+    for para in res_doc.paragraphs:
+        for page_num in para.metadata["page_num"]:
+            if isinstance(page_num, int):
+                page_nums.add(page_num)
+    return sorted(list(page_nums))
+
+
+def get_resolution_page_ids(res_doc: Union[rdm.Resolution, rdm.AttendanceList]) -> List[int]:
+    page_ids = set()
+    for para in res_doc.paragraphs:
+        if 'page_ids' not in para.metadata:
+            continue
+        for page_id in para.metadata["page_ids"]:
+            page_ids.add(page_id)
+    return sorted(list(page_ids))
+
+
 def map_alt_langs(langs):
     alt_langs = {
         # Dutch is often confused with
@@ -219,12 +238,16 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         elif len(opening_matches) > 0:
             if attendance_list:
                 attendance_list.metadata["text_page_num"] = get_resolution_text_page_nums(attendance_list)
+                attendance_list.metadata["page_num"] = get_resolution_page_nums(attendance_list)
+                attendance_list.metadata["page_ids"] = get_resolution_page_ids(attendance_list)
                 yield attendance_list
                 attendance_list = None
             resolution_number += 1
             if resolution:
                 resolution.set_proposition_type()
                 resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
+                resolution.metadata["page_num"] = get_resolution_page_nums(resolution)
+                resolution.metadata["page_ids"] = get_resolution_page_ids(resolution)
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
@@ -247,6 +270,8 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         resolution.metadata['lang'] = list({para.metadata['lang'] for para in resolution.paragraphs})
         resolution.set_proposition_type()
         resolution.metadata["text_page_num"] = get_resolution_text_page_nums(resolution)
+        resolution.metadata["page_num"] = get_resolution_page_nums(resolution)
+        resolution.metadata["page_ids"] = get_resolution_page_ids(resolution)
         yield resolution
 
 
@@ -267,7 +292,8 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         'inventory_num': source_doc.metadata['inventory_num'],
         'source_id': source_doc.metadata['id'],
         'type': doc_type,
-        'id': doc_id
+        'id': doc_id,
+        'page_ids': []
     }
     if doc_type in ["resolution", "attendance_list"]:
         metadata['session_date'] = source_doc.metadata['session_date']
@@ -279,7 +305,6 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         metadata['session_month'] = source_doc.metadata['session_month']
         metadata['session_day'] = source_doc.metadata['session_day']
         metadata['session_weekday'] = source_doc.metadata['session_weekday']
-        metadata['page_ids'] = []
     return metadata
 
 

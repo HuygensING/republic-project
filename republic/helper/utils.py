@@ -11,26 +11,36 @@ def get_commit_version():
     return completed_process.stdout.strip() if completed_process is not None else None
 
 
+def get_commit_url():
+    commit_version = get_commit_version()
+    return f'https://github.com/HuygensING/republic-project/commit/{commit_version}'
+
+
 def get_iso_utc_timestamp() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
 
 
 def make_provenance_data(es_config, source_ids: List[str], target_ids: List[str],
-                         source_index: str, target_index: str, source_es_url: str = None) -> Dict[str, any]:
+                         source_index: str, target_index: str, source_es_url: str = None,
+                         source_external_urls: List[str] = None, why: str = None) -> Dict[str, any]:
     if source_es_url is None:
         source_es_url = es_config['elastic_config']['url']
     target_es_url = es_config['elastic_config']['url']
     source_urls = [f'{source_es_url}{source_index}/_doc/{source_id}' for source_id in source_ids]
+    if source_external_urls is not None:
+        source_urls += source_external_urls
     target_urls = [f'{target_es_url}{target_index}/_doc/{target_id}' for target_id in target_ids]
     source_rels = ['primary'] * len(source_urls)
     target_rels = ['primary'] * len(target_urls)
-    commit_version = get_commit_version()
+    commit_url = get_commit_url()
+    if why is None:
+        why = f'REPUBLIC CAF Pipeline deriving {target_index} from {source_index}'
     return {
         'who': 'orcid:0000-0002-0301-2029',
         'where': 'https://annotation.republic-caf.diginfra.org/',
         'when': get_iso_utc_timestamp(),
-        'how': f'https://github.com/HuygensING/republic-project/commit/{commit_version}',
-        'why': f'REPUBLIC CAF Pipeline deriving {target_index} from {source_index}',
+        'how': commit_url,
+        'why': why,
         'source': source_urls,
         'source_rel': source_rels,
         'target': target_urls,

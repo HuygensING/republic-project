@@ -52,10 +52,12 @@ class RepublicElasticsearch(Retriever, Indexer):
         self.es_anno_config = set_elasticsearch_config(host_type)
 
     def post_provenance(self, source_ids: List[str], target_ids: List[str], source_index: str,
-                        target_index: str, source_es_url: str = None):
+                        target_index: str, source_es_url: str = None,
+                        source_external_urls: List[str] = None, why: str = None):
         data = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids,
                                     target_ids=target_ids, source_index=source_index,
-                                    target_index=target_index, source_es_url=source_es_url)
+                                    target_index=target_index, source_es_url=source_es_url,
+                                    source_external_urls=source_external_urls, why=why)
         response = requests.post(settings.prov_host_url, data=data,
                                  headers={'Authorization': f'Basic: {settings.prov_api_key}'})
         if response.status_code == 201:
