@@ -395,7 +395,7 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
             undecided_tr.metadata['normal_even_end'] = page_odd.metadata['normal_even_end']
     for page_doc in [page_even, page_odd]:
         if page_doc.metadata['page_num'] not in page_type_index:
-            print('no page_type for page', page_doc.id)
+            print('missing page_type for page', page_doc.id)
         if 'title_page' in page_type_index[page_doc.metadata['page_num']]:
             separate_title_lines(page_doc, debug=debug)
         if not page_doc.coords:
@@ -456,6 +456,12 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
         if scan_doc.metadata['inventory_num'] >= 3804:
             even_page_num = scan_doc.metadata['scan_num'] * 2 - 2
             odd_page_num = scan_doc.metadata['scan_num'] * 2 - 1
+            if even_page_num not in page_type_index:
+                print(f'missing page_num for page {scan_doc.id}-page-{even_page_num}')
+                raise KeyError(f'missing page_num for page {scan_doc.id}-page-{even_page_num}')
+            if odd_page_num not in page_type_index:
+                print(f'missing page_num for page {scan_doc.id}-page-{odd_page_num}')
+                raise KeyError(f'missing page_num for page {scan_doc.id}-page-{odd_page_num}')
             if 'index_page' in page_type_index[even_page_num] or 'index_page' in page_type_index[odd_page_num]:
                 max_col_width = 500
                 config['column_gap']['gap_pixel_freq_ratio'] = 0.2
