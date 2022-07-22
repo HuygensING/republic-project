@@ -254,9 +254,12 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
                                           source_index='session_lines', target_index='resolutions',
                                           source_external_urls=[phrase_file],
                                           why='Enriching resolution with metadata derived from resolution phrases')
+        if 'prov_url' not in new_resolution.metadata:
+            new_resolution.metadata['prov_url'] = [prov_url]
         if isinstance(new_resolution.metadata['prov_url'], str):
             new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
-        new_resolution.metadata['prov_url'].append(prov_url)
+        if prov_url not in new_resolution.metadata['prov_url']:
+            new_resolution.metadata['prov_url'].append(prov_url)
         print('\tadding resolution metadata for resolution', new_resolution.id)
         rep_es.index_resolution(new_resolution)
 
