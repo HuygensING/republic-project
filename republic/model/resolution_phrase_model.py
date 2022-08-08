@@ -162,6 +162,7 @@ proposition_opening_phrases = [
         'distractors': [
             'IS ter Vergaderinge gelesen de Memorie van ',
             'IS ter Vergaderinge gelesen het Advies van ',
+            'IS ter Vergaderinge gelesen een Remonstrantie van',
         ],
         'proposition_type': 'requeste',
         'max_offset': 10
@@ -175,6 +176,7 @@ proposition_opening_phrases = [
         'distractors': [
             'IS ter Vergaderinge gelesen de Requeste van ',
             'IS ter Vergaderinge gelesen het Advies van ',
+            'IS ter Vergaderinge gelesen een Remonstrantie van'
         ],
         'proposition_type': 'memorie',
         'max_offset': 10
@@ -185,8 +187,20 @@ proposition_opening_phrases = [
         'distractors': [
             'IS ter Vergaderinge gelesen de Memorie van ',
             'IS ter Vergaderinge gelesen de Requeste van ',
+            'IS ter Vergaderinge gelesen een Remonstrantie van'
         ],
         'proposition_type': 'advies',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'IS ter Vergaderinge gelesen het Remonstrantie van ',
+        'label': ['proposition_opening', 'proposition_type:remonstrantie'],
+        'distractors': [
+            'IS ter Vergaderinge gelesen de Memorie van ',
+            'IS ter Vergaderinge gelesen de Requeste van ',
+            'IS ter Vergaderinge gelesen een Advies van'
+        ],
+        'proposition_type': 'remonstrantie',
         'max_offset': 10
     },
     {

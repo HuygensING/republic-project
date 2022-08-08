@@ -111,7 +111,10 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
                 page.metadata['skip'] = text_page_num_map[page_num]['skip']
                 if text_page_num_map[page_num]['problem'] is not None:
                     page.metadata['problem'] = text_page_num_map[page_num]['problem']
-            if page.metadata['page_num'] not in page_type_index:
+            if page_type_index is None:
+                page.add_type('unknown')
+                page.metadata['type'] = [ptype for ptype in page.type]
+            elif page.metadata['page_num'] not in page_type_index:
                 page.add_type("empty_page")
                 page.metadata['type'] = [ptype for ptype in page.type]
                 page.metadata['skip'] = True

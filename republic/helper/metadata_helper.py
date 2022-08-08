@@ -128,7 +128,9 @@ def correct_section_types(inv_metadata):
 def get_per_page_type_index(inv_metadata: Dict[str, any]) -> Dict[int, Union[str, List[str]]]:
     if "num_pages" not in inv_metadata:
         return {}
-    page_type = {page_num: 'empty_page' for page_num in np.arange(inv_metadata['num_pages'] + 1)}
+    page_type = {page_num: 'unknown' for page_num in np.arange(inv_metadata['num_pages'] + 1)}
+    if 'title_page_nums' not in inv_metadata:
+        return page_type
     for page_num in inv_metadata['title_page_nums']:
         page_type[page_num] = 'title_page'
     for section in inv_metadata['sections']:
