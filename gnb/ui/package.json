@@ -14,7 +14,7 @@
     "@types/react-datepicker": "^3.1.8",
     "@types/react-dom": "^16.9.10",
     "balloon-css": "^1.2.0",
-    "d3": "^6.2.0",
+    "d3": "^7.6.1",
     "elasticsearch": "^16.7.2",
     "lodash": "^4.1.6",
     "moment": "^2.29.2",
