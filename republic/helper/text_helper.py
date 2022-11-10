@@ -21,7 +21,8 @@ class ResolutionSentences:
                  rewrite_dict: dict = None,
                  normalise: bool = False,
                  include_punct: bool = False,
-                 split_pattern: str = None
+                 split_pattern: str = None,
+                 tokenise_sentences: bool = False
                  ):
         self.res_files = res_files if isinstance(res_files, list) else [res_files]
         self.lowercase = lowercase
@@ -32,6 +33,7 @@ class ResolutionSentences:
         self.normalise = normalise
         self.rewrite_dict = rewrite_dict
         self.include_punct = include_punct
+        self.tokenise_sentences = tokenise_sentences
         if split_pattern is None:
             # by default use all characters from string.punctuation, except
             # the hyphen, as we want to keep hyphenated words as one.
@@ -40,32 +42,37 @@ class ResolutionSentences:
         self.split_regex = r'\b' if include_punct else split_pattern
 
     def __iter__(self):
-        for si, sent in enumerate(self.read_sentences()):
+        if self.tokenise_sentences:
+            print('using sentencesn as document level')
+            reader = self.read_sentences()
+        else:
+            print('using paragraphs as document level')
+            reader = self.read_paragraphs()
+        for si, doc in enumerate(reader):
+            if self.to_ascii:
+                doc['text'] = unicode_to_ascii(doc['text'])
+            doc['words'] = self.word_tokenize(doc['text'])
+            if self.normalise or self.rewrite_dict:
+                # print('rewriting')
+                doc['words'] = [self.rewrite_word(word) for word in doc['words']]
             if self.fields == 'text':
-                yield sent['words']
+                yield doc['words']
             else:
-                yield sent
+                yield doc
 
     def word_tokenize(self, sent):
         sent = sent.lower() if self.lowercase else sent
         return [word for word in re.split(self.split_regex, sent.strip()) if word != '']
 
+    def read_paragraphs(self):
+        for para in read_resolution_paragraphs(self.res_files):
+            yield para
+
     def read_sentences(self):
         for para in read_resolution_paragraphs(self.res_files):
             for si, sent in enumerate(sent_tokenize(para['text'])):
                 if self.to_ascii:
-                    sent = unicode_to_ascii(sent)
-                words = self.word_tokenize(sent)
-                if self.normalise or self.rewrite_dict:
-                    # print('rewriting')
-                    words = [self.rewrite_word(word) for word in words]
-                yield {
-                    "resolution_id": para["resolution_id"],
-                    "paragraph_id": para["paragraph_id"],
-                    "sentence_num": si + 1,
-                    "text": sent,
-                    "words": words
-                }
+                    yield sent
 
     def rewrite_word(self, word):
         if word in self.rewrite_dict:
@@ -842,9 +849,10 @@ def vector_length(skipgram_freq):
 class SkipgramSimilarity:
 
     def __init__(self, ngram_length: int = 3, skip_length: int = 0, terms: List[str] = None,
-                 max_length_diff: int = 2):
+                 max_length_diff: int = 2, include_boundaries: bool = False):
         self.ngram_length = ngram_length
         self.skip_length = skip_length
+        self.include_boundaries = include_boundaries
         self.vocab = {}
         self.vocab_map = {}
         self.vector_length = {}
@@ -868,6 +876,7 @@ class SkipgramSimilarity:
             self._index_term(term)
 
     def _term_to_skip(self, term):
+        term = f'#{term}#' if self.include_boundaries else term
         skip_gen = text2skipgrams(term, ngram_size=self.ngram_length, skip_size=self.skip_length)
         return Counter([skip.string for skip in skip_gen])
 

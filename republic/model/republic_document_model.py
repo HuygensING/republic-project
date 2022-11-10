@@ -483,7 +483,9 @@ def json_to_republic_resolution_paragraph(paragraph_json: dict) -> RepublicParag
                              line_ranges=paragraph_json['line_ranges'])
 
 
-def json_to_republic_resolution(resolution_json: dict) -> Resolution:
+def json_to_republic_resolution(resolution_json: dict) -> Union[Resolution, AttendanceList]:
+    if 'attendance_list' in resolution_json['type'] or 'attendance_list' in resolution_json['metadata']['type']:
+        return json_to_republic_attendance_list(resolution_json)
     paragraphs = []
     for paragraph_json in resolution_json['paragraphs']:
         try:

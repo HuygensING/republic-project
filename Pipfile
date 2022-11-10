@@ -28,6 +28,7 @@ maturin = "*"
 analiticcl = "*"
 langdetect = "*"
 nltk = "*"
+scikit-learn = "*"
 
 [requires]
 python_version = "3.8"

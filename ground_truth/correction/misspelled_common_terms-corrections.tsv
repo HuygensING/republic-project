@@ -1,5 +1,6 @@
 main_term	misspelled_term	most_similar_term	levenshtein_distance	cardinality	incomplete_word	merged_words	uncertain_word
-mogende	megende	mogende	1	singular			
+en	ende	en	2	singular
+mogende	megende	mogende	1	singular
 mogende	mogeude	mogende	1	singular			
 mogende	mngende	mogende	1	singular			
 mogende	maogende	mogende	1	singular			
@@ -585,40 +586,40 @@ suppliant	snppliante	suppliant	2	singular
 suppliant	suppgliant	suppliant	1	singular			
 suppliant	sippliant	suppliant	1	singular			
 suppliant	suppliantmet	supplianten met	2	plural		y	
-loopende	lopende	loopende	1	singular			
-loopende	soopende	loopende	1	singular			
-loopende	toopende	loopende	1	singular			
-loopende	joopende	loopende	1	singular			
-loopende	loonende	loopende	1	singular			
-loopende	loopenie	loopende	1	singular			
-loopende	looopende	loopende	1	singular			
-loopende	luopende	loopende	1	singular			
-loopende	loopeude	loopende	1	singular			
-loopende	looponde	loopende	1	singular			
-loopende	loorende	loopende	1	singular			
-loopende	ioopende	loopende	1	singular			
-loopende	loopence	loopende	1	singular			
-loopende	loopense	loopende	1	singular			
-loopende	loopnede	loopende	2	singular			
-loopende	loogende	loopende	1	singular			
-loopende	looperde	loopende	1	singular			
-loopende	loepende	loopende	1	singular			
-loopende	oopende	loopende	1	singular			
-loopende	looende	loopende	1	singular			
-loopende	loodende	loopende	1	singular			
-loopende	locpende	loopende	1	singular			
-loopende	loopede	loopende	1	singular			
-loopende	lonpende	loopende	1	singular			
-loopende	lcopende	loopende	1	singular			
-loopende	lvopende	loopende	1	singular			
-loopende	loopend	loopende	1	singular			
-loopende	loupende	loopende	1	singular			
-loopende	opende	loopende	2	singular	y		y
-loopende	loopen	loopende	2	singular			
-loopende	foopende	loopende	1	singular			
-loopende	loopenden	loopende	1	singular			
-loopende	loopendt	loopende	1	singular			
-loopende	koopende	loopende	1	singular			y
+lopende	lopende	loopende	1	singular
+lopende	soopende	loopende	1	singular
+lopende	toopende	loopende	1	singular
+lopende	joopende	loopende	1	singular
+lopende	loonende	loopende	1	singular
+lopende	loopenie	loopende	1	singular
+lopende	looopende	loopende	1	singular
+lopende	luopende	loopende	1	singular
+lopende	loopeude	loopende	1	singular
+lopende	looponde	loopende	1	singular
+lopende	loorende	loopende	1	singular
+lopende	ioopende	loopende	1	singular
+lopende	loopence	loopende	1	singular
+lopende	loopense	loopende	1	singular
+lopende	loopnede	loopende	2	singular
+lopende	loogende	loopende	1	singular
+lopende	looperde	loopende	1	singular
+lopende	loepende	loopende	1	singular
+lopende	oopende	loopende	1	singular
+lopende	looende	loopende	1	singular
+lopende	loodende	loopende	1	singular
+lopende	locpende	loopende	1	singular
+lopende	loopede	loopende	1	singular
+lopende	lonpende	loopende	1	singular
+lopende	lcopende	loopende	1	singular
+lopende	lvopende	loopende	1	singular
+lopende	loopend	loopende	1	singular
+lopende	loupende	loopende	1	singular
+lopende	opende	loopende	2	singular	y		y
+lopende	loopen	loopende	2	singular
+lopende	foopende	loopende	1	singular
+lopende	loopenden	loopende	1	singular
+lopende	loopendt	loopende	1	singular
+lopende	koopende	loopende	1	singular			y
 geschreven	geschteeven	geschreven	2	singular			
 geschreven	gefchreeven	geschreven	2	singular			
 geschreven	geschrceven	geschreven	1	singular			
@@ -677,48 +678,48 @@ geschreven	gheschreven	geschreven	1	singular
 geschreven	geschreezen	geschreven	2	singular			
 geschreven	gesohreeven	geschreven	2	singular			
 geschreven	geschreein	geschreven	2	singular			
-voorschreeve	voorschteeve	voorschreeve	1	singular			
-voorschreeve	voorschrceve	voorschreeve	1	singular			
-voorschreeve	voorfchreeve	voorschreeve	1	singular			
-voorschreeve	voorfchreve	voorschreve	1	variant			
-voorschreeve	woorschreeve	voorschreeve	1	singular			
-voorschreeve	voorlchreeve	voorschreeve	1	singular			
-voorschreeve	voorschieeve	voorschreeve	1	singular			
-voorschreeve	voorsehreve	voorschreve	1	variant			
-voorschreeve	voorschrewe	voorschreve	1	variant			
-voorschreeve	voorichreeve	voorschreeve	1	singular			
-voorschreeve	voorschteve	voorschreve	1	variant			
-voorschreeve	voorsehreeve	voorschreeve	1	singular			
-voorschreeve	voorichreve	voorschreve	1	variant			
-voorschreeve	voorsclireeve	voorschreeve	2	singular			
-voorschreeve	vooschreve	voorschreve	1	variant			
-voorschreeve	yoorschreve	voorschreve	1	variant			
-voorschreeve	voorscheeve	voorschreeve	1	singular			
-voorschreeve	voorschiteeve	voorschreeve	2	singular			
-voorschreeve	voorchreve	voorschreve	1	variant			
-voorschreeve	voorschrove	voorschreve	1	variant			
-voorschreeve	voorschrecve	voorschreeve	1	singular			
-voorschreeve	schreeve	voorschreeve	4	singular	y		y
-voorschreeve	voorlchreve	voorschreve	1	variant			
-voorschreeve	voorschrteeve	voorschreeve	1	singular			
-voorschreeve	voorschreewe	voorschreeve	1	singular			
-voorschreeve	vonrschreeve	voorschreeve	1	singular			
-voorschreeve	voorschreye	voorschreve	1	variant			
-voorschreeve	woorschreve	voorschreve	1	variant			
-voorschreeve	voorscheve	voorschreve	1	variant			
-voorschreeve	voorschrerve	voorschreeve	1	singular			
-voorschreeve	voorschreevé	voorschreeve	1	singular			
-voorschreeve	voorschieve	voorschreve	1	variant			
-voorschreeve	devoorschreeve	de voorschreeve	2	singular		y	
-voorschreeve	voorschreev	voorschreeve	1	singular			
-voorschreeve	voorschreere	voorschreeve	1	singular			
-voorschreeve	voerschreeve	voorschreeve	1	singular			
-voorschreeve	vootschreeve	voorschreeve	1	singular			
-voorschreeve	voorschre	voorschreve	2	variant	y		
-voorschreeve	voorschrere	voorschreve	1	variant			
-voorschreeve	voorschrve	voorschreve	1	variant			
-voorschreeve	roorschreve	voorschreve	1	variant			
-voorschreeve	voorschreove	voorschreeve	1	singular			
+voorschreve	voorschteeve	voorschreeve	1	singular
+voorschreve	voorschrceve	voorschreeve	1	singular
+voorschreve	voorfchreeve	voorschreeve	1	singular
+voorschreve	voorfchreve	voorschreve	1	variant
+voorschreve	woorschreeve	voorschreeve	1	singular
+voorschreve	voorlchreeve	voorschreeve	1	singular
+voorschreve	voorschieeve	voorschreeve	1	singular
+voorschreve	voorsehreve	voorschreve	1	variant
+voorschreve	voorschrewe	voorschreve	1	variant
+voorschreve	voorichreeve	voorschreeve	1	singular
+voorschreve	voorschteve	voorschreve	1	variant
+voorschreve	voorsehreeve	voorschreeve	1	singular
+voorschreve	voorichreve	voorschreve	1	variant
+voorschreve	voorsclireeve	voorschreeve	2	singular
+voorschreve	vooschreve	voorschreve	1	variant
+voorschreve	yoorschreve	voorschreve	1	variant
+voorschreve	voorscheeve	voorschreeve	1	singular
+voorschreve	voorschiteeve	voorschreeve	2	singular
+voorschreve	voorchreve	voorschreve	1	variant
+voorschreve	voorschrove	voorschreve	1	variant
+voorschreve	voorschrecve	voorschreeve	1	singular
+voorschreve	schreeve	voorschreeve	4	singular	y		y
+voorschreve	voorlchreve	voorschreve	1	variant
+voorschreve	voorschrteeve	voorschreeve	1	singular
+voorschreve	voorschreewe	voorschreeve	1	singular
+voorschreve	vonrschreeve	voorschreeve	1	singular
+voorschreve	voorschreye	voorschreve	1	variant
+voorschreve	woorschreve	voorschreve	1	variant
+voorschreve	voorscheve	voorschreve	1	variant
+voorschreve	voorschrerve	voorschreeve	1	singular
+voorschreve	voorschreevé	voorschreeve	1	singular
+voorschreve	voorschieve	voorschreve	1	variant
+voorschreve	devoorschreeve	de voorschreeve	2	singular		y
+voorschreve	voorschreev	voorschreeve	1	singular
+voorschreve	voorschreere	voorschreeve	1	singular
+voorschreve	voerschreeve	voorschreeve	1	singular
+voorschreve	vootschreeve	voorschreeve	1	singular
+voorschreve	voorschre	voorschreve	2	variant	y
+voorschreve	voorschrere	voorschreve	1	variant
+voorschreve	voorschrve	voorschreve	1	variant
+voorschreve	roorschreve	voorschreve	1	variant
+voorschreve	voorschreove	voorschreeve	1	singular
 provincie	provintie	provincie	1	singular			
 provincie	prowincie	provincie	1	singular			
 provincie	provincien	provincien	0	plural			
@@ -1058,46 +1059,46 @@ gelieven	gcelieven	gelieven	1	singular
 gelieven	gzelieven	gelieven	1	singular			
 gelieven	gelteven	gelieven	1	singular			
 gelieven	gelieren	gelieven	1	singular			
-twintighsten	twintigsten	twintighsten	1	singular			
-twintighsten	twintighiten	twintighsten	1	singular			
+twintigsten	twintigsten	twintighsten	1	singular
+twintigsten	twintighiten	twintighsten	1	singular
 dertighsten	dertighsten	dertighsten	4	singular			
-twintighsten	twintighstenm	twintighsten	1	singular			
-twintighsten	twintighstem	twintighsten	1	singular			
-twintighsten	twintighften	twintighsten	1	singular			
-twintighsten	twinrighsten	twintighsten	1	singular			
-twintighsten	twintighssen	twintighsten	1	singular			
-twintighsten	twintighisten	twintighsten	1	singular			
-twintighsten	twinghsten	twintighsten	2	singular			
-twintighsten	twintlghsten	twintighsten	1	singular			
-twintighsten	tighsten	twintighsten	4	singular	y		y
-twintighsten	twintigbsten	twintighsten	1	singular			
-twintighsten	twintiglisten	twintighsten	2	singular			
-twintighsten	twintighsien	twintighsten	1	singular			
-twintighsten	twintghsten	twintighsten	1	singular			
-twintighsten	twintighsteu	twintighsten	1	singular			
-twintighsten	wintighsten	twintighsten	1	singular			
-twintighsten	tintighsten	twintighsten	1	singular			
-twintighsten	twintighslen	twintighsten	1	singular			
-twintighsten	twintignsten	twintighsten	1	singular			
-twintighsten	twintighen	twintighsten	2	singular			
-twintighsten	iwintighsten	twintighsten	1	singular			
-twintighsten	twincighsten	twintighsten	1	singular			
-twintighsten	twintighden	twintighsten	2	singular			
-twintighsten	tuintighsten	twintighsten	1	singular			
-twintighsten	twintighsiten	twintighsten	1	singular			
-twintighsten	twintightten	twintighsten	1	singular			
-twintighsten	twinughsten	twintighsten	2	singular			
-twintighsten	twintightien	twintighsten	2	singular			
-twintighsten	twiutighsten	twintighsten	1	singular			
-twintighsten	twinsten	twintighsten	4	singular	y		y
-twintighsten	zwintighsten	twintighsten	1	singular			
-twintighsten	twintighstden	twintighsten	1	singular			
-twintighsten	twintighten	twintighsten	1	singular			
-twintighsten	twintigiten	twintighsten	2	singular			
-twintighsten	entwintighsten	en twintighsten	2	singular		y	
-twintighsten	twintighston	twintighsten	1	singular			
-twintighsten	twintighstender	twintighsten der	3	singular		y	
-twintighsten	twintinghsten	twintighsten	1	singular			
+twintigsten	twintighstenm	twintighsten	1	singular
+twintigsten	twintighstem	twintighsten	1	singular
+twintigsten	twintighften	twintighsten	1	singular
+twintigsten	twinrighsten	twintighsten	1	singular
+twintigsten	twintighssen	twintighsten	1	singular
+twintigsten	twintighisten	twintighsten	1	singular
+twintigsten	twinghsten	twintighsten	2	singular
+twintigsten	twintlghsten	twintighsten	1	singular
+twintigsten	tighsten	twintighsten	4	singular	y		y
+twintigsten	twintigbsten	twintighsten	1	singular
+twintigsten	twintiglisten	twintighsten	2	singular
+twintigsten	twintighsien	twintighsten	1	singular
+twintigsten	twintghsten	twintighsten	1	singular
+twintigsten	twintighsteu	twintighsten	1	singular
+twintigsten	wintighsten	twintighsten	1	singular
+twintigsten	tintighsten	twintighsten	1	singular
+twintigsten	twintighslen	twintighsten	1	singular
+twintigsten	twintignsten	twintighsten	1	singular
+twintigsten	twintighen	twintighsten	2	singular
+twintigsten	iwintighsten	twintighsten	1	singular
+twintigsten	twincighsten	twintighsten	1	singular
+twintigsten	twintighden	twintighsten	2	singular
+twintigsten	tuintighsten	twintighsten	1	singular
+twintigsten	twintighsiten	twintighsten	1	singular
+twintigsten	twintightten	twintighsten	1	singular
+twintigsten	twinughsten	twintighsten	2	singular
+twintigsten	twintightien	twintighsten	2	singular
+twintigsten	twiutighsten	twintighsten	1	singular
+twintigsten	twinsten	twintighsten	4	singular	y		y
+twintigsten	zwintighsten	twintighsten	1	singular
+twintigsten	twintighstden	twintighsten	1	singular
+twintigsten	twintighten	twintighsten	1	singular
+twintigsten	twintigiten	twintighsten	2	singular
+twintigsten	entwintighsten	en twintighsten	2	singular		y
+twintigsten	twintighston	twintighsten	1	singular
+twintigsten	twintighstender	twintighsten der	3	singular		y
+twintigsten	twintinghsten	twintighsten	1	singular
 deselve	dezelve	deselve	1	singular			
 deselve	defelve	deselve	1	singular			
 deselve	desclve	deselve	1	singular			
@@ -1135,31 +1136,31 @@ honderd	honders	honderd	1	singular
 honderd	lionderd	honderd	2	singular			
 honderd	honserd	honderd	1	singular			
 hondert	honderdt	honderd	1	singular
-hondert	honderc	honderd	1	singular
-hondert	bonderd	honderd	2	singular
-hondert	rondert	honderd	1	singular
-hondert	hondeit	honderd	1	singular
-hondert	hondett	honderd	1	singular
-hondert	hendert	honderd	1	singular
-hondert	honderr	honderd	1	singular
-hondert	honder	honderd	1	singular
-hondert	hondere	honderd	1	singular
-hondert	hondeid	honderd	2	singular
-hondert	houderd	honderd	2	singular
-hondert	honderde	honderd	2	singular			y
-hondert	ronderd	honderd	2	singular
-hondert	henderd	honderd	2	singular
-hondert	houdert	honderd	1	singular			y
-hondert	bondert	honderd	1	singular
-hondert	hondetd	honderd	2	singular
-hondert	hondertt	honderd	1	singular
-hondert	hunderd	honderd	2	singular
-hondert	hondent	honderd	1	singular
-hondert	honde	honderd	2	singular	y		y
-hondert	hondend	honderd	2	singular			y
-hondert	honderu	honderd	1	singular
-hondert	honders	honderd	1	singular
-hondert	honserd	honderd	2	singular
+honderd	honderc	honderd	1	singular
+honderd	bonderd	honderd	2	singular
+honderd	rondert	honderd	1	singular
+honderd	hondeit	honderd	1	singular
+honderd	hondett	honderd	1	singular
+honderd	hendert	honderd	1	singular
+honderd	honderr	honderd	1	singular
+honderd	honder	honderd	1	singular
+honderd	hondere	honderd	1	singular
+honderd	hondeid	honderd	2	singular
+honderd	houderd	honderd	2	singular
+honderd	honderde	honderd	2	singular			y
+honderd	ronderd	honderd	2	singular
+honderd	henderd	honderd	2	singular
+honderd	houdert	honderd	1	singular			y
+honderd	bondert	honderd	1	singular
+honderd	hondetd	honderd	2	singular
+honderd	hondertt	honderd	1	singular
+honderd	hunderd	honderd	2	singular
+honderd	hondent	honderd	1	singular
+honderd	honde	honderd	2	singular	y		y
+honderd	hondend	honderd	2	singular			y
+honderd	honderu	honderd	1	singular
+honderd	honders	honderd	1	singular
+honderd	honserd	honderd	2	singular
 guldens	guidens	guldens	1	plural			
 guldens	gnldens	guldens	1	plural			
 guldens	gulden	gulden	0	singular			
@@ -1200,54 +1201,54 @@ rapport	sapport	rapport	1	singular
 rapport	rapporten	rapporten	0	plural			
 rapport	raport	rapport	1	singular			
 rapport	rapportte	rapport	2	singular			
-versoeckende	verzoeckende	versoeckende	1	singular			
-versoeckende	versoekende	versoeckende	1	singular			
-versoeckende	versoeekende	versoeckende	1	singular			
-versoeckende	verzoekende	versoeckende	2	singular			
-versoeckende	verfoeckende	versoeckende	1	singular			
-versoeckende	verloeckende	versoeckende	1	singular			
-versoeckende	versoeeckende	versoeckende	1	singular			
-versoeckende	versockende	versoeckende	1	singular			
-versoeckende	verzoeekende	versoeckende	2	singular			
-versoeckende	wersoeckende	versoeckende	1	singular			
-versoeckende	versocckende	versoeckende	1	singular			
-versoeckende	verfoekende	versoeckende	2	singular			
-versoeckende	vetsoeckende	versoeckende	1	singular			
-versoeckende	verloekende	versoeckende	2	singular			
-versoeckende	wersoekende	versoeckende	2	singular			
-versoeckende	verroekende	versoeckende	2	singular			
-versoeckende	verzockende	versoeckende	2	singular			
-versoeckende	versoeckense	versoeckende	1	singular			
+verzoekende	verzoeckende	versoeckende	1	singular
+verzoekende	versoekende	versoeckende	1	singular
+verzoekende	versoeekende	versoeckende	1	singular
+verzoekende	verzoekende	versoeckende	2	singular
+verzoekende	verfoeckende	versoeckende	1	singular
+verzoekende	verloeckende	versoeckende	1	singular
+verzoekende	versoeeckende	versoeckende	1	singular
+verzoekende	versockende	versoeckende	1	singular
+verzoekende	verzoeekende	versoeckende	2	singular
+verzoekende	wersoeckende	versoeckende	1	singular
+verzoekende	versocckende	versoeckende	1	singular
+verzoekende	verfoekende	versoeckende	2	singular
+verzoekende	vetsoeckende	versoeckende	1	singular
+verzoekende	verloekende	versoeckende	2	singular
+verzoekende	wersoekende	versoeckende	2	singular
+verzoekende	verroekende	versoeckende	2	singular
+verzoekende	verzockende	versoeckende	2	singular
+verzoekende	versoeckense	versoeckende	1	singular
 verkoopende	verhoopende	verkoopende	4	singular			y
-versoeckende	werzoekende	versoeckende	3	singular			
-versoeckende	soeckende	versoeckende	3	singular	y		
-versoeckende	versoeckendeden	versoeckende den	3	singular		y	
-versoeckende	versaeckende	versoeckende	1	singular			y
-versoeckende	vertoekende	versoeckende	2	singular			
-verseekerende	verseekerende	verseekerende	4	singular			y
-versoeckende	verzoeeckende	versoeckende	2	singular			
-versoeckende	yersoeckende	versoeckende	1	singular			
-versoeckende	versorckende	versoeckende	1	singular			
-versoeckende	versoeokende	versoeckende	1	singular			
-versoeckende	versoekendeden	versoeckende den	4	singular		y	
-versoeckende	vertoeckende	versoeckende	1	singular			
-versoeckende	versoerkende	versoeckende	1	singular			
-versoeckende	verfsoeckende	versoeckende	1	singular			
-versoeckende	versoeckeude	versoeckende	1	singular			
-versoeckende	versaekende	versoeckende	2	singular			y
-versoeckende	verscekende	versoeckende	2	singular			
+verzoekende	werzoekende	versoeckende	3	singular
+verzoekende	soeckende	versoeckende	3	singular	y
+verzoekende	versoeckendeden	versoeckende den	3	singular		y
+verzoekende	versaeckende	versoeckende	1	singular			y
+verzoekende	vertoekende	versoeckende	2	singular
+verzekerende	verseekerende	verseekerende	4	singular			y
+verzoekende	verzoeeckende	versoeckende	2	singular
+verzoekende	yersoeckende	versoeckende	1	singular
+verzoekende	versorckende	versoeckende	1	singular
+verzoekende	versoeokende	versoeckende	1	singular
+verzoekende	versoekendeden	versoeckende den	4	singular		y
+verzoekende	vertoeckende	versoeckende	1	singular
+verzoekende	versoerkende	versoeckende	1	singular
+verzoekende	verfsoeckende	versoeckende	1	singular
+verzoekende	versoeckeude	versoeckende	1	singular
+verzoekende	versaekende	versoeckende	2	singular			y
+verzoekende	verscekende	versoeckende	2	singular
 vermeenende	vermeenende	vermeenende	4	singular			y
-versoeckende	vesoeckende	versoeckende	1	singular			
+verzoekende	vesoeckende	versoeckende	1	singular
 vermeenende	vermeynende	vermeenende	4	singular			
-versoeckende	verfsoekende	versoeckende	2	singular			
-versoeckende	versoecckende	versoeckende	1	singular			
-versoeckende	versoeker	versoeckende	4	singular	y		y
-versoeckende	verseeckerende	verseeckeren de	3	singular		y	y
-verseeckeren	verseeckeren	verseeckeren	4	singular			y
-versoeckende	vessoeckende	versoeckende	1	singular			
-versoeckende	werzoeckende	versoeckende	2	singular			
-versoeckende	versoekendede	versoeckende de	3	singular		y	
-versoeckende	verseeckende	versoeckende	1	singular			
+verzoekende	verfsoekende	versoeckende	2	singular
+verzoekende	versoecckende	versoeckende	1	singular
+verzoekende	versoeker	versoeckende	4	singular	y		y
+verzoekende	verseeckerende	verseeckeren de	3	singular		y	y
+verzekeren	verseeckeren	verseeckeren	4	singular			y
+verzoekende	vessoeckende	versoeckende	1	singular
+verzoekende	werzoeckende	versoeckende	2	singular
+verzoekende	versoekendede	versoeckende de	3	singular		y
+verzoekende	verseeckende	versoeckende	1	singular
 majesteyt	majesteit	majesteyt	1	singular			
 majesteyt	mijesteyt	majesteyt	1	singular			
 majesteyt	maiesteyt	majesteyt	1	singular			
@@ -1320,7 +1321,7 @@ gesonden	gesouden	gesonden	1	singular
 ingesonden	ingesonden	ingesonden	2	singular			
 versonden	versonden	versonden	2	singular			
 nagesonden	nagesonden	nagesonden	2	singular			
-geschreeven	geschteeven	geschreeven	1	singular			
+geschreeven	geschteeven	geschreeven	1	singular
 geschreeven	gefchreeven	geschreeven	1	singular			
 geschreeven	geschrceven	geschreeven	1	singular			
 geschreeven	geschreewen	geschreeven	1	singular			
@@ -1409,79 +1410,79 @@ verstaen	enverstaen	en verstaen	2	singular		y
 verstaen	vestaen	verstaen	1	singular			
 verstaen	versiaan	verstaen	2	singular			
 verstaen	vetstaan	verstaen	2	singular			
-goetgevonden	goedtgevonden	goedgevonden	1	singular			
-goetgevonden	goergevonden	goedgevonden	1	singular			
-goetgevonden	goedrgevonden	goedgevonden	1	variant			
-goetgevonden	goetvonden	goedgevonden	2	singular			
-goetgevonden	goedevonden	goedgevonden	1	variant			
-goetgevonden	goedgewonden	goedgevonden	1	variant			
-goetgevonden	goedtvonden	goedgevonden	2	variant			
-goetgevonden	gocdtgevonden	goedgevonden	2	singular			
-goetgevonden	guedgevonden	goedgevonden	1	variant			
-goetgevonden	goedtgevonde	goedgevonden	2	singular			
-goetgevonden	gocdgevonden	goedgevonden	1	variant			
-goetgevonden	goetgevon	goedgevonden	3	singular	y		
-goetgevonden	goeugevonden	goetgevonden	1	singular			
-goetgevonden	goedtgevon	goedgevonden	4	singular	y		
-goetgevonden	goedbevonden	goedgevonden	1	variant			
-goetgevonden	geedgevonden	goedgevonden	1	variant			
-goetgevonden	gcedgevonden	goedgevonden	1	variant			
-goetgevonden	goctgevonden	goedgevonden	1	singular			
-goetgevonden	goetgevenden	goedgevonden	1	singular			
-goetgevonden	goedgevonde	goedgevonden	1	variant			
-goetgevonden	goecgevonden	goedgevonden	1	singular			
-goetgevonden	vergevonden	goedgevonden	3	singular			y
-goetgevonden	goedvonden	goedgevonden	2	variant			
-goetgevonden	goedgegevonden	goedgevonden	2	variant			
-goetgevonden	goetgegevonden	goedgevonden	2	singular			
-goetgevonden	gordtgevonden	goedgevonden	2	singular			
-goetgevonden	goedtgevondenm	goedgevonden	2	singular			
-goetgevonden	goetgevouden	goedgevonden	1	singular			
-goetgevonden	goetgevonde	goedgevonden	1	singular			
-goetgevonden	goedzevonden	goedgevonden	1	variant			
-goetgevonden	goedgevenden	goedgevonden	1	variant			
-goetgevonden	goedtgeronden	goedgevonden	2	singular			
-goetgevonden	poedgevonden	goedgevonden	1	variant			
-goetgevonden	goedgevondem	goedgevonden	1	variant			
-goetgevonden	goedgevon	goedgevonden	3	variant	y		
-goetgevonden	goedlgevonden	goedgevonden	1	variant			
-goetgevonden	goedegevonden	goedgevonden	1	variant			
-goetgevonden	gnedgevonden	goedgevonden	1	variant			
-goetgevonden	gegevonden	goedgevonden	2	singular	y		y
-goetgevonden	goedgovonden	goedgevonden	1	variant			
-goetgevonden	goedpevonden	goedgevonden	1	variant			
-goetgevonden	goedwevonden	goedgevonden	1	variant			
-goetgevonden	goetgewonden	goedgevonden	1	singular			
-goetgevonden	goetdgevonden	goedgevonden	1	singular			
-goetgevonden	gordgevonden	goedgevonden	1	variant			
-goetgevonden	goedtgevenden	goedgevonden	2	singular			
-goetgevonden	goedgevondeu	goedgevonden	1	variant			
-goetgevonden	goedtgewonden	goedgevonden	2	singular			
-goetgevonden	goedgevanden	goedgevonden	1	variant			
-goetgevonden	goetrgevonden	goedgevonden	1	singular			
-goetgevonden	goedgevonsen	goedgevonden	1	variant			
-goetgevonden	goedgeronden	goedgevonden	1	variant			
-goetgevonden	goedgevond	goedgevonden	2	variant	y		
-goetgevonden	goedgevorden	goedgevonden	1	variant			
-goetgevonden	goedgevondenen	goedgevonden en	2	variant		y	
-goetgevonden	goedgeyonden	goedgevonden	1	variant			
-goetgevonden	goedgevouden	goedgevonden	1	variant			
-goetgevonden	goegevonden	goedgevonden	1	singular			
-goetgevonden	goodgevonden	goedgevonden	1	variant			
-goetgevonden	goetgeonden	goedgevonden	1	singular			
-goetgevonden	goetgeyonden	goedgevonden	1	singular			
+goedgevonden	goedtgevonden	goedgevonden	1	singular
+goedgevonden	goergevonden	goedgevonden	1	singular
+goedgevonden	goedrgevonden	goedgevonden	1	variant
+goedgevonden	goetvonden	goedgevonden	2	singular
+goedgevonden	goedevonden	goedgevonden	1	variant
+goedgevonden	goedgewonden	goedgevonden	1	variant
+goedgevonden	goedtvonden	goedgevonden	2	variant
+goedgevonden	gocdtgevonden	goedgevonden	2	singular
+goedgevonden	guedgevonden	goedgevonden	1	variant
+goedgevonden	goedtgevonde	goedgevonden	2	singular
+goedgevonden	gocdgevonden	goedgevonden	1	variant
+goedgevonden	goetgevon	goedgevonden	3	singular	y
+goedgevonden	goeugevonden	goetgevonden	1	singular
+goedgevonden	goedtgevon	goedgevonden	4	singular	y
+goedgevonden	goedbevonden	goedgevonden	1	variant
+goedgevonden	geedgevonden	goedgevonden	1	variant
+goedgevonden	gcedgevonden	goedgevonden	1	variant
+goedgevonden	goctgevonden	goedgevonden	1	singular
+goedgevonden	goetgevenden	goedgevonden	1	singular
+goedgevonden	goedgevonde	goedgevonden	1	variant
+goedgevonden	goecgevonden	goedgevonden	1	singular
+goedgevonden	vergevonden	goedgevonden	3	singular			y
+goedgevonden	goedvonden	goedgevonden	2	variant
+goedgevonden	goedgegevonden	goedgevonden	2	variant
+goedgevonden	goetgegevonden	goedgevonden	2	singular
+goedgevonden	gordtgevonden	goedgevonden	2	singular
+goedgevonden	goedtgevondenm	goedgevonden	2	singular
+goedgevonden	goetgevouden	goedgevonden	1	singular
+goedgevonden	goetgevonde	goedgevonden	1	singular
+goedgevonden	goedzevonden	goedgevonden	1	variant
+goedgevonden	goedgevenden	goedgevonden	1	variant
+goedgevonden	goedtgeronden	goedgevonden	2	singular
+goedgevonden	poedgevonden	goedgevonden	1	variant
+goedgevonden	goedgevondem	goedgevonden	1	variant
+goedgevonden	goedgevon	goedgevonden	3	variant	y
+goedgevonden	goedlgevonden	goedgevonden	1	variant
+goedgevonden	goedegevonden	goedgevonden	1	variant
+goedgevonden	gnedgevonden	goedgevonden	1	variant
+goedgevonden	gegevonden	goedgevonden	2	singular	y		y
+goedgevonden	goedgovonden	goedgevonden	1	variant
+goedgevonden	goedpevonden	goedgevonden	1	variant
+goedgevonden	goedwevonden	goedgevonden	1	variant
+goedgevonden	goetgewonden	goedgevonden	1	singular
+goedgevonden	goetdgevonden	goedgevonden	1	singular
+goedgevonden	gordgevonden	goedgevonden	1	variant
+goedgevonden	goedtgevenden	goedgevonden	2	singular
+goedgevonden	goedgevondeu	goedgevonden	1	variant
+goedgevonden	goedtgewonden	goedgevonden	2	singular
+goedgevonden	goedgevanden	goedgevonden	1	variant
+goedgevonden	goetrgevonden	goedgevonden	1	singular
+goedgevonden	goedgevonsen	goedgevonden	1	variant
+goedgevonden	goedgeronden	goedgevonden	1	variant
+goedgevonden	goedgevond	goedgevonden	2	variant	y
+goedgevonden	goedgevorden	goedgevonden	1	variant
+goedgevonden	goedgevondenen	goedgevonden en	2	variant		y
+goedgevonden	goedgeyonden	goedgevonden	1	variant
+goedgevonden	goedgevouden	goedgevonden	1	variant
+goedgevonden	goegevonden	goedgevonden	1	singular
+goedgevonden	goodgevonden	goedgevonden	1	variant
+goedgevonden	goetgeonden	goedgevonden	1	singular
+goedgevonden	goetgeyonden	goedgevonden	1	singular
 gevonden	gevonden	gevonden	4	singular			y
-goetgevonden	goetgevondenen	goedgevonden en	2	singular		y	
-goetgevonden	dgevonden	goedgevonden	3	variant	y		y
-goetgevonden	goesgevonden	goedgevonden	1	singular			
-goetgevonden	goetgevondenende	goedgevonden ende	4	singular		y	
-goetgevonden	goetgevondem	goedgevonden	1	singular			
-goetgevonden	goedtgvonden	goedgevonden	2	singular			
-goetgevonden	goengevonden	goedgevonden	1	singular			
-goetgevonden	regevonden	goedgevonden	3	singular	y		y
-goetgevonden	goedgevoncen	goedgevonden	1	variant			
-goetgevonden	sgevonden	goedgevonden	4	singular	y		y
-goetgevonden	lgevonden	goedgevonden	4	singular	y		y
+goedgevonden	goetgevondenen	goedgevonden en	2	singular		y
+goedgevonden	dgevonden	goedgevonden	3	variant	y		y
+goedgevonden	goesgevonden	goedgevonden	1	singular
+goedgevonden	goetgevondenende	goedgevonden ende	4	singular		y
+goedgevonden	goetgevondem	goedgevonden	1	singular
+goedgevonden	goedtgvonden	goedgevonden	2	singular
+goedgevonden	goengevonden	goedgevonden	1	singular
+goedgevonden	regevonden	goedgevonden	3	singular	y		y
+goedgevonden	goedgevoncen	goedgevonden	1	variant
+goedgevonden	sgevonden	goedgevonden	4	singular	y		y
+goedgevonden	lgevonden	goedgevonden	4	singular	y		y
 gevolge	gewolge	gevolge	1	singular			
 gevolge	geyolge	gevolge	1	singular			
 gevolge	gevoige	gevolge	1	singular			
@@ -1820,57 +1821,57 @@ amsterdam	amsteldam	amsterdam	1	singular
 amsterdam	terdam	amsterdam	3	singular	y		y
 rotterdam	kotterdam	rotterdam	3	singular			
 amsterdam	amssterdam	amsterdam	1	singular			
-geleesen	geleezen	geleesen	1	singular			
-geleesen	geleelen	geleesen	1	singular			
-geleesen	gelezen	gelesen	1	variant			
-geleesen	geleefen	geleesen	1	singular			
-geleesen	geseesen	geleesen	1	singular			
-geleesen	gelelen	gelesen	1	variant			
-geleesen	gelcesen	geleesen	1	singular			
-geleesen	geseezen	geleesen	2	singular			
-geleesen	geleien	gelesen	1	variant			
-geleesen	gelefen	gelesen	1	variant			
-geleesen	gesleesen	geleesen	1	singular			
-geleesen	gcleesen	geleesen	1	singular			
-geleesen	geleeslen	geleesen	1	singular			
-geleesen	gesesen	gelesen	1	variant			
-geleesen	geleeren	geleesen	1	singular			
-geleesen	geleeten	geleesen	1	singular			
-geleesen	gelecsen	geleesen	1	singular			
-geleesen	gelecesen	geleesen	1	singular			
-geleesen	gelcsen	gelesen	1	variant			
-geleesen	geleslen	gelesen	1	variant			
-geleesen	geleczen	geleesen	2	singular			
-geleesen	gesleezen	geleesen	2	singular			
-geleesen	gclesen	gelesen	1	variant			
-geleesen	geteesen	geleesen	1	singular			
-geleesen	geleson	gelesen	1	variant			
-geleesen	geleefsen	geleesen	1	singular			
-geleesen	geseelen	geleesen	2	singular			y
-geleesen	gelesien	gelesen	1	variant			
-geleesen	geleelsen	geleesen	1	singular			
-geleesen	geleeson	geleesen	1	singular			
-geleesen	gelcelen	geleesen	2	singular			y
-geleesen	geltesen	geleesen	1	singular			
-geleesen	gcelesen	gelesen	1	variant			
-geleesen	gelcezen	geleesen	2	singular			
-geleesen	geseefen	geleesen	2	singular			y
-geleesen	gelersen	geleesen	1	singular			
-geleesen	geslesen	gelesen	1	variant			
-geleesen	gelefsen	geleesen	1	singular			
-geleesen	geloesen	geleesen	1	singular			
-geleesen	geleecsen	geleesen	1	singular			
-geleesen	geieesen	geleesen	1	singular			
-geleesen	gescesen	geleesen	2	singular			
-geleesen	gesleelen	geleesen	2	singular			
-geleesen	geleeien	geleesen	1	singular			y
-geleesen	geleten	gelesen	1	variant			
-geleesen	gelezsen	geleesen	1	singular			
-geleesen	geiesen	gelesen	1	variant			
-geleesen	gelecien	geleesen	2	singular			y
-geleesen	geleesien	geleesen	1	singular			
-geleesen	gelecten	geleesen	2	singular			y
-geleesen	gelelsen	geleesen	1	singular			
+gelesen	geleezen	geleesen	1	singular
+gelesen	geleelen	geleesen	1	singular
+gelesen	gelezen	gelesen	1	variant
+gelesen	geleefen	geleesen	1	singular
+gelesen	geseesen	geleesen	1	singular
+gelesen	gelelen	gelesen	1	variant
+gelesen	gelcesen	geleesen	1	singular
+gelesen	geseezen	geleesen	2	singular
+gelesen	geleien	gelesen	1	variant
+gelesen	gelefen	gelesen	1	variant
+gelesen	gesleesen	geleesen	1	singular
+gelesen	gcleesen	geleesen	1	singular
+gelesen	geleeslen	geleesen	1	singular
+gelesen	gesesen	gelesen	1	variant
+gelesen	geleeren	geleesen	1	singular
+gelesen	geleeten	geleesen	1	singular
+gelesen	gelecsen	geleesen	1	singular
+gelesen	gelecesen	geleesen	1	singular
+gelesen	gelcsen	gelesen	1	variant
+gelesen	geleslen	gelesen	1	variant
+gelesen	geleczen	geleesen	2	singular
+gelesen	gesleezen	geleesen	2	singular
+gelesen	gclesen	gelesen	1	variant
+gelesen	geteesen	geleesen	1	singular
+gelesen	geleson	gelesen	1	variant
+gelesen	geleefsen	geleesen	1	singular
+gelesen	geseelen	geleesen	2	singular			y
+gelesen	gelesien	gelesen	1	variant
+gelesen	geleelsen	geleesen	1	singular
+gelesen	geleeson	geleesen	1	singular
+gelesen	gelcelen	geleesen	2	singular			y
+gelesen	geltesen	geleesen	1	singular
+gelesen	gcelesen	gelesen	1	variant
+gelesen	gelcezen	geleesen	2	singular
+gelesen	geseefen	geleesen	2	singular			y
+gelesen	gelersen	geleesen	1	singular
+gelesen	geslesen	gelesen	1	variant
+gelesen	gelefsen	geleesen	1	singular
+gelesen	geloesen	geleesen	1	singular
+gelesen	geleecsen	geleesen	1	singular
+gelesen	geieesen	geleesen	1	singular
+gelesen	gescesen	geleesen	2	singular
+gelesen	gesleelen	geleesen	2	singular
+gelesen	geleeien	geleesen	1	singular			y
+gelesen	geleten	gelesen	1	variant
+gelesen	gelezsen	geleesen	1	singular
+gelesen	geiesen	gelesen	1	variant
+gelesen	gelecien	geleesen	2	singular			y
+gelesen	geleesien	geleesen	1	singular
+gelesen	gelecten	geleesen	2	singular			y
+gelesen	gelelsen	geleesen	1	singular
 geaddresseert	geaddresleert	geaddresseert	1	singular			
 geaddresseert	geaddresscert	geaddresseert	1	singular			
 geaddresseert	geaddtesseert	geaddresseert	1	singular			
