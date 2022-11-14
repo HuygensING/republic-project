@@ -1263,6 +1263,8 @@
         "content_type": "resolutions",
         "num_scans": 873,
         "inventory_label": "3158 1607",
+        "period_start": "1607-01-01",
+        "period_end": "1607-12-31",
         "num_pages": 1745
     },
     {
@@ -1277,6 +1279,8 @@
         "content_type": "resolutions",
         "num_scans": 704,
         "inventory_label": "3160 1608",
+        "period_start": "1608-01-01",
+        "period_end": "1608-12-31",
         "num_pages": 1407
     },
     {
@@ -1291,6 +1295,8 @@
         "content_type": "resolutions",
         "num_scans": 792,
         "inventory_label": "3162 1609",
+        "period_start": "1609-01-01",
+        "period_end": "1609-12-31",
         "num_pages": 1583
     },
     {
@@ -1305,6 +1311,8 @@
         "content_type": "resolutions",
         "num_scans": 456,
         "inventory_label": "3164 1610",
+        "period_start": "1610-01-01",
+        "period_end": "1610-12-31",
         "num_pages": 911
     },
     {
@@ -1319,6 +1327,8 @@
         "content_type": "resolutions",
         "num_scans": 362,
         "inventory_label": "3166 1611",
+        "period_start": "1611-01-01",
+        "period_end": "1611-12-31",
         "num_pages": 723
     },
     {
@@ -1347,6 +1357,8 @@
         "content_type": "resolutions",
         "num_scans": 898,
         "inventory_label": "3168 1612",
+        "period_start": "1612-01-01",
+        "period_end": "1612-12-31",
         "num_pages": 1795
     },
     {
@@ -1361,6 +1373,8 @@
         "content_type": "resolutions",
         "num_scans": 809,
         "inventory_label": "3170 1613",
+        "period_start": "1613-01-01",
+        "period_end": "1613-12-31",
         "num_pages": 1617
     },
     {
@@ -1375,6 +1389,8 @@
         "content_type": "resolutions",
         "num_scans": 944,
         "inventory_label": "3172 1614",
+        "period_start": "1614-01-01",
+        "period_end": "1614-12-31",
         "num_pages": 1887
     },
     {
@@ -1405,6 +1421,8 @@
         "content_type": "resolutions",
         "num_scans": 820,
         "inventory_label": "3174 1615",
+        "period_start": "1615-01-01",
+        "period_end": "1615-12-31",
         "num_pages": 1639
     },
     {
@@ -10880,6 +10898,8 @@
         "year": 1592,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1592-04-11",
+        "period_end": "1604-02-13",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10890,6 +10910,8 @@
         "year": 1608,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1608-02-04",
+        "period_end": "1609-04-11",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10900,6 +10922,8 @@
         "year": 1615,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1615-12-31",
+        "period_end": "1634-12-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10910,6 +10934,8 @@
         "year": 1634,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1634-05-30",
+        "period_end": "1646-03-18",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10920,6 +10946,8 @@
         "year": 1634,
         "resolution_type": "secreet",
         "content_type": "index",
+        "period_start": "1634-05-30",
+        "period_end": "1646-03-18",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10930,6 +10958,8 @@
         "year": 1646,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1646-08-18",
+        "period_end": "1653-12-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10940,6 +10970,8 @@
         "resolution_type": "secreet",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02",
+        "period_start": "1654-01-01",
+        "period_end": "1660-12-31",
         "year": [
             1654,
             1655,
@@ -10958,6 +10990,8 @@
         "resolution_type": "secreet",
         "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
+        "period_start": "1654-01-01",
+        "period_end": "1660-12-31",
         "year": [
             1654,
             1655,
@@ -10976,6 +11010,8 @@
         "resolution_type": "secreet",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02",
+        "period_start": "1661-01-01",
+        "period_end": "1670-12-31",
         "year": [
             1661,
             1662,
@@ -10997,6 +11033,8 @@
         "resolution_type": "secreet",
         "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
+        "period_start": "1661-01-01",
+        "period_end": "1670-12-31",
         "year": [
             1661,
             1662,

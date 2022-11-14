@@ -46,6 +46,8 @@ def parse_line_words(textline: dict) -> List[PageXMLWord]:
     if isinstance(textline["Word"], dict):
         textline["Word"] = [textline["Word"]]
     for word_dict in textline["Word"]:
+        if 'TextEquiv' not in word_dict or word_dict['TextEquiv'] is None:
+            continue
         if isinstance(word_dict["TextEquiv"]["Unicode"], str):
             unicode_string = word_dict["TextEquiv"]["Unicode"]
         else:
