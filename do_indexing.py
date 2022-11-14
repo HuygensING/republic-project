@@ -422,12 +422,16 @@ def main():
                     }
                     tasks.append(task)
             print(f'indexing {indexing_step} for years', years)
-        elif start in range(3000, 3865):
+        elif start in range(3000, 5000):
             inv_nums = [inv_num for inv_num in range(start, end+1)]
             tasks = [{"inv_num": inv_num, "type": indexing_step, "commit": commit_version} for inv_num in range(start, end+1)]
             for task in tasks:
                 inv_map = get_inventory_by_num(task["inv_num"])
+                if inv_map is None:
+                    print('No inventory metadata for inventory number', task['inv_num'])
+                    continue
                 task["year"] = inv_map["year"]
+            tasks = [task for task in tasks if 'year' in task and task['year'] is not None]
             print(f'indexing {indexing_step} for inventories', inv_nums)
         else:
             raise ValueError("Unknown start number, expecting 1576-1796 or 3760-3864")
