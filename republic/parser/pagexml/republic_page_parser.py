@@ -128,7 +128,9 @@ def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
     elif item.parent and 'normal_odd_end' in item.parent.metadata:
         scan_width = item.parent.metadata['normal_odd_end']
     odd_end = scan_width
-    if "normal_odd_end" in item.metadata and scan_width > item.metadata['normal_odd_end']:
+    if scan_width is None:
+        odd_end, even_end = 0, 0
+    elif "normal_odd_end" in item.metadata and scan_width > item.metadata['normal_odd_end']:
         even_end = item.metadata['normal_even_end']
     else:
         even_end = scan_width / 2 + 100
