@@ -172,6 +172,7 @@ def is_next_to(region1: PageXMLTextRegion, region2: PageXMLTextRegion, margin: i
     else:
         return False
 
+
 def horizontal_distance(doc1: PageXMLDoc, doc2: PageXMLDoc):
     if doc1.coords.right < doc2.coords.left:
         # doc1 is to the left of doc2
@@ -194,6 +195,28 @@ def vertical_distance(doc1: PageXMLDoc, doc2: PageXMLDoc):
     else:
         # doc1 and doc2 vertically overlap
         return 0
+
+
+def get_horizontal_diff(doc1: PageXMLDoc, doc2: PageXMLDoc) -> int:
+    return abs(doc1.coords.left - doc2.coords.left)
+
+
+def get_horizontal_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
+    horizontal_diff = get_horizontal_diff(doc1, doc2)
+    max_right = max(doc1.coords.right, doc2.coords.right)
+    min_left = min(doc1.coords.left, doc2.coords.left)
+    return horizontal_diff / (max_right - min_left)
+
+
+def get_vertical_diff(doc1: PageXMLDoc, doc2: PageXMLDoc) -> int:
+    return abs(doc1.coords.top - doc2.coords.top)
+
+
+def get_vertical_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
+    vertical_diff = get_vertical_diff(doc1, doc2)
+    max_bottom = max(doc1.coords.bottom, doc2.coords.bottom)
+    min_top = min(doc1.coords.top, doc2.coords.top)
+    return vertical_diff / (max_bottom - min_top)
 
 
 def parse_derived_coords(document_list: list) -> Coords:
@@ -406,7 +429,16 @@ class PageXMLTextLine(PageXMLDoc):
         if other == self:
             return False
         if horizontal_overlap(self.coords, other.coords):
-            return self.is_below(other) is False
+            if vertical_overlap(self.coords, other.coords):
+                # check which orientation dominates the difference
+                horizontal_ratio = get_horizontal_ratio(self, other)
+                vertical_ratio = get_vertical_ratio(self, other)
+                if vertical_ratio < 0.2 and horizontal_ratio > 0.8:
+                    return self.coords.left < other.coords.left
+                else:
+                    return self.coords.top < other.coords.top
+            else:
+                return self.is_below(other) is False
         elif vertical_overlap(self.coords, other.coords):
             return self.coords.left < other.coords.left
         elif self.coords.left < other.coords.left:
@@ -693,7 +725,7 @@ class PageXMLPage(PageXMLTextRegion):
             self.columns.append(child)
         elif isinstance(child, PageXMLTextLine):
             self.lines.append(child)
-        elif isinstance(child, PageXMLTextRegion):
+        elif isinstance(child, PageXMLTextRegion) or child.__class__.__name__ == 'PageXMLTextRegion':
             if as_extra:
                 self.extra.append(child)
             else:
@@ -809,3 +841,4 @@ def set_parentage(parent_doc: StructureDoc):
         parent_doc.set_as_parent(parent_doc.words)
         for word in parent_doc.words:
             set_parentage(word)
+
