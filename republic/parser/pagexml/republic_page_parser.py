@@ -246,8 +246,6 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
             if text_region.has_type('date') and text_region.has_type('extra'):
                 text_region.add_type('main')
                 text_region.remove_type('extra')
-        print('assigning tr', text_region.id)
-        print('\t', text_region.type)
         as_extra = 'extra' in text_region.type
         text_region.metadata['scan_id'] = scan_doc.id
         if text_region.metadata and 'type' in text_region.metadata:
@@ -261,8 +259,6 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                     print(f"\tPAGE {side} STATS BEFORE ADDING DERIVED TR:", page.stats)
                     print(f"\t{side}:", text_region.id, text_region.type)
                     print('\t\t', text_region.stats)
-                # print(text_region.id, text_region.type, text_region.__class__.__name__)
-                # print(isinstance(text_region, pdm.PageXMLTextRegion))
                 page.add_child(text_region, as_extra=as_extra)
                 after_stats = page.stats
                 if text_region.stats['lines'] + before_stats['lines'] != after_stats['lines']:
