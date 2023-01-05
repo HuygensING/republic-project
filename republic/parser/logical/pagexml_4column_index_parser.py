@@ -537,7 +537,7 @@ def check_main_sub_lemma_overlap(line_types: Dict[str, List[pdm.PageXMLTextLine]
     # check if sub overlaps with main
     for main_col, sub_col in zip(main_cols, sub_cols):
         print(main_col.coords.left, main_col.coords.right, sub_col.coords.left, sub_col.coords.right)
-        print(pdm.horizontal_overlap(main_col.coords, sub_col.coords))
+        print(pdm.get_horizontal_overlap(main_col.coords, sub_col.coords))
 
 
 def move_unknowns_from_page(line_types: Dict[str, List[pdm.PageXMLTextLine]],

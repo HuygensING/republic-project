@@ -266,7 +266,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         for column in columns:
             # print("EXTRA LINE CHECKING OVERLAP:", line.coords.left, line.coords.right,
             #       column.coords.left, column.coords.right)
-            overlap = pdm.horizontal_overlap(line.coords, column.coords)
+            overlap = pdm.get_horizontal_overlap(line.coords, column.coords)
             # print('\tOVERLAP', overlap)
             if overlap > best_overlap:
                 if best_column is None or column.coords.width < best_column.coords.width:

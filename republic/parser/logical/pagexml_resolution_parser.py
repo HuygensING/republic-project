@@ -309,7 +309,7 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
 
 
 def is_paragraph_boundary(prev_line, line, next_line) -> bool:
-    if prev_line and pdm.same_column(line, prev_line):
+    if prev_line and pdm.is_same_column(line, prev_line):
         if line.is_next_to(prev_line):
             # print("SAME HEIGHT", prev_line['text'], '\t', line['text'])
             return False
@@ -324,7 +324,7 @@ def is_paragraph_boundary(prev_line, line, next_line) -> bool:
                 return True
             else:
                 return False
-    elif next_line and pdm.same_column(line, next_line):
+    elif next_line and pdm.is_same_column(line, next_line):
         if line.coords.left > next_line.coords.left + 20:
             return True
     return False

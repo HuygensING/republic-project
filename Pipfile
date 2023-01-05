@@ -29,6 +29,7 @@ analiticcl = "*"
 langdetect = "*"
 nltk = "*"
 scikit-learn = "*"
+torch = "*"
 
 [requires]
 python_version = "3.8"

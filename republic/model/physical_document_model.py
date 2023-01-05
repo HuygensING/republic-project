@@ -111,19 +111,19 @@ def baseline_is_below(baseline1: Baseline, baseline2: Baseline) -> bool:
     return num_below / num_overlap > 0.5
 
 
-def horizontal_overlap(coords1: Coords, coords2: Coords) -> int:
+def get_horizontal_overlap(coords1: Coords, coords2: Coords) -> int:
     right = min(coords1.right, coords2.right)
     left = max(coords1.left, coords2.left)
     return right - left if right > left else 0
 
 
-def vertical_overlap(coords1: Coords, coords2: Coords) -> int:
+def get_vertical_overlap(coords1: Coords, coords2: Coords) -> int:
     bottom = min(coords1.bottom, coords2.bottom)
     top = max(coords1.top, coords2.top)
     return bottom - top if bottom > top else 0
 
 
-def same_column(line1: PageXMLDoc, line2: PageXMLDoc) -> bool:
+def is_same_column(line1: PageXMLDoc, line2: PageXMLDoc) -> bool:
     if 'scan_id' in line1.metadata and 'scan_id' in line2.metadata:
         if line1.metadata['scan_id'] != line2.metadata['scan_id']:
             return False
@@ -132,13 +132,23 @@ def same_column(line1: PageXMLDoc, line2: PageXMLDoc) -> bool:
     else:
         # check if the two lines have a horizontal overlap that is more than 50% of the width of line 1
         # Note: this doesn't work for short adjacent lines within the same column
-        return horizontal_overlap(line1.coords, line2.coords) > (line1.coords.w / 2)
+        return get_horizontal_overlap(line1.coords, line2.coords) > (line1.coords.w / 2)
 
 
 def is_vertically_overlapping(region1: PageXMLDoc,
                               region2: PageXMLDoc,
                               threshold: float = 0.5) -> bool:
-    v_overlap = vertical_overlap(region1.coords, region2.coords)
+    if region1.coords is None:
+        raise ValueError(f"No coords for {region1.id}")
+    elif region2.coords is None:
+        raise ValueError(f"No coords for {region2.id}")
+    if region1.coords.height == 0 and region2.coords.height == 0:
+        return False
+    elif region1.coords.height == 0:
+        return region2.coords.top <= region1.coords.top <= region2.coords.bottom
+    elif region2.coords.height == 0:
+        return region1.coords.top <= region2.coords.top <= region1.coords.bottom
+    v_overlap = get_vertical_overlap(region1.coords, region2.coords)
     return v_overlap / min(region1.coords.height, region2.coords.height) > threshold
 
 
@@ -149,7 +159,7 @@ def is_horizontally_overlapping(region1: PageXMLDoc,
         raise ValueError(f"No coords for {region1.id}")
     elif region2.coords is None:
         raise ValueError(f"No coords for {region2.id}")
-    h_overlap = horizontal_overlap(region1.coords, region2.coords)
+    h_overlap = get_horizontal_overlap(region1.coords, region2.coords)
     if region1.coords.width == 0 and region2.coords.width == 0:
         return False
     elif region1.coords.width == 0:
@@ -201,22 +211,36 @@ def get_horizontal_diff(doc1: PageXMLDoc, doc2: PageXMLDoc) -> int:
     return abs(doc1.coords.left - doc2.coords.left)
 
 
-def get_horizontal_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
+def get_horizontal_diff_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
     horizontal_diff = get_horizontal_diff(doc1, doc2)
     max_right = max(doc1.coords.right, doc2.coords.right)
     min_left = min(doc1.coords.left, doc2.coords.left)
     return horizontal_diff / (max_right - min_left)
 
 
+def get_horizontal_overlap_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
+    horizontal_overlap = get_horizontal_overlap(doc1.coords, doc2.coords)
+    max_right = max(doc1.coords.right, doc2.coords.right)
+    min_left = min(doc1.coords.left, doc2.coords.left)
+    return horizontal_overlap / (max_right - min_left)
+
+
 def get_vertical_diff(doc1: PageXMLDoc, doc2: PageXMLDoc) -> int:
     return abs(doc1.coords.top - doc2.coords.top)
 
 
-def get_vertical_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
+def get_vertical_diff_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
     vertical_diff = get_vertical_diff(doc1, doc2)
     max_bottom = max(doc1.coords.bottom, doc2.coords.bottom)
     min_top = min(doc1.coords.top, doc2.coords.top)
     return vertical_diff / (max_bottom - min_top)
+
+
+def get_vertical_overlap_ratio(doc1: PageXMLDoc, doc2: PageXMLDoc) -> float:
+    vertical_overlap = get_vertical_overlap(doc1.coords, doc2.coords)
+    max_bottom = max(doc1.coords.bottom, doc2.coords.bottom)
+    min_top = min(doc1.coords.top, doc2.coords.top)
+    return vertical_overlap / (max_bottom - min_top)
 
 
 def parse_derived_coords(document_list: list) -> Coords:
@@ -428,18 +452,21 @@ class PageXMLTextLine(PageXMLDoc):
         top to bottom, even if the upper lines is more horizontally indented."""
         if other == self:
             return False
-        if horizontal_overlap(self.coords, other.coords):
-            if vertical_overlap(self.coords, other.coords):
+        print('lt')
+        if get_horizontal_overlap(self.coords, other.coords):
+            if get_vertical_overlap(self.coords, other.coords):
                 # check which orientation dominates the difference
-                horizontal_ratio = get_horizontal_ratio(self, other)
-                vertical_ratio = get_vertical_ratio(self, other)
+                horizontal_ratio = get_horizontal_diff_ratio(self, other)
+                vertical_ratio = get_vertical_diff_ratio(self, other)
+                print('horizontal_ratio:', horizontal_ratio)
+                print('vertical_ratio:', vertical_ratio)
                 if vertical_ratio < 0.2 and horizontal_ratio > 0.8:
                     return self.coords.left < other.coords.left
                 else:
                     return self.coords.top < other.coords.top
             else:
                 return self.is_below(other) is False
-        elif vertical_overlap(self.coords, other.coords):
+        elif get_vertical_overlap(self.coords, other.coords):
             return self.coords.left < other.coords.left
         elif self.coords.left < other.coords.left:
             return True
@@ -473,7 +500,7 @@ class PageXMLTextLine(PageXMLDoc):
     def is_below(self, other: PageXMLTextLine) -> bool:
         """Test if the baseline of this line is directly below the baseline of the other line."""
         # if there is no horizontal overlap, this line is not directly below the other
-        if not horizontal_overlap(self.baseline, other.baseline):
+        if not get_horizontal_overlap(self.baseline, other.baseline):
             # print("NO HORIZONTAL OVERLAP")
             return False
         # if the bottom of this line is above the top of the other line, this line is above the other
@@ -489,10 +516,10 @@ class PageXMLTextLine(PageXMLDoc):
 
     def is_next_to(self, other: PageXMLTextLine) -> bool:
         """Test if this line is vertically aligned with the other line."""
-        if vertical_overlap(self.coords, other.coords) == 0:
+        if get_vertical_overlap(self.coords, other.coords) == 0:
             # print("NO VERTICAL OVERLAP")
             return False
-        if horizontal_overlap(self.coords, other.coords) > 40:
+        if get_horizontal_overlap(self.coords, other.coords) > 40:
             # print("TOO MUCH HORIZONTAL OVERLAP", horizontal_overlap(self.coords, other.coords))
             return False
         if self.baseline.top > other.baseline.bottom + 10:

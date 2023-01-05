@@ -38,7 +38,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
     if page_doc.metadata["text_type"] == "printed":
         max_column_width = 1200
     else:
-        max_column_width = 2200
+        max_column_width = 2400
     trs = page_doc.text_regions + page_doc.columns
     for text_region in trs:
         if len(text_region.text_regions) > 0:
@@ -373,6 +373,8 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
             # append_count += 1
         if debug:
             print('APPEND_COUNT:', append_count)
+            print('EVEN PAGE STATS:', page_even.stats)
+            print('ODD PAGE STATS:', page_odd.stats)
     if debug:
         print('NUM UNDECIDED:', len(undecided))
         for tr in undecided:

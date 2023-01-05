@@ -181,7 +181,7 @@ def get_textregion_line_distances(text_region: pdm.PageXMLTextRegion) -> List[np
         if ti + 1 < len(text_regions):
             # check if the next textregion is directly below the current one
             next_tr = text_regions[ti + 1]
-            above_next_tr = pdm.same_column(curr_tr, next_tr)
+            above_next_tr = pdm.is_same_column(curr_tr, next_tr)
         for li, curr_line in enumerate(curr_tr.lines):
             next_line = None
             if li + 1 < len(curr_tr.lines):
@@ -441,8 +441,8 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
 def elements_overlap(element1: pdm.PageXMLDoc, element2: pdm.PageXMLDoc,
                      threshold: float = 0.5) -> bool:
     """Check if two elements have overlapping coordinates."""
-    v_overlap = pdm.vertical_overlap(element1.coords, element2.coords)
-    h_overlap = pdm.horizontal_overlap(element1.coords, element2.coords)
+    v_overlap = pdm.get_vertical_overlap(element1.coords, element2.coords)
+    h_overlap = pdm.get_horizontal_overlap(element1.coords, element2.coords)
     if v_overlap / element1.coords.height > threshold:
         if h_overlap / element1.coords.width > threshold:
             return True

@@ -22,7 +22,8 @@ class ResolutionSentences:
                  normalise: bool = False,
                  include_punct: bool = False,
                  split_pattern: str = None,
-                 tokenise_sentences: bool = False
+                 tokenise_sentences: bool = False,
+                 includes_headers: bool = True
                  ):
         self.res_files = res_files if isinstance(res_files, list) else [res_files]
         self.lowercase = lowercase
@@ -34,6 +35,7 @@ class ResolutionSentences:
         self.rewrite_dict = rewrite_dict
         self.include_punct = include_punct
         self.tokenise_sentences = tokenise_sentences
+        self.includes_headers = includes_headers
         if split_pattern is None:
             # by default use all characters from string.punctuation, except
             # the hyphen, as we want to keep hyphenated words as one.
@@ -65,7 +67,7 @@ class ResolutionSentences:
         return [word for word in re.split(self.split_regex, sent.strip()) if word != '']
 
     def read_paragraphs(self):
-        for para in read_resolution_paragraphs(self.res_files):
+        for para in read_resolution_paragraphs(self.res_files, includes_header=self.includes_headers):
             yield para
 
     def read_sentences(self):
@@ -534,6 +536,10 @@ def replace_t(word):
         word = word[:-2] + 'd'
     if word.endswith('heit'):
         word = word[:-1] + 'd'
+    if word.endswith('lant'):
+        word = word[:-1] + 'd'
+    if word.endswith('landt'):
+        word = word[:-2] + 'd'
     return word
 
 
@@ -587,18 +593,22 @@ def sent_to_vocab(sents: List[List[str]], min_freq: int = 5):
     return [word for word, freq in vocab.most_common() if freq >= min_freq]
 
 
-def read_resolution_paragraphs(res_files):
+def read_resolution_paragraphs(res_files, includes_header: bool = True, debug: bool = False):
     for res_file in res_files:
         opener = gzip.open if res_file.endswith('.gz') else open
-        print('parsing file', res_file)
+        if debug:
+            print('parsing file', res_file)
         with opener(res_file, 'rt') as fh:
+            if includes_header is True:
+                headers = next(fh).strip().split('\t')
+            else:
+                headers = ['resolution_id', 'paragraph_id', 'text']
             for line in fh:
-                parts = line.strip().split('\t')
-                if len(parts) == 2:
+                row = line.strip().split('\t')
+                if len(row) != len(headers):
                     continue
-                elif len(parts) == 3:
-                    res_id, para_id, para_text = parts
-                    yield {'resolution_id': res_id, 'paragraph_id': para_id, 'text': para_text}
+                else:
+                    yield {header: row[hi] for hi, header in enumerate(headers)}
 
 
 def read_rewrite_dictionary(dict_file: str, include_uncertain: bool = False) -> Dict[str, any]:
