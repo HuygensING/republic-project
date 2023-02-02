@@ -199,13 +199,23 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
         if tr.parent is None:
             print('MISSING PARENT:', tr.id)
         if tr.coords.width <= max_col_width and is_even_side(tr) or is_odd_side(tr):
-            if 'main' in tr.type:
+            if 'main' in tr.type or 'attendance' in tr.type:
                 col = pdm.PageXMLColumn(metadata=tr.metadata, coords=tr.coords,
                                         text_regions=tr.text_regions, lines=tr.lines)
                 col.set_derived_id(scan_doc.id)
                 col.set_parent(scan_doc)
+                for tr_type in tr.type:
+                    if tr_type not in {'text_region'} and tr_type not in col.type:
+                        col.add_type(tr_type)
+                if debug:
+                    print('get_column_text_regions - MAIN TEXT REGION', tr.id)
+                    print('\t', tr.type)
+                    print('becomes part of col', col.id, col.stats, len(col.text_regions))
                 trs.append(col)
             else:
+                if debug:
+                    print('get_column_text_regions - NON-MAIN TEXT REGION', tr.id)
+                    print('\t', tr.type)
                 trs.append(tr)
         else:
             if debug:

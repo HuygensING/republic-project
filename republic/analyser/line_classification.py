@@ -1,6 +1,8 @@
 from typing import Dict, Generator, List, Tuple, Union
 import re
 from string import punctuation
+from collections import Counter
+from collections import defaultdict
 import pickle
 
 import torch
@@ -31,7 +33,8 @@ class LSTMLineNgramTagger(nn.Module):
 
     def __init__(self, ngram_embedding_dim,
                  spatial_hidden_dim, ngram_hidden_dim,
-                 num_spatial_features, ngram_line_sizes, ngram_vocab_sizes, line_class_size):
+                 num_spatial_features, ngram_line_sizes, ngram_vocab_sizes, line_class_size,
+                 bidirectional: bool = False):
         super(LSTMLineNgramTagger, self).__init__()
         self.spatial_hidden_dim = spatial_hidden_dim
         self.ngram_hidden_dim = ngram_hidden_dim
@@ -49,15 +52,18 @@ class LSTMLineNgramTagger(nn.Module):
         self.ngram_embeddings = {}
         self.ngram_lstm = {}
         for ngram_size in ngram_vocab_sizes:
-            self.ngram_embeddings[ngram_size] = nn.Embedding(ngram_vocab_sizes[ngram_size], ngram_embedding_dim)
-            self.ngram_lstm[ngram_size] = nn.LSTM(ngram_line_sizes[ngram_size] * ngram_embedding_dim, ngram_hidden_dim)
+            self.ngram_embeddings[ngram_size] = nn.Embedding(ngram_vocab_sizes[ngram_size],
+                                                             ngram_embedding_dim)
+            self.ngram_lstm[ngram_size] = nn.LSTM(ngram_line_sizes[ngram_size] * ngram_embedding_dim,
+                                                  ngram_hidden_dim, bidirectional=bidirectional)
 
         # The spatial model
         self.spatial_linear = nn.Linear(num_spatial_features, spatial_hidden_dim)
-        self.spatial_lstm = nn.LSTM(num_spatial_features, spatial_hidden_dim)
+        self.spatial_lstm = nn.LSTM(num_spatial_features, spatial_hidden_dim, bidirectional=bidirectional)
 
         # The combined model
-        self.combined_lstm = nn.LSTM(spatial_hidden_dim + self.ngram_hidden_dim * num_ngram_sizes, self.combined_hidden_dim)
+        self.combined_lstm = nn.LSTM(spatial_hidden_dim + self.ngram_hidden_dim * num_ngram_sizes,
+                                     self.combined_hidden_dim, bidirectional=bidirectional)
 
         # The linear layer that maps from hidden state space to word space
         self.hidden2class = nn.Linear(self.combined_hidden_dim, line_class_size)
@@ -91,12 +97,19 @@ class LSTMLineNgramTagger(nn.Module):
 class LSTMLineTagger(nn.Module):
 
     def __init__(self, char_embedding_dim,
-                 spatial_hidden_dim, char_hidden_dim,
-                 num_spatial_features, char_line_size, char_vocab_size, line_class_size):
+                 spatial_hidden_dim: int, char_hidden_dim: int,
+                 num_spatial_features: int,
+                 char_line_size: int, char_vocab_size: int, line_class_size: int,
+                 bidirectional: bool = False):
         super(LSTMLineTagger, self).__init__()
         self.spatial_hidden_dim = spatial_hidden_dim
         self.char_hidden_dim = char_hidden_dim
         self.combined_hidden_dim = spatial_hidden_dim + char_hidden_dim
+
+        if bidirectional is True:
+            self.spatial_hidden_dim = self.spatial_hidden_dim * 2
+            self.char_hidden_dim = self.char_hidden_dim * 2
+            self.combined_hidden = self.combined_hidden_dim * 2
 
         # Initialise hidden state
         self.spatial_hidden = self.init_hidden(spatial_hidden_dim)
@@ -105,14 +118,17 @@ class LSTMLineTagger(nn.Module):
 
         # Char embedding and encoding into char-lvl representation of words (c_w):
         self.char_embeddings = nn.Embedding(char_vocab_size, char_embedding_dim)
-        self.char_lstm = nn.LSTM(char_line_size * char_embedding_dim, char_hidden_dim)
+        self.char_lstm = nn.LSTM(char_line_size * char_embedding_dim, char_hidden_dim,
+                                 bidirectional=bidirectional)
 
         # The spatial model
         self.spatial_linear = nn.Linear(num_spatial_features, spatial_hidden_dim)
-        self.spatial_lstm = nn.LSTM(num_spatial_features, spatial_hidden_dim)
+        self.spatial_lstm = nn.LSTM(num_spatial_features, spatial_hidden_dim,
+                                    bidirectional=bidirectional)
 
         # The combined model
-        self.combined_lstm = nn.LSTM(spatial_hidden_dim + char_hidden_dim, self.combined_hidden_dim)
+        self.combined_lstm = nn.LSTM(spatial_hidden_dim + char_hidden_dim, self.combined_hidden_dim,
+                                     bidirectional=bidirectional)
 
         # The linear layer that maps from hidden state space to word space
         self.hidden2class = nn.Linear(self.combined_hidden_dim, line_class_size)
@@ -220,6 +236,102 @@ def load_neural_line_classifier(model_file: str, charset_file: str,
         'num_spatial_features': len(SPATIAL_FIELDS),
     }
     return NeuralLineClassifier.load_from_config(config)
+
+
+def page_to_feature_sequences_char(page_lines, char_to_ix, class_to_ix, line_fixed_length=100):
+    spatial_sequence = []
+    char_sequence = []
+    class_sequence = []
+    for line in page_lines:
+        spatial_features = [float(line[spatial_field]) for spatial_field in SPATIAL_FIELDS]
+        padding_size = line_fixed_length - len(line['line_text'])
+        text = line['line_text']
+        text += ' ' * padding_size
+        for c in text:
+            if c not in char_to_ix:
+                print(line)
+        char_features = [char_to_ix[c] for c in text]
+        spatial_sequence.append(spatial_features)
+        char_sequence.append(char_features)
+        class_sequence.append(class_to_ix[line['line_class']])
+
+    spatial_tensor = torch.tensor(spatial_sequence, dtype=torch.float32)
+    char_tensor = torch.tensor(char_sequence)
+    class_tensor = torch.tensor(class_sequence)
+    return spatial_tensor, char_tensor, class_tensor
+
+
+def train_model(model, loss_function, optimizer, train_data, num_epochs,
+                char_to_ix, class_to_ix, show_loss_threshold: int = 1.0):
+    all_losses = []
+    for epoch in range(num_epochs):
+        for page in train_data:
+
+            # Step 1. Remember that Pytorch accumulates gradients.
+            # We need to clear them out before each instance
+            model.zero_grad()
+
+            # Step 2. Get our inputs ready for the network, that is, turn them into
+            # Tensors of word indices.
+            spatial_sequence, char_sequence, class_targets = page_to_feature_sequences_char(page['lines'],
+                                                                                            char_to_ix,
+                                                                                            class_to_ix)
+            model.spatial_hidden = model.init_hidden(model.spatial_hidden_dim)
+
+            # Step 3. Run our forward pass.
+            class_scores = model(spatial_sequence, char_sequence)
+
+            # Step 4. Compute the loss, gradients, and update the parameters by
+            #  calling optimizer.step()
+            loss = loss_function(class_scores, class_targets)
+            all_losses.append(loss)
+            if loss.item() > show_loss_threshold:
+                print(epoch, page['page_id'], loss.item())
+            loss.backward() #retain_graph=True
+            optimizer.step()
+    return all_losses
+
+
+def evaluate_model(model, test_data, validate_data, char_to_ix: Dict[str, int], class_to_ix: Dict[str, int]):
+    ix_to_class = {class_to_ix[c]: c for c in class_to_ix}
+
+    confusion = defaultdict(Counter)
+
+    line_scores = []
+    page_scores = {}
+
+    with torch.no_grad():
+        for page in test_data + validate_data:
+            spatial_sequence, char_sequence, class_targets = page_to_feature_sequences_char(page['lines'],
+                                                                                            char_to_ix,
+                                                                                            class_to_ix)
+            model.spatial_hidden = model.init_hidden(model.spatial_hidden_dim)
+            class_scores = model(spatial_sequence, char_sequence)
+            predict_scores, predict_classes = torch.max(class_scores, 1)
+            page_score = [pc.item() == tc.item() for pc, tc in zip(class_targets, predict_classes)].count(True)
+            line_scores.extend([pc.item() == tc.item() for pc, tc in zip(class_targets, predict_classes)])
+            page_scores[page['page_id']] = page_score / len(class_targets)
+            for pc, tc in zip(class_targets, predict_classes):
+                confusion[ix_to_class[pc.item()]].update([ix_to_class[tc.item()]])
+
+    print(f'micro_avg: {line_scores.count(True) / len(line_scores): >.2f}')
+    print(f'macro_avg: {sum(page_scores.values()) / len(page_scores): >.2f}')
+    return page_scores, confusion
+
+
+def evaluate_line_type(confusion, target_type):
+    total_lines = sum(confusion[target_type].values())
+    correct_lines = confusion[target_type][target_type]
+    predicted_lines = sum([confusion[predicted_type][target_type] for predicted_type in confusion])
+    if total_lines > 0:
+        precision = correct_lines / total_lines
+    else:
+        precision = 0
+    if predicted_lines > 0:
+        recall = correct_lines / predicted_lines
+    else:
+        recall = 0
+    return precision, recall
 
 
 def write_class_set_file(class_set, class_set_file):
