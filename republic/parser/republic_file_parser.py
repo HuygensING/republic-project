@@ -125,16 +125,18 @@ def get_inventory_num(fname: str) -> int:
     return int(fname_parts[2].split("_")[1])
 
 
-def get_inventory_period(fname: str) -> Union[Tuple[int, int], None]:
+def get_inventory_period(fname: str) -> Union[Tuple[int | None, int | None]]:
     inventory_num = get_inventory_num(fname)
     inventory_metadata = read_inventory_metadata()
     for inventory_map in inventory_metadata:
         if inventory_num == inventory_map["inventory_num"]:
             if "period_start" not in inventory_map:
+                return None, None
+            if "period_start" not in inventory_map:
                 print(inventory_num, inventory_map)
             return inventory_map["period_start"], inventory_map["period_end"]
     else:
-        return None
+        return None, None
 
 
 def get_inventory_year(fname: str) -> Union[int, None]:

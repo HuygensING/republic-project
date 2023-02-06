@@ -11,6 +11,8 @@
         "content_type": "resolutions",
         "num_scans": 602,
         "inventory_label": "62 1637 minuut",
+        "period_start": "1637-01-01",
+        "period_end": "1637-12-31",
         "num_pages": 1203
     },
     {
@@ -57,6 +59,8 @@
         "content_type": "resolutions",
         "num_scans": 533,
         "inventory_label": "402 1672 - 1673 gedrukt",
+        "period_start": "1672-01-01",
+        "period_end": "1673-12-31",
         "num_pages": 1065
     },
     {
@@ -71,6 +75,8 @@
         "content_type": "resolutions",
         "num_scans": 421,
         "inventory_label": "407 1674 - 1675 gedrukt",
+        "period_start": "1674-01-01",
+        "period_end": "1675-12-31",
         "num_pages": 841
     },
     {
@@ -645,6 +651,8 @@
         "content_type": "index",
         "num_scans": 64,
         "inventory_label": "3096 1576 augustus 4 - mei 18 index",
+        "period_start": "1576-08-04",
+        "period_end": "1576-05-18",
         "num_pages": 127
     },
     {
@@ -659,6 +667,8 @@
         "content_type": "resolutions",
         "num_scans": 520,
         "inventory_label": "3097 1577 mei 20 - november 21",
+        "period_start": "1577-05-20",
+        "period_end": "1577-11-21",
         "num_pages": 1039
     },
     {
@@ -673,6 +683,8 @@
         "content_type": "index",
         "num_scans": 70,
         "inventory_label": "3098 1577 index",
+        "period_start": "1577-01-01",
+        "period_end": "1577-12-31",
         "num_pages": 139
     },
     {
@@ -10660,6 +10672,8 @@
         "resolution_type": "ordinaris",
         "content_type": "index",
         "num_scans": 241,
+        "period_start": "1700-01-01",
+        "period_end": "1724-12-31",
         "inventory_label": "3865 1700-1724 index",
         "year": [
             1700,
@@ -10700,6 +10714,8 @@
         "resolution_type": "ordinaris",
         "content_type": "index",
         "num_scans": 190,
+        "period_start": "1725-01-01",
+        "period_end": "1749-12-31",
         "inventory_label": "3866 1725-1749 index",
         "year": [
             1725,
@@ -10740,6 +10756,8 @@
         "resolution_type": "ordinaris",
         "content_type": "index",
         "num_scans": 241,
+        "period_start": "1700-01-01",
+        "period_end": "1724-12-31",
         "inventory_label": "3867 1700-1724 index",
         "year": [
             1700,
@@ -10780,6 +10798,8 @@
         "resolution_type": "ordinaris",
         "content_type": "index",
         "num_scans": 179,
+        "period_start": "1725-01-01",
+        "period_end": "1749-12-31",
         "inventory_label": "3868 1725-1749 index",
         "year": [
             1725,
@@ -10818,6 +10838,8 @@
         "year": 1791,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1791-01-01",
+        "period_end": "1791-02-28",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10828,6 +10850,8 @@
         "year": 1791,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1791-03-01",
+        "period_end": "1791-05-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10838,6 +10862,8 @@
         "year": 1791,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1791-06-01",
+        "period_end": "1791-09-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10848,6 +10874,8 @@
         "year": 1791,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1791-10-01",
+        "period_end": "1791-12-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10858,6 +10886,8 @@
         "year": 1792,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1792-01-01",
+        "period_end": "1792-05-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10868,6 +10898,8 @@
         "year": 1792,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1792-06-01",
+        "period_end": "1792-08-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10878,6 +10910,8 @@
         "year": 1792,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1792-09-01",
+        "period_end": "1792-10-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -10888,6 +10922,8 @@
         "year": 1792,
         "resolution_type": "secreet",
         "content_type": "resolutions",
+        "period_start": "1792-11-01",
+        "period_end": "1792-12-31",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
