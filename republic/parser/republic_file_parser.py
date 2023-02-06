@@ -125,7 +125,7 @@ def get_inventory_num(fname: str) -> int:
     return int(fname_parts[2].split("_")[1])
 
 
-def get_inventory_period(fname: str) -> Union[Tuple[int | None, int | None]]:
+def get_inventory_period(fname: str) -> Union[Tuple[Union[int, None], Union[int, None]]]:
     inventory_num = get_inventory_num(fname)
     inventory_metadata = read_inventory_metadata()
     for inventory_map in inventory_metadata:
