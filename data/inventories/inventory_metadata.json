@@ -1426,8 +1426,6 @@
         "series_name": "NL-HaNA_1.01.02",
         "inventory_index": "republic_inventory",
         "inventory_doc_type": "inventory",
-        "period_start": "1615-01-01",
-        "period_end": "1615-12-31",
         "year": 1615,
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
@@ -14043,7 +14041,7 @@
         "num_scans": 408,
         "inventory_label": "4827 1667 januari 3 - 1668 december  31",
         "inventory_uuid": "28e23d72-b860-4ea6-8033-b4c22e7049f3",
-        "year": 1667, 1668,
+        "year": [1667, 1668],
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
