@@ -14013,7 +14013,7 @@
         "num_scans": 361,
         "inventory_label": "4824 1655 januari 2 - 1658 december  28",
         "inventory_uuid": "c9159ede-1c06-4851-b5bc-ab643b47a672",
-        "year": 1655,
+        "year": [1655, 1656, 1657, 1658],
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
@@ -14043,7 +14043,7 @@
         "num_scans": 408,
         "inventory_label": "4827 1667 januari 3 - 1668 december  31",
         "inventory_uuid": "28e23d72-b860-4ea6-8033-b4c22e7049f3",
-        "year": 1667,
+        "year": 1667, 1668,
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
@@ -14053,7 +14053,7 @@
         "num_scans": 286,
         "inventory_label": "4828 1669 januari 2 - 1670 december  31",
         "inventory_uuid": "7761cc1b-733f-4a26-ab90-68494f330128",
-        "year": 1669,
+        "year": [1669, 1670],
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
@@ -14073,7 +14073,7 @@
         "num_scans": 710,
         "inventory_label": "4830 1672 januari 2 - 1673 december  31",
         "inventory_uuid": "d4cb3de4-850e-41a9-8caa-a2230cd3d828",
-        "year": 1672,
+        "year": [1672, 1673],
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
@@ -14083,7 +14083,7 @@
         "num_scans": 364,
         "inventory_label": "4831 1674 januari 2 - 1675 december  24",
         "inventory_uuid": "0b88f862-f9c2-43c4-ba85-b70052384755",
-        "year": 1674,
+        "year": [1674, 1675],
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
@@ -14093,10 +14093,10 @@
         "num_scans": 289,
         "inventory_label": "4832 1679 januari 2 - 1682 december  31",
         "inventory_uuid": "fdb96b65-5fca-4e47-9e88-c474ffa4f16b",
-        "year": 1679,
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
-        "series_name": "NL-HaNA_1.01.02"
+        "series_name": "NL-HaNA_1.01.02",
+        "year": [1679, 1680, 1681, 1682]
     },
     {
         "inventory_num": 4833,
@@ -14105,7 +14105,8 @@
         "inventory_uuid": "b824f873-471c-4f93-be94-f1bc6ff9911f",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
-        "series_name": "NL-HaNA_1.01.02"
+        "series_name": "NL-HaNA_1.01.02",
+        "year": [1784, 1785]
     },
     {
         "inventory_num": 4834,
@@ -14151,7 +14152,21 @@
         "num_scans": 296,
         "inventory_label": "4843 1658 januari 4 - 1670 december 18",
         "inventory_uuid": "3d544d71-01bf-43de-ae35-1deb7bc03db2",
-        "year": 1658,
+        "year": [
+            1658,
+            1659,
+            1660,
+            1661,
+            1662,
+            1663,
+            1664,
+            1665,
+            1666,
+            1667,
+            1668,
+            1669,
+            1670
+        ],
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02"
@@ -14163,7 +14178,8 @@
         "inventory_uuid": "f2be2c1f-b19e-4064-a824-036b25f6bd6e",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
-        "series_name": "NL-HaNA_1.01.02"
+        "series_name": "NL-HaNA_1.01.02",
+        "year": [1790, 1791, 1792, 1793]
     },
     {
         "inventory_num": 4845,

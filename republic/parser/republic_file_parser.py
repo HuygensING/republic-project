@@ -49,7 +49,7 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         'series_uuid': inv_info['series_uuid'] if 'series_uuid' in inv_info else None,
         'inventory_uuid': inv_info['inventory_uuid'],
         'inventory_num': inv_num,
-        'inventory_year': inv_info['year'],
+        'inventory_year': inv_info['year'] if 'year' in inv_info else None,
         'inventory_period_start': inv_period[0],
         'inventory_period_end': inv_period[1],
         'scan_file': scan_fname,
