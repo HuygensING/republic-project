@@ -4,39 +4,10 @@ from dateutil.parser import parse as date_parse
 import re
 
 import xmltodict
+from pagexml.parser import parse_coords, parse_baseline
 
 from republic.model.physical_document_model import Baseline, Coords, parse_derived_coords
 from republic.model.physical_document_model import PageXMLScan, PageXMLTextLine, PageXMLTextRegion, PageXMLWord
-
-
-def parse_points_string(points_string: str) -> List[Tuple[int, int]]:
-    points = []
-    for point_string in points_string.split(' '):
-        x, y = point_string.split(',')
-        point = (int(x), int(y))
-        points.append(point)
-    return points
-
-
-def parse_coords(coords: dict) -> Union[Coords, None]:
-    if coords is None:
-        return None
-    if '@points' in coords:
-        if isinstance(coords['@points'], str):
-            coords['@points'] = parse_points_string(coords['@points'])
-        try:
-            return Coords(points=coords['@points'])
-        except IndexError:
-            print(coords)
-            raise
-    else:
-        return None
-
-
-def parse_baseline(baseline: dict) -> Baseline:
-    if isinstance(baseline['@points'], str):
-        baseline['@points'] = parse_points_string(baseline['@points'])
-    return Baseline(points=baseline['@points'])
 
 
 def parse_line_words(textline: dict) -> List[PageXMLWord]:

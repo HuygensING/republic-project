@@ -1,15 +1,19 @@
 from typing import Dict, List, Union
 
+import pagexml.parser as pagexml_parser
+import pagexml.model.physical_document_model as pdm
+import pagexml.helper.pagexml_helper as pagexml_helper
+
 import republic.parser.republic_file_parser as file_parser
-import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
+# import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
 from republic.parser.pagexml.republic_page_parser import split_scan_pages
 from republic.parser.pagexml.republic_page_parser import derive_pagexml_page_iiif_url
 from republic.parser.pagexml.republic_page_parser import split_column_regions
 from republic.parser.pagexml.republic_column_parser import is_full_text_column
 from republic.parser.pagexml.republic_column_parser import is_text_column
 from republic.parser.pagexml.republic_column_parser import make_derived_column
-import republic.model.physical_document_model as pdm
-import republic.helper.pagexml_helper as pagexml_helper
+# import republic.model.physical_document_model as pdm
+# import republic.helper.pagexml_helper as pagexml_helper
 
 
 def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
@@ -24,6 +28,45 @@ def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
     except (AssertionError, KeyError, TypeError, ValueError):
         print(f"Error parsing file {pagexml_file}")
         raise
+
+
+def set_scan_type(scan: pdm.PageXMLDoc) -> None:
+    inv_num = scan.metadata["inventory_num"]
+    if 62 <= inv_num <= 456:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    elif 3096 <= inv_num <= 3348:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    elif 3760 <= inv_num <= 3864:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "printed"
+        scan.metadata["normal_odd_end"] = 4900
+        scan.metadata["normal_even_end"] = 2500
+    elif 4542 <= inv_num <= 4797:
+        scan.metadata["resolution_type"] = "secreet"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    elif 4806 <= inv_num <= 4861:
+        scan.metadata["resolution_type"] = "speciaal"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    else:
+        raise ValueError(f'Unknown REPUBLIC inventory number: {inv_num}')
+    if scan.coords.right == 0:
+        scan.metadata['scan_type'] = ['empty_scan']
+    elif scan.coords.right <= scan.metadata["normal_even_end"]:
+        scan.metadata['scan_type'] = ['single_page']
+    elif scan.coords.right <= scan.metadata["normal_odd_end"]:
+        scan.metadata['scan_type'] = ['double_page']
+    else:
+        scan.metadata['scan_type'] = ['special_page']
 
 
 def get_scan_pagexml(pagexml_file: str,
@@ -54,7 +97,7 @@ def get_scan_pagexml(pagexml_file: str,
     scan_doc.id = metadata['id']
     for field in metadata:
         scan_doc.metadata[field] = metadata[field]
-    pagexml_helper.set_scan_type(scan_doc)
+    set_scan_type(scan_doc)
     set_document_children_derived_ids(scan_doc, scan_doc.id)
     return scan_doc
 
