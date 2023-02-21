@@ -1,19 +1,22 @@
-from typing import Dict, Generator, List, Tuple, Union
+from typing import Dict, Generator, List, Set, Tuple, Union
 import re
 from string import punctuation
 from collections import Counter
 from collections import defaultdict
 import pickle
 
+from Levenshtein import distance
 import torch
 from torch import nn
 import torch.autograd as autograd
 import torch.nn.functional as F
+import pagexml.model.physical_document_model as pdm
 
-import republic.model.physical_document_model as pdm
+# import republic.model.physical_document_model as pdm
 from republic.model.republic_date import week_day_names, week_day_names_handwritten
 from republic.model.republic_date import month_names_early, month_names_late
 from republic.helper.text_helper import SkipgramSimilarity
+from republic.helper.metadata_helper import doc_id_to_iiif_url
 
 
 SPATIAL_FIELDS = [
@@ -521,8 +524,8 @@ def is_insert_line(line: pdm.PageXMLTextLine, col: pdm.PageXMLColumn) -> bool:
     return len(line.text) < 14 and indent_frac > 0.7
 
 
-def get_col_line_base_dist(col: pdm.PageXMLColumn) -> Dict[str, any]:
-    lines = sorted(col.lines + [line for tr in col.text_regions for line in tr.lines])
+def get_line_base_dist(lines: List[pdm.PageXMLTextLine], col: pdm.PageXMLColumn) -> Dict[str, any]:
+    # lines = sorted(col.lines + [line for tr in col.text_regions for line in tr.lines])
     # print('pre num lines', len(lines))
     # for line in lines:
     #    print(is_noise_line(line, col), line.text)
@@ -584,6 +587,12 @@ def classify_line_rule_based(line: pdm.PageXMLTextLine, col: pdm.PageXMLColumn,
                              line_score: Dict[str, int]) -> str:
     indent = line.coords.left - col.coords.left
     indent_frac = indent / col.coords.width
+    if line.parent is not None:
+        for tr_type in ['attendance', 'date']:
+            if tr_type in line.parent.type:
+                # print('using type', tr_type)
+                return tr_type
+
     # print(line.coords.left, col.coords.left, indent, indent_frac, '\t\t', len(line.text), line.text)
     if line.text is None:
         return 'empty'
@@ -622,7 +631,9 @@ def classify_line_rule_based(line: pdm.PageXMLTextLine, col: pdm.PageXMLColumn,
         elif line.text.isdigit():
             return 'date'
         else:
-            return 'attendance'
+            return 'oara_mid'
+    elif len(line.text) > 10:
+        return 'para_mid'
     else:
         print('unknown:', line.coords.box, len(line.text), indent_frac, line.text)
         return 'unknown'
@@ -657,7 +668,8 @@ def get_page_line_features(page: pdm.PageXMLPage,
     rows = []
     for col in page.columns:
         trs = [tr for tr in col.text_regions if 'marginalia' not in tr.type]
-        base_dist = get_col_line_base_dist(col)
+        lines = [line for tr in trs for line in tr.lines]
+        base_dist = get_line_base_dist(lines, col)
         for tr in sorted(trs):
             for line in sorted(tr.lines):
                 doc = get_line_features(line, col, skip_sim, base_dist[line.id])
@@ -723,3 +735,74 @@ def read_ground_truth_data(line_class_csv: str) -> List[Dict[str, any]]:
         train_data.append({'page_id': page_lines[0]['page_id'], 'lines': page_lines})
     print('number of training pages:', len(train_data))
     return train_data
+
+
+def get_overlap_lines(gt_page_lines: List[pdm.PageXMLTextLine],
+                      page_lines: List[pdm.PageXMLTextLine],
+                      overlap_threshold: float=0.75) -> List[Tuple[pdm.PageXMLTextLine, pdm.PageXMLTextLine]]:
+    line_pairs = []
+    gt_paired = set()
+    page_paired = set()
+    for gt_page_line in gt_page_lines:
+        for page_line in page_lines:
+            if pdm.is_horizontally_overlapping(gt_page_line, page_line, threshold=0.5) is False:
+                continue
+            if pdm.is_vertically_overlapping(gt_page_line, page_line, threshold=0.5) is False:
+                continue
+            if gt_page_line.text is None or page_line.text is None:
+                continue
+            if abs(len(gt_page_line.text) - len(page_line.text)) > 18:
+                # print('GT_LINE:', gt_page_line.id, gt_page_line.text)
+                # print('PAGE_LINE:', page_line.id, page_line.text)
+                continue
+            if distance(gt_page_line.text, page_line.text) > 18:
+                # print('GT_LINE:', gt_page_line.id, gt_page_line.text)
+                # print('PAGE_LINE:', page_line.id, page_line.text)
+                # print('\t', distance(gt_page_line.text, page_line.text))
+                continue
+            if gt_page_line in gt_paired:
+                print('DOUBLE GT LINE')
+                print('\t', gt_page_line.text)
+            if page_line in page_paired:
+                print('DOUBLE PAGE LINE')
+                print('\t', page_line.text)
+            line_pairs.append((gt_page_line, page_line))
+            gt_paired.add(gt_page_line)
+            page_paired.add(page_line)
+    for gt_page_line in gt_page_lines:
+        if gt_page_line not in gt_paired:
+            print('GT UNPAIRED:', gt_page_line.id)
+            print('\t', gt_page_line.text)
+    for page_line in page_lines:
+        if page_line not in page_paired:
+            print('PAGE UNPAIRED:', page_line.id)
+            print(doc_id_to_iiif_url(page_line.id))
+            print('\t', page_line.text)
+    print(len(line_pairs))
+    return line_pairs
+
+
+def make_line(line_dict: Dict[str, any]) -> pdm.PageXMLTextLine:
+    x, y, w, h = [int(coord) for coord in line_dict['line_id'].split('-')[-4:]]
+    points = [(x, y), (x, y + h), (x + w, y), (x + w, y + h)]
+    coords = pdm.Coords(points)
+    return pdm.PageXMLTextLine(doc_id=line_dict['line_id'], coords=coords, text=line_dict['line_text'])
+
+
+def get_page_lines(page: pdm.PageXMLPage, gt_page_ids: Set[str]) -> List[pdm.PageXMLTextLine]:
+    main_col = None
+    max_words = 0
+    for col in page.columns:
+        if col.stats['words'] > max_words:
+            max_words = col.stats['words']
+            main_col = col
+    if page.id in gt_page_ids:
+        print(page.metadata['iiif_url'])
+    all_trs = [tr for col in page.columns for tr in col.text_regions]
+    print('number of textregions:', len(all_trs))
+    main_trs = [tr for col in page.columns for tr in col.text_regions if is_marginalia_text_region(tr) is False]
+    coords = pdm.parse_derived_coords(main_trs)
+    col = pdm.PageXMLColumn(doc_id=main_col.id, text_regions=main_trs, coords=coords)
+    return col.lines + [line for tr in col.text_regions for line in tr.lines]
+
+
