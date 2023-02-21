@@ -5,6 +5,7 @@ import elasticsearch
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.fuzzy_match import PhraseMatch
+import pagexml.model.physical_document_model as pdm
 
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
@@ -12,7 +13,7 @@ from republic.helper.metadata_helper import get_scan_id
 import republic.helper.pagexml_helper as pagexml
 from republic.model.republic_date import RepublicDate
 import republic.model.republic_document_model as rdm
-import republic.model.physical_document_model as pdm
+# import republic.model.physical_document_model as pdm
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -270,8 +271,9 @@ class Retriever:
     def retrieve_pages_by_query(self, query: dict, size: int = 10) -> List[pdm.PageXMLPage]:
         hits = []
         for hit in self.scroll_hits(self.es_anno, query, self.config['pages_index'], '_doc', size=size):
-            hits += [hit]
-        return parse_hits_as_pages(hits)
+            yield pagexml.json_to_pagexml_page(hit['_source'])
+            # hits += [hit]
+        # return parse_hits_as_pages(hits)
 
     def retrieve_page_by_page_number(self, page_num: int, year: int = None,
                                      inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:

@@ -30,6 +30,7 @@ langdetect = "*"
 nltk = "*"
 scikit-learn = "*"
 torch = "*"
+pagexml-tools = "*"
 
 [requires]
 python_version = "3.8"
