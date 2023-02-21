@@ -10861,7 +10861,7 @@
         "resolution_type": "secreet",
         "content_type": "resolutions",
         "period_start": "1791-06-01",
-        "period_end": "1791-09-31",
+        "period_end": "1791-09-30",
         "series_name": "NL-HaNA_1.01.02"
     },
     {
@@ -13842,7 +13842,7 @@
     {
         "inventory_num": 4807,
         "num_scans": 189,
-        "inventory_label": "4807  1651 februari 1 - juni 10 minuten resoluties Grote Vergadering (\"het Besoigne op de Grote Zale van 't Hof van Holland\")",
+        "inventory_label": "4807 1651 februari 1 - juni 10 minuten resoluties Grote Vergadering (\"het Besoigne op de Grote Zale van 't Hof van Holland\")",
         "inventory_uuid": "a8e4c2c7-08d2-488e-8eb3-6fbbfbf59e21",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
@@ -13999,7 +13999,7 @@
     {
         "inventory_num": 4823,
         "num_scans": 389,
-        "inventory_label": "4823 1651 januari 16 - 1654 december  31",
+        "inventory_label": "4823 1651 januari 16 - 1654 december 31",
         "inventory_uuid": "7b4be459-5c27-4f8a-af70-0823d7784f97",
         "year": 1651,
         "resolution_type": "ordinaris",
@@ -14009,7 +14009,7 @@
     {
         "inventory_num": 4824,
         "num_scans": 361,
-        "inventory_label": "4824 1655 januari 2 - 1658 december  28",
+        "inventory_label": "4824 1655 januari 2 - 1658 december 28",
         "inventory_uuid": "c9159ede-1c06-4851-b5bc-ab643b47a672",
         "year": [1655, 1656, 1657, 1658],
         "resolution_type": "ordinaris",
@@ -14019,7 +14019,7 @@
     {
         "inventory_num": 4825,
         "num_scans": 398,
-        "inventory_label": "4825 1665 januari 3 - december  31",
+        "inventory_label": "4825 1665 januari 3 - december 31",
         "inventory_uuid": "d138d532-1869-4b9d-91ab-cf3705e9a2f1",
         "year": 1665,
         "resolution_type": "ordinaris",
@@ -14029,7 +14029,7 @@
     {
         "inventory_num": 4826,
         "num_scans": 485,
-        "inventory_label": "4826 1666 januari 1 - december  30",
+        "inventory_label": "4826 1666 januari 1 - december 30",
         "inventory_uuid": "9c6a9cf8-eb9a-408e-92e6-98b0d9a9bd92",
         "year": 1666,
         "resolution_type": "ordinaris",
@@ -14039,7 +14039,7 @@
     {
         "inventory_num": 4827,
         "num_scans": 408,
-        "inventory_label": "4827 1667 januari 3 - 1668 december  31",
+        "inventory_label": "4827 1667 januari 3 - 1668 december 31",
         "inventory_uuid": "28e23d72-b860-4ea6-8033-b4c22e7049f3",
         "year": [1667, 1668],
         "resolution_type": "ordinaris",
@@ -14049,7 +14049,7 @@
     {
         "inventory_num": 4828,
         "num_scans": 286,
-        "inventory_label": "4828 1669 januari 2 - 1670 december  31",
+        "inventory_label": "4828 1669 januari 2 - 1670 december 31",
         "inventory_uuid": "7761cc1b-733f-4a26-ab90-68494f330128",
         "year": [1669, 1670],
         "resolution_type": "ordinaris",
@@ -14059,7 +14059,7 @@
     {
         "inventory_num": 4829,
         "num_scans": 244,
-        "inventory_label": "4829 1671 januari 2 - december  31",
+        "inventory_label": "4829 1671 januari 2 - december 31",
         "inventory_uuid": "c09d0abb-ad03-49ff-b5da-9d14546f6fcd",
         "year": 1671,
         "resolution_type": "ordinaris",
@@ -14069,7 +14069,7 @@
     {
         "inventory_num": 4830,
         "num_scans": 710,
-        "inventory_label": "4830 1672 januari 2 - 1673 december  31",
+        "inventory_label": "4830 1672 januari 2 - 1673 december 31",
         "inventory_uuid": "d4cb3de4-850e-41a9-8caa-a2230cd3d828",
         "year": [1672, 1673],
         "resolution_type": "ordinaris",
@@ -14079,7 +14079,7 @@
     {
         "inventory_num": 4831,
         "num_scans": 364,
-        "inventory_label": "4831 1674 januari 2 - 1675 december  24",
+        "inventory_label": "4831 1674 januari 2 - 1675 december 24",
         "inventory_uuid": "0b88f862-f9c2-43c4-ba85-b70052384755",
         "year": [1674, 1675],
         "resolution_type": "ordinaris",
@@ -14089,7 +14089,7 @@
     {
         "inventory_num": 4832,
         "num_scans": 289,
-        "inventory_label": "4832 1679 januari 2 - 1682 december  31",
+        "inventory_label": "4832 1679 januari 2 - 1682 december 31",
         "inventory_uuid": "fdb96b65-5fca-4e47-9e88-c474ffa4f16b",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
@@ -14118,7 +14118,7 @@
     {
         "inventory_num": 4839,
         "num_scans": 714,
-        "inventory_label": "4839 Resoluties betreffende de financi\u00ebn,   1787 januari 2 - december   31",
+        "inventory_label": "4839 Resoluties betreffende de financi\u00ebn, 1787 januari 2 - december 31",
         "inventory_uuid": "77e45a13-e2f1-4ce5-8ac3-4914770d35ad",
         "resolution_type": "ordinaris",
         "content_type": "resolutions",
