@@ -412,7 +412,8 @@ def main():
         if start in range(1576, 1797):
 
             tasks = []
-            for year in range(start, end+1):
+            years = [year for year in range(start, end+1)]
+            for year in years:
                 for inv_map in get_inventories_by_year(year):
                     task = {
                         'year': year,
