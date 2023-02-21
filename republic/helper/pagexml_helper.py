@@ -197,7 +197,7 @@ def get_textregion_line_distances(text_region: pdm.PageXMLTextRegion) -> List[np
 
 
 def get_textregion_avg_line_distance(text_region: pdm.PageXMLTextRegion,
-                                     avg_type: str = "macro") -> np.float:
+                                     avg_type: str = "macro") -> float:
     """Returns the median distance between subsequent lines in a
     textregion object. If the textregion contains smaller textregions, it only
     considers line distances between lines within the same column (i.e. only
@@ -210,7 +210,7 @@ def get_textregion_avg_line_distance(text_region: pdm.PageXMLTextRegion,
     :param avg_type: the type of averging to apply (macro or micro)
     :type avg_type: str
     :return: the median distance between horizontally aligned lines
-    :rtype: np.float
+    :rtype: float
     """
     if avg_type not in ["micro", "macro"]:
         raise ValueError(f'Invalid avg_type "{avg_type}", must be "macro" or "micro"')

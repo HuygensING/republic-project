@@ -53,6 +53,17 @@ participant_list_phrases = [
     "PRAESENTIBUS",
 ]
 
+week_day_names = [
+    {
+        'period_start': 1600,
+        'period_end': 1700,
+        'resolution_type': 'ordinaris',
+        'names': [
+            'Se Lunae'
+        ]
+    }
+]
+
 week_day_names_handwritten = [
     "Lunæ",
     "Martis",
