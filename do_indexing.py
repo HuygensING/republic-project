@@ -253,9 +253,8 @@ def do_resolution_metadata_indexing(inv_num: int, year: int):
         new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
                                                              prop_searchers['template'],
                                                              prop_searchers['variable'])
-        session_id = resolution.metadata['source_id']
-        prov_url = rep_es.post_provenance(source_ids=[session_id], target_ids=[resolution.id],
-                                          source_index='session_lines', target_index='resolutions',
+        prov_url = rep_es.post_provenance(source_ids=[resolution.id], target_ids=[resolution.id],
+                                          source_index='resolutions', target_index='resolutions',
                                           source_external_urls=[phrase_file],
                                           why='Enriching resolution with metadata derived from resolution phrases')
         if 'prov_url' not in new_resolution.metadata:
