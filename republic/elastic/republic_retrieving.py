@@ -427,8 +427,6 @@ class Retriever:
         if "query" in query:
             response = self.es_anno.search(index=self.config['resolutions_index'], body=query)
         else:
-            print('using query param')
-            print(self.config['resolutions_index'])
             response = self.es_anno.search(index=self.config['resolutions_index'], query=query, aggs=aggs, size=size)
         if response['hits']['total']['value'] == 0:
             return []

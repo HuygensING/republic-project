@@ -47,6 +47,11 @@ def set_scan_type(scan: pdm.PageXMLDoc) -> None:
         scan.metadata["text_type"] = "printed"
         scan.metadata["normal_odd_end"] = 4900
         scan.metadata["normal_even_end"] = 2500
+    elif 3865 <= inv_num <= 3868:
+        scan.metadata["resolution_type"] = "ordinaris"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
     elif 4542 <= inv_num <= 4797:
         scan.metadata["resolution_type"] = "secreet"
         scan.metadata["text_type"] = "handwritten"

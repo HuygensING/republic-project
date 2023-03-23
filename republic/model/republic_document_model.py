@@ -129,12 +129,14 @@ class RepublicParagraph(RepublicDoc):
             for line in self.lines:
                 if "text_page_num" in line.metadata and line.metadata["text_page_num"]:
                     text_page_nums.add(line.metadata["text_page_num"])
-                page_nums.add(line.metadata["page_num"])
+                if "page_num" in line.metadata and line.metadata["page_num"]:
+                    page_nums.add(line.metadata["page_num"])
         if len(self.line_ranges) > 0:
             for line_range in self.line_ranges:
                 if "text_page_num" in line_range and line_range["text_page_num"]:
                     text_page_nums.add(line_range["text_page_num"])
-                page_nums.add(line_range["page_num"])
+                if "page_num" in line_range and line_range["page_num"]:
+                    page_nums.add(line_range["page_num"])
         self.metadata["text_page_num"] = sorted(list(text_page_nums))
         self.metadata["page_num"] = sorted(list(page_nums))
 
