@@ -682,6 +682,7 @@ def read_csv(csv_file: str) -> Generator[Dict[str, any], None, None]:
         header_line = next(fh)
         headers = header_line.strip().replace('"', '').split('\t')
         # print(headers)
+        # print(len(headers))
         for line in fh:
             row = line.strip().split('\t')
             clean_row = []
@@ -689,7 +690,10 @@ def read_csv(csv_file: str) -> Generator[Dict[str, any], None, None]:
                 if cell.startswith('"') and cell.endswith('"'):
                     cell = cell[1:-1]
                 clean_row.append(cell)
+            if len(clean_row) == 1:
+                continue
             # print(clean_row)
+            # print(len(clean_row))
             yield {header: clean_row[hi] for hi, header in enumerate(headers)}
 
 

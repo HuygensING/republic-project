@@ -1,16 +1,16 @@
-from typing import Dict, Generator, List, Tuple, Union
 import copy
+from typing import Dict, Generator, List, Tuple, Union
 
 from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
 from langdetect import detect_langs, LangDetectException
 
-import republic.model.resolution_phrase_model as rpm
-import republic.model.republic_document_model as rdm
-import republic.model.physical_document_model as pdm
-import republic.helper.pagexml_helper as pagexml
-from republic.helper.paragraph_helper import LineBreakDetector
 import republic.helper.paragraph_helper as para_helper
+import republic.model.physical_document_model as pdm
+import republic.model.republic_document_model as rdm
+import republic.model.resolution_phrase_model as rpm
+from pagexml.analysis.layout_stats import line_starts_with_big_capital
 from republic.helper.metadata_helper import doc_id_to_iiif_url
+from republic.helper.paragraph_helper import LineBreakDetector
 
 
 def same_column(line1: dict, line2: dict) -> bool:
@@ -360,7 +360,7 @@ def make_line_range(text: str, line: pdm.PageXMLTextLine, line_text: str) -> Dic
         "start": len(text), "end": len(text + line_text),
         "line_id": line.id,
         "text_page_num": line.metadata["text_page_num"] if "text_page_num" in line.metadata else None,
-        "page_num": line.metadata["page_num"],
+        "page_num": line.metadata["page_num"] if "page_num" in line.metadata else None
     }
 
 
@@ -538,13 +538,13 @@ def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine,
         # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
         return False
     # If this line starts with a big capital, this is a resolution gap.
-    if pagexml.line_starts_with_big_capital(line):
+    if line_starts_with_big_capital(line):
         # print('is_resolution_gap: True, line starts with capital')
         return True
     # If the previous line has no big capital starting a resolution,
     # and it has a large vertical gap with the current line,
     # this is resolution gap.
-    if not pagexml.line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
+    if not line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
         # print('is_resolution_gap: True', line.coords.bottom - prev_line.coords.bottom)
         return True
     else:
