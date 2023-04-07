@@ -1,0 +1,70 @@
+[
+  {
+    "person_name": "Cornelis Weellemans",
+    "start_year": 1576,
+    "comment": "period is uncertain, start year is 'omstreeks 1576'.",
+    "end_year": 1581
+  },
+  {
+    "person_name": "Jan van Asseliers",
+    "start_year": 1581,
+    "comment": "period is uncertain, start year is 'omstreeks 1581'.",
+    "end_year": 1584
+  },
+  {
+    "person_name": "Mattheus de Hennin",
+    "start_year": 1584,
+    "comment": "period is uncertain, start year is 'omstreeks 1584'.",
+    "end_year": 1584
+  },
+  {
+    "person_name": "Cornelis van Aerssen",
+    "start_year": 1584,
+    "end_year": 1627
+  },
+  {
+    "person_name": "Johan van Goch",
+    "start_year": 1623,
+    "end_year": 1628
+  },
+  {
+    "person_name": "Cornelis Musch",
+    "start_year": 1628,
+    "end_year": 1650
+  },
+  {
+    "person_name": "Nicolaas Coenraadsz Ruijsch",
+    "start_year": 1650,
+    "end_year": 1670
+  },
+  {
+    "person_name": "Gaspar Fagel",
+    "start_year": 1670,
+    "end_year": 1672
+  },
+  {
+    "person_name": "Hendrik Fagel de Oudste",
+    "start_year": 1672,
+    "end_year": 1690
+  },
+  {
+    "person_name": "François Fagel",
+    "start_year": 1690,
+    "end_year": 1744
+  },
+  {
+    "person_name": "Hendrik Fagel de Oude",
+    "start_year": 1744,
+    "end_year": 1790
+  },
+  {
+    "person_name": "Hendrik Fagel de Jonge",
+    "start_year": 1790,
+    "end_year": 1795
+  },
+  {
+    "person_name": "Willem Quarles van Ufford",
+    "start_year": 1795,
+    "end_year": 1796
+  }
+]
