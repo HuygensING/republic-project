@@ -3,8 +3,8 @@ from collections import defaultdict
 import copy
 import datetime
 
-from fuzzy_search.fuzzy_phrase_searcher import PhraseModel
-from fuzzy_search.fuzzy_match import PhraseMatch
+from fuzzy_search.search.phrase_searcher import PhraseModel
+from fuzzy_search.match.phrase_match import PhraseMatch
 
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
@@ -92,7 +92,7 @@ class SessionSearcher(EventSearcher):
 
     def __init__(self, inventory_num: int, current_date: RepublicDate,
                  phrase_model_list: List[Dict[str, Union[str, int, List[str]]]],
-                 window_size: int = 30):
+                 window_size: int = 30, include_year: bool = False):
         """SessionSearcher extends the generic event searcher to specifically search for the lines
         that express the opening of a new session in the resolutions."""
         super(self.__class__, self).__init__(window_size=window_size)
@@ -102,9 +102,10 @@ class SessionSearcher(EventSearcher):
         self.current_date = current_date
         # set year of inventory
         self.year = current_date.year
+        self.include_year = include_year
         # generate initial meeting date strings
-        self.date_strings: Union[None, List[str]] = get_next_date_strings(self.current_date, num_dates=7,
-                                                                          include_year=False)
+        self.date_strings: Dict[str, RepublicDate] = get_next_date_strings(self.current_date, num_dates=7,
+                                                                           include_year=include_year)
         self.add_attendance_searcher(phrase_model_list)
         self.add_session_date_searcher()
         self.session_opening_elements: Dict[str, int] = {}
@@ -129,7 +130,8 @@ class SessionSearcher(EventSearcher):
     def add_session_date_searcher(self, num_dates: int = 7) -> None:
         """Add a fuzzy searcher configured with a session date phrase model"""
         # generate session date strings for the current day and next six days
-        self.date_strings = get_next_date_strings(self.current_date, num_dates=num_dates, include_year=False)
+        self.date_strings = get_next_date_strings(self.current_date, num_dates=num_dates,
+                                                  include_year=self.include_year)
         # generate session date phrases for the first week covered in this inventory
         date_phrases = [{'phrase': date_string, 'label': 'session_date'} for date_string in self.date_strings]
         date_phrases += [{'phrase': str(self.year), 'label': 'session_year'}]
@@ -183,7 +185,8 @@ class SessionSearcher(EventSearcher):
         first_date = None
         if 'meeting_date' in self.session_opening_elements:
             date_match = self.get_session_date_match()
-            first_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
+            first_date = self.date_strings[date_match.phrase.phrase_string]
+            # first_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
         for line_index, line in enumerate(self.sliding_window):
             if not line or len(line['matches']) == 0:
                 continue
@@ -192,7 +195,8 @@ class SessionSearcher(EventSearcher):
             date_matches = [match for match in line['matches'] if match.has_label('meeting_date')]
             dates_ordered = True
             for date_match in date_matches:
-                date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
+                date = self.date_strings[date_match.phrase.phrase_string]
+                # date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
                 if first_date and date.date < first_date.date:
                     dates_ordered = False
             if not dates_ordered:
@@ -540,7 +544,8 @@ class SessionSearcher(EventSearcher):
             date_match = self.get_session_date_match()
             # print('shifting by date match:', date_match['match_keyword'])
             # determine number of days to shift based on the match in the list of date strings
-            new_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
+            new_date = self.date_strings[date_match.phrase.phrase_string]
+            # new_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
                 new_date = get_next_workday(new_date)

@@ -1,5 +1,6 @@
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.phrase.phrase_model import PhraseModel
+
 from ...model.republic_phrase_model import month_names_early, month_names_late
 from ...data.delegate_database import abbreviated_delegates, ekwz
 from ...data.stopwords import stopwords

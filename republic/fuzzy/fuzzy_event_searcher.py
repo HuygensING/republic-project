@@ -1,8 +1,9 @@
 from typing import Dict, List, Union
 from collections import defaultdict
 
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseMatch
+from fuzzy_search.phrase.phrase_model import PhraseModel
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.match.phrase_match import PhraseMatch
 
 # from republic.fuzzy.fuzzy_phrase_model import PhraseModel
 # from republic.fuzzy.fuzzy_keyword_searcher import FuzzyKeywordSearcher

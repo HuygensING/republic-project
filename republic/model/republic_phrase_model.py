@@ -7,7 +7,8 @@ resolution_categories = {
     "resolution_decision": [
         "gehouden voor gecommiteert",
         "waar by goedgevonden is",
-        "voor de genomen moeyte bedanckt", # should probably move somewhere else
+        "voor de genomen moeyte bedanckt",
+        # should probably move somewhere else
     ],
     "resolution_not_accepted": [
         "WAAR op geen resolutie is gevallen",
@@ -53,17 +54,6 @@ participant_list_phrases = [
     "PRAESENTIBUS",
 ]
 
-week_day_names = [
-    {
-        'period_start': 1600,
-        'period_end': 1700,
-        'resolution_type': 'ordinaris',
-        'names': [
-            'Se Lunae'
-        ]
-    }
-]
-
 week_day_names_handwritten = [
     "Lunæ",
     "Martis",
@@ -74,7 +64,7 @@ week_day_names_handwritten = [
     "Dominica"
 ]
 
-week_day_names = [
+week_day_names_printed = [
     "Lunae",
     "Martis",
     "Mercurii",
@@ -82,6 +72,198 @@ week_day_names = [
     "Veneris",
     "Sabbathi",
     "Dominica"
+]
+
+
+date_name_map = [
+    {
+        'text_type': 'printed',
+        'resolution_type': 'ordinaris',
+        'period_start': 1705,
+        'period_end': 1796,
+        'month_name': {
+            'January': 1,
+            'Januarij': 1,
+            'February': 2,
+            'Februarij': 2,
+            'Maart': 3,
+            'April': 4,
+            'Mey': 5,
+            'Junij': 6,
+            'Juny': 6,
+            'Julij': 7,
+            'July': 7,
+            'Augusti': 8,
+            'September': 9,
+            'October': 10,
+            'November': 11,
+            'December': 12
+        },
+        'week_day_name': {
+            "Lunae": 0,
+            "Martis": 1,
+            "Mercurii": 2,
+            "Jovis": 3,
+            "Veneris": 4,
+            "Sabbathi": 5,
+            "Dominica": 6
+        }
+    },
+    {
+        'text_type': 'handwritten',
+        'resolution_type': 'secreet',
+        'period_start': 1600,
+        'period_end': 1700,
+        'month_name': {
+            'January': 1,
+            'Januarij': 1,
+            'February': 2,
+            'Februarij': 2,
+            'Meerte': 3,
+            'Martij': 3,
+            'Marty': 3,
+            'Meert': 3,
+            'Aprilis': 4,
+            'April': 4,
+            'Maij': 5,
+            'May': 5,
+            'Mey': 5,
+            'Meije': 5,
+            'Meye': 5,
+            'Maye': 5,
+            'Junij': 6,
+            'Juny': 6,
+            'Julij': 7,
+            'July': 7,
+            'Augusti': 8,
+            'Septembris': 9,
+            'Septemb': 9,
+            'September': 9,
+            'Octobris': 10,
+            'Octob': 10,
+            'Novembris': 11,
+            'Novemb': 11,
+            'Decembris': 12,
+            'Decemb': 12,
+            'December': 12
+        },
+        'week_day_name': {
+            "Lunae": 0,
+            "Luna": 0,
+            "Martis": 1,
+            "Mercurij": 2,
+            "Mercury": 2,
+            "Jovis": 3,
+            "Veneris": 4,
+            "Sabbathi": 5,
+            "Saterdach": 5,
+            "Dominica": 6,
+            "Sondach": 6
+        }
+    },
+    {
+        'text_type': 'handwritten',
+        'resolution_type': 'ordinaris',
+        'period_start': 1600,
+        'period_end': 1700,
+        'month_name': {
+            'January': 1,
+            'Januarij': 1,
+            'February': 2,
+            'Februarij': 2,
+            'Meerte': 3,
+            'Martij': 3,
+            'Marty': 3,
+            'Meert': 3,
+            'Aprilis': 4,
+            'April': 4,
+            'Maij': 5,
+            'May': 5,
+            'Mey': 5,
+            'Meije': 5,
+            'Meye': 5,
+            'Maye': 5,
+            'Junij': 6,
+            'Juny': 6,
+            'Julij': 7,
+            'July': 7,
+            'Augusti': 8,
+            'Septembris': 9,
+            'Septemb': 9,
+            'September': 9,
+            'Octobris': 10,
+            'Octob': 10,
+            'Novembris': 11,
+            'Novemb': 11,
+            'Decembris': 12,
+            'Decemb': 12,
+            'December': 12
+        },
+        'week_day_name': {
+            "Lunae": 0,
+            "Luna": 0,
+            "Martis": 1,
+            "Mercurij": 2,
+            "Mercury": 2,
+            "Jovis": 3,
+            "Jouis": 3,
+            "Veneris": 4,
+            "Sabbathi": 5,
+            "Saterdach": 5,
+            "Dominica": 6,
+            "Sondach": 6
+        },
+        'month_day_name': {
+            'eersten': 1,
+            'jen': 1,
+            'ijen': 2,
+            'iijen': 3,
+            'iiijen': 4,
+            'ven': 5,
+            'vjen': 6,
+            'vien': 6,
+            'vijen': 7,
+            'viien': 7,
+            'viijen': 8,
+            'ixen': 9,
+            '1xen': 9,
+            'xen': 10,
+            'xjen': 11,
+            'xien': 11,
+            'xijen': 12,
+            'xiien': 12,
+            'xiijen': 13,
+            'xiiijen': 14,
+            'xven': 15,
+            'xvjen': 16,
+            'xvien': 16,
+            'xvijen': 17,
+            'xviien': 17,
+            'xviijen': 18,
+            'xixen': 19,
+            'xxen': 20,
+            'xxjen': 21,
+            'xxien': 21,
+            'xxijen': 22,
+            'xxiien': 22,
+            'xxiijen': 23,
+            'xxiiijen': 24,
+            'xxven': 25,
+            'xxvjen': 26,
+            'xxvien': 26,
+            'xxvijen': 27,
+            'xxviien': 27,
+            'xxviijen': 28,
+            'xxixen': 29,
+            'xxxen': 30,
+            'xxxien': 30,
+            'lesten': 0,
+            'laesten': 0,
+            'Laesten': 0,
+            'naestlesten': -1,
+            'nalesten': -1
+        }
+    }
 ]
 
 month_names_early = [
@@ -489,4 +671,3 @@ resolution_phrase_model = [
         'label': 'resolution_summarized'
     },
 ]
-

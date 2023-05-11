@@ -13,7 +13,8 @@ import torch.nn.functional as F
 import pagexml.model.physical_document_model as pdm
 
 # import republic.model.physical_document_model as pdm
-from republic.model.republic_date import week_day_names, week_day_names_handwritten
+from republic.model.republic_phrase_model import week_day_names_printed
+from republic.model.republic_phrase_model import week_day_names_handwritten
 from republic.model.republic_date import month_names_early, month_names_late
 from republic.helper.text_helper import SkipgramSimilarity
 from republic.helper.metadata_helper import doc_id_to_iiif_url
@@ -448,7 +449,7 @@ def get_line_text_features(line: Union[pdm.PageXMLTextLine, Dict[str, any]],
 def get_date_skip_sim() -> Dict[str, SkipgramSimilarity]:
     months = set(month_names_early + month_names_late)
     months.add('Decembris')
-    weekdays = set(week_day_names + week_day_names_handwritten)
+    weekdays = set(week_day_names_printed + week_day_names_handwritten)
     weekdays.add('Jouis')
     skip_sim = {
         'weekdays': SkipgramSimilarity(ngram_length=3, skip_length=1),
@@ -734,6 +735,8 @@ def read_ground_truth_data(line_class_csv: str) -> List[Dict[str, any]]:
             pass
         checked = [line for line in page_lines if line['checked'] == '1']
         if len(checked) != len(page_lines):
+            # print('LAST CHECKED PAGE ID', page_lines[0]['page_id'])
+            # print(len(checked), len(page_lines))
             break
         # print(f"adding page {page_lines[0]['page_id']} to training data")
         train_data.append({'page_id': page_lines[0]['page_id'], 'lines': page_lines})

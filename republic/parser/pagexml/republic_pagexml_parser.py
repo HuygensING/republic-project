@@ -3,6 +3,7 @@ from typing import Dict, List, Union
 import pagexml.parser as pagexml_parser
 import pagexml.model.physical_document_model as pdm
 import pagexml.helper.pagexml_helper as pagexml_helper
+import pagexml.analysis.layout_stats as layout_helper
 
 import republic.parser.republic_file_parser as file_parser
 # import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
@@ -75,7 +76,8 @@ def set_scan_type(scan: pdm.PageXMLDoc) -> None:
 
 
 def get_scan_pagexml(pagexml_file: str,
-                     pagexml_data: Union[str, None] = None) -> pdm.PageXMLScan:
+                     pagexml_data: Union[str, None] = None,
+                     debug: int = 0) -> pdm.PageXMLScan:
     try:
         scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
     except (AssertionError, KeyError, TypeError):
@@ -104,7 +106,26 @@ def get_scan_pagexml(pagexml_file: str,
         scan_doc.metadata[field] = metadata[field]
     set_scan_type(scan_doc)
     set_document_children_derived_ids(scan_doc, scan_doc.id)
+    pdm.set_parentage(scan_doc)
+    # print('get_scan_pagexml - setting scan_id as metadata')
+    scan_doc.set_scan_id_as_metadata()
+    # print('get_scan_pagexml - setting line height stats')
+    set_line_heights(scan_doc, debug=debug)
     return scan_doc
+
+
+def set_line_heights(scan: pdm.PageXMLScan, debug: int = 0):
+    if debug > 0:
+        print('set_line_heights - scan.id:', scan.id)
+    for line in scan.get_lines():
+        line_height_stats = layout_helper.get_line_height_stats(line, debug=debug)
+        if debug > 0:
+            print('set_line_heights - line_height_stats:', line_height_stats)
+        if line_height_stats is None:
+            return None
+        if line.xheight is None:
+            line.xheight = line_height_stats['mean']
+        line.metadata['height'] = line_height_stats
 
 
 def swap_reading_order_ids(doc: pdm.PageXMLDoc, text_region: pdm.PageXMLTextRegion,

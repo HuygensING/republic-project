@@ -5,7 +5,7 @@ import time
 import json
 
 from elasticsearch.exceptions import ElasticsearchException
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 import pagexml.parser as pagexml_parser
 
 from republic.helper.utils import get_commit_version
@@ -85,6 +85,7 @@ def do_scan_indexing_pagexml(inv_num: int, year: int):
     print(f"Indexing pagexml scans for inventory {inv_num} (year {year})...")
     for si, scan in enumerate(rep_es.retrieve_text_repo_scans_by_inventory(inv_num)):
         try:
+            print('do_scan_indexing_pagexml - indexing scan', scan.id)
             rep_es.index_scan(scan)
         except ZeroDivisionError:
             print("ZeroDivisionError for scan", scan.id)

@@ -5,7 +5,7 @@ import re
 
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
-from fuzzy_search.fuzzy_match import PhraseMatch
+from fuzzy_search.match.phrase_match import PhraseMatch
 
 import republic.parser.logical.pagexml_session_parser as session_parser
 import republic.model.republic_document_model as rdm

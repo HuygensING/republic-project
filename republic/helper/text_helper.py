@@ -8,8 +8,9 @@ import pickle
 import unicodedata
 import math
 
-from fuzzy_search.fuzzy_string import text2skipgrams
+from fuzzy_search.tokenization.string import text2skipgrams
 from nltk.tokenize import sent_tokenize
+import pagexml.model.physical_document_model as pdm
 
 
 class ResolutionSentences:
@@ -931,3 +932,82 @@ class SkipgramSimilarity:
             if len(top_terms) == top_n:
                 break
         return top_terms
+
+
+################################################################
+# Duplicate page detection
+#
+# **Problem 2**: Some pages are duplicates of the preceding scan. When the page turning
+# mechanism fails, subsequent scans are images of the same two pages. Duplicates page
+# should therefore come in pairs, that is, even and odd side of scan $n$ are duplicates
+# of even and odd side of scan $n-1$. Shingling or straightforward text tiling won't work
+# because of OCR variation. Many words may be recognized slightly different and lines and
+# words may not align.
+#
+# **Solution**: Compare each pair of even+odd pages against preceding pair of even+odd pages,
+# using Levenshtein distance. This deals with slight character-level variations due to OCR.
+# Most pairs will be very dissimilar. Use a heuristic threshold to determine whether pages
+# are duplicates.
+#
+################################################################
+
+def get_column_text(column: pdm.PageXMLColumn):
+    return "\n".join([line.text for line in column.get_lines() if line.text is not None])
+
+
+def compute_column_similarity(curr_column: pdm.PageXMLColumn, prev_column: pdm.PageXMLColumn,
+                              chunk_size = 200, chunk_sim_threshold: float = 0.5):
+    """Compute similarity of two Republic hOCR columns using levenshtein distance.
+    Chunking is done for efficiency. Most pages have around 2200 characters.
+        Comparing two 2200 character strings is slow.
+    Similarity of individual chunk pairs can be lower than whole column similarity.
+        => use lower threshold for cumulative chunk similarity.
+    Approach:
+        1. divide the text string of each column in chunks,
+        2. calculate levenshtein distance of chunk pairs
+        3. sum distances of chunk up to current chunk
+        4. compute distance ratio as sum of distance divided by cumulative length of chunks up to current chunk
+        5. compute cumulative chunk similarity as 1 - distance ratio
+        6. if cumulative chunk similarity drops below threshold, stop comparison and return similarity (efficiency)
+    Assumption: summing distances of 11 pairs of 200 character strings is a good approximation of overall distance
+    Assumption: if cumulative chunk similarity drops below threshold, return with current chunk similarity
+    Assumption: similarity is normalized by the length of the current page.
+    """
+    curr_text = get_column_text(curr_column)
+    prev_text = get_column_text(prev_column)
+    if len(curr_text) < len(prev_text):
+        curr_text, prev_text = prev_text, curr_text  # use longest text for chunking
+    sum_chunk_dist = 0
+    chunk_sim = 1
+    for start_offset in range(0, len(curr_text), chunk_size):
+        end_offset = start_offset + chunk_size
+        chunk_dist = score_levenshtein_distance(curr_text[start_offset:end_offset], prev_text[start_offset:end_offset])
+        sum_chunk_dist += chunk_dist
+        chunk_sim = 1 - sum_chunk_dist / min(end_offset, len(curr_text))
+        if chunk_sim < chunk_sim_threshold:  # stop as soon as similarity drops below 0.5
+            return chunk_sim
+    return chunk_sim
+
+
+def compute_page_similarity(curr_page: pdm.PageXMLPage, prev_page: pdm.PageXMLPage):
+    """Compute similarity of two Republic hOCR pages using levenshtein distance.
+    Assumption: pages should have equal number of columns, otherwise their similarity is 0.0
+    Assumption: similarity between two pages is the sum of the similarity of their columns.
+    Assumption: on each page, columns are in page order from left to right.
+    Assumption: similarity is normalized by the length of the current page.
+    """
+    sim = 0.0
+    if len(curr_page.columns) != len(prev_page.columns):
+        return sim
+    for column_index, curr_column in enumerate(curr_page.columns):
+        prev_column = prev_page.columns[column_index]
+        sim += compute_column_similarity(curr_column, prev_column)
+    return sim / len(curr_page.columns)
+
+
+def is_duplicate(page_doc: pdm.PageXMLPage, prev_page_doc: pdm.PageXMLPage,
+                 similarity_threshold: float = 0.8):
+    if len(page_doc.columns) == 0 or len(prev_page_doc.columns) == 0:
+        return False
+    return compute_page_similarity(page_doc, prev_page_doc) > similarity_threshold
+

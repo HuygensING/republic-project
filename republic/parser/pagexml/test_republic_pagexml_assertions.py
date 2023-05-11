@@ -179,7 +179,7 @@ def check_root_assertions(scan_json: dict) -> None:
     check_page_assertions(scan_json['PcGts']['Page'])
 
 
-def test_republic_pagexml_assertions(scan_json: dict):
+def do_test_republic_pagexml_assertions(scan_json: dict):
     check_root_assertions(scan_json)
     if 'Metadata' in scan_json['PcGts'] and scan_json['PcGts']['Metadata']:
         check_page_metadata_assertions(scan_json['PcGts']['Metadata'])

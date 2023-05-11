@@ -1,10 +1,14 @@
 from typing import List
-import republic.elastic.republic_retrieving as rep_es
-import republic.analyser.republic_inventory_analyser as inv_analyser
+
 from elasticsearch import Elasticsearch
+import pagexml.model.physical_document_model as pdm
+
+from republic.elastic.republic_elasticsearch import initialize_es
+from republic.elastic.republic_elasticsearch import RepublicElasticsearch as RepEs
+import republic.analyser.republic_inventory_analyser as inv_analyser
 
 
-def score_levenshtein_distance(s1, s2):
+def score_levenshtein_distance(s1: str, s2: str) -> int:
     if len(s1) > len(s2):
         s1, s2 = s2, s1
     distances = range(len(s1) + 1)
@@ -84,7 +88,7 @@ def get_correct_page_type(page_doc: dict, inventory_info: dict) -> str:
         return "empty_page"
 
 
-def correct_page_type_external_info(es: Elasticsearch, inventory_info: dict, inv_num: int, inv_config: dict) -> None:
+def correct_page_type_external_info(rep_es: RepEs, es: Elasticsearch, inventory_info: dict, inv_num: int, inv_config: dict) -> None:
     print("correcting page_type using external info for inventory", inv_num)
     pages = rep_es.retrieve_inventory_pages(es, inv_num, inv_config)
     pages.sort(key = lambda x: x["page_num"])
@@ -103,7 +107,7 @@ def correct_page_type_external_info(es: Elasticsearch, inventory_info: dict, inv
         rep_es.index_page(es, page_doc, inv_config)
 
 
-def correct_single_page_type(es: Elasticsearch, page_num: int, section: dict, inventory_config: dict) -> bool:
+def correct_single_page_type(rep_es: RepEs, es: Elasticsearch, page_num: int, section: dict, inventory_config: dict) -> bool:
     section_types = ["index_page", "resolution_page", "respect_page", "unknown_page_type"]
     correct_page_type = section["page_type"]
     page_doc = rep_es.retrieve_page_by_page_number(es, page_num, inventory_config)
@@ -159,7 +163,7 @@ def correct_page_types(es: Elasticsearch, inventory_config: dict):
     print("\nDone!")
 
 
-def correct_page_types_old(es: Elasticsearch, config: dict):
+def correct_page_types_old(rep_es: RepEs, es: Elasticsearch, config: dict):
     ordered_page_ids = get_ordered_page_ids(es, config)
     ordered_parts = ["index_page", "resolution_page"]  # "non_text_page",
     prev_part = None
@@ -189,88 +193,13 @@ def correct_page_types_old(es: Elasticsearch, config: dict):
     print("\nDone!")
 
 
-################################################################
-# Duplicate page detection
-#
-# **Problem 2**: Some pages are duplicates of the preceding scan. When the page turning
-# mechanism fails, subsequent scans are images of the same two pages. Duplicates page
-# should therefore come in pairs, that is, even and odd side of scan $n$ are duplicates
-# of even and odd side of scan $n-1$. Shingling or straightforward text tiling won't work
-# because of OCR variation. Many words may be recognized slightly different and lines and
-# words may not align.
-#
-# **Solution**: Compare each pair of even+odd pages against preceding pair of even+odd pages,
-# using Levenshtein distance. This deals with slight character-level variations due to OCR.
-# Most pairs will be very dissimilar. Use a heuristic threshold to determine whether pages
-# are duplicates.
-#
-################################################################
-
-def get_column_text(column):
-    return "\n".join([line["line_text"] for line in column["lines"]])
-
-
-def compute_column_similarity(curr_column, prev_column,
-                              chunk_size=200, chunk_sim_threshold=0.5):
-    """Compute similarity of two Republic hOCR columns using levenshtein distance.
-    Chunking is done for efficiency. Most pages have around 2200 characters.
-        Comparing two 2200 character strings is slow.
-    Similarity of individual chunk pairs can be lower than whole column similarity.
-        => use lower threshold for cumulative chunk similarity.
-    Approach:
-        1. divide the text string of each column in chunks,
-        2. calculate levenshtein distance of chunk pairs
-        3. sum distances of chunk up to current chunk
-        4. compute distance ratio as sum of distance divided by cumulative length of chunks up to current chunk
-        5. compute cumulative chunk similarity as 1 - distance ratio
-        6. if cumulative chunk similarity drops below threshold, stop comparison and return similarity (efficiency)
-    Assumption: summing distances of 11 pairs of 200 character strings is a good approximation of overall distance
-    Assumption: if cumulative chunk similarity drops below threshold, return with current chunk similarity
-    Assumption: similarity is normalized by the length of the current page.
-    """
-    curr_text = get_column_text(curr_column)
-    prev_text = get_column_text(prev_column)
-    if len(curr_text) < len(prev_text):
-        curr_text, prev_text = prev_text, curr_text  # use longest text for chunking
-    sum_chunk_dist = 0
-    chunk_sim = 1
-    for start_offset in range(0, len(curr_text), chunk_size):
-        end_offset = start_offset + chunk_size
-        chunk_dist = score_levenshtein_distance(curr_text[start_offset:end_offset], prev_text[start_offset:end_offset])
-        sum_chunk_dist += chunk_dist
-        chunk_sim = 1 - sum_chunk_dist / min(end_offset, len(curr_text))
-        if chunk_sim < chunk_sim_threshold:  # stop as soon as similarity drops below 0.5
-            return chunk_sim
-    return chunk_sim
-
-
-def compute_page_similarity(curr_page, prev_page):
-    """Compute similarity of two Republic hOCR pages using levenshtein distance.
-    Assumption: pages should have equal number of columns, otherwise their similarity is 0.0
-    Assumption: similarity between two pages is the sum of the similarity of their columns.
-    Assumption: on each page, columns are in page order from left to right.
-    Assumption: similarity is normalized by the length of the current page.
-    """
-    sim = 0.0
-    if len(curr_page["columns"]) != len(prev_page["columns"]):
-        return sim
-    for column_index, curr_column in enumerate(curr_page["columns"]):
-        prev_column = prev_page["columns"][column_index]
-        sim += compute_column_similarity(curr_column, prev_column)
-    return sim / len(curr_page["columns"])
-
-
-def is_duplicate(page_doc, prev_page_doc, similarity_threshold=0.8):
-    return compute_page_similarity(page_doc, prev_page_doc) > similarity_threshold
-
-
-def get_page_pairs(es: Elasticsearch, ordered_page_ids: list, es_config: dict) -> iter:
+def get_page_pairs(rep_es: RepEs, ordered_page_ids: list) -> iter:
     for curr_page_index, curr_page_id in enumerate(ordered_page_ids):
         if curr_page_index == 0:  # skip
             continue
-        curr_page_doc = rep_es.retrieve_page_by_id(es, curr_page_id, es_config)
+        curr_page_doc = rep_es.retrieve_page_by_id(curr_page_id)
         prev_page_id = ordered_page_ids[curr_page_index - 2]
-        prev_page_doc = rep_es.retrieve_page_by_id(es, prev_page_id, es_config)
+        prev_page_doc = rep_es.retrieve_page_by_id(prev_page_id)
         yield curr_page_doc, prev_page_doc
 
 
@@ -285,7 +214,7 @@ def get_ordered_page_ids(es: Elasticsearch, config: dict) -> list:
     return [page_info["page_id"] for page_info in sorted(pages_info, key=lambda x: x["page_num"])]
 
 
-def detect_duplicate_scans(es: Elasticsearch, config: dict):
+def detect_duplicate_scans(rep_es: RepEs, es: Elasticsearch, config: dict):
     ordered_page_ids = get_ordered_page_ids(es, config)
     for curr_page_doc, prev_page_doc in get_page_pairs(es, ordered_page_ids, config):
         curr_page_doc["is_duplicate"] = False
@@ -311,11 +240,11 @@ def detect_duplicate_scans(es: Elasticsearch, config: dict):
 #
 ########################################################################
 
-def correct_page_numbers(es: Elasticsearch, config: dict):
+def correct_page_numbers(rep_es: RepEs, es: Elasticsearch, config: dict):
     ordered_page_ids = get_ordered_page_ids(es, config)
     prev_numbered_page_number = 0
     for page_id in ordered_page_ids:
-        page_doc = rep_es.retrieve_page_by_id(es, page_id, config)
+        page_doc = rep_es.retrieve_page_by_id(page_id)
         year = page_doc["inventory_year"]
         if not page_doc:  # skip unindexed pages
             continue
@@ -326,9 +255,9 @@ def correct_page_numbers(es: Elasticsearch, config: dict):
             continue
         if "is_duplicate" not in page_doc:
             print("No is_duplicate field for page", page_doc["page_id"], ", inventory", page_doc["inventory_num"])
-            print(page_doc["page_type"])
-        if page_doc["is_duplicate"]:
-            duplicated_page_doc = rep_es.retrieve_page_by_id(es, page_doc["is_duplicate_of"], config)
+            print(page_doc.metadata['page_type'])
+        if page_doc.metadata["is_duplicate"]:
+            duplicated_page_doc = rep_es.retrieve_page_by_id(page_doc["is_duplicate_of"])
             print("CORRECTING FOR DUPLICATE SCAN:", page_doc["page_id"], page_doc["type_page_num"],
                   duplicated_page_doc["type_page_num"])
             page_doc["type_page_num"] = duplicated_page_doc["type_page_num"]
@@ -342,6 +271,6 @@ def correct_page_numbers(es: Elasticsearch, config: dict):
             page_doc["type_page_num"] = prev_numbered_page_number + 1
         page_doc["type_page_num_checked"] = True
         doc = rep_es.create_es_page_doc(page_doc)
-        es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id, body=doc)
+        es.index(index=config["page_index"], doc_type=config["page_doc_type"], id=page_id, doc=doc)
         prev_numbered_page_number = page_doc["type_page_num"]
     print("\nDone!")

@@ -1,6 +1,6 @@
 import re
 import pandas as pd
-from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
+from fuzzy_search.tokenization.string import score_levenshtein_similarity_ratio
 
 
 def identify(name: str,

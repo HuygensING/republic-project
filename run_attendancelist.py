@@ -7,8 +7,8 @@ from elasticsearch import Elasticsearch
 import networkx as nx
 import pandas as pd
 import logging
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.phrase.phrase_model import PhraseModel
 
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
 from republic.analyser.attendance_lists.pattern_finders import province_searcher, president_searcher, make_groslijst

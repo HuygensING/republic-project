@@ -1,6 +1,6 @@
 from typing import Union
 import hashlib
-from fuzzy_search.fuzzy_match import PhraseMatch
+from fuzzy_search.match.phrase_match import PhraseMatch
 
 from republic.model.republic_document_model import Resolution
 

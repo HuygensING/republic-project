@@ -1,14 +1,11 @@
 import re
 import logging
-# import networkx as nx
-from collections import Counter, defaultdict
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
-from ...config.republic_config import base_config
+
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.phrase.phrase_model import PhraseModel
+
 from ...helper.utils import best_match
-from ...data.delegate_database import abbreviated_delegates, found_delegates, ekwz
-from .parse_delegates import FndMatch, fndmatch, match_previous
-from .identify import iterative_search
+from ...data.delegate_database import ekwz
 
 
 fuzzysearch_config = {
@@ -72,9 +69,7 @@ def make_president_searcher():
     variants = [{'phrase': 'PRAESIDE Den Heere', 'label':'president', 'variants': vs},
                 {'phrase': 'PRAESENTIBUS', 'label':'presentibus', 'variants': pvs},
                 ]
-    phrase_model = PhraseModel(model=variants)
-    #phrase_model.add_phrase(phrase='Den Heere', label)
-    president_searcher.index_phrase_model(phrase_model=phrase_model)
+    president_searcher.index_phrase_model(phrase_model=variants)
     return president_searcher
 
 

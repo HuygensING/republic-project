@@ -3,8 +3,9 @@ from typing import Dict, List, Set, Union
 import re
 import json
 
-from fuzzy_search.fuzzy_match import PhraseMatch, Phrase
-import republic.model.physical_document_model as pdm
+from fuzzy_search.phrase.phrase import Phrase
+from fuzzy_search.match.phrase_match import PhraseMatch
+import pagexml.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 import republic.helper.pagexml_helper as pagexml
@@ -18,6 +19,10 @@ class RepublicDoc(pdm.LogicalStructureDoc):
         super().__init__(doc_id=doc_id, doc_type='republic_doc', metadata=metadata,
                          lines=lines, text_regions=text_regions)
         self.main_type = "republic_doc"
+        if lines:
+            self.set_as_logical_parent(lines)
+        if text_regions:
+            self.set_as_logical_parent(text_regions)
         if doc_type:
             self.add_type(doc_type)
         self.add_text_region_iiif_url()
@@ -96,7 +101,7 @@ class RepublicParagraph(RepublicDoc):
         if text_region_ids:
             self.text_region_ids = set(text_region_ids)
         else:
-            self.text_region_ids = {text_region.metadata['id'] for text_region in self.text_regions}
+            self.text_region_ids = {text_region.id for text_region in self.text_regions}
         if len(self.text_page_nums) == 0:
             self.set_text_page_nums()
         self.add_type("republic_paragraph")
@@ -104,7 +109,7 @@ class RepublicParagraph(RepublicDoc):
         self.evidence: List[PhraseMatch] = []
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(lines={[line.metadata['id'] for line in self.lines]}, text={self.text})"
+        return f"{self.__class__.__name__}(lines={[line.id for line in self.lines]}, text={self.text})"
 
     @property
     def json(self, include_text_regions: bool = True):
@@ -194,7 +199,7 @@ class ResolutionElementDoc(RepublicDoc):
     def add_paragraph(self, paragraph: RepublicParagraph, matches: List[PhraseMatch] = None):
         paragraph.metadata['paragraph_index'] = len(self.paragraphs)
         self.paragraphs.append(paragraph)
-        self.text_region_ids = self.text_region_ids.union([text_region.metadata['id']
+        self.text_region_ids = self.text_region_ids.union([text_region.id
                                                            for text_region in paragraph.text_regions])
         self.evidence += matches
 
@@ -249,7 +254,6 @@ class Session(ResolutionElementDoc):
         self.date = self.session_date
         if not doc_id:
             self.id = f"session-{self.session_date.as_date_string()}-{self.session_type}-num-1"
-            self.metadata['id'] = self.id
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions

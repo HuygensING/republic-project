@@ -7,8 +7,8 @@ import pandas as pd
 import logging
 import regex
 from numpy import argmax
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.tokenization.string import score_levenshtein_similarity_ratio
 
 from .searchers import nm_to_delen, herensearcher, junksweeper
 from ...helper.utils import reverse_dict, levenst_vals, score_match

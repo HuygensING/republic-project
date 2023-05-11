@@ -1,14 +1,16 @@
 import copy
 from typing import Dict, Generator, List, Tuple, Union
 
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher, PhraseModel
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.phrase.phrase_model import PhraseModel
 from langdetect import detect_langs, LangDetectException
 
 import republic.helper.paragraph_helper as para_helper
 import republic.model.physical_document_model as pdm
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
-from pagexml.analysis.layout_stats import line_starts_with_big_capital
+from republic.parser.logical.paragraph_parser import ParagraphGenerator
+from republic.parser.logical.paragraph_parser import running_id_generator
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.paragraph_helper import LineBreakDetector
 
@@ -218,20 +220,22 @@ def determine_language(text):
 
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher,
-                            line_break_detector: LineBreakDetector = None) -> Generator[rdm.Resolution, None, None]:
+                            line_break_detector: LineBreakDetector = None,
+                            word_break_chars: str = None) -> Generator[rdm.Resolution, None, None]:
     resolution = None
     resolution_number = 0
     attendance_list = None
-    generate_id = running_id_generator(session.metadata['id'], '-resolution-')
+    generate_id = running_id_generator(session.id, '-resolution-')
     session_offset = 0
-    para_generator = ParagraphGenerator(line_break_detector=line_break_detector)
+    para_generator = SessionParagraphGenerator(line_break_detector=line_break_detector,
+                                               word_break_chars=word_break_chars)
     for paragraph in para_generator.get_paragraphs(session):
         paragraph.metadata['lang'] = determine_language(paragraph.text)
         # print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
-        opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
-        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.metadata['id']})
+        opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
+        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
         for match in opening_matches + verb_matches:
-            match.text_id = paragraph.metadata['id']
+            match.text_id = paragraph.id
             # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if len(opening_matches) > 0 and opening_matches[0].has_label('reviewed'):
             paragraph.add_type('reviewed')
@@ -252,17 +256,17 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
                                         evidence=opening_matches + verb_matches)
-            # print('\tCreating new resolution with number:', resolution_number, resolution.metadata['id'])
+            # print('\tCreating new resolution with number:', resolution_number, resolution.id)
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
             resolution.evidence += opening_matches + verb_matches
         elif attendance_list:
             attendance_list.add_paragraph(paragraph, matches=[])
         else:
-            metadata = get_base_metadata(session, session.metadata['id'] + '-attendance_list',
+            metadata = get_base_metadata(session, session.id + '-attendance_list',
                                          'attendance_list')
             attendance_list = rdm.AttendanceList(doc_id=metadata['id'], metadata=metadata)
-            # print('\tCreating new attedance list with number:', 1, attendance_list.metadata['id'])
+            # print('\tCreating new attedance list with number:', 1, attendance_list.id)
             attendance_list.add_paragraph(paragraph, matches=[])
         # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
         session_offset += len(paragraph.text)
@@ -275,29 +279,18 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         yield resolution
 
 
-def running_id_generator(base_id: str, suffix: str, count: int = 0):
-    """Returns an ID generator based on running numbers."""
-
-    def generate_id():
-        nonlocal count
-        count += 1
-        return f'{base_id}{suffix}{count}'
-
-    return generate_id
-
-
 def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -> Dict[str, Union[str, int, list]]:
     """Return a dictionary with basic metadata for a structure document."""
     metadata = {
         'inventory_num': source_doc.metadata['inventory_num'],
-        'source_id': source_doc.metadata['id'],
+        'source_id': source_doc.id,
         'type': doc_type,
         'id': doc_id,
         'page_ids': []
     }
     if doc_type in ["resolution", "attendance_list"]:
         metadata['session_date'] = source_doc.metadata['session_date']
-        metadata['session_id'] = source_doc.metadata['id']
+        metadata['session_id'] = source_doc.id
         metadata['session_num'] = source_doc.metadata['session_num']
         metadata['inventory_num'] = source_doc.metadata['inventory_num']
         metadata['president'] = source_doc.metadata['president']
@@ -306,28 +299,6 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         metadata['session_day'] = source_doc.metadata['session_day']
         metadata['session_weekday'] = source_doc.metadata['session_weekday']
     return metadata
-
-
-def is_paragraph_boundary(prev_line, line, next_line) -> bool:
-    if prev_line and pdm.is_same_column(line, prev_line):
-        if line.is_next_to(prev_line):
-            # print("SAME HEIGHT", prev_line['text'], '\t', line['text'])
-            return False
-        elif line.coords.left > prev_line.coords.left + 20:
-            # this line is left indented w.r.t. the previous line
-            # so is the start of a new paragraph
-            return True
-        elif line.coords.left - prev_line.coords.left < 20:
-            if line.coords.right > prev_line.coords.right + 40:
-                # this line starts at the same horizontal level as the previous line
-                # but the previous line ends early, so is the end of a paragraph.
-                return True
-            else:
-                return False
-    elif next_line and pdm.is_same_column(line, next_line):
-        if line.coords.left > next_line.coords.left + 20:
-            return True
-    return False
 
 
 def make_line_text(line: pdm.PageXMLTextLine, do_merge: bool,
@@ -364,14 +335,14 @@ def make_line_range(text: str, line: pdm.PageXMLTextLine, line_text: str) -> Dic
     }
 
 
-class ParagraphGenerator:
+class SessionParagraphGenerator(ParagraphGenerator):
 
-    def __init__(self, line_break_detector: LineBreakDetector = None):
-        self.lbd = line_break_detector
+    def __init__(self, line_break_detector: LineBreakDetector = None, word_break_chars: str = None):
+        super().__init__(line_break_detector=line_break_detector, word_break_chars=word_break_chars)
 
     def get_paragraphs(self, session: rdm.Session,
                        prev_line: Union[None, dict] = None) -> Generator[rdm.RepublicParagraph, None, None]:
-        if session.paragraphs:
+        if hasattr(session, 'paragraphs') and session.paragraphs:
             for paragraph in session.paragraphs:
                 yield paragraph
         else:
@@ -395,7 +366,7 @@ class ParagraphGenerator:
             else:
                 paragraphs = []
             for paragraph in paragraphs:
-                paragraph.metadata['doc_id'] = session.metadata['id']
+                paragraph.metadata['doc_id'] = session.id
                 yield paragraph
 
     def make_paragraph(self, doc: rdm.RepublicDoc, doc_text_offset: int, paragraph_id: str,
@@ -418,6 +389,7 @@ class ParagraphGenerator:
             paragraph.metadata["iiif_url"] = paragraph.metadata["iiif_url"][0]
         return paragraph
 
+    """
     def make_paragraph_text(self, lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
         text = ''
         line_ranges = []
@@ -448,7 +420,7 @@ class ParagraphGenerator:
                                    text_page_num_map: Dict[str, int] = None,
                                    page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
         paragraphs: List[rdm.RepublicParagraph] = []
-        generate_paragraph_id = running_id_generator(base_id=doc.metadata['id'], suffix='-para-')
+        generate_paragraph_id = running_id_generator(base_id=doc.id, suffix='-para-')
         para_lines = []
         doc_text_offset = 0
         lines = [line for line in doc.get_lines()]
@@ -527,29 +499,7 @@ class ParagraphGenerator:
             doc_text_offset += len(paragraph.text)
             paragraphs.append(paragraph)
         return paragraphs
-
-
-def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine, resolution_gap: int) -> bool:
-    if not prev_line:
-        return False
-    # Resolution start line has big capital with low bottom.
-    # If gap between box bottoms is small, this is no resolution gap.
-    if -20 < line.coords.bottom - prev_line.coords.bottom < resolution_gap:
-        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
-        return False
-    # If this line starts with a big capital, this is a resolution gap.
-    if line_starts_with_big_capital(line):
-        # print('is_resolution_gap: True, line starts with capital')
-        return True
-    # If the previous line has no big capital starting a resolution,
-    # and it has a large vertical gap with the current line,
-    # this is resolution gap.
-    if not line_starts_with_big_capital(prev_line) and line.coords.top - prev_line.coords.top > 70:
-        # print('is_resolution_gap: True', line.coords.bottom - prev_line.coords.bottom)
-        return True
-    else:
-        # print('is_resolution_gap: False', line.coords.bottom - prev_line.coords.bottom)
-        return False
+    """
 
 
 def configure_resolution_searchers():

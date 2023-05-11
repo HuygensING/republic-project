@@ -4,8 +4,9 @@ import re
 import elasticsearch
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
-from fuzzy_search.fuzzy_match import PhraseMatch
+from fuzzy_search.match.phrase_match import PhraseMatch
 import pagexml.model.physical_document_model as pdm
+import pagexml.parser as parser
 
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
@@ -33,11 +34,11 @@ def extract_hits(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> List[Dict
 
 
 def parse_hits_as_scans(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> List[pdm.PageXMLScan]:
-    return [pagexml.json_to_pagexml_scan(hit['_source']) for hit in extract_hits(hits)]
+    return [parser.json_to_pagexml_scan(hit['_source']) for hit in extract_hits(hits)]
 
 
 def parse_hits_as_pages(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> List[pdm.PageXMLPage]:
-    return [pagexml.json_to_pagexml_page(hit['_source']) for hit in extract_hits(hits)]
+    return [parser.json_to_pagexml_page(hit['_source']) for hit in extract_hits(hits)]
 
 
 def make_bool_query(match_fields, size: int = 10000) -> dict:
@@ -64,20 +65,17 @@ def make_paragraph_term_query(term: str) -> Dict[str, any]:
 def make_text_repo_inventory_query(inventory_num):
     """Returns a Nested Query to match a key/value pair for inventory numbers in the Text Repository."""
     return {
-        "query": {
-            "nested": {
-                "path": "doc.metadata",
-                "query": {
-                    "bool": {
-                        "must": [
-                            {"match": {"doc.metadata.key": "inventaris"}},
-                            {"match": {"doc.metadata.value": str(inventory_num)}}
-                        ]
-                    }
+        "nested": {
+            "path": "doc.metadata",
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match": {"doc.metadata.key": "inventaris"}},
+                        {"match": {"doc.metadata.value": str(inventory_num)}}
+                    ]
                 }
             }
-        },
-        'size': 2
+        }
     }
 
 
@@ -236,19 +234,21 @@ class Retriever:
         if not self.es_anno.exists(index=self.config['scans_index'], id=scan_id):
             return None
         response = self.es_anno.get(index=self.config['scans_index'], id=scan_id)
-        return pagexml.json_to_pagexml_scan(response['_source'])
+        return parser.json_to_pagexml_scan(response['_source'])
 
     def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
         for hit in self.scroll_hits(self.es_anno, query, self.config['scans_index'],
                                     size=2, scroll='5m'):
-            yield pagexml.json_to_pagexml_scan(hit['_source'])
+            yield parser.json_to_pagexml_scan(hit['_source'])
         # response = self.es_anno.search(index=self.config['scans_index'], body=query)
         # return parse_hits_as_scans(response)
 
     def retrieve_text_repo_scans_by_inventory(self,
                                               inventory_num: int) -> Generator[pdm.PageXMLScan, None, None]:
         text_repo = TextRepo(text_repo_url)
+        print('retrieve_text_repo_scans_by_inventory - inventory_num:', inventory_num)
         query = make_text_repo_inventory_query(inventory_num)
+        print('retrieve_text_repo_scans_by_inventory - query:', query)
         for hi, hit in enumerate(self.scroll_hits(self.es_text, query, index='file', size=2)):
             doc = hit['_source']
             versions = get_tesseract_versions(doc)
@@ -266,12 +266,12 @@ class Retriever:
         if not self.es_anno.exists(index=self.config['pages_index'], id=page_id):
             return None
         response = self.es_anno.get(index=self.config['pages_index'], id=page_id)
-        return pagexml.json_to_pagexml_page(response['_source'])
+        return parser.json_to_pagexml_page(response['_source'])
 
     def retrieve_pages_by_query(self, query: dict, size: int = 10) -> List[pdm.PageXMLPage]:
         hits = []
         for hit in self.scroll_hits(self.es_anno, query, self.config['pages_index'], '_doc', size=size):
-            yield pagexml.json_to_pagexml_page(hit['_source'])
+            yield parser.json_to_pagexml_page(hit['_source'])
             # hits += [hit]
         # return parse_hits_as_pages(hits)
 
@@ -599,7 +599,7 @@ class Retriever:
         return self.retrieve_resolutions_by_query(query, size=1000)
 
     def retrieve_session_phrase_matches(self, session_resolutions):
-        paragraph_ids = [paragraph.metadata['id'] for resolution in session_resolutions
+        paragraph_ids = [paragraph.id for resolution in session_resolutions
                          for paragraph in resolution.paragraphs]
         phrase_matches = []
         for para_id in paragraph_ids:

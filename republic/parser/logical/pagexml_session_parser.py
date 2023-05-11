@@ -11,9 +11,7 @@ from republic.model.republic_session import SessionSearcher, calculate_work_day_
 from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
 from republic.helper.pagexml_helper import sort_lines_in_reading_order
-import republic.helper.pagexml_helper as pagexml_helper
 from republic.helper.metadata_helper import doc_id_to_iiif_url
-import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
 def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:

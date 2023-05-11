@@ -5,10 +5,9 @@ from collections import UserString
 
 import pandas as pd
 from numpy import argmax
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.phrase.phrase_model import PhraseModel
 
-import republic.model.republic_document_model as rdm
 from .republic_phrase_model import resolution_phrase_model
 from ..helper.utils import score_match
 

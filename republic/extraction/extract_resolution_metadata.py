@@ -3,9 +3,9 @@ from collections import defaultdict
 import copy
 
 from elasticsearch import Elasticsearch
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_template_searcher import FuzzyTemplateSearcher, FuzzyTemplate, TemplateMatch
+from fuzzy_search.phrase.phrase_model import PhraseModel
+from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.search.template_searcher import FuzzyTemplateSearcher, FuzzyTemplate, TemplateMatch
 
 from republic.model.republic_document_model import parse_phrase_match, PhraseMatch, RepublicParagraph, Resolution
 from republic.model.resolution_templates import opening_templates

@@ -2,7 +2,7 @@ from typing import Dict, List
 import subprocess
 import datetime
 
-from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
+from fuzzy_search.tokenization.string import score_levenshtein_similarity_ratio
 
 
 def get_commit_version():
