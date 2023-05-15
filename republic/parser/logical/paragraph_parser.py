@@ -1,4 +1,5 @@
 import copy
+from collections import defaultdict
 from typing import Dict, Generator, List, Tuple, Union
 
 import numpy as np
@@ -59,6 +60,8 @@ class ParagraphLines:
         self.avg_distances = np.empty(0)
         self.num_chars = 0
         self.avg_char_width = 0
+        self.insertion_lines = set()
+        self.noise_lines = set()
         self.add_lines(lines)
 
     @property
@@ -79,24 +82,33 @@ class ParagraphLines:
     @property
     def last(self):
         if len(self.lines) > 0:
-            return self.lines[-1]
+            for line in self.lines[::-1]:
+                if line in self.insertion_lines:
+                    continue
+                return line
         else:
             return None
 
     def _set_left_right(self):
-        coords_list = [line.baseline if line.baseline else line.coords for line in self.lines]
+        coords_list = [line.baseline if line.baseline else line.coords for line in self.lines
+                       if line not in self.insertion_lines]
         self.lefts = np.array([coords.left for coords in coords_list])
         self.rights = np.array([coords.right for coords in coords_list])
         self.widths = np.array([coords.width for coords in coords_list])
         self.heights = np.array([coords.height for coords in coords_list])
 
     def _set_top_bottom(self):
-        coords_list = [line.baseline if line.baseline else line.coords for line in self.lines]
+        coords_list = [line.baseline if line.baseline else line.coords for line in self.lines
+                       if line not in self.insertion_lines]
         self.top = min([coords.top for coords in coords_list])
         self.bottom = max([coords.bottom for coords in coords_list])
 
+    def add_insertion_line(self, line: pdm.PageXMLTextLine):
+        self.insertion_lines.add(line)
+        self.lines.append(line)
+
     def add_lines(self, lines: Union[pdm.PageXMLTextLine, List[pdm.PageXMLTextLine]]):
-        print('\tADDING LINES', lines)
+        # print('\tADDING LINES', lines)
         if isinstance(lines, pdm.PageXMLTextLine):
             lines = [lines]
         if len(self.lines) == 0:
@@ -110,7 +122,7 @@ class ParagraphLines:
         self.lines.extend(lines)
         self._set_top_bottom()
         self._set_left_right()
-        print(f'\tWIDTHS: {self.widths}\t\tSUM OF WIDTHS: {self.widths.sum()}\n')
+        # print(f'\tWIDTHS: {self.widths}\t\tSUM OF WIDTHS: {self.widths.sum()}\n')
         self.avg_char_width = self.widths.sum() / self.num_chars
         if len(new_interval_lines) >= 2:
             new_distances = layout_helper.get_line_distances(new_interval_lines)
@@ -151,11 +163,14 @@ def get_relative_position(curr_line: pdm.PageXMLTextLine, para_lines: ParagraphL
     return relative_position
 
 
-def split_paragraphs(lines: List[pdm.PageXMLTextLine]):
-    # find vertical gap
-    # find left indentations
-    # find right indentations
-    # find horizontal overlap between pair of lines
+def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
+    column_lines = defaultdict(list)
+    for line in lines:
+        column_lines[line.metadata['column_id']].append(line)
+    grouped_lines = []
+    for column_id in column_lines:
+        column_grouped_lines = pagexml_helper.horizontal_group_lines(column_lines[column_id])
+        grouped_lines.extend(column_grouped_lines)
     if lines[0].baseline:
         lefts = [line.baseline.left for line in lines]
     else:
@@ -164,88 +179,153 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine]):
         return lines
     paras = []
     para_lines = None
-    for ci, curr_line in enumerate(lines):
-        if curr_line.text is None:
-            continue
-        print('----------------------------------------------------------------------------')
-        print('split_paragraphs - iterating lines - curr_line:', curr_line.text)
-        coords = curr_line.coords
-        baseline = curr_line.baseline
-        # print(f'\t{coords.left: >4}-{coords.right: <4}\t{coords.top: >4}-{coords.bottom}')
-        # print(f'\t{baseline.left: >4}-{baseline.right: <4}\t{baseline.top: >4}-{baseline.bottom}')
-        # if para_lines:
-        #     print(f'start of iteration, para_lines has {len(para_lines.lines)} lines')
-        if para_lines is None or para_lines.last is None:
-            print('\tSTART: empty para_lines')
-            para_lines = ParagraphLines([curr_line])
-            continue
-        elif pdm.in_same_column(curr_line, para_lines.last) is False:
-            print('\tSPLIT: different column, appending para_lines')
-            paras.append(para_lines)
-            yield para_lines
-            para_lines = ParagraphLines([curr_line])
-            continue
-        else:
-            rel_pos = get_relative_position(curr_line, para_lines)
-            print('\n\tRELATIVE POSITION', rel_pos)
-            print('\tpara_lines.avg_char_width:', para_lines.avg_char_width)
-            # print('\tpara_lines - lines:', para_lines.lines)
-            if rel_pos['vertical_distance'] > curr_line.coords.height * 2:
-                # vertical distance to prev line is twice the height of current line
-                # so this is probably the start of a new para
-                print('\tSPLIT: vertical distance more than twice line height')
+    prev_page_id = None
+    for gi, curr_group in enumerate(grouped_lines):
+        if debug > 1:
+            print(f'LINE GROUP {gi}')
+        for ci, curr_line in enumerate(curr_group):
+            if prev_page_id is None or prev_page_id != curr_line.metadata['page_id']:
+                if debug > 1:
+                    print(f'-----------------------------------\n'
+                          f'{curr_line.metadata["page_id"]}\n'
+                          f'-----------------------------------')
+                pass
+            prev_page_id = curr_line.metadata['page_id']
+            if curr_line.text is None:
+                continue
+            if debug > 0:
+                print('----------------------------------------------------------------------------')
+                print('split_paragraphs - iterating lines - curr_line:', curr_line.text)
+            if debug > 2:
+                coords = curr_line.coords
+                baseline = curr_line.baseline
+                print(f'\t{coords.left: >4}-{coords.right: <4}\t{coords.top: >4}-{coords.bottom}')
+                print(f'\t{baseline.left: >4}-{baseline.right: <4}\t{baseline.top: >4}-{baseline.bottom}')
+            if debug > 3:
+                print(curr_line.metadata)
+                # if para_lines:
+                #     print(f'\t{para_lines.rights.mean()}')
+                #     print(f'start of iteration, para_lines has {len(para_lines.lines)} lines')
+            if para_lines is None or para_lines.last is None:
+                if debug > 0:
+                    print('\tSTART: empty para_lines')
+                para_lines = ParagraphLines([curr_line])
+                continue
+            elif pdm.in_same_column(curr_line, para_lines.last) is False:
+                if debug > 0:
+                    print('\tSPLIT: different column, appending para_lines')
                 paras.append(para_lines)
                 yield para_lines
                 para_lines = ParagraphLines([curr_line])
                 continue
-            if len(para_lines.lines) >= 2:
-                if rel_pos['vertical_distance'] > para_lines.avg_distances.mean() * 1.5:
-                    print('\tSPLIT: vertical distance more than 1.5 avg vertical distance')
+            else:
+                rel_pos = get_relative_position(curr_line, para_lines)
+                if debug > 0:
+                    print('\n\tRELATIVE POSITION', rel_pos)
+                    print('\tpara_lines.avg_char_width:', para_lines.avg_char_width)
+                    # print('\tpara_lines - lines:', para_lines.lines)
+                if rel_pos['vertical_distance'] > curr_line.coords.height * 2:
+                    # vertical distance to prev line is twice the height of current line
+                    # so this is probably the start of a new para
+                    if debug > 0:
+                        print('\tSPLIT: vertical distance more than twice line height')
                     paras.append(para_lines)
                     yield para_lines
                     para_lines = ParagraphLines([curr_line])
                     continue
-            if rel_pos['overlap_ratio'] > 0.85:
-                # curr_line and para are left- and right-aligned
-                print('\tAPPEND: line and para are left- and right-aligned')
-                para_lines.add_lines(curr_line)
-                continue
-            elif abs(rel_pos['left_indent']) < para_lines.avg_char_width * 3:
-                # print('left_indent:', rel_pos['left_indent'], abs(rel_pos['left_indent']), para_lines.avg_char_width)
-                # print(para_lines.json)
-                if rel_pos['right_indent'] > para_lines.avg_char_width * 3:
-                    # line and para are left-aligned but line is right-indented
-                    print('\tAPPEND AND SPLIT: line and para are left-aligned but line is right-indented')
+                if len(para_lines.lines) >= 2:
+                    if rel_pos['vertical_distance'] > para_lines.avg_distances.mean() * 1.5:
+                        if debug > 0:
+                            print('\tSPLIT: vertical distance more than 1.5 avg vertical distance')
+                        paras.append(para_lines)
+                        yield para_lines
+                        para_lines = ParagraphLines([curr_line])
+                        continue
+                if rel_pos['overlap_ratio'] > 0.85:
+                    # curr_line and para are left- and right-aligned
+                    if debug > 0:
+                        print('\tAPPEND: line and para are left- and right-aligned')
                     para_lines.add_lines(curr_line)
-                    paras.append(para_lines)
-                    yield para_lines
-                    para_lines = None
+                    continue
+                elif abs(rel_pos['left_indent']) < para_lines.avg_char_width * 3:
+                    # print('left_indent:', rel_pos['left_indent'], abs(rel_pos['left_indent']), para_lines.avg_char_width)
+                    # print(para_lines.json)
+                    if rel_pos['right_indent'] > para_lines.avg_char_width * 3:
+                        # line and para are left-aligned but line is right-indented
+                        if debug > 0:
+                            print('\tAPPEND AND SPLIT: line and para are left-aligned but line is right-indented')
+                        para_lines.add_lines(curr_line)
+                        paras.append(para_lines)
+                        yield para_lines
+                        para_lines = None
+                    else:
+                        # line is left-aligned with para but longer
+                        if debug > 0:
+                            print('\tAPPEND: line is left-aligned with para but longer')
+                        para_lines.add_lines(curr_line)
+                elif abs(rel_pos['right_indent']) < para_lines.avg_char_width * 2:
+                    # line and para are right-aligned
+                    if len(curr_group) > 1 and curr_line == curr_group[-1]:
+                        if debug > 0:
+                            print('\tSKIP: curr line is right-aligned with para, and is noise')
+                    elif rel_pos['left_indent'] > 0:
+                        # curr line is right-aligned with para, but is left-indented
+                        if debug > 0:
+                            print('\tAPPEND: curr line is right-aligned with para, but is left-indented')
+                        para_lines.add_lines(curr_line)
+                    else:
+                        # curr line is negatively left-indented, new para
+                        print('\tSPLIT: curr line is negatively left-indented, new para')
+                        paras.append(para_lines)
+                        yield para_lines
+                        para_lines = ParagraphLines([curr_line])
                 else:
-                    # line is left-aligned with para but longer
-                    print('\tAPPEND: line is left-aligned with para but longer')
-                    para_lines.add_lines(curr_line)
-            elif abs(rel_pos['right_indent']) < para_lines.avg_char_width * 2:
-                # line and para are right-aligned
-                if rel_pos['left_indent'] > 0:
-                    # curr line is right-aligned with para, but is left-indented
-                    print('\tAPPEND: curr line is right-aligned with para, but is left-indented')
-                    para_lines.add_lines(curr_line)
-                else:
-                    # curr line is negatively left-indented, new para
-                    print('\tSPLIT: curr line is negatively left-indented, new para')
-                    paras.append(para_lines)
-                    yield para_lines
-                    para_lines = ParagraphLines([curr_line])
-            else:
-                # line and para are not aligned
-                print('\tSPLIT: line and para are not aligned')
-                paras.append(para_lines)
-                yield para_lines
-                para_lines = ParagraphLines([curr_line])
+                    # print('PARA_LINES WIDTHS:', para_lines.widths)
+                    # print('AVG PARA_LINES WIDTH:', para_lines.widths.mean())
+                    # print('\t', rel_pos['left_indent'] > para_lines.widths.mean())
+                    if rel_pos['left_indent'] / para_lines.widths.mean() > 0.8 and len(curr_group) > 1 and curr_line == curr_group[-1]:
+                        para_lines.noise_lines.add(curr_line)
+                        if debug > 0:
+                            print('\tSKIP: curr line is right-aligned with para, and is noise')
+                    # line and para are not aligned
+                    elif is_missing_text_insertion(ci, curr_line, gi, grouped_lines, para_lines, debug=debug):
+                        if debug > 0:
+                            print('\tAPPEND: line is insertion of missing text')
+                        para_lines.add_insertion_line(curr_line)
+                    else:
+                        if debug > 0:
+                            print('\tSPLIT: line and para are not aligned')
+                        paras.append(para_lines)
+                        yield para_lines
+                        para_lines = ParagraphLines([curr_line])
     if len(para_lines.lines) > 0:
         paras.append(para_lines)
         yield para_lines
     return paras
+
+
+def is_missing_text_insertion(curr_index, curr_line, group_index, grouped_lines, para_lines,
+                              debug: int = 0):
+    next_line = grouped_lines[group_index+1][0]
+    prev_line = para_lines.last
+    if prev_line.metadata['column_id'] == curr_line.metadata['column_id']:
+        vertical_overlap_prev = pdm.get_vertical_overlap(curr_line, para_lines.lines[-1])
+    else:
+        vertical_overlap_prev = 0
+    vertical_overlap_next = pdm.get_vertical_overlap(curr_line, next_line)
+    if debug > 2:
+        print('\t\tvertical_overlap_prev:', vertical_overlap_prev)
+        print('\t\tvertical_overlap_next:', vertical_overlap_next)
+    rel_pos = get_relative_position(next_line, para_lines)
+    if debug > 2:
+        print('\t\tRELATIVE POSITION OF NEXT LINE:', rel_pos)
+        print('\t\tDISTANCES:', para_lines.avg_distances)
+    if vertical_overlap_prev + vertical_overlap_next > 0.75 * curr_line.coords.height:
+        return True
+    elif abs(rel_pos['vertical_distance'] - para_lines.avg_distances.mean()) / para_lines.avg_distances.mean() > 0.9:
+        return True
+    else:
+        return False
 
 
 def is_resolution_gap(prev_line: pdm.PageXMLTextLine, line: pdm.PageXMLTextLine, resolution_gap: int) -> bool:

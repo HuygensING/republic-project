@@ -64,6 +64,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
     # remove the text_regions as direct descendants of page
     page_doc.text_regions = []
     for text_region in text_regions:
+        text_region.set_as_parent(text_region.lines)
         if text_region.lines and text_region.coords.width > max_column_width:
             # Wide text_regions are part of the header
             text_region.main_type = 'extra'
@@ -98,6 +99,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         column.text_regions.sort(key=lambda x: x.coords.top)
         column.metadata = column_metadata
         column.set_derived_id(column.metadata['scan_id'])
+        column.set_as_parent(column.text_regions)
         pagexml_helper.set_line_alignment(column)
         pagexml_helper.copy_reading_order(page_doc, column)
         column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], column.coords)
