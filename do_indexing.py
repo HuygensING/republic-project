@@ -104,7 +104,7 @@ def do_page_indexing_pagexml(inv_num: int, year: int):
         try:
             pages = pagexml_parser.split_pagexml_scan(scan, page_type_index)
         except BaseException:
-            print(scan.id)
+            print('Error splitting pages of scan', scan.id)
             raise
         for page in pages:
             if page.metadata['page_num'] in text_page_num_map:
