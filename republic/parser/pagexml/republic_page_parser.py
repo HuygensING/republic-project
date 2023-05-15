@@ -1,8 +1,10 @@
 from typing import Dict, List, Tuple, Union
 import copy
 
+import pagexml.model.physical_document_model as pdm
+
 from republic.helper.metadata_helper import make_iiif_region_url
-import republic.model.physical_document_model as pdm
+# import republic.model.physical_document_model as pdm
 from republic.config.republic_config import base_config
 from republic.parser.pagexml.republic_column_parser import split_lines_on_column_gaps
 from republic.parser.pagexml.republic_column_parser import determine_column_type
@@ -496,7 +498,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     trs = get_column_text_regions(scan_doc, max_col_width, config, debug=debug)
     tr_stats = combine_stats(trs)
     if tr_stats['words'] != scan_stats['words']:
-        raise ValueError(f'Unequal number of words in trs ({tr_stats["words"]}) and scan ({scan_stats["words"]})')
+        raise ValueError(f'Unequal number of words in trs ({tr_stats["words"]}) '
+                         f'and scan ({scan_stats["words"]}) for scan {scan_doc.id}')
     # print('scan_stats:', scan_stats)
     # print('tr_stats:', tr_stats)
     pages = assign_trs_to_odd_even_pages(scan_doc, trs, page_type_index, config, debug=debug)
@@ -505,7 +508,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     if page_stats['words'] != scan_stats['words']:
         for page in pages:
             print('stats for page', page.id, page.stats)
-        raise ValueError(f'Unequal number of words in pages ({page_stats["words"]}) and scan ({scan_stats["words"]})')
+        raise ValueError(f'Unequal number of words in pages ({page_stats["words"]}) '
+                         f'and scan ({scan_stats["words"]}) for scan {scan_doc.id}')
     return pages
 
 
