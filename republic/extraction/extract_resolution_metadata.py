@@ -484,13 +484,13 @@ def generate_template_searchers(templates: List[Dict[str, any]], phrases: List[D
                                 searcher_config: dict) -> Dict[str, Union[FuzzyPhraseSearcher,
                                                                           Dict[str, FuzzyTemplateSearcher],
                                                                           Dict[str, VariableMatcher]]]:
-    proposition_searcher = FuzzyPhraseSearcher(searcher_config)
-    proposition_phrase_model = PhraseModel(model=phrases, config=searcher_config)
-    proposition_searcher.index_phrase_model(proposition_phrase_model)
+    proposition_searcher = FuzzyPhraseSearcher(phrase_model=phrases, config=searcher_config)
+    # proposition_phrase_model = PhraseModel(model=phrases, config=searcher_config)
+    # proposition_searcher.index_phrase_model(proposition_phrase_model)
     template_searchers = {}
     variable_matchers = {}
     for template in templates:
-        opening_template = FuzzyTemplate(proposition_phrase_model, template)
+        opening_template = FuzzyTemplate(proposition_searcher.phrase_model, template)
         template_searcher = FuzzyTemplateSearcher(opening_template, searcher_config)
         template_searcher.name = template['label']
         template_searchers[template['label']] = template_searcher
