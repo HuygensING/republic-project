@@ -38,8 +38,8 @@ class EventSearcher:
                      phrase_model: PhraseModel):
         """Add a fuzzy keyword searcher with its own config and phrase model"""
         # Create a new fuzzy keyword searcher
-        searcher = FuzzyPhraseSearcher(searcher_config)
-        searcher.index_phrase_model(phrase_model)
+        searcher = FuzzyPhraseSearcher(phrase_model=phrase_model, config=searcher_config)
+        # searcher.index_phrase_model(phrase_model)
         # searcher.index_phrases(phrase_model.get_phrases())
         # make sure the EventSearcher knows which keywords and labels are registered
         # self.add_keywords(phrase_model)

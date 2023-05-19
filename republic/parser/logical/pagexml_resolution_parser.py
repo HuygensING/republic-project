@@ -10,6 +10,8 @@ import republic.model.physical_document_model as pdm
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 from republic.parser.logical.paragraph_parser import ParagraphGenerator
+from republic.parser.logical.paragraph_parser import is_paragraph_boundary
+from republic.parser.logical.paragraph_parser import is_resolution_gap
 from republic.parser.logical.paragraph_parser import running_id_generator
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.paragraph_helper import LineBreakDetector
@@ -102,7 +104,6 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
         'ngram_size': 3,
         'skip_size': 1
     }
-    resolution_phrase_searcher = FuzzyPhraseSearcher(resolution_phrase_searcher_config)
 
     '''
     phrases = rpm.proposition_reason_phrases + rpm.proposition_closing_phrases + rpm.decision_phrases + \
@@ -121,11 +122,13 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     #         del phrase['max_offset']
     print(f'building phrase model for {len(phrases)} resolution phrases')
 
-    resolution_phrase_model = PhraseModel(model=phrases, config=resolution_phrase_searcher_config)
-    resolution_phrase_searcher.index_phrase_model(resolution_phrase_model)
+    resolution_phrase_searcher = FuzzyPhraseSearcher(phrase_model=phrases,
+                                                     config=resolution_phrase_searcher_config)
+    # resolution_phrase_model = PhraseModel(model=phrases, config=resolution_phrase_searcher_config)
+    # resolution_phrase_searcher.index_phrase_model(resolution_phrase_model)
     for phrase in resolution_phrase_searcher.phrases:
         if phrase.has_label('proposition_opening'):
-            custom = resolution_phrase_model.custom[phrase.phrase_string]
+            custom = resolution_phrase_searcher.phrase_model.custom[phrase.phrase_string]
             if 'proposition_type' in custom:
                 label_set = phrase.label_set
                 label_set.add(f"proposition_type:{custom['proposition_type']}")
@@ -389,7 +392,6 @@ class SessionParagraphGenerator(ParagraphGenerator):
             paragraph.metadata["iiif_url"] = paragraph.metadata["iiif_url"][0]
         return paragraph
 
-    """
     def make_paragraph_text(self, lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
         text = ''
         line_ranges = []
@@ -499,7 +501,6 @@ class SessionParagraphGenerator(ParagraphGenerator):
             doc_text_offset += len(paragraph.text)
             paragraphs.append(paragraph)
         return paragraphs
-    """
 
 
 def configure_resolution_searchers():
@@ -513,9 +514,9 @@ def configure_resolution_searchers():
         'skip_size': 1,
         'max_length_variance': 3
     }
-    opening_searcher = FuzzyPhraseSearcher(opening_searcher_config)
-    opening_phrase_model = PhraseModel(model=rpm.proposition_opening_phrases, config=opening_searcher_config)
-    opening_searcher.index_phrase_model(opening_phrase_model)
+    opening_searcher = FuzzyPhraseSearcher(phrase_model=rpm.proposition_opening_phrases, config=opening_searcher_config)
+    # opening_phrase_model = PhraseModel(model=rpm.proposition_opening_phrases, config=opening_searcher_config)
+    # opening_searcher.index_phrase_model(phrase_model=opening_phrase_model, )
     verb_searcher_config = {
         "char_match_threshold": 0.7,
         "ngram_threshold": 0.6,
@@ -524,7 +525,7 @@ def configure_resolution_searchers():
         'skip_size': 1,
         'max_length_variance': 1
     }
-    verb_searcher = FuzzyPhraseSearcher(verb_searcher_config)
-    verb_phrase_model = PhraseModel(model=rpm.proposition_verbs, config=verb_searcher_config)
-    verb_searcher.index_phrase_model(verb_phrase_model)
+    verb_searcher = FuzzyPhraseSearcher(phrase_model=rpm.proposition_verbs, config=verb_searcher_config)
+    # verb_phrase_model = PhraseModel(model=rpm.proposition_verbs, config=verb_searcher_config)
+    # verb_searcher.index_phrase_model(verb_phrase_model)
     return opening_searcher, verb_searcher
