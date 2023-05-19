@@ -55,6 +55,8 @@ class ParagraphLines:
         self.rights: np.array = np.array([])
         self.widths: np.array = np.array([])
         self.heights: np.array = np.array([])
+        self.start_type = None
+        self.end_type = None
         self.top = None
         self.bottom = None
         self.avg_distances = np.empty(0)
@@ -63,6 +65,13 @@ class ParagraphLines:
         self.insertion_lines = set()
         self.noise_lines = set()
         self.add_lines(lines)
+
+    def __iter__(self):
+        for line in self.lines:
+            yield line
+
+    def __len__(self):
+        return len(self.lines)
 
     @property
     def json(self):
@@ -210,13 +219,16 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                 if debug > 0:
                     print('\tSTART: empty para_lines')
                 para_lines = ParagraphLines([curr_line])
+                para_lines.start_type = 'para_start'
                 continue
             elif pdm.in_same_column(curr_line, para_lines.last) is False:
                 if debug > 0:
                     print('\tSPLIT: different column, appending para_lines')
+                para_lines.end_type = 'para_mid'
                 paras.append(para_lines)
                 yield para_lines
                 para_lines = ParagraphLines([curr_line])
+                para_lines.start_type = 'para_mid'
                 continue
             else:
                 rel_pos = get_relative_position(curr_line, para_lines)
@@ -229,17 +241,21 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     # so this is probably the start of a new para
                     if debug > 0:
                         print('\tSPLIT: vertical distance more than twice line height')
+                    para_lines.end_type = 'para_end'
                     paras.append(para_lines)
                     yield para_lines
                     para_lines = ParagraphLines([curr_line])
+                    para_lines.start_type = 'para_start'
                     continue
                 if len(para_lines.lines) >= 2:
                     if rel_pos['vertical_distance'] > para_lines.avg_distances.mean() * 1.5:
                         if debug > 0:
                             print('\tSPLIT: vertical distance more than 1.5 avg vertical distance')
+                        para_lines.end_type = 'para_end'
                         paras.append(para_lines)
                         yield para_lines
                         para_lines = ParagraphLines([curr_line])
+                        para_lines.start_type = 'para_start'
                         continue
                 if rel_pos['overlap_ratio'] > 0.85:
                     # curr_line and para are left- and right-aligned
@@ -254,6 +270,7 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                         # line and para are left-aligned but line is right-indented
                         if debug > 0:
                             print('\tAPPEND AND SPLIT: line and para are left-aligned but line is right-indented')
+                        para_lines.end_type = 'para_end'
                         para_lines.add_lines(curr_line)
                         paras.append(para_lines)
                         yield para_lines
@@ -276,9 +293,11 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     else:
                         # curr line is negatively left-indented, new para
                         print('\tSPLIT: curr line is negatively left-indented, new para')
+                        para_lines.end_type = 'para_end'
                         paras.append(para_lines)
                         yield para_lines
                         para_lines = ParagraphLines([curr_line])
+                        para_lines.start_type = 'para_start'
                 else:
                     # print('PARA_LINES WIDTHS:', para_lines.widths)
                     # print('AVG PARA_LINES WIDTH:', para_lines.widths.mean())
@@ -295,10 +314,13 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     else:
                         if debug > 0:
                             print('\tSPLIT: line and para are not aligned')
+                        para_lines.end_type = 'para_end'
                         paras.append(para_lines)
                         yield para_lines
                         para_lines = ParagraphLines([curr_line])
+                        para_lines.start_type = 'para_start'
     if len(para_lines.lines) > 0:
+        para_lines.end_type = 'para_end'
         paras.append(para_lines)
         yield para_lines
     return paras

@@ -18,8 +18,7 @@ fuzzysearch_config = {
 }
 
 
-
-def president_searcher(presentielijsten, from_scratch=True):
+def search_presidents(presentielijsten, from_scratch=True):
     """search and mark president in delegate attendance list
        this returns heren, but marks the presidents
        in the presentielijsten texts"""
@@ -43,7 +42,6 @@ def make_president_searcher():
                           'ignorecase': False,
                           'ngram_size': 2,
                           'skip_size': 2}
-    president_searcher = FuzzyPhraseSearcher(config=fuzzysearch_config)
     vs = ['PRASIDE Den Heere',
           'PRA ESIDE Den Heere',
           'PRA ZSIDE Den Heere'
@@ -69,7 +67,8 @@ def make_president_searcher():
     variants = [{'phrase': 'PRAESIDE Den Heere', 'label':'president', 'variants': vs},
                 {'phrase': 'PRAESENTIBUS', 'label':'presentibus', 'variants': pvs},
                 ]
-    president_searcher.index_phrase_model(phrase_model=variants)
+    president_searcher = FuzzyPhraseSearcher(phrase_model=variants, config=fuzzysearch_config)
+    # president_searcher.index_phrase_model(phrase_model=variants)
     return president_searcher
 
 
@@ -126,7 +125,6 @@ def get_president(ob, pat, ps, txt, debug=True):
 
 
 def make_province_searcher(config):
-    pr_searcher = FuzzyPhraseSearcher(config)
     basephrase = [{'phrase':"extraordinaris Gedeputeerden uyt de provincie van",
                   'label':'extraordinaris',
                   'variants':[]}]
@@ -157,9 +155,11 @@ def make_province_searcher(config):
                                                                         'Nibil actum est']}]
     phrases = basephrase + prefix + provinces + raadp + hrn + nihil
     pmodel = PhraseModel(model=phrases, config=config)
-    #print(phrases, phrase_model)
-    pr_searcher.index_phrase_model(phrase_model=pmodel)
+    # print(phrases, phrase_model)
+    pr_searcher = FuzzyPhraseSearcher(phrase_model=pmodel, config=config)
+    # pr_searcher.index_phrase_model(phrase_model=pmodel)
     return pr_searcher
+
 
 def match_prov(matches):
     foundtexts = []
@@ -176,7 +176,8 @@ def match_prov(matches):
         foundtexts.append((o,l))
     return foundtexts
 
-def province_searcher(presentielijsten, config=fuzzysearch_config):
+
+def search_provinces(presentielijsten, config=fuzzysearch_config):
     pr_searcher = make_province_searcher(config)
     for T in presentielijsten.keys():
         itm = presentielijsten[T]

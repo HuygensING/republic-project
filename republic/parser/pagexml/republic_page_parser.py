@@ -204,18 +204,38 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             print('MISSING PARENT:', tr.id)
         if tr.coords.width <= max_col_width and is_even_side(tr) or is_odd_side(tr):
             if 'main' in tr.type or 'attendance' in tr.type:
-                col = pdm.PageXMLColumn(metadata=tr.metadata, coords=tr.coords,
-                                        text_regions=tr.text_regions, lines=tr.lines)
-                col.set_derived_id(scan_doc.id)
-                col.set_parent(scan_doc)
-                for tr_type in tr.type:
-                    if tr_type not in {'text_region'} and tr_type not in col.type:
-                        col.add_type(tr_type)
+                col = None
+                for col_tr in trs:
+                    if pdm.is_horizontally_overlapping(tr, col_tr):
+                        col = col_tr
+                        text_regions = [tr] if len(tr.text_regions) == 0 else tr.text_regions
+                        for text_region in text_regions:
+                            if debug > 0:
+                                print(f'get_column_text_regions - adding tr {text_region.id} to col {col.id}')
+                            col.add_child(text_region)
+
+                        col.set_derived_id(scan_doc.id)
+                        if debug > 0:
+                            print(f'get_column_text_regions - updating col id to {col.id}')
+                        break
+                if col is None:
+                    metadata = copy.deepcopy(tr.metadata)
+                    coords = copy.deepcopy(tr.coords)
+                    text_regions = [tr] if len(tr.text_regions) == 0 else tr.text_regions
+                    if debug > 0:
+                        print(f'get_column_text_regions - creating new column for trs {[t.id for t in text_regions]}')
+                    col = pdm.PageXMLColumn(metadata=metadata, coords=coords,
+                                            text_regions=text_regions)
+                    col.set_derived_id(scan_doc.id)
+                    col.set_parent(scan_doc)
+                    for tr_type in tr.type:
+                        if tr_type not in {'text_region'} and tr_type not in col.type:
+                            col.add_type(tr_type)
+                    trs.append(col)
                 if debug > 0:
                     print('get_column_text_regions - MAIN TEXT REGION', tr.id)
                     print('\t', tr.type)
                     print('becomes part of col', col.id, col.stats, len(col.text_regions))
-                trs.append(col)
             else:
                 if debug > 0:
                     print('get_column_text_regions - NON-MAIN TEXT REGION', tr.id)
@@ -240,6 +260,13 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             trs += cols
         # tr_stats = combine_stats(trs)
         # print(ti, tr_stats)
+        if debug > 0:
+            print('\n')
+    if debug > 1:
+        print('\ncolumn text_regions:')
+        for tr in trs:
+            print('\t', tr.id, tr.stats)
+        print('\n')
     return trs
 
 

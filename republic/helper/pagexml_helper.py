@@ -87,15 +87,30 @@ def set_line_alignment(column: pdm.PageXMLColumn):
 
 
 def merge_columns(columns: List[pdm.PageXMLColumn],
-                  doc_id: str, metadata: dict) -> pdm.PageXMLColumn:
+                  doc_id: str, metadata: dict, lines_only: bool = False) -> pdm.PageXMLColumn:
     """Merge two columns into one, sorting lines by baseline height."""
-    merged_lines = [line for col in columns for line in col.get_lines()]
-    merged_lines = list(set(merged_lines))
-    sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
-    merged_coords = pdm.parse_derived_coords(sorted_lines)
-    merged_col = pdm.PageXMLColumn(doc_id=doc_id, doc_type='index_column',
-                                   metadata=metadata, coords=merged_coords,
-                                   lines=merged_lines)
+    if lines_only is True:
+        merged_lines = [line for col in columns for line in col.get_lines()]
+        merged_lines = list(set(merged_lines))
+        sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
+        merged_coords = pdm.parse_derived_coords(sorted_lines)
+        merged_col = pdm.PageXMLColumn(doc_id=doc_id,
+                                       metadata=metadata, coords=merged_coords,
+                                       lines=merged_lines)
+    else:
+        merged_trs = [tr for col in columns for tr in col.text_regions]
+        sorted_trs = sorted(merged_trs, key=lambda  x: x.coords.y)
+        merged_lines = [line for col in columns for line in col.lines]
+        sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
+        merged_coords = pdm.parse_derived_coords(sorted_trs + sorted_lines)
+        merged_col = pdm.PageXMLColumn(doc_id=doc_id,
+                                       metadata=metadata, coords=merged_coords,
+                                       text_regions=sorted_trs, lines=sorted_lines)
+
+    for col in columns:
+        for col_type in col.types:
+            if col_type not in merged_col.type:
+                merged_col.add_type(col_type)
     return merged_col
 
 
