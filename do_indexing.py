@@ -5,8 +5,9 @@ import time
 import json
 
 from elasticsearch.exceptions import ElasticsearchException
+from elasticsearch.exceptions import TransportError
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
-import pagexml.parser as pagexml_parser
+# import pagexml.parser as pagexml_parser
 
 from republic.helper.utils import get_commit_version
 
@@ -23,7 +24,7 @@ import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 
 import republic.parser.logical.pagexml_session_parser as session_parser
-# import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
+import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as res_parser
 import republic.parser.logical.index_page_parser as index_parser
 
