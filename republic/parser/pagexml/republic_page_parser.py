@@ -197,32 +197,52 @@ def combine_stats(text_regions: List[pdm.PageXMLTextRegion]) -> Dict[str, int]:
 
 
 def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, config: Dict[str, any],
-                            debug: bool = False) -> List[Union[pdm.PageXMLTextRegion, pdm.PageXMLColumn]]:
+                            debug: int = 0) -> List[Union[pdm.PageXMLTextRegion, pdm.PageXMLColumn]]:
     trs = []
     for ti, tr in enumerate(scan_doc.text_regions):
         if tr.parent is None:
             print('MISSING PARENT:', tr.id)
         if tr.coords.width <= max_col_width and is_even_side(tr) or is_odd_side(tr):
             if 'main' in tr.type or 'attendance' in tr.type:
-                col = pdm.PageXMLColumn(metadata=tr.metadata, coords=tr.coords,
-                                        text_regions=tr.text_regions, lines=tr.lines)
-                col.set_derived_id(scan_doc.id)
-                col.set_parent(scan_doc)
-                for tr_type in tr.type:
-                    if tr_type not in {'text_region'} and tr_type not in col.type:
-                        col.add_type(tr_type)
-                if debug:
+                col = None
+                for col_tr in trs:
+                    if pdm.is_horizontally_overlapping(tr, col_tr):
+                        col = col_tr
+                        text_regions = [tr] if len(tr.text_regions) == 0 else tr.text_regions
+                        for text_region in text_regions:
+                            if debug > 0:
+                                print(f'get_column_text_regions - adding tr {text_region.id} to col {col.id}')
+                            col.add_child(text_region)
+
+                        col.set_derived_id(scan_doc.id)
+                        if debug > 0:
+                            print(f'get_column_text_regions - updating col id to {col.id}')
+                        break
+                if col is None:
+                    metadata = copy.deepcopy(tr.metadata)
+                    coords = copy.deepcopy(tr.coords)
+                    text_regions = [tr] if len(tr.text_regions) == 0 else tr.text_regions
+                    if debug > 0:
+                        print(f'get_column_text_regions - creating new column for trs {[t.id for t in text_regions]}')
+                    col = pdm.PageXMLColumn(metadata=metadata, coords=coords,
+                                            text_regions=text_regions)
+                    col.set_derived_id(scan_doc.id)
+                    col.set_parent(scan_doc)
+                    for tr_type in tr.type:
+                        if tr_type not in {'text_region'} and tr_type not in col.type:
+                            col.add_type(tr_type)
+                    trs.append(col)
+                if debug > 0:
                     print('get_column_text_regions - MAIN TEXT REGION', tr.id)
                     print('\t', tr.type)
                     print('becomes part of col', col.id, col.stats, len(col.text_regions))
-                trs.append(col)
             else:
-                if debug:
+                if debug > 0:
                     print('get_column_text_regions - NON-MAIN TEXT REGION', tr.id)
                     print('\t', tr.type)
                 trs.append(tr)
         else:
-            if debug:
+            if debug > 0:
                 if tr.coords.width > max_col_width:
                     print("SPLITTING COLUMN BECAUSE IT IS TOO WIDE", tr.id)
                 else:
@@ -232,7 +252,7 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             config['column_gap']['gap_threshold'] = 20
             config['column_gap']['gap_pixel_freq_ratio'] = 0.5
             cols = split_lines_on_column_gaps(tr, config, debug=debug)
-            if debug:
+            if debug > 0:
                 for col in cols:
                     print("COLUMN:", col.id)
                     for line in col.lines:
@@ -240,18 +260,25 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             trs += cols
         # tr_stats = combine_stats(trs)
         # print(ti, tr_stats)
+        if debug > 0:
+            print('\n')
+    if debug > 1:
+        print('\ncolumn text_regions:')
+        for tr in trs:
+            print('\t', tr.id, tr.stats)
+        print('\n')
     return trs
 
 
 def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXMLTextRegion],
                                  page_type_index: Dict[int, any], config: Dict[str, any],
-                                 debug: bool = False) -> List[pdm.PageXMLPage]:
+                                 debug: int = 0) -> List[pdm.PageXMLPage]:
     page_even = initialize_pagexml_page(scan_doc, 'even', page_type_index)
     page_odd = initialize_pagexml_page(scan_doc, 'odd', page_type_index)
     tr_id_map = {}
     undecided = []
     append_count = 0
-    if debug:
+    if debug > 0:
         print(f'STARTING WITH {len(trs)} TRS')
     for text_region in sorted(trs, key=lambda x: x.coords.x):
         if text_region.has_type('main') and text_region.has_type('extra'):
@@ -263,13 +290,13 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
         as_extra = 'extra' in text_region.type
         text_region.metadata['scan_id'] = scan_doc.id
         if text_region.metadata and 'type' in text_region.metadata:
-            if debug:
+            if debug > 0:
                 print("DECIDING EVEN/ODD SIDE", text_region.id)
             if is_even_side(text_region) or is_odd_side(text_region):
                 side = 'EVEN' if is_even_side(text_region) else 'ODD'
                 page = page_even if is_even_side(text_region) else page_odd
                 before_stats = page.stats
-                if debug:
+                if debug > 0:
                     print(f"\tPAGE {side} STATS BEFORE ADDING DERIVED TR:", page.stats)
                     print(f"\t{side}:", text_region.id, text_region.type)
                     print('\t\t', text_region.stats)
@@ -280,18 +307,18 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                     print('text_region:', text_region.stats)
                     print('AFTER:', after_stats)
                     raise ValueError('Line missing in page line count after adding text_region')
-                if debug:
+                if debug > 0:
                     print(f"\tPAGE {side} STATS AFTER ADDING DERIVED TR:", page.stats)
                 append_count += 1
             else:
                 if text_region.coords is None:
                     lines = text_region.get_lines()
                     text_region.coords = pdm.parse_derived_coords(lines)
-                if debug:
+                if debug > 0:
                     print('\tSPLITTING PAGE BOUNDARY OVERLAPPING REGION:', text_region.id, text_region.type)
                     # print(config)
                 sub_trs = split_lines_on_column_gaps(text_region, config=config, debug=debug)
-                if debug:
+                if debug > 0:
                     print('\t\tnumber of sub text regions:', len(sub_trs))
                 for sub_tr in sub_trs:
                     if is_even_side(sub_tr):
@@ -301,47 +328,47 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                         side = 'odd'
                         page = page_odd
                     else:
-                        if debug:
+                        if debug > 0:
                             print('\tUNDECIDED:', sub_tr.id, sub_tr.type)
                         undecided.append(sub_tr)
                         append_count += 1
                         continue
                     sub_tr.set_derived_id(page.id)
                     sub_tr.set_parent(page)
-                    if debug:
+                    if debug > 0:
                         print(f"PAGE {side} STATS BEFORE ADDING DERIVED TR:", page.stats)
                     page.add_child(sub_tr, as_extra=as_extra)
                     append_count += 1
-                    if debug:
+                    if debug > 0:
                         print(f"PAGE {side} STATS AFTER ADDING DERIVED TR:", page.stats)
-                    if debug:
+                    if debug > 0:
                         print(f'\tSPLIT SUB TR {side}:', sub_tr.id)
                         print('\t', sub_tr.type)
                         print('\t', sub_tr.stats)
                 # undecided.append(text_region)
         elif text_region.lines:
-            if debug:
+            if debug > 0:
                 print("TEXTREGION HAS NO TYPE BUT HAS LINES:", text_region.id)
             even_lines = [line for line in text_region.lines if is_even_side(line)]
             odd_lines = [line for line in text_region.lines if is_odd_side(line)]
             if len(even_lines) == 0:
-                if debug:
+                if debug > 0:
                     print("NO EVEN, MOVE TR TO ODD")
                 page_odd.add_child(text_region, as_extra=as_extra)
             elif len(odd_lines) == 0:
-                if debug:
+                if debug > 0:
                     print("NO ODD, MOVE TR TO EVEN")
                 page_even.add_child(text_region, as_extra=as_extra)
             else:
                 # The text region crosses the page boundary. Split the lines into new text regions per
                 # page, and create new text regions
-                if debug:
+                if debug > 0:
                     print("SPLIT LINES")
                 odd_region = pdm.PageXMLTextRegion(lines=odd_lines, coords=pdm.parse_derived_coords(odd_lines),
                                                    metadata=text_region.metadata)
                 even_region = pdm.PageXMLTextRegion(lines=even_lines, coords=pdm.parse_derived_coords(even_lines),
                                                     metadata=text_region.metadata)
-                if debug:
+                if debug > 0:
                     print("ODD REGION", odd_region.id, odd_region.stats)
                     print("EVEN REGION", even_region.id, even_region.stats)
                 even_region.set_parent(page_even)
@@ -353,28 +380,28 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                 page_even.add_child(even_region, as_extra=as_extra)
                 page_odd.add_child(odd_region, as_extra=as_extra)
         elif text_region.text_regions:
-            if debug:
+            if debug > 1:
                 print("TEXTREGION HAS TEXTREGIONS:", text_region.id)
             even_text_regions = [text_region for text_region in text_region.text_regions if is_even_side(text_region)]
             odd_text_regions = [text_region for text_region in text_region.text_regions if is_odd_side(text_region)]
             if len(even_text_regions) == 0:
-                if debug:
+                if debug > 1:
                     print("NO EVEN, MOVE TR TO ODD")
                 page_odd.add_child(text_region, as_extra=as_extra)
             elif len(odd_text_regions) == 0:
-                if debug:
+                if debug > 1:
                     print("NO ODD, MOVE TR TO EVEN")
                 page_even.add_child(text_region, as_extra=as_extra)
             else:
                 # The text region crosses the page boundary. Split the text_regions into new text regions per
                 # page, and create new text regions
-                if debug:
+                if debug > 1:
                     print("SPLIT TEXTREGION")
                 odd_region = pdm.PageXMLTextRegion(text_regions=odd_text_regions, metadata=text_region.metadata,
                                                    coords=pdm.parse_derived_coords(odd_text_regions))
                 even_region = pdm.PageXMLTextRegion(text_regions=even_text_regions, metadata=text_region.metadata,
                                                     coords=pdm.parse_derived_coords(even_text_regions))
-                if debug:
+                if debug > 1:
                     print("ODD REGION", odd_region.id, odd_region.stats)
                     print("EVEN REGION", even_region.id, even_region.stats)
                 tr_id_map[even_region.id] = text_region.id
@@ -385,11 +412,11 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
             print('SKIPPING TR', text_region.id)
             # undecided.append(text_region)
             # append_count += 1
-        if debug:
+        if debug > 1:
             print('APPEND_COUNT:', append_count)
             print('EVEN PAGE STATS:', page_even.stats)
             print('ODD PAGE STATS:', page_odd.stats)
-    if debug:
+    if debug > 1:
         print('NUM UNDECIDED:', len(undecided))
         for tr in undecided:
             print('\t', tr.id, tr.stats)
@@ -410,7 +437,7 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
 
 def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
                      undecided: List[pdm.PageXMLTextRegion],
-                     page_type_index: Dict[int, any], debug: bool = False):
+                     page_type_index: Dict[int, any], debug: int = 0):
     if 'normal_odd_end' in page_odd.metadata:
         for undecided_tr in undecided:
             undecided_tr.metadata['normal_odd_end'] = page_odd.metadata['normal_odd_end']
@@ -451,7 +478,7 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
                 decided.append(undecided_tr)
         undecided = [tr for tr in undecided if tr not in decided]
     for undecided_tr in undecided:
-        if debug:
+        if debug > 1:
             print("UNKNOWN:", undecided_tr.id, undecided_tr.stats)
             # print('\tpage_even metadata:', page_even.metadata)
             # print('\tpage_odd metadata:', page_odd.metadata)
@@ -467,7 +494,7 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
 
 
 def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] = None,
-                     debug: bool = False) -> List[pdm.PageXMLPage]:
+                     debug: int = 0) -> List[pdm.PageXMLPage]:
     scan_stats = combine_stats([scan_doc])
     pages: List[pdm.PageXMLPage] = []
     if not scan_doc.text_regions:
@@ -490,21 +517,24 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
                 config['column_gap']['gap_threshold'] = 10
     else:
         max_col_width = 2200
-    # print("INITIAL EVEN:", page_even.stats)
-    # print(page_even.type)
-    # print("INITIAL ODD:", page_odd.stats)
-    # print(page_odd.type)
+    if debug > 1:
+        print("INITIAL EVEN:", pages[0].stats)
+        print(pages[0].type)
+        print("INITIAL ODD:", pages[1].stats)
+        print(pages[1].type)
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     trs = get_column_text_regions(scan_doc, max_col_width, config, debug=debug)
     tr_stats = combine_stats(trs)
     if tr_stats['words'] != scan_stats['words']:
         raise ValueError(f'Unequal number of words in trs ({tr_stats["words"]}) '
                          f'and scan ({scan_stats["words"]}) for scan {scan_doc.id}')
-    # print('scan_stats:', scan_stats)
-    # print('tr_stats:', tr_stats)
+    if debug > 0:
+        print('scan_stats:', scan_stats)
+        print('tr_stats:', tr_stats)
     pages = assign_trs_to_odd_even_pages(scan_doc, trs, page_type_index, config, debug=debug)
     page_stats = combine_stats(pages)
-    # print('page_stats:', page_stats)
+    if debug > 0:
+        print('page_stats:', page_stats)
     if page_stats['words'] != scan_stats['words']:
         for page in pages:
             print('stats for page', page.id, page.stats)
@@ -588,17 +618,17 @@ def split_merged_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[pdm.
     return split_regions
 
 
-def separate_title_lines(page: pdm.PageXMLPage, debug: bool = False) -> pdm.PageXMLPage:
+def separate_title_lines(page: pdm.PageXMLPage, debug: int = 0) -> pdm.PageXMLPage:
     outer: List[pdm.PageXMLDoc] = page.columns + page.text_regions + page.extra
     if 3760 <= page.metadata['inventory_num'] <= 3864:
         max_col_width = 1000
     else:
         max_col_width = 1500
     for tr in outer:
-        if debug is True:
+        if debug > 0:
             print('\tTEXT REGION', tr.id, tr.type)
         if tr.coords.width > max_col_width:
-            if debug is True:
+            if debug > 0:
                 print('HAS TITLE LINES:', tr.id)
             last_title_line_top = 0
             for line in tr.lines:
@@ -606,11 +636,11 @@ def separate_title_lines(page: pdm.PageXMLPage, debug: bool = False) -> pdm.Page
                     continue
                 if line.coords.top > 2000:
                     continue
-                if debug is True:
+                if debug > 0:
                     print('\tTITLE LINE:', line.coords.width, line.coords.top, line.text)
                 if line.coords.top > last_title_line_top:
                     last_title_line_top = line.coords.top
-                    if debug is True:
+                    if debug > 0:
                         print('\tLAST TITLE LINE:', line.coords.width, line.coords.top, line.text)
             title_lines = [line for line in tr.lines if line.coords.top <= last_title_line_top]
             col_lines = [line for line in tr.lines if line.coords.top > last_title_line_top]
@@ -621,7 +651,7 @@ def separate_title_lines(page: pdm.PageXMLPage, debug: bool = False) -> pdm.Page
                 title_tr = pdm.PageXMLTextRegion(coords=title_tr_coords, lines=title_lines)
                 title_tr.set_derived_id(page.metadata['scan_id'])
                 page.extra.append(title_tr)
-                if debug is True:
+                if debug > 0:
                     print('BELOW TITLE:')
                     for line in tr.lines:
                         print(f'\t{line.coords.left: >4}-{line.coords.right: <4}\t{line.coords.top}\t{line.text}')

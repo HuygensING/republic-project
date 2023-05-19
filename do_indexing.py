@@ -7,6 +7,7 @@ import time
 from typing import Dict, Union
 
 from elasticsearch.exceptions import ElasticsearchException
+from elasticsearch.exceptions import TransportError
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 # import pagexml.parser as pagexml_parser
 

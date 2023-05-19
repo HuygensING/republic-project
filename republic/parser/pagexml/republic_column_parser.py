@@ -75,14 +75,14 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
 
 
 def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any],
-                     debug: bool = False):
+                     debug: int = 0):
     num_column_lines = len(lines) / 2 if len(lines) < 140 else 60
     gap_pixel_freq_threshold = int(num_column_lines * config["column_gap"]["gap_pixel_freq_ratio"])
-    if debug:
+    if debug > 0:
         print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
         print("freq_threshold:", gap_pixel_freq_threshold)
     gap_pixel_dist = compute_pixel_dist(lines)
-    # if debug:
+    # if debug > 0:
     #     print("gap_pixel_dist:", gap_pixel_dist)
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config)
     return gap_pixel_intervals
@@ -192,9 +192,9 @@ def make_derived_column(lines: List[pdm.PageXMLTextLine], metadata: dict, page_i
 def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                                config: Dict[str, any],
                                overlap_threshold: float = 0.5,
-                               debug: bool = False) -> List[pdm.PageXMLColumn]:
+                               debug: int = 0) -> List[pdm.PageXMLColumn]:
     column_ranges = find_column_gaps(text_region.lines, config, debug=debug)
-    if debug:
+    if debug > 0:
         print('split_lines_on_column_gaps - column_gap:', config['column_gap'])
         print("COLUMN RANGES:", column_ranges)
     column_ranges = [col_range for col_range in column_ranges if col_range["end"] - col_range["start"] >= 20]
@@ -219,7 +219,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             append_count += 1
             # print(f"APPENDING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
     columns = []
-    if debug:
+    if debug > 0:
         print('RANGE SPLIT num_lines:', num_lines, 'append_count:', append_count)
         for ci, lines in enumerate(column_lines):
             print('\tcolumn', ci, '\tlines:', len(lines))
@@ -244,7 +244,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
     merge_cols = {col for merge_set in merge_sets for col in merge_set}
     non_overlapping_cols = [col for col in columns if col not in merge_cols]
     for merge_set in merge_sets:
-        if debug:
+        if debug > 0:
             print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
         merged_col = pagexml_helper.merge_columns(merge_set, "temp_id", merge_set[0].metadata)
         if text_region.parent and text_region.parent.id:
@@ -254,7 +254,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             merged_col.set_derived_id(text_region.id)
         non_overlapping_cols.append(merged_col)
     columns = non_overlapping_cols
-    if debug:
+    if debug > 0:
         print("NUM COLUMNS:", len(columns))
         print("EXTRA LINES BEFORE:", len(extra_lines))
         for line in extra_lines:
@@ -283,10 +283,10 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             # print(f"APPENDING NON-COL LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             non_col_lines.append(line)
             append_count += 1
-    if debug is True:
+    if debug > 0:
         print('append_count:', append_count)
     extra_lines = non_col_lines
-    if debug is True:
+    if debug > 0:
         print("EXTRA LINES AFTER:", len(extra_lines))
     extra = None
     if len(extra_lines) > 0:
@@ -307,11 +307,11 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
         config = copy.deepcopy(config)
         config["column_gap"]["gap_pixel_freq_ratio"] = 0.01
-        if debug:
+        if debug > 0:
             print('SPLITTING EXTRA')
         extra_cols = split_lines_on_column_gaps(extra, config, debug=debug)
         for extra_col in extra_cols:
-            if debug:
+            if debug > 0:
                 print('\tEXTRA COL AFTER EXTRA SPLIT:', extra_col.stats)
             extra_col.set_parent(text_region.parent)
             if text_region.parent:
