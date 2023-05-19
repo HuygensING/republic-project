@@ -11,7 +11,7 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.phrase.phrase_model import PhraseModel
 
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
-from republic.analyser.attendance_lists.pattern_finders import province_searcher, president_searcher, make_groslijst
+from republic.analyser.attendance_lists.pattern_finders import search_provinces, search_presidents, make_groslijst
 from republic.model.republic_attendancelist_models import MatchHeer
 import republic.analyser.attendance_lists.parse_delegates as parse_delegates
 from republic.analyser.attendance_lists.searchers import make_junksweeper
@@ -175,11 +175,11 @@ class RunAll(object):
 
     def initial_find(self):
         print("1. finding presidents")
-        presidents = president_searcher(presentielijsten=self.searchobs)  # update
+        presidents = search_presidents(presentielijsten=self.searchobs)  # update
         print(len(presidents), 'found')
         self.presidents = [h.strip() for h in presidents]
         print("2.find provincial extraordinaris gedeputeerden")
-        ps = province_searcher(presentielijsten=self.searchobs)
+        ps = search_provinces(presentielijsten=self.searchobs)
 
     def find_unmarked_text(self, sweep=True):
         print("3. finding unmarked text")
