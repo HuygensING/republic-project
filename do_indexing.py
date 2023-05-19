@@ -1,12 +1,14 @@
-from typing import Dict, Union
+import glob
+import gzip
+import json
 import multiprocessing
 import os
 import time
-import json
+from typing import Dict, Union
 
 from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
-import pagexml.parser as pagexml_parser
+# import pagexml.parser as pagexml_parser
 
 from republic.helper.utils import get_commit_version
 
@@ -23,7 +25,7 @@ import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 
 import republic.parser.logical.pagexml_session_parser as session_parser
-# import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
+import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as res_parser
 import republic.parser.logical.index_page_parser as index_parser
 
@@ -157,26 +159,50 @@ def do_page_type_indexing_pagexml(inv_num: int, year: int):
         rep_es.index_page(page)
 
 
-def do_session_lines_indexing(inv_num: int, year: int):
-    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+def get_sessions_from_pages(inv_num, year):
+    print(f"Writing PageXML sessions for inventory {inv_num} (year {year})...")
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
-    if "period_start" not in inv_metadata:
-        return None
+    session_inv_dir = f'data/sessions/{inv_num}'
+    if os.path.exists(session_inv_dir) is False:
+        os.mkdir(session_inv_dir)
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     pages.sort(key=lambda page: page.metadata['page_num'])
     pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
     for mi, session in enumerate(session_parser.get_sessions(pages, inv_num, inv_metadata)):
         print('session received from get_sessions:', session.id)
-        source_ids = session.metadata['page_ids']
         date_string = None
         for match in session.evidence:
             if match.has_label('session_date'):
                 date_string = match.string
         print('\tdate string:', date_string)
+        json_file = os.path.join(session_inv_dir, f"session-{session.date.isoformat()}.json.gz")
+        with gzip.open(json_file, 'wt') as fh:
+            json.dump(session.json, fh)
+
+
+def get_sessions_from_files(inv_num):
+    session_inv_dir = f'data/sessions/{inv_num}'
+    if os.path.exists(session_inv_dir) is False:
+        return None
+    session_files = glob.glob(os.path.join(session_inv_dir, 'session-*.json.gz'))
+    for session_file in session_files:
+        with gzip.open(session_file, 'rt') as fh:
+            session = json.load(fh)
+            yield rdm.json_to_republic_session(session)
+
+
+def do_session_lines_indexing(inv_num: int, year: int):
+    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    if "period_start" not in inv_metadata:
+        return None
+    for session in get_sessions_from_files(inv_num):
+        source_ids = session.metadata['page_ids']
         try:
             prov_url = rep_es.post_provenance(source_ids=source_ids, target_ids=[session.id],
                                               source_index='pages', target_index='session_lines')
             session.metadata['prov_url'] = prov_url
+            print('indexing session from files', session.id)
             rep_es.index_session_with_lines(session)
         except ElasticsearchException as error:
             print(session.id)
@@ -360,6 +386,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         do_page_indexing_pagexml(task["inv_num"], task["year"])
     elif task["type"] == "page_types":
         do_page_type_indexing_pagexml(task["inv_num"], task["year"])
+    elif task["type"] == "session_files":
+        get_sessions_from_pages(task["inv_num"], task["year"])
     elif task["type"] == "session_lines":
         do_session_lines_indexing(task["inv_num"], task["year"])
     elif task["type"] == "session_text":
@@ -384,11 +412,10 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     print(f"Finished indexing {task['type']} for inventory {task['inv_num']}, year {task['year']}")
 
 
-def main():
-    # Get the arguments from the command-line except the filename
+def parse_args():
     argv = sys.argv[1:]
+    # Define the getopt parameters
     try:
-        # Define the getopt parameters
         opts, args = getopt.getopt(argv, 's:e:i:n:l:', ['foperand', 'soperand'])
         start, end, indexing_step, num_processes, index_label = None, None, None, None, None
         for opt, arg in opts:
@@ -405,44 +432,60 @@ def main():
         if not start or not end or not indexing_step or not num_processes:
             print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes> -l <label_index_name>')
             sys.exit(2)
-        if index_label:
-            for key in rep_es.config:
-                if key.startswith(indexing_step) and key.endswith("_index"):
-                    rep_es.config[key] = f"{rep_es.config[key]}_{index_label}"
-                    print(key, rep_es.config[key])
-        if start in range(1576, 1797):
-
-            tasks = []
-            years = [year for year in range(start, end+1)]
-            for year in years:
-                for inv_map in get_inventories_by_year(year):
-                    task = {
-                        'year': year,
-                        'type': indexing_step,
-                        'commit': commit_version,
-                        'inv_num': inv_map['inventory_num']
-                    }
-                    tasks.append(task)
-            print(f'indexing {indexing_step} for years', years)
-        elif start in range(3000, 5000):
-            inv_nums = [inv_num for inv_num in range(start, end+1)]
-            tasks = [{"inv_num": inv_num, "type": indexing_step, "commit": commit_version} for inv_num in range(start, end+1)]
-            for task in tasks:
-                inv_map = get_inventory_by_num(task["inv_num"])
-                if inv_map is None:
-                    print('No inventory metadata for inventory number', task['inv_num'])
-                    continue
-                task["year"] = inv_map["year"]
-            tasks = [task for task in tasks if 'year' in task and task['year'] is not None]
-            print(f'indexing {indexing_step} for inventories', inv_nums)
-        else:
-            raise ValueError("Unknown start number, expecting 1576-1796 or 3760-3864")
+        indexing_steps = indexing_step.split(';')
+        return start, end, indexing_steps, num_processes, index_label
     except getopt.GetoptError:
         # Print something useful
         print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
         sys.exit(2)
-    with multiprocessing.Pool(processes=num_processes) as pool:
-        pool.map(process_inventory, tasks)
+
+
+def get_tasks(start, end, indexing_step, num_processes, index_label):
+    if index_label:
+        for key in rep_es.config:
+            if key.startswith(indexing_step) and key.endswith("_index"):
+                rep_es.config[key] = f"{rep_es.config[key]}_{index_label}"
+                print(key, rep_es.config[key])
+    if start in range(1576, 1797):
+
+        tasks = []
+        years = [year for year in range(start, end+1)]
+        for year in years:
+            for inv_map in get_inventories_by_year(year):
+                task = {
+                    'year': year,
+                    'type': indexing_step,
+                    'commit': commit_version,
+                    'inv_num': inv_map['inventory_num']
+                }
+                tasks.append(task)
+        print(f'indexing {indexing_step} for years', years)
+    elif start in range(3000, 5000):
+        inv_nums = [inv_num for inv_num in range(start, end+1)]
+        tasks = [{"inv_num": inv_num, "type": indexing_step, "commit": commit_version} for inv_num in range(start, end+1)]
+        for task in tasks:
+            inv_map = get_inventory_by_num(task["inv_num"])
+            if inv_map is None:
+                print('No inventory metadata for inventory number', task['inv_num'])
+                continue
+            task["year"] = inv_map["year"]
+        tasks = [task for task in tasks if 'year' in task and task['year'] is not None]
+        print(f'indexing {indexing_step} for inventories', inv_nums)
+    else:
+        raise ValueError("Unknown start number, expecting 1576-1796 or 3760-3864")
+    return tasks
+
+
+def main():
+    # Get the arguments from the command-line except the filename
+    start, end, indexing_steps, num_processes, index_label = parse_args()
+    for indexing_step in indexing_steps:
+        tasks = get_tasks(start, end, indexing_step, num_processes, index_label)
+        with multiprocessing.Pool(processes=num_processes) as pool:
+            pool.map(process_inventory, tasks)
+        if indexing_step == "session_lines":
+            for task in tasks:
+                do_session_lines_indexing(task["inv_num"], task["year"])
 
 
 if __name__ == "__main__":
