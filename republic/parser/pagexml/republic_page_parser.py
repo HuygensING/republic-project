@@ -141,13 +141,37 @@ def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
     return odd_end, even_end
 
 
-def is_even_side(item: pdm.PhysicalStructureDoc) -> bool:
+def is_even_side(item: pdm.PhysicalStructureDoc, debug: int = 0) -> bool:
     odd_end, even_end = get_page_split_widths(item)
+    if item.coords.right < even_end:
+        return True
+    elif item.coords.left > even_end:
+        return False
+    even_width = even_end - item.coords.left if item.coords.left < even_end else 0
+    even_ratio = even_width / item.coords.width
+    if even_ratio > 0.7:
+        return True
+    elif even_ratio < 0.3:
+        return False
+    if debug > 2:
+        print(f'is_even_side - odd_end: {odd_end}\t\teven_end: {even_end}')
+        print(f'is_even_side - even_width: {even_width}')
+        print(f'is_even_side - even_ratio: {even_width / item.coords.width}')
     return item.coords.left < even_end - 100 and item.coords.right < even_end
 
 
 def is_odd_side(item: pdm.PhysicalStructureDoc) -> bool:
     odd_end, even_end = get_page_split_widths(item)
+    if item.coords.right < even_end:
+        return False
+    elif item.coords.left > even_end:
+        return True
+    even_width = even_end - item.coords.left if item.coords.left < even_end else 0
+    even_ratio = even_width / item.coords.width
+    if even_ratio > 0.7:
+        return False
+    elif even_ratio < 0.3:
+        return True
     return item.coords.left > even_end - 300 and item.coords.right > even_end
 
 
@@ -206,6 +230,8 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             if 'main' in tr.type or 'attendance' in tr.type:
                 col = None
                 for col_tr in trs:
+                    if 'column' not in col_tr.type:
+                        continue
                     if pdm.is_horizontally_overlapping(tr, col_tr):
                         col = col_tr
                         text_regions = [tr] if len(tr.text_regions) == 0 else tr.text_regions
@@ -244,9 +270,9 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
         else:
             if debug > 0:
                 if tr.coords.width > max_col_width:
-                    print("SPLITTING COLUMN BECAUSE IT IS TOO WIDE", tr.id)
+                    print("get_column_text_regions - SPLITTING COLUMN BECAUSE IT IS TOO WIDE", tr.id)
                 else:
-                    print("SPLITTING COLUMN FOR SOME OTHER REASON", tr.id)
+                    print("get_column_text_regions - SPLITTING COLUMN FOR SOME OTHER REASON", tr.id)
                 print(tr.stats)
             config = copy.deepcopy(config)
             config['column_gap']['gap_threshold'] = 20
@@ -254,16 +280,21 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             cols = split_lines_on_column_gaps(tr, config, debug=debug)
             if debug > 0:
                 for col in cols:
-                    print("COLUMN:", col.id)
+                    print("get_column_text_regions - after tr split -> COLUMN:", col.id)
                     for line in col.lines:
-                        print(f"\tLINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+                        print(f"\tget_column_text_regions - LINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             trs += cols
+        if debug > 0:
+            print('\nADDED TRS:')
+            for added_tr in trs:
+                print('\tIN TRS:', added_tr.id)
+            print('\n')
         # tr_stats = combine_stats(trs)
         # print(ti, tr_stats)
         if debug > 0:
             print('\n')
     if debug > 1:
-        print('\ncolumn text_regions:')
+        print('\nget_column_text_regions - column text_regions:')
         for tr in trs:
             print('\t', tr.id, tr.stats)
         print('\n')
@@ -279,7 +310,7 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
     undecided = []
     append_count = 0
     if debug > 0:
-        print(f'STARTING WITH {len(trs)} TRS')
+        print(f'STARTING WITH {len(trs)} TRS\n')
     for text_region in sorted(trs, key=lambda x: x.coords.x):
         if text_region.has_type('main') and text_region.has_type('extra'):
             text_region.remove_type('extra')
@@ -416,6 +447,8 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
             print('APPEND_COUNT:', append_count)
             print('EVEN PAGE STATS:', page_even.stats)
             print('ODD PAGE STATS:', page_odd.stats)
+        if debug > 0:
+            print('\n')
     if debug > 1:
         print('NUM UNDECIDED:', len(undecided))
         for tr in undecided:
@@ -526,6 +559,9 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     trs = get_column_text_regions(scan_doc, max_col_width, config, debug=debug)
     tr_stats = combine_stats(trs)
     if tr_stats['words'] != scan_stats['words']:
+        for tr in trs:
+            print(tr.id, tr.stats)
+        print(scan_stats)
         raise ValueError(f'Unequal number of words in trs ({tr_stats["words"]}) '
                          f'and scan ({scan_stats["words"]}) for scan {scan_doc.id}')
     if debug > 0:

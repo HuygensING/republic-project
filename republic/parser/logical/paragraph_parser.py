@@ -1,3 +1,4 @@
+from __future__ import annotations
 import copy
 from collections import defaultdict
 from typing import Dict, Generator, List, Tuple, Union
@@ -49,7 +50,7 @@ def is_paragraph_boundary(prev_line: Union[None, pdm.PageXMLTextLine],
 
 class ParagraphLines:
 
-    def __init__(self, lines: Union[pdm.PageXMLTextLine, List[pdm.PageXMLTextLine]]):
+    def __init__(self, lines: Union[pdm.PageXMLTextLine, List[pdm.PageXMLTextLine]] = None):
         self.lines = []
         self.lefts: np.array = np.array([])
         self.rights: np.array = np.array([])
@@ -64,7 +65,9 @@ class ParagraphLines:
         self.avg_char_width = 0
         self.insertion_lines = set()
         self.noise_lines = set()
-        self.add_lines(lines)
+        self.empty_lines = set()
+        if lines is not None:
+            self.add_lines(lines)
 
     def __iter__(self):
         for line in self.lines:
@@ -72,6 +75,21 @@ class ParagraphLines:
 
     def __len__(self):
         return len(self.lines)
+
+    def num_lines(self, count_all: bool = False):
+        if count_all:
+            return len(self.lines) + len(self.empty_lines) + len(self.noise_lines)
+        else:
+            return len(self.lines)
+
+    def __add__(self, other: ParagraphLines):
+        merge_lines = self.lines + other.lines
+        merge_para = ParagraphLines(merge_lines)
+        merge_para.start_type = self.start_type
+        merge_para.end_type = other.end_type
+        merge_para.insertion_lines = self.insertion_lines.union(other.insertion_lines)
+        merge_para.noise_lines = self.noise_lines.union(other.noise_lines)
+        return merge_para
 
     @property
     def json(self):
@@ -87,6 +105,16 @@ class ParagraphLines:
             'avg_char_width': self.avg_char_width,
             'lines': [line.text for line in self.lines],
         }
+
+    @property
+    def first(self):
+        if len(self.lines) > 0:
+            for line in self.lines:
+                if line in self.insertion_lines:
+                    continue
+                return line
+        else:
+            return None
 
     @property
     def last(self):
@@ -173,6 +201,8 @@ def get_relative_position(curr_line: pdm.PageXMLTextLine, para_lines: ParagraphL
 
 
 def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
+    if len(lines) == 0:
+        return []
     column_lines = defaultdict(list)
     for line in lines:
         column_lines[line.metadata['column_id']].append(line)
@@ -189,10 +219,17 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
     paras = []
     para_lines = None
     prev_page_id = None
+    num_lines = len([line for line in lines if line.text is not None])
+    num_grouped_lines = sum([len(line_group) for line_group in grouped_lines])
+    if num_grouped_lines != num_lines:
+        raise ValueError(f'horizontal grouping of lines has changed the number of lines '
+                         f'from {num_lines} to {num_grouped_lines}')
     for gi, curr_group in enumerate(grouped_lines):
         if debug > 1:
-            print(f'LINE GROUP {gi}')
+            print(f'split_paragraphs - LINE GROUP {gi}')
         for ci, curr_line in enumerate(curr_group):
+            if debug > 0:
+                print('split_paragraphs - curr_line:', curr_line.id)
             if prev_page_id is None or prev_page_id != curr_line.metadata['page_id']:
                 if debug > 1:
                     print(f'-----------------------------------\n'
@@ -201,10 +238,15 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                 pass
             prev_page_id = curr_line.metadata['page_id']
             if curr_line.text is None:
+                if para_lines is None:
+                    para_lines = ParagraphLines()
+                para_lines.empty_lines.add(curr_line)
+                if debug > 0:
+                    print('\tnoise line:', curr_line.id)
                 continue
             if debug > 0:
                 print('----------------------------------------------------------------------------')
-                print('split_paragraphs - iterating lines - curr_line:', curr_line.text)
+                print('split_paragraphs - iterating lines - curr_line:', curr_line.id, curr_line.text)
             if debug > 2:
                 coords = curr_line.coords
                 baseline = curr_line.baseline
@@ -219,7 +261,7 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                 if debug > 0:
                     print('\tSTART: empty para_lines')
                 para_lines = ParagraphLines([curr_line])
-                para_lines.start_type = 'para_start'
+                para_lines.start_type = 'para_start' if curr_line.text[0].isupper() else 'para_mid'
                 continue
             elif pdm.in_same_column(curr_line, para_lines.last) is False:
                 if debug > 0:
@@ -283,6 +325,7 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                 elif abs(rel_pos['right_indent']) < para_lines.avg_char_width * 2:
                     # line and para are right-aligned
                     if len(curr_group) > 1 and curr_line == curr_group[-1]:
+                        para_lines.noise_lines.add(curr_line)
                         if debug > 0:
                             print('\tSKIP: curr line is right-aligned with para, and is noise')
                     elif rel_pos['left_indent'] > 0:
@@ -292,7 +335,8 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                         para_lines.add_lines(curr_line)
                     else:
                         # curr line is negatively left-indented, new para
-                        print('\tSPLIT: curr line is negatively left-indented, new para')
+                        if debug > 0:
+                            print('\tSPLIT: curr line is negatively left-indented, new para')
                         para_lines.end_type = 'para_end'
                         paras.append(para_lines)
                         yield para_lines
@@ -307,7 +351,7 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                         if debug > 0:
                             print('\tSKIP: curr line is right-aligned with para, and is noise')
                     # line and para are not aligned
-                    elif is_missing_text_insertion(ci, curr_line, gi, grouped_lines, para_lines, debug=debug):
+                    elif is_missing_text_insertion(curr_line, gi, grouped_lines, para_lines, debug=debug):
                         if debug > 0:
                             print('\tAPPEND: line is insertion of missing text')
                         para_lines.add_insertion_line(curr_line)
@@ -319,15 +363,17 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                         yield para_lines
                         para_lines = ParagraphLines([curr_line])
                         para_lines.start_type = 'para_start'
-    if len(para_lines.lines) > 0:
+    if para_lines and len(para_lines.lines) > 0:
         para_lines.end_type = 'para_end'
         paras.append(para_lines)
         yield para_lines
     return paras
 
 
-def is_missing_text_insertion(curr_index, curr_line, group_index, grouped_lines, para_lines,
+def is_missing_text_insertion(curr_line, group_index, grouped_lines, para_lines,
                               debug: int = 0):
+    if len(grouped_lines) <= group_index+1:
+        return False
     next_line = grouped_lines[group_index+1][0]
     prev_line = para_lines.last
     if prev_line.metadata['column_id'] == curr_line.metadata['column_id']:

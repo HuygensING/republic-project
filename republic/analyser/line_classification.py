@@ -1,16 +1,20 @@
-from typing import Dict, Generator, List, Set, Tuple, Union
+import gzip
+import json
+import os
+import pickle
 import re
-from string import punctuation
 from collections import Counter
 from collections import defaultdict
-import pickle
+from string import punctuation
+from typing import Dict, Generator, List, Set, Tuple, Union
 
-from Levenshtein import distance
+import pagexml.model.physical_document_model as pdm
 import torch
-from torch import nn
 import torch.autograd as autograd
 import torch.nn.functional as F
-import pagexml.model.physical_document_model as pdm
+from Levenshtein import distance
+from pagexml.parser import json_to_pagexml_page
+from torch import nn
 
 # import republic.model.physical_document_model as pdm
 from republic.model.republic_phrase_model import week_day_names_printed
@@ -18,6 +22,7 @@ from republic.model.republic_phrase_model import week_day_names_handwritten
 from republic.model.republic_date import month_names_early, month_names_late
 from republic.helper.text_helper import SkipgramSimilarity
 from republic.helper.metadata_helper import doc_id_to_iiif_url
+from republic.parser.logical.paragraph_parser import split_paragraphs
 
 
 SPATIAL_FIELDS = [
@@ -296,6 +301,67 @@ def train_model(model, loss_function, optimizer, train_data, num_epochs,
     return all_losses
 
 
+def classify_lines_with_split_paragraphs(page: pdm.PageXMLPage, debug: int = 0):
+    line_class = {}
+    page_trs = [tr for column in page.columns + page.extra for tr in column.text_regions]
+    if debug > 1:
+        for col in page.columns:
+            print('COL STATS:', col.stats)
+            for tr in col.text_regions:
+                print('\tTR STATS:', tr.stats, tr.types)
+                for line in tr.lines:
+                    print('\t\tLINE:', line.id)
+    page_trs += [tr for tr in page.text_regions]
+    resolution_trs = [tr for tr in page_trs if 'resolution' in tr.type]
+    other_trs = [tr for tr in page_trs if 'resolution' not in tr.type]
+    non_res_types = {'attendance', 'date', 'marginalia'}
+    for tr in other_trs:
+        if len(tr.types.intersection(non_res_types)) > 0:
+            for non_res_type in non_res_types:
+                if non_res_type in tr.types:
+                    if non_res_type == 'date' and tr.coords.bottom > 300 and sum([len(line.text) for line in tr.lines if line.text]) < 30:
+                        non_res_type = 'date_header'
+                    for line in tr.lines:
+                        line_class[line.id] = non_res_type
+        else:
+            print('Unexpected tr type:', tr.types)
+    res_lines = [line for res_tr in resolution_trs for line in res_tr.get_lines()]
+    if debug > 1:
+        print('number of res_tr lines:', len(res_lines))
+    sum_para_lines = 0
+    for res_line in res_lines:
+        if res_line.text is None:
+            line_class[res_line.id] = 'empty'
+    paras_lines = [para_lines for para_lines in split_paragraphs(res_lines, debug=debug)]
+    for para_lines in paras_lines:
+        if debug > 1:
+            for li, line in enumerate(para_lines):
+                line_type = 'para_mid'
+                if li == 0:
+                    line_type = para_lines.start_type
+                if li == len(para_lines) - 1:
+                    line_type = para_lines.end_type
+                print('PARA_LINES:', line.id, line_type)
+            for line in para_lines.noise_lines:
+                print('PARA_LINES:', line.id, 'noise')
+        sum_para_lines += len(para_lines) + len(para_lines.noise_lines)
+        first_line = para_lines.first
+        last_line = para_lines.last
+        mid_lines = [line for line in para_lines if line != first_line and line != last_line and
+                     line not in para_lines.insertion_lines]
+        line_class[first_line.id] = para_lines.start_type
+        line_class[last_line.id] = para_lines.end_type
+        for mid_line in mid_lines:
+            line_class[mid_line.id] = 'para_mid'
+        for line in para_lines.insertion_lines:
+            line_class[line.id] = 'insert_omitted'
+        for line in para_lines.noise_lines:
+            line_class[line.id] = 'noise'
+    if debug > 1:
+        print('sum_para_lines:', sum_para_lines)
+    return line_class
+
+
 def evaluate_model(model, test_data, validate_data, char_to_ix: Dict[str, int], class_to_ix: Dict[str, int]):
     ix_to_class = {class_to_ix[c]: c for c in class_to_ix}
 
@@ -315,7 +381,7 @@ def evaluate_model(model, test_data, validate_data, char_to_ix: Dict[str, int], 
             page_score = [pc.item() == tc.item() for pc, tc in zip(class_targets, predict_classes)].count(True)
             line_scores.extend([pc.item() == tc.item() for pc, tc in zip(class_targets, predict_classes)])
             page_scores[page['page_id']] = page_score / len(class_targets)
-            for pc, tc in zip(class_targets, predict_classes):
+            for tc, pc in zip(class_targets, predict_classes):
                 confusion[ix_to_class[pc.item()]].update([ix_to_class[tc.item()]])
 
     print(f'micro_avg: {line_scores.count(True) / len(line_scores): >.2f}')
@@ -727,19 +793,24 @@ def split_ground_truth_data(gt_data: List[Dict[str, any]]) -> Tuple[List[Dict[st
     return train_data, validate_data, test_data
 
 
-def read_ground_truth_data(line_class_csv: str) -> List[Dict[str, any]]:
+def read_ground_truth_data(line_class_files: Union[str, List[str]]) -> List[Dict[str, any]]:
     train_data = []
-    for page_lines in read_page_lines(line_class_csv):
-        for line in page_lines:
-            # print(line['page_id'])
-            pass
-        checked = [line for line in page_lines if line['checked'] == '1']
-        if len(checked) != len(page_lines):
-            # print('LAST CHECKED PAGE ID', page_lines[0]['page_id'])
-            # print(len(checked), len(page_lines))
-            break
-        # print(f"adding page {page_lines[0]['page_id']} to training data")
-        train_data.append({'page_id': page_lines[0]['page_id'], 'lines': page_lines})
+    found = set()
+    for line_class_file in line_class_files:
+        for page_lines in read_page_lines(line_class_file):
+            if page_lines[0]['page_id'] in found:
+                continue
+            for line in page_lines:
+                # print(line['page_id'])
+                pass
+            checked = [line for line in page_lines if line['checked'] == '1']
+            if len(checked) != len(page_lines):
+                # print('LAST CHECKED PAGE ID', page_lines[0]['page_id'])
+                # print(len(checked), len(page_lines))
+                break
+            # print(f"adding page {page_lines[0]['page_id']} to training data")
+            train_data.append({'page_id': page_lines[0]['page_id'], 'lines': page_lines})
+            found.add(page_lines[0]['page_id'])
     print('number of training pages:', len(train_data))
     return train_data
 
@@ -812,4 +883,37 @@ def get_page_lines(page: pdm.PageXMLPage, gt_page_ids: Set[str]) -> List[pdm.Pag
     col = pdm.PageXMLColumn(doc_id=main_col.id, text_regions=main_trs, coords=coords)
     return col.lines + [line for tr in col.text_regions for line in tr.lines]
 
+
+def read_page_json(gt_page_json_file):
+    with gzip.open(gt_page_json_file, 'rt') as fh:
+        gt_pages_json = [json.loads(line.strip()) for line in fh]
+        gt_pages = [json_to_pagexml_page(page_json) for page_json in gt_pages_json]
+    return gt_pages
+
+
+def load_ground_truth():
+    gt_dir = '../../ground_truth/line_classification'
+    charset_file = os.path.join(gt_dir, 'republic_charset.pcl')
+    line_class_set_file = os.path.join(gt_dir, 'republic_line_class_set.pcl')
+    line_class_csv_marijn = os.path.join(gt_dir, 'htr_classified_lines_marijn.csv')
+    line_class_csv_rosalie = os.path.join(gt_dir, 'htr_classified_lines_rosalie.csv')
+    gt_page_data = read_ground_truth_data([line_class_csv_marijn, line_class_csv_rosalie])
+
+    gt_page_json_file = f'{gt_dir}/htr_page_json.jsonl.gz'
+    gt_pages = read_page_json(gt_page_json_file)
+
+    class_to_ix = read_class_set_mapping(line_class_set_file)
+    char_to_ix = read_class_set_mapping(charset_file)
+    gt_page_ids = [page['page_id'] for page in gt_page_data]
+    gt_line_ids = [line['line_id'] for page in gt_page_data for line in page['lines']]
+    gt_line_page_map = {line['line_id']: page['page_id'] for page in gt_page_data for line in page['lines']}
+    return {
+        'gt_page_data': gt_page_data,
+        'gt_pages': gt_pages,
+        'char_to_ix': char_to_ix,
+        'class_to_ix': class_to_ix,
+        'gt_page_ids': gt_page_ids,
+        'gt_line_ids': gt_line_ids,
+        'gt_line_page_map': gt_line_page_map
+    }
 

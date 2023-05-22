@@ -174,7 +174,8 @@ def horizontal_group_lines(lines: List[pdm.PageXMLTextLine]) -> List[List[pdm.Pa
     if len(lines) == 0:
         return []
     # First, sort lines vertically
-    vertically_sorted = [line for line in sorted(lines, key=lambda line: line.coords.top) if line.text is not None]
+    # Important: include ALL lines with coords, including empty ones
+    vertically_sorted = [line for line in sorted(lines, key=lambda line: line.coords.top)]
     if len(vertically_sorted) == 0:
         for line in lines:
             print(line.coords.box, line.text)
