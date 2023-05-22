@@ -1,7 +1,6 @@
 from typing import Dict, List, Union
-import re
 
-import republic.model.physical_document_model as pdm
+import pagexml.model.physical_document_model as pdm
 
 
 class IndexReference:

@@ -4,7 +4,9 @@ from collections import defaultdict
 import gzip
 import re
 
-import republic.model.physical_document_model as pdm
+import pagexml.model.physical_document_model as pdm
+
+# import republic.model.physical_document_model as pdm
 from republic.helper.pagexml_helper import sort_lines_in_reading_order
 from republic.helper.text_helper import SkipgramSimilarity, score_levenshtein_distance
 from republic.helper.metadata_helper import doc_id_to_iiif_url

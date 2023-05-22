@@ -3,7 +3,6 @@ from typing import Dict, List, Union
 import numpy as np
 from settings import image_host_url
 from republic.model.inventory_mapping import get_inventory_by_num
-import republic.model.physical_document_model as pdm
 
 
 def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,

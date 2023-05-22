@@ -2,7 +2,8 @@ from typing import Dict, List
 from collections import defaultdict
 import re
 
-from republic.model.physical_document_model import PageXMLTextLine, parse_derived_coords
+from pagexml.model.physical_document_model import PageXMLTextLine, parse_derived_coords
+
 from republic.model.republic_document_model import RepublicParagraph, Resolution, Session
 import republic.model.republic_document_model as rdm
 from republic.parser.logical.pagexml_session_parser import get_session_scans_version

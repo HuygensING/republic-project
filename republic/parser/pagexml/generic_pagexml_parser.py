@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple, Union
+from typing import List, Dict, Union
 from datetime import datetime
 from dateutil.parser import parse as date_parse
 import re
@@ -6,8 +6,8 @@ import re
 import xmltodict
 from pagexml.parser import parse_coords, parse_baseline
 
-from republic.model.physical_document_model import Baseline, Coords, parse_derived_coords
-from republic.model.physical_document_model import PageXMLScan, PageXMLTextLine, PageXMLTextRegion, PageXMLWord
+from pagexml.model.physical_document_model import Coords, parse_derived_coords
+from pagexml.model.physical_document_model import PageXMLScan, PageXMLTextLine, PageXMLTextRegion, PageXMLWord
 
 
 def parse_line_words(textline: dict) -> List[PageXMLWord]:

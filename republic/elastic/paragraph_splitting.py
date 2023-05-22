@@ -6,12 +6,12 @@ from collections import defaultdict
 from elasticsearch import Elasticsearch
 
 from fuzzy_search.fuzzy_match import PhraseMatch
+from pagexml.model.physical_document_model import parse_derived_coords
 
-import republic.model.resolution_phrase_model as rpm
 import republic.elastic.republic_retrieving as rep_es
-from republic.model.physical_document_model import parse_derived_coords
-from republic.model.republic_document_model import RepublicParagraph, Resolution, RepublicDoc
+import republic.model.resolution_phrase_model as rpm
 from republic.helper.annotation_helper import make_match_hash_id
+from republic.model.republic_document_model import RepublicParagraph, Resolution, RepublicDoc
 
 MINIMUM_RESOLUTION_LENGTH = 150
 

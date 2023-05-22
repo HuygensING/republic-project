@@ -1,9 +1,11 @@
-from typing import Dict, List
-from collections import Counter
 import copy
 import re
+from collections import Counter
+from typing import Dict, List
 
-import republic.model.physical_document_model as pdm
+import pagexml.model.physical_document_model as pdm
+
+# import republic.model.physical_document_model as pdm
 import republic.helper.pagexml_helper as pagexml_helper
 
 
@@ -266,7 +268,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         for column in columns:
             # print("EXTRA LINE CHECKING OVERLAP:", line.coords.left, line.coords.right,
             #       column.coords.left, column.coords.right)
-            overlap = pdm.get_horizontal_overlap(line.coords, column.coords)
+            overlap = pdm.get_horizontal_overlap(line, column)
             # print('\tOVERLAP', overlap)
             if overlap > best_overlap:
                 if best_column is None or column.coords.width < best_column.coords.width:

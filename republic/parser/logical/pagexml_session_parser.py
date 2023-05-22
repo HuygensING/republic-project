@@ -2,9 +2,10 @@ from typing import List, Dict, Generator, Union, Iterator
 from collections import defaultdict
 import copy
 
-from republic.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
-from republic.model.physical_document_model import parse_derived_coords
-import republic.model.physical_document_model as pdm
+import pagexml.model.physical_document_model as pdm
+# from pagexml.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
+# from pagexml.model.physical_document_model import parse_derived_coords
+
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
@@ -19,8 +20,8 @@ def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
     return RepublicDate(year, month, day)
 
 
-def stream_handwritten_page_lines(page: PageXMLPage,
-                                  include_marginalia: bool = False) -> Generator[PageXMLTextLine, None, None]:
+def stream_handwritten_page_lines(page: pdm.PageXMLPage,
+                                  include_marginalia: bool = False) -> Generator[pdm.PageXMLTextLine, None, None]:
     if include_marginalia:
         trs = [tr for column in page.columns for tr in column.text_regions]
     else:
@@ -47,7 +48,7 @@ def stream_handwritten_page_lines(page: PageXMLPage,
             yield line
 
 
-def stream_resolution_page_lines(pages: List[PageXMLPage]) -> Generator[PageXMLTextLine, None, None]:
+def stream_resolution_page_lines(pages: List[pdm.PageXMLPage]) -> Generator[pdm.PageXMLTextLine, None, None]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
@@ -98,7 +99,7 @@ def score_opening_element_order(opening_element_list: List[any]) -> float:
     return order_score
 
 
-def find_session_line(line_id: str, session_lines: List[PageXMLTextLine]) -> PageXMLTextLine:
+def find_session_line(line_id: str, session_lines: List[pdm.PageXMLTextLine]) -> pdm.PageXMLTextLine:
     """Find a specific line by id in the list of lines belonging to a session."""
     for line in session_lines:
         if line.id == line_id:
@@ -106,12 +107,12 @@ def find_session_line(line_id: str, session_lines: List[PageXMLTextLine]) -> Pag
     raise IndexError(f'Line with id {line_id} not in session lines.')
 
 
-def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLTextLine],
+def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXMLTextLine],
                          session_searcher: SessionSearcher, column_metadata: Dict[str, dict]) -> iter:
     evidence = session_metadata['evidence']
     del session_metadata['evidence']
     text_region_lines = defaultdict(list)
-    text_regions: List[PageXMLTextRegion] = []
+    text_regions: List[pdm.PageXMLTextRegion] = []
     scan_version = {}
     session_text_page_nums = set()
     session_page_ids = set()
@@ -129,8 +130,8 @@ def generate_session_doc(session_metadata: dict, session_lines: List[PageXMLText
                     print(line.metadata)
                     print(line.text)
         metadata = column_metadata[text_region_id]
-        coords = parse_derived_coords(text_region_lines[text_region_id])
-        text_region = PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
+        coords = pdm.parse_derived_coords(text_region_lines[text_region_id])
+        text_region = pdm.PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
                                         coords=coords, lines=text_region_lines[text_region_id])
         text_region.set_derived_id(text_region.metadata['scan_id'])
         text_region.metadata["iiif_url"] = doc_id_to_iiif_url(text_region.id)
@@ -202,14 +203,14 @@ class GatedWindow:
         self.window_size = window_size
         self.middle_doc = int(window_size/2)
         # fill the sliding window with empty elements, so that first documents are appended at the end.
-        self.sliding_window: List[Union[None, PageXMLTextLine]] = [None] * window_size
+        self.sliding_window: List[Union[None, pdm.PageXMLTextLine]] = [None] * window_size
         self.open_threshold = open_threshold
         self.shut_threshold = shut_threshold
         self.gate_open = False
         self.num_chars = 0
         self.let_through: List[bool] = [False] * window_size
 
-    def add_line(self, line: PageXMLTextLine):
+    def add_line(self, line: pdm.PageXMLTextLine):
         """Add a document to the sliding window. doc should be a dictionary with
         the 'text' property containing the document text."""
         if len(self.sliding_window) >= self.window_size:
@@ -232,12 +233,12 @@ class GatedWindow:
         elif self.num_chars_in_window() < self.shut_threshold:
             self.let_through[self.middle_doc] = True
 
-    def get_first_doc(self) -> Union[None, PageXMLTextLine]:
+    def get_first_doc(self) -> Union[None, pdm.PageXMLTextLine]:
         """Return the first sentence in the sliding window if it is set to be let through, otherwise return None."""
         return self.sliding_window[0] if self.let_through[0] else None
 
 
-def get_columns_metadata(sorted_pages: List[PageXMLPage]) -> Dict[str, dict]:
+def get_columns_metadata(sorted_pages: List[pdm.PageXMLPage]) -> Dict[str, dict]:
     column_metadata = {}
     for page in sorted_pages:
         for column in page.columns:
@@ -257,7 +258,7 @@ def get_columns_metadata(sorted_pages: List[PageXMLPage]) -> Dict[str, dict]:
     return column_metadata
 
 
-def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
+def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
                  inv_metadata: dict) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - check for large date jumps and short session docs
@@ -269,7 +270,7 @@ def get_sessions(sorted_pages: List[PageXMLPage], inv_num: int,
     gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
-    session_lines: List[PageXMLTextLine] = []
+    session_lines: List[pdm.PageXMLTextLine] = []
     for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
         # before modifying, make sure we're working on a copy
         # remove all word-level objects, as we only need the text
