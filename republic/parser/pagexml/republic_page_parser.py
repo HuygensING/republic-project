@@ -238,6 +238,7 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
                         for text_region in text_regions:
                             if debug > 0:
                                 print(f'get_column_text_regions - adding tr {text_region.id} to col {col.id}')
+                                print('\t', text_region.stats)
                             col.add_child(text_region)
 
                         col.set_derived_id(scan_doc.id)
@@ -287,7 +288,7 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
         if debug > 0:
             print('\nADDED TRS:')
             for added_tr in trs:
-                print('\tIN TRS:', added_tr.id)
+                print('\tIN TRS:', added_tr.id, added_tr.stats)
             print('\n')
         # tr_stats = combine_stats(trs)
         # print(ti, tr_stats)
@@ -347,17 +348,25 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                     text_region.coords = pdm.parse_derived_coords(lines)
                 if debug > 0:
                     print('\tSPLITTING PAGE BOUNDARY OVERLAPPING REGION:', text_region.id, text_region.type)
+                    print('\t', text_region.stats)
                     # print(config)
                 sub_trs = split_lines_on_column_gaps(text_region, config=config, debug=debug)
                 if debug > 0:
                     print('\t\tnumber of sub text regions:', len(sub_trs))
                 for sub_tr in sub_trs:
+                    if debug > 0:
+                        print('\t\t\tdeciding on side for sub_tr', sub_tr.id)
+                        print('\t\t\t', sub_tr.stats)
                     if is_even_side(sub_tr):
                         side = 'even'
                         page = page_even
+                        if debug > 0:
+                            print('\t\t\t\tadding sub_tr to even')
                     elif is_odd_side(sub_tr):
                         side = 'odd'
                         page = page_odd
+                        if debug > 0:
+                            print('\t\t\t\tadding sub_tr to odd')
                     else:
                         if debug > 0:
                             print('\tUNDECIDED:', sub_tr.id, sub_tr.type)
@@ -559,9 +568,16 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     trs = get_column_text_regions(scan_doc, max_col_width, config, debug=debug)
     tr_stats = combine_stats(trs)
     if tr_stats['words'] != scan_stats['words']:
+        print('Unequal number of words')
         for tr in trs:
-            print(tr.id, tr.stats)
-        print(scan_stats)
+            print('trs:', tr.id, tr.stats)
+            for li, line in enumerate(tr.lines):
+                print('\t', li, line.id)
+            for sub_tr in tr.text_regions:
+                print('\tSUB_TR:', sub_tr.id, sub_tr.stats)
+                for line in sub_tr.lines:
+                    print('\t\t', line.id, line.text)
+        print('scan_stats:', scan_stats)
         raise ValueError(f'Unequal number of words in trs ({tr_stats["words"]}) '
                          f'and scan ({scan_stats["words"]}) for scan {scan_doc.id}')
     if debug > 0:
@@ -572,6 +588,11 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     if debug > 0:
         print('page_stats:', page_stats)
     if page_stats['words'] != scan_stats['words']:
+        print('Unequal number of words')
+        print('scan stats:', scan_stats)
+        print('trs')
+        for tr in trs:
+            print('\ttr', tr.id, tr.stats)
         for page in pages:
             print('stats for page', page.id, page.stats)
         raise ValueError(f'Unequal number of words in pages ({page_stats["words"]}) '

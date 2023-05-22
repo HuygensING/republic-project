@@ -2,11 +2,10 @@ import copy
 from typing import Dict, Generator, List, Tuple, Union
 
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.phrase.phrase_model import PhraseModel
 from langdetect import detect_langs, LangDetectException
+import pagexml.model.physical_document_model as pdm
 
 import republic.helper.paragraph_helper as para_helper
-import republic.model.physical_document_model as pdm
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 from republic.parser.logical.paragraph_parser import ParagraphGenerator

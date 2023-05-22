@@ -195,7 +195,8 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                                config: Dict[str, any],
                                overlap_threshold: float = 0.5,
                                debug: int = 0) -> List[pdm.PageXMLColumn]:
-    column_ranges = find_column_gaps(text_region.lines, config, debug=debug)
+    lines = [line for line in text_region.get_lines()]
+    column_ranges = find_column_gaps(lines, config, debug=debug)
     if debug > 0:
         print('split_lines_on_column_gaps - column_gap:', config['column_gap'])
         print("COLUMN RANGES:", column_ranges)
@@ -204,7 +205,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
     extra_lines = []
     num_lines = text_region.stats['lines']
     append_count = 0
-    for line in text_region.lines:
+    for line in lines:
         index = None
         for column_range in column_ranges:
             if line.coords.width == 0:
