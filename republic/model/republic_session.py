@@ -90,14 +90,16 @@ def has_attendance_match(line: Dict[str, Union[str, int, dict]]) -> bool:
 
 class SessionSearcher(EventSearcher):
 
-    def __init__(self, inventory_num: int, current_date: RepublicDate,
+    def __init__(self, inventory_metadata: int, current_date: RepublicDate,
                  phrase_model_list: List[Dict[str, Union[str, int, List[str]]]],
                  window_size: int = 30, include_year: bool = False):
         """SessionSearcher extends the generic event searcher to specifically search for the lines
         that express the opening of a new session in the resolutions."""
         super(self.__class__, self).__init__(window_size=window_size)
         # store the inventory number to add it to meeting metadata
-        self.inventory_num = inventory_num
+        self.inventory_metadata = inventory_metadata
+        self.inventory_id = f"{inventory_metadata['series_name']}_{inventory_metadata['inventory_num']}"
+        self.inventory_num = inventory_metadata['inventory_num']
         # set start date based on period covered by inventory
         self.current_date = current_date
         # set year of inventory
@@ -435,6 +437,7 @@ class SessionSearcher(EventSearcher):
         session_metadata = {
             'id': f'session-{session_date}-num-{len(self.sessions[session_date])}',
             'type': 'session',
+            'inventory_id': self.inventory_id,
             'inventory_num': self.inventory_num,
             # copy current date instead passing a reference, as current date gets updated
             'session_date': current_date.isoformat(),

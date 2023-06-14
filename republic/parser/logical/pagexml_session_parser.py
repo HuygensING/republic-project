@@ -264,7 +264,7 @@ def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
     # - check for large date jumps and short session docs
     column_metadata = get_columns_metadata(sorted_pages)
     current_date = initialize_inventory_date(inv_metadata)
-    session_searcher = SessionSearcher(inv_num, current_date,
+    session_searcher = SessionSearcher(inv_metadata, current_date,
                                        session_phrase_model, window_size=30)
     session_metadata = session_searcher.parse_session_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
