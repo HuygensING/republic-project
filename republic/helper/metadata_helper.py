@@ -127,6 +127,9 @@ def correct_section_types(inv_metadata):
 def get_per_page_type_index(inv_metadata: Dict[str, any]) -> Dict[int, Union[str, List[str]]]:
     if "num_pages" not in inv_metadata:
         return {}
+    if inv_metadata['num_pages'] is None:
+        print(f'Warning: num_pages property is None for inventory{inv_metadata["inventory_num"]}')
+        return {}
     page_type = {page_num: 'unknown' for page_num in np.arange(inv_metadata['num_pages'] + 1)}
     if 'title_page_nums' not in inv_metadata:
         return page_type

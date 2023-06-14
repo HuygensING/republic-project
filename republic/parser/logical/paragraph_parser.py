@@ -1,5 +1,6 @@
 from __future__ import annotations
 import copy
+import time
 from collections import defaultdict
 from typing import Dict, Generator, List, Tuple, Union
 
@@ -152,11 +153,14 @@ class ParagraphLines:
             new_interval_lines = lines
         else:
             new_interval_lines = [self.lines[-1]] + lines
+        content_lines = []
         for line in lines:
             if line.text is None:
+                self.empty_lines.add(line)
                 continue
+            content_lines.append(line)
             self.num_chars += len(line.text)
-        self.lines.extend(lines)
+        self.lines.extend(content_lines)
         self._set_top_bottom()
         self._set_left_right()
         # print(f'\tWIDTHS: {self.widths}\t\tSUM OF WIDTHS: {self.widths.sum()}\n')
@@ -201,6 +205,7 @@ def get_relative_position(curr_line: pdm.PageXMLTextLine, para_lines: ParagraphL
 
 
 def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
+    start = time.time()
     if len(lines) == 0:
         return []
     column_lines = defaultdict(list)
@@ -268,6 +273,8 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     print('\tSPLIT: different column, appending para_lines')
                 para_lines.end_type = 'para_mid'
                 paras.append(para_lines)
+                step = time.time()
+                prev_step = step
                 yield para_lines
                 para_lines = ParagraphLines([curr_line])
                 para_lines.start_type = 'para_mid'
@@ -290,7 +297,8 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     para_lines.start_type = 'para_start'
                     continue
                 if len(para_lines.lines) >= 2:
-                    if rel_pos['vertical_distance'] > para_lines.avg_distances.mean() * 1.5:
+                    if len(para_lines.avg_distances) > 0 and \
+                            rel_pos['vertical_distance'] > para_lines.avg_distances.mean() * 1.5:
                         if debug > 0:
                             print('\tSPLIT: vertical distance more than 1.5 avg vertical distance')
                         para_lines.end_type = 'para_end'
@@ -367,7 +375,8 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
         para_lines.end_type = 'para_end'
         paras.append(para_lines)
         yield para_lines
-    return paras
+    return None
+    # return paras
 
 
 def is_missing_text_insertion(curr_line, group_index, grouped_lines, para_lines,
@@ -390,6 +399,8 @@ def is_missing_text_insertion(curr_line, group_index, grouped_lines, para_lines,
         print('\t\tDISTANCES:', para_lines.avg_distances)
     if vertical_overlap_prev + vertical_overlap_next > 0.75 * curr_line.coords.height:
         return True
+    elif len(para_lines.avg_distances) == 0:
+        return False
     elif abs(rel_pos['vertical_distance'] - para_lines.avg_distances.mean()) / para_lines.avg_distances.mean() > 0.9:
         return True
     else:

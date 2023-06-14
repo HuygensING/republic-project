@@ -282,7 +282,7 @@ class Retriever:
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
         query = make_bool_query(match_fields)
-        pages = self.retrieve_pages_by_query(query)
+        pages = [page for page in self.retrieve_pages_by_query(query)]
         return None if len(pages) == 0 else pages[0]
 
     def retrieve_page_by_text_page_number(self, text_page_num: int, year: int = None,
@@ -424,7 +424,7 @@ class Retriever:
             yield rdm.json_to_republic_resolution(hit['_source'])
 
     def retrieve_resolutions_by_query(self, query: dict, size: int = 10, aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
-        if "query" in query:
+        if query and "query" in query:
             response = self.es_anno.search(index=self.config['resolutions_index'], body=query)
         else:
             response = self.es_anno.search(index=self.config['resolutions_index'], query=query, aggs=aggs, size=size)
