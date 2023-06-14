@@ -130,7 +130,7 @@ class Indexer:
 
     def index_scan(self, scan: pdm.PageXMLScan):
         if 'inventory_id' not in scan.metadata:
-            scan.metadata['inventory'] = f"{scan.metadata['series_name']}_{scan.metadata['inventory_num']}"
+            scan.metadata['inventory_id'] = f"{scan.metadata['series_name']}_{scan.metadata['inventory_num']}"
         self.index_doc(index=self.config['scans_index'], doc_id=scan.id, doc_body=scan.json)
 
     def index_page(self, page: pdm.PageXMLPage):
