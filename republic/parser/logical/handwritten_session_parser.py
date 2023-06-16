@@ -332,9 +332,19 @@ def get_sessions(inv_id: str, pages, neural_line_classifier):
     text_type = pages[0].metadata['text_type']
     for session_date, session_trs in find_session_dates(pages, inv_start_date, neural_line_classifier):
         # print('-------------')
+        if 3090 < inv_metadata['inventory_num'] < 3244:
+            session_num = 1
+        elif 3244 <= inv_metadata['inventory_num'] < 3284:
+            session_num = 2
+        elif 3284 <= inv_metadata['inventory_num'] < 3350:
+            session_num = 1
+        elif inv_metadata['inventory_num'] > 4500:
+            session_num = 3
+        else:
+            session_num = 4
         session_metadata = {
-            'id': f"session-{session_date['session_date']}-{resolution_type}-num-1",
-            'session_id': f"session-{session_date['session_date']}-{resolution_type}-num-1",
+            'id': f"session-{session_date['session_date']}-{resolution_type}-num-{session_num}",
+            'session_id': f"session-{session_date['session_date']}-{resolution_type}-num-{session_num}",
             'type': 'session',
             'inventory_id': session_trs[0].metadata['inventory_id'],
             'inventory_num': session_trs[0].metadata['inventory_num'],
