@@ -16,16 +16,18 @@ from republic.helper.utils import get_commit_version
 import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
+
+from republic.classification.line_classification import NeuralLineClassifier
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.metadata_helper import page_num_to_page_id
 from republic.helper.model_loader import load_line_break_detector
-
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 
 import republic.parser.logical.pagexml_session_parser as session_parser
+from republic.parser.logical.handwritten_session_parser import get_sessions
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as res_parser
 import republic.parser.logical.index_page_parser as index_parser
@@ -223,6 +225,23 @@ def do_session_text_indexing(inv_num: int, year: int):
         rep_es.index_session_with_text(session_text_doc)
 
 
+def do_handwritten_session_indexing(inv_num: int, year: int):
+    print(f"Indexing PageXML sessions for inventory {inv_num} (year {year})...")
+    pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
+    inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
+    model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
+    nlc_gysbert = NeuralLineClassifier(model_dir)
+    try:
+        for session_metadata, session_trs in get_sessions(inv_metadata['inventory_id'], pages, nlc_gysbert):
+            # print(json.dumps(session_metadata, indent=4))
+            rep_es.index_session_metadata(session_metadata)
+            for tr in session_trs:
+                rep_es.index_session_text_region(tr)
+    except Exception:
+        print('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
+        return None
+
+
 def do_resolution_indexing(inv_num: int, year: int):
     print(f"Indexing PageXML resolutions for inventory {inv_num} (year {year})...")
     opening_searcher, verb_searcher = res_parser.configure_resolution_searchers()
@@ -393,6 +412,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         do_session_lines_indexing(task["inv_num"], task["year"])
     elif task["type"] == "session_text":
         do_session_text_indexing(task["inv_num"], task["year"])
+    elif task["type"] == "sessions" and task["inv_num"] <= 3350:
+        do_handwritten_session_indexing(task["inv_num"], task["year"])
     elif task["type"] == "resolutions":
         do_resolution_indexing(task["inv_num"], task["year"])
     elif task["type"] == "full_resolutions":
