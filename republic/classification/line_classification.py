@@ -59,7 +59,7 @@ class NeuralLineClassifier:
             for c in text:
                 if c not in self.char_to_ix:
                     print(line)
-            char_features = [self.char_to_ix[c] for c in text]
+            char_features = [self.char_to_ix[c] if c in self.char_to_ix else self.char_to_ix['<unk>'] for c in text]
             spatial_sequence.append(spatial_features)
             char_sequence.append(char_features)
             # class_sequence.append(self.class_to_ix[line['line_class']])

@@ -42,7 +42,7 @@ def page_to_feature_sequences(page_lines, char_to_ix, class_to_ix,
         for c in text:
             if c not in char_to_ix:
                 print(line)
-        char_features = [char_to_ix[c] for c in text]
+        char_features = [char_to_ix[c] if c in char_to_ix else char_to_ix['<unk>'] for c in text]
         spatial_sequence.append(spatial_features)
         char_sequence.append(char_features)
         if 'line_class' in line:

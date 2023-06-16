@@ -17,7 +17,9 @@ from republic.helper.utils import get_iso_utc_timestamp, get_commit_url
 
 
 def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
-    if isinstance(doc, pdm.StructureDoc):
+    if isinstance(doc, dict) and 'type' in doc and doc['type'] == 'session':
+        doc['index_timestamp'] = get_iso_utc_timestamp()
+    elif isinstance(doc, pdm.StructureDoc):
         doc.metadata['index_timestamp'] = get_iso_utc_timestamp()
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
@@ -27,7 +29,9 @@ def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
 
 
 def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
-    if isinstance(doc, pdm.StructureDoc):
+    if isinstance(doc, dict) and 'type' in doc and doc['type'] == 'session':
+        doc['code_commit'] = get_commit_url()
+    elif isinstance(doc, pdm.StructureDoc):
         doc.metadata['code_commit'] = get_commit_url()
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
@@ -154,6 +158,16 @@ class Indexer:
         self.index_doc(index=self.config['session_text_index'],
                        doc_id=session_text_doc["metadata"]["id"],
                        doc_body=session_text_doc)
+
+    def index_session_metadata(self, metadata: dict):
+        self.index_doc(index='session_metadata',
+                       doc_id=metadata['id'],
+                       doc_body=metadata)
+
+    def index_session_text_region(self, session_tr: pdm.PageXMLTextRegion):
+        self.index_doc(index='session_text_regions',
+                       doc_id=session_tr.id,
+                       doc_body=session_tr.json)
 
     def index_resolution(self, resolution: rdm.Resolution):
         print('\t', resolution.id, resolution.paragraphs[0].text[:60])

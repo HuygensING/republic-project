@@ -90,7 +90,7 @@ def has_attendance_match(line: Dict[str, Union[str, int, dict]]) -> bool:
 
 class SessionSearcher(EventSearcher):
 
-    def __init__(self, inventory_metadata: int, current_date: RepublicDate,
+    def __init__(self, inventory_metadata: Dict[str, any], current_date: RepublicDate,
                  phrase_model_list: List[Dict[str, Union[str, int, List[str]]]],
                  window_size: int = 30, include_year: bool = False):
         """SessionSearcher extends the generic event searcher to specifically search for the lines

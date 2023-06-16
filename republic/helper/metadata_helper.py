@@ -1,6 +1,8 @@
 from typing import Dict, List, Union
 
 import numpy as np
+from pagexml.model.physical_document_model import Coords
+
 from settings import image_host_url
 from republic.model.inventory_mapping import get_inventory_by_num
 
@@ -61,10 +63,12 @@ def make_iiif_region_url(jpg_url: str,
 
 
 def coords_to_iiif_url(scan_id: str,
-                       coords: Union[List[int], Dict[str, int]] = None, margin=100):
+                       coords: Union[List[int], Dict[str, int], Coords] = None, margin=100):
     base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
     inv_num = scan_id_to_inv_num(scan_id)
-    if isinstance(coords, dict):
+    if isinstance(coords, Coords):
+        coords = [coords.x, coords.y, coords.w, coords.h]
+    elif isinstance(coords, dict):
         coords = [coords["x"], coords["y"], coords["w"], coords["h"]]
     if isinstance(coords, list):
         x = coords[0] - margin if coords[0] > margin else 0

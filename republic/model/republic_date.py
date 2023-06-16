@@ -269,15 +269,15 @@ class RepublicDate:
     def __ne__(self, other):
         return self.date != other.date
 
-    def __cmp__(self, other):
-        """Override comparison operations to use the date properties for comparison."""
-        assert(isinstance(other, RepublicDate))
-        if self.date < other.date:
-            return -1
-        elif self.date == other.date:
-            return 0
-        else:
-            return 1
+    # def __cmp__(self, other):
+    #     """Override comparison operations to use the date properties for comparison."""
+    #     assert(isinstance(other, RepublicDate))
+    #     if self.date < other.date:
+    #         return -1
+    #     elif self.date == other.date:
+    #         return 0
+    #     else:
+    #         return 1
 
     def as_date_string(self):
         return self.date.strftime("%Y-%m-%d")

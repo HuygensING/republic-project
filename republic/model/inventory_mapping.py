@@ -32,6 +32,13 @@ def get_inventory_by_num(inventory_num: int) -> dict:
             return inv_map
 
 
+def get_inventory_by_id(inventory_id: str) -> dict:
+    inventory_metadata = read_inventory_metadata()
+    for inv_map in inventory_metadata:
+        if inv_map["inventory_id"] == inventory_id:
+            return inv_map
+
+
 def get_inventories_by_year(inventory_years: Union[int, List[int]]) -> list:
     inventory_metadata = read_inventory_metadata()
     if isinstance(inventory_years, int):
