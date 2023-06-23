@@ -24,9 +24,33 @@ def generate_date_string(curr_date: RepublicDate):
     return get_next_date_strings(curr_date, num_dates=7)
 
 
+def get_predicted_line_classes(page: pdm.PageXMLPage, line_classifier: NeuralLineClassifier):
+    lines = page.get_lines()
+    classified = [line for line in lines if 'line_class' in line.metadata]
+    if len(classified) >= len(lines) - 10:
+        # print('lines already classified for page', page.id)
+        predicted_line_class = {}
+        for line in page.get_lines():
+            if 'line_class' not in line.metadata:
+                if line.text and len(line.text) < 3:
+                    line.metadata['line_class'] = 'noise'
+                else:
+                    print('\nMISSING LINE_CLASS:', line.text)
+                    print('\t', line.parent.type)
+                    continue
+            predicted_line_class[line.id] = line.metadata['line_class']
+    elif len(classified) < len(lines) - 10:
+        predicted_line_class = line_classifier.classify_page_lines(page)
+        # print('NON-CLASSIFIED LINSE FOR PAGE:', page.id, '\tLINES:', len(lines), '\tCLASSIFIED:', len(classified), '\tNLC:', len(predicted_line_class))
+        # print('\t', page.stats, '\n')
+    else:
+        predicted_line_class = line_classifier.classify_page_lines(page)
+    return predicted_line_class
+
+
 def sort_lines_by_class(page, line_classifier: NeuralLineClassifier):
     class_lines = defaultdict(list)
-    predicted_line_class = line_classifier.classify_page_lines(page)
+    predicted_line_class = get_predicted_line_classes(page, line_classifier)
     for col in sorted(page.columns, key=lambda c: c.coords.left):
         for tr in sorted(col.text_regions, key=lambda t: t.coords.top):
             # print(tr.type)
@@ -176,7 +200,16 @@ def make_classified_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine
     for line_class in class_lines:
         line_groups = split_lines_on_vertical_gaps(class_lines[line_class])
         for line_group in line_groups:
-            group_coords = pdm.parse_derived_coords(line_group)
+            try:
+                group_coords = pdm.parse_derived_coords(line_group)
+            except Exception:
+                print('Cannot derive coords from line_group:')
+                lines_coords = [line.coords for line in line_group if line.coords]
+                points = [point for coords in lines_coords for point in coords.points]
+                if len(points) == 0:
+                    group_coords = None
+                else:
+                    group_coords = pdm.Coords(points)
             group_metadata = make_text_region_metadata(line_class, group_coords, page)
             group_tr = pdm.PageXMLTextRegion(coords=group_coords, lines=line_group, metadata=group_metadata)
             group_tr.add_type(line_class)
@@ -258,6 +291,8 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier):
     session_trs = defaultdict(list)
     current_date = None
     for pi, page in enumerate(pages):
+        if page.stats['words'] == 0:
+            continue
         try:
             if pi > 1 and is_duplicate(page, pages[pi - 2]):
                 print('FOUND duplicate page', page.id)

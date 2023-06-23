@@ -7,8 +7,7 @@ import torch
 
 # import republic.model.physical_document_model as pdm
 from republic.helper.text_helper import SkipgramSimilarity
-from republic.model.republic_phrase_model import week_day_names_printed
-from republic.model.republic_phrase_model import week_day_names_handwritten
+from republic.model.republic_date_phrase_model import week_day_names
 from republic.model.republic_date import month_names_early, month_names_late
 
 
@@ -36,6 +35,10 @@ def page_to_feature_sequences(page_lines, char_to_ix, class_to_ix,
         line_text = line['text'] if 'text' in line else line['line_text']
         if line_text is None:
             line_text = ''
+        if len(line_text) > line_fixed_length:
+            # DIRTY HACK
+            # TODO: increase fixed length
+            line_text = line_text[:line_fixed_length]
         padding_size = line_fixed_length - len(line_text)
         text = line_text
         text += ' ' * padding_size
@@ -155,7 +158,7 @@ def get_line_text_features(line: Union[pdm.PageXMLTextLine, Dict[str, any]],
 def get_date_skip_sim() -> Dict[str, SkipgramSimilarity]:
     months = set(month_names_early + month_names_late)
     months.add('Decembris')
-    weekdays = set(week_day_names_printed + week_day_names_handwritten)
+    weekdays = set(week_day_names['printed'] + week_day_names['handwritten'])
     weekdays.add('Jouis')
     skip_sim = {
         'weekdays': SkipgramSimilarity(ngram_length=3, skip_length=1),
@@ -294,6 +297,8 @@ def get_line_features(line, col, skip_sim: Dict[str, SkipgramSimilarity], base_d
     cc = col.coords
     line_score = get_line_text_features(line, skip_sim)
     left_base = sorted(line.baseline.points)[0]
+    if 'dist_to_prev' not in base_dist:
+        print(line.id, base_dist)
     doc = {
         'line_id': line.id,
         'left': lc.left - cc.left,
@@ -316,13 +321,13 @@ def get_line_features(line, col, skip_sim: Dict[str, SkipgramSimilarity], base_d
 def get_page_line_features(page: pdm.PageXMLPage,
                            skip_sim: Dict[str, SkipgramSimilarity]) -> List[Dict[str, any]]:
     rows = []
-    for tr in sorted(page.text_regions):
+    for tr in sorted(page.text_regions + page.extra):
         if 'marginalia' in tr.type:
             continue
         lines = [line for line in tr.get_lines()]
         base_dist = get_lines_base_dist(lines, tr)
         for line in sorted(tr.lines):
-            doc = get_line_features(line, tr, skip_sim, base_dist=base_dist)
+            doc = get_line_features(line, tr, skip_sim, base_dist=base_dist[line.id])
             rows.append(doc)
     for col in page.columns:
         trs = [tr for tr in col.text_regions if 'marginalia' not in tr.type]

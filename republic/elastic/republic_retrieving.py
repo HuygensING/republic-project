@@ -51,13 +51,11 @@ def make_bool_query(match_fields, size: int = 10000) -> dict:
 
 def make_paragraph_term_query(term: str) -> Dict[str, any]:
     return {
-        'query': {
-            'bool': {
-                'must': [
-                    {'match': {'paragraphs.text': term}},
-                    {'match': {'type': 'resolution'}}
-                ]
-            }
+        'bool': {
+            'must': [
+                {'match_phrase': {'paragraphs.text': term}},
+                {'match': {'type': 'resolution'}}
+            ]
         }
     }
 
@@ -520,19 +518,20 @@ class Retriever:
             return None
 
     def keyword_in_context(self, term: str,
-                             num_hits: int = 10,
-                             context_size: int = 3,
-                             index: str = "resolutions",
-                             filters: List[Dict[str,any]] = None):
+                           num_hits: int = 10,
+                           context_size: int = 3,
+                           index: str = "resolutions",
+                           filters: List[Dict[str,any]] = None):
         query = make_paragraph_term_query(term)
         if filters is not None:
             query["query"]["bool"]["must"] += filters
-        query['size'] = num_hits
-        response = self.es_anno.search(index=index, body=query)
+        # query['size'] = num_hits
+        response = self.es_anno.search(index=index, query=query, size=num_hits)
         pre_regex = r'(\w+\W+){,' + f'{context_size}' + r'}\b('
         post_regex = r')\b(\W+\w+){,' + f'{context_size}' + '}'
         pre_width = 5 + context_size * 10
         results = []
+        print(response['hits']['total']['value'], len(response['hits']['hits']))
         for hit in response['hits']['hits']:
             doc = hit['_source']
             res_start_offset = doc['paragraphs'][0]['metadata']['start_offset']

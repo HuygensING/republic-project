@@ -7,10 +7,9 @@ from dateutil.easter import easter
 from dateutil.parser import parse
 from typing import Dict, List, Union
 
-from republic.model.republic_phrase_model import month_names_late, month_names_early
-from republic.model.republic_phrase_model import holiday_phrases, week_day_names_printed
-from republic.model.republic_phrase_model import week_day_names_handwritten
-from republic.model.republic_phrase_model import date_name_map as default_date_name_map
+from republic.model.republic_date_phrase_model import month_names_late, month_names_early
+from republic.model.republic_date_phrase_model import holiday_phrases, week_day_names
+from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
 
 
 exception_dates = {
@@ -230,9 +229,9 @@ class RepublicDate:
         else:
             self.text_type = 'handwritten'
         if self.text_type == 'handwritten':
-            self.day_name = week_day_names_handwritten[self.date.weekday()]
+            self.day_name = week_day_names['handwritten'][self.date.weekday()]
         else:
-            self.day_name = week_day_names_printed[self.date.weekday()]
+            self.day_name = week_day_names['printed'][self.date.weekday()]
         self.month_name = month_names_early[self.month - 1] if self.year <= 1750 else month_names_late[self.month - 1]
         if self.date_mapper is not None:
             self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
@@ -473,3 +472,4 @@ def derive_date_from_string(date_string: str, year: int) -> RepublicDate:
 def get_shifted_date(current_date: RepublicDate, day_shift: int) -> RepublicDate:
     new_date = current_date.date + datetime.timedelta(days=day_shift)
     return RepublicDate(new_date.year, new_date.month, new_date.day)
+

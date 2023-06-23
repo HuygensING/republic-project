@@ -32,8 +32,6 @@ import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as res_parser
 import republic.parser.logical.index_page_parser as index_parser
 
-import run_attendancelist
-
 
 # Get the Git repository commit hash for keeping provenance
 commit_version = get_commit_version()
@@ -359,6 +357,7 @@ def do_resolution_metadata_indexing_old(inv_num: int, year: int):
 
 def do_inventory_attendance_list_indexing(inv_num: int, year: int):
     print(f"Indexing attendance lists with spans for inventory {inv_num} (year {year})...")
+    import run_attendancelist
     att_spans_year = run_attendancelist.run(rep_es.es_anno, year, outdir=None,
                                             verbose=True, tofile=False,
                                             source_index=rep_es.config['resolutions_index'])

@@ -1,6 +1,230 @@
+import re
 from typing import Dict, List, Set, Tuple
 
+from fuzzy_search.tokenization.token import RegExTokenizer
+from fuzzy_search.tokenization.token import Doc
+
 from republic.helper.text_helper import TermDictionary
+
+
+SINGLETON_TAG_TYPES = ['DAT', 'RES', 'PROP_OPEN']
+
+
+class Annotation:
+
+    def __init__(self, tag_type: str, text: str, offset: int, doc_id: str = None):
+        self.tag_type = tag_type
+        self.text = text
+        self.offset = offset
+        self.end = offset + len(text)
+        self.doc_id = doc_id
+
+    def __repr__(self):
+        doc_id_repr = f"'{self.doc_id}'" if self.doc_id else None
+        return f"{self.__class__.__name__}(tag_type='{self.tag_type}', text='{self.text}', " \
+               f"offset={self.offset}, end={self.end}, doc_id={doc_id_repr})"
+
+
+class Tag:
+
+    def __init__(self, tag_type: str, text: str, offset: int, doc_id: str = None):
+        self.type = tag_type
+        self.text = text
+        self.offset = offset
+        self.tag_string = f"<{tag_type}>{text}</{tag_type}>"
+        self.end = offset + len(self.tag_string)
+        self.text_end = offset + len(text)
+        self.doc_id = doc_id
+        self.extra_offset = len(self.tag_string) - len(self.text)
+
+    def __repr__(self):
+        doc_id_repr = f"'{self.doc_id}'" if self.doc_id else None
+        return f"{self.__class__.__name__}(tag_type='{self.type}', text='{self.text}', " \
+               f"offset={self.offset}, end={self.end}, doc_id={doc_id_repr})"
+
+
+class TagRegExTokenizer(RegExTokenizer):
+
+    def __init__(self, debug: int = 0, **kwargs):
+        super().__init__(**kwargs)
+        self.debug = debug
+        # self.regex_tokenizer = RegExTokenizer(**kwargs)
+
+    def tokenize(self, tagged_text: str, doc_id: str = None, debug: int = None) -> Doc:
+        if debug is None:
+            debug = self.debug
+        clean_text, annotations = transform_tags_to_standoff(tagged_text, debug=debug)
+        if self.debug > 0:
+            print('tokeinze - num annotations:', len(annotations))
+            print('\ntokenize - clean_text:', clean_text)
+        doc = super().tokenize(clean_text, doc_id=doc_id)
+        if self.include_boundary_tokens:
+            for anno in annotations:
+                # adjust offset with width of <START> boundary token and whitespace
+                anno.offset += 8
+                anno.end += 8
+        for token in doc:
+            if len(annotations) == 0:
+                break
+            curr_anno = annotations[0]
+            if self.debug > 0:
+                print('tokeinze - curr_anno:', curr_anno)
+                print('tokeinze - curr_token:', token.char_index, token.i, token.n)
+            if curr_anno.offset <= token.char_index < curr_anno.end:
+                token.metadata['tag_type'] = curr_anno.tag_type
+                token.metadata['tag_text'] = curr_anno.text
+                token.metadata['tag_offset'] = curr_anno.offset
+                token.metadata['tag_end'] = curr_anno.end
+            elif token.char_index >= curr_anno.end:
+                annotations.pop(0)
+                if self.debug > 0:
+                    print('tokeinze - popping - num annotations:', len(annotations))
+            if self.debug > 0:
+                print(token.metadata)
+        return doc
+
+
+def extract_non_tagged_strings(tagged_text, doc_id: str = None, debug: int = 0):
+    tags = extract_tags(tagged_text)
+    remaining_text = tagged_text
+    non_tagged_strings = []
+    if debug > 0:
+        print(tagged_text, '\n\n')
+    for tag in sorted(tags, key=lambda t: t.end, reverse=True):
+        non_tagged_string = remaining_text[tag.end:]
+        if debug > 0:
+            print('non_tagged_string:', non_tagged_string)
+        non_tagged_strings.append({
+            'doc_id': doc_id,
+            'text': non_tagged_string,
+            'offset': tag.end,
+            'end': tag.end + len(non_tagged_string)
+        })
+        remaining_text = remaining_text[:tag.offset]
+        if debug > 0:
+            print('remaining_text:', remaining_text)
+            print()
+    if len(remaining_text) > 0:
+        non_tagged_strings.append({
+            'doc_id': doc_id,
+            'text': remaining_text,
+            'offset': 0,
+            'end': len(remaining_text)
+        })
+    return non_tagged_strings[::-1]
+
+
+def transform_tags_to_standoff(tagged_text: str, doc_id: str = None, debug: int = 0):
+    tags = extract_tags(tagged_text, doc_id=doc_id)
+    clean_text = tagged_text
+    annos = []
+    if debug > 0:
+        print(tagged_text)
+        print('num tags:', len(tags))
+        print()
+    extra_tag_offset = sum([tag.extra_offset for tag in tags])
+    for ti, tag in enumerate(tags[::-1]):
+        num_preceeding = len(tags) - (ti+1)
+        if debug > 0:
+            print('num_preceeding:', num_preceeding)
+        extra_tag_offset = extra_tag_offset - tag.extra_offset
+        if debug > 0:
+            print('extra_tag_offset:', extra_tag_offset)
+        anno = Annotation(tag.type, tag.text, tag.offset - extra_tag_offset, doc_id=tag.doc_id)
+        if debug > 0:
+            print('tag offset:', tag.offset)
+            print('tag end:', tag.end)
+            print('tag len:', len(tag.tag_string))
+        annos.append(anno)
+        if debug > 0:
+            print(clean_text[:tag.offset])
+            print(tag.text)
+            print(clean_text[tag.end:])
+        clean_text = clean_text[:tag.offset] + tag.text + clean_text[tag.end:]
+        if debug > 0:
+            print()
+    for anno in annos:
+        if debug > 0:
+            print(anno.text)
+            print(clean_text[anno.offset:anno.end])
+        message = f'tag text and anno range text are not aligned:' \
+                  f'\n\ttag text: {anno.text}' \
+                  f'\n\tanno range text: {clean_text[anno.offset:anno.end]}'
+        assert clean_text[anno.offset:anno.end] == anno.text, IndexError(message)
+    return clean_text, annos[::-1]
+
+
+def extract_tags(tagged_text: str, doc_id: str = None) -> List[Tag]:
+    tags = []
+    for m in re.finditer(r'<([A-Z_]{3,})>(.*?)</\1>', tagged_text):
+        tag_type = m.group(1)
+        tag_text = m.group(2)
+        tag_offset = m.start()
+        tag = Tag(tag_type, tag_text, tag_offset, doc_id=doc_id)
+        tags.append(tag)
+    return tags
+
+
+def extract_tag_sequences(tagged_text, doc_id: str = None, debug: int = 0):
+    tags = extract_tags(tagged_text, doc_id=doc_id)
+    if debug > 0:
+        print('extract_tag_sequences - tags:', len(tags))
+    prev_end = 0
+    if len(tags) == 0:
+        return None
+    elif len(tags) == 1:
+        yield tags
+        return None
+    sequence = []
+    for tag in tags:
+        if tag.offset - prev_end > 2:
+            if len(sequence) > 0:
+                yield sequence
+            sequence = []
+        if tag.type in SINGLETON_TAG_TYPES:
+            if len(sequence) > 0:
+                yield sequence
+            yield [tag]
+            sequence = []
+        elif len(sequence) > 0 and sequence[-1].type.startswith('DEC') and tag.type.startswith('DEC') is False:
+            if len(sequence) > 0:
+                yield sequence
+            sequence = [tag]
+        elif len(sequence) > 0 and sequence[-1].type.startswith('DEC') is False and tag.type.startswith('DEC'):
+            if len(sequence) > 0:
+                yield sequence
+            sequence = [tag]
+        else:
+            sequence.append(tag)
+        prev_end = tag.end
+    if len(sequence) > 0:
+        yield sequence
+    return None
+
+
+def get_sequence_main_tag(sequence: List[Tag]):
+    if len(sequence) == 1:
+        if sequence[0].type == 'HOE':
+            return 'PER'
+        else:
+            return sequence[0].type
+    for tag in sequence:
+        if tag.type in {'PER', 'ORG', 'COM'}:
+            return tag.type
+        elif tag.type.startswith('DEC'):
+            return tag.type
+        elif tag.type.startswith('PROP'):
+            return tag.type
+        else:
+            continue
+    return sequence[0].type
+
+
+def replace_tags(tagged_text: str, tags: List[Dict[str, any]]) -> str:
+    for tag in tags:
+        tagged_text = tagged_text.replace(tag['tag_string'], f"<{tag['type']}/>", 1)
+    return tagged_text
+    # return text.replace('><', '> <').replace('>,', '> ,')
 
 
 def get_phrase_term_labels(geo_name: str, term_dict: TermDictionary,
