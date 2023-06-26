@@ -1,9 +1,3 @@
-from collections import defaultdict
-
-from republic.model.inventory_mapping import get_inventory_by_num
-from republic.model.inventory_mapping import get_inventory_by_id
-
-
 week_day_names_handwritten = [
     "Lunæ",
     "Martis",
@@ -37,14 +31,20 @@ month_day_names = {
         'iiije': 4,
         'Quarta': 4,
         've': 5,
+        'Guinta': 5,
         'vje': 6,
         'vie': 6,
+        'Sexta': 6,
         'vije': 7,
         'viie': 7,
+        'Setana': 7,
         'viije': 8,
+        'Octana': 8,
         'ixe': 9,
         '1xe': 9,
+        'Nona': 9,
         'xe': 10,
+        'Decima': 10,
         'xje': 11,
         'xie': 11,
         'xije': 12,
@@ -77,6 +77,7 @@ month_day_names = {
         'leste': 0,
         'laeste': 0,
         'Laeste': 0,
+        'Ultima': 0,
         'naestleste': -1,
         'naleste': -1
     },
@@ -287,6 +288,8 @@ month_names = {
         'September': 9,
         'Octobris': 10,
         'Octob': 10,
+        'Nouembris': 11,
+        'Nouemb': 11,
         'Novembris': 11,
         'Novemb': 11,
         'Decembris': 12,
@@ -327,6 +330,14 @@ week_day_names = {
         "Dominica": 6,
         "Sondach": 6
     }
+}
+
+date_structure_map = {
+    'week_day_name': week_day_names,
+    'month_day_name': month_day_names,
+    'month_name': month_names,
+    'den': None,
+    'year': None
 }
 
 date_name_map = [
@@ -504,31 +515,3 @@ holiday_phrases = [
     },
 ]
 
-
-def get_date_token_cat(inv_num: int = None, inv_id: str = None):
-    if inv_num:
-        inv_metadata = get_inventory_by_num(inv_num)
-        if inv_metadata is None:
-            raise ValueError(f'invalid inv_num {inv_num}')
-    elif inv_id:
-        inv_metadata = get_inventory_by_id(inv_id)
-        if inv_metadata is None:
-            raise ValueError(f'invalid inv_id {inv_id}')
-    else:
-        raise ValueError('need to pass either inv_num or inv_id')
-    print(inv_metadata)
-    date_token_map = {
-        'month_name': month_names,
-        'month_day_name': month_day_names,
-        'week_day_name': week_day_names,
-        'year': [year for year in range(inv_metadata['year_start'], inv_metadata['year_end']+1)]
-    }
-
-    date_token_cat = defaultdict(set)
-
-    for name_set in date_token_map:
-        for set_version in date_token_map[name_set]:
-            for date_token in date_token_map[name_set][set_version]:
-                date_token_cat[date_token].add((name_set, set_version))
-
-    return date_token_cat

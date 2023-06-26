@@ -5,11 +5,12 @@ from calendar import monthrange
 from collections import defaultdict
 from dateutil.easter import easter
 from dateutil.parser import parse
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from republic.model.republic_date_phrase_model import month_names_late, month_names_early
-from republic.model.republic_date_phrase_model import holiday_phrases, week_day_names
+from republic.model.republic_date_phrase_model import holiday_phrases
 from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
+from republic.model.republic_date_phrase_model import date_structure_map
 
 
 exception_dates = {
@@ -97,21 +98,33 @@ exception_dates = {
 }
 
 
+def make_date_name_map(date_elements):
+    date_structure = {
+        'week_day_name': None,
+        'month_day_name': None,
+        'month_name': None,
+        'include_year': False,
+        'include_den': False
+    }
+    for date_element in date_elements:
+        name_set, set_version = date_element
+        if date_structure_map[name_set] and set_version in date_structure_map[name_set]:
+            date_structure[name_set] = date_structure_map[name_set][set_version]
+        elif name_set == 'den':
+            date_structure['include_den'] = True
+        elif name_set == 'year':
+            date_structure['include_year'] = True
+    return date_structure
+
+
 class DateNameMapper:
 
-    def __init__(self, text_type: str, resolution_type: str, period_start: int,
-                 period_end: int, date_name_map: Dict[str, any] = None,
-                 include_year: bool = True):
-        self.text_type = text_type
-        self.resolution_type = resolution_type
-        self.period_start = period_start
-        self.period_end = period_end
-        self.date_name_map = None
-        self.include_year = include_year
-        if date_name_map is not None:
-            self.date_name_map = date_name_map
-        else:
-            self.date_name_map = extract_date_name_map(text_type, resolution_type, period_start, period_end)
+    def __init__(self, inv_metadata: Dict[str, any], date_elements: List[Tuple[str, str]]):
+        self.inv_metadata = inv_metadata
+        self.date_element_order = date_elements
+        self.date_name_map = make_date_name_map(date_elements)
+        self.include_year = self.date_name_map['include_year']
+        self.include_den = self.date_name_map['include_den']
         self.index_week_day = {}
         self.index_month = {}
         self.index_month_day = {}
@@ -142,11 +155,14 @@ class DateNameMapper:
         return None
 
     def generate_day_string(self, year: int, month: int, day: int,
-                            include_year: bool = None, debug: int = 0) -> Union[str, List[str], None]:
+                            include_year: bool = None, include_den: bool = None,
+                            debug: int = 0) -> Union[str, List[str], None]:
         if include_year is None:
             include_year = self.include_year
-            if debug > 0:
-                print('generate')
+        if include_den is None:
+            include_den = self.include_den
+        if debug > 0:
+            print('generate')
         day_strings = []
         try:
             date = datetime.date(year, month, day)
@@ -154,32 +170,48 @@ class DateNameMapper:
             print(f'year: {year}\tmonth: {month}\tday: {day}')
             raise
         week_day = date.weekday()
-        month_names = self.index_month[month]
+        names = {
+            'month_name': self.index_month[month],
+            'month_day_name': [],
+            'week_day_name': self.index_week_day[week_day],
+            'den': ['den'],
+            'year': [year for year in range(self.inv_metadata['year_start'], self.inv_metadata['year_end']+1)]
+        }
 
         month_start_day, month_num_days = monthrange(year, month)
 
         if 'month_day_name' in self.date_name_map:
             # index has a set, so copy to list to avoid updating the set itself
-            day_names = [day for day in self.index_month_day[day]]
+            names['month_day_name'] = [day for day in self.index_month_day[day]]
             if day - month_num_days == 0:
-                day_names.extend([day for day in self.index_month_day[0]])
+                names['month_day_name'].extend([day for day in self.index_month_day[0]])
             elif day - month_num_days == -1:
-                day_names.extend([day for day in self.index_month_day[-1]])
+                names['month_day_name'].extend([day for day in self.index_month_day[-1]])
         else:
             suffix = 'sten' if day in {1, 8} or day >= 20 else 'den'
-            day_names = [f'{day}{suffix}']
+            month_day_names = [f'{day}{suffix}']
         week_day_names = self.index_week_day[week_day]
         if debug > 0:
-            print('generate_day_string - month_names:', month_names)
-            print('generate_day_string - day_names', day_names)
-            print('generate_day_string - week_day_names:', week_day_names)
-        for month_name in month_names:
-            for day_name in day_names:
-                for week_day_name in week_day_names:
+            print('generate_day_string - month_names:', names['month_name'])
+            print('generate_day_string - month_day_names', names['month_day_name'])
+            print('generate_day_string - week_day_names:', names['week_day_name'])
+        day_strings = []
+        for name_set, set_version in self.date_element_order:
+            if len(day_strings) == 0:
+                day_strings = [name for name in names[name_set]]
+            else:
+                day_strings = [f"{day_string} {name}" for day_string in day_strings for name in names[name_set]]
+        return day_strings
+        '''
+        day_strings = []
+        for month_name in names['month_name']:
+            for month_day_name in names['month_day_name']:
+                for week_day_name in names['week_day_name']:
+                    den = 'den ' if include_den else ''
                     if include_year is True:
-                        day_string = f"{week_day_name} den {day_name} {month_name} {year}"
+                        day_string = f"{week_day_name} {den}{month_day_name} {month_name} {year}"
                     else:
-                        day_string = f"{week_day_name} den {day_name} {month_name}"
+                        day_string = f"{week_day_name} {den}{month_day_name} {month_name}"
                     # print('day_string:', day_string)
                     day_strings.append(day_string)
         if len(day_strings) == 0:
@@ -188,6 +220,7 @@ class DateNameMapper:
             return day_strings[0]
         else:
             return day_strings
+        '''
 
 
 class RepublicDate:
@@ -223,6 +256,7 @@ class RepublicDate:
         self.year = date.year
         self.month = date.month
         self.day = date.day
+        '''
         if date_mapper is not None:
             self.text_type = date_mapper.text_type
             self.day_name = date_mapper.index_week_day[date.weekday()]
@@ -233,12 +267,13 @@ class RepublicDate:
         else:
             self.day_name = week_day_names['printed'][self.date.weekday()]
         self.month_name = month_names_early[self.month - 1] if self.year <= 1750 else month_names_late[self.month - 1]
-        if self.date_mapper is not None:
-            self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
-            self.date_year_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=True)
-        else:
-            self.date_string = f"{self.day_name} den {self.day} {self.month_name}"
-            self.date_year_string = f"{self.date_string} {self.year}."
+        '''
+        # if self.date_mapper is not None:
+        self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
+        self.date_year_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=True)
+        # else:
+        #     self.date_string = f"{self.day_name} den {self.day} {self.month_name}"
+        #     self.date_year_string = f"{self.date_string} {self.year}."
 
     def __repr__(self):
         return f'RepublicDate({self.date.strftime("%Y-%m-%d")})'
@@ -296,14 +331,16 @@ class RepublicDate:
         Before 1754, that only includes Sundays, from 1754, it also includes Saturdays"""
         if self.is_holiday():
             return True
-        elif self.year >= 1754 and self.month == 12 and self.day in [23, 27] and self.day_name == 'Sabbathi':
+        elif self.year >= 1754 and self.month == 12 and self.day in [23, 27] and self.date.weekday() == 5:
             # this is an exception: after two holidays that are normally work days (Christmas)
             # the SG meets on the Saturday after Christmas if christmas starts on Thursday
             # or if christmas starts on Monday.
             return False
-        elif self.year >= 1754 and self.day_name == 'Sabbathi':
+        elif self.year >= 1754 and self.date.weekday() == 5:
+            # 5 is Saturday
             return True
-        elif self.day_name == 'Dominica':
+        elif self.date.weekday() == 'Dominica':
+            # 6 is Sunday
             return True
         else:
             return False
@@ -386,41 +423,41 @@ def get_date_exception_shift(current_date: RepublicDate) -> int:
     return exception_dates[date]["shift_days"]
 
 
-def get_next_workday(current_date: RepublicDate) -> Union[RepublicDate, None]:
-    next_day = get_next_day(current_date)
+def get_next_workday(current_date: RepublicDate, date_mapper: DateNameMapper = None) -> Union[RepublicDate, None]:
+    next_day = get_next_day(current_date, date_mapper)
     loop_count = 0
     while next_day.is_rest_day():
         if loop_count > 7:
             print("STUCK IN WHILE LOOP, BREAKING OUT")
             print("current_date", current_date.isoformat())
             break
-        next_day = get_next_day(next_day)
+        next_day = get_next_day(next_day, date_mapper=date_mapper)
         if next_day.year != current_date.year:
             return None
         loop_count += 1
     return next_day
 
 
-def get_previous_workday(current_date: RepublicDate) -> Union[RepublicDate, None]:
-    previous_day = get_previous_day(current_date)
+def get_previous_workday(current_date: RepublicDate, date_mapper: DateNameMapper = None) -> Union[RepublicDate, None]:
+    previous_day = get_previous_day(current_date, date_mapper=date_mapper)
     while previous_day.is_rest_day():
-        previous_day = get_previous_day(previous_day)
+        previous_day = get_previous_day(previous_day, date_mapper=date_mapper)
         if previous_day.year != current_date.year:
             return None
     return previous_day
 
 
-def get_next_day(current_date: RepublicDate) -> RepublicDate:
+def get_next_day(current_date: RepublicDate, date_mapper: DateNameMapper = None) -> RepublicDate:
     next_day = current_date.date + datetime.timedelta(days=1)
-    return RepublicDate(next_day.year, next_day.month, next_day.day, date_mapper=current_date.date_mapper)
+    return RepublicDate(next_day.year, next_day.month, next_day.day, date_mapper=date_mapper)
 
 
-def get_previous_day(current_date: RepublicDate) -> RepublicDate:
+def get_previous_day(current_date: RepublicDate, date_mapper: DateNameMapper = None) -> RepublicDate:
     previous_day = current_date.date - datetime.timedelta(days=1)
-    return RepublicDate(previous_day.year, previous_day.month, previous_day.day)
+    return RepublicDate(previous_day.year, previous_day.month, previous_day.day, date_mapper=date_mapper)
 
 
-def get_next_date_strings(current_date: RepublicDate,
+def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMapper,
                           num_dates: int = 3, include_year: bool = True) -> Dict[str, RepublicDate]:
     date_strings = {}
     if not current_date:
@@ -438,7 +475,7 @@ def get_next_date_strings(current_date: RepublicDate,
             loop_date_strings = loop_date.date_year_string if include_year else loop_date.date_string
             for date_string in loop_date_strings:
                 date_strings[date_string] = loop_date
-        loop_date = get_next_day(loop_date)
+        loop_date = get_next_day(loop_date, date_mapper)
         # print('next_day - loop_date:', loop_date, type(loop_date.date_string))
         if not loop_date:
             break
@@ -472,4 +509,3 @@ def derive_date_from_string(date_string: str, year: int) -> RepublicDate:
 def get_shifted_date(current_date: RepublicDate, day_shift: int) -> RepublicDate:
     new_date = current_date.date + datetime.timedelta(days=day_shift)
     return RepublicDate(new_date.year, new_date.month, new_date.day)
-
