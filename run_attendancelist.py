@@ -7,8 +7,8 @@ from elasticsearch import Elasticsearch
 import networkx as nx
 import pandas as pd
 import logging
-from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.phrase.phrase_model import PhraseModel
+from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.fuzzy_phrase_model import PhraseModel
 
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
 from republic.analyser.attendance_lists.pattern_finders import search_provinces, search_presidents, make_groslijst
@@ -17,7 +17,8 @@ import republic.analyser.attendance_lists.parse_delegates as parse_delegates
 from republic.analyser.attendance_lists.searchers import make_junksweeper
 from republic.helper.similarity_match import FuzzyKeywordGrouper
 from republic.helper.utils import reverse_dict
-from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+
+
 
 
 def start_logger(outdir, year):
@@ -35,16 +36,8 @@ fuzzysearch_config = {
     "skip_size": 1,
 }
 
-# we define a number of data sources at the module level
-# in the hope this speeds things up a bit
 
-junksweeper = make_junksweeper(ekwz=ekwz)
-transposed_graph = reverse_dict(ekwz)
-keywords = list(abbreviated_delegates.name)
-kwrds = {key: parse_delegates.nm_to_delen(key) for key in keywords}
-
-
-def sweep_list(dralist, junksweeper=junksweeper):
+def sweep_list(dralist, junksweeper=None):
     def get_lscore(r):
         return r.score_levenshtein_similarity()
 
@@ -83,24 +76,36 @@ def list_tograph(inputlist: list):
     return g_heren
 
 
-matchfinder = parse_delegates.FndMatch(year=0, rev_graph=transposed_graph,
-                                       searcher=parse_delegates.herensearcher,
-                                       junksearcher=junksweeper,
-                                       df=abbreviated_delegates)
 
 
-def prepare_found_delegates(framed_gtlm, found_delegates, year):
-    framed_gtlm['vs'] = framed_gtlm.gentleobject.apply(lambda x: [e for e in x.variants['general']])
-    framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
-    # framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
-    framed_gtlm['name'] = framed_gtlm.gentleobject.apply(lambda x: x.name)
-    framed_gtlm['found_in'] = year
-    return framed_gtlm
+
+# def prepare_found_delegates(framed_gtlm, found_delegates, year):
+#     framed_gtlm['vs'] = framed_gtlm.gentleobject.apply(lambda x: [e for e in x.variants['general']])
+#     framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
+#     # framed_gtlm['uuid'] = framed_gtlm.gentleobject.apply(lambda x: x.get_uuid())
+#     framed_gtlm['name'] = framed_gtlm.gentleobject.apply(lambda x: x.name)
+#     framed_gtlm['found_in'] = year
+#     return framed_gtlm
 
 
 def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
         source_index: str = 'resolutions'):
-    runner = RunAll(es=es, year=year, source_index=source_index)
+    #do imports of resources here
+    #and construct the environment and databases
+    from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+    junksweeper = make_junksweeper(ekwz=ekwz)
+    transposed_graph = reverse_dict(ekwz)
+    keywords = list(abbreviated_delegates.name)
+    kwrds = {key: parse_delegates.nm_to_delen(key) for key in keywords}
+    matchfinder = parse_delegates.FndMatch(year=0, rev_graph=transposed_graph,
+                                       searcher=parse_delegates.herensearcher,
+                                       junksearcher=junksweeper,
+                                    #    found_delegates=found_delegates,
+                                       df=abbreviated_delegates)
+    runner = RunAll(es=es, 
+                    year=year, 
+                    source_index=source_index,
+                    matchfnd=matchfinder)
     if verbose:
         print("- gathering attendance lists")
     if len(runner.searchobs) == 0:
@@ -147,13 +152,13 @@ class RunAll(object):
 
     def __init__(self, es: Elasticsearch,
                  year=0,
-                 abbreviated_delegates=abbreviated_delegates,
-                 kwrds=kwrds,
-                 found_delegates=found_delegates,
-                 matchfnd=matchfinder,
-                 ekwz=ekwz,
+                 abbreviated_delegates=None,
+                 kwrds=None,
+                 found_delegates=None,
+                 matchfnd=None,
+                 ekwz=None,
                  outdir='',
-                 source_index: str = 'resolutions'
+                 source_index: str = 'full_resolutions'
                  ):
         start_logger(outdir, year)
         self.year = year
