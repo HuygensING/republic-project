@@ -177,6 +177,9 @@ class Retriever:
         self.es_text = es_text
         self.config = config
 
+    def retrieve_multi_docs_by_id(self, index: str, doc_ids: List[str]):
+        docs = self.es_anno.mget(index=index, docs=doc_ids)
+
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
                     size: int = 100, scroll: str = '2m') -> iter:
         if query is None:

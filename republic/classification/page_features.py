@@ -158,7 +158,8 @@ def get_line_text_features(line: Union[pdm.PageXMLTextLine, Dict[str, any]],
 def get_date_skip_sim() -> Dict[str, SkipgramSimilarity]:
     months = set(month_names_early + month_names_late)
     months.add('Decembris')
-    weekdays = set(week_day_names['printed'] + week_day_names['handwritten'])
+    weekdays = set([week_day_name for name_set in week_day_names for week_day_name in week_day_names[name_set]])
+    # weekdays = set(week_day_names['printed_early'] + week_day_names['printed_late'] + week_day_names['handwritten'])
     weekdays.add('Jouis')
     skip_sim = {
         'weekdays': SkipgramSimilarity(ngram_length=3, skip_length=1),

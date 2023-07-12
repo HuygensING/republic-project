@@ -1,8 +1,16 @@
-from typing import Dict, List
-import subprocess
 import datetime
+import os
+import subprocess
+from typing import Dict, List
 
 from fuzzy_search.tokenization.string import score_levenshtein_similarity_ratio
+
+import republic
+
+
+def get_project_dir() -> str:
+    module_dir = str(republic.__path__[0])
+    return os.path.split(module_dir)[0]
 
 
 def get_commit_version():

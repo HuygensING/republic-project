@@ -1,12 +1,14 @@
-import re
+import copy
 from collections import defaultdict
-from itertools import combinations
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
+from pagexml.parser import json_to_pagexml_text_region
+from pagexml.helper.pagexml_helper import make_text_region_text
 from fuzzy_search.match.phrase_match import PhraseMatch
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 
+import republic.model.republic_document_model as rdm
 from republic.classification.line_classification import NeuralLineClassifier
 from republic.classification.page_features import get_line_base_dist
 from republic.helper.text_helper import is_duplicate
@@ -15,51 +17,62 @@ from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_date import get_next_date_strings
-from republic.model.republic_word_model import get_specific_date_words
+from republic.parser.logical.date_parser import get_date_token_cat
+from republic.parser.logical.date_parser import get_session_date_line_structure
+from republic.parser.logical.date_parser import get_session_date_lines_from_pages
 
 
-def generate_date_string(curr_date: RepublicDate):
-    date_mapper = DateNameMapper(text_type='handwritten', resolution_type='ordinaris',
-                                 period_start=1600, period_end=1700)
-    return get_next_date_strings(curr_date, num_dates=7)
+def generate_date_string(curr_date: RepublicDate, date_mapper: DateNameMapper):
+    return get_next_date_strings(curr_date, date_mapper=date_mapper, num_dates=7)
 
 
-def get_predicted_line_classes(page: pdm.PageXMLPage, line_classifier: NeuralLineClassifier):
+def get_predicted_line_classes(page: pdm.PageXMLPage, line_classifier: NeuralLineClassifier,
+                               debug: int = 0):
     lines = page.get_lines()
     classified = [line for line in lines if 'line_class' in line.metadata]
     if len(classified) >= len(lines) - 10:
-        # print('lines already classified for page', page.id)
+        if debug > 1:
+            print('lines already classified for page', page.id)
         predicted_line_class = {}
         for line in page.get_lines():
             if 'line_class' not in line.metadata:
                 if line.text and len(line.text) < 3:
                     line.metadata['line_class'] = 'noise'
                 else:
-                    print('\nMISSING LINE_CLASS:', line.text)
-                    print('\t', line.parent.type)
+                    if debug > 1:
+                        print('\nMISSING LINE_CLASS:', line.text)
+                        print('\t', line.parent.type)
                     continue
             predicted_line_class[line.id] = line.metadata['line_class']
     elif len(classified) < len(lines) - 10:
         predicted_line_class = line_classifier.classify_page_lines(page)
-        # print('NON-CLASSIFIED LINSE FOR PAGE:', page.id, '\tLINES:', len(lines), '\tCLASSIFIED:', len(classified), '\tNLC:', len(predicted_line_class))
-        # print('\t', page.stats, '\n')
+        if debug > 1:
+            print('NON-CLASSIFIED LINSE FOR PAGE:', page.id, '\tLINES:', len(lines),
+                  '\tCLASSIFIED:', len(classified), '\tNLC:', len(predicted_line_class))
+            print('\t', page.stats, '\n')
     else:
         predicted_line_class = line_classifier.classify_page_lines(page)
     return predicted_line_class
 
 
-def sort_lines_by_class(page, line_classifier: NeuralLineClassifier):
+def sort_lines_by_class(page, line_classifier: NeuralLineClassifier, debug: int = 0):
     class_lines = defaultdict(list)
     predicted_line_class = get_predicted_line_classes(page, line_classifier)
     for col in sorted(page.columns, key=lambda c: c.coords.left):
         for tr in sorted(col.text_regions, key=lambda t: t.coords.top):
-            # print(tr.type)
+            if debug > 1:
+                print('sort_lines_by_class - tr.type:', tr.type)
             for line in tr.lines:
+                if debug > 1:
+                    print(f"sort_lines_by_class - line_class line.text: "
+                          f"{line.metadata['line_class']: <12}\t{line.text}")
                 if 'marginalia' in tr.type:
                     class_lines['marginalia'].append(line)
                     line.metadata['line_class'] = 'marginalia'
                     line.metadata['line_classifier'] = 'loghi'
                 elif line.id in predicted_line_class:
+                    if debug > 1:
+                        print('sort_lines_by_class - line.id in predicted_line_class', line.id)
                     pred_class = predicted_line_class[line.id]
                     if 'date' in tr.type and pred_class != 'date':
                         line.metadata['line_class'] = 'date'
@@ -68,10 +81,37 @@ def sort_lines_by_class(page, line_classifier: NeuralLineClassifier):
                             # print('DISAGREEMENT', line.text)
                             class_lines['date'].append(line)
                             continue
+                        elif tr.coords.bottom < 500:
+                            if debug > 1:
+                                print('DISAGREEMENT DATE HEADER')
+                                print(f'\tpage.top: {page.coords.top}\ttr.bottom: {tr.coords.bottom}')
+                            class_lines['date_header'].append(line)
+                            continue
+                    if 'attendance' in tr.type and pred_class != 'attendance':
+                        line.metadata['line_class'] = 'attendance'
+                        line.metadata['line_classifier'] = 'loghi'
+                        if tr.coords.left - page.coords.left < 200:
+                            if debug > 1:
+                                print('DISAGREEMENT ATTENDANCE')
+                                print(f'\tpage.left: {page.coords.left}\ttr.left: {tr.coords.left}')
+                            class_lines['attendance'].append(line)
+                            continue
+                    if 'resolution' in tr.type and pred_class == 'attendance':
+                        line.metadata['line_class'] = 'para_mid'
+                        line.metadata['line_classifier'] = 'loghi'
+                        if page.coords.right - tr.coords.right < 400:
+                            if debug > 1:
+                                print('DISAGREEMENT ATTENDANCE')
+                                print(f'\tpage.left: {page.coords.left}\ttr.left: {tr.coords.left}')
+                            class_lines['para'].append(line)
+                            continue
                     # elif 'date' not in tr.type and pred_class == 'date':
                         # print('DISAGREEMENT', line.text)
                         # print('NLC predicts date')
                     if pred_class.startswith('para_'):
+                        if debug > 3:
+                            print('PARA INDENT')
+                            print(f'\tpage.left: {page.coords.left}\ttr.left: {tr.coords.left}')
                         class_lines['para'].append(line)
                         line.metadata['line_class'] = pred_class
                         line.metadata['line_classifier'] = 'nlc_classifier'
@@ -194,12 +234,99 @@ def make_text_region_metadata(line_class: str, group_coords: pdm.Coords, page: p
     return metadata
 
 
+def split_above_below_overlap_groups(para_line_group: List[pdm.PageXMLTextLine],
+                                     date_line_group: List[pdm.PageXMLTextLine],
+                                     debug: int = 0):
+    above_group = []
+    below_group = []
+    overlap_group = []
+    para_top = para_line_group[0].coords.top
+    para_bottom = para_line_group[-1].coords.bottom
+    date_top = date_line_group[0].coords.top
+    date_bottom = date_line_group[-1].coords.bottom
+    if debug > 0:
+        print('split_para_lines_on_date_gaps - para_top:', para_top)
+        print('split_para_lines_on_date_gaps - para_bottom:', para_bottom)
+        print('split_para_lines_on_date_gaps - date_top:', date_top)
+        print('split_para_lines_on_date_gaps - date_bottom:', date_bottom)
+        for line in date_line_group:
+            print(f"\tdate line: {line.coords.top: >4}-{line.coords.bottom: <4}\t{line.text}")
+    for line in para_line_group:
+        if line.coords.bottom < date_top:
+            if debug > 1:
+                print('adding to above group, line', line.text)
+            above_group.append(line)
+        elif line.coords.top > date_bottom:
+            if debug > 1:
+                print('adding to below group, line', line.text)
+            below_group.append(line)
+        else:
+            if debug > 1:
+                print('adding to overlap group, line', line.text)
+            overlap_group.append(line)
+    # print(len(above_group), len(overlap_group), len(below_group), len(para_line_group))
+    assert sum([len(above_group), len(overlap_group), len(below_group)]) == len(para_line_group)
+    return above_group, overlap_group, below_group
+
+
+def split_para_lines_on_date_gaps(line_groups: Dict[str, List[List[pdm.PageXMLTextLine]]],
+                                  debug: int = 0) -> List[List[pdm.PageXMLTextLine]]:
+    sum_before = sum([len(group) for group in line_groups['para']])
+    para_line_groups = []
+    for para_line_group in line_groups['para']:
+        overlapping_date_group = []
+        for date_line_group in line_groups['date']:
+            para_top = para_line_group[0].coords.top
+            para_bottom = para_line_group[-1].coords.bottom
+            date_top = date_line_group[0].coords.top
+            date_bottom = date_line_group[-1].coords.bottom
+            if para_top < date_top and para_bottom > date_bottom:
+                overlapping_date_group.append(date_line_group)
+        if len(overlapping_date_group) == 0:
+            if debug > 0:
+                print('split_para_lines_on_date_gaps - no overlapping date text_region:')
+                for line in para_line_group:
+                    print('\t', line.text)
+            para_line_groups.append(para_line_group)
+            continue
+        while len(overlapping_date_group) > 0 and len(para_line_group) > 0:
+            if debug > 0:
+                print('number of overlapping date_groups:', len(overlapping_date_group))
+            date_line_group = overlapping_date_group.pop(0)
+            above_group, overlap_group, below_group = split_above_below_overlap_groups(para_line_group, date_line_group)
+            if debug > 0:
+                print(f"\tabove: {len(above_group)}\toverlap: {len(overlap_group)}\tbelow: {len(below_group)}")
+            if len(above_group) > 0:
+                if debug > 0:
+                    for line in above_group:
+                        print(f"\tabove date line: {line.coords.top: >4}-{line.coords.bottom: <4}\t{line.text}")
+                para_line_groups.append(above_group)
+            if len(overlap_group) > 0:
+                if debug > 0:
+                    for line in overlap_group:
+                        print(f"\toverlap with date line: {line.coords.top: >4}-{line.coords.bottom: <4}\t{line.text}")
+                para_line_groups.append(overlap_group)
+            para_line_group = below_group
+        if len(para_line_group) > 0:
+            para_line_groups.append(para_line_group)
+            if debug > 0:
+                for line in para_line_group:
+                    print(f"\tbelow date line: {line.coords.top: >4}-{line.coords.bottom: <4}\t{line.text}")
+    sum_after = sum([len(group) for group in para_line_groups])
+    assert sum_after == sum_before, f"unequal number of lines before split {sum_before} and after split {sum_after}"
+    return para_line_groups
+
+
 def make_classified_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine]],
-                                 page: pdm.PageXMLPage) -> Dict[str, List[pdm.PageXMLTextRegion]]:
+                                 page: pdm.PageXMLPage, debug: int = 0) -> Dict[str, List[pdm.PageXMLTextRegion]]:
     class_trs = defaultdict(list)
+    line_groups: Dict[str, List[List[pdm.PageXMLTextLine]]] = defaultdict(list)
     for line_class in class_lines:
-        line_groups = split_lines_on_vertical_gaps(class_lines[line_class])
-        for line_group in line_groups:
+        line_groups[line_class] = split_lines_on_vertical_gaps(class_lines[line_class], debug=debug)
+    for line_class in line_groups:
+        if line_class == 'para' and 'date' in class_lines and len(class_lines['date']) > 0:
+            line_groups[line_class] = split_para_lines_on_date_gaps(line_groups, debug=debug)
+        for line_group in line_groups[line_class]:
             try:
                 group_coords = pdm.parse_derived_coords(line_group)
             except Exception:
@@ -232,7 +359,7 @@ def link_classified_text_regions(class_trs):
 
 def print_trs(class_trs, has_attendance, has_marginalia):
     if 'date' in class_trs and 'para' in class_trs:
-        main_trs = sorted(class_trs['date'] + class_trs['para'], key=lambda tr: tr.coords.top)
+        main_trs = sorted(class_trs['date'] + class_trs['para'], key=lambda t: t.coords.top)
         for ti, tr in enumerate(main_trs):
             print('\t', ti, tr.coords.top, tr.coords.bottom, tr.type)
             for line in tr.lines:
@@ -249,7 +376,8 @@ def print_trs(class_trs, has_attendance, has_marginalia):
                         print('\t\t\t', line.text)
 
 
-def split_lines_on_vertical_gaps(lines: List[pdm.PageXMLTextLine]) -> List[List[pdm.PageXMLTextLine]]:
+def split_lines_on_vertical_gaps(lines: List[pdm.PageXMLTextLine],
+                                 debug: int = 0) -> List[List[pdm.PageXMLTextLine]]:
     lines = sorted(lines)
     line_groups = []
     if len(lines) == 0:
@@ -257,14 +385,26 @@ def split_lines_on_vertical_gaps(lines: List[pdm.PageXMLTextLine]) -> List[List[
     line_group = [lines[0]]
     if len(lines) == 1:
         return [line_group]
+    if debug > 2:
+        print('split_lines_on_vertical_gaps - first line_group:')
+        for line in line_group:
+            print(f"\t{line.coords.top: >4}-{line.coords.bottom: <4}    {line.text}")
     for curr_line in lines[1:]:
         prev_line = line_group[-1]
         base_dist = get_line_base_dist(prev_line, curr_line)
+        if debug > 2:
+            print('split_lines_on_vertical_gaps - curr_line:')
+            print(f"\t{curr_line.coords.top: >4}-{curr_line.coords.bottom: <4}    {curr_line.text}")
+            if 'height' in curr_line.metadata:
+                print(f"\tbase_dist: {base_dist}\tcurr_line.height: {curr_line.metadata['height']['mean']}")
+            else:
+                print(f"\tbase_dist: {base_dist}\tcurr_line base - top + 50: "
+                      f"{curr_line.baseline.top - curr_line.coords.top + 50}")
         split = False
         if 'height' in curr_line.metadata and 'height' in prev_line.metadata:
             if base_dist > curr_line.metadata['height']['mean'] * 2:
                 split = True
-        elif base_dist > curr_line.coords.top + 50:
+        elif base_dist > (curr_line.baseline.top - curr_line.coords.top + 50):
             split = True
         if split is True:
             line_groups.append(line_group)
@@ -283,9 +423,10 @@ def extract_best_date_match(matches: List[PhraseMatch]) -> Union[None, PhraseMat
     return best_match
 
 
-def find_session_dates(pages, inv_start_date, neural_line_classifier):
-    date_strings = get_next_date_strings(inv_start_date, num_dates=7, include_year=False)
-    config = {'ngram_size': 2, 'skip_size': 2}
+def find_session_dates(pages, inv_start_date, neural_line_classifier, date_mapper: DateNameMapper,
+                       ignorecase: bool = True, debug: int = 0):
+    date_strings = get_next_date_strings(inv_start_date, date_mapper, num_dates=7, include_year=False)
+    config = {'ngram_size': 2, 'skip_size': 2, 'ignorecase': ignorecase}
     date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     session_dates = {}
     session_trs = defaultdict(list)
@@ -301,18 +442,37 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier):
             print(pi, page.id, pages[pi - 2].id)
             print(page.stats, pages[pi - 2].stats)
             raise
+        if debug > 0:
+            print('\n\n---------------------------------------')
+            print('find_session_dates - page:', page.id)
         if 'inventory_id' not in page.metadata:
             page.metadata['inventory_id'] = f"{page.metadata['series_name']}_{page.metadata['inventory_num']}"
-        class_lines = sort_lines_by_class(page, neural_line_classifier)
-        class_trs = make_classified_text_regions(class_lines, page)
+        class_lines = sort_lines_by_class(page, neural_line_classifier, debug=debug)
+        class_trs = make_classified_text_regions(class_lines, page, debug=debug)
         has_attendance = link_date_attendance(class_trs)
         has_marginalia = link_para_marginalia(class_trs)
         unlinked_att_trs, unlinked_marg_trs = link_classified_text_regions(class_trs)
+        if len(unlinked_att_trs) > 0:
+            print('find_session_dates - unlinked_att_trs:', len(unlinked_att_trs), page.id)
+        if len(unlinked_marg_trs) > 0:
+            print('find_session_dates - unlinked_marg_trs:', len(unlinked_marg_trs), page.id)
         main_trs = sorted(class_trs['date'] + class_trs['para'], key=lambda tr: tr.coords.top)
 
         for main_tr in main_trs:
+            if debug > 0:
+                print('\nfind_session_dates - main_tr:', main_tr.coords.box)
+                if current_date:
+                    print('find_session_dates - current_date:', current_date.isoformat())
+                else:
+                    print('find_session_dates - no current_date')
             if current_date and main_tr.metadata['text_region_class'] == 'para':
+                if debug > 0:
+                    print('find_session_dates - adding para to session with date', current_date.isoformat())
                 session_trs[current_date.isoformat()].append(main_tr)
+                for line in main_tr.lines:
+                    if debug > 0:
+                        print(f"\tPARA_LINE: {line.coords.top: >4}-{line.coords.bottom: <4} "
+                              f"{line.metadata['line_class']: <12}    {line.text}")
                 if main_tr in has_marginalia:
                     for marg_tr in has_marginalia[main_tr]:
                         session_trs[current_date.isoformat()].append(marg_tr)
@@ -320,13 +480,15 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier):
             for line in main_tr.lines:
                 if line.text is None:
                     continue
+                if debug > 0:
+                    print(f"\t{line.metadata['line_class']: <12}    {line.text}")
                 line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text})
                 filtered_matches = [match for match in line_matches if match.offset < 50]
                 filtered_matches = [match for match in filtered_matches if
                                     abs(len(match.string) - len(line.text)) < 50]
                 best_match = extract_best_date_match(filtered_matches)
                 if best_match:
-                    print('\t', best_match.phrase.phrase_string)
+                    # print('\t', best_match.phrase.phrase_string)
                     current_date = date_strings[best_match.phrase.phrase_string]
                     session_dates[current_date.isoformat()] = {
                         'session_date': current_date.isoformat(),
@@ -340,8 +502,9 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier):
                         # 'text': line.text
                     }
                     session_trs[current_date.isoformat()].append(main_tr)
-                    print('current_date:', current_date, best_match.string, page.id)
-                    date_strings = get_next_date_strings(current_date, num_dates=7, include_year=False)
+                    if debug > 0:
+                        print('find_session_dates - found date:', current_date, best_match.string, page.id)
+                    date_strings = get_next_date_strings(current_date, date_mapper, num_dates=7, include_year=False)
                     # print(date_strings.keys())
                     date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
             if current_date and main_tr in has_attendance:
@@ -355,18 +518,39 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier):
     return None
 
 
-def get_sessions(inv_id: str, pages, neural_line_classifier):
+def get_sessions(inv_id: str, pages, neural_line_classifier, ignorecase: bool = True,
+                 debug: int = 0):
+    print('get_sessions - num pages:', len(pages))
     inv_metadata = get_inventory_by_id(inv_id)
     period_start = inv_metadata['period_start']
     pages.sort(key=lambda page: page.id)
-    date_mapper = DateNameMapper(text_type='handwritten', resolution_type='ordinaris',
-                                 period_start=1600, period_end=1700, include_year=False)
+    date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
+    session_date_lines = get_session_date_lines_from_pages(pages)
+    if len(session_date_lines) == 0:
+        print(f"WARNING - No session date lines found for "
+              f"inventory {inv_metadata['inventory_num']} with {len(pages)} pages")
+        return None
+    date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat, inv_id)
+    if 'week_day_name' not in [element[0] for element in date_line_structure]:
+        print('WARNING - missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
+        return None
+
+    date_mapper = DateNameMapper(inv_metadata, date_line_structure)
+
+    # year_start_date = RepublicDate(date_string=inv_metadata['period_start'], date_mapper=date_mapper)
+    # date_strings = get_next_date_strings(year_start_date, date_mapper, num_dates=7)
+
     # period_start = "1616-01-01"
     inv_start_date = RepublicDate(date_string=period_start, date_mapper=date_mapper)
     resolution_type = pages[0].metadata['resolution_type']
     text_type = pages[0].metadata['text_type']
-    for session_date, session_trs in find_session_dates(pages, inv_start_date, neural_line_classifier):
+    session_num = 0
+    for session_date, session_trs in find_session_dates(pages, inv_start_date,
+                                                        neural_line_classifier, date_mapper,
+                                                        ignorecase=ignorecase, debug=debug):
         # print('-------------')
+        session_num += 1
+        '''
         if 3090 < inv_metadata['inventory_num'] < 3244:
             session_num = 1
         elif 3244 <= inv_metadata['inventory_num'] < 3284:
@@ -377,9 +561,11 @@ def get_sessions(inv_id: str, pages, neural_line_classifier):
             session_num = 3
         else:
             session_num = 4
+        '''
         session_metadata = {
-            'id': f"session-{session_date['session_date']}-{resolution_type}-num-{session_num}",
-            'session_id': f"session-{session_date['session_date']}-{resolution_type}-num-{session_num}",
+            'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
+            'session_id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
+            'session_num': session_num,
             'type': 'session',
             'inventory_id': session_trs[0].metadata['inventory_id'],
             'inventory_num': session_trs[0].metadata['inventory_num'],
@@ -390,7 +576,7 @@ def get_sessions(inv_id: str, pages, neural_line_classifier):
         for session_tr in session_trs:
             session_tr.metadata['session_id'] = session_metadata['id']
         session = {
-            'id': session_metadata['id'],
+            'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
             'type': ['republic_doc', 'session'],
             'metadata': session_metadata,
             'date': session_date,
@@ -406,135 +592,130 @@ def get_sessions(inv_id: str, pages, neural_line_classifier):
             }
         }
         yield session, session_trs
-        # print(json.dumps(session_metadata, indent=4))
-        for tr in session_trs:
-            # print(f'\tsession has text region:', tr.id)
-            # print('\t\t', tr.metadata['text_region_links'])
-            pass
-            # for line in tr.lines:
-            #     print(f"{line.metadata['line_class']: <14}\t{line.text}")
-    # period_start = "1616-03-15"
-    # inv_start_date = RepublicDate(date_string=period_start, date_mapper=date_mapper)
-    # session_dates[inv_num] = find_session_dates(pages[294:306], inv_start_date, word_date_cat)
+    return None
 
 
-"""
-def add_page_line_classes(page):
-    page_lines = []
-    for col in page.columns:
-        for tr in col.text_regions:
-            print('\t', tr.type)
-            for line in tr.lines:
-                if 'marginalia' in tr.type:
-                    line_class = 'marginalia'
-                elif line.id in predicted_line_class:
-                    line_class = predicted_line_class[line.id]
-                else:
-                    line_class = 'None'
-                line.metadata['line_class'] = line_class
-                if line_class in skip_types:
-                    continue
-                page_lines.append(line)
-    return page_lines
+def make_paragraph_text(lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
+    text, line_ranges = make_text_region_text(lines, word_break_chars='-„')
+    return text, line_ranges
 
 
-def sort_page_textregions(page: pdm.PageXMLPage) -> List[pdm.PageXMLTextRegion]:
-    trs = page.extra + page.text_regions + [tr for col in page.columns for tr in col.text_regions]
-    return sorted(trs, key=lambda tr: tr.coords.y)
+def make_session_paragraphs(session_metadata, session_trs, debug: int = 0):
+    paras = get_session_paragraph_line_groups(session_trs, debug=debug)
+    # print('make_session_paragraphs - len(paras):', len(paras))
+    doc_text_offset = 0
+    for pi, para in enumerate(paras):
+        para_type, para_lines = para
+        paragraph_id = f"{session_metadata['id']}-para-{pi+1}"
+        metadata = copy.deepcopy(session_metadata)
+        metadata['id'] = paragraph_id
+        metadata['type'] = "paragraph"
+        text_region_ids = []
+        for line in para_lines:
+            if line.metadata["parent_id"] not in text_region_ids:
+                text_region_ids.append(line.metadata["parent_id"])
+                if line.metadata['page_id'] not in metadata['page_ids']:
+                    metadata['page_ids'].append(line.metadata['page_id'])
+        text, line_ranges = make_paragraph_text(para_lines)
+        paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
+                                          text=text, line_ranges=line_ranges)
+        paragraph.metadata["start_offset"] = doc_text_offset
+        paragraph.metadata["para_type"] = para_type
+        paragraph.add_type(para_type)
+        doc_text_offset += len(paragraph.text)
+        yield paragraph
+    return None
 
 
-def get_session_info(trs: List[pdm.PageXMLTextRegion],
-                     word_date_cat: Dict[str, str]) -> Dict[str, any]:
-    session_info = {
-        'has_session_start': False,
-        'has_attendance': False,
-        'has_date': False,
-        'has_short_date': False,
-        'has_full_date': False,
-        'full_date_tr': None,
-        'attendance_tr': None
-    }
-    for tr in trs:
-        if 'date' in tr.type:
-            session_info['has_date'] = True
-        if 'attendance' in tr.type:
-            session_info['has_attendance'] = True
-        if 'date' in tr.type:
-            tr_text = '\n'.join([line.text for line in tr.get_lines() if line.text is not None])
-            if len(tr_text) > 20:
-                session_info['has_full_date'] = True
-                session_info['full_date_tr'] = tr
-            else:
-                session_info['has_short_date'] = True
-                session_info['short_date_tr'] = tr
-        elif 'attendance' in tr.type:
-            session_info['attendance_tr'] = tr
-            session_info['has_attendance'] = True
-        elif text_region_has_session_date(tr, word_date_cat):
-            session_info['has_full_date'] = True
-            session_info['has_date'] = True
-            session_info['full_date_tr'] = tr
-    session_info['has_session_start'] = session_info['has_full_date'] or session_info['has_attendance']
-    return session_info
-
-
-def session_date_elements_in_order(line_date_cats):
-    in_order = []
-    session_date_elements = ['date_weekday', 'date_monthday', 'date_month_specific']
-    for cat1, cat2 in combinations(session_date_elements, 2):
-        if cat1 in line_date_cats and cat2 in line_date_cats:
-            in_order.append(line_date_cats.index(cat1) == line_date_cats.index(cat2) - 1)
-    return any(in_order)
-
-
-def is_session_date_line(line, word_date_cat):
-    if line.text is None:
+def check_lines_have_boundary_signals(lines: List[pdm.PageXMLTextLine], curr_index: int,
+                                      prev_line: pdm.PageXMLTextLine, debug: int = 0) -> bool:
+    if debug > 0:
+        print('check_lines_have_boundary_signals - curr_index:', curr_index)
+    if curr_index == -1:
+        curr_line = prev_line
+    else:
+        curr_line = lines[curr_index]
+    if curr_line is None:
+        return True
+    if debug > 0:
+        print('check_lines_have_boundary_signals - curr_line:', curr_line.metadata['line_class'], curr_line.text)
+    if curr_line.metadata['line_class'].startswith('para') is False:
+        if debug > 0:
+            print('\tno para line:', True)
+        return True
+    if curr_line.text is None:
+        if debug > 0:
+            print('\tno text:', True)
+        return True
+    if len(lines) == curr_index+1:
+        if debug > 0:
+            print('\tno next line:', True)
+        return True
+    if curr_line.text and curr_line.text[-1] == '.':
+        if debug > 0:
+            print('\tends with period:', True)
+        return True
+    next_line = lines[curr_index+1]
+    if debug > 0:
+        print('check_lines_have_boundary_signals - next_line:', next_line.metadata['line_class'], next_line.text)
+    if next_line.text is None:
+        if debug > 0:
+            print('\tno text:', True)
+        return True
+    if curr_line.text[-1] in '-„':
+        if debug > 0:
+            print('\tcurr line has word break:', False)
         return False
-    words = [w for w in re.split(r'\W+', line.text) if w != '']
-    date_words = get_specific_date_words(words, word_date_cat)
-    date_cats = [word_date_cat[word] for word in date_words]
-    return session_date_elements_in_order(date_cats)
+    if next_line.text[0].isalpha() and next_line.text[0].islower():
+        if debug > 0:
+            print('\tnext line starts with lower alpha:', False)
+        return False
+    if debug > 0:
+        print('\telse:', True)
+    return True
 
 
-def text_region_has_session_date(text_region, word_date_cat):
-    for line in text_region.lines:
-        if is_session_date_line(line, word_date_cat):
-            return True
-    return False
+def get_next_line(session_trs: List[pdm.PageXMLTextRegion], si: int, li: int) -> Union[pdm.PageXMLTextLine, None]:
+    curr_tr = session_trs[si]
+    if len(curr_tr.lines) > li+1:
+        return curr_tr.lines[li+1]
+    elif len(session_trs) > si+1:
+        next_tr = session_trs[si+1]
+        next_text_lines = [line for line in next_tr.lines if line.text]
+        return next_text_lines[0]
+    else:
+        return None
 
 
-def find_session_date(trs: List[pdm.PageXMLTextRegion],
-                      session_info: Dict[str, Union[bool, None, pdm.PageXMLTextRegion]],
-                      date_searcher: FuzzyPhraseSearcher) -> List[str]:
-    session_dates = []
-    if session_info['has_full_date']:
-        date_tr = session_info['full_date_tr']
-        tr_text = '\n'.join([line.text for line in date_tr.get_lines() if line.text is not None])
-        date_matches = date_searcher.find_matches({'id': date_tr.id, 'text': tr_text})
-        best_match = extract_best_date_match(date_matches)
-        session_dates.append(best_match.phrase.phrase_string)
-    elif session_info['has_attendance']:
-        print('\tNO FULL DATE')
-        attendance = session_info['attendance_tr']
-        for tr in trs:
-            for line in tr.lines:
-                if line.text is None:
-                    continue
-                if pdm.vertical_distance(line, attendance) > 800:
-                    continue
-                date_matches = date_searcher.find_matches({'id': line.id, 'text': line.text})
-                if len(date_matches) > 0:
-                    best_match = extract_best_date_match(date_matches)
-                    session_dates.append(best_match.phrase.phrase_string)
-                print('CANDIDATE:', attendance.coords.top, line.coords.top, line.text)
-    return session_dates
-
-
-def parse_page(page: pdm.PageXMLPage, date_searcher: FuzzyPhraseSearcher):
-    trs = sort_page_textregions(page)
-    session_info = get_session_info(trs)
-    print(page.id, session_info['has_session_start'])
-    if session_info['has_session_start']:
-        session_date = find_session_date(trs, session_info, date_searcher)
-"""
-
+def get_session_paragraph_line_groups(session_trs: List[pdm.PageXMLTextRegion],
+                                      debug: int = 0):
+    paras = []
+    para = []
+    prev_line = None
+    para_trs = [tr for tr in session_trs if tr.has_type('para')]
+    other_trs = [tr for tr in session_trs if tr.has_type('para') is False]
+    para_lines = [line for tr in para_trs for line in tr.lines]
+    for si, session_tr in enumerate(other_trs):
+        paras.append((session_tr.metadata['text_region_class'], session_tr.lines))
+    for li, line in enumerate(para_lines):
+        if line.metadata['line_class'] == 'para_start':
+            if check_lines_have_boundary_signals(para_lines, li-1, prev_line, debug=debug):
+                if len(para) > 0:
+                    if debug > 0:
+                        print('reached para_start, adding previous as number', len(paras)+1)
+                    paras.append(('para', para))
+                para = []
+        if debug > 0:
+            print(f"{line.coords.top: >4}-{line.coords.bottom: <4}\t{line.metadata['line_class']: <20}\t{line.text}")
+        para.append(line)
+        if line.metadata['line_class'] == 'para_end':
+            if check_lines_have_boundary_signals(para_lines, li, prev_line, debug=debug):
+                if len(para) > 0:
+                    if debug > 0:
+                        print('reached para_end, adding current as number', len(paras)+1)
+                    paras.append(('para', para))
+                para = []
+        prev_line = line
+    if len(para) > 0:
+        paras.append(('para', para))
+    return paras

@@ -1,8 +1,10 @@
 # This is a container for variants for keywords. They should go to either elasticsearch,
 # but perhaps it is a good idea to keep them local as well
 
-'}
-variants={'PRASIDE' = [], 'PRAESENTIBUS' = [], }
+variants = {
+    'PRASIDE': [],
+    'PRAESENTIBUS': [],
+}
 
 
 

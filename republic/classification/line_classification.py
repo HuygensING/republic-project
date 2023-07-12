@@ -113,7 +113,7 @@ def save_neural_line_classifier(model_dir: str,
     config_file = os.path.join(model_dir, 'line_classifier.config.json')
     with open(config_file, 'wt') as fh:
         model_config = model.config
-        model_config['model_file'] = model_file
+        model_config['model_file'] = 'line_classifier.model.pt'
         json.dump(model_config, fh)
     char_to_ix_file = os.path.join(model_dir, 'line_classifier.char_to_ix.json')
     with open(char_to_ix_file, 'wt') as fh:
@@ -129,8 +129,8 @@ def load_neural_line_classifier(model_dir: str) -> Tuple[Union[line_tagger.LSTML
     config_file = os.path.join(model_dir, 'line_classifier.config.json')
     with open(config_file, 'rt') as fh:
         model_config = json.load(fh)
-        if 'model_file' not in model_config:
-            model_config['model_file'] = f"{model_dir}/line_classifier.model.pt"
+        # if 'model_file' not in model_config:
+        model_config['model_file'] = f"{model_dir}/line_classifier.model.pt"
     char_to_ix_file = os.path.join(model_dir, 'line_classifier.char_to_ix.json')
     with open(char_to_ix_file, 'rt') as fh:
         char_to_ix = json.load(fh)
