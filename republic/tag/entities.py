@@ -3,6 +3,8 @@ import os
 from flair.data import Sentence
 from flair.models import SequenceTagger
 
+from republic.extraction.extract_entities import Annotation
+
 
 LAYER_COLOR = {
     'DAT': 'blue',
@@ -18,6 +20,25 @@ LAYER_COLOR = {
 
 def load_tagger(model_dir: str) -> SequenceTagger:
     return SequenceTagger.load(os.path.join(model_dir, 'final-model.pt'))
+
+
+def tag_resolution(res_text: str, res_id: str, model: SequenceTagger, as_annotations: bool = True):
+    text = res_text
+    sentence = Sentence(res_text)
+    model.predict(sentence)
+    tagged_positions = get_tagged_positions(sentence)
+    annotations = []
+    for tagged_position in tagged_positions:
+        start, end = tagged_position
+        tag_type = tagged_positions[tagged_position]
+        anno = Annotation(tag_type, text[start:end], start, res_id)
+        annotations.append(anno)
+        if as_annotations is False:
+            text = text[:start] + f'<{tag_type}>' + text[start:end] + f'</{tag_type}>' + text[end:]
+    if as_annotations:
+        return annotations[::-1]
+    else:
+        return text
 
 
 def get_layer_test_file(layer_name, repo_dir: str):
