@@ -8,8 +8,8 @@ ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES'}
 
 
 def train_entity_tagger(layer_name: str, train_size: float = 1.0, hidden_size=256,
-             model_max_length=512, learning_rate: float = 0.05,
-             mini_batch_size: int = 32, max_epochs: int = 10):
+                        model_max_length=512, learning_rate: float = 0.05,
+                        mini_batch_size: int = 32, max_epochs: int = 10):
     trainer = prep_training(layer_name, train_size, hidden_size, model_max_length)
     train(trainer, layer_name, train_size, learning_rate=learning_rate,
           mini_batch_size=mini_batch_size, max_epochs=max_epochs)
