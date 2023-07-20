@@ -23,6 +23,13 @@ def read_paragraphs(para_file: str):
     return None
 
 
+def make_plain_text_file(para_files, plan_text_filename: str):
+    with open(plan_text_filename, 'wt') as fh:
+        for para_file in para_files:
+            for _, _, _, text in read_paragraphs(para_file):
+                fh.write(f'{text}\n')
+
+
 def read_para_files(para_dir: str, as_inv_dict: bool = False):
     para_files = glob.glob(os.path.join(para_dir, 'resolution*.tsv.gz'))
     if as_inv_dict:

@@ -6,6 +6,94 @@ from typing import Iterable
 from flair.data import Dictionary
 from flair.models import LanguageModel
 from flair.trainers.language_model_trainer import LanguageModelTrainer, TextCorpus
+from pathlib import Path
+
+from tokenizers import ByteLevelBPETokenizer
+
+from tokenizers.implementations import ByteLevelBPETokenizer
+from tokenizers.processors import BertProcessing
+from transformers import RobertaConfig
+from transformers import RobertaTokenizerFast
+from transformers import RobertaForMaskedLM
+from transformers import LineByLineTextDataset
+from transformers import DataCollatorForLanguageModeling
+from transformers import Trainer, TrainingArguments
+
+
+def make_bert_trainer(model_dir: str, text_file: str):
+    tokenizer = RobertaTokenizerFast.from_pretrained(model_dir, max_len=512)
+    dataset = load_data_set(text_file, tokenizer)
+    data_collator = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+    )
+    training_args = TrainingArguments(
+        output_dir=model_dir,
+        overwrite_output_dir=True,
+        num_train_epochs=1,
+        per_device_train_batch_size=64,
+        save_steps=10_000,
+        save_total_limit=2,
+        prediction_loss_only=True,
+        use_mps_device=True
+    )
+    model = init_roberta_model()
+    return Trainer(
+        model=model,
+        args=training_args,
+        data_collator=data_collator,
+        train_dataset=dataset,
+    )
+
+
+def load_data_set(file_path: str, tokenizer):
+    return LineByLineTextDataset(
+        tokenizer=tokenizer,
+        file_path=file_path,
+        block_size=128,
+    )
+
+
+def init_roberta_model():
+    config = RobertaConfig(
+        vocab_size=52_000,
+        max_position_embeddings=514,
+        num_attention_heads=12,
+        num_hidden_layers=6,
+        type_vocab_size=1,
+    )
+    return RobertaForMaskedLM(config=config)
+
+
+def load_tokenizer(model_dir: str):
+    tokenizer = ByteLevelBPETokenizer(
+        os.path.join(model_dir, "vocab.json"),
+        os.path.join(model_dir, "merges.txt"),
+    )
+    tokenizer._tokenizer.post_processor = BertProcessing(
+        ("</s>", tokenizer.token_to_id("</s>")),
+        ("<s>", tokenizer.token_to_id("<s>")),
+    )
+    tokenizer.enable_truncation(max_length=512)
+    return tokenizer
+
+
+def train_tokenizer(resolutions_text_file: str, model_dir: str):
+    paths = [str(Path(resolutions_text_file))]
+
+    # Initialize a tokenizer
+    tokenizer = ByteLevelBPETokenizer()
+
+    # Customize training
+    tokenizer.train(files=paths, vocab_size=52_000, min_frequency=5, special_tokens=[
+        "<s>",
+        "<pad>",
+        "</s>",
+        "<unk>",
+        "<mask>",
+    ])
+
+    # Save files to disk
+    tokenizer.save_model(model_dir)
 
 
 def get_train_test_validate_filenames(corpus_dir: str):
