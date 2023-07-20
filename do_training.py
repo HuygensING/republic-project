@@ -38,8 +38,9 @@ def parse_args():
     argv = sys.argv[1:]
     # Define the getopt parameters
     try:
-        opts, args = getopt.getopt(argv, 'e:l:s:r:m',
-                                   ['epochs=', 'layers=', 'train_size=', 'learning_rate=', 'mini_batch_size='])
+        opts, args = getopt.getopt(argv, 'e:l:s:r:m:t',
+                                   ['epochs=', 'layers=', 'train_size=', 'learning_rate=', 'mini_batch_size=', 'type='])
+        train_type = None
         layers = ['single_layer']
         train_size = 1.0
         learing_rate = 0.05
@@ -53,28 +54,54 @@ def parse_args():
                 if ':' in layers:
                     layers = layers.split(':')
                 else:
-                    layers = [layer]
+                    layers = [layers]
                 assert all([layer in ENTITY_TYPES for layer in layers])
             if opt in {'-s', '--train_size'}:
                 train_size = int(arg)
             if opt in {'-r', '--learning_rate'}:
                 learing_rate = float(arg)
             if opt in {'-m', '--mini_batch_size'}:
-                print(arg)
                 mini_batch_size = int(arg)
-        print('training layers:', layers)
-        return layers, train_size, learing_rate, mini_batch_size, max_epochs
+            if opt in {'-t', '--type'}:
+                train_type = arg
+        return layers, train_size, learing_rate, mini_batch_size, max_epochs, train_type
     except getopt.GetoptError:
         # Print something useful
         print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
         sys.exit(2)
 
 
+def do_train_lm():
+    logging.basicConfig(filename='training_lm.log', level=logging.DEBUG)
+    para_dir = 'data/paragraphs/loghi'
+    corpus_dir = 'data/embeddings/flair_embeddings/corpus_loghi'
+
+    para_files = read_para_files(para_dir)
+    para_reader = ParaReader(para_files, ignorecase=False)
+
+    make_train_test_split(corpus_dir, para_reader=para_reader)
+    make_character_dictionary(corpus_dir)
+
+    train_lm(corpus_dir, is_forward_lm=True, character_level=True,
+                hidden_size=256, nlayers=1, sequence_length=512,
+                mini_batch_size=32, max_epochs=10)
+
+    train_lm(corpus_dir, is_forward_lm=False, character_level=True,
+                hidden_size=256, nlayers=1, sequence_length=512,
+                mini_batch_size=32, max_epochs=10)
+
+
 def main():
-    layers, train_size, learing_rate, mini_batch_size, max_epochs = parse_args()
-    for layer in layers:
-        print(f'training layer {layer}')
-        train_entity_tagger(layer_name=layer, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+    layers, train_size, learing_rate, mini_batch_size, max_epochs, train_type = parse_args()
+    if train_type == 'ner':
+        print('layers to train:', layers)
+        for layer in layers:
+            print(f'training layer {layer}')
+            train_entity_tagger(layer_name=layer, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+    elif train_type == 'lm':
+        do_train_lm()
+    else:
+        raise ValueError(f"invalid train_type '{train_type}', must be 'ner' or 'lm'.")
 
 
 if __name__ == "__main__":
