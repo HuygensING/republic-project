@@ -81,7 +81,7 @@ def train(trainer, layer_name: str, train_size: float = 1.0, learning_rate: floa
           mini_batch_size: int = 32, max_epochs: int = 10):
     flair_dir = get_flair_dir()
     model_dir = f'{flair_dir}/resources/taggers/ner-tbd-{layer_name}-' \
-                f'train_{train_size}-{datetime.date.today().isoformat()}'
+                f'train_{train_size}-epochs_{max_epochs}'
     trainer.train(model_dir,
                   learning_rate=learning_rate,
                   mini_batch_size=mini_batch_size,

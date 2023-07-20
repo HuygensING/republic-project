@@ -8,7 +8,8 @@ from collections import defaultdict
 from flair.models import SequenceTagger
 
 from republic.helper.utils import get_project_dir
-from republic.tag.entities import tag_resolution
+from republic.nlp.entities import tag_resolution
+from republic.nlp.read import read_paragraphs
 
 
 ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES'}
