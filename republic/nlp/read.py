@@ -23,5 +23,13 @@ def read_paragraphs(para_file: str):
     return None
 
 
-def read_para_files(para_dir: str):
-    return glob.glob(os.path.join(para_dir, 'resolution*.tsv.gz'))
+def read_para_files(para_dir: str, as_inv_dict: bool = False):
+    para_files = glob.glob(os.path.join(para_dir, 'resolution*.tsv.gz'))
+    if as_inv_dict:
+        inv_dict = {}
+        for para_file in para_files:
+            inv = int(para_file.split('-')[-1][:4])
+            inv_dict[inv] = para_file
+        return inv_dict
+    else:
+        return para_files
