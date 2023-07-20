@@ -154,8 +154,9 @@ def make_searcher():
 
 def tag_inventory_formulas(inv_num: str, debug: int = 0):
     searcher = make_searcher()
-    tagged_dir = '../../data/resolutions/ner_tagged'
-    tagged_extra_dir = '../../data/resolutions/ner_tagged_extra'
+    project_dir = get_project_dir()
+    tagged_dir = os.path.join(project_dir, 'data/resolutions/ner_tagged')
+    tagged_extra_dir = os.path.join(project_dir, 'data/resolutions/ner_tagged_extra')
     tagged_file = os.path.join(tagged_dir, f"resolutions-{inv_num}.tsv.gz")
     extra_tagged_file = os.path.join(tagged_extra_dir, f'resolutions-extra_tagged-{inv_num}.tsv.gz')
     start = time.time()
