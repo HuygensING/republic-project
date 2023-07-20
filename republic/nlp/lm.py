@@ -131,7 +131,10 @@ def train_lm(corpus_dir: str, is_forward_lm: bool = True, character_level: bool 
     # train your language model
     trainer = LanguageModelTrainer(language_model, corpus)
 
-    trainer.train(f'{corpus_dir}/resources/taggers/language_model_bw',
+    level = 'char' if character_level else 'word'
+    direction = 'fw' if is_forward_lm else 'bw'
+
+    trainer.train(f'{corpus_dir}/resources/taggers/language_model_{level}_{direction}',
                   sequence_length=sequence_length,
                   mini_batch_size=mini_batch_size,
                   max_epochs=max_epochs)
