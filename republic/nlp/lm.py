@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 from typing import Iterable
 
@@ -16,6 +17,8 @@ def get_train_test_validate_filenames(corpus_dir: str):
 
 def make_train_test_split(corpus_dir: str, para_reader: Iterable):
     train_dir, test_file, validate_file = get_train_test_validate_filenames(corpus_dir)
+    if os.path.exists(train_dir) is False:
+        os.mkdir(train_dir)
     train_split = 0
     fh_test = open(test_file, 'wt', encoding="utf-8")
     fh_valid = open(validate_file, 'wt', encoding="utf-8")
