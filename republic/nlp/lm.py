@@ -20,21 +20,22 @@ from transformers import DataCollatorForLanguageModeling
 from transformers import Trainer, TrainingArguments
 
 
-def make_bert_trainer(model_dir: str, text_file: str):
-    tokenizer = RobertaTokenizerFast.from_pretrained(model_dir, max_len=512)
+def make_bert_trainer(model_dir: str, text_file: str,
+                      tokenizer_max_len: int = 512, mlm_probability: float = 0.15,
+                      num_train_epochs: int = 10, per_device_mini_batch_size: int = 64):
+    tokenizer = RobertaTokenizerFast.from_pretrained(model_dir, max_len=tokenizer_max_len)
     dataset = load_data_set(text_file, tokenizer)
     data_collator = DataCollatorForLanguageModeling(
-        tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+        tokenizer=tokenizer, mlm=True, mlm_probability=mlm_probability
     )
     training_args = TrainingArguments(
         output_dir=model_dir,
         overwrite_output_dir=True,
-        num_train_epochs=1,
-        per_device_train_batch_size=64,
+        num_train_epochs=num_train_epochs,
+        per_device_train_batch_size=per_device_mini_batch_size,
         save_steps=10_000,
         save_total_limit=2,
-        prediction_loss_only=True,
-        use_mps_device=True
+        prediction_loss_only=True
     )
     model = init_roberta_model()
     return Trainer(
