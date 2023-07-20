@@ -1,7 +1,11 @@
-import sys
+import logging
 
-from republic.tag.train import prep_training
-from republic.tag.train import train
+from republic.nlp.lm import train_lm
+from republic.nlp.lm import make_character_dictionary
+from republic.nlp.lm import make_train_test_split
+from republic.nlp.ner import prep_training
+from republic.nlp.ner import train
+from republic.nlp.read import ParaReader, read_para_files
 
 
 ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES'}
@@ -10,9 +14,24 @@ ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES'}
 def train_entity_tagger(layer_name: str, train_size: float = 1.0, hidden_size=256,
                         model_max_length=512, learning_rate: float = 0.05,
                         mini_batch_size: int = 32, max_epochs: int = 10):
+    logging.basicConfig(filename='training_ner.log', encoding='utf-8', level=logging.DEBUG)
     trainer = prep_training(layer_name, train_size, hidden_size, model_max_length)
     train(trainer, layer_name, train_size, learning_rate=learning_rate,
           mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+
+
+def train_language_model(para_dir: str, corpus_dir: str, is_forward_lm: bool = True,
+                         character_level: bool = True, hidden_size=256,
+                         sequence_length=512, nlayers: int = 1,
+                         mini_batch_size: int = 32, max_epochs: int = 10):
+    logging.basicConfig(filename='training_lm.log', encoding='utf-8', level=logging.DEBUG)
+    para_files = read_para_files(para_dir)
+    para_reader = ParaReader(para_files, ignorecase=False)
+    make_train_test_split(corpus_dir, para_reader=para_reader)
+    make_character_dictionary(corpus_dir)
+    train_lm(corpus_dir, is_forward_lm=is_forward_lm, character_level=character_level,
+             hidden_size=hidden_size, nlayers=nlayers, sequence_length=sequence_length,
+             mini_batch_size=mini_batch_size, max_epochs=max_epochs)
 
 
 def parse_args():

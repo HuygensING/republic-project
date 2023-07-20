@@ -6,18 +6,8 @@ import pickle
 from flair.models import SequenceTagger
 
 from republic.helper.utils import get_project_dir
-from republic.tag.entities import tag_resolution
-
-
-def read_paragraphs(para_file: str):
-    with gzip.open(para_file, 'rt') as fh:
-        for line in fh:
-            yield line.strip().split('\t')
-    return None
-
-
-def read_para_files(para_dir: str):
-    return glob.glob(os.path.join(para_dir, 'resolutions*.tsv.gz'))
+from republic.nlp.entities import tag_resolution
+from republic.nlp.read import read_paragraphs
 
 
 def load_model(layer_name: str, taggers_dir: str, num_epochs: int):
