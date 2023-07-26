@@ -1,0 +1,62 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+nadere	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Phillips de Maulde heere van Mauroije, Deecken vant' Cappittel, vant' Cortrijck
+Phillips	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Maulde	O	O	I-PER	O	O	O	O	O
+heere	B-HOE	O	I-PER	O	O	O	O	O	heere van Mauroije, Deecken vant' Cappittel, vant' Cortrijck
+van	I-HOE	O	I-PER	O	O	O	O	O
+Mauroije	I-HOE	B-LOC	I-PER	O	O	O	O	O	Mauroije
+,	I-HOE	O	I-PER	O	O	O	O	O
+Deecken	I-HOE	O	I-PER	O	O	O	O	O
+vant	I-HOE	O	I-PER	O	O	O	O	O
+'	I-HOE	O	I-PER	O	O	O	O	O
+Cappittel	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+vant	I-HOE	O	I-PER	O	O	O	O	O
+'	I-HOE	O	I-PER	O	O	O	O	O
+Cortrijck	I-HOE	B-LOC	I-PER	O	O	O	O	O	Cortrijck
+versoeckende	O	O	O	O	O	O	O	O
+Consent	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Canonick	B-HOE	O	O	O	O	O	O	O	Canonick tot Hulst, Hulster- en avel Ambachten ende andere quartieren
+tot	I-HOE	O	O	O	O	O	O	O
+Hulst	I-HOE	B-LOC	O	O	O	O	O	O	Hulst, Hulster- en avel Ambachten ende andere quartieren
+,	I-HOE	I-LOC	O	O	O	O	O	O
+Hulster	I-HOE	I-LOC	O	O	O	O	O	O
+-	I-HOE	I-LOC	O	O	O	O	O	O
+en	I-HOE	I-LOC	O	O	O	O	O	O
+avel	I-HOE	I-LOC	O	O	O	O	O	O
+Ambachten	I-HOE	I-LOC	O	O	O	O	O	O
+ende	I-HOE	I-LOC	O	O	O	O	O	O
+andere	I-HOE	I-LOC	O	O	O	O	O	O
+quartieren	I-HOE	I-LOC	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+affaires	O	O	O	O	O	O	O	O
+vant	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+Cappittel	O	O	O	O	O	O	O	O
+voornt	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verrichten	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorsz	O	O	O	O	O	O	O	O
+saecke	O	O	O	O	O	O	O	O
+opgehouden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,35 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+opte	O	O	O	O	O	O	O	O
+Recommandatie	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Agent	B-HOE	O	B-PER	O	O	O	O	O	Agent
+Bilderbeecke	O	O	I-PER	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+paspoort	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Jacques	O	O	B-PER	O	O	O	O	O	Jacques de Hennin, Coopman woonende tot Valenchyn
+de	O	O	I-PER	O	O	O	O	O
+Hennin	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Coopman	B-HOE	O	I-PER	O	O	O	O	O	Coopman woonende tot Valenchyn
+woonende	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Valenchyn	I-HOE	B-LOC	I-PER	O	O	O	O	O	Valenchyn
+,	O	O	O	O	O	O	O	O
+omme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+vreyelyck	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+moegen	O	O	O	O	O	O	O	O
+reysen	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+franckfort	O	B-LOC	O	O	O	O	O	O	franckfort
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+weder	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+keeren	O	O	O	O	O	O	O	O

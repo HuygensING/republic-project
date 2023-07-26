@@ -1,0 +1,148 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Drost	B-HOE	O	B-PER	O	O	O	O	O	Drost
+Ittersom	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Mastricht	O	B-LOC	O	O	O	O	O	O	Mastricht
+den	O	O	O	O	O	O	O	O
+3en	O	O	O	O	B-DAT	O	O	O	3en. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daernevens	O	O	O	O	O	O	O	O
+vijff	O	O	O	O	O	O	O	O
+bijlagen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+effect	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+d'excessen	O	O	O	O	O	O	O	O
+bijde	O	O	O	O	O	O	O	O
+Lottringhsche	O	O	O	O	O	O	O	O
+troupes	O	O	O	O	O	O	O	O
+gepleecht	O	O	O	O	O	O	O	O
+werdende	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Landen	O	B-LOC	O	O	O	O	O	O	Landen van Overmase
+van	O	I-LOC	O	O	O	O	O	O
+Overmase	O	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mitsgaders	O	O	O	O	O	O	O	O
+Ee	O	O	O	O	O	O	O	O
+pretensien	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+eenen	O	O	O	O	O	O	O	O
+Joncker	B-HOE	O	B-PER	O	O	O	O	O	Joncker
+Harmen	O	O	I-PER	O	O	O	O	O
+Diderick	O	O	I-PER	O	O	O	O	O
+vanden	O	O	I-PER	O	O	O	O	O
+Berge	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+genaemt	O	O	I-PER	O	O	O	O	O
+Trips	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Drostampt	B-HOE	O	O	O	O	O	O	O	Drostampt van s' Hertogenraden
+van	I-HOE	O	O	O	O	O	O	O
+s'	I-HOE	B-LOC	O	O	O	O	O	O	s' Hertogenraden
+Hertogenraden	I-HOE	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Spagne
+van	I-HOE	O	I-PER	O	O	O	O	O
+Spagne	I-HOE	B-LOC	I-PER	O	O	O	O	O	Spagne
+tot	O	O	O	O	O	O	O	O
+Brussel	O	B-LOC	O	O	O	O	O	O	Brussel
+aengestelt	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+eijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+vstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+bijlagen	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	B-HOE	O	B-PER	O	O	O	B-COM	O	heeren van Raesfelt
+van	I-HOE	O	I-PER	O	O	O	I-COM	O
+Raesfelt	I-HOE	B-LOC	I-PER	O	O	O	I-COM	O	Raesfelt
+,	O	O	O	O	O	O	I-COM	O
+ende	O	O	O	O	O	O	I-COM	O
+andere	O	O	O	O	O	O	I-COM	O
+hare	O	O	O	O	O	O	I-COM	O
+Ho	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Mo	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Gedeputeerden	O	O	O	O	O	O	I-COM	O
+totte	O	O	O	O	O	O	I-COM	O
+saecken	O	O	O	O	O	O	I-COM	O
+van	O	O	O	O	O	O	I-COM	O
+Landen	O	B-LOC	O	O	O	O	I-COM	O	Landen van Overmase
+van	O	I-LOC	O	O	O	O	I-COM	O
+Overmase	O	I-LOC	O	O	O	O	I-COM	O
+,	O	O	O	O	O	O	O	O
+mitsgaders	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+stuck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+patenten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+examineren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Des	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+souder	O	O	O	O	O	O	O	O
+resumptie	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+uijtgegeven	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

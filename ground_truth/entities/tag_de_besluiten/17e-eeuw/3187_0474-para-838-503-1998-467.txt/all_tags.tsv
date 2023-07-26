@@ -1,0 +1,45 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Geresumeert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+t'aduis	O	O	O	O	O	O	O	O
+ses	O	O	O	O	O	O	O	O
+Raedts	O	O	O	B-ORG	O	O	O	O	Raedts van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geformeert	O	O	O	O	O	O	O	O
+opten	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Graeff	B-HOE	O	B-PER	O	O	O	O	O	Graeff
+ulrich	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+oostvrieslant	O	B-LOC	I-PER	O	O	O	O	O	oostvrieslant
+den	O	O	O	O	O	O	O	O
+xvije	O	O	O	O	B-DAT	O	O	O	xvije. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+conformité	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t'selffde	O	O	O	O	O	O	O	O
+aduis	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+welgemelten	O	O	O	O	O	O	O	O
+Graeff	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+rescriberen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,35 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opte	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Franchois	O	O	B-PER	O	O	O	O	O	Franchois Dalochi Comissars ende Sergeant Maior ouer f'quartier van Lochem
+Dalochi	O	O	I-PER	O	O	O	O	O
+Comissars	B-HOE	O	I-PER	O	O	O	O	O	Comissars ende Sergeant Maior ouer f'quartier van Lochem
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Sergeant	I-HOE	O	I-PER	O	O	O	O	O
+Maior	I-HOE	O	I-PER	O	O	O	O	O
+ouer	I-HOE	O	I-PER	O	O	O	O	O
+f'quartier	I-HOE	B-LOC	I-PER	O	O	O	O	O	f'quartier van Lochem
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Lochem	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+geordonneert	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+deselue	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+mette	O	O	O	O	O	O	O	O
+gebueghde	O	O	O	O	O	O	O	O
+stucken	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+commis	B-HOE	O	B-PER	O	O	O	O	O	commis
+vander	O	O	I-PER	O	O	O	O	O
+Does	O	O	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doene	O	O	O	O	O	O	O	O

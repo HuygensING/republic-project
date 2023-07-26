@@ -1,0 +1,145 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Groot-Bailliuw	B-HOE	O	B-PER	O	O	O	O	O	Groot-Bailliuw , Procureur ende Leenmannen van de Bailluagie van Aire
+,	I-HOE	O	I-PER	O	O	O	O	O
+Procureur	I-HOE	O	I-PER	O	O	O	O	O
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Leenmannen	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Bailluagie	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bailluagie van Aire
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Aire	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Aire	O	B-LOC	O	O	O	O	O	O	Aire
+den	O	O	O	O	O	O	O	O
+negentienden	O	O	O	O	B-DAT	O	O	O	negentienden deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+hondende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+ervaringe	O	O	O	O	O	O	O	O
+gekomen	O	O	O	O	O	O	O	O
+waren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+das	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Wanin	O	O	B-PER	O	O	O	O	O	Wanin, Advocaet van de souveraine Bailluagie van Aire
+,	O	O	I-PER	O	O	O	O	O
+Advocaet	B-HOE	O	I-PER	O	O	O	O	O	Advocaet van de souveraine Bailluagie van Aire
+van	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+souveraine	I-HOE	B-LOC	I-PER	O	O	O	O	O	souveraine Bailluagie van Aire
+Bailluagie	I-HOE	I-LOC	I-PER	O	O	O	O	O
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Aire	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+overgesonden	O	O	O	O	O	O	O	O
+gehadt	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Advis	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Brief	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+addresserende	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Officieren	B-HOE	O	O	O	O	O	O	O	Officieren
+van	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Bailluagie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+geadviseert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+surcheantie	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+kunnen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gegeven	O	O	O	O	O	O	O	O
+tegen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+executie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Sententie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Parlement	O	O	O	B-ORG	O	O	O	O	Parlement van Parys
+van	O	O	O	I-ORG	O	O	O	O
+Parys	O	B-LOC	O	I-ORG	O	O	O	O	Parys
+,	O	O	O	O	O	O	O	O
+geobtineert	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+de	O	O	B-PER	O	O	O	O	O	de la Hault
+la	O	O	I-PER	O	O	O	O	O
+Hault	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tegen	O	O	O	O	O	O	O	O
+de	O	O	B-PER	O	O	O	O	O	de Cohem
+Cohem	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+geallegeerde	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+gelieven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+reflecteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+soodanige	O	O	O	O	O	O	O	O
+surcheantie	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verleenen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Retroacta	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+nagesien	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

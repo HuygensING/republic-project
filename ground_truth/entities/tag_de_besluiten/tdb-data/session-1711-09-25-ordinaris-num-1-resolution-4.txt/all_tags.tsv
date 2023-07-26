@@ -1,0 +1,29 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Resident	B-HOE	O	B-PER	O	O	O	O	O	Resident
+Bilderbeeck	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Keulen	O	B-LOC	O	O	O	O	O	O	Keulen
+den	O	O	O	O	O	O	O	O
+vyf	O	B-LOC	O	O	O	O	O	O	vyf en twintigsten deser loopende maendt
+en	O	I-LOC	O	O	O	O	O	O
+twintigsten	O	I-LOC	O	O	O	O	O	O
+deser	O	I-LOC	O	O	O	O	O	O
+loopende	O	I-LOC	O	O	O	O	O	O
+maendt	O	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geentie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

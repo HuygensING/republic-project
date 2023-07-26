@@ -1,0 +1,30 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	B-PER	O	O	O	O	O	Secretaris
+Duker	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Coppenhagen	O	B-LOC	O	O	O	O	O	O	Coppenhagen
+den	O	O	O	O	O	O	O	O
+14	O	O	O	O	B-DAT	O	O	O	14 der voorleeden maand
+der	O	O	O	O	I-DAT	O	O	O
+voorleeden	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Den	O	O	O	O	O	O	O	O
+October	O	O	O	O	O	O	O	O

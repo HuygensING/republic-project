@@ -1,0 +1,45 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer hop haer ho:mo: Ex: Envoijé aen het hoff van heere Churcfurst van Brandenburgh
+hop	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer ho:mo: Ex: Envoijé aen het hoff van heere Churcfurst van Brandenburgh
+ho	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+mo	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Ex	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Envoijé	I-HOE	O	I-PER	O	O	O	O	O
+aen	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+hoff	I-HOE	O	I-PER	B-ORG	O	O	O	O	hoff van heere Churcfurst van Brandenburgh
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+heere	B-HOE	O	B-PER	I-ORG	O	O	O	O	heere Churcfurst van Brandenburgh
+Churcfurst	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Brandenburgh	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Brandenburgh
+,	O	O	O	O	O	O	O	O
+ges	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Berlin	O	B-LOC	O	O	O	O	O	O	Berlin
+den	O	O	O	O	O	O	O	O
+22e	O	O	O	O	B-DAT	O	O	O	22e. deser
+.	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+griffier	B-HOE	O	B-PER	O	O	O	O	O	griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

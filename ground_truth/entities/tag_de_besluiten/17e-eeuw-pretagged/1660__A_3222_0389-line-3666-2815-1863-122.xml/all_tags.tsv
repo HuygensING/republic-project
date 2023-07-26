@@ -1,0 +1,82 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+hrn	O	O	O	B-ORG	O	O	O	O	hrn Gedepe. Staten van Stadt Groninge & Ommelanden
+Gedepe	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	I-ORG	O	O	O	O
+Staten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Stadt	O	B-LOC	O	I-ORG	O	O	O	O	Stadt Groninge & Ommelanden
+Groninge	O	I-LOC	O	I-ORG	O	O	O	O
+&	O	I-LOC	O	I-ORG	O	O	O	O
+Ommelanden	O	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ge	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Groninge	O	B-LOC	O	O	O	O	O	O	Groninge
+den	O	O	O	O	O	O	O	O
+5deses	O	O	O	O	B-DAT	O	O	O	5deses, stilo loci
+,	O	O	O	O	I-DAT	O	O	O
+stilo	O	O	O	O	I-DAT	O	O	O
+loci	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+tenderende	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+einde	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Compe	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Baron	B-HOE	O	B-PER	O	O	O	O	O	Baron van Ronan
+van	I-HOE	O	I-PER	O	O	O	O	O
+Ronan	I-HOE	B-LOC	I-PER	O	O	O	O	O	Ronan
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+plaetse	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Captn	B-HOE	O	B-PER	O	O	O	O	O	Captn
+Eger	O	O	I-PER	O	O	O	O	O
+Tamminga	O	O	I-PER	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+meurs	O	B-LOC	O	O	O	O	O	O	meurs
+hebbende	O	O	O	O	O	O	O	O
+gelegen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+wederom	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Groninge	O	B-LOC	O	O	O	O	O	O	Groninge
+voornt	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+Guarnisoen	O	O	O	O	O	O	O	O
+gebracht	O	O	O	O	O	O	O	O
+moge	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibt	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+vstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+vs	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+adviseren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

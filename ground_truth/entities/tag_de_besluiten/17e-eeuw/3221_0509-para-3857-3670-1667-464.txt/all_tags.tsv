@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+drie	O	O	O	O	O	O	O	O
+missiven	O	O	O	O	O	O	O	O
+vandhinexs	B-HOE	O	O	O	O	O	O	O	vandhinexs. Gedepu vandesen Staet
+.	I-HOE	O	O	O	O	O	O	O
+Gedepu	I-HOE	O	O	O	O	O	O	O
+vandesen	I-HOE	O	O	O	O	O	O	O
+Staet	I-HOE	O	O	O	O	O	O	O
+bijde	O	O	O	O	O	O	O	O
+cningsv	B-HOE	O	B-PER	O	O	O	O	O	cningsv an Sweeden & eenemarcken
+an	I-HOE	O	I-PER	O	O	O	O	O
+Sweeden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Sweeden & eenemarcken
+&	I-HOE	I-LOC	I-PER	O	O	O	O	O
+eenemarcken	I-HOE	I-LOC	I-PER	O	O	O	O	O
+ges	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+coppenhage	O	B-LOC	O	O	O	O	O	O	coppenhage
+den	O	O	O	O	O	O	O	O
+4en	O	O	O	O	B-DAT	O	O	O	4en. &s deses
+.	O	O	O	O	I-DAT	O	O	O
+&	O	O	O	O	I-DAT	O	O	O
+s	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+gelijck	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+lans	O	O	O	O	O	O	O	O
+dito	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Griffere	B-HOE	O	B-PER	O	O	O	O	O	Griffere
+Ruijsch	O	O	I-PER	O	O	O	O	O
+hou	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+advertenten	O	O	O	O	O	O	O	O
+naenpegeen	O	O	O	O	O	O	O	O
+resol	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

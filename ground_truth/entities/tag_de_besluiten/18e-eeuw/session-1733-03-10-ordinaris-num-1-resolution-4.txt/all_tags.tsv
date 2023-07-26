@@ -1,0 +1,71 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Lieutenant	B-HOE	O	B-PER	O	O	O	O	O	Lieutenant - Generaal
+-	I-HOE	O	I-PER	O	O	O	O	O
+Generaal	I-HOE	O	I-PER	O	O	O	O	O
+Cronstrom	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Commandeur	B-HOE	O	I-PER	O	O	O	O	O	Commandeur van Furnes
+van	I-HOE	O	I-PER	O	O	O	O	O
+Furnes	I-HOE	B-LOC	I-PER	O	O	O	O	O	Furnes
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+aghtsten	O	O	O	O	B-DAT	O	O	O	aghtsten deser loopende maandt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+gevende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+vertrek	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Commando	O	O	O	O	O	O	O	O
+zoude	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn Lieutenant
+Lieutenant	I-HOE	O	I-PER	O	O	O	O	O
+Graviset	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+als	B-HOE	O	I-PER	O	O	O	O	O	als oudtste in rangh van de drie Switzersche Compagnien
+oudtste	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+rangh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+drie	I-HOE	O	I-PER	O	O	O	O	O
+Switzersche	I-HOE	O	I-PER	O	O	O	O	O
+Compagnien	I-HOE	O	I-PER	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+Garnilsoen	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

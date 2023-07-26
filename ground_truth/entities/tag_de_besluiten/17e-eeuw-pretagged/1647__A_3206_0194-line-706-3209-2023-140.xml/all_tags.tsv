@@ -1,0 +1,65 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Sijnde	O	O	O	O	O	O	O	O
+gecontinueert	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Lecture	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+bijlagen	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+heer	B-HOE	O	B-PER	O	O	O	O	O	heer van Heemstede
+van	I-HOE	O	I-PER	O	O	O	O	O
+Heemstede	I-HOE	B-LOC	I-PER	O	O	O	O	O	Heemstede
+,	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+neffens	O	O	O	O	O	O	O	O
+sijnen	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+19en	O	O	O	O	B-DAT	O	O	O	19en. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+van	O	O	O	O	O	O	O	O
+Munster	O	B-LOC	O	O	O	O	O	O	Munster
+herwaerts	O	O	O	O	O	O	O	O
+overgesonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+verdere	O	O	O	O	O	O	O	O
+Lecture	O	O	O	O	O	O	O	O
+derselver	O	O	O	O	O	O	O	O
+bijlagen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+berusten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+gegeven	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Griffie	O	O	O	B-ORG	O	O	O	O	Griffie
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Copien	O	O	O	O	O	O	O	O
+gemaect	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Provintien	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+begerende	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

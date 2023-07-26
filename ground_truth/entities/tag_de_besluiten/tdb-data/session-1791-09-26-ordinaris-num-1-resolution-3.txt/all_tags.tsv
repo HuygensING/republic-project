@@ -1,0 +1,51 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+Missiven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Hoy guer, haar Hoog Mog. extraordinaris Envoyé aan hot Hof van Rusland
+Hoy	O	O	I-PER	O	O	O	O	O
+guer	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	O	O	I-PER	O	O	O	O	O
+Hoog	O	O	I-PER	O	O	O	O	O
+Mog	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Envoyé aan hot Hof van Rusland
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+hot	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van Rusland
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Rusland	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Rusland
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+St	O	B-LOC	O	O	O	O	O	O	St. Petersburg
+.	O	I-LOC	O	O	O	O	O	O
+Petersburg	O	I-LOC	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+6	O	O	O	O	B-DAT	O	O	O	6 deezer loop nde maand
+deezer	O	O	O	O	I-DAT	O	O	O
+loop	O	O	O	O	I-DAT	O	O	O
+nde	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

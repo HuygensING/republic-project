@@ -1,0 +1,256 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+IBS	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Jeremias	O	O	B-PER	O	O	O	O	O	Jeremias vander Meer en Soon, Koopluyden te Amsterdam
+vander	O	O	I-PER	O	O	O	O	O
+Meer	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+Soon	B-HOE	O	I-PER	O	O	O	O	O	Soon
+,	O	O	I-PER	O	O	O	O	O
+Koopluyden	B-HOE	O	I-PER	O	O	O	O	O	Koopluyden te Amsterdam
+te	I-HOE	O	I-PER	O	O	O	O	O
+Amsterdam	I-HOE	B-LOC	I-PER	O	O	O	O	O	Amsterdam
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+kennen	O	O	O	O	O	O	O	O
+geven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+eersten	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Amsterdam	O	B-LOC	O	O	O	O	O	O	Amsterdam
+stondt	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+senden	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+West-Indiën	O	B-LOC	O	O	O	O	O	O	West-Indiën
+het	O	O	O	O	O	O	O	O
+Schip	O	O	O	O	O	O	O	B-NAM	Schip de Hoop
+de	O	O	O	O	O	O	O	I-NAM
+Hoop	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+Jacob	O	O	I-PER	O	O	O	O	O
+Everts	O	O	I-PER	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+retorsie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+doch	O	O	O	O	O	O	O	O
+maar	O	O	O	O	O	O	O	O
+alleenlijck	O	O	O	O	O	O	O	O
+relatif	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Roofschepen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Marocco	O	B-LOC	O	O	O	O	O	O	Marocco
+,	O	O	O	O	O	O	O	O
+Zalée	O	B-LOC	O	O	O	O	O	O	Zalée
+en	O	O	O	O	O	O	O	O
+Algiers	O	B-LOC	O	O	O	O	O	O	Algiers
+,	O	O	O	O	O	O	O	O
+blyckende	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	B-NAM	Commissie van retorsie
+van	O	O	O	O	O	O	O	I-NAM
+retorsie	O	O	O	O	O	O	O	I-NAM
+Origineelijck	O	O	O	O	O	O	O	O
+nevens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+gevoeght	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+doch	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+meeste	O	O	O	O	O	O	O	O
+swarigheydt	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+zyn	O	O	O	O	O	O	O	O
+omtrent	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Roovers	B-HOE	O	O	O	O	O	O	O	Roovers in de West-Indiën
+in	I-HOE	O	O	O	O	O	O	O
+de	I-HOE	O	O	O	O	O	O	O
+West-Indiën	I-HOE	B-LOC	O	O	O	O	O	O	West-Indiën
+;	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+abuys	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorsz	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+geweest	O	O	O	O	O	O	O	O
+Jeremias	O	O	B-PER	O	O	O	O	O	Jeremias vander Meer
+vander	O	O	I-PER	O	O	O	O	O
+Meer	O	O	I-PER	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	B-NAM	Commissie van retorsie
+van	O	O	O	O	O	O	O	I-NAM
+retorsie	O	O	O	O	O	O	O	I-NAM
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+woorden	O	O	O	O	O	O	O	O
+Jeremias	O	O	B-PER	O	O	O	O	O	Jeremias vander Meer
+vander	O	O	I-PER	O	O	O	O	O
+Meer	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+moge	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+bygevoeght	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+Soon	B-HOE	O	O	O	O	O	O	O	Soon
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	B-NAM	Commissie van retorsie
+van	O	O	O	O	O	O	O	I-NAM
+retorsie	O	O	O	O	O	O	O	I-NAM
+oock	O	O	O	O	O	O	O	O
+relatif	O	O	O	O	O	O	O	O
+magh	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gemaackt	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Roovers	B-HOE	O	O	O	O	O	O	O	Roovers in de West-Indien
+in	I-HOE	O	O	O	O	O	O	O
+de	I-HOE	O	O	O	O	O	O	O
+West-Indien	I-HOE	B-LOC	O	O	O	O	O	O	West-Indien
+en	O	O	O	O	O	O	O	O
+anderen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedilibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedtgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+woorden	O	O	O	O	O	O	O	O
+Jeremias	O	O	B-PER	O	O	O	O	O	Jeremias vander Meer
+vander	O	O	I-PER	O	O	O	O	O
+Meer	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gevoeght	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+Soon	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+verdere	O	O	O	O	O	O	O	O
+Copie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	B-COM	O	Heeren van Wynbergen
+van	O	O	I-PER	O	O	O	I-COM	O
+Wynbergen	O	O	I-PER	O	O	O	I-COM	O
+,	O	O	O	O	O	O	I-COM	O
+en	O	O	O	O	O	O	I-COM	O
+andere	O	O	O	O	O	O	I-COM	O
+haar	O	O	O	O	O	O	I-COM	O
+Hoogh	O	O	O	O	O	O	I-COM	O
+Mogende	O	O	O	O	O	O	I-COM	O
+Gedeputeerden	O	O	O	O	O	O	I-COM	O
+tot	O	O	O	O	O	O	I-COM	O
+de	O	O	O	O	O	O	I-COM	O
+saacken	O	O	O	O	O	O	I-COM	O
+van	O	O	O	O	O	O	I-COM	O
+de	O	O	O	O	O	O	I-COM	O
+Zee	O	O	O	O	O	O	I-COM	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+examineeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+alles	O	O	O	O	O	O	O	O
+alhier	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

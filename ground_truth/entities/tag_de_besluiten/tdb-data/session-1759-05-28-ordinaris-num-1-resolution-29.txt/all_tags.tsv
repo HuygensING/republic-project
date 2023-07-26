@@ -1,0 +1,70 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+DOP	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requieste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+.	O	O	B-PER	O	O	O	O	O	. . . la de Nible, woonende te Amstermam , beroepen Predikant in de Walsche Gemeente te Dalem, geleegen in het Hertoghdom van Limburgh
+.	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+la	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Nible	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+woonende	B-HOE	O	I-PER	O	O	O	O	O	woonende te Amstermam
+te	I-HOE	O	I-PER	O	O	O	O	O
+Amstermam	I-HOE	B-LOC	I-PER	O	O	O	O	O	Amstermam
+,	O	O	I-PER	O	O	O	O	O
+beroepen	B-HOE	O	I-PER	O	O	O	O	O	beroepen Predikant in de Walsche Gemeente te Dalem, geleegen in het Hertoghdom van Limburgh
+Predikant	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Walsche	I-HOE	O	I-PER	B-ORG	O	O	O	O	Walsche Gemeente te Dalem, geleegen in het Hertoghdom van Limburgh
+Gemeente	I-HOE	O	I-PER	I-ORG	O	O	O	O
+te	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Dalem	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Dalem, geleegen in het Hertoghdom van Limburgh
+,	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+geleegen	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+in	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+het	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+Hertoghdom	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+van	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+Limburgh	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+15	O	O	O	O	O	O	O	O
+ha	O	O	O	O	O	O	O	O
+voorgaande	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+behoeve	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Pasport	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+forma	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Acte	O	O	O	O	O	O	O	O
+ad	O	O	O	O	O	O	O	O
+omnes	O	O	O	O	O	O	O	O
+Poupulos	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepecheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+sigh	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Amsterdam	O	B-LOC	O	O	O	O	O	O	Amsterdam
+na	O	O	O	O	O	O	O	O
+Dalem	O	B-LOC	O	O	O	O	O	O	Dalem
+te	O	O	O	O	O	O	O	O
+kunnen	O	O	O	O	O	O	O	O
+begeeven	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,128 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Resident	B-HOE	O	B-PER	O	O	O	O	O	Resident van Kinschot
+van	I-HOE	O	I-PER	O	O	O	O	O
+Kinschot	I-HOE	B-LOC	I-PER	O	O	O	O	O	Kinschot
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Brussel	O	B-LOC	O	O	O	O	O	O	Brussel
+den	O	O	O	O	O	O	O	O
+vier	O	O	O	O	B-DAT	O	O	O	vier en twintighsten deeser loopende maand
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+antwoord	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	B-RES	O	O	haar Hoogh Mogende Resolutie van den sceventienden daar te vooren
+Hoogh	O	O	O	O	O	I-RES	O	O
+Mogende	O	O	O	O	O	I-RES	O	O
+Resolutie	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+sceventienden	O	O	O	O	B-DAT	I-RES	O	O	sceventienden daar te vooren
+daar	O	O	O	O	I-DAT	I-RES	O	O
+te	O	O	O	O	I-DAT	I-RES	O	O
+vooren	O	O	O	O	I-DAT	I-RES	O	O
+,	O	O	O	O	O	O	O	O
+raackende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+klaghten	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Lieutenant	B-HOE	O	B-PER	O	O	O	O	O	Lieutenant Collonel de Vassy, commandeerende te Lillo
+Collonel	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Vassy	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+commandeerende	I-HOE	O	I-PER	O	O	O	O	O
+te	I-HOE	O	I-PER	O	O	O	O	O
+Lillo	I-HOE	B-LOC	I-PER	O	O	O	O	O	Lillo
+,	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Commisen	B-HOE	O	O	O	O	O	O	O	Commisen te Santvliet
+te	I-HOE	O	O	O	O	O	O	O
+Santvliet	I-HOE	B-LOC	O	O	O	O	O	O	Santvliet
+weegens	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+aanhouden	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+Waaren	O	O	O	O	O	O	O	O
+gebraght	O	O	O	O	O	O	O	O
+werdende	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Lillo	O	B-LOC	O	O	O	O	O	O	Lillo
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+sendende	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+neevens	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dienende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+beantwoordinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorsz	O	O	O	O	O	O	O	O
+klaghten	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Copie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreeve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+Bylaage	O	O	O	O	O	O	O	O
+gezonden	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Lieutenant	B-HOE	O	B-PER	O	O	O	O	O	Lieutenant Collonel de Vassy, commandeerende tot Lillo
+Collonel	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Vassy	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+commandeerende	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Lillo	I-HOE	B-LOC	I-PER	O	O	O	O	O	Lillo
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+zelfs	O	O	O	O	O	O	O	O
+beright	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laaten	O	O	O	O	O	O	O	O
+toekoomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

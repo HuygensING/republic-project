@@ -1,0 +1,62 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Curateuren	B-HOE	O	O	O	O	O	O	O	Curateuren in Indien
+in	I-HOE	O	O	O	O	O	O	O
+Indien	I-HOE	B-LOC	O	O	O	O	O	O	Indien
+gehouden	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+sterfffuijsen	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+administratie	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+overschieten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+spoedichsten	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Compagnie	O	O	O	B-ORG	O	O	O	O	Compagnie
+goet	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+eijnde	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+herwaerts	O	O	O	O	O	O	O	O
+overgemackt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+vervolgens	O	O	O	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+rechte	O	O	O	O	O	O	O	O
+Erffgenamen	B-HOE	O	O	O	O	O	O	O	Erffgenamen
+,	O	O	O	O	O	O	O	O
+ofte	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+geene	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+gerechticht	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+uijtgereijct	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

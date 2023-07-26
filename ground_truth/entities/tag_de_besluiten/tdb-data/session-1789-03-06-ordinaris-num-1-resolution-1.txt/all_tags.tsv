@@ -1,0 +1,80 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staaten van de Provincie van Gelderland
+Staaten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Gelderland	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Nymegen	O	B-LOC	O	O	O	O	O	O	Nymegen
+den	O	O	O	O	O	O	O	O
+14	O	O	O	O	B-DAT	O	O	O	14 Mey des voorleeden jaars
+Mey	O	O	O	O	I-DAT	O	O	O
+des	O	O	O	O	I-DAT	O	O	O
+voorleeden	O	O	O	O	I-DAT	O	O	O
+jaars	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+Creditief	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Pieter Hes broek, Burgemeester der Stad Zutphen
+Pieter	O	O	I-PER	O	O	O	O	O
+Hes	O	O	I-PER	O	O	O	O	O
+broek	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Burgemeester	B-HOE	O	I-PER	O	O	O	O	O	Burgemeester der Stad Zutphen
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stad	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stad Zutphen
+Zutphen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+ex	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+D	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+gaderinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+verklaart	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Hasebroek
+Hasebroek	O	O	I-PER	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+aangenaam	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+zelven	O	O	O	O	O	O	O	O
+verwelkomt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+dienvolgende	O	O	O	O	O	O	O	O
+sessie	O	O	O	O	O	O	O	O
+genomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

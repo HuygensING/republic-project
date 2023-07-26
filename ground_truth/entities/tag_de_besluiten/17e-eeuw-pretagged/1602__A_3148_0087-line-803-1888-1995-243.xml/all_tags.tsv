@@ -1,0 +1,27 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+geresolveert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Lacquay	B-HOE	O	O	O	O	O	O	O	Lacquay, byden Cheur furst Paltzgraue
+,	I-HOE	O	O	O	O	O	O	O
+byden	I-HOE	O	O	O	O	O	O	O
+Cheur	B-HOE	O	B-PER	O	O	O	O	O	Cheur furst Paltzgraue
+furst	I-HOE	O	I-PER	O	O	O	O	O
+Paltzgraue	I-HOE	B-LOC	I-PER	O	O	O	O	O	Paltzgraue
+,	O	O	O	O	O	O	O	O
+onlancx	O	O	O	O	O	O	O	O
+alhier	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+Creyse	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+verstrecken	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

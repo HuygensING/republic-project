@@ -1,0 +1,43 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Haersolte, haer Hoogh Mogende extraordinaris Envoyé aen het Hof van den Koningh van Polen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Haersolte	I-HOE	B-LOC	I-PER	O	O	O	O	O	Haersolte
+,	I-HOE	O	I-PER	O	O	O	O	O
+haer	I-HOE	O	I-PER	O	O	O	O	O
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aen	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van den Koningh van Polen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koningh	B-HOE	O	B-PER	I-ORG	O	O	O	O	Koningh van Polen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Polen	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Polen
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Dantzigh	O	B-LOC	O	O	O	O	O	O	Dantzigh
+den	O	O	O	O	O	O	O	O
+negenden	O	O	O	O	B-DAT	O	O	O	negenden deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

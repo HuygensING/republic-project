@@ -1,0 +1,50 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Synde	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+d'aenwesende	O	O	O	O	O	O	O	O
+Gedepden	B-HOE	O	O	O	O	O	O	O	Gedepden. vande respectiuue collegien
+.	I-HOE	O	O	O	O	O	O	O
+vande	I-HOE	O	O	O	O	O	O	O
+respectiuue	I-HOE	O	O	O	O	O	O	O
+collegien	I-HOE	O	O	O	O	O	O	O
+ouergegeuen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+aduis	O	O	O	O	O	O	O	O
+geformeert	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+versochts	O	O	O	O	O	O	O	O
+wisselinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+wedersyts	O	O	O	O	O	O	O	O
+gevangenen	B-HOE	O	O	O	O	O	O	O	gevangenen
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+t'selfde	O	O	O	O	O	O	O	O
+aduis	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+slattby	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren van Hollant
+van	O	O	O	I-ORG	O	O	O	O
+Hollant	O	O	O	I-ORG	O	O	O	O
+na	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+genomen	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+principale	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+landtdage	O	O	O	O	O	O	O	O
+vergadert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+communiceren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

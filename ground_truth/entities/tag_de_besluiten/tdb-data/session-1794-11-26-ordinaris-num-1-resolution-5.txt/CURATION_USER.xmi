@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:pos="http:///de/tudarmstadt/ukp/dkpro/core/api/lexmorph/type/pos.ecore" xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:tweet="http:///de/tudarmstadt/ukp/dkpro/core/api/lexmorph/type/pos/tweet.ecore" xmlns:morph="http:///de/tudarmstadt/ukp/dkpro/core/api/lexmorph/type/morph.ecore" xmlns:type="http:///de/tudarmstadt/ukp/clarin/webanno/api/type.ecore" xmlns:dependency="http:///de/tudarmstadt/ukp/dkpro/core/api/syntax/type/dependency.ecore" xmlns:type6="http:///de/tudarmstadt/ukp/dkpro/core/api/semantics/type.ecore" xmlns:type9="http:///de/tudarmstadt/ukp/dkpro/core/api/transform/type.ecore" xmlns:type8="http:///de/tudarmstadt/ukp/dkpro/core/api/syntax/type.ecore" xmlns:type3="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:type11="http:///org/dkpro/core/api/xml/type.ecore" xmlns:type4="http:///de/tudarmstadt/ukp/dkpro/core/api/ner/type.ecore" xmlns:type10="http:///org/dkpro/core/api/pdf/type.ecore" xmlns:type5="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/coref/type.ecore" xmlns:type7="http:///de/tudarmstadt/ukp/dkpro/core/api/structure/type.ecore" xmlns:constituent="http:///de/tudarmstadt/ukp/dkpro/core/api/syntax/type/constituent.ecore" xmlns:chunk="http:///de/tudarmstadt/ukp/dkpro/core/api/syntax/type/chunk.ecore" xmlns:custom="http:///webanno/custom.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type3:DocumentMetaData xmi:id="8" sofa="1" begin="0" end="193" language="x-unspecified" documentTitle="session-1794-11-26-ordinaris-num-1-resolution-5.txt" documentId="CURATION_USER" documentUri="file:/Users/esger/.inception/repository/project/9/document/4851/source/CURATION_USER" collectionId="file:/Users/esger/.inception/repository/project/9/document/4851/source/" documentBaseUri="file:/Users/esger/.inception/repository/project/9/document/4851/source/" isLastSegment="false"/>
+    <type5:Token xmi:id="19" sofa="1" begin="0" end="9" order="0"/>
+    <type5:Token xmi:id="32" sofa="1" begin="10" end="13" order="0"/>
+    <type5:Token xmi:id="45" sofa="1" begin="14" end="21" order="0"/>
+    <type5:Token xmi:id="58" sofa="1" begin="22" end="25" order="0"/>
+    <type5:Token xmi:id="71" sofa="1" begin="26" end="29" order="0"/>
+    <type5:Token xmi:id="84" sofa="1" begin="30" end="36" order="0"/>
+    <type5:Token xmi:id="97" sofa="1" begin="37" end="45" order="0"/>
+    <type5:Token xmi:id="110" sofa="1" begin="45" end="46" order="0"/>
+    <type5:Token xmi:id="123" sofa="1" begin="47" end="57" order="0"/>
+    <type5:Token xmi:id="136" sofa="1" begin="58" end="60" order="0"/>
+    <type5:Token xmi:id="149" sofa="1" begin="61" end="68" order="0"/>
+    <type5:Token xmi:id="162" sofa="1" begin="69" end="72" order="0"/>
+    <type5:Token xmi:id="175" sofa="1" begin="73" end="75" order="0"/>
+    <type5:Token xmi:id="188" sofa="1" begin="76" end="83" order="0"/>
+    <type5:Token xmi:id="201" sofa="1" begin="84" end="96" order="0"/>
+    <type5:Token xmi:id="214" sofa="1" begin="96" end="97" order="0"/>
+    <type5:Token xmi:id="227" sofa="1" begin="98" end="111" order="0"/>
+    <type5:Token xmi:id="240" sofa="1" begin="112" end="115" order="0"/>
+    <type5:Token xmi:id="253" sofa="1" begin="116" end="119" order="0"/>
+    <type5:Token xmi:id="266" sofa="1" begin="120" end="128" order="0"/>
+    <type5:Token xmi:id="279" sofa="1" begin="129" end="134" order="0"/>
+    <type5:Token xmi:id="292" sofa="1" begin="134" end="135" order="0"/>
+    <type5:Token xmi:id="305" sofa="1" begin="136" end="144" order="0"/>
+    <type5:Token xmi:id="318" sofa="1" begin="145" end="156" order="0"/>
+    <type5:Token xmi:id="331" sofa="1" begin="156" end="157" order="0"/>
+    <type5:Token xmi:id="344" sofa="1" begin="158" end="162" order="0"/>
+    <type5:Token xmi:id="357" sofa="1" begin="163" end="165" order="0"/>
+    <type5:Token xmi:id="370" sofa="1" begin="166" end="170" order="0"/>
+    <type5:Token xmi:id="383" sofa="1" begin="171" end="180" order="0"/>
+    <type5:Token xmi:id="396" sofa="1" begin="181" end="183" order="0"/>
+    <type5:Token xmi:id="409" sofa="1" begin="184" end="192" order="0"/>
+    <type5:Token xmi:id="422" sofa="1" begin="192" end="193" order="0"/>
+    <type5:Sentence xmi:id="435" sofa="1" begin="0" end="157"/>
+    <type5:Sentence xmi:id="440" sofa="1" begin="158" end="193"/>
+    <custom:REPUBLIC_annotatie xmi:id="445" sofa="1" begin="30" end="45" entity="Persoonsaanduiding"/>
+    <custom:REPUBLIC_annotatie xmi:id="450" sofa="1" begin="30" end="36" entity="Hoedanigheid"/>
+    <custom:REPUBLIC_annotatie xmi:id="455" sofa="1" begin="61" end="68" entity="Plaats - Politieke Entiteit"/>
+    <custom:REPUBLIC_annotatie xmi:id="460" sofa="1" begin="73" end="96" entity="Datum"/>
+    <custom:REPUBLIC_annotatie xmi:id="465" sofa="1" begin="120" end="134" entity="Persoonsaanduiding"/>
+    <custom:REPUBLIC_annotatie xmi:id="470" sofa="1" begin="120" end="128" entity="Hoedanigheid"/>
+    <type:LayerDefinition xmi:id="529" name="de.tudarmstadt.ukp.dkpro.core.api.semantics.type.SemPred" uiName="SemPred"/>
+    <type:LayerDefinition xmi:id="486" name="de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.morph.MorphologicalFeatures" uiName="Morphological features"/>
+    <type:LayerDefinition xmi:id="547" name="de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" uiName="Dependency"/>
+    <type:LayerDefinition xmi:id="475" name="de.tudarmstadt.ukp.dkpro.core.api.coref.type.Coreference" uiName="Coreference"/>
+    <type:LayerDefinition xmi:id="558" name="de.tudarmstadt.ukp.dkpro.core.api.transform.type.SofaChangeAnnotation" uiName="Orthography Correction"/>
+    <type:LayerDefinition xmi:id="569" name="webanno.custom.REPUBLIC_annotatie" uiName="REPUBLIC_annotatie"/>
+    <type:LayerDefinition xmi:id="522" name="de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.SurfaceForm" uiName="Surface form"/>
+    <type:LayerDefinition xmi:id="540" name="de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk" uiName="Chunk"/>
+    <type:LayerDefinition xmi:id="493" name="de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" uiName="Part of speech"/>
+    <type:LayerDefinition xmi:id="504" name="de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity" uiName="Named entity"/>
+    <type:LayerDefinition xmi:id="515" name="de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma" uiName="Lemma"/>
+    <type:FeatureDefinition xmi:id="496" layer="493" name="PosValue" uiName="XPOS"/>
+    <type:FeatureDefinition xmi:id="565" layer="558" name="value" uiName="Correction"/>
+    <type:FeatureDefinition xmi:id="489" layer="486" name="value" uiName="Features"/>
+    <type:FeatureDefinition xmi:id="536" layer="529" name="category" uiName="category"/>
+    <type:FeatureDefinition xmi:id="543" layer="540" name="chunkValue" uiName="Tag"/>
+    <type:FeatureDefinition xmi:id="572" layer="569" name="entity" uiName="entity"/>
+    <type:FeatureDefinition xmi:id="500" layer="493" name="coarseValue" uiName="UPOS"/>
+    <type:FeatureDefinition xmi:id="511" layer="504" name="value" uiName="value"/>
+    <type:FeatureDefinition xmi:id="482" layer="475" name="referenceType" uiName="referenceType"/>
+    <type:FeatureDefinition xmi:id="554" layer="547" name="flavor" uiName="Flavor"/>
+    <type:FeatureDefinition xmi:id="478" layer="475" name="referenceRelation" uiName="referenceRelation"/>
+    <type:FeatureDefinition xmi:id="518" layer="515" name="value" uiName="Lemma"/>
+    <type:FeatureDefinition xmi:id="525" layer="522" name="value" uiName="Form"/>
+    <type:FeatureDefinition xmi:id="550" layer="547" name="DependencyType" uiName="Relation"/>
+    <type:FeatureDefinition xmi:id="532" layer="529" name="arguments" uiName="arguments"/>
+    <type:FeatureDefinition xmi:id="507" layer="504" name="identifier" uiName="identifier"/>
+    <type:FeatureDefinition xmi:id="561" layer="558" name="operation" uiName="Operation"/>
+    <type3:TagsetDescription xmi:id="576" sofa="1" begin="0" end="0" layer="de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency" name="UD Universal Dependencies (v2)" input="false"/>
+    <type3:TagsetDescription xmi:id="589" sofa="1" begin="0" end="0" layer="de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity" name="Named Entity tags" input="false"/>
+    <type3:TagsetDescription xmi:id="602" sofa="1" begin="0" end="0" layer="de.tudarmstadt.ukp.dkpro.core.api.transform.type.SofaChangeAnnotation" name="Operation" input="false"/>
+    <type3:TagsetDescription xmi:id="615" sofa="1" begin="0" end="0" layer="de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" name="UD Universal POS tags (v2)" input="false"/>
+    <type3:TagsetDescription xmi:id="628" sofa="1" begin="0" end="0" layer="webanno.custom.REPUBLIC_annotatie" name="REPUBLIC_tags" input="false"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="ONtfangen een Missive van den Consul Warnsman, geschreven te Livorno den 31 October laatstleeden, geaddresseert aan den Griffier Fagel, houdende advertentie. WAAR op geen resolutie is gevallen."/>
+    <cas:View sofa="1" members="8 19 32 45 58 71 84 97 110 123 136 149 162 175 188 201 214 227 240 253 266 279 292 305 318 331 344 357 370 383 396 409 422 435 440 445 450 455 460 465 470 529 486 547 475 558 569 522 540 493 504 515 496 565 489 536 543 572 500 511 482 554 478 518 525 550 532 507 561 576 589 602 615 628"/>
+</xmi:XMI>

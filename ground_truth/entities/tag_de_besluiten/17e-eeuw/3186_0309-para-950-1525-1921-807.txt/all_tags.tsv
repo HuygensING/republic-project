@@ -1,0 +1,87 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+uytgevoert	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+binnenlantsche	O	O	O	O	O	O	O	O
+paspoorte	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Iuderoien	O	B-LOC	O	O	O	O	O	O	Iuderoien
+by	O	O	O	O	O	O	O	O
+Leuert	O	O	B-PER	O	O	O	O	O	Leuert Dirxen
+Dirxen	O	O	I-PER	O	O	O	O	O
+drie	O	O	O	O	O	O	O	O
+moerpeerden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Geertruidenberge	O	B-LOC	O	O	O	O	O	O	Geertruidenberge
+by	O	O	O	O	O	O	O	O
+Adriaen	O	O	B-PER	O	O	O	O	O	Adriaen Laureis Cadéé
+Laureis	O	O	I-PER	O	O	O	O	O
+Cadéé	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Henrick	O	O	B-PER	O	O	O	O	O	Henrick Cornelissen Flitter
+Cornelissen	O	O	I-PER	O	O	O	O	O
+Flitter	O	O	I-PER	O	O	O	O	O
+Adriaen	O	O	B-PER	O	O	O	O	O	Adriaen Stoffels
+Stoffels	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+Rogier	O	O	B-PER	O	O	O	O	O	Rogier Ariaenssen
+Ariaenssen	O	O	I-PER	O	O	O	O	O
+elcx	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+moerpeerden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Item	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+Bosch	O	B-LOC	O	O	O	O	O	O	Bosch
+licent	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+Jan	O	O	B-PER	O	O	O	O	O	Jan de Loeper
+de	O	O	I-PER	O	O	O	O	O
+Loeper	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Jan	O	O	B-PER	O	O	O	O	O	Jan Claessen
+Claessen	O	O	I-PER	O	O	O	O	O
+Jntgen	O	O	B-PER	O	O	O	O	O	Jntgen Aerts dochter Weduwe Simon Jacobs
+Aerts	O	O	I-PER	O	O	O	O	O
+dochter	B-HOE	O	I-PER	O	O	O	O	O	dochter Weduwe Simon Jacobs
+Weduwe	B-HOE	O	B-PER	O	O	O	O	O	Weduwe
+Simon	I-HOE	O	I-PER	O	O	O	O	O
+Jacobs	I-HOE	O	I-PER	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Adriaen	O	O	B-PER	O	O	O	O	O	Adriaen Aertsen
+Aertsen	O	O	I-PER	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Sprangh	O	B-LOC	O	O	O	O	O	O	Sprangh
+elcx	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+moerpeerden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Ende	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+Cornelis	O	O	B-PER	O	O	O	O	O	Cornelis Ariaenssen
+Ariaenssen	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Aert	O	O	B-PER	O	O	O	O	O	Aert Janssen
+Janssen	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Adriaen	O	O	B-PER	O	O	O	O	O	Adriaen Anthonissen
+Anthonissen	O	O	I-PER	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Lambert	O	O	B-PER	O	O	O	O	O	Lambert Anthoniss
+Anthoniss	O	O	I-PER	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Baertwyck	O	B-LOC	O	O	O	O	O	O	Baertwyck
+mede	O	O	O	O	O	O	O	O
+elcx	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+moerpeerden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

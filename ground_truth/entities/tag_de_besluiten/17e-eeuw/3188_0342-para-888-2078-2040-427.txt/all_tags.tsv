@@ -1,0 +1,56 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Isack	O	O	B-PER	O	O	O	O	O	Isack Aduis
+Aduis	O	O	I-PER	O	O	O	O	O
+versouckende	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+verhaelt	O	O	O	O	O	O	O	O
+Commissarissen	B-HOE	O	O	O	O	O	O	O	Commissarissen
+voor	O	O	O	O	O	O	O	O
+dewelcke	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+gehoort	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+questie	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+differentien	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+uytstaende	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+iegens	O	O	O	O	O	O	O	O
+Meinardus	O	O	B-PER	O	O	O	O	O	Meinardus Aetsma Secretaris in t' collegie ter Admiraliteyt tot Doccum
+Aetsma	O	O	I-PER	O	O	O	O	O
+Secretaris	B-HOE	O	I-PER	O	O	O	O	O	Secretaris in t' collegie ter Admiraliteyt tot Doccum
+in	I-HOE	O	I-PER	O	O	O	O	O
+t	I-HOE	O	I-PER	O	O	O	O	O
+'	I-HOE	O	I-PER	O	O	O	O	O
+collegie	I-HOE	O	I-PER	B-ORG	O	O	O	O	collegie ter Admiraliteyt tot Doccum
+ter	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Admiraliteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+tot	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Doccum	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Doccum
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+alvoorens	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+disponeren	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t'gemelte	O	O	O	O	O	O	O	O
+collegie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

@@ -1,0 +1,100 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Item	O	O	O	O	O	O	O	O
+eenen	O	O	O	O	O	O	O	O
+anderen	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+tvoors	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie
+gedateert	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+xven	O	O	O	O	B-DAT	O	O	O	xven. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+daerby	O	O	O	O	O	O	O	O
+zy	O	O	O	O	O	O	O	O
+alnoch	O	O	O	O	O	O	O	O
+versoecken	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+goede	O	O	O	O	O	O	O	O
+geliefte	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Staten
+Staten	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hoe	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+handelen	O	O	O	O	O	O	O	O
+mette	O	O	O	O	O	O	O	O
+goeden	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+byde	O	O	O	O	O	O	O	O
+schepen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+oorloge	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+vrybueters	B-HOE	O	O	O	O	O	O	O	vrybueters
+tot	O	O	O	O	O	O	O	O
+Amstelredam	O	B-LOC	O	O	O	O	O	O	Amstelredam
+zyn	O	O	O	O	O	O	O	O
+ingebracht	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+diuersche	B-HOE	O	O	O	O	O	O	O	diuersche Coopluyden
+Coopluyden	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+Ingesetenen	B-HOE	O	O	O	O	O	O	O	Ingesetenen van dese landen
+van	I-HOE	O	O	O	O	O	O	O
+dese	I-HOE	O	O	O	O	O	O	O
+landen	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+Neutrale	B-HOE	O	O	O	O	O	O	O	Neutrale
+,	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gereclameert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+weeten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Oft	O	O	O	O	O	O	O	O
+zy	O	O	O	O	O	O	O	O
+deselue	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+verclaeren	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+goede	O	O	O	O	O	O	O	O
+prinse	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dan	O	O	O	O	O	O	O	O
+oft	O	O	O	O	O	O	O	O
+zy	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Coopluyden	B-HOE	O	O	O	O	O	O	O	Coopluyden
+op	O	O	O	O	O	O	O	O
+derseluer	O	O	O	O	O	O	O	O
+dueghdelyck	O	O	O	O	O	O	O	O
+reclameren	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+restitueren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+vuytgestelt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+resolueren	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+maendage	O	O	O	O	O	O	O	O

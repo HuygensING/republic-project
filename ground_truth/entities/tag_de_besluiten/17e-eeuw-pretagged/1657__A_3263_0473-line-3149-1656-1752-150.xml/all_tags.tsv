@@ -1,0 +1,67 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Sijnde	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe van Corstiaen Dircxsz in sijn leven Werckmeester
+van	I-HOE	O	O	O	O	O	O	O
+Corstiaen	I-HOE	O	B-PER	O	O	O	O	O	Corstiaen Dircxsz in sijn leven Werckmeester
+Dircxsz	I-HOE	O	I-PER	O	O	O	O	O
+in	B-HOE	O	I-PER	O	O	O	O	O	in sijn leven Werckmeester
+sijn	I-HOE	O	I-PER	O	O	O	O	O
+leven	I-HOE	O	I-PER	O	O	O	O	O
+Werckmeester	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+ordonnantie	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+date	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+achtsten	O	O	O	O	B-DAT	O	O	O	achtsten april 1650
+april	O	O	O	O	I-DAT	O	O	O
+1650	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+derthien	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+Sessentzestich	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+derthien	O	O	O	O	O	O	O	O
+stuijvers	O	O	O	O	O	O	O	O
+vier	O	O	O	O	O	O	O	O
+d.	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+gemaeckte	O	O	O	O	O	O	O	O
+fortificatiewercken	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

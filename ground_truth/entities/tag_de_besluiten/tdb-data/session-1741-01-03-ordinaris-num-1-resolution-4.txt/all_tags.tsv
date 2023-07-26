@@ -1,0 +1,39 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+Panhuys	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+s	O	O	O	O	O	O	O	O
+Lands	O	O	O	O	O	O	O	B-NAM	Lands Schip Boeckenroode
+Schip	O	O	O	O	O	O	O	I-NAM
+Boeckenroode	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+zeylende	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Noordzee	O	B-LOC	O	O	O	O	O	O	Noordzee
+den	O	O	O	O	O	O	O	O
+Ve	O	O	O	O	B-DAT	O	O	O	Ve . . neder voorleede maand
+.	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O
+neder	O	O	O	O	I-DAT	O	O	O
+voorleede	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

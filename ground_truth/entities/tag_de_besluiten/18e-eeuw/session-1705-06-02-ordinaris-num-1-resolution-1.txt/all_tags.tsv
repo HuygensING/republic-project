@@ -1,0 +1,29 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Resident	B-HOE	O	B-PER	O	O	O	O	O	Resident
+Bilderbeeck	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gheschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Keulen	O	B-LOC	O	O	O	O	O	O	Keulen
+den	O	O	O	O	O	O	O	O
+29	O	O	O	O	B-DAT	O	O	O	29. der voorlede maendt
+.	O	O	O	O	I-DAT	O	O	O
+der	O	O	O	O	I-DAT	O	O	O
+voorlede	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertontie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

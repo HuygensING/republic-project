@@ -1,0 +1,51 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfanwgen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Lewe, Heere van Aduart
+Lewe	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Heere	B-HOE	O	I-PER	O	O	O	O	O	Heere van Aduart
+van	I-HOE	O	I-PER	O	O	O	O	O
+Aduart	I-HOE	B-LOC	I-PER	O	O	O	O	O	Aduart
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Groningen	O	B-LOC	O	O	O	O	O	O	Groningen
+den	O	O	O	O	O	O	O	O
+sestienden	O	O	O	O	B-DAT	O	O	O	sestienden deser loopende maandt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Grif-Her	B-HOE	O	B-PER	O	O	O	O	O	Grif-Her
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sigh	O	O	O	O	O	O	O	O
+gereedt	O	O	O	O	O	O	O	O
+maackte	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+reyse	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Oost-Vrieslandt	O	B-LOC	O	O	O	O	O	O	Oost-Vrieslandt
+aan	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+nemen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

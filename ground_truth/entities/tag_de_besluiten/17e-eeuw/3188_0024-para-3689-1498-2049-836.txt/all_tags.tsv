@@ -1,0 +1,77 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Tot	O	O	O	O	O	O	O	O
+examinatie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+memorie	O	O	O	O	O	O	O	O
+ingestelt	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+syn	B-HOE	O	O	O	O	O	O	O	syn Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+behandicht	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Ridder	O	O	B-PER	O	O	O	O	O	Ridder Ro geweesen ambassr. van Coninck van Groot Bretagnien tot Constantinopolen
+Ro	O	O	I-PER	O	O	O	O	O
+geweesen	B-HOE	O	I-PER	O	O	O	O	O	geweesen ambassr. van Coninck van Groot Bretagnien tot Constantinopolen
+ambassr	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Groot Bretagnien
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot Bretagnien
+Bretagnien	I-HOE	I-LOC	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Constantinopolen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Constantinopolen
+,	O	O	O	O	O	O	O	O
+belangende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+conservatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+vryen	O	O	O	O	O	O	O	O
+handel	O	O	O	O	O	O	O	O
+opde	O	O	O	O	O	O	O	O
+Oostzee	O	B-LOC	O	O	O	O	O	O	Oostzee
+tegens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+desseins	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t'huis	O	O	O	B-ORG	O	O	O	O	t'huis van Oostenryck
+van	O	O	O	I-ORG	O	O	O	O
+Oostenryck	O	B-LOC	O	I-ORG	O	O	O	O	Oostenryck
+ende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorslagen	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Syn	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+neuens	O	O	O	O	O	O	O	O
+d'heer	O	O	B-PER	O	O	O	O	O	d'heer Joachimi
+Joachimi	O	O	I-PER	O	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+gecommitteert	O	O	O	O	O	O	O	O
+d'heeren	O	O	B-PER	O	O	O	O	O	d'heeren Essen Noortwyck, Bas, Beaumont, Ploos, Eysinga, Haersolte, ende Schaffer
+Essen	O	O	I-PER	O	O	O	O	O
+Noortwyck	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Bas	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Beaumont	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Ploos	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Eysinga	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Haersolte	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+Schaffer	O	O	I-PER	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

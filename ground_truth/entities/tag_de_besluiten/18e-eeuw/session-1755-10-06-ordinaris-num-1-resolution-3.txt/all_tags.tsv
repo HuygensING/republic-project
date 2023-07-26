@@ -1,0 +1,50 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere de Smart
+de	I-HOE	O	I-PER	O	O	O	O	O
+Smart	I-HOE	B-LOC	I-PER	O	O	O	O	O	Smart
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoogh Mogende extraordinaris Envoyé aan het Hof van haare Majesteyt de Keyserinne van geheel Rusland
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van haare Majesteyt de Keyserinne van geheel Rusland
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+haare	B-HOE	O	B-PER	I-ORG	O	O	O	O	haare Majesteyt de Keyserinne van geheel Rusland
+Majesteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+de	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Keyserinne	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+geheel	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	geheel Rusland
+Rusland	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+St	O	B-LOC	O	O	O	O	O	O	St. Petersburgh
+.	O	I-LOC	O	O	O	O	O	O
+Petersburgh	O	I-LOC	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+sestienden	O	O	O	O	B-DAT	O	O	O	sestienden der voorleede maand
+der	O	O	O	O	I-DAT	O	O	O
+voorleede	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+DE	O	O	O	O	O	O	O	O
+EE	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

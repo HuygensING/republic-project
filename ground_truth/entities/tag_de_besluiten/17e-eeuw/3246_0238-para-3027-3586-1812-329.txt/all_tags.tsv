@@ -1,0 +1,39 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren haer ho:Mo: Gedeputeer te Velde
+haer	O	O	O	I-ORG	O	O	O	O
+ho	O	O	O	I-ORG	O	O	O	O
+:	O	O	O	I-ORG	O	O	O	O
+Mo	O	O	O	I-ORG	O	O	O	O
+:	O	O	O	I-ORG	O	O	O	O
+Gedeputeer	O	O	O	I-ORG	O	O	O	O
+te	O	O	O	I-ORG	O	O	O	O
+Velde	O	O	O	I-ORG	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Sluys	O	B-LOC	O	O	O	O	O	O	Sluys
+den	O	O	O	O	O	O	O	O
+25e	O	O	O	O	B-DAT	O	O	O	25e. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+houdende	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+effect	O	O	O	O	O	O	O	O
+datse	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Capiteinen	B-HOE	O	B-PER	O	O	O	O	O	Capiteinen
+allevrunden	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Jan	O	O	I-PER	O	O	O	O	O
+burgers	O	O	I-PER	O	O	O	O	O
+blom	O	O	I-PER	O	O	O	O	O
+&	O	O	I-PER	O	O	O	O	O
+Symon	O	O	I-PER	O	O	O	O	O
+Elsevier	O	O	I-PER	O	O	O	O	O
+dienende	O	O	O	O	O	O	O	O
+opde	O	O	O	O	O	O	O	O
+drije	O	O	O	O	O	O	O	O
+pleijten	O	O	O	O	O	O	O	O

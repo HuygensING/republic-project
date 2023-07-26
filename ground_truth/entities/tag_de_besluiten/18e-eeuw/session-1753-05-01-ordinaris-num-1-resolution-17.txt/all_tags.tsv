@@ -1,0 +1,291 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staaten van de Provincie van Gelderland
+Staaten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Gelderland	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Zutphen	O	B-LOC	O	O	O	O	O	O	Zutphen
+den	O	O	O	O	O	O	O	O
+tienden	O	O	O	O	B-DAT	O	O	O	tienden der voorleede maand
+der	O	O	O	O	I-DAT	O	O	O
+voorleede	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Generaliteyts	O	O	O	B-ORG	O	O	O	O	Generaliteyts Reeckenkaamer
+Reeckenkaamer	O	O	O	I-ORG	O	O	O	O
+te	O	O	O	O	O	O	O	O
+committeeren	O	O	O	O	O	O	O	O
+Maarten	O	O	B-PER	O	O	O	O	O	Maarten van Vlaardingerwoud, Burgermeester der Stad Wageningen
+van	O	O	I-PER	O	O	O	O	O
+Vlaardingerwoud	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Burgermeester	B-HOE	O	I-PER	O	O	O	O	O	Burgermeester der Stad Wageningen
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stad	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stad Wageningen
+Wageningen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ingaande	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+eersten	O	O	O	O	B-DAT	O	O	O	eersten Mey seeventien honderd drie en vyftigh
+Mey	O	O	O	O	I-DAT	O	O	O
+seeventien	O	O	O	O	I-DAT	O	O	O
+honderd	O	O	O	O	I-DAT	O	O	O
+drie	O	O	O	O	I-DAT	O	O	O
+en	O	O	O	O	I-DAT	O	O	O
+vyftigh	O	O	O	O	I-DAT	O	O	O
+;	O	O	O	O	O	O	O	O
+versoekende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+selven	O	O	O	O	O	O	O	O
+Maarten	O	O	B-PER	O	O	O	O	O	Maarten van Vlaardingerwoud
+van	O	O	I-PER	O	O	O	O	O
+Vlaardingerwoud	O	O	I-PER	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Generaliteyts	O	O	O	B-ORG	O	O	O	O	Generaliteyts Reeckenkaamer
+Reeckenkaamer	O	O	O	I-ORG	O	O	O	O
+gelieven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+inrroduceeren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Maarten van Vlaardingerwoud
+Maarten	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Vlaardingerwoud	O	B-LOC	I-PER	O	O	O	O	O	Vlaardingerwoud
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Generaliteyts	O	O	O	B-ORG	O	O	O	O	Generaliteyts Reekenkaamer
+Reekenkaamer	O	O	O	I-ORG	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+deesen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+houden	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+gecommitteert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+doende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+behoorlycken	O	O	O	O	O	O	O	O
+eed	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+nogh	O	O	O	O	O	O	O	O
+staande	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+afgeleght	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+zelve	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Otters
+Otters	O	O	I-PER	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Generaliteyts	O	O	O	B-ORG	O	O	O	O	Generaliteyts Reekenkaamer
+Reekenkaamer	O	O	O	I-ORG	O	O	O	O
+geintroduceert	O	O	O	O	O	O	O	O
+geworden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+DEn	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere de Raet, een van de Heeren Gecommitteerde Raaden van Holland en Westvriesland
+de	O	O	I-PER	O	O	O	O	O
+Raet	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+een	B-HOE	O	I-PER	O	O	O	O	O	een van de Heeren Gecommitteerde Raaden van Holland en Westvriesland
+van	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Heeren	I-HOE	O	I-PER	O	O	O	O	O
+Gecommitteerde	I-HOE	O	I-PER	O	O	O	O	O
+Raaden	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Holland	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Westvriesland	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+gevolge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	B-RES	O	O	haar Hoogh Mogende Resolutie van den vyfden Mey seeventien honderd dertigh
+Hoogh	O	O	O	O	O	I-RES	O	O
+Mogende	O	O	O	O	O	I-RES	O	O
+Resolutie	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+vyfden	O	O	O	O	B-DAT	I-RES	O	O	vyfden Mey seeventien honderd dertigh
+Mey	O	O	O	O	I-DAT	I-RES	O	O
+seeventien	O	O	O	O	I-DAT	I-RES	O	O
+honderd	O	O	O	O	I-DAT	I-RES	O	O
+dertigh	O	O	O	O	I-DAT	I-RES	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+voorgedraagen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie van gemelde Heeren Gecommitteerde Rlaaden
+van	O	O	O	I-ORG	O	O	O	O
+gemelde	O	O	O	I-ORG	O	O	O	O
+Heeren	O	O	O	I-ORG	O	O	O	O
+Gecommitteerde	O	O	O	I-ORG	O	O	O	O
+Rlaaden	O	O	O	I-ORG	O	O	O	O
+op	O	O	O	O	O	O	O	O
+heeden	O	O	O	O	O	O	O	O
+sessie	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+genoomen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+vervolgens	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+geintroduceert	O	O	O	O	O	O	O	O
+stonden	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	O	O	Heeren van Dyck en Boudaan weegens de Steeden Haarlem en Amsterdam
+van	O	O	I-PER	O	O	O	O	O
+Dyck	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+Boudaan	O	O	I-PER	O	O	O	O	O
+weegens	B-HOE	O	I-PER	O	O	O	O	O	weegens de Steeden Haarlem en Amsterdam
+de	I-HOE	O	I-PER	O	O	O	O	O
+Steeden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Steeden Haarlem en Amsterdam
+Haarlem	I-HOE	I-LOC	I-PER	O	O	O	O	O
+en	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Amsterdam	I-HOE	I-LOC	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+En	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere de Raet
+de	O	O	I-PER	O	O	O	O	O
+Raet	O	O	I-PER	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+bekent	O	O	O	O	O	O	O	O
+gemaackt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	O	O	Heeren van Dyck en Boudaan
+van	O	O	I-PER	O	O	O	O	O
+Dyck	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+Boudaan	O	O	I-PER	O	O	O	O	O
+geene	O	O	O	O	O	O	O	O
+Ampten	O	O	O	O	O	O	O	O
+besitten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+hen	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	B-RES	O	O	haar Hoogh Mogende Resolutie van den vyf en twintighsten February seeventien honderd drie en twintigh
+Hoogh	O	O	O	O	O	I-RES	O	O
+Mogende	O	O	O	O	O	I-RES	O	O
+Resolutie	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+vyf	O	O	O	O	B-DAT	I-RES	O	O	vyf en twintighsten February seeventien honderd drie en twintigh
+en	O	O	O	O	I-DAT	I-RES	O	O
+twintighsten	O	O	O	O	I-DAT	I-RES	O	O
+February	O	O	O	O	I-DAT	I-RES	O	O
+seeventien	O	O	O	O	I-DAT	I-RES	O	O
+honderd	O	O	O	O	I-DAT	I-RES	O	O
+drie	O	O	O	O	I-DAT	I-RES	O	O
+en	O	O	O	O	I-DAT	I-RES	O	O
+twintigh	O	O	O	O	I-DAT	I-RES	O	O
+beletten	O	O	O	O	O	O	O	O
+alhier	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+compareeren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+deesen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verklaaren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	O	O	Heeren van Dyck en Boudaan
+van	O	O	I-PER	O	O	O	O	O
+Dyck	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+Boudaan	O	O	I-PER	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+aangenaam	O	O	O	O	O	O	O	O
+zyn	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+dienvolgende	O	O	O	O	O	O	O	O
+sessie	O	O	O	O	O	O	O	O
+genoomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

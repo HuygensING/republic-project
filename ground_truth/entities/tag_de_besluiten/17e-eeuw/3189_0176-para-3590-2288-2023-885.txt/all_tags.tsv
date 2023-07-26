@@ -1,0 +1,134 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren Brunincx ende van Goch haer Ho:Mo: Gedeputeerden
+Brunincx	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Goch	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Ho:Mo: Gedeputeerden
+Ho	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Mo	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Gedeputeerden	I-HOE	O	I-PER	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Tilburch	O	B-LOC	O	O	O	O	O	O	Tilburch
+den	O	O	O	O	O	O	O	O
+9	O	O	O	O	B-DAT	O	O	O	9. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+anderen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+seer	O	O	O	O	O	O	O	O
+grousame	O	O	O	O	O	O	O	O
+daet	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+seker	O	O	O	O	O	O	O	O
+vroupersoon	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Oosterwyck	O	B-LOC	O	O	O	O	O	O	Oosterwyck
+is	O	O	O	O	O	O	O	O
+begaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versouckende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+meeninge	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+intentie	O	O	O	O	O	O	O	O
+off	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+hoochschout	B-HOE	O	O	O	O	O	O	O	hoochschout vanden Bosch
+vanden	I-HOE	B-LOC	O	O	O	O	O	O	vanden Bosch
+Bosch	I-HOE	I-LOC	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+delinquant	B-HOE	O	O	O	O	O	O	O	delinquant
+niet	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+vervolgen	O	O	O	O	O	O	O	O
+gedurende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+conferentie	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+vyant	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+heeren	B-HOE	O	O	O	O	O	O	O	heeren Gedepden
+Gedepden	I-HOE	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+rescriberen	O	O	O	O	O	O	O	O
+datse	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+hoochschout	B-HOE	O	O	O	O	O	O	O	hoochschout
+sullen	O	O	O	O	O	O	O	O
+lasten	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+delinquant	B-HOE	O	O	O	O	O	O	O	delinquant
+te	O	O	O	O	O	O	O	O
+vervolgen	O	O	O	O	O	O	O	O
+ingevalle	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+delict	O	O	O	O	O	O	O	O
+geschiet	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+off	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+delinquant	B-HOE	O	O	O	O	O	O	O	delinquant
+sich	O	O	O	O	O	O	O	O
+onthout	O	O	O	O	O	O	O	O
+binnen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+limiten	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+jurisdictie	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+meyerie	O	B-LOC	O	O	O	O	O	O	meyerie
+,	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+hoochschout	B-HOE	O	O	O	O	O	O	O	hoochschout
+gesach	O	O	O	O	O	O	O	O
+competeert	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+sententie	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van Brabant
+van	O	O	O	I-ORG	O	O	O	O
+Brabant	O	O	O	I-ORG	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+s'vyants	O	O	O	O	O	O	O	O
+syde	O	O	O	O	O	O	O	O
+diesaengaende	O	O	O	O	O	O	O	O
+gewesen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

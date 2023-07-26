@@ -1,0 +1,86 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+JIS	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Jacob	O	O	B-PER	O	O	O	O	O	Jacob Sautin, Koopman tot Middelburgh in Zeelandt
+Sautin	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Koopman	B-HOE	O	I-PER	O	O	O	O	O	Koopman tot Middelburgh in Zeelandt
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Middelburgh	I-HOE	B-LOC	I-PER	O	O	O	O	O	Middelburgh in Zeelandt
+in	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Zeelandt	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Suppliants	O	O	O	O	O	O	O	O
+voorige	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+nadere	O	O	O	O	O	O	O	O
+Verklaringe	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staten van Hollandt ende West -Vrierlandt
+Staten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Hollandt	O	O	O	I-ORG	O	O	O	O
+ende	O	O	O	I-ORG	O	O	O	O
+West	O	O	O	I-ORG	O	O	O	O
+-	O	O	O	I-ORG	O	O	O	O
+Vrierlandt	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Suppliants	O	O	O	O	O	O	O	O
+saken	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Wynbergen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Wynbergen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wynbergen
+.	O	O	O	O	O	O	O	O
+DN	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+0	O	O	O	O	O	O	O	O
+)	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Stucken	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Wynbergen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Wynbergen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wynbergen
+gestelt	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

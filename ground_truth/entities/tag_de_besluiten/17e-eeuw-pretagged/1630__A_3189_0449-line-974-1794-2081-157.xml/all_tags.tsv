@@ -1,0 +1,30 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	B-ORG	O	O	O	O	' Collegie ter Admirt. in t'Noorderqrs
+Collegie	O	O	O	I-ORG	O	O	O	O
+ter	O	O	O	I-ORG	O	O	O	O
+Admirt	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	I-ORG	O	O	O	O
+in	O	O	O	I-ORG	O	O	O	O
+t'Noorderqrs	O	B-LOC	O	I-ORG	O	O	O	O	t'Noorderqrs
+.	O	O	O	O	O	O	O	O
+geschreen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Enchuysen	O	B-LOC	O	O	O	O	O	O	Enchuysen
+den	O	O	O	O	O	O	O	O
+11	O	O	O	O	B-DAT	O	O	O	11. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentien	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

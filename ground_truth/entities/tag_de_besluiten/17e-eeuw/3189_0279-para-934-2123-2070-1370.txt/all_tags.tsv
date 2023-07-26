@@ -1,0 +1,196 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+geresumeert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Vrouwe	B-HOE	O	B-PER	O	O	O	O	O	Vrouwe Helena van Brederode Baronnesse van Potlith
+Helena	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Brederode	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brederode
+Baronnesse	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Potlith	I-HOE	B-LOC	I-PER	O	O	O	O	O	Potlith
+versouckende	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+verhaelt	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+gelieven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+vrouwe	O	O	O	O	O	O	O	O
+suppliante	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+becomen	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+acht	O	O	O	O	O	O	O	O
+duysent	O	O	O	O	O	O	O	O
+Rycxdaelders	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Grave	B-HOE	O	B-PER	O	O	O	O	O	Grave van Swarsenburch
+van	I-HOE	O	I-PER	O	O	O	O	O
+Swarsenburch	I-HOE	B-LOC	I-PER	O	O	O	O	O	Swarsenburch
+van	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+syne	B-HOE	O	B-PER	O	O	O	O	O	syne Churf: Dht: van Brandenborch
+Churf	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Dht	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Brandenborch	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brandenborch
+over	O	O	O	O	O	O	O	O
+sekere	O	O	O	O	O	O	O	O
+Chrychsdiensten	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heer	B-HOE	O	B-PER	O	O	O	O	O	heer van Potlith
+van	I-HOE	O	I-PER	O	O	O	O	O
+Potlith	I-HOE	O	I-PER	O	O	O	O	O
+sa	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+meerder	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+bedragende	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+accoort	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+toegevonden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+achtervolgens	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	B-RES	O	O	haer Ho:Mo: resolutie vanden 12. deses
+Ho	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+resolutie	O	O	O	O	O	I-RES	O	O
+vanden	O	O	O	O	O	I-RES	O	O
+12	O	O	O	O	B-DAT	I-RES	O	O	12. deses
+.	O	O	O	O	I-DAT	I-RES	O	O
+deses	O	O	O	O	I-DAT	I-RES	O	O
+naegesien	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+voorn	O	O	O	O	O	O	O	O
+Graeff	B-HOE	O	O	O	O	O	O	O	Graeff
+deses	O	O	O	O	O	O	O	O
+aengaende	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+dato	O	O	O	O	O	O	O	O
+1	O	O	O	O	B-DAT	O	O	O	1 february lestleden
+february	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+uyt	O	O	O	O	O	O	O	O
+Custrin	O	B-LOC	O	O	O	O	O	O	Custrin
+geschreven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+nochmaels	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Regieringe	O	O	O	B-ORG	O	O	O	O	Regieringe vanden hoochsgeds. Chur furst tot Embrick
+vanden	O	O	O	I-ORG	O	O	O	O
+hoochsgeds	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	I-ORG	O	O	O	O
+Chur	B-HOE	O	B-PER	I-ORG	O	O	O	O	Chur furst tot Embrick
+furst	I-HOE	O	I-PER	I-ORG	O	O	O	O
+tot	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Embrick	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Embrick
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Ontfanger	B-HOE	O	B-PER	O	O	O	O	O	Ontfanger
+Onckel	O	O	I-PER	O	O	O	O	O
+serieuselyck	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+schryven	O	O	O	O	O	O	O	O
+datse	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+vrouwe	O	O	O	O	O	O	O	O
+suppliante	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+opt	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+spoedichste	O	O	O	O	O	O	O	O
+verhelpen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+brenger	O	O	O	O	O	O	O	O
+s'brieffs	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+specialicken	O	O	O	O	O	O	O	O
+aff	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+veerdigen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+favorabel	O	O	O	O	O	O	O	O
+antwoort	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+rugge	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+comen	O	O	O	O	O	O	O	O
+off	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+faute	O	O	O	O	O	O	O	O
+vandien	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+invorderen	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+domeinen	O	O	O	O	O	O	O	O
+off	O	O	O	O	O	O	O	O
+incompsten	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+hoochsgede	B-HOE	O	O	O	O	O	O	O	hoochsgede. Churfurst
+.	I-HOE	O	O	O	O	O	O	O
+Churfurst	I-HOE	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+quartieren	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

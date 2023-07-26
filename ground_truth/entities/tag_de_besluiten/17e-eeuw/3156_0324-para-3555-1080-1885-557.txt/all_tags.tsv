@@ -1,0 +1,42 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opte	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Schotsch	B-HOE	O	B-PER	O	O	O	O	O	Schotsch Capiteyn
+Capiteyn	I-HOE	O	I-PER	O	O	O	O	O
+Willem	O	O	I-PER	O	O	O	O	O
+Martin	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+genyeten	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+tractement	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+Cornette	B-HOE	O	O	O	O	O	O	O	Cornette vande Compaignie vanden Ritmr Arskin
+vande	I-HOE	O	O	O	O	O	O	O
+Compaignie	I-HOE	O	O	O	O	O	O	O
+vanden	I-HOE	O	O	O	O	O	O	O
+Ritmr	B-HOE	O	B-PER	O	O	O	O	O	Ritmr
+Arskin	I-HOE	O	I-PER	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+deselue	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+begonnen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+proffiteren	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+tractement	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	O	O	O	O	O	O	Capiteyn van zyne Compaignie voetknechten
+van	I-HOE	O	O	O	O	O	O	O
+zyne	I-HOE	O	O	O	O	O	O	O
+Compaignie	I-HOE	O	O	O	O	O	O	O
+voetknechten	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

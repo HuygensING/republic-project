@@ -1,0 +1,55 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Hertugh van Saxen
+Hertugh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Saxen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Saxen
+,	O	O	I-PER	O	O	O	O	O
+Frederick	O	O	I-PER	O	O	O	O	O
+Willem	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Meyningen	O	B-LOC	O	O	O	O	O	O	Meyningen
+den	O	O	O	O	O	O	O	O
+sestienden	O	O	O	O	B-DAT	O	O	O	sestienden der voorlede maandt
+der	O	O	O	O	I-DAT	O	O	O
+voorlede	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+antwoordt	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Brief	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+voorschryvens	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+faveur	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Geertruyd	O	O	B-PER	O	O	O	O	O	Geertruyd Gelskercke, Weduwe van wylen den Medicinae Doctor Ernst Regers
+Gelskercke	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe van wylen den Medicinae Doctor Ernst Regers
+van	I-HOE	O	I-PER	O	O	O	O	O
+wylen	B-HOE	O	B-PER	O	O	O	O	O	wylen den Medicinae Doctor
+den	I-HOE	O	I-PER	O	O	O	O	O
+Medicinae	I-HOE	O	I-PER	O	O	O	O	O
+Doctor	I-HOE	O	I-PER	O	O	O	O	O
+Ernst	I-HOE	O	I-PER	O	O	O	O	O
+Regers	I-HOE	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+EE	O	O	O	O	O	O	O	O
+WAAK	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

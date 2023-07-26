@@ -1,0 +1,62 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Palmquist, extraordinaris Envoyé van den Koningh von Sweden
+Palmquist	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Envoyé van den Koningh von Sweden
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Koningh	B-HOE	O	B-PER	O	O	O	O	O	Koningh von Sweden
+von	I-HOE	O	I-PER	O	O	O	O	O
+Sweden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Sweden
+;	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Pasport	O	O	O	O	O	O	O	O
+gratis	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+behoorlijke	O	O	O	O	O	O	O	O
+forma	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheertt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+eynde	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Prince	B-HOE	O	B-PER	O	O	O	O	O	Prince van Birckenfelt, Lieutenant - Generael in Franschen dienst
+van	I-HOE	O	I-PER	O	O	O	O	O
+Birckenfelt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Birckenfelt
+,	I-HOE	O	I-PER	O	O	O	O	O
+Lieutenant	I-HOE	O	I-PER	O	O	O	O	O
+-	I-HOE	O	I-PER	O	O	O	O	O
+Generael	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+Franschen	I-HOE	O	I-PER	O	O	O	O	O
+dienst	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	O	O	O	O	O	O	Heere Prince sijn Vader
+Prince	I-HOE	O	O	O	O	O	O	O
+sijn	I-HOE	O	O	O	O	O	O	O
+Vader	I-HOE	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Birckenfelt	O	B-LOC	O	O	O	O	O	O	Birckenfelt
+sal	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+reysen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

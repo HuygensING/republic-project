@@ -1,0 +1,182 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Godefrie	O	O	B-PER	O	O	O	O	O	Godefrie van Wachtendonck, Agent in de Rijcx Stadt Aeckenhoudende
+van	O	O	I-PER	O	O	O	O	O
+Wachtendonck	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Agent	B-HOE	O	I-PER	O	O	O	O	O	Agent in de Rijcx Stadt Aeckenhoudende
+in	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Rijcx	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rijcx Stadt Aeckenhoudende
+Stadt	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Aeckenhoudende	I-HOE	I-LOC	I-PER	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Magistaet	O	O	O	B-ORG	O	O	O	O	Magistaet
+van	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+Stadt	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+derden	O	O	O	O	B-DAT	O	O	O	derden deses
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+sesten	O	O	O	O	B-DAT	O	O	O	sesten daeraenvolgende
+daeraenvolgende	O	O	O	O	I-DAT	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+wesende	O	O	O	O	O	O	O	O
+responsive	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+derthienden	O	O	O	O	B-DAT	O	O	O	derthienden februarij lestleden
+februarij	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+faveur	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+magistraet	O	O	O	B-ORG	O	O	O	O	magistraet
+affgegaen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+concernerende	O	O	O	O	O	O	O	O
+Abrahaut	O	O	B-PER	O	O	O	O	O	Abrahaut Roelants
+Roelants	O	O	I-PER	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Oock	O	O	O	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer van Asperen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Asperen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Asperen
+als	O	O	I-PER	O	O	O	O	O
+Drossard	B-HOE	O	I-PER	O	O	O	O	O	Drossard ‛s Lants van ‛s hertogenrade
+‛	I-HOE	O	I-PER	O	O	O	O	O
+s	I-HOE	O	I-PER	O	O	O	O	O
+Lants	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+‛	I-HOE	B-LOC	I-PER	O	O	O	O	O	‛s hertogenrade
+s	I-HOE	I-LOC	I-PER	O	O	O	O	O
+hertogenrade	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+partagie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+Staet	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+huijden	O	O	O	O	B-DAT	O	O	O	huijden
+geschreven	O	O	O	O	O	O	O	O
+alhier	O	O	O	O	O	O	O	O
+inden	O	B-LOC	O	O	O	O	O	O	inden Hage
+Hage	O	I-LOC	O	O	O	O	O	O
+sustinerende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+voornoemden	O	O	O	O	O	O	O	O
+Roelandts	O	O	B-PER	O	O	O	O	O	Roelandts, sijnde een Ingeseten ende participant inde Cooperwercken van Vaals
+,	O	O	I-PER	O	O	O	O	O
+sijnde	B-HOE	O	I-PER	O	O	O	O	O	sijnde een Ingeseten ende participant inde Cooperwercken van Vaals
+een	I-HOE	O	I-PER	O	O	O	O	O
+Ingeseten	I-HOE	O	I-PER	O	O	O	O	O
+ende	I-HOE	O	I-PER	O	O	O	O	O
+participant	I-HOE	O	I-PER	O	O	O	O	O
+inde	I-HOE	O	I-PER	O	O	O	O	O
+Cooperwercken	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Vaals	I-HOE	B-LOC	I-PER	O	O	O	O	O	Vaals
+,	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+recht	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+gulde	O	O	O	O	O	O	O	B-NAM	gulde Bulle tot Aacken
+Bulle	O	O	O	O	O	O	O	I-NAM
+tot	O	O	O	O	O	O	O	I-NAM
+Aacken	O	B-LOC	O	O	O	O	O	I-NAM	Aacken
+voorschreve	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+arrestabel	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	B-COM	O	Heeren vander Graeff
+vander	O	O	I-PER	O	O	O	I-COM	O
+Graeff	O	O	I-PER	O	O	O	I-COM	O
+ende	O	O	O	O	O	O	I-COM	O
+andere	O	O	O	O	O	O	I-COM	O
+hare	O	O	O	O	O	O	I-COM	O
+Ho	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Mo	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Gedeputeerden	O	O	O	O	O	O	I-COM	O
+tot	O	O	O	O	O	O	I-COM	O
+de	O	O	O	O	O	O	I-COM	O
+saecken	O	O	O	O	O	O	I-COM	O
+vande	O	O	O	O	O	O	I-COM	O
+Landen	O	O	O	O	O	O	I-COM	O
+van	O	O	O	O	O	O	I-COM	O
+Overmase	O	O	O	O	O	O	I-COM	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+examineren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+retroacta	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+sien	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+alles	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

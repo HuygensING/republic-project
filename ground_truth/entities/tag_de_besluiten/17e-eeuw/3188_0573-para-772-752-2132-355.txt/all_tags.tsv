@@ -1,0 +1,79 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Syn	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+gecompareert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren van Plessen ende Ronsoorf Raetsheren van S. Coe. Mat. van Bohemen
+van	O	O	I-PER	O	O	O	O	O
+Plessen	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+Ronsoorf	O	O	I-PER	O	O	O	O	O
+Raetsheren	B-HOE	O	I-PER	O	O	O	O	O	Raetsheren van S. Coe. Mat. van Bohemen
+van	I-HOE	O	I-PER	O	O	O	O	O
+S	B-HOE	O	B-PER	O	O	O	O	O	S. Coe. Mat. van Bohemen
+.	I-HOE	O	I-PER	O	O	O	O	O
+Coe	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+Mat	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Bohemen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bohemen
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+eerst	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+monde	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+daerne	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+geschrifte	O	O	O	O	O	O	O	O
+ouergegeuen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+propositie	O	O	O	O	O	O	O	O
+hier	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+geinsereert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+neffens	O	O	O	O	O	O	O	O
+geexhibeert	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+eriginale	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Keyser	B-HOE	O	B-PER	O	O	O	O	O	Keyser
+Ferdinand	O	O	I-PER	O	O	O	O	O
+gesn	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+don	O	O	B-PER	O	O	O	O	O	don Baltasir de luniga Raedt van Co van Spaignen
+Baltasir	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+luniga	O	O	I-PER	O	O	O	O	O
+Raedt	B-HOE	O	I-PER	O	O	O	O	O	Raedt van Co van Spaignen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Co	B-HOE	O	B-PER	O	O	O	O	O	Co van Spaignen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Spaignen	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Gedepde. vande Prouintien
+Gedepde	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	I-ORG	O	O	O	O
+vande	O	O	O	I-ORG	O	O	O	O
+Prouintien	O	O	O	I-ORG	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+copie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+Propositie	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

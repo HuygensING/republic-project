@@ -1,0 +1,172 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Capittel	O	O	O	B-ORG	O	O	O	O	Capittel van de Collegiale Kercke van St. Pieter tot Aire
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Collegiale	O	O	O	I-ORG	O	O	O	O
+Kercke	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+St	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	I-ORG	O	O	O	O
+Pieter	O	O	O	I-ORG	O	O	O	O
+tot	O	O	O	I-ORG	O	O	O	O
+Aire	O	B-LOC	O	I-ORG	O	O	O	O	Aire
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Aire	O	B-LOC	O	O	O	O	O	O	Aire
+den	O	O	O	O	O	O	O	O
+achtienden	O	O	O	O	B-DAT	O	O	O	achtienden deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+geallegeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+inlogeringe	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Militiei	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+geëximeert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Copie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Magistraet	B-HOE	O	O	O	O	O	O	O	Magistraet der Stadt Aire
+der	I-HOE	O	O	O	O	O	O	O
+Stadt	I-HOE	B-LOC	O	O	O	O	O	O	Stadt Aire
+Aire	I-HOE	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+selver	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+toekomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+DE	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Gedeputeerden van de Provincie van Utrecht
+Gedeputeerden	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Utrecht	O	O	O	I-ORG	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+geëxhibeert	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+lesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staten van de hoogh- gemelde Provincie hare Principalen
+Staten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+hoogh	O	O	O	I-ORG	O	O	O	O
+-	O	O	O	I-ORG	O	O	O	O
+gemelde	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+hare	O	O	O	I-ORG	O	O	O	O
+Principalen	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+voordragen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Renswoude
+van	I-HOE	O	I-PER	O	O	O	O	O
+Renswoude	I-HOE	B-LOC	I-PER	O	O	O	O	O	Renswoude
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Plenipotentiaris	B-HOE	O	O	O	O	O	O	O	Plenipotentiaris op het aenstaende Congres van Vreede -handelinge tot Utrecht
+op	I-HOE	O	O	O	O	O	O	O
+het	I-HOE	O	O	O	O	O	O	O
+aenstaende	I-HOE	O	O	O	O	O	O	O
+Congres	I-HOE	O	O	B-ORG	O	O	O	O	Congres van Vreede -handelinge tot Utrecht
+van	I-HOE	O	O	I-ORG	O	O	O	O
+Vreede	I-HOE	O	O	I-ORG	O	O	O	O
+-	I-HOE	O	O	I-ORG	O	O	O	O
+handelinge	I-HOE	O	O	I-ORG	O	O	O	O
+tot	I-HOE	O	O	I-ORG	O	O	O	O
+Utrecht	I-HOE	B-LOC	O	I-ORG	O	O	O	O	Utrecht
+,	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+hier	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+geinsereert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Extract	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Resolutien	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Edele	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staten 's Landts van Utrecht
+Staten	O	O	O	I-ORG	O	O	O	O
+'	O	O	O	I-ORG	O	O	O	O
+s	O	O	O	I-ORG	O	O	O	O
+Landts	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Utrecht	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	I-ORG	O	O	O	O
+Martis	O	O	O	O	B-DAT	O	O	O	Martis den 22. December 1711
+den	O	O	O	O	I-DAT	O	O	O
+22	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O
+December	O	O	O	O	I-DAT	O	O	O
+1711	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O

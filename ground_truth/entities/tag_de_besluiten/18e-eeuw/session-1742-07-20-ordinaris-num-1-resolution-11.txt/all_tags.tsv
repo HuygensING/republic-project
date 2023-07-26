@@ -1,0 +1,54 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Collonel	B-HOE	O	B-PER	O	O	O	O	O	Collonel
+van	O	O	I-PER	O	O	O	O	O
+Lynden	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Blitterswyck	O	B-LOC	I-PER	O	O	O	O	O	Blitterswyck
+,	O	O	I-PER	O	O	O	O	O
+Commandeur	B-HOE	O	I-PER	O	O	O	O	O	Commandeur van Steenbergen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Steenbergen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Steenbergen
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+aghtienden	O	O	O	O	B-DAT	O	O	O	aghtienden deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+liaar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+geevende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+vertrek	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Commandement	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+overgeeven	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+van	O	O	I-PER	O	O	O	O	O
+Dyk	O	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+EI	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

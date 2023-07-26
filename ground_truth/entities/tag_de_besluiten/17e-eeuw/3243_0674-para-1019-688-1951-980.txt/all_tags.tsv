@@ -1,0 +1,59 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+eene	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere de Witt, haar ho:mo: Gedepde en Gevolmagde op's Lands Vlote
+de	O	O	I-PER	O	O	O	O	O
+Witt	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar ho:mo: Gedepde en Gevolmagde op's Lands Vlote
+ho	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+mo	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Gedepde	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Gevolmagde	I-HOE	O	I-PER	O	O	O	O	O
+op's	I-HOE	O	I-PER	O	O	O	O	O
+Lands	I-HOE	O	I-PER	O	O	O	O	O
+Vlote	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+in's	O	O	O	O	O	O	O	B-NAM	in's Lands schip de seven Provincien
+Lands	O	O	O	O	O	O	O	I-NAM
+schip	O	O	O	O	O	O	O	I-NAM
+de	O	O	O	O	O	O	O	I-NAM
+seven	O	O	O	O	O	O	O	I-NAM
+Provincien	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+zeijlende	O	O	O	O	O	O	O	O
+omtrent	O	O	O	O	O	O	O	O
+tien	O	B-LOC	O	O	O	O	O	O	tien mijlen west aan 's Gravensande
+mijlen	O	I-LOC	O	O	O	O	O	O
+west	O	I-LOC	O	O	O	O	O	O
+aan	O	I-LOC	O	O	O	O	O	O
+'	O	I-LOC	O	O	O	O	O	O
+s	O	I-LOC	O	O	O	O	O	O
+Gravensande	O	I-LOC	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+13	O	O	O	O	B-DAT	O	O	O	13. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+nevens	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+bijlage	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+Waarop	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

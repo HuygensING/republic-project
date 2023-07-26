@@ -1,0 +1,73 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Deecken	O	O	O	B-ORG	O	O	O	O	Deecken ende Capittel der Collegiale kercke van Servaes tot maestricht
+ende	O	O	O	I-ORG	O	O	O	O
+Capittel	O	O	O	I-ORG	O	O	O	O
+der	O	O	O	I-ORG	O	O	O	O
+Collegiale	O	O	O	I-ORG	O	O	O	O
+kercke	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Servaes	O	O	O	I-ORG	O	O	O	O
+tot	O	O	O	I-ORG	O	O	O	O
+maestricht	O	B-LOC	O	I-ORG	O	O	O	O	maestricht
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+voorschrijvens	O	O	O	O	O	O	O	O
+venBurgemeesteren	B-HOE	O	O	O	O	O	O	O	venBurgemeesteren ende Geswoorens
+ende	I-HOE	O	O	O	O	O	O	O
+Geswoorens	I-HOE	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+deser	O	O	O	O	O	O	O	O
+zijde	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+expeditie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Justitie	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+saecken	O	O	O	O	O	O	O	O
+diesi	O	O	O	O	O	O	O	O
+vertoonders	O	O	O	O	O	O	O	O
+uijtstaende	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+jegens	O	O	O	O	O	O	O	O
+Johan	O	O	B-PER	O	O	O	O	O	Johan Cloot, haren gewesen Rentmeester
+Cloot	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haren	B-HOE	O	I-PER	O	O	O	O	O	haren gewesen Rentmeester
+gewesen	I-HOE	O	I-PER	O	O	O	O	O
+Rentmeester	I-HOE	O	I-PER	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+consenteren	O	O	O	O	O	O	O	O
+int	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+versoeck	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+dienvolgens	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+gerequireerde	O	O	O	O	O	O	O	O
+voorschrijvens	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O

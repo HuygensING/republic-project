@@ -1,0 +1,80 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+OP	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Alefeld
+van	I-HOE	O	I-PER	O	O	O	O	O
+Alefeld	I-HOE	B-LOC	I-PER	O	O	O	O	O	Alefeld
+,	O	O	I-PER	O	O	O	O	O
+Plenipotentiaris	B-HOE	O	I-PER	O	O	O	O	O	Plenipotentiaris van sijne Majesteyt den Koningh van Denemarcken
+van	I-HOE	O	I-PER	O	O	O	O	O
+sijne	B-HOE	O	B-PER	O	O	O	O	O	sijne Majesteyt den Koningh van Denemarcken
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Koningh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Denemarcken	I-HOE	B-LOC	I-PER	O	O	O	O	O	Denemarcken
+.	O	O	O	O	O	O	O	O
+MIE	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Pasport	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+ses	O	O	O	O	O	O	O	O
+Ballots	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+seven	O	O	O	O	O	O	O	O
+Koffers	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+eene	O	O	O	O	O	O	O	O
+Mande	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+behoeve	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Rosenkrans, Minister van hooghstgedachte sijne Majesteyt op het Congres tot Brunswyck
+Rosenkrans	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Minister	B-HOE	O	I-PER	O	O	O	O	O	Minister van hooghstgedachte sijne Majesteyt op het Congres tot Brunswyck
+van	I-HOE	O	I-PER	O	O	O	O	O
+hooghstgedachte	I-HOE	O	I-PER	O	O	O	O	O
+sijne	B-HOE	O	I-PER	O	O	O	O	O	sijne Majesteyt
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+op	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Congres	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Brunswyck	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brunswyck
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Amsterdam	O	B-LOC	O	O	O	O	O	O	Amsterdam
+na	O	O	O	O	O	O	O	O
+Brunswyck	O	B-LOC	O	O	O	O	O	O	Brunswyck
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+uytvoeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vry	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+sonder	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+s	O	O	O	O	O	O	O	O
+Lands	O	O	O	O	O	O	O	O
+gerechtigheydt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

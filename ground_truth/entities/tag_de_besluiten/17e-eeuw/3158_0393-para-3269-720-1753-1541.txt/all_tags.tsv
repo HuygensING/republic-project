@@ -1,0 +1,98 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Die	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Ommelanden	O	B-LOC	O	O	O	O	O	O	Ommelanden
+hebben	O	O	O	O	O	O	O	O
+schriftelyck	O	O	O	O	O	O	O	O
+ouergegeuen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+poincten	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+articulen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+nieuwicherden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+attemptatent	O	O	O	O	O	O	O	O
+gepleeght	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Ingevoert	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Groeningen	O	B-LOC	O	O	O	O	O	O	Groeningen
+tegens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Sententien	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Staten generael
+Staten	O	O	O	I-ORG	O	O	O	O
+generael	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+tractaet	O	O	O	O	O	O	O	B-NAM	tractaet van reductie van Groeningen
+van	O	O	O	O	O	O	O	I-NAM
+reductie	O	O	O	O	O	O	O	I-NAM
+van	O	O	O	O	O	O	O	I-NAM
+Groeningen	O	B-LOC	O	O	O	O	O	I-NAM	Groeningen
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+naelder	O	O	O	O	O	O	O	O
+vnie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+die	O	O	O	B-ORG	O	O	O	O	die van Groeningen
+van	O	O	O	I-ORG	O	O	O	O
+Groeningen	O	B-LOC	O	I-ORG	O	O	O	O	Groeningen
+geconvempneert	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+werdden	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+verhinveringen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+nieuwichenden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+attentaten	O	O	O	O	O	O	O	O
+costeloos	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+schadeloos	O	O	O	O	O	O	O	O
+aff	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+datel	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+repareren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Ende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+dheeren	O	O	O	B-ORG	O	O	O	O	dheeren Staten
+Staten	O	O	O	I-ORG	O	O	O	O
+zulcken	O	O	O	O	O	O	O	O
+orrre	O	O	O	O	O	O	O	O
+zouden	O	O	O	O	O	O	O	O
+willen	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+penael	O	O	O	O	O	O	O	O
+placcaet	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+xen	O	O	O	O	B-DAT	O	O	O	xen Aprilis sesthien, hondert
+Aprilis	O	O	O	O	I-DAT	O	O	O
+sesthien	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	I-DAT	O	O	O
+hondert	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+zulde	O	O	O	O	O	O	O	O
+hen	O	O	O	O	O	O	O	O
+voorder	O	O	O	O	O	O	O	O
+werdde	O	O	O	O	O	O	O	O
+verhindert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

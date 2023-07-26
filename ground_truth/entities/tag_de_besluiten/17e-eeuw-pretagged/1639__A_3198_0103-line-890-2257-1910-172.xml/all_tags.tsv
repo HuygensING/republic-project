@@ -1,0 +1,138 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+resolutien	O	O	O	O	O	O	O	O
+gisteren	O	O	O	O	O	O	O	O
+genomen	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+geresumeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Sijn	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gecompareert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren Doctor Bernhard Swaluwen burgermeester der Stadt Embden
+Doctor	B-HOE	O	I-PER	O	O	O	O	O	Doctor
+Bernhard	O	O	I-PER	O	O	O	O	O
+Swaluwen	O	O	I-PER	O	O	O	O	O
+burgermeester	B-HOE	O	I-PER	O	O	O	O	O	burgermeester der Stadt Embden
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stadt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stadt Embden
+Embden	I-HOE	I-LOC	I-PER	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Henricus	O	O	B-PER	O	O	O	O	O	Henricus Gerardi President des Collegij der veertigen derselver Stadt
+Gerardi	O	O	I-PER	O	O	O	O	O
+President	B-HOE	O	I-PER	O	O	O	O	O	President des Collegij der veertigen derselver Stadt
+des	I-HOE	O	I-PER	O	O	O	O	O
+Collegij	I-HOE	O	I-PER	B-ORG	O	O	O	O	Collegij der veertigen derselver Stadt
+der	I-HOE	O	I-PER	I-ORG	O	O	O	O
+veertigen	I-HOE	O	I-PER	I-ORG	O	O	O	O
+derselver	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Stadt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+cracht	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+derselver	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+credentie	O	O	O	O	O	O	O	O
+dato	O	O	O	O	O	O	O	O
+Embden	O	B-LOC	O	O	O	O	O	O	Embden
+xI	O	O	O	O	B-DAT	O	O	O	xI februarij lestleden
+februarij	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+eerst	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+monde	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+geschrifte	O	O	O	O	O	O	O	O
+overgelevert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+propositie	O	O	O	O	O	O	O	O
+hier	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+geinsereert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoochmog	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+overgenomen	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+lesen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+vervolgens	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+resolveren	O	O	O	O	O	O	O	O
+sulcx	O	O	O	O	O	O	O	O
+zij	O	O	O	O	O	O	O	O
+bevinden	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+behooren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Opde	O	O	O	O	O	O	O	O
+memorie	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+gepresenteert	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+Joost	O	O	B-PER	O	O	O	O	O	Joost Willemsz Miekercke
+Willemsz	O	O	I-PER	O	O	O	O	O
+Miekercke	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+verclaert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Saeck	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+berusten	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+t'officie	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Musch	O	O	I-PER	O	O	O	O	O
+albereijts	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+t'Hoff	O	O	O	B-ORG	O	O	O	O	t'Hoff van Hollandt
+van	O	O	O	I-ORG	O	O	O	O
+Hollandt	O	B-LOC	O	I-ORG	O	O	O	O	Hollandt
+in	O	O	O	O	O	O	O	O
+persoon	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+naem	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O

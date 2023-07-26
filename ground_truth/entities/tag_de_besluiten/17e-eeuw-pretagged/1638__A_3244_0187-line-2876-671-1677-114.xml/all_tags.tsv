@@ -1,0 +1,52 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opde	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Dirck	O	O	B-PER	O	O	O	O	O	Dirck van Steenbergen Geweldige Generael over de Schepen van Oorloch havenende op hellevoet Sluijs
+van	O	O	I-PER	O	O	O	O	O
+Steenbergen	O	O	I-PER	O	O	O	O	O
+Geweldige	B-HOE	O	I-PER	O	O	O	O	O	Geweldige Generael over de Schepen van Oorloch havenende op hellevoet Sluijs
+Generael	I-HOE	O	I-PER	O	O	O	O	O
+over	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Schepen	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Oorloch	I-HOE	O	I-PER	O	O	O	O	O
+havenende	I-HOE	O	I-PER	O	O	O	O	O
+op	I-HOE	O	I-PER	O	O	O	O	O
+hellevoet	I-HOE	B-LOC	I-PER	O	O	O	O	O	hellevoet Sluijs
+Sluijs	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+clagende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hij	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+weet	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+becoomen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+syner	O	O	O	O	O	O	O	O
+orderhebbende	O	O	O	O	O	O	O	O
+Dienaers	B-HOE	O	O	O	O	O	O	O	Dienaers
+Soldien	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Ontfanger	B-HOE	O	B-PER	O	O	O	O	O	Ontfanger Generael
+Generael	I-HOE	O	I-PER	O	O	O	O	O
+Doublet	O	O	I-PER	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gehoort	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

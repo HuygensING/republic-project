@@ -1,0 +1,56 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Staten des furstendams zelre & Graeffschaps Zutphen
+Staten	O	O	O	I-ORG	O	O	O	O
+des	O	O	O	I-ORG	O	O	O	O
+furstendams	O	B-LOC	O	I-ORG	O	O	O	O	furstendams zelre & Graeffschaps Zutphen
+zelre	O	I-LOC	O	I-ORG	O	O	O	O
+&	O	I-LOC	O	I-ORG	O	O	O	O
+Graeffschaps	O	I-LOC	O	I-ORG	O	O	O	O
+Zutphen	O	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+welcke	O	O	O	O	O	O	O	O
+genomineert	O	O	O	O	O	O	O	O
+wort	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer hendrick vander capellen Burgermeester der Stadt zutphen
+hendrick	O	O	I-PER	O	O	O	O	O
+vander	O	O	I-PER	O	O	O	O	O
+capellen	O	O	I-PER	O	O	O	O	O
+Burgermeester	B-HOE	O	I-PER	O	O	O	O	O	Burgermeester der Stadt zutphen
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stadt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stadt zutphen
+zutphen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State dervereenichde Nederlanden
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+dervereenichde	O	O	O	I-ORG	O	O	O	O
+Nederlanden	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+commissie	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+depescheren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selue	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Eedt	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+staende	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

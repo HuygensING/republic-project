@@ -1,0 +1,25 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+qz	O	O	O	O	O	O	O	O
+Ynde	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+getoont	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+geexhibeert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Instructie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	O	O	O	O	O	O	Griffier van haar Hoogh Mogende
+van	I-HOE	O	O	O	O	O	O	O
+haar	I-HOE	O	O	O	O	O	O	O
+Hoogh	I-HOE	O	O	O	O	O	O	O
+Mogende	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+gehouden	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,53 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Gedeputeerde Staten vande provintie van Overijssel
+Gedeputeerde	O	O	O	I-ORG	O	O	O	O
+Staten	O	O	O	I-ORG	O	O	O	O
+vande	O	O	O	I-ORG	O	O	O	O
+provintie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Overijssel	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gegeven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Swoll	O	B-LOC	O	O	O	O	O	O	Swoll
+d	O	O	O	O	O	O	O	O
+twede	O	O	O	O	B-DAT	O	O	O	twede deses stilo loci
+deses	O	O	O	O	I-DAT	O	O	O
+stilo	O	O	O	O	I-DAT	O	O	O
+loci	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+daerbij	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+E	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+hooghgemelte	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+committeren	O	O	O	O	O	O	O	O
+denheere	O	O	O	O	O	O	O	O
+Joan	O	O	B-PER	O	O	O	O	O	Joan henrick Krull Borgermeester der Stadt Swoll
+henrick	O	O	I-PER	O	O	O	O	O
+Krull	O	O	I-PER	O	O	O	O	O
+Borgermeester	B-HOE	O	I-PER	O	O	O	O	O	Borgermeester der Stadt Swoll
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stadt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stadt Swoll
+Swoll	I-HOE	I-LOC	I-PER	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Commissie	O	O	O	O	O	O	O	O
+hier	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+woorde	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+woorde	O	O	O	O	O	O	O	O
+geinsereert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

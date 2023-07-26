@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Gelesen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+concepten	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+missiten	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Syn	B-HOE	O	O	O	O	O	O	O	Syn Extie
+Extie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Gedeputeerde	O	O	O	B-ORG	O	O	O	O	Gedeputeerde vande Staten van Utrecht
+vande	O	O	O	I-ORG	O	O	O	O
+Staten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Utrecht	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Graeff	B-HOE	O	B-PER	O	O	O	O	O	Graeff Willem van Nassau
+Willem	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Nassau	I-HOE	B-LOC	I-PER	O	O	O	O	O	Nassau
+,	O	O	O	O	O	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+vacerende	O	O	O	O	O	O	O	O
+Ritmeesterschap	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Compe	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+heere	O	O	O	O	O	O	O	O
+hertoch	B-HOE	O	B-PER	O	O	O	O	O	hertoch van Brunswyck
+van	I-HOE	O	I-PER	O	O	O	O	O
+Brunswyck	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brunswyck
+hoger	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,54 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Synde	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Jacob	O	O	B-PER	O	O	O	O	O	Jacob Sybrantsz Timmerman
+Sybrantsz	O	O	I-PER	O	O	O	O	O
+Timmerman	B-HOE	O	I-PER	O	O	O	O	O	Timmerman
+cum	O	O	O	O	O	O	O	O
+socys	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+octroy	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+syne	O	O	O	O	O	O	O	O
+nieuwe	O	O	O	O	O	O	O	O
+inventie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+watermolens	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+alvoorens	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+disponeren	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+versoucken	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+commit	O	O	O	O	O	O	O	O
+„	O	O	O	O	O	O	O	O
+teren	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Brunincx
+Brunincx	O	O	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+inventie	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+examineren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

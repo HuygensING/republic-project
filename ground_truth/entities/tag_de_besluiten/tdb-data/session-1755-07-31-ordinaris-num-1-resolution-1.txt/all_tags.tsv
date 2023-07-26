@@ -1,0 +1,90 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Burmania
+van	I-HOE	O	I-PER	O	O	O	O	O
+Burmania	I-HOE	B-LOC	I-PER	O	O	O	O	O	Burmania
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoogh Mogende extraordinaris Envoyé aan het Hof van haare Keyserlijcke Majestevten
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van haare Keyserlijcke Majestevten
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+haare	B-HOE	O	B-PER	I-ORG	O	O	O	O	haare Keyserlijcke Majestevten
+Keyserlijcke	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Majestevten	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Weenen	O	B-LOC	O	O	O	O	O	O	Weenen
+den	O	O	O	O	O	O	O	O
+sestienden	O	O	O	O	B-DAT	O	O	O	sestienden deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+verder	O	O	O	O	O	O	O	O
+gepasseerde	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+aangewende	O	O	O	O	O	O	O	O
+devoiren	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+saack	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Koopman	B-HOE	O	B-PER	O	O	O	O	O	Koopman
+Fiotard	O	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Ih	O	O	O	O	O	O	O	O
+)	O	O	O	O	O	O	O	O
+VWAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Gedeputeerden van de Provincie van Holland en Westvriesland
+Gedeputeerden	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Holland	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+Westvriesland	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreeve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+copielijck	O	O	O	O	O	O	O	O
+overgenoomen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+haaren	O	O	O	O	O	O	O	O
+breeder	O	O	O	O	O	O	O	O
+gecommuniceert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
