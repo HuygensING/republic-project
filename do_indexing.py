@@ -6,6 +6,11 @@ import os
 import time
 from typing import Dict, Union
 
+
+import sys
+
+sys.path.append('/data/republic/site-packages')
+
 from elasticsearch.exceptions import ElasticsearchException
 # from elasticsearch.exceptions import TransportError
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
