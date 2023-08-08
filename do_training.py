@@ -14,7 +14,7 @@ ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES'}
 def train_entity_tagger(layer_name: str, train_size: float = 1.0, hidden_size=256,
                         model_max_length=512, learning_rate: float = 0.05,
                         mini_batch_size: int = 32, max_epochs: int = 10):
-    logging.basicConfig(filename='training_ner.log', encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(filename='training_ner.log', level=logging.DEBUG)
     trainer = prep_training(layer_name, train_size, hidden_size, model_max_length)
     train(trainer, layer_name, train_size, learning_rate=learning_rate,
           mini_batch_size=mini_batch_size, max_epochs=max_epochs)
@@ -24,7 +24,7 @@ def train_language_model(para_dir: str, corpus_dir: str, is_forward_lm: bool = T
                          character_level: bool = True, hidden_size=256,
                          sequence_length=512, nlayers: int = 1,
                          mini_batch_size: int = 32, max_epochs: int = 10):
-    logging.basicConfig(filename='training_lm.log', encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(filename='training_lm.log', level=logging.DEBUG)
     para_files = read_para_files(para_dir)
     para_reader = ParaReader(para_files, ignorecase=False)
     make_train_test_split(corpus_dir, para_reader=para_reader)
@@ -67,7 +67,8 @@ def parse_args():
         return layers, train_size, learing_rate, mini_batch_size, max_epochs, train_type
     except getopt.GetoptError:
         # Print something useful
-        print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
+        print('usage: do_training.py --type <ner|lm>')
+        raise
         sys.exit(2)
 
 

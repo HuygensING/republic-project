@@ -1,4 +1,3 @@
-import datetime
 import os.path
 
 from flair.data import Corpus
@@ -7,12 +6,13 @@ from flair.embeddings import WordEmbeddings, StackedEmbeddings, CharLMEmbeddings
 from flair.embeddings import TransformerWordEmbeddings
 from flair.models import SequenceTagger
 from flair.trainers import ModelTrainer
+from transformers import RobertaForMaskedLM
 
 from republic.helper.utils import get_project_dir
 
 
 def prep_corpus(project_dir: str, layer_name: str, train_size: float):
-    data_dir = f'{project_dir}/ground_truth/entities/tag_de_besluiten/flair_training_{layer_name}'
+    data_dir = f'{project_dir}/ground_truth/entities/flair_training-17th_18th/flair_training_17th_18th_{layer_name}'
     assert os.path.exists(data_dir), f"the data directory {data_dir} doesn't exist"
     train_file = os.path.join(data_dir, f'train_{train_size}.txt')
     test_file = os.path.join(data_dir, 'test.txt')
@@ -30,6 +30,11 @@ def prep_corpus(project_dir: str, layer_name: str, train_size: float):
 
 
 def prep_embeddings(flair_dir: str, model_max_length: int):
+    # resolution_bert = RobertaForMaskedLM.from_pretrained('data/models/resolution_bert')
+    resolution_bert = TransformerWordEmbeddings('data/models/resolution_bert',
+                                                layers='-1',
+                                                allow_long_sentences=False,
+                                                model_max_length=model_max_length)
     gysbert_embeddings = TransformerWordEmbeddings('emanjavacas/GysBERT',
                                                    layers="-1",
                                                    allow_long_sentences=False,
@@ -39,6 +44,7 @@ def prep_embeddings(flair_dir: str, model_max_length: int):
         FlairEmbeddings(f'{flair_dir}/resources/taggers/language_model_fw_char/best-lm.pt'),
         # WordEmbeddings(''),
         # CharacterEmbeddings(),
+        resolution_bert,
         gysbert_embeddings
     ]
 
