@@ -1,0 +1,41 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Amanuensis	O	O	B-PER	O	O	O	O	O	Amanuensis van haer Hoogh Mogende Gecommitteerden - Hulft
+van	O	O	I-PER	O	O	O	O	O
+haer	O	O	I-PER	O	O	O	O	O
+Hoogh	O	O	I-PER	O	O	O	O	O
+Mogende	O	O	I-PER	O	O	O	O	O
+Gecommitteerden	O	O	I-PER	O	O	O	O	O
+-	O	O	I-PER	O	O	O	O	O
+Hulft	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Brussel	O	B-LOC	O	O	O	O	O	O	Brussel
+den	O	O	O	O	O	O	O	O
+18	O	O	O	O	B-DAT	O	O	O	18. deser loopende maendt
+.	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

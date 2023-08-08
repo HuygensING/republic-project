@@ -1,0 +1,47 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opte	O	O	O	O	O	O	O	O
+reqte	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Dor	O	O	B-PER	O	O	O	O	O	Dor. Henrick Vos van Kellendonck
+.	O	O	I-PER	O	O	O	O	O
+Henrick	O	O	I-PER	O	O	O	O	O
+Vos	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Kellendonck	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vsoecken	O	O	O	O	O	O	O	O
+continuatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+tractement	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+geappt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Sy	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Rade	O	O	O	B-ORG	O	O	O	O	Rade van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Vstaen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+E	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+daerna	O	O	O	O	O	O	O	O
+geresolveert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+behooren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

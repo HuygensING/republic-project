@@ -60,3 +60,18 @@ def get_inventory_by_date(date: Union[str, RepublicDate]) -> dict:
             if inv_start <= date <= inv_end:
                 return inventory
     raise ValueError(f"Cannot find inventory for date {date}")
+
+
+def get_inventory_text_type(inventory_id: str):
+    inv_num = inventory_id.split('_')[-1]
+    if inv_num.isdigit():
+        inv_num = int(inv_num)
+        if 3760 <= inv_num < 3805:
+            text_type = 'printed_early'
+        elif 3806 <= inv_num <= 3864:
+            text_type = 'printed_late'
+        else:
+            text_type = 'handwritten'
+    else:
+        text_type = 'handwritten'
+    return text_type

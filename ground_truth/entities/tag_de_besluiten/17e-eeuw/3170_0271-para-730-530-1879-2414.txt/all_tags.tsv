@@ -1,0 +1,145 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Alsoo	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Princesse	B-HOE	O	O	O	O	O	O	O	Princesse Cheurfurstinne
+Cheurfurstinne	I-HOE	O	O	O	O	O	O	O
+onderwegen	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Rotterdam	O	B-LOC	O	O	O	O	O	O	Rotterdam
+herwaerts	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+geaduyseert	O	O	O	O	O	O	O	O
+hoe	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+mette	O	O	O	O	O	O	O	O
+eere	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+reputatie	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verdragen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+t'samen	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+gaen	O	O	O	O	O	O	O	O
+int	O	O	O	O	O	O	O	O
+hoff	O	O	O	B-ORG	O	O	O	O	hoff van My Vrouwe de Princesse van Orangien
+van	O	O	O	I-ORG	O	O	O	O
+My	B-HOE	O	B-PER	I-ORG	O	O	O	O	My Vrouwe de Princesse van Orangien
+Vrouwe	I-HOE	O	I-PER	I-ORG	O	O	O	O
+de	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Princesse	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Orangien	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Orangien
+alwaer	O	O	O	O	O	O	O	O
+haere	O	O	O	O	O	O	O	O
+hoocheden	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+logeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+deselue	O	O	O	O	O	O	O	O
+Princesse	O	O	O	O	O	O	O	O
+opte	O	O	O	O	O	O	O	O
+plaetsse	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+verwillecommen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+heere	B-HOE	O	B-PER	O	O	O	O	O	heere van Brederode
+van	I-HOE	O	I-PER	O	O	O	O	O
+Brederode	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brederode
+het	O	O	O	O	O	O	O	O
+woort	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+voeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+d'heere	B-HOE	O	O	O	O	O	O	O	d'heere Aduocaet van Hollant
+Aduocaet	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+Hollant	I-HOE	O	O	O	O	O	O	O
+syne	O	O	O	O	O	O	O	O
+L	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+seconderen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+alsoe	O	O	O	O	O	O	O	O
+haere	O	O	O	O	O	O	O	O
+hoocheyde	O	O	O	O	O	O	O	O
+my	B-HOE	O	B-PER	O	O	O	O	O	my vrouwe de Princesse, van Oraingien
+vrouwe	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Princesse	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Oraingien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Oraingien
+ouerleueren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+Camere	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+gemack	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+brengen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+waertoe	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+heere	B-HOE	O	B-PER	O	O	O	O	O	heere van Brederode
+van	I-HOE	O	I-PER	O	O	O	O	O
+Brederode	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brederode
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+heer	B-HOE	O	O	O	O	O	O	O	heer Aduocaet
+Aduocaet	I-HOE	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+oick	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+conuoyeren	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+hoocheyt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+clocke	O	O	O	O	O	O	O	O
+vyff	O	O	O	O	O	O	O	O
+vren	O	O	O	O	O	O	O	O
+inne	O	O	O	O	O	O	O	O
+„	O	O	O	O	O	O	O	O
+gecommen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Ende	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+oick	O	O	O	O	O	O	O	O
+geschiet	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorscreuen	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

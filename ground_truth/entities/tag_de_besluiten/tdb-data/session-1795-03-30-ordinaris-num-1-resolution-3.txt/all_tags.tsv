@@ -1,0 +1,91 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Provisioneele	O	O	O	B-ORG	O	O	O	O	Provisioneele Vertegenwoordigers van bet Volk van Gelderland
+Vertegenwoordigers	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+bet	O	O	O	I-ORG	O	O	O	O
+Volk	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Gelderland	O	B-LOC	O	I-ORG	O	O	O	O	Gelderland
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Arnhem	O	B-LOC	O	O	O	O	O	O	Arnhem
+den	O	O	O	O	O	O	O	O
+27	O	O	O	O	B-DAT	O	O	O	27 deezer loopende maand
+deezer	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+extraordinaris	B-HOE	O	O	O	O	O	O	O	extraordinaris Gecommitteerde ter Vergaderinge van haar Hoog Mog
+Gecommitteerde	I-HOE	O	O	O	O	O	O	O
+ter	I-HOE	O	O	O	O	O	O	O
+Vergaderinge	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+haar	I-HOE	O	O	O	O	O	O	O
+Hoog	I-HOE	O	O	O	O	O	O	O
+Mog	I-HOE	O	O	O	O	O	O	O
+.	I-HOE	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+committeeren	O	O	O	O	O	O	O	O
+den	B-HOE	O	B-PER	O	O	O	O	O	den Burger
+Burger	I-HOE	O	I-PER	O	O	O	O	O
+F	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+N	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+Roeber	O	O	I-PER	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+verzoekende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+dezelve	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+qualiteit	O	O	O	O	O	O	O	O
+mogt	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+erkend	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+verklaart	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Burger	B-HOE	O	B-PER	O	O	O	O	O	Burger
+Roeber	O	O	I-PER	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+aangenaam	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+zelven	O	O	O	O	O	O	O	O
+verwelkomt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+dienvolgende	O	O	O	O	O	O	O	O
+sessie	O	O	O	O	O	O	O	O
+genomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

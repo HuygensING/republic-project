@@ -1,0 +1,50 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Die	O	O	O	O	O	O	O	O
+Gedeputeerde	O	O	O	B-ORG	O	O	O	O	Gedeputeerde van Zeelandt
+van	O	O	O	I-ORG	O	O	O	O
+Zeelandt	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+rapporteren	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+zjn	B-HOE	O	O	O	O	O	O	O	zjn Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+vreden	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+dheer	B-HOE	O	B-PER	O	O	O	O	O	dheer van Malderee
+van	I-HOE	O	I-PER	O	O	O	O	O
+Malderee	I-HOE	B-LOC	I-PER	O	O	O	O	O	Malderee
+hem	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Legatie	O	O	O	B-ORG	O	O	O	O	Legatie naer Engelandt
+naer	O	O	O	I-ORG	O	O	O	O
+Engelandt	O	B-LOC	O	I-ORG	O	O	O	O	Engelandt
+emploijere	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+welcken	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+d'heeren	O	O	O	B-ORG	O	O	O	O	d'heeren Staten generael
+Staten	O	O	O	I-ORG	O	O	O	O
+generael	O	O	O	I-ORG	O	O	O	O
+zjne	O	O	O	O	O	O	O	O
+nominatie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+aengenomen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+geconsenteert	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Instructie	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+brieuen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+credentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

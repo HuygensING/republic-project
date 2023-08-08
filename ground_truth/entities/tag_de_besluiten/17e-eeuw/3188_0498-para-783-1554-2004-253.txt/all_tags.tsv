@@ -1,0 +1,37 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Borgermrs	B-HOE	O	O	O	O	O	O	O	Borgermrs Schepenen ende Raet der Stede Hattum
+Schepenen	I-HOE	O	O	O	O	O	O	O
+ende	I-HOE	O	O	O	O	O	O	O
+Raet	I-HOE	O	O	O	O	O	O	O
+der	I-HOE	O	O	O	O	O	O	O
+Stede	I-HOE	B-LOC	O	O	O	O	O	O	Stede Hattum
+Hattum	I-HOE	I-LOC	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+14e	O	O	O	O	B-DAT	O	O	O	14e. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+neffens	O	O	O	O	O	O	O	O
+dien	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+corte	O	O	O	O	O	O	O	O
+deductie	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+gelegentheyt	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+Stadt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

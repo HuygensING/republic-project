@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Hamel Bruyninx, haer Hoogh Mogen de extraordinaris Envoyé aen het Hof van den Keyser
+Hamel	O	O	I-PER	O	O	O	O	O
+Bruyninx	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Hoogh Mogen de extraordinaris Envoyé aen het Hof van den Keyser
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogen	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aen	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van den Keyser
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Keyser	B-HOE	O	I-PER	I-ORG	O	O	O	O	Keyser
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Weenen	O	B-LOC	O	O	O	O	O	O	Weenen
+den	O	O	O	O	O	O	O	O
+seven	O	O	O	O	B-DAT	O	O	O	seven en twintighsten der voorlede maendt
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+der	O	O	O	O	I-DAT	O	O	O
+voorlede	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

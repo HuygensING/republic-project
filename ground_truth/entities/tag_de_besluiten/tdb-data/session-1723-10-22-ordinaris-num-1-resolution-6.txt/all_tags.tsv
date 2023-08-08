@@ -1,0 +1,113 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Resident	B-HOE	O	B-PER	O	O	O	O	O	Resident
+Bilderbeeck	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Keulen	O	B-LOC	O	O	O	O	O	O	Keulen
+den	O	O	O	O	O	O	O	O
+negentienden	O	O	O	O	B-DAT	O	O	O	negentienden deser loopende maandt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+DE	O	O	O	O	O	O	O	O
+Heeren	O	O	O	O	O	O	O	O
+Gxdeputeerden	O	O	O	B-ORG	O	O	O	O	Gxdeputeerden van de Provincie van Gelderlandt
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Gelderlandt	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+geëxhibeert	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+lesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staten van hooghgemelde Provincie hare Principalen
+Staten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+hooghgemelde	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+hare	O	O	O	I-ORG	O	O	O	O
+Principalen	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	I-ORG	O	O	O	O
+raackende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+nomineeren	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Hendrick Hop
+Hendrick	O	O	I-PER	O	O	O	O	O
+Hop	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+extraordinaris	B-HOE	O	O	O	O	O	O	O	extraordinaris Envoyé naar het Hof van den Koningh van Groot-Brittannien
+Envoyé	I-HOE	O	O	O	O	O	O	O
+naar	I-HOE	O	O	O	O	O	O	O
+het	I-HOE	O	O	O	O	O	O	O
+Hof	I-HOE	O	O	B-ORG	O	O	O	O	Hof van den Koningh van Groot-Brittannien
+van	I-HOE	O	O	I-ORG	O	O	O	O
+den	I-HOE	O	O	I-ORG	O	O	O	O
+Koningh	B-HOE	O	B-PER	I-ORG	O	O	O	O	Koningh van Groot-Brittannien
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Groot-Brittannien	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Groot-Brittannien
+;	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+hier	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+geinsereert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Extract	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+ver	O	O	O	O	O	O	O	O
+volgh	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Reces	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Landtdagh	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+September	O	O	O	O	B-DAT	O	O	O	September ende October 1723
+ende	O	O	O	O	I-DAT	O	O	O
+October	O	O	O	O	I-DAT	O	O	O
+1723	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	O	O	O	O
+ordinarie	O	O	O	O	O	O	O	O
+binnen	O	O	O	O	O	O	O	O
+Zutphen	O	B-LOC	O	O	O	O	O	O	Zutphen
+gehouden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Mercurii	O	O	O	O	B-DAT	O	O	O	Mercurii den 13. October 1723
+den	O	O	O	O	I-DAT	O	O	O
+13	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O
+October	O	O	O	O	I-DAT	O	O	O
+1723	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O

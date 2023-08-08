@@ -1,0 +1,81 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+gecompareert	O	O	O	O	O	O	O	O
+Gillis	O	O	B-PER	O	O	O	O	O	Gillis van Exsel affgesonden van Grootforst van Mosconien
+van	O	O	I-PER	O	O	O	O	O
+Exsel	O	O	I-PER	O	O	O	O	O
+affgesonden	B-HOE	O	I-PER	O	O	O	O	O	affgesonden van Grootforst van Mosconien
+van	I-HOE	O	I-PER	O	O	O	O	O
+Grootforst	B-HOE	O	B-PER	O	O	O	O	O	Grootforst van Mosconien
+van	I-HOE	O	I-PER	O	O	O	O	O
+Mosconien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Mosconien
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+ouergelevert	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+selffden	O	O	O	O	O	O	O	O
+Grootfurst	B-HOE	O	O	O	O	O	O	O	Grootfurst
+gescreuen	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+mescouische	O	O	O	O	O	O	O	O
+tale	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	B-HOE	O	O	O	O	O	O	O	heeren Burgermrs der Stede Amster dam
+Burgermrs	I-HOE	O	O	O	O	O	O	O
+der	I-HOE	O	O	O	O	O	O	O
+Stede	I-HOE	B-LOC	O	O	O	O	O	O	Stede Amster dam
+Amster	I-HOE	I-LOC	O	O	O	O	O	O
+dam	I-HOE	I-LOC	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+deselue	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+translateren	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ouersetven	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Nederlantse	O	O	O	O	O	O	O	O
+tate	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+t'selfde	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+originelen	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+rugge	O	O	O	O	O	O	O	O
+stuijren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

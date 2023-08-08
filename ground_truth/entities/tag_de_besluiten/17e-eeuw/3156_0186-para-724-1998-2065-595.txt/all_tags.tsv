@@ -1,0 +1,36 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opte	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Heindrick	O	O	B-PER	O	O	O	O	O	Heindrick Loduwicx van Haestens borger ende Bouckdrucker tot Leyden
+Loduwicx	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Haestens	O	O	I-PER	O	O	O	O	O
+borger	B-HOE	O	I-PER	O	O	O	O	O	borger ende Bouckdrucker tot Leyden
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Bouckdrucker	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Leyden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Leyden
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+Octroy	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+moegen	O	O	O	O	O	O	O	O
+drucken	O	O	O	O	O	O	O	O
+seecker	O	O	O	O	O	O	O	B-NAM	seecker boucxken, geintiuleert oudt Batavien ofte nyeuw Hollandt
+boucxken	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	I-NAM
+geintiuleert	O	O	O	O	O	O	O	I-NAM
+oudt	O	O	O	O	O	O	O	I-NAM
+Batavien	O	O	O	O	O	O	O	I-NAM
+ofte	O	O	O	O	O	O	O	I-NAM
+nyeuw	O	O	O	O	O	O	O	I-NAM
+Hollandt	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+tvoors	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+versoeck	O	O	O	O	O	O	O	O
+affgeslagen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

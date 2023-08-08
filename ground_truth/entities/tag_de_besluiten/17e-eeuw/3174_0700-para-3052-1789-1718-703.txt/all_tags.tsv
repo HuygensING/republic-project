@@ -1,0 +1,49 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Baillieu	B-HOE	O	O	O	O	O	O	O	Baillieu, Borgermres, ende Schepenen der Steden, ende Ambachten van Axel ende Neusen in Vlaensderen
+,	I-HOE	O	O	O	O	O	O	O
+Borgermres	I-HOE	O	O	O	O	O	O	O
+,	I-HOE	O	O	O	O	O	O	O
+ende	I-HOE	O	O	O	O	O	O	O
+Schepenen	I-HOE	O	O	O	O	O	O	O
+der	I-HOE	O	O	O	O	O	O	O
+Steden	I-HOE	B-LOC	O	O	O	O	O	O	Steden, ende Ambachten van Axel ende Neusen in Vlaensderen
+,	I-HOE	I-LOC	O	O	O	O	O	O
+ende	I-HOE	I-LOC	O	O	O	O	O	O
+Ambachten	I-HOE	I-LOC	O	O	O	O	O	O
+van	I-HOE	I-LOC	O	O	O	O	O	O
+Axel	I-HOE	I-LOC	O	O	O	O	O	O
+ende	I-HOE	I-LOC	O	O	O	O	O	O
+Neusen	I-HOE	I-LOC	O	O	O	O	O	O
+in	I-HOE	I-LOC	O	O	O	O	O	O
+Vlaensderen	I-HOE	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Maer	O	O	O	O	O	O	O	O
+goet	O	O	O	O	O	O	O	O
+„	O	O	O	O	O	O	O	O
+gevonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+alvooren	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+disponeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daerop	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+hooren	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Bergermre	B-HOE	O	B-PER	O	O	O	O	O	Bergermre
+Cserliypens	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+weeten	O	O	O	O	O	O	O	O
+oft	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+landt	O	O	O	O	O	O	O	O
+bedyckt	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

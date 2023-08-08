@@ -1,0 +1,13 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Die	O	O	O	B-ORG	O	O	O	O	Die van vuytrecht
+van	O	O	O	I-ORG	O	O	O	O
+vuytrecht	O	O	O	I-ORG	O	O	O	O
+persisteerden	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+heure	O	O	O	O	O	O	O	O
+voergaende	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+aengaende	O	O	O	O	O	O	O	O
+gewt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

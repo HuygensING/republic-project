@@ -1,0 +1,143 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+syn	B-HOE	O	O	O	O	O	O	O	syn Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+t'leger	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+s'Hertogenbosch	O	B-LOC	O	O	O	O	O	O	s'Hertogenbosch
+den	O	O	O	O	O	O	O	O
+26e	O	O	O	O	B-DAT	O	O	O	26e. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe wijlen Ediwaert vere in syn leven Lieutenant Colonnel van heer horatio veer
+wijlen	B-HOE	O	B-PER	O	O	O	O	O	wijlen
+Ediwaert	I-HOE	O	I-PER	O	O	O	O	O
+vere	I-HOE	O	I-PER	O	O	O	O	O
+in	B-HOE	O	I-PER	O	O	O	O	O	in syn leven Lieutenant Colonnel van heer horatio veer
+syn	I-HOE	O	I-PER	O	O	O	O	O
+leven	I-HOE	O	I-PER	O	O	O	O	O
+Lieutenant	B-HOE	O	I-PER	O	O	O	O	O	Lieutenant Colonnel van heer horatio veer
+Colonnel	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+heer	I-HOE	O	B-PER	O	O	O	O	O	heer horatio veer
+horatio	I-HOE	O	I-PER	O	O	O	O	O
+veer	I-HOE	O	I-PER	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+believen	O	O	O	O	O	O	O	O
+toe	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+leggen	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+kinderen	B-HOE	O	O	O	O	O	O	O	kinderen
+eenich	O	O	O	O	O	O	O	O
+onderhout	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe
+voor	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+persoone	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+meubelen	O	O	O	O	O	O	O	O
+vergunnen	O	O	O	O	O	O	O	O
+seureté	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+buyten	O	O	O	O	O	O	O	O
+arrest	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haere	O	O	O	O	O	O	O	O
+crediteuren	B-HOE	O	O	O	O	O	O	O	crediteuren
+te	O	O	O	O	O	O	O	O
+blyven	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorn	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe
+met	O	O	O	O	O	O	O	O
+haere	B-HOE	O	O	O	O	O	O	O	haere kinderen
+kinderen	I-HOE	O	O	O	O	O	O	O
+toegeleyt	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+maent	O	O	O	O	O	O	O	O
+gagie	O	O	O	O	O	O	O	O
+boven	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+maent	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Lieutenant	B-HOE	O	O	O	O	O	O	O	Lieutenant colonel
+colonel	I-HOE	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gestorven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+wat	O	O	O	O	O	O	O	O
+belanct	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+versochte	O	O	O	O	O	O	O	O
+seurete	O	O	O	O	O	O	O	O
+verclaren	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorn	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe
+in	O	O	O	O	O	O	O	O
+conformité	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+d'ordre	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t'lant	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+t'addresseren	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Provincie	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+laets	O	O	O	O	O	O	O	O
+domicilie	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+gehouden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+verhoopende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+contentement	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+wedervaeren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

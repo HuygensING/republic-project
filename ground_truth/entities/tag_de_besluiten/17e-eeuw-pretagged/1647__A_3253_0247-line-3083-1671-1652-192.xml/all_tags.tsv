@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Pieter	O	O	B-PER	O	O	O	O	O	Pieter de Wint, Brouwer ende — Schepen op t' Zas van Gent
+de	O	O	I-PER	O	O	O	O	O
+Wint	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Brouwer	B-HOE	O	I-PER	O	O	O	O	O	Brouwer ende — Schepen op t' Zas van Gent
+ende	I-HOE	O	I-PER	O	O	O	O	O
+—	I-HOE	O	I-PER	O	O	O	O	O
+Schepen	I-HOE	O	I-PER	O	O	O	O	O
+op	I-HOE	O	I-PER	O	O	O	O	O
+t	I-HOE	B-LOC	I-PER	O	O	O	O	O	t' Zas van Gent
+'	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Zas	I-HOE	I-LOC	I-PER	O	O	O	O	O
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Gent	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+erigeren	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+rosmolen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+adviseren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

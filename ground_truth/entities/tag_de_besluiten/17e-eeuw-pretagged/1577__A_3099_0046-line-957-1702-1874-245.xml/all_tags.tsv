@@ -1,0 +1,23 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Les	O	O	O	O	O	O	O	O
+arles	O	O	O	O	O	O	O	O
+et	O	O	O	O	O	O	O	O
+conditions	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+la	O	O	O	O	O	O	O	O
+reteption	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+lirchiducq	B-HOE	O	B-PER	O	O	O	O	O	lirchiducq
+Maltthias	O	O	I-PER	O	O	O	O	O
+au	O	O	O	O	O	O	O	O
+Gouuernement	O	O	O	B-ORG	O	O	O	O	Gouuernement General des Pays
+General	O	O	O	I-ORG	O	O	O	O
+des	O	O	O	I-ORG	O	O	O	O
+Pays	O	O	O	I-ORG	O	O	O	O
+sont	O	O	O	O	O	O	O	O
+arrestez	O	O	O	O	O	O	O	O
+comme	O	O	O	O	O	O	O	O
+Sappert	O	O	O	O	O	O	O	O
+par	O	O	O	O	O	O	O	O
+lescript	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

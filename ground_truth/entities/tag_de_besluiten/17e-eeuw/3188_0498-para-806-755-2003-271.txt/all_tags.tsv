@@ -1,0 +1,40 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+rescriptie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Gedeputeerde Staten van Vrieslant
+Gedeputeerde	O	O	O	I-ORG	O	O	O	O
+Staten	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Vrieslant	O	O	O	I-ORG	O	O	O	O
+in	O	O	O	O	O	O	O	O
+dato	O	O	O	O	O	O	O	O
+15e	O	O	O	O	B-DAT	O	O	O	15e. deses ouden styls
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+ouden	O	O	O	O	I-DAT	O	O	O
+styls	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+missiven	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+19e	O	O	O	O	B-DAT	O	O	O	19e ende 21e. deses nieuwen styls
+ende	O	O	O	O	I-DAT	O	O	O
+21e	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+nieuwen	O	O	O	O	I-DAT	O	O	O
+styls	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

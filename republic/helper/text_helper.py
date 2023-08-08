@@ -1,4 +1,4 @@
-from typing import Dict, List, Set, Union
+from typing import Callable, Dict, List, Set, Union
 from collections import Counter, defaultdict
 import json
 import os
@@ -9,6 +9,8 @@ import unicodedata
 import math
 
 from fuzzy_search.tokenization.string import text2skipgrams
+from fuzzy_search.tokenization.token import Doc
+from fuzzy_search.tokenization.token import Tokenizer
 from nltk.tokenize import sent_tokenize
 import pagexml.model.physical_document_model as pdm
 
@@ -24,8 +26,12 @@ class ResolutionSentences:
                  include_punct: bool = False,
                  split_pattern: str = None,
                  tokenise_sentences: bool = False,
-                 includes_headers: bool = True
-                 ):
+                 includes_headers: bool = True,
+                 use_headers: List[str] = None,
+                 pre_tokenise_func: Callable = None,
+                 pre_tokenise_field: str = None,
+                 as_doc: bool = True,
+                 debug: int = 0):
         self.res_files = res_files if isinstance(res_files, list) else [res_files]
         self.lowercase = lowercase
         if fields not in ['text', 'all']:
@@ -37,6 +43,12 @@ class ResolutionSentences:
         self.include_punct = include_punct
         self.tokenise_sentences = tokenise_sentences
         self.includes_headers = includes_headers
+        self.use_headers = use_headers
+        self.pre_tokenise_func = pre_tokenise_func
+        self.pre_tokenise_field = pre_tokenise_field
+        self.as_doc = as_doc
+        self.doc_tokenize = Tokenizer(ignorecase=lowercase)
+        self.debug = debug
         if split_pattern is None:
             # by default use all characters from string.punctuation, except
             # the hyphen, as we want to keep hyphenated words as one.
@@ -46,33 +58,49 @@ class ResolutionSentences:
 
     def __iter__(self):
         if self.tokenise_sentences:
-            print('using sentencesn as document level')
+            if self.debug > 0:
+                print('using sentences as document level')
             reader = self.read_sentences()
         else:
-            print('using paragraphs as document level')
+            if self.debug > 0:
+                print('using paragraphs as document level')
             reader = self.read_paragraphs()
-        for si, doc in enumerate(reader):
-            if self.to_ascii:
-                doc['text'] = unicode_to_ascii(doc['text'])
-            doc['words'] = self.word_tokenize(doc['text'])
-            if self.normalise or self.rewrite_dict:
-                # print('rewriting')
-                doc['words'] = [self.rewrite_word(word) for word in doc['words']]
-            if self.fields == 'text':
-                yield doc['words']
-            else:
+        if self.as_doc is True:
+            for doc in reader:
+                id_field = 'resolution_id' if 'resolution_id' in doc else 'res_id'
+                metadata = {field: doc[field] for field in doc if field not in {'text', id_field}}
+                doc = self.doc_tokenize.tokenize(doc['text'], doc[id_field])
+                doc.metadata = metadata
                 yield doc
+        else:
+            for doc in reader:
+                yield self.dict_tokenize(doc)
+
+    def dict_tokenize(self, doc):
+        if self.to_ascii:
+            doc['text'] = unicode_to_ascii(doc['text'])
+        doc['words'] = self.word_tokenize(doc['text'])
+        if self.normalise or self.rewrite_dict:
+            # print('rewriting')
+            doc['words'] = [self.rewrite_word(word) for word in doc['words']]
+        if self.fields == 'text':
+            return doc['words']
+        else:
+            return doc
 
     def word_tokenize(self, sent):
         sent = sent.lower() if self.lowercase else sent
         return [word for word in re.split(self.split_regex, sent.strip()) if word != '']
 
     def read_paragraphs(self):
-        for para in read_resolution_paragraphs(self.res_files, includes_header=self.includes_headers):
+        for para in read_resolution_paragraphs(self.res_files, includes_headers=self.includes_headers,
+                                               headers=self.use_headers, pre_tokenise_func=self.pre_tokenise_func,
+                                               pre_tokenise_field=self.pre_tokenise_field):
             yield para
 
     def read_sentences(self):
-        for para in read_resolution_paragraphs(self.res_files):
+        for para in read_resolution_paragraphs(self.res_files, pre_tokenise_func=self.pre_tokenise_func,
+                                               pre_tokenise_field=self.pre_tokenise_field):
             for si, sent in enumerate(sent_tokenize(para['text'])):
                 if self.to_ascii:
                     yield sent
@@ -594,22 +622,43 @@ def sent_to_vocab(sents: List[List[str]], min_freq: int = 5):
     return [word for word, freq in vocab.most_common() if freq >= min_freq]
 
 
-def read_resolution_paragraphs(res_files, includes_header: bool = True, debug: bool = False):
+def read_resolution_paragraphs(res_files, pre_tokenise_func: Callable = None, pre_tokenise_field: str = None,
+                               includes_headers: bool = True, headers: List[str] = None,
+                               debug: bool = False):
+    if pre_tokenise_func and not pre_tokenise_field:
+        pre_tokenise_field = 'text'
     for res_file in res_files:
         opener = gzip.open if res_file.endswith('.gz') else open
         if debug:
             print('parsing file', res_file)
         with opener(res_file, 'rt') as fh:
-            if includes_header is True:
+            if includes_headers is True and headers is None:
                 headers = next(fh).strip().split('\t')
-            else:
+            elif headers is None:
                 headers = ['resolution_id', 'paragraph_id', 'text']
             for line in fh:
                 row = line.strip().split('\t')
                 if len(row) != len(headers):
                     continue
                 else:
-                    yield {header: row[hi] for hi, header in enumerate(headers)}
+                    doc = {header: row[hi] for hi, header in enumerate(headers)}
+                    if pre_tokenise_func:
+                        doc[pre_tokenise_field] = pre_tokenise_func(doc[pre_tokenise_field])
+                    yield doc
+
+
+def write_rewrite_dictionary_json(rewrite_dict: Dict[str, str], dict_file: str):
+    """Write a word replacement dictionary to a JSON file."""
+    with open(dict_file, 'wt') as fh:
+        json.dump(rewrite_dict, fh, indent=4)
+    return None
+
+
+def read_rewrite_dictionary_json(dict_file: str) -> Dict[str, str]:
+    """Read a JSON-formatted word replacement dictionary."""
+    with open(dict_file, 'rt') as fh:
+        rewrite_dict = json.load(fh)
+    return rewrite_dict
 
 
 def read_rewrite_dictionary(dict_file: str, include_uncertain: bool = False) -> Dict[str, any]:

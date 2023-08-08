@@ -1,0 +1,13 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Tuijl	O	O	B-PER	O	O	O	O	O	Tuijl van Seroskercken
+van	O	O	I-PER	O	O	O	O	O
+Seroskercken	O	O	I-PER	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Philips	O	O	B-PER	O	O	O	O	O	Philips van Schoonhoven
+van	O	O	I-PER	O	O	O	O	O
+Schoonhoven	O	B-LOC	I-PER	O	O	O	O	O	Schoonhoven
+..	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Zutpken	O	B-LOC	O	O	O	O	O	O	Zutpken
+,	O	O	O	O	O	O	O	O

@@ -1,0 +1,48 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere van Vrybergen, haer Hoogh Mogende extraordinaris Envoyé aen het Hof van hare Majesteyt de Koning inne van Groot Brittannien
+van	O	O	I-PER	O	O	O	O	O
+Vrybergen	O	B-LOC	I-PER	O	O	O	O	O	Vrybergen
+,	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Hoogh Mogende extraordinaris Envoyé aen het Hof van hare Majesteyt de Koning inne van Groot Brittannien
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aen	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van hare Majesteyt de Koning inne van Groot Brittannien
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+hare	B-HOE	O	I-PER	I-ORG	O	O	O	O	hare Majesteyt de Koning inne van Groot Brittannien
+Majesteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+de	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koning	I-HOE	O	I-PER	I-ORG	O	O	O	O
+inne	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Groot	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Groot Brittannien
+Brittannien	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+,	I-HOE	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Londen	O	B-LOC	O	O	O	O	O	O	Londen
+den	O	O	O	O	O	O	O	O
+15	O	O	O	O	B-DAT	O	O	O	15. deser loopende maendt
+.	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

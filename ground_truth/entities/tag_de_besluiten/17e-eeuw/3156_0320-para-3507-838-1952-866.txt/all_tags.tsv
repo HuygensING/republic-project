@@ -1,0 +1,77 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Item	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+gelycken	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Commis	B-HOE	O	O	O	O	O	O	O	Commis
+te	O	O	O	O	O	O	O	O
+senden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Zutphen	O	B-LOC	O	O	O	O	O	O	Zutphen
+mette	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+thien	O	O	O	O	O	O	O	O
+duysent	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+ouer	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+tellen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Henrick	O	O	B-PER	O	O	O	O	O	Henrick Schouten Contrerolleur vande fortificatie wercken tot Sutphen
+Schouten	O	O	I-PER	O	O	O	O	O
+Contrerolleur	B-HOE	O	I-PER	O	O	O	O	O	Contrerolleur vande fortificatie wercken tot Sutphen
+vande	I-HOE	O	I-PER	O	O	O	O	O
+fortificatie	I-HOE	O	I-PER	O	O	O	O	O
+wercken	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Sutphen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Sutphen
+,	O	O	O	O	O	O	O	O
+Om	O	O	O	O	O	O	O	O
+byden	O	O	O	O	O	O	O	O
+seluen	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Joncker	B-HOE	O	B-PER	O	O	O	O	O	Joncker
+Johan	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Dorth	O	O	I-PER	O	O	O	O	O
+Raedt	B-HOE	O	I-PER	O	O	O	O	O	Raedt van State
+van	I-HOE	O	I-PER	O	O	O	O	O
+State	I-HOE	O	I-PER	O	O	O	O	O
+geemployeert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+fortificatie	O	O	O	O	O	O	O	O
+„	O	O	O	O	O	O	O	O
+vijhem	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+commissie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Staten Generael
+Staten	O	O	O	I-ORG	O	O	O	O
+Generael	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Raedts	O	O	O	B-ORG	O	O	O	O	Raedts van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+bestayet	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+noch	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+bestaden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

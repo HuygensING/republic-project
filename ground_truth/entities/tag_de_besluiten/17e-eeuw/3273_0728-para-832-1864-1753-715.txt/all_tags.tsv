@@ -1,0 +1,50 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Dom	B-HOE	O	B-PER	O	O	O	O	O	Dom ferdinand Alexander Prince van Portugael
+ferdinand	I-HOE	O	I-PER	O	O	O	O	O
+Alexander	I-HOE	O	I-PER	O	O	O	O	O
+Prince	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Portugael	I-HOE	B-LOC	I-PER	O	O	O	O	O	Portugael
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Brussel	O	B-LOC	O	O	O	O	O	O	Brussel
+den	O	O	O	O	O	O	O	O
+vierden	O	O	O	O	B-DAT	O	O	O	vierden deses
+deses	O	O	O	O	I-DAT	O	O	O
+daerbij	O	O	O	O	O	O	O	O
+hijnotificeert	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+overlijden	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	B-HOE	O	O	O	O	O	O	O	sijne vrouw moeder
+vrouw	I-HOE	O	O	O	O	O	O	O
+moeder	I-HOE	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+md	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daten	O	O	O	O	O	O	O	O
+beleeft	O	O	O	O	O	O	O	O
+compliment	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+condleantie	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+voorn	O	O	O	O	O	O	O	O
+Prince	B-HOE	O	O	O	O	O	O	O	Prince
+gerescribeert	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

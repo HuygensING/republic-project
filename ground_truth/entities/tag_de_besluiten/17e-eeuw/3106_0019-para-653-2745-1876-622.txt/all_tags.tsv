@@ -1,0 +1,47 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opheden	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+mynen	O	O	O	O	O	O	O	O
+Ge	O	O	O	O	O	O	O	O
+heere	B-HOE	O	B-PER	O	O	O	O	O	heere den Princk van Graingne
+den	I-HOE	O	I-PER	O	O	O	O	O
+Princk	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Graingne	I-HOE	B-LOC	I-PER	O	O	O	O	O	Graingne
+min	O	O	O	O	O	O	O	O
+heere	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Gemraele	O	O	O	B-ORG	O	O	O	O	Gemraele Staeten
+Staeten	O	O	O	I-ORG	O	O	O	O
+ouergegene	O	O	O	O	O	O	O	O
+seker	O	O	O	O	O	O	O	O
+poincten	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+arkey	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+welcke	O	O	O	O	O	O	O	O
+zijn	O	O	O	O	O	O	O	O
+V	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+G	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+yde	O	O	O	O	O	O	O	O
+prouincie	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+willen	O	O	O	O	O	O	O	O
+reguleren	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+d'Inhoudt	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+sel	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+ale	O	O	O	O	O	O	O	O
+spoet	O	O	O	O	O	O	O	O
+effectuiren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

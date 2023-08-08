@@ -1,0 +1,36 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere van Rouwenoord, haer Hoogh Moende Gedeputeerde te Velde
+van	O	O	I-PER	O	O	O	O	O
+Rouwenoord	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Hoogh Moende Gedeputeerde te Velde
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Moende	I-HOE	O	I-PER	O	O	O	O	O
+Gedeputeerde	I-HOE	O	I-PER	O	O	O	O	O
+te	I-HOE	O	I-PER	O	O	O	O	O
+Velde	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+in't	O	O	O	O	O	O	O	O
+Leger	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Woestwesel	O	B-LOC	O	O	O	O	O	O	Woestwesel
+den	O	O	O	O	O	O	O	O
+eersten	O	O	O	O	O	O	O	O
+deser	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

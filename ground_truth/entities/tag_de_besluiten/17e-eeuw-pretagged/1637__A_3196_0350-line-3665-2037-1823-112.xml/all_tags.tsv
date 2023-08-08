@@ -1,0 +1,52 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Capn	B-HOE	O	B-PER	O	O	O	O	O	Capn. ende Drossart
+.	I-HOE	O	I-PER	O	O	O	O	O
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Drossart	I-HOE	O	I-PER	O	O	O	O	O
+Til	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+lambert	O	O	B-PER	O	O	O	O	O	lambert Rietraet rentmeester vande Domeijnen van Valckenburch
+Rietraet	O	O	I-PER	O	O	O	O	O
+rentmeester	B-HOE	O	I-PER	O	O	O	O	O	rentmeester vande Domeijnen van Valckenburch
+vande	I-HOE	O	I-PER	O	O	O	O	O
+Domeijnen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Domeijnen van Valckenburch
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Valckenburch	I-HOE	I-LOC	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+authorisatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+vangen	O	O	O	O	O	O	O	O
+d'Officieren	B-HOE	O	O	O	O	O	O	O	d'Officieren des Vijants
+des	I-HOE	O	O	O	O	O	O	O
+Vijants	I-HOE	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+Contravenieren	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+placcaten	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+retorsie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaen	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+t'adviseren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

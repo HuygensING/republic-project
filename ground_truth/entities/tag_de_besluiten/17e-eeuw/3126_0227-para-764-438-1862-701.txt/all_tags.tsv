@@ -1,0 +1,49 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opte	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+herfamg	O	O	I-PER	O	O	O	O	O
+verzuecken	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+drye	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+minderinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+alzulcke	O	O	O	O	O	O	O	O
+vyff	O	O	O	O	O	O	O	O
+duysent	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+heere	O	O	B-PER	O	O	O	O	O	heere Generael Noureys
+Generael	B-HOE	O	I-PER	O	O	O	O	O	Generael
+Noureys	O	O	I-PER	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+bamisse	O	O	O	O	O	O	O	O
+naestcommende	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+tontfangen	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+faccordt	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+zyne	O	O	O	O	O	O	O	O
+E	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+gemaeckt	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+geapxte	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+d'heeren	O	O	O	B-ORG	O	O	O	O	d'heeren Staten
+Staten	O	O	O	I-ORG	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+vermogen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+treden	O	O	O	O	O	O	O	O

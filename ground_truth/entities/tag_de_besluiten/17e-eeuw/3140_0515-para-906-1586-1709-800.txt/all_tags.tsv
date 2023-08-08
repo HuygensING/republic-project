@@ -1,0 +1,42 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+Merlyn	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+geordonneert	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selue	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+In	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Commis	B-HOE	O	B-PER	O	O	O	O	O	Commis
+vander	O	O	I-PER	O	O	O	O	O
+Does	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+omme	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+voegen	O	O	O	O	O	O	O	O
+byde	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+stucken	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+suppliants	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+tzynder	O	O	O	O	O	O	O	O
+tydt	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,62 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Generaal	B-HOE	O	B-PER	O	O	O	O	O	Generaal
+van	O	O	I-PER	O	O	O	O	O
+Schwarizenbergb	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Gouverneur	B-HOE	O	I-PER	O	O	O	O	O	Gouverneur der Stad en Citadelle van Namen
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stad	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stad en Citadelle van Namen
+en	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Citadelle	I-HOE	I-LOC	I-PER	O	O	O	O	O
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Namen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Namen	O	B-LOC	O	O	O	O	O	O	Namen
+den	O	O	O	O	O	O	O	O
+neegenden	O	O	O	O	B-DAT	O	O	O	neegenden deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+kennis	O	O	O	O	O	O	O	O
+grevende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+eerste	O	O	O	O	O	O	O	O
+Battaillon	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Generaal	B-HOE	O	B-PER	O	O	O	O	O	Generaal
+Hirtzel	O	O	I-PER	O	O	O	O	O
+daags	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+vooren	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+ingemarcheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+Patent	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	B-HOE	O	O	O	O	O	O	O	sijne Hoogheyd
+Hoogheyd	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+komende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Woerden	O	B-LOC	O	O	O	O	O	O	Woerden
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

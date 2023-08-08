@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Grave van Degenfeld, haar Hoog Mog. extraordinaris Envoyé en Plehipotentiaris aan het Hof van haare Keyserlyke Majesteiten
+Grave	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Degenfeld	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	O	O	I-PER	O	O	O	O	O
+Hoog	O	O	I-PER	O	O	O	O	O
+Mog	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Envoyé en Plehipotentiaris aan het Hof van haare Keyserlyke Majesteiten
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Plehipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van haare Keyserlyke Majesteiten
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+haare	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Keyserlyke	B-HOE	O	I-PER	I-ORG	O	O	O	O	Keyserlyke Majesteiten
+Majesteiten	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Weenen	O	B-LOC	O	O	O	O	O	O	Weenen
+den	O	O	O	O	O	O	O	O
+17	O	O	O	O	O	O	O	O
+deeser	O	O	O	O	O	O	O	O
+loopende	O	O	O	O	O	O	O	O
+maand	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

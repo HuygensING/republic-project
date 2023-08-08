@@ -1,0 +1,73 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+OP	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requefte	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Jean	O	O	B-PER	O	O	O	O	O	Jean Martin Salles, Kamerdienaar van den Heer van Burmania, extraordinaris Envoyé van den Staat der vereenighde Nederlanden aan het Hof van haare Majesteyt de Koninginne van Hungaryen en Boheemen
+Martin	O	O	I-PER	O	O	O	O	O
+Salles	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Kamerdienaar	B-HOE	O	I-PER	O	O	O	O	O	Kamerdienaar van den Heer van Burmania, extraordinaris Envoyé van den Staat der vereenighde Nederlanden aan het Hof van haare Majesteyt de Koninginne van Hungaryen en Boheemen
+van	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer van Burmania
+van	I-HOE	O	I-PER	O	O	O	O	O
+Burmania	I-HOE	B-LOC	I-PER	O	O	O	O	O	Burmania
+,	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Envoyé van den Staat der vereenighde Nederlanden aan het Hof van haare Majesteyt de Koninginne van Hungaryen en Boheemen
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	B-LOC	I-PER	O	O	O	O	O	den Staat der vereenighde Nederlanden
+Staat	I-HOE	I-LOC	I-PER	O	O	O	O	O
+der	I-HOE	I-LOC	I-PER	O	O	O	O	O
+vereenighde	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Nederlanden	I-HOE	I-LOC	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van haare Majesteyt de Koninginne van Hungaryen en Boheemen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+haare	B-HOE	O	B-PER	I-ORG	O	O	O	O	haare Majesteyt de Koninginne van Hungaryen en Boheemen
+Majesteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+de	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koninginne	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Hungaryen	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Hungaryen en Boheemen
+en	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+Boheemen	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+.	O	O	O	O	O	O	O	O
+IB	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+voorgaande	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+behoeve	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Pasport	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+forma	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Acte	O	O	O	O	O	O	O	O
+ad	O	O	O	O	O	O	O	O
+omnes	O	O	O	O	O	O	O	O
+Populos	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepecheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+reyle	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Weenen	O	B-LOC	O	O	O	O	O	O	Weenen
+te	O	O	O	O	O	O	O	O
+moogen	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

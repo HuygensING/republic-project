@@ -1,0 +1,195 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Testevenon van Berkenroode
+Testevenon	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Berkenroode	I-HOE	B-LOC	I-PER	O	O	O	O	O	Berkenroode
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mog. Ambassadeur aan het Hof van sijne Majesteit den Koning van Vrankryk
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mog	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van sijne Majesteit den Koning van Vrankryk
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+sijne	B-HOE	O	B-PER	I-ORG	O	O	O	O	sijne Majesteit den Koning van Vrankryk
+Majesteit	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koning	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Vrankryk	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Vrankryk
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Parys	O	B-LOC	O	O	O	O	O	O	Parys
+den	O	O	O	O	O	O	O	O
+9	O	O	O	O	B-DAT	O	O	O	9 deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+lagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+anderen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haare	B-HOE	O	O	O	O	O	O	O	haare Majesteiten
+Majesteiten	I-HOE	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Maandags	O	O	O	O	B-DAT	O	O	O	Maandags daar aan volgende
+daar	O	O	O	O	I-DAT	O	O	O
+aan	O	O	O	O	I-DAT	O	O	O
+volgende	O	O	O	O	I-DAT	O	O	O
+na	O	O	O	O	O	O	O	O
+Compiegne	O	B-LOC	O	O	O	O	O	O	Compiegne
+souden	O	O	O	O	O	O	O	O
+vertrekken	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	B-HOE	O	O	O	O	O	O	O	Heeren uitheemsche Ministers
+uitheemsche	I-HOE	O	O	O	O	O	O	O
+Ministers	I-HOE	O	O	O	O	O	O	O
+sig	O	O	O	O	O	O	O	O
+insgelyks	O	O	O	O	O	O	O	O
+derwaards	O	O	O	O	O	O	O	O
+begeevende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+sulks	O	O	O	O	O	O	O	O
+meede	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+navolgen	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+versoekende	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+toe	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+approbatoire	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+meede	O	O	O	O	O	O	O	O
+permissie	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+kosten	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+reise	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+Declaratie	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Lestevenon van Berkenroode
+Lestevenon	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Berkenroode	I-HOE	B-LOC	I-PER	O	O	O	O	O	Berkenroode
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gerescribeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+permitteeren	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Hof	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Compiegne	O	B-LOC	O	O	O	O	O	O	Compiegne
+te	O	O	O	O	O	O	O	O
+volgen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+kosten	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+reise	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+Declaratie	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+brengen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+alwaar	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gevalideert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+En	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+Extract	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+deese	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raad	O	O	O	B-ORG	O	O	O	O	Raad van Staate en de Generaliteits Reekenkaamer
+van	O	O	O	I-ORG	O	O	O	O
+Staate	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Generaliteits	O	O	O	I-ORG	O	O	O	O
+Reekenkaamer	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+strekken	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+selver	O	O	O	O	O	O	O	O
+narigtinge	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

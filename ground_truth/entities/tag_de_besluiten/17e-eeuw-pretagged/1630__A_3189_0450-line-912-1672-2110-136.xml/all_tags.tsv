@@ -1,0 +1,58 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opt	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Cornelis	O	O	B-PER	O	O	O	O	O	Cornelis van Vlooswyck
+van	O	O	I-PER	O	O	O	O	O
+Vlooswyck	O	B-LOC	I-PER	O	O	O	O	O	Vlooswyck
+ende	O	O	O	O	O	O	O	O
+d'andere	B-HOE	O	O	O	O	O	O	O	d'andere kinderen ende erffge, namen van wylen Margarieta de Coninck weduwe wylen barthout van Vlooswyck
+kinderen	I-HOE	O	O	O	O	O	O	O
+ende	I-HOE	O	O	O	O	O	O	O
+erffge	I-HOE	O	O	O	O	O	O	O
+,	I-HOE	O	O	O	O	O	O	O
+namen	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+wylen	B-HOE	O	B-PER	O	O	O	O	O	wylen
+Margarieta	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Coninck	I-HOE	O	I-PER	O	O	O	O	O
+weduwe	B-HOE	O	I-PER	O	O	O	O	O	weduwe wylen barthout van Vlooswyck
+wylen	B-HOE	O	B-PER	O	O	O	O	O	wylen
+barthout	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Vlooswyck	I-HOE	B-LOC	I-PER	O	O	O	O	O	Vlooswyck
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+geconsenteert	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+mandament	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+reformatie	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+sekere	O	O	O	O	O	O	O	O
+sententie	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Rade	O	O	O	B-ORG	O	O	O	O	Rade van Vlaenderen
+van	O	O	O	I-ORG	O	O	O	O
+Vlaenderen	O	B-LOC	O	I-ORG	O	O	O	O	Vlaenderen
+residerende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Middelburch	O	B-LOC	O	O	O	O	O	O	Middelburch
+geweesen	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+voordeel	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Willem	O	O	B-PER	O	O	O	O	O	Willem van Dingenhoven
+van	O	O	I-PER	O	O	O	O	O
+Dingenhoven	O	B-LOC	I-PER	O	O	O	O	O	Dingenhoven
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+nadeel	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hun	O	O	O	O	O	O	O	O
+supplianten	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

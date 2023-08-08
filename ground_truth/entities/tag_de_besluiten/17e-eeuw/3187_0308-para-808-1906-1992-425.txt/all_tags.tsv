@@ -1,0 +1,34 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+depescheren	O	O	O	O	O	O	O	O
+ordonnan	O	O	O	O	O	O	O	O
+opden	O	O	O	O	O	O	O	O
+ontfanger	B-HOE	O	B-PER	O	O	O	O	O	ontfanger generael
+generael	I-HOE	O	I-PER	O	O	O	O	O
+Doubleth	O	O	I-PER	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ouer	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Jaer	O	O	O	O	O	O	O	O
+tractements	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+Magdalena	O	O	B-PER	O	O	O	O	O	Magdalena Jans vierstooxster van haer Ho:Mo
+Jans	O	O	I-PER	O	O	O	O	O
+vierstooxster	B-HOE	O	I-PER	O	O	O	O	O	vierstooxster van haer Ho:Mo
+van	I-HOE	O	I-PER	O	O	O	O	O
+haer	I-HOE	O	I-PER	O	O	O	O	O
+Ho	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Mo	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+vervallen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+xiiijen	O	O	O	O	B-DAT	O	O	O	xiiijen. deser
+.	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O

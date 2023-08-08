@@ -78,10 +78,10 @@ proposition_opening_phrases = [
     {
         'phrase': 'in gevolge en tot voldoeninge van der selver Resolutie commissoriaal van den',
         'label': [
-            'proposition_opening',
-            'proposition_type:resolutie'
+            'reference',
+            'reference_type:resolutie'
         ],
-        'proposition_type': 'resolutie',
+        'reference_type': 'resolutie',
         'max_offset': 500
     },
     {
@@ -291,6 +291,15 @@ proposition_opening_phrases = [
         'max_offset': 10
     },
     {
+        'phrase': 'OP het geproponeerde door den aenwesenden',
+        'label': [
+            'proposition_opening',
+            'proposition_type:voordracht'
+        ],
+        'proposition_type': 'voordracht',
+        'max_offset': 10
+    },
+    {
         'phrase': 'OP het geproponeerde door',
         'label': [
             'proposition_opening',
@@ -303,25 +312,37 @@ proposition_opening_phrases = [
         'phrase': 'OP den differente gereezen voor de',
         'label': [
             'proposition_opening',
-            'proposition_type:onbekend'
+            'proposition_type:differente'
         ],
         'proposition_type': 'differente',
         'max_offset': 10
     },
     {
-        'phrase': 'BY resumptie gedelibereert zynde op een Missive ',
+        'phrase': 'BY resumptie gedelibereert zynde op de Missive ',
         'label': ['proposition_opening', 'proposition_type:missive'],
         'proposition_type': 'missive',
         'max_offset': 10
     },
     {
+        'phrase': 'BY resumptie gedelibereert zynde op de Requeste ',
+        'label': ['proposition_opening', 'proposition_type:requeste'],
+        'proposition_type': 'requeste',
+        'max_offset': 10
+    },
+    {
+        'phrase': 'BY resumptie gedelibereert zynde op de rapport ',
+        'label': ['proposition_opening', 'proposition_type:rapport'],
+        'proposition_type': 'rapport',
+        'max_offset': 10
+    },
+    {
         'phrase': 'BY resumptie gedelibereert zynde op het geproponeerde ',
-        'label': ['proposition_opening', 'proposition_type:onbekend'],
+        'label': ['proposition_opening', 'proposition_type:voordracht'],
         'proposition_type': 'voordracht',
         'max_offset': 10
     },
     {
-        'phrase': 'BY Resumtie gedelibereert zynde',
+        'phrase': 'BY Resumptie gedelibereert zynde',
         'label': ['proposition_opening', 'proposition_type:onbekend'],
         'proposition_type': 'onbekend',
         'max_offset': 10
@@ -374,19 +395,19 @@ proposition_opening_phrases = [
     {
         'phrase': 'DE Conclusie van Eisch op de Requeste',
         'label': ['proposition_opening', 'proposition_type:conclusie'],
-        'proposition_type': 'requeste',
+        'proposition_type': 'conclusie',
         'max_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
-        'label': ['proposition_opening', 'proposition_type:onbekend'],
-        'proposition_type': 'presentatie',
+        'label': ['proposition_opening', 'proposition_type:voordarcht'],
+        'proposition_type': 'voordracht',
         'max_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde ter Vergaderinge gedaan',
-        'label': ['proposition_opening', 'proposition_type:onbekend'],
-        'proposition_type': 'presentatie',
+        'label': ['proposition_opening', 'proposition_type:voordracht'],
+        'proposition_type': 'voordracht',
         'max_offset': 10
     },
     {

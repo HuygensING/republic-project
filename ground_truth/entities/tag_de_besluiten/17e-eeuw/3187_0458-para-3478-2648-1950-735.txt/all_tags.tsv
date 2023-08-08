@@ -1,0 +1,70 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Graeff	B-HOE	O	B-PER	O	O	O	O	O	Graeff
+Ernst	O	O	I-PER	O	O	O	O	O
+Casimr	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Nassau	O	B-LOC	I-PER	O	O	O	O	O	Nassau
+Stadtholder	B-HOE	O	I-PER	O	O	O	O	O	Stadtholder
+geschreuen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Lieroort	O	B-LOC	O	O	O	O	O	O	Lieroort
+den	O	O	O	O	O	O	O	O
+13	O	O	O	O	B-DAT	O	O	O	13/. deses
+/	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+aduis	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Gouuerneur	B-HOE	O	B-PER	O	O	O	O	O	Gouuerneur van Gluckstadt
+van	I-HOE	O	I-PER	O	O	O	O	O
+Gluckstadt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Gluckstadt
+hem	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+eynde	O	O	O	O	O	O	O	O
+syner	O	O	O	O	O	O	O	O
+L	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+eenich	O	O	O	O	O	O	O	O
+secours	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+willen	O	O	O	O	O	O	O	O
+bemiddelen	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+Gluckstadt	O	B-LOC	O	O	O	O	O	O	Gluckstadt
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+neffens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hoogenhouck	O	O	B-PER	O	O	O	O	O	hoogenhouck
+te	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O

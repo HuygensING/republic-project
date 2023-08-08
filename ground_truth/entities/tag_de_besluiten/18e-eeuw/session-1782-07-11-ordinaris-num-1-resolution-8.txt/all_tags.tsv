@@ -1,0 +1,142 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+DOP	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Sara	O	O	B-PER	O	O	O	O	O	Sara RHenselaar, Weduwe Willemsen, van Anna Cathayina van Erp, Geertruyd van Meurs, J. G. Scheffer, van de Weduwe Julien, H.M. van Es, Weduwe vander Put, van Alida Keyzer, Weduwe van Stryp, van de Weduwe Weismar en de Weduwe Hugting
+RHenselaar	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+Willemsen	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Anna	O	O	I-PER	O	O	O	O	O
+Cathayina	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Erp	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Geertruyd	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Meurs	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+J	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+G	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+Scheffer	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+Julien	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+H.M	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Es	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+vander	O	O	I-PER	O	O	O	O	O
+Put	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Alida	O	O	I-PER	O	O	O	O	O
+Keyzer	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+van	O	O	I-PER	O	O	O	O	O
+Stryp	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+Weismar	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+Hugting	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoekende	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+adsistentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+IS	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+voorgaande	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+deesen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+lasten	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Kaamerbewaarders	B-HOE	O	O	O	O	O	O	O	Kaamerbewaarders van haar Hoog Mog
+van	I-HOE	O	O	O	O	O	O	O
+haar	I-HOE	O	O	O	O	O	O	O
+Hoog	I-HOE	O	O	O	O	O	O	O
+Mog	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+ieder	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+vier	O	O	O	O	O	O	O	O
+eerste	O	O	O	O	O	O	O	O
+Supplianten	O	O	O	O	O	O	O	O
+uit	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+keeren	O	O	O	O	O	O	O	O
+ses	O	O	O	O	O	O	O	O
+silvere	O	O	O	O	O	O	O	O
+Ducatons	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Weduwe	B-HOE	O	B-PER	O	O	O	O	O	Weduwe
+Julien	O	O	I-PER	O	O	O	O	O
+agt	O	O	O	O	O	O	O	O
+silvere	O	O	O	O	O	O	O	O
+Ducatons	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+laatstgemelde	O	O	O	O	O	O	O	O
+Weduwe	B-HOE	O	B-PER	O	O	O	O	O	Weduwe
+vander	O	O	I-PER	O	O	O	O	O
+Putt	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+van	O	O	I-PER	O	O	O	O	O
+Stryp	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+Weismar	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+Weduwe	B-HOE	O	I-PER	O	O	O	O	O	Weduwe
+Hugting	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ieder	O	O	O	O	O	O	O	O
+tien	O	O	O	O	O	O	O	O
+silvere	O	O	O	O	O	O	O	O
+Ducatons	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+welke	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+reekening	O	O	O	O	O	O	O	O
+gevalideert	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+goedgedaan	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,38 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+In	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+geleyt	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+soucken	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+stucken	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+resolutien	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+concernerende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Brandenburchsche	O	O	O	O	O	O	O	B-NAM	Brandenburchsche saken
+saken	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+conferentie	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+heer	B-HOE	O	B-PER	O	O	O	O	O	heer Graeff van Swarsenburch
+Graeff	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Swarsenburch	I-HOE	B-LOC	I-PER	O	O	O	O	O	Swarsenburch
+gedient	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

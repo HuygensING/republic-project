@@ -1,0 +1,105 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+t'advis	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Raets	O	O	O	B-ORG	O	O	O	O	Raets van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+communicatie	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+syn	B-HOE	O	O	O	O	O	O	O	syn Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+geformeert	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+11	O	O	O	O	B-DAT	O	O	O	11. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+heere	O	O	O	O	O	O	O	O
+Grave	B-HOE	O	B-PER	O	O	O	O	O	Grave
+Ernst	O	O	I-PER	O	O	O	O	O
+Casimir	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Nassau	O	B-LOC	I-PER	O	O	O	O	O	Nassau
+den	O	O	O	O	O	O	O	O
+10	O	O	O	O	B-DAT	O	O	O	10. daer te vooren
+.	O	O	O	O	I-DAT	O	O	O
+daer	O	O	O	O	I-DAT	O	O	O
+te	O	O	O	O	I-DAT	O	O	O
+vooren	O	O	O	O	I-DAT	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+gecomunicert	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+opden	O	O	O	O	O	O	O	O
+ingeleyden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Commandeur	B-HOE	O	O	O	O	O	O	O	Commandeur op Lieroort
+op	I-HOE	O	O	O	O	O	O	O
+Lieroort	I-HOE	B-LOC	O	O	O	O	O	O	Lieroort
+nopende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+preparatien	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Keysersche	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+voorslach	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+eene	O	O	O	O	O	O	O	O
+redoubte	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+leggen	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Eselsweert	O	B-LOC	O	O	O	O	O	O	Eselsweert beneden Lieroort
+beneden	O	I-LOC	O	O	O	O	O	O
+Lieroort	O	I-LOC	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+conformité	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+datment	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+beloop	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+overmits	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+waert	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+Rycxs	O	O	O	O	O	O	O	O
+bodem	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

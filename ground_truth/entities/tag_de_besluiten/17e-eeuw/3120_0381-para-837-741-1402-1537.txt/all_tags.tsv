@@ -1,0 +1,132 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+goetgeuonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+eyen	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Deere	B-HOE	O	B-PER	O	O	O	O	O	Deere van Mobesbergen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Mobesbergen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Mobesbergen
+verzocht	O	O	O	O	O	O	O	O
+Syner	B-HOE	O	B-PER	O	O	O	O	O	Syner G. den Graue van Moeurs
+G	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Graue	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Moeurs	I-HOE	B-LOC	I-PER	O	O	O	O	O	Moeurs
+benevens	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+Gedeputeerde	O	O	O	B-ORG	O	O	O	O	Gedeputeerde wten raede van State
+wten	O	O	O	I-ORG	O	O	O	O
+raede	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+te	O	O	O	O	O	O	O	O
+willen	O	O	O	O	O	O	O	O
+assisteren	O	O	O	O	O	O	O	O
+int	O	O	O	O	O	O	O	O
+effectueren	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	B-RES	O	O	resolutie saterdage lestleden
+saterdage	O	O	O	O	B-DAT	I-RES	O	O	saterdage lestleden
+lestleden	O	O	O	O	I-DAT	I-RES	O	O
+genomen	O	O	O	O	O	O	O	O
+aengaende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+aaengrypen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ouervallen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+schansse	O	B-LOC	O	O	O	O	O	O	schansse te Wiele
+te	O	I-LOC	O	O	O	O	O	O
+Wiele	O	I-LOC	O	O	O	O	O	O
+geslagen	O	O	O	O	O	O	O	O
+opde	O	O	O	O	O	O	O	O
+Rimiere	O	B-LOC	O	O	O	O	O	O	Rimiere vande Eecke
+vande	O	I-LOC	O	O	O	O	O	O
+Eecke	O	I-LOC	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Ouersten	B-HOE	O	B-PER	O	O	O	O	O	Ouersten
+Schenck	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Lmman	O	B-LOC	O	O	O	O	O	O	Lmman
+vygh	O	O	O	O	O	O	O	O
+tegen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+publicqiue	O	O	O	O	O	O	O	O
+authoriteyt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+dyen	O	O	O	O	O	O	O	O
+eynde	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+provintie	O	B-LOC	O	O	O	O	O	O	provintie van Utrecht
+van	O	I-LOC	O	O	O	O	O	O
+Utrecht	O	I-LOC	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+voirderen	O	O	O	O	O	O	O	O
+tgene	O	O	O	O	O	O	O	O
+byden	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+zyne	O	O	O	O	O	O	O	O
+voers	O	O	O	O	O	O	O	O
+G	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+geschut	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volck	O	O	O	O	O	O	O	O
+viures	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+munitien	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+oorloge	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+zelue	O	O	O	O	O	O	O	O
+provintie	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+verzocht	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Coeleggende	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+Gedeputeerde	O	O	O	B-ORG	O	O	O	O	Gedeputeerde van Hollant
+van	O	O	O	I-ORG	O	O	O	O
+Hollant	O	O	O	I-ORG	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Staten	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+zelue	O	O	O	O	O	O	O	O
+provintie	O	O	O	O	O	O	O	O
+Insgelix	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heuren	O	O	O	O	O	O	O	O
+twegen	O	O	O	O	O	O	O	O
+alle	O	O	O	O	O	O	O	O
+debuoir	O	O	O	O	O	O	O	O
+zullen	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daermede	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voers	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+effecte	O	O	O	O	O	O	O	O
+moghte	O	O	O	O	O	O	O	O
+gebrocht	O	O	O	O	O	O	O	O
+wordden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,49 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+zyde	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+pointen	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Joost vander Hooge
+Joost	O	O	I-PER	O	O	O	O	O
+vander	O	O	I-PER	O	O	O	O	O
+Hooge	O	O	I-PER	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+geschrifte	O	O	O	O	O	O	O	O
+gevat	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+incidentaliter	O	O	O	O	O	O	O	O
+opde	O	O	O	O	O	O	O	O
+handelinge	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+wisselinge	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+gevangenen	B-HOE	O	O	O	O	O	O	O	gevangenen
+syn	O	O	O	O	O	O	O	O
+voorgevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+pointen	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+adviseren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

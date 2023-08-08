@@ -1,0 +1,61 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Gelesen	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missivue	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Burgemrn van Amsterdam
+Burgemrn	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Amsterdam	O	B-LOC	O	I-ORG	O	O	O	O	Amsterdam
+:	O	O	O	O	O	O	O	O
+geschreuen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+vijen	O	O	O	O	B-DAT	O	O	O	vijen. Juny lestleden
+.	O	O	O	O	I-DAT	O	O	O
+Juny	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Jillis	O	O	B-PER	O	O	O	O	O	Jillis van wxel, goutsmith
+van	O	O	I-PER	O	O	O	O	O
+wxel	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+goutsmith	B-HOE	O	I-PER	O	O	O	O	O	goutsmith
+iegenwoordich	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Keyser	B-HOE	O	B-PER	O	O	O	O	O	Keyser van Moscovien
+van	I-HOE	O	I-PER	O	O	O	O	O
+Moscovien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Moscovien
+,	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+seluen	O	O	O	O	O	O	O	O
+mochte	O	O	O	O	O	O	O	O
+verleent	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+brieuen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+voorschryuens	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+herwaerts	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+heer	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+t'selffde	O	O	O	O	O	O	O	O
+versoeck	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

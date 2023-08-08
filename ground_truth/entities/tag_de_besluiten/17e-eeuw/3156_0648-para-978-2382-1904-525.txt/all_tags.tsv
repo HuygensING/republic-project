@@ -1,0 +1,41 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+besoigne	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+gisteren	O	O	O	O	B-DAT	O	O	O	gisteren
+ter	O	O	O	O	O	O	O	O
+presentie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Byn	B-HOE	O	O	O	O	O	O	O	Byn Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gecontinueert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Opte	O	O	O	O	O	O	O	O
+tweede	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+derde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vierde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+vyffde	O	O	O	O	O	O	O	O
+articulen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+eerste	O	O	O	O	O	O	O	O
+poincten	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Item	O	O	O	O	O	O	O	O
+opt	O	O	O	O	O	O	O	O
+eerste	O	O	O	O	O	O	O	O
+article	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+tweede	O	O	O	O	O	O	O	O
+poincten	O	O	O	O	O	O	O	O

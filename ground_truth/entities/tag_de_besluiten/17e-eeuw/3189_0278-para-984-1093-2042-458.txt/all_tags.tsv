@@ -1,0 +1,58 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Gedeputeerden	B-HOE	O	O	O	O	O	O	O	Gedeputeerden vande gemeente vande Roomsche religie binnen Emmerick
+vande	I-HOE	O	O	O	O	O	O	O
+gemeente	I-HOE	O	O	B-ORG	O	O	O	O	gemeente vande Roomsche religie binnen Emmerick
+vande	I-HOE	O	O	I-ORG	O	O	O	O
+Roomsche	I-HOE	O	O	I-ORG	O	O	O	O
+religie	I-HOE	O	O	I-ORG	O	O	O	O
+binnen	I-HOE	O	O	I-ORG	O	O	O	O
+Emmerick	I-HOE	B-LOC	O	I-ORG	O	O	O	O	Emmerick
+versouckende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+gebruycken	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+d'exercitie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haere	O	O	O	O	O	O	O	O
+religie	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+kercken	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+cappellekens	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+(	O	O	O	O	O	O	O	O
+buyten	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Parochiale	O	O	O	O	O	O	O	O
+kercke	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+gereformeerde	O	O	O	O	O	O	O	O
+religie	O	O	O	O	O	O	O	O
+publicquelick	O	O	O	O	O	O	O	O
+wert	O	O	O	O	O	O	O	O
+geleert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+hierop	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+nemen	O	O	O	O	O	O	O	O
+t'advis	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Raets	O	O	O	B-ORG	O	O	O	O	Raets van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	O	O	O	O	O

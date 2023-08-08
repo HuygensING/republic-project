@@ -1,0 +1,66 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Generael	B-HOE	O	B-PER	O	O	O	O	O	Generael - Major Baron van Franckenbergh
+-	I-HOE	O	I-PER	O	O	O	O	O
+Major	I-HOE	O	I-PER	O	O	O	O	O
+Baron	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Franckenbergh	I-HOE	B-LOC	I-PER	O	O	O	O	O	Franckenbergh
+;	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedtgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Pasport	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+behoorlijke	O	O	O	O	O	O	O	O
+forma	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Goederen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+breder	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+gespecificeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+kledinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Battaillon	O	O	O	B-ORG	O	O	O	O	Battaillon yan Bettendorf
+yan	O	O	O	I-ORG	O	O	O	O
+Bettendorf	O	B-LOC	O	I-ORG	O	O	O	O	Bettendorf
+,	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Maoestricht	O	B-LOC	O	O	O	O	O	O	Maoestricht
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+uytvoeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vry	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+sonder	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+s	O	O	O	O	O	O	O	O
+Landts	O	O	O	O	O	O	O	O
+gerechtigheyt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

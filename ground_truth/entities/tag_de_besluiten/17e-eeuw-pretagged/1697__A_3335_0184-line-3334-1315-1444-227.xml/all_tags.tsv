@@ -1,0 +1,50 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+memorie	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+heere	O	O	B-PER	O	O	O	O	O	heere Grave van Canmits, Plenipotentiaris vanden keijzer
+Grave	B-HOE	O	I-PER	O	O	O	O	O	Grave van Canmits
+van	I-HOE	O	I-PER	O	O	O	O	O
+Canmits	I-HOE	B-LOC	I-PER	O	O	O	O	O	Canmits
+,	O	O	I-PER	O	O	O	O	O
+Plenipotentiaris	B-HOE	O	I-PER	O	O	O	O	O	Plenipotentiaris vanden keijzer
+vanden	I-HOE	O	I-PER	O	O	O	O	O
+keijzer	B-HOE	O	I-PER	O	O	O	O	O	keijzer
+;	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naar	O	O	O	O	O	O	O	O
+voorgaande	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+paspoort	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+behoorlijke	O	O	O	O	O	O	O	O
+forme	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+vierentwintigh	O	O	O	O	O	O	O	O
+paarden	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+Duijtslandt	O	B-LOC	O	O	O	O	O	O	Duijtslandt
+herwaarts	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+jnbrengen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vrij	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+zonder	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+s'Landts	O	O	O	O	O	O	O	O
+geregtigheijt	O	O	O	O	O	O	O	O

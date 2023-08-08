@@ -1,0 +1,154 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Welderen
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Welderen	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	O	O	I-PER	O	O	O	O	O
+Hoog	O	O	I-PER	O	O	O	O	O
+Mog	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Envoyé en Plenipotentiaris aan het Hof van sijne Mogqjesteit den Koning van Groot-Brittannien
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van sijne Mogqjesteit den Koning van Groot-Brittannien
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+sijne	B-HOE	O	B-PER	I-ORG	O	O	O	O	sijne Mogqjesteit den Koning van Groot-Brittannien
+Mogqjesteit	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koning	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Groot-Brittannien	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Groot-Brittannien
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Londen	O	B-LOC	O	O	O	O	O	O	Londen
+den	O	O	O	O	O	O	O	O
+3	O	O	O	O	B-DAT	O	O	O	3 deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+gepasseerde	O	O	O	O	O	O	O	O
+raakende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Schip	O	O	O	O	O	O	O	B-NAM	Schip de Waaksaamhieid
+de	O	O	O	O	O	O	O	I-NAM
+Waaksaamhieid	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+Schipper	B-HOE	O	B-PER	O	O	O	O	O	Schipper
+Tieerd	O	O	I-PER	O	O	O	O	O
+Inz	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+Stavanger	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+welk	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Teneriffe	O	B-LOC	O	O	O	O	O	O	Teneriffe
+na	O	O	O	O	O	O	O	O
+Amsterdam	O	B-LOC	O	O	O	O	O	O	Amsterdam
+gaande	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+had	O	O	O	O	O	O	O	O
+meede	O	O	O	O	O	O	O	O
+genomen	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+Contanten	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+agt	O	O	O	O	O	O	O	O
+Balen	O	O	O	O	O	O	O	O
+ruwe	O	O	O	O	O	O	O	O
+Zyde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Schipper	B-HOE	O	O	O	O	O	O	O	Schipper
+te	O	O	O	O	O	O	O	O
+Portsmouth	O	B-LOC	O	O	O	O	O	O	Portsmouth
+soude	O	O	O	O	O	O	O	O
+moeten	O	O	O	O	O	O	O	O
+lossen	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Koopman	B-HOE	O	O	O	O	O	O	O	Koopman
+te	O	O	O	O	O	O	O	O
+Londen	O	B-LOC	O	O	O	O	O	O	Londen
+,	O	O	O	O	O	O	O	O
+dan	O	O	O	O	O	O	O	O
+welk	O	O	O	O	O	O	O	O
+Schip	O	O	O	O	O	O	O	O
+in	O	O	O	O	B-DAT	O	O	O	in de maand Maart van den voorleeden jaare
+de	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+Maart	O	O	O	O	I-DAT	O	O	O
+van	O	O	O	O	I-DAT	O	O	O
+den	O	O	O	O	I-DAT	O	O	O
+voorleeden	O	O	O	O	I-DAT	O	O	O
+jaare	O	O	O	O	I-DAT	O	O	O
+te	O	O	O	O	O	O	O	O
+Portsmouth	O	B-LOC	O	O	O	O	O	O	Portsmouth
+voornoemt	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Officieren	B-HOE	O	O	O	O	O	O	O	Officieren van de Douane
+van	I-HOE	O	O	O	O	O	O	O
+de	I-HOE	O	O	O	O	O	O	O
+Douane	I-HOE	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+aangehouden	O	O	O	O	O	O	O	O
+gewol	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Gedeputeerden van de Provincie van Holland en Westvriesland
+Gedeputeerden	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Holland	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+Westvriesland	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreeve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+Copielyk	O	O	O	O	O	O	O	O
+overgenoomen	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+haaren	O	O	O	O	O	O	O	O
+breeder	O	O	O	O	O	O	O	O
+gecommuniceert	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

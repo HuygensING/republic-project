@@ -1,0 +1,65 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opde	O	O	O	O	O	O	O	O
+reqte	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Gerrit	O	O	B-PER	O	O	O	O	O	Gerrit de vos, Burgu. tot vlaerdingen
+de	O	O	I-PER	O	O	O	O	O
+vos	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Burgu	B-HOE	O	I-PER	O	O	O	O	O	Burgu. tot vlaerdingen
+.	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+vlaerdingen	I-HOE	B-LOC	I-PER	O	O	O	O	O	vlaerdingen
+:	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+vstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+supplt	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Consenteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+accorderen	O	O	O	O	O	O	O	O
+naerder	O	O	O	O	O	O	O	O
+voorschrijvens	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Co	B-HOE	O	B-PER	O	O	O	O	O	Co: van Groot Brittaigne
+:	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot Brittaigne
+Brittaigne	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mitsgrs	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+hru	B-HOE	O	O	O	O	O	O	O	hru, exs. ambrs. van desen Staet
+,	I-HOE	O	O	O	O	O	O	O
+exs	I-HOE	O	O	O	O	O	O	O
+.	I-HOE	O	O	O	O	O	O	O
+ambrs	I-HOE	O	O	O	O	O	O	O
+.	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+desen	I-HOE	O	O	O	O	O	O	O
+Staet	I-HOE	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+hoochstgeme	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Coninck	B-HOE	O	O	O	O	O	O	O	Coninck
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+bevordere	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+saecken	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+hij	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+uijtstaende	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

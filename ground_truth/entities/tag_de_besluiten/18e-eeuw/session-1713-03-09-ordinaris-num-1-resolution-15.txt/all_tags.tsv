@@ -1,0 +1,96 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+15	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Leonard	O	O	B-PER	O	O	O	O	O	Leonard Hesselt van Dinter, Capiteyn in het Regiment van den Brigadier Berckhoffer
+Hesselt	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Dinter	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Capiteyn	B-HOE	O	I-PER	O	O	O	O	O	Capiteyn in het Regiment van den Brigadier Berckhoffer
+in	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Regiment	I-HOE	O	I-PER	B-ORG	O	O	O	O	Regiment van den Brigadier Berckhoffer
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Brigadier	B-HOE	O	B-PER	I-ORG	O	O	O	O	Brigadier
+Berckhoffer	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+cen	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+vacante	O	O	O	O	O	O	O	O
+Major	B-HOE	O	O	O	O	O	O	O	Major de Brigades
+de	I-HOE	O	O	O	O	O	O	O
+Brigades	I-HOE	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+plaetsen	O	O	O	O	O	O	O	O
+gelieven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+beneficeren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Copie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	O	O	Heeren van Welderen
+van	O	O	I-PER	O	O	O	O	O
+Welderen	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	B-COM	O	andere haer Hoogh Mogende Gedeputeerden tot de militaire saecken
+haer	O	O	O	O	O	O	I-COM	O
+Hoogh	O	O	O	O	O	O	I-COM	O
+Mogende	O	O	O	O	O	O	I-COM	O
+Gedeputeerden	O	O	O	O	O	O	I-COM	O
+tot	O	O	O	O	O	O	I-COM	O
+de	O	O	O	O	O	O	I-COM	O
+militaire	O	O	O	O	O	O	I-COM	O
+saecken	O	O	O	O	O	O	I-COM	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+examineren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+alles	O	O	O	O	O	O	O	O
+alhier	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

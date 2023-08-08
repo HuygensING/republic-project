@@ -1,0 +1,35 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	B-PER	O	O	O	O	O	Secretaris
+van	O	O	I-PER	O	O	O	O	O
+Deurs	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Elseneur	O	B-LOC	O	O	O	O	O	O	Elseneur
+den	O	O	O	O	O	O	O	O
+achtsten	O	O	O	O	B-DAT	O	O	O	achtsten deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+nevens	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Bylage	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

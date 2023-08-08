@@ -1,0 +1,101 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+resolutien	O	O	O	O	O	O	O	O
+gisteren	O	O	O	O	O	O	O	O
+genomen	O	O	O	O	O	O	O	O
+sjn	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+geresumeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Joost Maximiliaen — Grave tot Gronsfelt
+Joost	O	O	I-PER	O	O	O	O	O
+Maximiliaen	O	O	I-PER	O	O	O	O	O
+—	O	O	I-PER	O	O	O	O	O
+Grave	B-HOE	O	I-PER	O	O	O	O	O	Grave tot Gronsfelt
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Gronsfelt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Gronsfelt
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Coeulen	O	B-LOC	O	O	O	O	O	O	Coeulen
+den	O	O	O	O	O	O	O	O
+xxixen	O	O	O	O	B-DAT	O	O	O	xxixen februarij lestleden
+februarij	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+neffens	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+bijlaech	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Houdende	O	O	O	O	O	O	O	O
+clachten	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+t'Guarnisoen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+maestricht	O	B-LOC	O	O	O	O	O	O	maestricht
+uijt	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+besschen	O	O	O	O	O	O	O	O
+affgecapt	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Commis	B-HOE	O	B-PER	O	O	O	O	O	Commis
+Conincx	O	O	I-PER	O	O	O	O	O
+Vijff	O	O	O	O	O	O	O	O
+duijsent	O	O	O	O	O	O	O	O
+negen	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+Eijcke	O	O	O	O	O	O	O	O
+boomen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+geemploijeert	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+fortificatie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+voorsz	O	O	O	O	O	O	O	O
+Stadt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorsz	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+bijlage	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+omme	O	O	O	O	O	O	O	O
+t'adviseren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

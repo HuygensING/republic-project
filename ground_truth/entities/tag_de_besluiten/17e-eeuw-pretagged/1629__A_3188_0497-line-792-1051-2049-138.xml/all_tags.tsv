@@ -1,0 +1,26 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haer	B-HOE	O	O	O	O	O	O	O	haer Ho:Mo: Gedepden
+Ho	I-HOE	O	O	O	O	O	O	O
+:	I-HOE	O	O	O	O	O	O	O
+Mo	I-HOE	O	O	O	O	O	O	O
+:	I-HOE	O	O	O	O	O	O	O
+Gedepden	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+drnhem	O	B-LOC	O	O	O	O	O	O	drnhem
+geschreven	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+26e.	O	O	O	O	B-DAT	O	O	O	26e. deses
+deses	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,91 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+scryuen	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Ertzhertogen	B-HOE	O	O	O	O	O	O	O	Ertzhertogen
+inde	O	O	O	O	O	O	O	O
+sake	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Erffgenamen	B-HOE	O	O	O	O	O	O	O	Erffgenamen van heere van Gotthem saliger
+van	I-HOE	O	O	O	O	O	O	O
+heere	B-HOE	O	B-PER	O	O	O	O	O	heere van Gotthem saliger
+van	I-HOE	O	I-PER	O	O	O	O	O
+Gotthem	I-HOE	B-LOC	I-PER	O	O	O	O	O	Gotthem
+saliger	I-HOE	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Ende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Greffier	B-HOE	O	O	O	O	O	O	O	Greffier
+geordonneert	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+ander	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+meeninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+streckende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+beraempde	O	O	O	O	O	O	O	O
+communicatie	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+conferentie	O	O	O	O	O	O	O	O
+tusschen	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+Commissarisen	B-HOE	O	O	O	O	O	O	O	Commissarisen van hare Doorluchticheyden
+van	I-HOE	O	O	O	O	O	O	O
+hare	B-HOE	O	O	O	O	O	O	O	hare Doorluchticheyden
+Doorluchticheyden	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+opte	O	O	O	O	O	O	O	O
+pretensien	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Erffgenamen	B-HOE	O	O	O	O	O	O	O	Erffgenamen
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+accommodement	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+selue	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+vrientlyck	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+voorgenomen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+affgehandelt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

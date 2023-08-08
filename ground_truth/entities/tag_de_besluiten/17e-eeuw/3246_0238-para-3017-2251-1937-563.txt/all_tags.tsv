@@ -1,0 +1,62 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+fiscael	B-HOE	O	B-PER	O	O	O	O	O	fiscael
+Storm	O	O	I-PER	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Amsterdam	O	B-LOC	O	O	O	O	O	O	Amsterdam
+den	O	O	O	O	O	O	O	O
+26	O	O	O	O	B-DAT	O	O	O	26 deses
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+responsiue	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+22	O	O	O	O	B-DAT	O	O	O	22 derselver maent
+derselver	O	O	O	O	I-DAT	O	O	O
+maent	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+beleyders	B-HOE	O	O	O	O	O	O	O	beleyders van sLants Equipagie ter Zee in Vrieslandt
+van	I-HOE	O	O	O	O	O	O	O
+sLants	I-HOE	O	O	O	O	O	O	O
+Equipagie	I-HOE	O	O	O	O	O	O	O
+ter	I-HOE	O	O	O	O	O	O	O
+Zee	I-HOE	O	O	O	O	O	O	O
+in	I-HOE	O	O	O	O	O	O	O
+Vrieslandt	I-HOE	B-LOC	O	O	O	O	O	O	Vrieslandt
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+harlingen	O	B-LOC	O	O	O	O	O	O	harlingen
+den	O	O	O	O	O	O	O	O
+26	O	O	O	O	B-DAT	O	O	O	26. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

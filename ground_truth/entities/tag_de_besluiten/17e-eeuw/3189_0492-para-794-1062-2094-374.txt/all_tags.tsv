@@ -1,0 +1,45 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Eot	O	O	O	O	O	O	O	O
+examinatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+recht	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+d'anstraelsche	O	O	O	B-ORG	O	O	O	O	d'anstraelsche Compnie
+Compnie	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+t'versouck	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+recompensie	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+t'vinden	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+straet	O	B-LOC	O	O	O	O	O	O	straet le maire
+le	O	I-LOC	O	O	O	O	O	O
+maire	O	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+gecommitteert	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren, Arnhem, Brunincx, Beaumont Tienhoven, Eysinga Marienburch ende Schaffer
+,	O	O	I-PER	O	O	O	O	O
+Arnhem	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Brunincx	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Beaumont	O	O	I-PER	O	O	O	O	O
+Tienhoven	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Eysinga	O	O	I-PER	O	O	O	O	O
+Marienburch	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+Schaffer	O	O	I-PER	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

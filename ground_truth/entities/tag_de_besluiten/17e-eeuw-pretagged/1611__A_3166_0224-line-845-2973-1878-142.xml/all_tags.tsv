@@ -1,0 +1,70 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+eenen	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Gedeputeerde	B-HOE	O	O	O	O	O	O	O	Gedeputeerde vande heeren Staten van Utrecht
+vande	I-HOE	O	O	O	O	O	O	O
+heeren	I-HOE	O	O	B-ORG	O	O	O	O	heeren Staten van Utrecht
+Staten	I-HOE	O	O	I-ORG	O	O	O	O
+van	I-HOE	O	O	I-ORG	O	O	O	O
+Utrecht	I-HOE	B-LOC	O	I-ORG	O	O	O	O	Utrecht
+,	O	O	O	O	O	O	O	O
+gedateert	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+xxvje	O	O	O	O	B-DAT	O	O	O	xxvje July
+July	O	O	O	O	I-DAT	O	O	O
+ten	O	O	O	O	O	O	O	O
+faueure	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+nagelaten	B-HOE	O	O	O	O	O	O	O	nagelaten weduwe van wylen den Capiteyn Anthonis Buth
+weduwe	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+wylen	B-HOE	O	B-PER	O	O	O	O	O	wylen den Capiteyn
+den	I-HOE	O	I-PER	O	O	O	O	O
+Capiteyn	I-HOE	O	I-PER	O	O	O	O	O
+Anthonis	I-HOE	O	I-PER	O	O	O	O	O
+Buth	I-HOE	O	I-PER	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+moeder	B-HOE	O	O	O	O	O	O	O	moeder ende momboiresse ouer haer eenich kinct ende dochter byden voorschreuen Capiteyn verwect
+ende	I-HOE	O	O	O	O	O	O	O
+momboiresse	I-HOE	O	O	O	O	O	O	O
+ouer	I-HOE	O	O	O	O	O	O	O
+haer	I-HOE	O	O	O	O	O	O	O
+eenich	I-HOE	O	O	O	O	O	O	O
+kinct	I-HOE	O	O	O	O	O	O	O
+ende	I-HOE	O	O	O	O	O	O	O
+dochter	I-HOE	O	O	O	O	O	O	O
+byden	I-HOE	O	O	O	O	O	O	O
+voorschreuen	I-HOE	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	O	O	O	O	O	O	Capiteyn
+verwect	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Versoecken	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+redel	O	O	O	O	O	O	O	O
+pensioen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+betaelinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+huers	O	O	O	O	O	O	O	O
+mans	B-HOE	O	O	O	O	O	O	O	mans achterwesen
+achterwesen	I-HOE	O	O	O	O	O	O	O
+saliger	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+syne	O	O	O	O	O	O	O	O
+diensten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgeuonden	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	O	O	O	O	O

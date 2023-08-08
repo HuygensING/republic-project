@@ -1,0 +1,96 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Capittel	O	O	O	B-ORG	O	O	O	O	Capittel van de Collegiale Kercke van St. Pieter tot Aire
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Collegiale	O	O	O	I-ORG	O	O	O	O
+Kercke	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+St	O	B-LOC	O	I-ORG	O	O	O	O	St. Pieter tot Aire
+.	O	I-LOC	O	I-ORG	O	O	O	O
+Pieter	O	I-LOC	O	I-ORG	O	O	O	O
+tot	O	I-LOC	O	I-ORG	O	O	O	O
+Aire	O	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Aire	O	B-LOC	O	O	O	O	O	O	Aire
+den	O	O	O	O	O	O	O	O
+vyf	O	O	O	O	B-DAT	O	O	O	vyf en twintighsten deser loopende maendt
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+gerequireert	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Request	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+gepresenteert	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+Charles	O	O	B-PER	O	O	O	O	O	Charles Chevalier, Priester ende Doctor Theologie
+Chevalier	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Priester	B-HOE	O	I-PER	O	O	O	O	O	Priester ende Doctor Theologie
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Doctor	I-HOE	O	I-PER	O	O	O	O	O
+Theologie	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tenderende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+verwisselinge	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+optineren	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Provostschap	B-HOE	O	O	O	O	O	O	O	Provostschap van de gemelde Collegiale Kercke
+van	I-HOE	O	O	O	O	O	O	O
+de	I-HOE	O	O	O	O	O	O	O
+gemelde	I-HOE	O	O	O	O	O	O	O
+Collegiale	I-HOE	O	O	O	O	O	O	O
+Kercke	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+t'sedert	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Chevalier	B-HOE	O	O	O	O	O	O	O	Chevalier
+aen	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Capittel	O	O	O	O	O	O	O	O
+gedeclareert	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+versoeck	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+desisteren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutieis	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,195 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Viceadmiraal	B-HOE	O	B-PER	O	O	O	O	O	Viceadmiraal
+'	O	O	I-PER	O	O	O	O	O
+s	O	O	I-PER	O	O	O	O	O
+Hoosd	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gecommandeert	O	O	O	O	O	O	O	O
+hebbende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+auxiliaire	O	O	O	O	O	O	O	O
+Esquadre	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Staat	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gedient	O	O	O	O	O	O	O	O
+hebbende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+secours	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	B-HOE	O	B-PER	O	O	O	O	O	sijne Majesteyt den Koningh van Groot-Brittannien
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Koningh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot-Brittannien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot-Brittannien
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+Boord	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+s	O	O	O	O	O	O	O	O
+Lands	O	O	O	O	O	O	O	O
+Schip	O	O	O	O	O	O	O	B-NAM	Schip Dordrecht
+Dordrecht	O	O	O	O	O	O	O	I-NAM
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+anker	O	O	O	O	O	O	O	O
+leggende	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Rheede	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Helvoetsluys	O	B-LOC	O	O	O	O	O	O	Helvoetsluys
+den	O	O	O	O	O	O	O	O
+vier	O	O	O	O	B-DAT	O	O	O	vier en twintighsten deeser loopende maand
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+geevende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+vier	O	O	O	O	B-DAT	O	O	O	vier en twintighsten daar te vooren
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+daar	O	O	O	O	I-DAT	O	O	O
+te	O	O	O	O	I-DAT	O	O	O
+vooren	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+bencevens	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+Sappius	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gehoorende	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie ter Admiraliteyt in Zeeland
+ter	O	O	O	I-ORG	O	O	O	O
+Admiraliteyt	O	O	O	I-ORG	O	O	O	O
+in	O	O	O	I-ORG	O	O	O	O
+Zeeland	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Rheede	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Duyns	O	B-LOC	O	O	O	O	O	O	Duyns
+was	O	O	O	O	O	O	O	O
+gezeylt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+dien	O	O	O	O	O	O	O	O
+avond	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Rheede	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Helvoetsluys	O	B-LOC	O	O	O	O	O	O	Helvoetsluys
+was	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+ander	O	O	O	O	O	O	O	O
+gekoomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Als	O	O	O	O	O	O	O	O
+meede	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	B-PER	O	O	O	O	O	Capiteyn
+Prigge	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gedateert	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+Portsmouth	O	B-LOC	O	O	O	O	O	O	Portsmouth
+den	O	O	O	O	O	O	O	O
+seeventienden	O	O	O	O	B-DAT	O	O	O	seeventienden December
+December	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+waar	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+Viceadmiraal	B-HOE	O	B-PER	O	O	O	O	O	Viceadmiraal
+'	O	O	I-PER	O	O	O	O	O
+t	O	O	I-PER	O	O	O	O	O
+Hoofd	O	O	I-PER	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+gegeeven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+ordres	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+elfden	O	O	O	O	B-DAT	O	O	O	elfden daar te vooren
+daar	O	O	O	O	I-DAT	O	O	O
+te	O	O	O	O	I-DAT	O	O	O
+vooren	O	O	O	O	I-DAT	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+Viceadmiraal	B-HOE	O	O	O	O	O	O	O	Viceadmiraal
+aan	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Capiteyn	B-HOE	O	O	O	O	O	O	O	Capiteyn
+een	O	O	O	O	O	O	O	O
+nader	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+um	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+alle	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Hoilandsche	O	O	O	O	O	O	O	O
+Oorloghscheepen	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+leggende	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Texel	O	B-LOC	O	O	O	O	O	O	Texel
+te	O	O	O	O	O	O	O	O
+zeylen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+sigh	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+Hollanders	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+gedraagen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

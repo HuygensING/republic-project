@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+heeren	O	O	O	O	O	O	O	O
+haere	O	O	O	O	O	O	O	O
+hooch	O	O	O	B-ORG	O	O	O	O	hooch Mogen Gedeputeerden
+Mogen	O	O	O	I-ORG	O	O	O	O
+Gedeputeerden	O	O	O	I-ORG	O	O	O	O
+gesommeert	O	O	O	O	O	O	O	O
+syndt	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+t'examineren	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+remonstrantie	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe van heer Berck
+van	I-HOE	O	O	O	O	O	O	O
+heer	I-HOE	O	B-PER	O	O	O	O	O	heer Berck
+Berck	I-HOE	O	I-PER	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+ouergegeuen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+nader	O	O	O	O	O	O	O	O
+Justificatie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+posten	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+za	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+mans	O	O	O	O	O	O	O	O
+declaratie	O	O	O	O	O	O	O	O
+geroyeert	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+aengenomen	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+affcompste	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+maecken	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

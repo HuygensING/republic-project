@@ -1,0 +1,119 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+hooghSchoutten	B-HOE	O	O	O	O	O	O	O	hooghSchoutten, Burgermeestens, Schepenen ende gesweren raden der Stadt Maet tricht
+,	I-HOE	O	O	O	O	O	O	O
+Burgermeestens	I-HOE	O	O	O	O	O	O	O
+,	I-HOE	O	O	O	O	O	O	O
+Schepenen	I-HOE	O	O	O	O	O	O	O
+ende	I-HOE	O	O	O	O	O	O	O
+gesweren	I-HOE	O	O	O	O	O	O	O
+raden	I-HOE	O	O	O	O	O	O	O
+der	I-HOE	O	O	O	O	O	O	O
+Stadt	I-HOE	B-LOC	O	O	O	O	O	O	Stadt Maet tricht
+Maet	I-HOE	I-LOC	O	O	O	O	O	O
+tricht	I-HOE	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Maestricht	O	B-LOC	O	O	O	O	O	O	Maestricht
+den	O	O	O	O	O	O	O	O
+3	O	O	O	O	B-DAT	O	O	O	3. deser
+.	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+ingevolge	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+voldoeninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	B-RES	O	O	haar Hoog Mogende resolutie van den 16. Augusti lestl
+Hoog	O	O	O	O	O	I-RES	O	O
+Mogende	O	O	O	O	O	I-RES	O	O
+resolutie	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+16.	O	O	O	O	B-DAT	I-RES	O	O	16. Augusti lestl
+Augusti	O	O	O	O	I-DAT	I-RES	O	O
+lestl	O	O	O	O	I-DAT	I-RES	O	O
+derselver	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+here	O	O	B-PER	O	O	O	O	O	here Norff
+Norff	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+rakende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+omlage	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heren	B-HOE	O	B-PER	O	O	O	O	O	heren van Breust
+van	I-HOE	O	I-PER	O	O	O	O	O
+Breust	I-HOE	B-LOC	I-PER	O	O	O	O	O	Breust
+pretendeerden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Landerijen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Borgers	B-HOE	O	O	O	O	O	O	O	Borgers der stadt Maestricht
+der	I-HOE	O	O	O	O	O	O	O
+stadt	I-HOE	B-LOC	O	O	O	O	O	O	stadt Maestricht
+Maestricht	I-HOE	I-LOC	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+subventie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+lasten	O	O	O	O	O	O	O	O
+dee	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+sware	O	O	O	O	O	O	O	O
+oorlogs	O	O	O	O	O	O	O	O
+tyden	O	O	O	O	O	O	O	O
+overquamen	O	O	O	O	O	O	O	O
+Waar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Copije	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+gemn	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+here	O	O	B-PER	O	O	O	O	O	here Nooff
+Nooff	O	O	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+stracken	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+desselfs	O	O	O	O	O	O	O	O
+narichtinge	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

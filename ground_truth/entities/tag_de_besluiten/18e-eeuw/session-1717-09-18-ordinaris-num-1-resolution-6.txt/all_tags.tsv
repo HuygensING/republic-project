@@ -1,0 +1,103 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+DE	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Jssselmuden
+van	I-HOE	O	I-PER	O	O	O	O	O
+Jssselmuden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Jssselmuden
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+praesiderende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+voorgedragen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+bekent	O	O	O	O	O	O	O	O
+gemaackt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Cadogan , extraordinaris Ambassadeur ende Plenipotentiaris van sijne Majesteyt den Koningh van Groot-Brittannien
+Cadogan	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Ambassadeur ende Plenipotentiaris van sijne Majesteyt den Koningh van Groot-Brittannien
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+sijne	B-HOE	O	B-PER	O	O	O	O	O	sijne Majesteyt den Koningh van Groot-Brittannien
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Koningh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot-Brittannien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot-Brittannien
+,	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+Engelandt	O	B-LOC	O	O	O	O	O	O	Engelandt
+alhier	O	O	O	O	O	O	O	O
+wedergekeert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+geweest	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+geven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+aankomste	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedtgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+versoecken	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+committeren	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van lsselmulden
+van	I-HOE	O	I-PER	O	O	O	O	O
+lsselmulden	I-HOE	B-LOC	I-PER	O	O	O	O	O	lsselmulden
+,	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+praesiderende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Cadogan
+Cadogan	O	O	I-PER	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+naam	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verwellekomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

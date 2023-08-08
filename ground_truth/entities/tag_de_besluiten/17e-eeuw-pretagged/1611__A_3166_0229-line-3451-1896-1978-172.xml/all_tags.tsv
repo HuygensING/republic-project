@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opte	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Thomas	O	O	B-PER	O	O	O	O	O	Thomas vaindts Edelman
+vaindts	O	O	I-PER	O	O	O	O	O
+Edelman	B-HOE	O	I-PER	O	O	O	O	O	Edelman
+,	O	O	O	O	O	O	O	O
+wordt	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Suppt	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+paspoort	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+tyt	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+ses	O	O	O	O	O	O	O	O
+maenden	O	O	O	O	O	O	O	O
+naestcommende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+absenteren	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+syne	O	O	O	O	O	O	O	O
+Compaignie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ondertusschen	O	O	O	O	O	O	O	O
+syne	O	O	O	O	O	O	O	O
+affairen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verrichten	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+vnderlanten	O	O	O	O	O	O	O	O
+continuerende	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+binnen	O	O	O	O	O	O	O	O
+middelen	O	O	O	O	O	O	O	O
+tjde	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+tractement	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

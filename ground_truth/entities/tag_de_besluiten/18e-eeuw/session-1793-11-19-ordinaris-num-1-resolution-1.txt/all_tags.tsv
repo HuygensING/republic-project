@@ -1,0 +1,41 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+F	O	O	B-PER	O	O	O	O	O	F. de HKoninck, waarneemende de zaaken van den Staat aan het Hof van Deenemarken
+.	O	O	I-PER	O	O	O	O	O
+de	O	O	I-PER	O	O	O	O	O
+HKoninck	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+waarneemende	B-HOE	O	I-PER	O	O	O	O	O	waarneemende de zaaken van den Staat aan het Hof van Deenemarken
+de	I-HOE	O	I-PER	O	O	O	O	O
+zaaken	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Staat	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van Deenemarken
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Deenemarken	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Deenemarken
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Koppenhagen	O	B-LOC	O	O	O	O	O	O	Koppenhagen
+den	O	O	O	O	O	O	O	O
+12	O	O	O	O	B-DAT	O	O	O	12 deezer loopende maand
+deezer	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

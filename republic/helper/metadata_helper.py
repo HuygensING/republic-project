@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List, Union
 
 import numpy as np
@@ -224,3 +225,9 @@ def map_text_page_nums(inv_metadata: dict) -> Dict[int, Dict[str, Union[int, str
                 "skip": skip
             }
     return text_page_num_map
+
+
+def load_greffiers():
+    greffier_file = '../../data/attendance_lists/griffiers.json'
+    with open(greffier_file, 'rt') as fh:
+        return json.load(fh)

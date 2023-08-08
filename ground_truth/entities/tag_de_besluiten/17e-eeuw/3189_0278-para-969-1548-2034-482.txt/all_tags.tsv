@@ -1,0 +1,67 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Synde	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Carel	O	O	B-PER	O	O	O	O	O	Carel Rademaecker
+Rademaecker	O	O	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+subsidie	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+onderhout	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+suppliant	O	O	O	O	O	O	O	O
+sich	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+t'addresseren	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren Brunincx ende van Goch haer Ho:Mo: Gedeputeerden
+Brunincx	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Goch	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Ho:Mo: Gedeputeerden
+Ho	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Mo	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Gedeputeerden	I-HOE	O	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+geavanceert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+d'een	O	O	O	O	O	O	O	O
+off	O	O	O	O	O	O	O	O
+d'andere	O	O	O	O	O	O	O	O
+vacante	O	O	O	O	O	O	O	O
+plaetse	O	O	O	O	O	O	O	O
+binnen	O	O	O	O	O	O	O	O
+s'Hertogenbosch	O	B-LOC	O	O	O	O	O	O	s'Hertogenbosch
+daertoe	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+foude	O	O	O	O	O	O	O	O
+suppliant	O	O	O	O	O	O	O	O
+capabel	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

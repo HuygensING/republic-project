@@ -1,0 +1,103 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Christoffel	O	O	B-PER	O	O	O	O	O	Christoffel de Corne als in huwelick hebbende Johanna de Vrieut
+de	O	O	I-PER	O	O	O	O	O
+Corne	O	O	I-PER	O	O	O	O	O
+als	B-HOE	O	I-PER	O	O	O	O	O	als in huwelick hebbende Johanna de Vrieut
+in	I-HOE	O	I-PER	O	O	O	O	O
+huwelick	I-HOE	O	I-PER	O	O	O	O	O
+hebbende	I-HOE	O	I-PER	O	O	O	O	O
+Johanna	I-HOE	O	B-PER	O	O	O	O	O	Johanna de Vrieut
+de	I-HOE	O	I-PER	O	O	O	O	O
+Vrieut	I-HOE	O	I-PER	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+voldoeninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	B-RES	O	O	hare Ho:Mo: resolutien vanden eenentwintichsten Julij lestleden ende twaelffden deses
+Ho	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+resolutien	O	O	O	O	O	I-RES	O	O
+vanden	O	O	O	O	O	I-RES	O	O
+eenentwintichsten	O	O	O	O	B-DAT	I-RES	O	O	eenentwintichsten Julij lestleden
+Julij	O	O	O	O	I-DAT	I-RES	O	O
+lestleden	O	O	O	O	I-DAT	I-RES	O	O
+ende	O	O	O	O	O	I-RES	O	O
+twaelffden	O	O	O	O	B-DAT	I-RES	O	O	twaelffden deses
+deses	O	O	O	O	I-DAT	I-RES	O	O
+rescriptie	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+distincte	O	O	O	O	O	O	O	O
+Requesten	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+gepresenteert	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+ofte	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+Anna	O	O	B-PER	O	O	O	O	O	Anna vander Stringe, laetst weduwe van wijlen Arnout van Citters
+vander	O	O	I-PER	O	O	O	O	O
+Stringe	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+laetst	B-HOE	O	I-PER	O	O	O	O	O	laetst weduwe van wijlen Arnout van Citters
+weduwe	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+wijlen	B-HOE	O	B-PER	O	O	O	O	O	wijlen
+Arnout	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Citters	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Pieter	O	O	B-PER	O	O	O	O	O	Pieter d'Asseval Burgemeester der Stede Neusen
+d'Asseval	O	O	I-PER	O	O	O	O	O
+Burgemeester	B-HOE	O	I-PER	O	O	O	O	O	Burgemeester der Stede Neusen
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stede	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stede Neusen
+Neusen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+rescriptie	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Heer	O	O	B-PER	O	O	O	O	O	Heer Schrieck
+Schrieck	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+examineren	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

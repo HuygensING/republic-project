@@ -1,0 +1,115 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+seecker	O	O	O	O	O	O	O	O
+memoriael	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+heere	B-HOE	O	B-PER	O	O	O	O	O	heere Resident
+Resident	I-HOE	O	I-PER	O	O	O	O	O
+Charisius	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vsoeckende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+Ordonnantie	O	O	O	O	O	O	O	O
+opden	O	O	O	O	O	O	O	O
+Ontfanger	B-HOE	O	B-PER	O	O	O	O	O	Ontfanger Generael
+Generael	I-HOE	O	I-PER	O	O	O	O	O
+Doublet	O	O	I-PER	O	O	O	O	O
+moge	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+omme	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+heere	O	O	O	O	O	O	O	O
+Resident	B-HOE	O	O	O	O	O	O	O	Resident
+sonder	O	O	O	O	O	O	O	O
+uijtstel	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+betalen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+14413	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+10	O	O	O	O	O	O	O	O
+st	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+provintie	O	B-LOC	O	O	O	O	O	O	provintie van Utrecht
+van	O	I-LOC	O	O	O	O	O	O
+Utrecht	O	I-LOC	O	O	O	O	O	O
+geresolveert	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+Comptoire	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+voorn	O	O	O	O	O	O	O	O
+Ontfanger	B-HOE	O	O	O	O	O	O	O	Ontfanger
+tot	O	O	O	O	O	O	O	O
+voldooninge	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+resterende	O	O	O	O	O	O	O	O
+helft	O	O	O	O	O	O	O	O
+harer	O	O	O	O	O	O	O	O
+quote	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+beloofde	O	O	O	O	O	O	O	O
+subsidien	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Denemarcken
+van	I-HOE	O	I-PER	O	O	O	O	O
+Denemarcken	I-HOE	B-LOC	I-PER	O	O	O	O	O	Denemarcken
+over	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Jare	O	O	O	O	B-DAT	O	O	O	Jare 1654
+1654	O	O	O	O	I-DAT	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+furneren	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+versoecken	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raet	O	O	O	B-ORG	O	O	O	O	Raet van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+E	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+gerequireerde	O	O	O	O	O	O	O	O
+Ordonnantie	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+fine	O	O	O	O	O	O	O	O
+voornoemt	O	O	O	O	O	O	O	O
+willen	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+depescheren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

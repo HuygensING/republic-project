@@ -1,0 +1,29 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ende	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Jacob	O	O	B-PER	O	O	O	O	O	Jacob Elsevier
+Elsevier	O	O	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+gelycken	O	O	O	O	O	O	O	O
+tyt	O	O	O	O	O	O	O	O
+alleene	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+drucken	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+bouxken	O	O	O	O	O	O	O	B-NAM	bouxken geintituleert rables des Simis tangentes et secautes
+geintituleert	O	O	O	O	O	O	O	I-NAM
+rables	O	O	O	O	O	O	O	I-NAM
+des	O	O	O	O	O	O	O	I-NAM
+Simis	O	O	O	O	O	O	O	I-NAM
+tangentes	O	O	O	O	O	O	O	I-NAM
+et	O	O	O	O	O	O	O	I-NAM
+secautes	O	O	O	O	O	O	O	I-NAM
+escrit	O	O	O	O	O	O	O	O
+par	O	O	O	O	O	O	O	O
+Albert	O	O	B-PER	O	O	O	O	O	Albert Girard, Samuelas
+Girard	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Samuelas	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O

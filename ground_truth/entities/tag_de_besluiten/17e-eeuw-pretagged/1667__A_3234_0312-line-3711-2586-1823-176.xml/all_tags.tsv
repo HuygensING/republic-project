@@ -1,0 +1,131 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vant	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie ter Admiraliteijt tot Rotterdam
+ter	O	O	O	I-ORG	O	O	O	O
+Admiraliteijt	O	O	O	I-ORG	O	O	O	O
+tot	O	O	O	I-ORG	O	O	O	O
+Rotterdam	O	B-LOC	O	I-ORG	O	O	O	O	Rotterdam
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+achtentwintighsten	O	O	O	O	B-DAT	O	O	O	achtentwintighsten deses
+deses	O	O	O	O	I-DAT	O	O	O
+houdende	O	O	O	O	O	O	O	O
+responsive	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+eenentwintighsten	O	O	O	O	B-DAT	O	O	O	eenentwintighsten derselver maent
+derselver	O	O	O	O	I-DAT	O	O	O
+maent	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+mitsgaders	O	O	O	O	O	O	O	O
+copie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Groot Brittannien
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot Brittannien
+Brittannien	I-HOE	I-LOC	I-PER	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Withall	O	B-LOC	O	O	O	O	O	O	Withall
+den	O	O	O	O	O	O	O	O
+dertighsten	O	O	O	O	B-DAT	O	O	O	dertighsten september lestleden, stilo loci
+september	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	I-DAT	O	O	O
+stilo	O	O	O	O	I-DAT	O	O	O
+loci	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+bijlage	O	O	O	O	O	O	O	O
+daernevens	O	O	O	O	O	O	O	O
+gevoecht	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+concernerende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+werck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Gevangenen	B-HOE	O	O	O	O	O	O	O	Gevangenen
+:	O	O	O	O	O	O	O	O
+nogh	O	O	O	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vant	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie ter Admiraliteijt int Noorderquartier
+ter	O	O	O	I-ORG	O	O	O	O
+Admiraliteijt	O	O	O	I-ORG	O	O	O	O
+int	O	O	O	I-ORG	O	O	O	O
+Noorderquartier	O	B-LOC	O	I-ORG	O	O	O	O	Noorderquartier
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Enckhuijsen	O	B-LOC	O	O	O	O	O	O	Enckhuijsen
+den	O	O	O	O	O	O	O	O
+sevenentwintighsten	O	O	O	O	B-DAT	O	O	O	sevenentwintighsten deses
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+t'selve	O	O	O	O	O	O	O	O
+subject	O	O	O	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+beijde	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+missiven	O	O	O	O	O	O	O	O
+copielick	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Meerman Extraordinaris Hmbdassideur vandese taet in Engelant
+Meerman	O	O	I-PER	O	O	O	O	O
+Extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	Extraordinaris Hmbdassideur vandese taet in Engelant
+Hmbdassideur	I-HOE	O	I-PER	O	O	O	O	O
+vandese	I-HOE	O	I-PER	O	O	O	O	O
+taet	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+Engelant	I-HOE	B-LOC	I-PER	O	O	O	O	O	Engelant
+,	O	O	O	O	O	O	O	O
+omte	O	O	O	O	O	O	O	O
+strecken	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+desselffs	O	O	O	O	O	O	O	O
+naerightinge	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+wijders	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+dienen	O	O	O	O	O	O	O	O
+sulcx	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daert	O	O	O	O	O	O	O	O
+behoort	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

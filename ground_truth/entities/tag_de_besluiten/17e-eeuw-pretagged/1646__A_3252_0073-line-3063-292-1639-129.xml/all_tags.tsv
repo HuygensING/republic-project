@@ -1,0 +1,100 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Sijnde	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	B-RES	O	O	resolutie van haer Ho:Mo: in date 19e. deses
+van	O	O	O	O	O	I-RES	O	O
+haer	O	O	O	O	O	I-RES	O	O
+Ho	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+in	O	O	O	O	O	I-RES	O	O
+date	O	O	O	O	O	I-RES	O	O
+19e	O	O	O	O	B-DAT	I-RES	O	O	19e. deses
+.	O	O	O	O	I-DAT	I-RES	O	O
+deses	O	O	O	O	I-DAT	I-RES	O	O
+ingestelt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Churfurst van Ceulen
+Churfurst	B-HOE	O	I-PER	O	O	O	O	O	Churfurst van Ceulen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Ceulen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Ceulen
+ende	O	O	O	O	O	O	O	O
+Mutatis	O	O	O	O	O	O	O	O
+Mutandis	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Stadt	O	B-LOC	O	O	O	O	O	O	Stadt Ceulen
+Ceulen	O	I-LOC	O	O	O	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+bewuste	O	O	O	O	O	O	O	O
+defensions	O	O	O	O	O	O	O	O
+werck	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Westphalischen	O	B-LOC	O	O	O	O	O	O	Westphalischen Creijts
+Creijts	O	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+gedane	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+vanderinge	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+vercortinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Heeren	O	O	B-PER	O	O	O	B-COM	O	Heeren Bronchors
+Bronchors	O	O	I-PER	O	O	O	I-COM	O
+&	O	O	O	O	O	O	I-COM	O
+andere	O	O	O	O	O	O	I-COM	O
+haer	O	O	O	O	O	O	I-COM	O
+Ho	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Mo	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+voorgaende	O	O	O	O	O	O	I-COM	O
+Gedeputeerden	O	O	O	O	O	O	I-COM	O
+tot	O	O	O	O	O	O	I-COM	O
+de	O	O	O	O	O	O	I-COM	O
+voors	O	O	O	O	O	O	I-COM	O
+.	O	O	O	O	O	O	I-COM	O
+Saecke	O	O	O	O	O	O	I-COM	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+meergenoemde	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+communiceren	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+Hoocht	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+vstaen	O	O	O	O	O	O	O	O
+desselffs	O	O	O	O	O	O	O	O
+hoochwijs	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+consideratien	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

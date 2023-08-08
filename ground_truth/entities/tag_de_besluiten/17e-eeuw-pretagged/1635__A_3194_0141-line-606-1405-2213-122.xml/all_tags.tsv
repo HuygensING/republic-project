@@ -1,0 +1,77 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Johannis	O	O	B-PER	O	O	O	O	O	Johannis Casimirus Prans van Poolen
+Casimirus	O	O	I-PER	O	O	O	O	O
+Prans	O	O	I-PER	O	O	O	O	O
+van	O	O	I-PER	O	O	O	O	O
+Poolen	O	B-LOC	I-PER	O	O	O	O	O	Poolen
+geschreuen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Warsouws	O	B-LOC	O	O	O	O	O	O	Warsouws
+den	O	O	O	O	O	O	O	O
+13	O	O	O	O	B-DAT	O	O	O	13 Septemb lestleden
+Septemb	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+om	O	O	O	O	O	O	O	O
+langs	O	O	O	O	O	O	O	O
+den	O	B-LOC	O	O	O	O	O	O	den Rhyn
+Rhyn	O	I-LOC	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+Landen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+soovoorts	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Poolen	O	B-LOC	O	O	O	O	O	O	Poolen
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+transporteren	O	O	O	O	O	O	O	O
+twaelff	O	O	O	O	O	O	O	O
+tolvoederen	O	O	O	O	O	O	O	O
+Rinschen	O	O	O	O	O	O	O	O
+wyn	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+behouff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+S	O	O	B-PER	B-ORG	O	O	O	O	S. Gurs
+.	O	O	I-PER	I-ORG	O	O	O	O
+Gurs	O	O	I-PER	I-ORG	O	O	O	O
+hoffhoudinge	O	O	O	I-ORG	O	O	O	O
+sonder	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+betalen	O	O	O	O	O	O	O	O
+slants	O	O	O	O	O	O	O	O
+gerechticht	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+consenteren	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+accorderen	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+wyders	O	O	O	O	O	O	O	O
+geordonneert	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+passepoort	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+debitâ	O	O	O	O	O	O	O	O
+formu	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

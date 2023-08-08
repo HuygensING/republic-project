@@ -1,0 +1,42 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opt	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Laurens	O	O	B-PER	O	O	O	O	O	Laurens de Maerschalck gewesen rechter in Amban
+de	O	O	I-PER	O	O	O	O	O
+Maerschalck	O	O	I-PER	O	O	O	O	O
+gewesen	B-HOE	O	I-PER	O	O	O	O	O	gewesen rechter in Amban
+rechter	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+Amban	I-HOE	B-LOC	I-PER	O	O	O	O	O	Amban
+Is	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+tottet	O	O	O	O	O	O	O	O
+maecken	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+cleedt	O	O	O	O	O	O	O	O
+toegevoucht	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+boven	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+driehondert	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+syne	O	O	O	O	O	O	O	O
+montcosten	O	O	O	O	O	O	O	O
+Jaerlicx	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+toegeleit	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

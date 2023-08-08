@@ -1,0 +1,34 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+och	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+geaccordeert	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Marc	O	O	B-PER	O	O	O	O	O	Marc Anthonio Lenier ten dienste vanden Con: van Groot Bretaignen
+Anthonio	O	O	I-PER	O	O	O	O	O
+Lenier	O	O	I-PER	O	O	O	O	O
+ten	B-HOE	O	I-PER	O	O	O	O	O	ten dienste vanden Con: van Groot Bretaignen
+dienste	I-HOE	O	I-PER	O	O	O	O	O
+vanden	I-HOE	O	I-PER	O	O	O	O	O
+Con	B-HOE	O	B-PER	O	O	O	O	O	Con: van Groot Bretaignen
+:	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot Bretaignen
+Bretaignen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+uytvoeren	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Engelant	O	B-LOC	O	O	O	O	O	O	Engelant
+sonder	O	O	O	O	O	O	O	O
+Convoy	O	O	O	O	O	O	O	O
+off	O	O	O	O	O	O	O	O
+licent	O	O	O	O	O	O	O	O
+vier	O	O	O	O	O	O	O	O
+lassen	O	O	O	O	O	O	O	O
+schilderie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+inhoudende	O	O	O	O	O	O	O	O
+tweenderttich	O	O	O	O	O	O	O	O
+stucken	O	O	O	O	O	O	O	O
+gemerckt	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O

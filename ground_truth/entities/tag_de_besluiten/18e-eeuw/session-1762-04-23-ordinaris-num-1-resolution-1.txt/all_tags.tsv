@@ -1,0 +1,183 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Wiassenaer
+van	I-HOE	O	I-PER	O	O	O	O	O
+Wiassenaer	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wiassenaer
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoogh Mogende Ambassadeur aan het Hof van sijne Majesteyt den Koningh van Spagne
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van sijne Majesteyt den Koningh van Spagne
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+sijne	B-HOE	O	B-PER	I-ORG	O	O	O	O	sijne Majesteyt den Koningh van Spagne
+Majesteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koningh	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Spagne	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Spagne
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Madrid	O	B-LOC	O	O	O	O	O	O	Madrid
+den	O	O	O	O	O	O	O	O
+vyfden	O	O	O	O	B-DAT	O	O	O	vyfden deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+anderen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Hof	O	O	O	O	O	O	O	O
+sigh	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+wyftienden	O	O	O	O	B-DAT	O	O	O	wyftienden daar aan volgende
+daar	O	O	O	O	I-DAT	O	O	O
+aan	O	O	O	O	I-DAT	O	O	O
+volgende	O	O	O	O	I-DAT	O	O	O
+weeder	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Aranjuez	O	B-LOC	O	O	O	O	O	O	Aranjuez
+stond	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+begeeven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+sullende	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	O	O	O	O	O	O	Heere Ambassadeur
+Ambassadeur	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+verwaghiuingh	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+approbatie	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+permissie	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+diesweegens	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+ordte	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Lande	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+moogen	O	O	O	O	O	O	O	O
+declareeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+gewoonte	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+neevens	O	O	O	O	O	O	O	O
+alle	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+vreemde	O	O	O	O	O	O	O	O
+Ministers	B-HOE	O	O	O	O	O	O	O	Ministers
+derwaards	O	O	O	O	O	O	O	O
+volgen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+gemeide	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Wasjenaer
+van	I-HOE	O	I-PER	O	O	O	O	O
+Wasjenaer	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wasjenaer
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gerescribeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+laaten	O	O	O	O	O	O	O	O
+welgevallen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Hof	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+volgen	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+Aranjuez	O	B-LOC	O	O	O	O	O	O	Aranjuez
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+diesweegens	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+moogen	O	O	O	O	O	O	O	O
+declareeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+conformiteyt	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+ordres	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Lande	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Sullende	O	O	O	O	O	O	O	O
+Extract	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+detfe	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raad	O	O	O	B-ORG	O	O	O	O	Raad van Staate en des Generaliteyts Reeckenkaamer
+van	O	O	O	I-ORG	O	O	O	O
+Staate	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+des	O	O	O	I-ORG	O	O	O	O
+Generaliteyts	O	O	O	I-ORG	O	O	O	O
+Reeckenkaamer	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+strecken	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+selver	O	O	O	O	O	O	O	O
+narigtinge	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

@@ -1,0 +1,67 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+OV	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Helena	O	O	B-PER	O	O	O	O	O	Helena van Eyk, Burgerelle, woonagtig alhier in den Hage
+van	O	O	I-PER	O	O	O	O	O
+Eyk	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Burgerelle	B-HOE	O	I-PER	O	O	O	O	O	Burgerelle, woonagtig alhier in den Hage
+,	I-HOE	O	I-PER	O	O	O	O	O
+woonagtig	I-HOE	O	I-PER	O	O	O	O	O
+alhier	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	B-LOC	I-PER	O	O	O	O	O	den Hage
+Hage	I-HOE	I-LOC	I-PER	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+verzoekende	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+gratificatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoos	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+18	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+voorgaande	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+deezen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+lasten	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Kamerbewaarders	B-HOE	O	O	O	O	O	O	O	Kamerbewaarders van haar Hoog Mog
+van	I-HOE	O	O	O	O	O	O	O
+haar	I-HOE	O	O	O	O	O	O	O
+Hoog	I-HOE	O	O	O	O	O	O	O
+Mog	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Suppliante	O	O	O	O	O	O	O	O
+uit	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+keeren	O	O	O	O	O	O	O	O
+zes	O	O	O	O	O	O	O	O
+zillvere	O	O	O	O	O	O	O	O
+Ducatons	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dewelke	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+hun	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+Reekening	O	O	O	O	O	O	O	O
+gevalideert	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+goedgedaan	O	O	O	O	O	O	O	O
+zullen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

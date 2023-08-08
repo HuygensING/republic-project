@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+CA	O	O	B-PER	O	O	O	O	O	CA. GN. Schutz, waarneemende de saaken van de Ambassade aan het Hof van den Turkschen Keiser
+.	O	O	I-PER	O	O	O	O	O
+GN	O	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+Schutz	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+waarneemende	B-HOE	O	I-PER	O	O	O	O	O	waarneemende de saaken van de Ambassade aan het Hof van den Turkschen Keiser
+de	I-HOE	O	I-PER	O	O	O	O	O
+saaken	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Ambassade	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van den Turkschen Keiser
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Turkschen	B-HOE	O	B-PER	I-ORG	O	O	O	O	Turkschen Keiser
+Keiser	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Pera	O	B-LOC	O	O	O	O	O	O	Pera van Constantinopolen
+van	O	I-LOC	O	O	O	O	O	O
+Constantinopolen	O	I-LOC	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+vyftienden	O	O	O	O	B-DAT	O	O	O	vyftienden der voorleede maand
+der	O	O	O	O	I-DAT	O	O	O
+voorleede	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

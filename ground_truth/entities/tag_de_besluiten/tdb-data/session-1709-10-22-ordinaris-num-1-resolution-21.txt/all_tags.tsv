@@ -1,0 +1,54 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Dom-Capittel	O	O	O	B-ORG	O	O	O	O	Dom-Capittel van Keulen
+van	O	O	O	I-ORG	O	O	O	O
+Keulen	O	B-LOC	O	I-ORG	O	O	O	O	Keulen
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Keulen	O	B-LOC	O	O	O	O	O	O	Keulen
+den	O	O	O	O	O	O	O	O
+veertienden	O	O	O	O	B-DAT	O	O	O	veertienden deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+klachten	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Lieutenant	B-HOE	O	B-PER	O	O	O	O	O	Lieutenant - Collonel
+-	I-HOE	O	I-PER	O	O	O	O	O
+Collonel	I-HOE	O	I-PER	O	O	O	O	O
+Coetier	O	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+saecke	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+alwaer	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+aenhangigh	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

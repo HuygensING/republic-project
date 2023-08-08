@@ -1,0 +1,63 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Sijnde	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergadering	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+seecker	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Antwoorde	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+geven	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+Heer	O	O	B-PER	O	O	O	O	O	Heer Downing, Envoijé extraordinaris vanden Coninck van Grodt Britannien
+Downing	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Envoijé	B-HOE	O	I-PER	O	O	O	O	O	Envoijé extraordinaris vanden Coninck van Grodt Britannien
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+vanden	I-HOE	O	I-PER	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Grodt Britannien
+van	I-HOE	O	I-PER	O	O	O	O	O
+Grodt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Grodt Britannien
+Britannien	I-HOE	I-LOC	I-PER	O	O	O	O	O
+ingevolge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	B-RES	O	O	hare Ho:Mo: resolutie vanden negenden deses
+Ho	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+resolutie	O	O	O	O	O	I-RES	O	O
+vanden	O	O	O	O	O	I-RES	O	O
+negenden	O	O	O	O	B-DAT	I-RES	O	O	negenden deses
+deses	O	O	O	O	I-DAT	I-RES	O	O
+:	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+gehouden	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+gearresteert	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+dienvolgens	O	O	O	O	O	O	O	O
+int	O	O	O	O	O	O	O	O
+metgeschreven	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+voornoemden	O	O	O	O	O	O	O	O
+Heer	O	O	B-PER	O	O	O	O	O	Heer Downig
+Downig	O	O	I-PER	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Agent	B-HOE	O	B-PER	O	O	O	O	O	Agent
+de	O	O	I-PER	O	O	O	O	O
+Heijde	O	O	I-PER	O	O	O	O	O
+verhantreijckt	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

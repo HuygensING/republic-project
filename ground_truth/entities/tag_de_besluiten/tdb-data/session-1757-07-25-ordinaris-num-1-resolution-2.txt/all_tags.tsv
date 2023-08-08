@@ -1,0 +1,60 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Seeretaris	B-HOE	O	O	O	O	O	O	O	Seeretaris van den Heere Calkoen, haar Hoogh Mogende Minister Plenipotentiaris aan het Hof van sijne Majesteyt den Koningh van Poolen, als Churvorst van Saxen
+van	I-HOE	O	O	O	O	O	O	O
+den	I-HOE	O	O	O	O	O	O	O
+Heere	I-HOE	O	B-PER	O	O	O	O	O	Heere Calkoen, haar Hoogh Mogende Minister Plenipotentiaris aan het Hof van sijne Majesteyt den Koningh van Poolen, als Churvorst van Saxen
+Calkoen	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoogh Mogende Minister Plenipotentiaris aan het Hof van sijne Majesteyt den Koningh van Poolen, als Churvorst van Saxen
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+Minister	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van sijne Majesteyt den Koningh van Poolen, als Churvorst van Saxen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+sijne	B-HOE	O	B-PER	I-ORG	O	O	O	O	sijne Majesteyt den Koningh van Poolen, als Churvorst van Saxen
+Majesteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koningh	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Poolen	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Poolen
+,	I-HOE	O	I-PER	I-ORG	O	O	O	O
+als	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Churvorst	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Saxen	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Saxen
+,	O	O	O	O	O	O	O	O
+getschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Dresden	O	B-LOC	O	O	O	O	O	O	Dresden
+den	O	O	O	O	O	O	O	O
+seeventienden	O	O	O	O	B-DAT	O	O	O	seeventienden deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+VIV	O	O	O	O	O	O	O	O
+NE	O	O	O	O	O	O	O	O
+NWAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

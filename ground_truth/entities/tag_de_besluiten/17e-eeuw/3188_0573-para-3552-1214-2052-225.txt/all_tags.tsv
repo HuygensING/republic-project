@@ -1,0 +1,40 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Synde	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Prope	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Mahimad	O	O	B-PER	O	O	O	O	O	Mahimad vanegas
+vanegas	O	O	I-PER	O	O	O	O	O
+gisteren	O	O	O	O	B-DAT	O	O	O	gisteren
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+hoMo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+ouer	O	O	O	O	O	O	O	O
+gelevert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+beleefde	O	O	O	O	O	O	O	O
+antwoort	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+generaliben	O	O	O	O	O	O	O	O
+ermnes	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+ingestelt	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+gearresteert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
