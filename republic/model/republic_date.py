@@ -8,6 +8,7 @@ from dateutil.parser import parse
 from typing import Dict, List, Tuple, Union
 
 from republic.model.republic_date_phrase_model import month_names_late, month_names_early
+from republic.model.republic_date_phrase_model import week_day_names, month_names
 from republic.model.republic_date_phrase_model import holiday_phrases
 from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
 from republic.model.republic_date_phrase_model import date_structure_map
@@ -202,25 +203,6 @@ class DateNameMapper:
             else:
                 day_strings = [f"{day_string} {name}" for day_string in day_strings for name in names[name_set]]
         return day_strings
-        '''
-        day_strings = []
-        for month_name in names['month_name']:
-            for month_day_name in names['month_day_name']:
-                for week_day_name in names['week_day_name']:
-                    den = 'den ' if include_den else ''
-                    if include_year is True:
-                        day_string = f"{week_day_name} {den}{month_day_name} {month_name} {year}"
-                    else:
-                        day_string = f"{week_day_name} {den}{month_day_name} {month_name}"
-                    # print('day_string:', day_string)
-                    day_strings.append(day_string)
-        if len(day_strings) == 0:
-            return None
-        elif len(day_strings) == 1:
-            return day_strings[0]
-        else:
-            return day_strings
-        '''
 
 
 class RepublicDate:
@@ -256,24 +238,18 @@ class RepublicDate:
         self.year = date.year
         self.month = date.month
         self.day = date.day
-        '''
-        if date_mapper is not None:
-            self.text_type = date_mapper.text_type
-            self.day_name = date_mapper.index_week_day[date.weekday()]
-        else:
-            self.text_type = 'handwritten'
-        if self.text_type == 'handwritten':
-            self.day_name = week_day_names['handwritten'][self.date.weekday()]
-        else:
-            self.day_name = week_day_names['printed'][self.date.weekday()]
-        self.month_name = month_names_early[self.month - 1] if self.year <= 1750 else month_names_late[self.month - 1]
-        '''
-        # if self.date_mapper is not None:
-        self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
-        self.date_year_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=True)
-        # else:
-        #     self.date_string = f"{self.day_name} den {self.day} {self.month_name}"
-        #     self.date_year_string = f"{self.date_string} {self.year}."
+        for week_day_name in week_day_names['modern_nl']:
+            if week_day_names['modern_nl'][week_day_name] == self.date.weekday():
+                self.day_name = week_day_name
+        for month_name in month_names['modern_nl']:
+            if month_names['modern_nl'][month_name] == self.month:
+                self.month_name = month_name
+        self.date_string = None
+        self.date_year_string = None
+        if date_mapper:
+            self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
+            self.date_year_string = date_mapper.generate_day_string(date.year, date.month, date.day,
+                                                                    include_year=True)
 
     def __repr__(self):
         return f'RepublicDate({self.date.strftime("%Y-%m-%d")})'
@@ -321,7 +297,7 @@ class RepublicDate:
 
     def is_holiday(self) -> bool:
         """Return boolean whether current date is a holiday."""
-        for holiday in get_holidays(self.year):
+        for holiday in get_holidays(self.year, date_mapper=self.date_mapper):
             if self.isoformat() == holiday['date'].isoformat():
                 return True
         return False
@@ -373,25 +349,28 @@ def extract_date_name_map(text_type: str, resolution_type: str,
                      f'and period_end "{period_end}"')
 
 
-def get_holidays(year: int) -> List[Dict[str, Union[str, RepublicDate]]]:
+def get_holidays(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union[str, RepublicDate]]]:
     """Return a list of holidays based on given year."""
     easter_monday = easter(year) + datetime.timedelta(days=1)
     ascension_day = easter(year) + datetime.timedelta(days=39)
     pentecost_monday = easter(year) + datetime.timedelta(days=50)
     holidays = [
-        {'holiday': 'Nieuwjaarsdag', 'date': RepublicDate(year, 1, 1)},
-        {'holiday': 'eerste Kerstdag', 'date': RepublicDate(year, 12, 25)},
-        {'holiday': 'tweede Kerstdag', 'date': RepublicDate(year, 12, 26)},
-        {'holiday': 'tweede Paasdag', 'date': RepublicDate(year, easter_monday.month, easter_monday.day)},
-        {'holiday': 'Hemelvaartsdag', 'date': RepublicDate(year, ascension_day.month, ascension_day.day)},
-        {'holiday': 'tweede Pinksterdag', 'date': RepublicDate(year, pentecost_monday.month, pentecost_monday.day)},
+        {'holiday': 'Nieuwjaarsdag', 'date': RepublicDate(year, 1, 1, date_mapper=date_mapper)},
+        {'holiday': 'eerste Kerstdag', 'date': RepublicDate(year, 12, 25, date_mapper=date_mapper)},
+        {'holiday': 'tweede Kerstdag', 'date': RepublicDate(year, 12, 26, date_mapper=date_mapper)},
+        {'holiday': 'tweede Paasdag', 'date': RepublicDate(year, easter_monday.month, easter_monday.day,
+                                                           date_mapper=date_mapper)},
+        {'holiday': 'Hemelvaartsdag', 'date': RepublicDate(year, ascension_day.month, ascension_day.day,
+                                                           date_mapper=date_mapper)},
+        {'holiday': 'tweede Pinksterdag', 'date': RepublicDate(year, pentecost_monday.month,
+                                                               pentecost_monday.day, date_mapper=date_mapper)},
     ]
     return holidays
 
 
-def get_holiday_phrases(year: int) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
+def get_holiday_phrases(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
     """Return a list of holiday-specific phrases based on given year."""
-    holidays = get_holidays(year)
+    holidays = get_holidays(year, date_mapper=date_mapper)
     year_holiday_phrases: List[Dict[str, Union[str, int, bool, RepublicDate]]] = []
     for holiday in holidays:
         for holiday_phrase in holiday_phrases:
@@ -402,9 +381,10 @@ def get_holiday_phrases(year: int) -> List[Dict[str, Union[str, int, bool, Repub
     return year_holiday_phrases
 
 
-def get_coming_holidays_phrases(current_date: RepublicDate) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
+def get_coming_holidays_phrases(current_date: RepublicDate,
+                                date_mapper: DateNameMapper) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
     """Return a list of holiday phrases in the next seven days."""
-    year_holiday_phrases = get_holiday_phrases(current_date.year)
+    year_holiday_phrases = get_holiday_phrases(current_date.year, date_mapper=date_mapper)
     coming_holiday_phrases: List[Dict[str, Union[str, int, bool, datetime.date]]] = []
     for holiday_phrase in year_holiday_phrases:
         date_diff = holiday_phrase['date'] - current_date
@@ -496,13 +476,12 @@ def make_republic_date(date_string: str) -> RepublicDate:
     return RepublicDate(year=year, month=month, day=day)
 
 
-def derive_date_from_string(date_string: str, year: int) -> RepublicDate:
+def derive_date_from_string(date_string: str, year: int, date_mapper: DateNameMapper) -> RepublicDate:
     """Return a RepublicDate object derived from a session date string."""
     weekday, _, day_num, month_name = date_string.split(' ')
     day_num = int(day_num)
-    month_names = month_names_early if year <= 1750 else month_names_late
-    month = month_names.index(month_name) + 1
-    date = RepublicDate(year, month, day_num)
+    month = date_mapper.date_name_map['month_name'][month_name]
+    date = RepublicDate(year, month, day_num, date_mapper=date_mapper)
     return date
 
 

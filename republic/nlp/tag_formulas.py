@@ -45,15 +45,23 @@ FORMULAS = [
         ]
     },
     {
+        'phrase': 'WAAR op gedelibereert en by haer Hoogh Mogende verklaart zynde',
+        'label': ['decision', 'decision:deliberation'],
+    },
+    {
+        'phrase': 'WAAR op gedelibereert, en in aghtinge genoomen zynde',
+        'label': ['decision', 'decision:deliberation'],
+    },
+    {
         'phrase': 'IS na voorgaende deliberatie goetgevonden ende verstaen',
-        'label': ['decision', 'decision:deliberation_accepted'],
+        'label': ['decision', 'decision:deliberation_agreed'],
         'variants': [
             'is na deliberatie goetgevonden en verstaen'
         ]
     },
     {
         'phrase': 'is goetgevonden ende verstaen',
-        'label': ['decision', 'decision:accepted']
+        'label': ['decision', 'decision:agreed']
     },
     {
         'phrase': 'dat Copie van de voorschreve',
@@ -74,22 +82,76 @@ FORMULAS = [
             'te visiteren examineren en liquideren'
         ]
     },
+    {
+        'phrase': 'haar aangenaam was',
+        'label': ['decision', 'decision:member_introduced']
+    },
+    {
+        'phrase': 'is den selven verwellekomt',
+        'label': ['decision', 'decision:member_welcome']
+    },
+    {
+        'phrase': 'heeft dienvolgende sessie genoomen',
+        'label': ['decision', 'decision:member_added']
+    },
+    {
+        'phrase': 'Extract uyt de Resolutien van',
+        'label': ['extract', 'extract:resolution'],
+        'variants': [
+            'Extract uyt het Resolutieboeck',
+            'Extract uyt het Register der Resolutien'
+        ]
+    },
+    {
+        'phrase': 'WAAR op de devoiren. gedelibereert zynde',
+        'label': ['decision', 'decision:deliberation']
+    },
+    {
+        'phrase': 'WAAR gedelibereert, en gehoord zynde',
+        'label': ['decision', 'decision:deliberation']
+    },
+    {
+        'phrase': 'is daar op geen verder resolutie gevallen',
+        'label': ['no_decision']
+    },
+    {
+        'phrase': 'IS goedgevonden en verstaan',
+        'label': ['decision', 'decision:agreed']
+    },
+    {
+        'phrase': 'niet kan werden getreeden',
+        'label': ['decision', 'decision:rejected']
+    },
+    {
+        'phrase': 'en werd dienvolgende het zelve afgeweesen.',
+        'label': ['decision', 'decision:rejected']
+    },
+    {
+        'phrase': 'WAAR op de devoiren. gedelibereert zynde',
+        'label': ['decision', 'decision:deliberation']
+    }
 ]
 
 
 LABEL_TAG = {
     'decision': 'DEC',
-    'decision:accepted': 'DEC_ACC',
+    'decision:agreed': 'DEC_ACC',
     'decision:copy': 'DEC_COPY',
     'decision:deliberation': 'DEC_DEL',
-    'decision:deliberation_accepted': 'DEC_DEL_ACC',
+    'decision:deliberation_agreed': 'DEC_DEL_ACC',
     'decision:hand_to': 'DEC_HAND',
     'decision:send': 'DEC_SEND',
-    'no_decision': 'NON_DEC',
-    'no_decision:read': 'NON_DEC_READ',
+    'decision:member_added': 'DEC_MEM_ADD',
+    'decision:member_introduced': 'DEC_MEM_INT',
+    'decision:member_welcome': 'DEC_MEM_WEL',
+    'decision:rejected': 'DEC_REJ',
+    'no_decision': 'DEC_NON',
+    'no_decision:read': 'DEC_NON_READ',
     'proposition_opening': 'PROP_OPEN',
     'decision:report': 'DEC_REPO',
     'decision:examine': 'DEC_EXAM',
+    'extract': 'EXT',
+    'extract:resolution': 'EXT_RES'
 }
 
 

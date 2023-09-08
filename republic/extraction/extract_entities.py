@@ -7,7 +7,7 @@ from fuzzy_search.tokenization.token import Doc
 from republic.helper.text_helper import TermDictionary
 
 
-SINGLETON_TAG_TYPES = ['DAT', 'RES', 'PROP_OPEN']
+SINGLETON_TAG_TYPES = ['DAT', 'RES', 'PROP_OPEN', 'NON_DEC', 'NON_DEC_READ']
 
 
 class Annotation:
@@ -216,7 +216,8 @@ def get_sequence_main_tag(sequence: List[Tag]):
         elif tag.type.startswith('PROP'):
             return tag.type
         else:
-            continue
+            return tag.type
+            # continue
     return sequence[0].type
 
 

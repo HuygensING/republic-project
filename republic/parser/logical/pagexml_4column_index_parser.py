@@ -7,10 +7,11 @@ from itertools import combinations
 import re
 
 import numpy as np
+import pagexml.model.physical_document_model as pdm
 
-import republic.parser.pagexml.republic_pagexml_parser as page_parser
-import republic.model.physical_document_model as pdm
-from republic.model.physical_document_model import PageXMLTextLine
+import republic.parser.pagexml.republic_column_parser as column_parser
+# import republic.model.physical_document_model as pdm
+# from republic.model.physical_document_model import PageXMLTextLine
 from republic.helper.metadata_helper import parse_scan_id
 
 day_month_pattern = r"^(\d+) (Jan|Feb|Maa|Apr|Mey|Jun|Jul|Aug|Sep|Oct|Okt|Nov|Dec)\S{,3}$"
@@ -42,10 +43,11 @@ def move_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], target_type: st
                 threshold = 0.5
                 if line_type in {'date_locator', 'page_locator'}:
                     threshold = 0.7
-                if pdm.is_horizontally_overlapping(line, target_doc, threshold=threshold): # and line.coords.top > target_doc.coords.top:
+                if pdm.is_horizontally_overlapping(line, target_doc, threshold=threshold):
                     # pdm.is_vertically_overlapping(line, target_doc):
                     if debug:
-                        print(f"{li} moving line from {line_type} to {target_type}: {line.coords.x}-{line.coords.right}\t{line.coords.y: >6}\t{line.text}")
+                        print(f"{li} moving line from {line_type} to {target_type}: {line.coords.x}-{line.coords.right}"
+                              f"\t{line.coords.y: >6}\t{line.text}")
                     line_types[target_type].append(line)
                     if line not in line_types[line_type]:
                         print("trying to remove line", li, line.text)
@@ -76,7 +78,8 @@ def filter_header_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], debug:
                 if len(line.text) >= 5 and line.coords.bottom > header.coords.bottom - 20:
                     h_overlap = []
                     for header_line in line_types["header"]:
-                        if pdm.is_horizontally_overlapping(header_line, line, threshold=0.01) and line.is_below(header_line):
+                        if pdm.is_horizontally_overlapping(header_line, line, threshold=0.01) \
+                                and line.is_below(header_line):
                             move = False
                         elif pdm.is_vertically_overlapping(line, header_line, threshold=0.5):
                             h_overlap.append(header_line)
@@ -91,7 +94,8 @@ def filter_header_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]], debug:
                     line_types["header"].append(line)
                     line_types[line_type].remove(line)
                     if debug:
-                        print(f"moving line from {line_type} to header: {line.coords.left: >4}-{line.coords.right: <4}\t{line.coords.top}-{line.coords.bottom}\t{line.text}")
+                        print(f"moving line from {line_type} to header: {line.coords.left: >4}-{line.coords.right: <4}"
+                              f"\t{line.coords.top}-{line.coords.bottom}\t{line.text}")
 
 
 def move_double_col_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]],
@@ -104,8 +108,8 @@ def move_double_col_lines(line_types: Dict[str, List[pdm.PageXMLTextLine]],
 
     temp_tr = pdm.PageXMLTextRegion(coords=temp_coords, lines=line_types[target_type])
     # print("temp tr:", temp_tr.id, temp_tr.stats)
-    columns, extra_tr = page_parser.split_lines_on_column_gaps(temp_tr, config,
-                                                           overlap_threshold=overlap_threshold)
+    columns = column_parser.split_lines_on_column_gaps(temp_tr, config,
+                                                       overlap_threshold=overlap_threshold)
     if len(columns) > 2:
         columns.sort(key=lambda x: x.coords.left)
         for ci, left_col in enumerate(columns[:-1]):
@@ -132,7 +136,7 @@ def filter_target_type_lines(page_id: str, target_type: str,
         print("FILTERING FOR TARGET", target_type)
     try:
         temp_coords = pdm.parse_derived_coords(line_types[target_type])
-    except IndexError as err:
+    except IndexError:
         config = copy.deepcopy(config)
         config["column_gap"]["gap_pixel_freq_ratio"] = 0.25
         temp_coords = pdm.parse_derived_coords(line_types[target_type])
@@ -140,24 +144,25 @@ def filter_target_type_lines(page_id: str, target_type: str,
     temp_tr = pdm.PageXMLTextRegion(coords=temp_coords, lines=line_types[target_type])
     temp_tr.set_derived_id(page_id)
     # print("temp tr:", temp_tr.id, temp_tr.stats)
-    columns, extra_tr = page_parser.split_lines_on_column_gaps(temp_tr, config,
-                                                               overlap_threshold=overlap_threshold)
+    columns = column_parser.split_lines_on_column_gaps(temp_tr, config,
+                                                                 overlap_threshold=overlap_threshold)
     # if debug:
     #     print("BEFORE MOVING TO SUB LEMMA")
     #     for line_type in line_types:
     #         print(f'\t{line_type}: {len(line_types[line_type])} lines')
     # print("filter split columns:", len(columns))
-    if extra_tr is not None:
-        if len(columns) == 2:
-            for line in extra_tr.lines:
-                print("extra as third column", line.coords.left, line.coords.right, line.text)
-        else:
-            columns.append(extra_tr)
+    # if extra_tr is not None:
+    #     if len(columns) == 2:
+    #         for line in extra_tr.lines:
+    #             print("extra as third column", line.coords.left, line.coords.right, line.text)
+    #     else:
+    #         columns.append(extra_tr)
     columns.sort(key=lambda x: x.coords.left)
     if debug:
         print('\tnumber of columns:', len(columns))
         for column in columns:
-            print(f"BEFORE MOVING LINES: {target_type}\t{column.coords.left}-{column.coords.right}\tWidth: {column.coords.width}\tLines: {len(column.lines)}")
+            print(f"BEFORE MOVING LINES: {target_type}\t{column.coords.left}-{column.coords.right}"
+                  f"\tWidth: {column.coords.width}\tLines: {len(column.lines)}")
             # for line in column.lines:
             #     print('\t', line.coords.left, line.coords.right, line.text)
     if len(columns) > 2:
@@ -231,15 +236,18 @@ def filter_finis_lines(lines: List[pdm.PageXMLTextLine],
 
 def classify_lines(page_doc: pdm.PageXMLTextRegion, last_page: bool = False,
                    debug: bool = False) -> Dict[str, List[pdm.PageXMLTextLine]]:
-    trs = page_doc.text_regions
+    # print(f"BEFORE COLLECTING TRS - PAGE HAS {page_doc.stats['words']} WORDS, {page_doc.stats['lines']} LINES")
+    trs = [tr for tr in page_doc.text_regions]
     if hasattr(page_doc, "columns"):
-        trs += page_doc.columns
+        trs += [tr for tr in page_doc.columns if tr not in trs]
     if hasattr(page_doc, "extra"):
-        trs += page_doc.extra
+        trs += [tr for tr in page_doc.extra if tr not in trs]
+    # print(f"BEFORE COLLECTING LINES - PAGE HAS {page_doc.stats['words']} WORDS, {page_doc.stats['lines']} LINES")
     lines = [line for tr_outer in trs for tr_inner in tr_outer.text_regions for line in tr_inner.lines]
     lines += [line for tr in trs for line in tr.lines if line not in lines]
     lines += [line for line in page_doc.lines if line not in lines]
     lines = list(set(lines))
+    # print(f"AFTER COLLECTING LINES - PAGE HAS {page_doc.stats['words']} WORDS, {page_doc.stats['lines']} LINES")
     if last_page:
         lines, finis_lines = filter_finis_lines(lines, debug=debug)
     else:
@@ -261,7 +269,7 @@ def classify_lines(page_doc: pdm.PageXMLTextRegion, last_page: bool = False,
             continue
         if re.match(r"^[A-Z]\.?$", line.text) and line.coords.y < 420:
             line_types["header"].append(line)
-        elif re.match(r"^(datums|pag)[,\.]*$", line.text, re.IGNORECASE):
+        elif re.match(r"^(datums|pag)[,.]*$", line.text, re.IGNORECASE):
             line_types["header"].append(line)
         elif re.search(day_month_dito_pattern, line.text, re.IGNORECASE):
             line_types["date_locator"].append(line)
@@ -279,16 +287,19 @@ def classify_lines(page_doc: pdm.PageXMLTextRegion, last_page: bool = False,
             line_types["sub_lemma"].append(line)
         else:
             line_types["main_term"].append(line)
+    # print(f"AFTER SORTING LINES - PAGE HAS {page_doc.stats['words']} WORDS, {page_doc.stats['lines']} LINES")
     if debug:
         for line_type in line_types:
             print(line_type, len(line_types[line_type]))
             for line in sorted(line_types[line_type], key=lambda x: x.coords.y):
-                print(f"{line_type}\t{line.coords.left: >4}-{line.coords.right: <4}\twidth: {line.coords.width}\ttop: {line.coords.top}, bottom: {line.coords.bottom}\t{line.text}")
+                print(f"{line_type}\t{line.coords.left: >4}-{line.coords.right: <4}"
+                      f"\twidth: {line.coords.width}\ttop: {line.coords.top}, bottom: {line.coords.bottom}"
+                      f"\t{line.text}")
     return line_types
 
 
 def extract_overlapping_text(line: pdm.PageXMLTextLine, tr: pdm.PageXMLTextRegion,
-                             debug: bool = False) -> tuple[PageXMLTextLine | None, PageXMLTextLine | None]:
+                             debug: bool = False) -> tuple[pdm.PageXMLTextLine | None, pdm.PageXMLTextLine | None]:
     num_chars = len(line.text)
     char_width = line.coords.width / num_chars
     overlap_width = tr.coords.right - line.coords.left
@@ -312,7 +323,8 @@ def extract_overlapping_text(line: pdm.PageXMLTextLine, tr: pdm.PageXMLTextRegio
             best_end = end
             best_tail_start = m.end()
         if debug:
-            print(m.start(), m.end(), m.group(1), len(m.group(1)), "num_chars:", overlap_num_chars, "best_end:", best_end)
+            print(m.start(), m.end(), m.group(1), len(m.group(1)), "num_chars:",
+                  overlap_num_chars, "best_end:", best_end)
 
     overlap_text = text[:best_end]
     overlap_width = int(char_width * len(overlap_text))
@@ -324,7 +336,8 @@ def extract_overlapping_text(line: pdm.PageXMLTextLine, tr: pdm.PageXMLTextRegio
         print("REMAINING TEXT:", remaining_text)
 
         print(
-            f"char width: {char_width}\t{left} - {tr.coords.right}\toverlap width: {overlap_width}\tnum_chars: {best_end}")
+            f"char width: {char_width}\t{left} - {tr.coords.right}\toverlap width: {overlap_width}"
+            f"\tnum_chars: {best_end}")
     overlap_points = [point for point in points if point[0] <= tr.coords.right]
     overlap_bases = [point for point in bases if point[0] <= tr.coords.right]
     if debug and len(overlap_bases) == 0:
@@ -370,7 +383,7 @@ def make_dummy_line(left: int, right: int, top: int, bottom: int,
     return pdm.PageXMLTextLine(metadata=copy.deepcopy(metadata), coords=dummy_coords, text=None)
 
 
-def make_dummy_column(left: int, right: int, top: int, bottom:int,
+def make_dummy_column(left: int, right: int, top: int, bottom: int,
                       metadata: Dict[str, any]) -> pdm.PageXMLColumn:
     dummy_line = make_dummy_line(left, right, top, bottom, metadata)
     dummy_coords = pdm.parse_derived_coords([dummy_line])
@@ -432,8 +445,8 @@ def split_double_col_lines(line_types, config, debug: bool = False):
     cols = []
     if debug:
         print("SPLITTING DOUBLE COL LINES")
-    lines = [line for line_type in line_types for line in line_types[line_type] if line.text]
-    char_width = sum([line.coords.w for line in lines]) / sum([len(line.text) for line in lines])
+    # lines = [line for line_type in line_types for line in line_types[line_type] if line.text]
+    # char_width = sum([line.coords.w for line in lines]) / sum([len(line.text) for line in lines])
     for line_type in line_types:
         if line_type in {"header", "double_col", "unknown", "finis_lines"}:
             continue
@@ -446,21 +459,22 @@ def split_double_col_lines(line_types, config, debug: bool = False):
             raise
         temp_tr = pdm.PageXMLTextRegion(coords=coords, lines=line_types[line_type])
         temp_tr.set_derived_id("temp_tr")
-        columns, temp_extra = page_parser.split_lines_on_column_gaps(temp_tr, config, overlap_threshold=0.1)
+        columns = column_parser.split_lines_on_column_gaps(temp_tr, config, overlap_threshold=0.1)
         if debug:
             print(line_type, "temp_tr:", temp_tr.id)
-            print("\tnum cols:", len(columns), "temp_extra:", temp_extra.id if temp_extra else None)
+            # print("\tnum cols:", len(columns), "temp_extra:", temp_extra.id if temp_extra else None)
+            print("\tnum cols:", len(columns))
         for col in columns:
             col.add_type(line_type)
             if debug:
                 print("ADDING COL\t", line_type, col.coords.left, col.coords.right)
             cols.append((col, line_type))
-        if temp_extra:
-            if debug:
-                print("ADDING EXTRA COL\t", line_type, temp_extra.coords.left, temp_extra.coords.right)
-                for line in temp_extra.lines:
-                    print("\t\t", line.coords.left, line.coords.right, line.text)
-            cols.append((temp_extra, line_type))
+        # if temp_extra:
+        #     if debug:
+        #         print("ADDING EXTRA COL\t", line_type, temp_extra.coords.left, temp_extra.coords.right)
+        #         for line in temp_extra.lines:
+        #             print("\t\t", line.coords.left, line.coords.right, line.text)
+        #     cols.append((temp_extra, line_type))
     cols.sort(key=lambda x: x[0].coords.left)
     cols = check_missing_columns(cols, cols[0][0].metadata)
     for line in line_types["double_col"]:
@@ -499,7 +513,8 @@ def split_double_col_lines(line_types, config, debug: bool = False):
                     print(f"Adding overlapping line to {col_type}:", overlap_line.text)
                     print(f"\tbaseline: {overlap_line.baseline.points}")
                     if remaining_line is not None:
-                        print(f"Remaining line: {remaining_line.coords.left}-{remaining_line.coords.right}\t{remaining_line.text}")
+                        print(f"Remaining line: {remaining_line.coords.left}-{remaining_line.coords.right}"
+                              f"\t{remaining_line.text}")
                         print(f"\tbaseline: {remaining_line.baseline.points}")
                 line_types[col_type].append(overlap_line)
             text = remaining_line.text if remaining_line else ''
@@ -518,7 +533,7 @@ def check_main_sub_lemma_overlap(line_types: Dict[str, List[pdm.PageXMLTextLine]
     print("CHECKING MAIN AND SUB OVERLAP")
     main_coords = pdm.parse_derived_coords(line_types["main_term"])
     main_tr = pdm.PageXMLTextRegion(coords=main_coords, lines=line_types["main_term"])
-    main_cols, main_extra = page_parser.split_lines_on_column_gaps(main_tr, config)
+    main_cols, main_extra = column_parser.split_lines_on_column_gaps(main_tr, config)
     print("MAIN COLS:", len(main_cols), "EXTRA:", main_extra is not None)
     for main_col in main_cols:
         print("\tCOL", main_col.coords.left, main_col.coords.right)
@@ -528,7 +543,7 @@ def check_main_sub_lemma_overlap(line_types: Dict[str, List[pdm.PageXMLTextLine]
             print(line.coords.left, line.coords.right, line.text)
     sub_coords = pdm.parse_derived_coords(line_types["sub_lemma"])
     sub_tr = pdm.PageXMLTextRegion(coords=sub_coords, lines=line_types["sub_lemma"])
-    sub_cols, sub_extra = page_parser.split_lines_on_column_gaps(sub_tr, config)
+    sub_cols, sub_extra = column_parser.split_lines_on_column_gaps(sub_tr, config)
     print("SUB COLS:", len(sub_cols), "EXTRA:", sub_extra is not None)
     for sub_col in sub_cols:
         print("\tCOL", sub_col.coords.left, sub_col.coords.right)
@@ -545,9 +560,9 @@ def move_unknowns_from_page(line_types: Dict[str, List[pdm.PageXMLTextLine]],
     if debug:
         print("MOVING UNKNOWNS FROM PAGE")
     all_cols = []
-    main_coords = pdm.parse_derived_coords(line_types["main_term"])
-    main_tr = pdm.PageXMLTextRegion(coords=main_coords, lines=line_types["main_term"])
-    main_cols, main_extra = page_parser.split_lines_on_column_gaps(main_tr, config)
+    # main_coords = pdm.parse_derived_coords(line_types["main_term"])
+    # main_tr = pdm.PageXMLTextRegion(coords=main_coords, lines=line_types["main_term"])
+    # main_cols, main_extra = column_parser.split_lines_on_column_gaps(main_tr, config)
     # for col in main_cols:
     #     col.add_type('main_term')
     #     all_cols.append(col)
@@ -556,35 +571,35 @@ def move_unknowns_from_page(line_types: Dict[str, List[pdm.PageXMLTextLine]],
     #     all_cols.append(main_extra)
     sub_coords = pdm.parse_derived_coords(line_types["sub_lemma"])
     sub_tr = pdm.PageXMLTextRegion(coords=sub_coords, lines=line_types["sub_lemma"])
-    sub_cols, sub_extra = page_parser.split_lines_on_column_gaps(sub_tr, config)
+    sub_cols = column_parser.split_lines_on_column_gaps(sub_tr, config)
     for col in sub_cols:
         col.add_type('sub_lemma')
         # print('\tMOVING\tSUB_LEMMA COL:', col.coords.left, col.coords.right)
         all_cols.append(col)
-    if sub_extra:
-        sub_extra.add_type('sub_lemma')
+    # if sub_extra:
+    #     sub_extra.add_type('sub_lemma')
         # print('\tMOVING\tSUB_LEMMA EXTRA:', sub_extra.coords.left, sub_extra.coords.right)
-        all_cols.append(sub_extra)
+    #     all_cols.append(sub_extra)
     date_coords = pdm.parse_derived_coords(line_types["date_locator"])
     date_tr = pdm.PageXMLTextRegion(coords=date_coords, lines=line_types["date_locator"])
-    date_cols, date_extra = page_parser.split_lines_on_column_gaps(date_tr, config)
+    date_cols = column_parser.split_lines_on_column_gaps(date_tr, config)
     for col in date_cols:
         col.add_type('date_locator')
         all_cols.append(col)
-    if date_extra:
-        date_extra.add_type('date_locator')
-        all_cols.append(date_extra)
+    # if date_extra:
+    #     date_extra.add_type('date_locator')
+    #     all_cols.append(date_extra)
     page_coords = pdm.parse_derived_coords(line_types["page_locator"])
     page_tr = pdm.PageXMLTextRegion(coords=page_coords, lines=line_types["page_locator"])
-    page_cols, page_extra = page_parser.split_lines_on_column_gaps(page_tr, config, debug=False)
+    page_cols = column_parser.split_lines_on_column_gaps(page_tr, config, debug=False)
     for col in page_cols:
         col.add_type('page_locator')
         # print("PAGE COL:", col.id)
         all_cols.append(col)
-    if page_extra:
-        page_extra.add_type('page_locator')
+    # if page_extra:
+    #     page_extra.add_type('page_locator')
         # print("PAGE EXTRA:", page_extra.id)
-        all_cols.append(page_extra)
+    #     all_cols.append(page_extra)
     all_cols = sorted(all_cols, key=lambda x: x.coords.left)
     if debug:
         for ci, col in enumerate(all_cols):
@@ -594,7 +609,7 @@ def move_unknowns_from_page(line_types: Dict[str, List[pdm.PageXMLTextLine]],
         if debug:
             print("FIRST COLUMN IS NOT SUB_LEMMA:", first_col.type)
         # remove the first column from the list
-        all_cols = all_cols[1:]
+        # all_cols = all_cols[1:]
         if 'page_locator' in first_col.type:
             line_types["unknown"] = first_col.lines
             for line in first_col.lines:
@@ -609,10 +624,10 @@ def move_unknowns_to_correct_column(line_types: Dict[str, List[pdm.PageXMLTextLi
     for line_type in ['main_term', 'sub_lemma', 'date_locator', 'page_locator']:
         type_coords = pdm.parse_derived_coords(line_types[line_type])
         type_tr = pdm.PageXMLTextRegion(coords=type_coords, lines=line_types[line_type])
-        type_cols, type_extra = page_parser.split_lines_on_column_gaps(type_tr, config)
+        type_cols = column_parser.split_lines_on_column_gaps(type_tr, config)
         cols[line_type] = type_cols
-        if type_extra:
-            cols[line_type].append(type_extra)
+        # if type_extra:
+        #     cols[line_type].append(type_extra)
     unknown_lines = line_types["unknown"]
     for line in unknown_lines:
         found_col = False
@@ -642,6 +657,7 @@ def classify_and_filter_lines(page: pdm.PageXMLPage,
     config["column_gap"]["gap_pixel_freq_ratio"] = 0.25
     move_double_col_lines(line_types, config)
     filter_target_type_lines(page.id, "sub_lemma", line_types, config, overlap_threshold=0.7, debug=debug)
+    # print(f"AFTER FILTERING TARGET LINE TYPES - PAGE HAS {page.stats['words']} WORDS, {page.stats['lines']} LINES")
     # check for lines incorrectly moved to page col
     move_unknowns_from_page(line_types, config, debug=debug)
     # First, filter page and date, so main_term has only overlap with
@@ -657,7 +673,7 @@ def classify_and_filter_lines(page: pdm.PageXMLPage,
     #     for line in sorted(line_types[line_type], key=lambda x: x.coords.y):
     #         print(line_type, line.coords.bottom, line.coords.left, line.coords.right, line.text)
     if debug:
-        print("BEFORE SPLITTING DOUBLE COLUMN LINES")
+        print(f"BEFORE SPLITTING DOUBLE COLUMN LINES - PAGE HAS {page.stats['words']} WORDS, {page.stats['lines']} LINES")
         for line_type in line_types:
             print(f'\t{line_type}: {len(line_types[line_type])} lines')
     split_double_col_lines(line_types, config, debug=debug)
@@ -677,6 +693,7 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
     # Add test: count lines and words in new columns to make sure
     # All content of page is copied to new columns
     lines, words = 0, 0
+    # print('PAGE STATS START:', page.stats)
     for line_type in line_types:
         if line_type in {"double_col", "unknown"}:
             continue
@@ -711,10 +728,10 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
             temp_tr = pdm.PageXMLTextRegion(coords=temp_coords, lines=line_types[line_type])
             if debug:
                 print("\nsplitting lines into columns for type:", line_type)
-            columns, temp_extra = page_parser.split_lines_on_column_gaps(temp_tr, config,
-                                                                         overlap_threshold=0.1,
-                                                                         debug=False)
-            if len(columns) > 2 or len(columns) == 2 and temp_extra is not None:
+            columns = column_parser.split_lines_on_column_gaps(temp_tr, config,
+                                                               overlap_threshold=0.1,
+                                                               debug=False)
+            if len(columns) > 2:
                 if debug:
                     for column in columns:
                         print("column:", line_type, column.coords.box, column.stats)
@@ -725,15 +742,15 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
                 if len(columns) > 2:
                     extra += columns[2:]
                     columns = columns[:2]
-                if temp_extra is not None:
-                    if debug:
-                        print("extra:", line_type, temp_extra.coords.box, temp_extra.stats)
-                        for line in temp_extra.lines:
-                            print("\t", line.coords.left, line.coords.right, line.text)
-                    extra.append(temp_extra)
-                #raise ValueError(f"More columns of type {line_type} than expected")
-            if temp_extra is not None:
-                columns += [temp_extra]
+                # if temp_extra is not None:
+                #     if debug:
+                #         print("extra:", line_type, temp_extra.coords.box, temp_extra.stats)
+                #         for line in temp_extra.lines:
+                #             print("\t", line.coords.left, line.coords.right, line.text)
+                #     extra.append(temp_extra)
+                # raise ValueError(f"More columns of type {line_type} than expected")
+            # if temp_extra is not None:
+            #     columns += [temp_extra]
             for column in columns:
                 if debug:
                     print(line_type, column.coords.box)
@@ -749,16 +766,19 @@ def make_index_page_text_regions(page: pdm.PageXMLPage,
                     print(f"COLUMN HAS {column.stats['words']} WORDS AND {column.stats['lines']} LINES", column.type)
                     print(column.stats)
                 index_columns.append(column)
-            if temp_extra is not None:
-                if debug:
-                    print(temp_tr.stats)
-                    print("col_type:", line_type, "columns:", len(columns))
-                    for column in columns:
-                        print(column.id, column.coords.box)
-                    print("temp_extra:", temp_extra.stats)
-                    for line in temp_extra.lines:
-                        print(f"\t{line_type}\t{line.coords.x: >6}{line.coords.y: >6}{line.coords.w: >6}\t{line.text}")
-                pass
+            # if temp_extra is not None:
+            #     if debug:
+            #         print(temp_tr.stats)
+            #         print("col_type:", line_type, "columns:", len(columns))
+            #         for column in columns:
+            #             print(column.id, column.coords.box)
+            #         print("temp_extra:", temp_extra.stats)
+            #         for line in temp_extra.lines:
+            #             print(f"\t{line_type}\t{line.coords.x: >6}{line.coords.y: >6}{line.coords.w: >6}"
+            #             "\t{line.text}")
+            #     pass
+        # print(f'PAGE STATS {line_type}:', page.stats)
+
     # if there are remaining unknown lines, add
     # them as a new extra text region
     if len(line_types["unknown"]) > 0:
@@ -822,14 +842,14 @@ class Sublemma:
         self.date_locator_month = month
         self.has_preferred_term: bool = False
         self.lines = type_lines if type_lines is not None else init_sub_lemma_lines()
-        lines = [l for t in type_lines for l in type_lines[t]]
+        lines = [line for line_type in type_lines for line in type_lines[line_type]]
         if len(lines) > 0:
             try:
                 self.coords = pdm.parse_derived_coords(lines)
             except IndexError:
-                for t in type_lines:
-                    for l in type_lines[t]:
-                        print(l.coords.box)
+                for line_type in type_lines:
+                    for line in type_lines[line_type]:
+                        print(line.coords.box)
                 raise
         else:
             print(f'empty sublemma, main_term: {main_term}\n\tsub_lemma: {sub_lemma}')
@@ -847,6 +867,7 @@ class Sublemma:
                f"sub_lemma={self.sub_lemma}, " \
                f"date_locator={self.date_locator}, " \
                f"page_locator={self.page_locator})"
+
 
 def init_sub_lemma_lines(line: pdm.PageXMLTextLine = None) -> Dict[str, List[pdm.PageXMLTextLine]]:
     return {
@@ -920,7 +941,7 @@ def get_sub_lemma_lines(boundary: Dict[str, int],
                     # main terms have no page reference but a reference
                     # to a preferred term ('Abbema -> Zie Hamburg')
                     sub_lemma_lines[col_type] = [line]
-                    prev_bottom = line.coords.top
+                    # prev_bottom = line.coords.top
                 else:
                     sub_lemma_lines[col_type].append(line)
             else:
@@ -952,11 +973,11 @@ def parse_sub_lemma_lines(sub_lemma_lines: Dict[str, List[pdm.PageXMLTextLine]])
             for line in sub_lemma_lines[line_type]:
                 print(line_type, line.coords.left, line.coords.right, line.text)
         raise
-    if len([l for t in sub_lemma_lines for l in sub_lemma_lines[t]]) == 0:
+    if len([line for line_type in sub_lemma_lines for line in sub_lemma_lines[line_type]]) == 0:
         return None
     return Sublemma(main_term=main_term, sub_lemma=sub_lemma_text,
-                         date_locator=date_locator, page_locator=page_locator,
-                         type_lines=sub_lemma_lines)
+                    date_locator=date_locator, page_locator=page_locator,
+                    type_lines=sub_lemma_lines)
 
 
 def has_line(sub_lemma: Sublemma, line: pdm.PageXMLTextLine) -> bool:
@@ -977,11 +998,10 @@ def parse_date_locator(date_locator: str) -> Tuple[Union[None, str], Union[None,
     elif re.match("dito", date_locator):
         day = "dito"
         month = "dito"
-    elif m:= re.search(r"^(\w+) (\w+)[,\.]?$", date_locator):
+    elif m := re.search(r"^(\w+) (\w+)[,.]?$", date_locator):
         day = m.group(1)
         month = m.group(2)
     return day, month
-
 
 
 def check_date_locator(sub_lemma: Sublemma, sub_lemmas: List[Sublemma]) -> None:
@@ -1053,7 +1073,7 @@ def get_lemma_boundaries(column_lines: Dict[str, List[pdm.PageXMLTextLine]],
             next_main_term = column_lines['main_term'][li+1]
             main_term_bottom = next_main_term.coords.top
         in_range_page_locs = []
-        for li, page_loc in enumerate(column_lines['page_locator']):
+        for pi, page_loc in enumerate(column_lines['page_locator']):
             if page_loc.coords.bottom < main_term_top:
                 continue
             elif page_loc.coords.top > main_term_bottom:
@@ -1081,12 +1101,12 @@ def split_sub_lemmas(column_lines: Dict[str, List[pdm.PageXMLTextLine]],
                      prev_main_term: str = None,
                      debug: bool = False) -> Tuple[List[Sublemma], Dict[str, List[pdm.PageXMLTextLine]]]:
     sub_lemmas = []
-    prev_bottom = 0
+    # prev_bottom = 0
     main_term_lines = group_main_term_lines(column_lines['main_term'], debug=debug)
     column_lines['main_term'] = main_term_lines
     boundaries = get_lemma_boundaries(column_lines, debug=debug)
     for boundary in boundaries:
-    # for line in column_lines["page_locator"]:
+        # for line in column_lines["page_locator"]:
         if remaining_lines:
             sub_lemma = get_sub_lemma_lines(boundary, column_lines, remaining_lines=remaining_lines,
                                             debug=debug)

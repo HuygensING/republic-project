@@ -643,8 +643,9 @@ def read_resolution_paragraphs(res_files, pre_tokenise_func: Callable = None, pr
                 else:
                     doc = {header: row[hi] for hi, header in enumerate(headers)}
                     if pre_tokenise_func:
-                        doc[pre_tokenise_field] = pre_tokenise_func(doc[pre_tokenise_field])
-                    yield doc
+                        tokenized_doc = pre_tokenise_func(doc[pre_tokenise_field])
+                        doc['tokens'] = tokenized_doc.tokens
+                        yield doc
 
 
 def write_rewrite_dictionary_json(rewrite_dict: Dict[str, str], dict_file: str):

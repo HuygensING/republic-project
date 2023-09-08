@@ -1,23 +1,30 @@
+import copy
+import json
 from typing import List, Dict, Generator, Union, Iterator
 from collections import defaultdict
-import copy
 
 import pagexml.model.physical_document_model as pdm
 # from pagexml.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
 # from pagexml.model.physical_document_model import parse_derived_coords
 
+from republic.model.inventory_mapping import get_inventory_by_num
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
+from republic.model.republic_date import DateNameMapper
+from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
 from republic.helper.pagexml_helper import sort_lines_in_reading_order
 from republic.helper.metadata_helper import doc_id_to_iiif_url
+from republic.parser.logical.date_parser import get_date_token_cat
+from republic.parser.logical.date_parser import get_session_date_line_structure
+from republic.parser.logical.date_parser import get_session_date_lines_from_pages
 
 
-def initialize_inventory_date(inv_metadata: dict) -> RepublicDate:
+def initialize_inventory_date(inv_metadata: dict, date_mapper: DateNameMapper) -> RepublicDate:
     year, month, day = [int(part) for part in inv_metadata['period_start'].split('-')]
-    return RepublicDate(year, month, day)
+    return RepublicDate(year, month, day, date_mapper=date_mapper)
 
 
 def stream_handwritten_page_lines(page: pdm.PageXMLPage,
@@ -30,12 +37,10 @@ def stream_handwritten_page_lines(page: pdm.PageXMLPage,
         # make sure the session date is part of the column because the
         # session parser needs it
         if tr.has_type('date'):
-            add_column = False
             for column in page.columns:
                 if pdm.is_horizontally_overlapping(tr, column) and tr not in column.text_regions:
                     # print("adding extra tr to column")
                     column.text_regions.append(tr)
-                    add_column = True
                     trs.append(tr)
                     for line in tr.lines:
                         line.metadata["column_id"] = column.id
@@ -130,23 +135,35 @@ def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXML
                     print(line.metadata)
                     print(line.text)
         metadata = column_metadata[text_region_id]
+        parent = text_region_lines[text_region_id][0].parent
+        # print('FIRST PARENT:')
+        # print(json.dumps(parent.metadata, indent=4))
         coords = pdm.parse_derived_coords(text_region_lines[text_region_id])
         text_region = pdm.PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
-                                        coords=coords, lines=text_region_lines[text_region_id])
+                                            coords=coords, lines=text_region_lines[text_region_id])
         text_region.set_derived_id(text_region.metadata['scan_id'])
         text_region.metadata["iiif_url"] = doc_id_to_iiif_url(text_region.id)
         # We're going from physical to logical structure here, so add a trace to the
         # logical structure elements about where they come from in the physical
         # structure, especially the printed page number needed for linking to locators
         # in the index pages.
-        parent = text_region_lines[text_region_id][0].parent
+        # print('START TEXTREGION:')
+        # print(json.dumps(text_region.metadata, indent=4))
+        # print('FIRST LINE:')
+        first_line = text_region_lines[text_region_id][0]
+        # print(json.dumps(first_line.metadata, indent=4))
         while "resolution_page" not in parent.type and parent.parent:
             parent = parent.parent
+            # print('NEXT PARENT:')
+            # print(json.dumps(parent.metadata, indent=4))
         if parent:
             source_page = parent
             if "textrepo_version" in source_page.metadata:
                 scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
             text_region.metadata['page_id'] = source_page.id
+            if 'page_num' not in source_page.metadata:
+                print('MISSING PAGE_NUM')
+                print(json.dumps(source_page.metadata, indent=4))
             text_region.metadata['page_num'] = source_page.metadata['page_num']
             if "text_page_num" not in source_page.metadata:
                 pass
@@ -160,7 +177,8 @@ def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXML
     for scan_id in scan_version:
         scan_version[scan_id]['scan_id'] = scan_id
     session = Session(metadata=session_metadata, text_regions=text_regions,
-                      evidence=evidence, scan_versions=list(scan_version.values()))
+                      evidence=evidence, scan_versions=list(scan_version.values()),
+                      date_mapper=session_searcher.date_mapper)
     session.metadata["text_page_num"] = sorted(list(session_text_page_nums))
     session.metadata["page_ids"] = sorted(list(session_page_ids))
     # session.add_page_text_region_metadata(column_metadata)
@@ -172,11 +190,12 @@ def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXML
         return session
     # Check if the next session date is more than 1 workday ahead
     date_match = session_searcher.get_session_date_match()
-    new_date = derive_date_from_string(date_match.phrase.phrase_string, session_searcher.year)
+    new_date = derive_date_from_string(date_match.phrase.phrase_string, session_searcher.year,
+                                       date_mapper=session_searcher.date_mapper)
     if session.date.isoformat() == new_date.isoformat():
         # print('SAME DAY:', session_searcher.current_date.isoformat(), '\t', session.date.isoformat())
         return session
-    workday_shift = calculate_work_day_shift(new_date, session.date)
+    workday_shift = calculate_work_day_shift(new_date, session.date, date_mapper=session_searcher.date_mapper)
     # print('workday_shift:', workday_shift)
     if workday_shift > 1:
         print('MEETING DOC IS MULTI DAY')
@@ -258,14 +277,47 @@ def get_columns_metadata(sorted_pages: List[pdm.PageXMLPage]) -> Dict[str, dict]
     return column_metadata
 
 
+def get_printed_date_elements(inv_num):
+    inv_metadata = get_inventory_by_num(inv_num)
+    date_elements = []
+    for name_map in default_date_name_map:
+        if name_map['period_start'] <= inv_metadata['year_start'] and \
+                inv_metadata['year_end'] <= name_map['period_end']:
+            date_elements.append(('week_day_name', name_map['week_day_name']))
+            date_elements.append(('den', True))
+            date_elements.append(('month_day_name', name_map['month_day_name']))
+            date_elements.append(('month_name', name_map['month_name']))
+            # date_elements.append(('year', False))
+    return date_elements
+
+
+def get_date_mapper(inv_num, pages, ignorecase: bool = True):
+    inv_metadata = get_inventory_by_num(inv_num)
+    inv_id = inv_metadata['inventory_id']
+    pages.sort(key=lambda page: page.id)
+    date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
+    session_date_lines = get_session_date_lines_from_pages(pages)
+    if len(session_date_lines) == 0:
+        date_line_structure = get_printed_date_elements(inv_num)
+    else:
+        date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat, inv_id)
+    if 'week_day_name' not in [element[0] for element in date_line_structure]:
+        print('WARNING - missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
+        return None
+
+    return DateNameMapper(inv_metadata, date_line_structure)
+
+
 def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
                  inv_metadata: dict) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - check for large date jumps and short session docs
     column_metadata = get_columns_metadata(sorted_pages)
-    current_date = initialize_inventory_date(inv_metadata)
+    date_mapper = get_date_mapper(inv_num, sorted_pages)
+    current_date = initialize_inventory_date(inv_metadata, date_mapper)
     session_searcher = SessionSearcher(inv_metadata, current_date,
-                                       session_phrase_model, window_size=30)
+                                       session_phrase_model, window_size=30,
+                                       date_mapper=date_mapper)
     session_metadata = session_searcher.parse_session_metadata(None)
     gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
     lines_skipped = 0
