@@ -85,6 +85,8 @@ class NeuralLineClassifier:
     '''
 
     def classify_page_lines(self, page: pdm.PageXMLPage):
+        if page.stats['lines'] == 0:
+            return {}
         with torch.no_grad():
             page_line_features = page_features.get_page_line_features(page, self.skip_sim)
             # spatial_sequence, char_sequence, class_sequence = self.page_to_feature_sequences(page_line_features)
@@ -458,7 +460,8 @@ def read_ground_truth_data(line_class_files: Union[str, List[str]]) -> List[Dict
 
 
 def get_overlap_lines(gt_page_lines: List[pdm.PageXMLTextLine],
-                      page_lines: List[pdm.PageXMLTextLine]) -> List[Tuple[pdm.PageXMLTextLine, pdm.PageXMLTextLine]]:
+                      page_lines: List[pdm.PageXMLTextLine],
+                      debug: int = 0) -> List[Tuple[pdm.PageXMLTextLine, pdm.PageXMLTextLine]]:
     line_pairs = []
     gt_paired = set()
     page_paired = set()
@@ -479,24 +482,27 @@ def get_overlap_lines(gt_page_lines: List[pdm.PageXMLTextLine],
                 # print('PAGE_LINE:', page_line.id, page_line.text)
                 # print('\t', distance(gt_page_line.text, page_line.text))
                 continue
-            if gt_page_line in gt_paired:
-                print('DOUBLE GT LINE')
-                print('\t', gt_page_line.text)
-            if page_line in page_paired:
-                print('DOUBLE PAGE LINE')
-                print('\t', page_line.text)
+            if debug > 0:
+                if gt_page_line in gt_paired:
+                    print('DOUBLE GT LINE')
+                    print('\t', gt_page_line.text)
+                if page_line in page_paired:
+                    print('DOUBLE PAGE LINE')
+                    print('\t', page_line.text)
             line_pairs.append((gt_page_line, page_line))
             gt_paired.add(gt_page_line)
             page_paired.add(page_line)
     for gt_page_line in gt_page_lines:
-        if gt_page_line not in gt_paired:
-            print('GT UNPAIRED:', gt_page_line.id)
-            print('\t', gt_page_line.text)
+        if debug > 0:
+            if gt_page_line not in gt_paired:
+                print('GT UNPAIRED:', gt_page_line.id)
+                print('\t', gt_page_line.text)
     for page_line in page_lines:
-        if page_line not in page_paired:
-            print('PAGE UNPAIRED:', page_line.id)
-            print(doc_id_to_iiif_url(page_line.id))
-            print('\t', page_line.text)
+        if debug > 0:
+            if page_line not in page_paired:
+                print('PAGE UNPAIRED:', page_line.id)
+                print(doc_id_to_iiif_url(page_line.id))
+                print('\t', page_line.text)
     print(len(line_pairs))
     return line_pairs
 

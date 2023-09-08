@@ -3,7 +3,6 @@ from collections import defaultdict
 from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
-from pagexml.parser import json_to_pagexml_text_region
 from pagexml.helper.pagexml_helper import make_text_region_text
 from fuzzy_search.match.phrase_match import PhraseMatch
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher

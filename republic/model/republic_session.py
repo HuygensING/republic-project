@@ -9,7 +9,8 @@ from fuzzy_search.match.phrase_match import PhraseMatch
 from republic.fuzzy.fuzzy_event_searcher import EventSearcher
 from republic.model.republic_date import RepublicDate, get_next_date_strings, get_coming_holidays_phrases
 from republic.model.republic_date import get_date_exception_shift, is_session_date_exception, exception_dates
-from republic.model.republic_date import get_next_workday, derive_date_from_string, get_shifted_date
+from republic.model.republic_date import DateNameMapper
+from republic.model.republic_date import get_next_workday, get_shifted_date
 from republic.model.republic_document_model import Session
 
 
@@ -57,12 +58,13 @@ def session_from_json(json_doc: dict) -> Session:
     return Session(metadata=json_doc['metadata'], columns=json_doc['columns'], evidence=json_doc['evidence'])
 
 
-def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate) -> int:
+def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate,
+                             date_mapper: DateNameMapper) -> int:
     """Calculate the number of work days different between current session date and previous session date."""
     if current_date.date < prev_date.date:
         return 0
     #     raise ValueError("current session dates should be later than previous session date.")
-    next_date = get_next_workday(prev_date)
+    next_date = get_next_workday(prev_date, date_mapper=date_mapper)
     workday_shift = 1
     # if not next_date:
     #     print('NO NEXT DATE FOR PREV DATE:', prev_date.isoformat())
@@ -70,7 +72,7 @@ def calculate_work_day_shift(current_date: RepublicDate, prev_date: RepublicDate
     #     print('NO CURRENT DATE FOR PREV DATE:', prev_date.isoformat())
     while next_date and next_date.isoformat() < current_date.isoformat():
         # print('getting next workday')
-        next_date = get_next_workday(next_date)
+        next_date = get_next_workday(next_date, date_mapper=date_mapper)
         # print('next_date:', next_date.isoformat())
         workday_shift += 1
     return workday_shift
@@ -92,6 +94,7 @@ class SessionSearcher(EventSearcher):
 
     def __init__(self, inventory_metadata: Dict[str, any], current_date: RepublicDate,
                  phrase_model_list: List[Dict[str, Union[str, int, List[str]]]],
+                 date_mapper: DateNameMapper,
                  window_size: int = 30, include_year: bool = False):
         """SessionSearcher extends the generic event searcher to specifically search for the lines
         that express the opening of a new session in the resolutions."""
@@ -102,12 +105,14 @@ class SessionSearcher(EventSearcher):
         self.inventory_num = inventory_metadata['inventory_num']
         # set start date based on period covered by inventory
         self.current_date = current_date
+        self.date_mapper = date_mapper
         # set year of inventory
         self.year = current_date.year
         self.include_year = include_year
         # generate initial meeting date strings
         self.date_strings: Dict[str, RepublicDate] = get_next_date_strings(self.current_date, num_dates=7,
-                                                                           include_year=include_year)
+                                                                           include_year=include_year,
+                                                                           date_mapper=self.date_mapper)
         self.add_attendance_searcher(phrase_model_list)
         self.add_session_date_searcher()
         self.session_opening_elements: Dict[str, int] = {}
@@ -121,7 +126,7 @@ class SessionSearcher(EventSearcher):
         for entry in phrase_model_list:
             if entry['start_year'] <= self.year <= entry['end_year']:
                 attendance_phrases.append(entry)
-        for coming_holiday_phrase in get_coming_holidays_phrases(self.current_date):
+        for coming_holiday_phrase in get_coming_holidays_phrases(self.current_date, date_mapper=self.date_mapper):
             attendance_phrases.append(coming_holiday_phrase)
         # add phrases as PhraseModel objects
         self.phrase_models: Dict[str, PhraseModel] = {'attendance_searcher': PhraseModel(model=attendance_phrases,
@@ -133,7 +138,8 @@ class SessionSearcher(EventSearcher):
         """Add a fuzzy searcher configured with a session date phrase model"""
         # generate session date strings for the current day and next six days
         self.date_strings = get_next_date_strings(self.current_date, num_dates=num_dates,
-                                                  include_year=self.include_year)
+                                                  include_year=self.include_year,
+                                                  date_mapper=self.date_mapper)
         # generate session date phrases for the first week covered in this inventory
         date_phrases = [{'phrase': date_string, 'label': 'session_date'} for date_string in self.date_strings]
         date_phrases += [{'phrase': str(self.year), 'label': 'session_year'}]
@@ -351,10 +357,10 @@ class SessionSearcher(EventSearcher):
         prev_date, prev_prev_date = None, None
         if len(found_dates) > 0:
             year, month, day = [int(part) for part in found_dates[-1].split('-')]
-            prev_date = RepublicDate(year, month, day)
+            prev_date = RepublicDate(year, month, day, date_mapper=self.date_mapper)
         if len(found_dates) > 1:
             year, month, day = [int(part) for part in found_dates[-2].split('-')]
-            prev_prev_date = RepublicDate(year, month, day)
+            prev_prev_date = RepublicDate(year, month, day, date_mapper=self.date_mapper)
         return prev_date, prev_prev_date
 
     def check_date_shift_validity(self, prev_session_metadata: Union[None, dict]) -> str:
@@ -386,7 +392,7 @@ class SessionSearcher(EventSearcher):
                 [session['num_lines'] for session in self.sessions[prev_prev_date.isoformat()]])
             two_sessions_num_lines = prev_prev_date_num_lines + prev_date_num_lines
             prev_prev_date_day_shift = self.current_date - prev_prev_date
-            workday_shift = calculate_work_day_shift(self.current_date, prev_prev_date)
+            workday_shift = calculate_work_day_shift(self.current_date, prev_prev_date, date_mapper=self.date_mapper)
             if prev_prev_date_day_shift.days > 7 and two_sessions_num_lines < workday_shift * 200:
                 # If the date is more than 7 days ahead of the date two sessions ago
                 # and the number of lines for the previous two sessions is low,
@@ -399,7 +405,7 @@ class SessionSearcher(EventSearcher):
                 self.update_session_date_searcher()
                 return status
         if prev_date:
-            workday_shift = calculate_work_day_shift(self.current_date, prev_date)
+            workday_shift = calculate_work_day_shift(self.current_date, prev_date, date_mapper=self.date_mapper)
             # print('workday_shift:', workday_shift)
             if workday_shift > 4 and prev_date_num_lines < workday_shift * 200:
                 # If the new date is more than 4 work days ahead of the previous date,

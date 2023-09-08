@@ -6,6 +6,7 @@ import json
 from fuzzy_search.phrase.phrase import Phrase
 from fuzzy_search.match.phrase_match import PhraseMatch
 import pagexml.model.physical_document_model as pdm
+from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 import republic.helper.pagexml_helper as pagexml
@@ -237,7 +238,7 @@ class ResolutionElementDoc(RepublicDoc):
 class Session(ResolutionElementDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Dict = None,
-                 session_type: str = "ordinaris",
+                 session_type: str = "ordinaris", date_mapper: DateNameMapper = None,
                  paragraphs: List[RepublicParagraph] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
                  lines: List[pdm.PageXMLTextLine] = None,
                  scan_versions: List[dict] = None, evidence: List[PhraseMatch] = None, **kwargs):
@@ -246,7 +247,7 @@ class Session(ResolutionElementDoc):
          lines or possibly as Resolution objects."""
         super().__init__(doc_id=doc_id, doc_type='session', metadata=metadata, paragraphs=paragraphs,
                          text_regions=text_regions, lines=lines, evidence=evidence, **kwargs)
-        self.session_date = RepublicDate(date_string=metadata['session_date'])
+        self.session_date = RepublicDate(date_string=metadata['session_date'], date_mapper=date_mapper)
         self.main_type = "session"
         self.session_type = session_type
         if doc_type:

@@ -3,7 +3,7 @@ import re
 
 import elasticsearch
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import ElasticsearchException
+from elasticsearch.exceptions import ElasticsearchException, NotFoundError
 from fuzzy_search.match.phrase_match import PhraseMatch
 import pagexml.model.physical_document_model as pdm
 import pagexml.parser as parser
@@ -41,7 +41,7 @@ def parse_hits_as_pages(hits: Union[Dict[str, any], List[Dict[str, any]]]) -> Li
     return [parser.json_to_pagexml_page(hit['_source']) for hit in extract_hits(hits)]
 
 
-def make_bool_query(match_fields, size: int = 10000) -> dict:
+def make_bool_query(match_fields) -> dict:
     return {
         'bool': {
             'must': match_fields
@@ -128,14 +128,13 @@ def make_text_page_num_query(page_num: str):
 
 
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
-                         inventory_num: Union[int, None] = None,
-                         size: int = 10000) -> dict:
+                         inventory_num: Union[int, None] = None) -> dict:
     match_fields = [{'match': {'type': page_type}}]
     if inventory_num:
         match_fields += [{'match': {'metadata.inventory_num': inventory_num}}]
     if year:
         match_fields += [{'match': {'metadata.year': year}}]
-    return make_bool_query(match_fields, size)
+    return make_bool_query(match_fields)
 
 
 def select_latest_tesseract_version(versions: List[Dict[str, any]]) -> Dict[str, any]:
@@ -176,40 +175,45 @@ class Retriever:
         self.es_anno = es_anno
         self.es_text = es_text
         self.config = config
+        self.scroll_id = None
 
     def retrieve_multi_docs_by_id(self, index: str, doc_ids: List[str]):
         docs = self.es_anno.mget(index=index, docs=doc_ids)
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
-                    size: int = 100, scroll: str = '2m') -> iter:
+                    size: int = 100, scroll: str = '2m', show_total: bool = True) -> iter:
         if query is None:
             response = es.search(index=index, scroll=scroll, size=size)
         else:
             response = es.search(index=index, scroll=scroll, size=size, query=query)
-        sid = response['_scroll_id']
+        self.scroll_id = response['_scroll_id']
         scroll_size = response['hits']['total']
-        print('total hits:', scroll_size, "\thits per scroll:", len(response['hits']['hits']))
         if type(scroll_size) == dict:
             scroll_size = scroll_size['value']
+        if show_total:
+            print(f"total hits: {scroll_size: >8}\thits per scroll: {len(response['hits']['hits'])}")
+        if scroll_size == 0:
+            self.scroll_id = None
+            return None
         # Start scrolling
         while scroll_size > 0:
             for hit in response['hits']['hits']:
                 yield hit
             try:
-                response = es.scroll(scroll_id=sid, scroll=scroll)
+                response = es.scroll(scroll_id=self.scroll_id, scroll=scroll)
             except ElasticsearchException:
                 print("retrieval failed for query:")
                 print(query)
                 print("last successful hit:", response["hits"]["hits"][0]["_id"])
                 raise
             # Update the scroll ID
-            sid = response['_scroll_id']
+            self.scroll_id = response['_scroll_id']
             # Get the number of results that we returned in the last scroll
             scroll_size = len(response['hits']['hits'])
             # Do something with the obtained page
         # remove scroll context
         try:
-            self.es_anno.clear_scroll(scroll_id=sid)
+            self.es_anno.clear_scroll(scroll_id=self.scroll_id)
         except elasticsearch.ElasticsearchException:
             print('WARNING: no scroll id found when clearing scroll at end of scroll with query:')
             print(query)
@@ -270,11 +274,17 @@ class Retriever:
         return parser.json_to_pagexml_page(response['_source'])
 
     def retrieve_pages_by_query(self, query: dict, size: int = 10) -> List[pdm.PageXMLPage]:
-        hits = []
-        for hit in self.scroll_hits(self.es_anno, query, self.config['pages_index'], '_doc', size=size):
+        for hi, hit in enumerate(self.scroll_hits(self.es_anno, query,
+                                                  self.config['pages_index'],
+                                                  '_doc', size=size)):
             yield parser.json_to_pagexml_page(hit['_source'])
-            # hits += [hit]
-        # return parse_hits_as_pages(hits)
+            if size is not None and (hi+1) == size:
+                break
+        if self.scroll_id:
+            try:
+                self.es_anno.clear_scroll(scroll_id=self.scroll_id)
+            except NotFoundError:
+                pass
 
     def retrieve_page_by_page_number(self, page_num: int, year: int = None,
                                      inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
@@ -307,9 +317,9 @@ class Retriever:
         pages = self.retrieve_pages_by_query(query)
         return sorted(pages, key=lambda x: x.metadata['page_num'])
 
-    def retrieve_pages_by_type(self, page_type: str, inventory_num: int) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_type(self, page_type: str, inventory_num: int, size: int = 10) -> List[pdm.PageXMLPage]:
         query = make_page_type_query(page_type, inventory_num=inventory_num)
-        return self.retrieve_pages_by_query(query)
+        return self.retrieve_pages_by_query(query, size=size)
 
     def retrieve_pages_by_number_of_columns(self, num_columns_min: int,
                                             num_columns_max: int, inventory_config: dict) -> list:
@@ -324,7 +334,7 @@ class Retriever:
         return sorted(pages, key=lambda page: page.metadata['page_num'])
 
     def retrieve_inventory_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
-        pages = self.retrieve_pages_by_type('resolution_page', inventory_num)
+        pages = self.retrieve_pages_by_type('resolution_page', inventory_num, size=10000)
         return sorted(pages, key=lambda page: page.metadata['page_num'])
 
     def retrieve_pagexml_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:

@@ -203,7 +203,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
     for text_region in scan_doc.text_regions:
         if text_region.has_type('main') and text_region.coords.width > 1100:
             if debug:
-                print('WIDE TEXT REGION:', text_region.id)
+                print('split_pagexml_scan - WIDE TEXT REGION:', text_region.id)
             has_wide_main = True
         if text_region.has_type('main'):
             split_columns = False
@@ -211,7 +211,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
         split_columns = True
     pages = split_scan_pages(scan_doc, page_type_index, debug=debug)
     if debug:
-        print('\n')
+        print('split_pagexml_scan - trs per page\n')
         for page in pages:
             print(page.id, page.type)
             for tr in page.columns + page.extra + page.text_regions:
@@ -219,8 +219,8 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
         print('\n')
     if split_columns:
         if debug:
-            print('Splitting page columns into narrower sub columns')
-        pages = [split_column_regions(page_doc) for page_doc in pages]
+            print('split_pagexml_scan - Splitting page columns into narrower sub columns')
+        pages = [split_column_regions(page_doc, debug=debug) for page_doc in pages]
     else:
         for page in pages:
             for text_region in page.text_regions:
@@ -231,7 +231,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
                                                                                     text_region.coords)
                     page.add_child(text_region, as_extra=True)
                     if debug:
-                        print('adding tr as extra:', text_region.id)
+                        print('split_pagexml_scan - adding tr as extra:', text_region.id)
                 else:
                     # turn the text region into a column
                     column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
@@ -241,14 +241,14 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
                     column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                column.coords)
                     if debug:
-                        print('adding tr as column:', text_region.id)
+                        print('split_pagexml_scan - adding tr as column:', text_region.id)
                     page.add_child(column)
             page.text_regions = []
     for page in pages:
         for text_region in page.columns + page.extra:
             text_region.set_derived_id(scan_doc.id)
             if debug:
-                print('setting derived ID:', text_region.id, 'with parent', scan_doc.id)
+                print('split_pagexml_scan - setting derived ID:', text_region.id, 'with parent', scan_doc.id)
             if text_region.has_type('column'):
                 id_field = 'column_id'
             elif text_region.has_type('header'):

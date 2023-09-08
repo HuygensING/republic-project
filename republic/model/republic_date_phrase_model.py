@@ -229,6 +229,9 @@ month_day_names = {
         '29en.': 29,
         '30en.': 30,
         '31en.': 31
+    },
+    'decimal': {
+        f"{i}": i for i in range(1, 32)
     }
 }
 
@@ -260,6 +263,34 @@ month_names = {
         'October': 10,
         'November': 11,
         'December': 12
+    },
+    'modern_en': {
+        'January': 1,
+        'February': 2,
+        'March': 3,
+        'April': 4,
+        'May': 5,
+        'June': 6,
+        'July': 7,
+        'August': 8,
+        'September': 9,
+        'October': 10,
+        'November': 11,
+        'December': 12
+    },
+    'modern_nl': {
+        'januari': 1,
+        'februari': 2,
+        'maart': 3,
+        'april': 4,
+        'mei': 5,
+        'juni': 6,
+        'juli': 7,
+        'augustus': 8,
+        'september': 9,
+        'oktober': 10,
+        'november': 11,
+        'december': 12
     },
     'handwritten': {
         'January': 1,
@@ -329,6 +360,24 @@ week_day_names = {
         "Saterdach": 5,
         "Dominica": 6,
         "Sondach": 6
+    },
+    'modern_nl': {
+        'maandag': 0,
+        'dinsdag': 1,
+        'woensdag': 2,
+        'donderdag': 3,
+        'vrijdag': 4,
+        'zaterdag': 5,
+        'zondag': 6
+    },
+    'modern_en': {
+        'Monday': 0,
+        'Tuesday': 1,
+        'Wednesday': 2,
+        'Thursday': 3,
+        'Friday': 4,
+        'Saturday': 5,
+        'Sunday': 6
     }
 }
 
@@ -340,7 +389,30 @@ date_structure_map = {
     'year': None
 }
 
+
 date_name_map = [
+    {
+        'text_type': 'printed_early',
+        'resolution_type': 'ordinaris',
+        'period_start': 1705,
+        'period_end': 1750,
+        'month_name': 'printed_early',
+        'month_day_name': 'decimal',
+        'week_day_name': 'printed_early'
+    },
+    {
+        'text_type': 'printed_late',
+        'resolution_type': 'ordinaris',
+        'period_start': 1751,
+        'period_end': 1796,
+        'month_name': 'printed_late',
+        'month_day_name': 'decimal',
+        'week_day_name': 'printed_late'
+    }
+]
+
+
+date_name_map_old = [
     {
         'text_type': 'printed_early',
         'resolution_type': 'ordinaris',
@@ -393,6 +465,7 @@ date_name_map = [
         'month_day_name': month_day_names['decimal_en']
     }
 ]
+
 
 month_names_early = [
     "Januarii",

@@ -36,11 +36,13 @@ def get_date_lines(date_trs):
 
 
 def check_line_starts_with_week_day_name(line: pdm.PageXMLTextLine, ignorecase: bool = False):
+    if line.text is None:
+        return False
+    line_text = line.text.lower() if ignorecase else line.text
     for set_version in week_day_names:
         for week_day_name in week_day_names[set_version]:
-            if ignorecase and line.text.lower().startswith(week_day_name):
-                return True
-            elif line.text.startswith(week_day_name):
+            week_day_name = week_day_name if ignorecase else week_day_name.lower()
+            if line_text.startswith(week_day_name):
                 return True
     return False
 
