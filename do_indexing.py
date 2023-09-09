@@ -191,7 +191,7 @@ def get_sessions_from_files(inv_num):
     if os.path.exists(session_inv_dir) is False:
         return None
     session_files = glob.glob(os.path.join(session_inv_dir, 'session-*.json.gz'))
-    for session_file in session_files:
+    for session_file in sorted(session_files):
         with gzip.open(session_file, 'rt') as fh:
             session = json.load(fh)
             yield rdm.json_to_republic_session(session)
