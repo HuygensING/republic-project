@@ -491,7 +491,7 @@ def main():
             pool.map(process_inventory, tasks)
         if indexing_step == "session_lines":
             for task in tasks:
-                do_session_lines_indexing(task["inv_num"], task["year"])
+                do_session_lines_indexing(task["inv_num"], task["year_start"], task["year_end"])
 
 
 if __name__ == "__main__":
