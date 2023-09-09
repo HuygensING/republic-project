@@ -186,7 +186,7 @@ def get_sessions_from_files(inv_num):
     if os.path.exists(session_inv_dir) is False:
         return None
     session_files = glob.glob(os.path.join(session_inv_dir, 'session-*.json.gz'))
-    for session_file in session_files:
+    for session_file in sorted(session_files):
         with gzip.open(session_file, 'rt') as fh:
             session = json.load(fh)
             yield rdm.json_to_republic_session(session)
@@ -486,7 +486,7 @@ def main():
             pool.map(process_inventory, tasks)
         if indexing_step == "session_lines":
             for task in tasks:
-                do_session_lines_indexing(task["inv_num"], task["year"])
+                do_session_lines_indexing(task["inv_num"], task["year_start"], task["year_end"])
 
 
 if __name__ == "__main__":

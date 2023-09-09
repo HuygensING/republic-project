@@ -115,6 +115,8 @@ def find_session_line(line_id: str, session_lines: List[pdm.PageXMLTextLine]) ->
 def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXMLTextLine],
                          session_searcher: SessionSearcher, column_metadata: Dict[str, dict]) -> iter:
     evidence = session_metadata['evidence']
+    # print('\ngenerate_session_doc - evidence:', [match.phrase.phrase_string for match in evidence])
+    # print('\n')
     del session_metadata['evidence']
     text_region_lines = defaultdict(list)
     text_regions: List[pdm.PageXMLTextRegion] = []
@@ -176,6 +178,8 @@ def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXML
         text_regions.append(text_region)
     for scan_id in scan_version:
         scan_version[scan_id]['scan_id'] = scan_id
+    # print('\ngenerate_session_doc - metadata:', session_metadata)
+    # print('\n')
     session = Session(metadata=session_metadata, text_regions=text_regions,
                       evidence=evidence, scan_versions=list(scan_version.values()),
                       date_mapper=session_searcher.date_mapper)
@@ -186,6 +190,8 @@ def generate_session_doc(session_metadata: dict, session_lines: List[pdm.PageXML
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
     session_info['num_lines'] = len(session_lines)
     # print('this sessions contains elements from the following scans:', session.scan_versions)
+    # print('\ngenerate_session_doc - session.date:', session.date)
+    # print('\n')
     if session.date.is_rest_day() or not session_searcher.has_session_date_match():
         return session
     # Check if the next session date is more than 1 workday ahead
@@ -378,11 +384,13 @@ def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
         # - need to match at least four session opening elements
         # - number of opening elements in expected order must be 99% of found opening elements
         if score_session_opening_elements(session_opening_elements, num_elements_threshold=4) > 0.99:
-            # for line in session_searcher.sliding_window:
-            #     if not line:
+            # print('\nget_sessions - threshold reached - session_opening_elements:', session_opening_elements)
+            # for window_line in session_searcher.sliding_window:
+            #     if not window_line:
             #         print(None)
             #     else:
-            #         print(line['text_string'], [match['match_keyword'] for match in line['matches']])
+            #         print(window_line['text'], [match.phrase for match in window_line['matches']])
+            # print('\n')
             # get the first line of the new session day in the sliding window
             first_new_session_line_id = session_searcher.sliding_window[0]['id']
             # find that first line in the list of the collected session lines
@@ -395,6 +403,7 @@ def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
             session_lines = session_lines[new_session_index:]
             session_doc = generate_session_doc(session_metadata, finished_session_lines,
                                                session_searcher, column_metadata)
+            # print('get_sessions - generated session_doc.metadata:', session_doc.metadata)
             # if session_doc.metadata['num_lines'] == 0:
             if session_doc.num_lines == 0:
                 # A session with no lines only happens at the beginning
@@ -410,6 +419,7 @@ def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
                 yield session_doc
             # update the current session date in the searcher
             session_searcher.update_session_date()
+            # print('get_sessions - after update - current_date:', session_searcher.current_date)
             # update the searcher with new date strings for the next seven days
             session_searcher.update_session_date_searcher(num_dates=7)
             # get the session metadata for the new session date

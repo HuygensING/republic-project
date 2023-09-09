@@ -74,12 +74,14 @@ exception_dates = {
     "1794-12-05": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1794-12-12": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1794-12-19": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-01-03": {"mistake": "this day is a work day", "shift_days": 2},
     "1795-01-09": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-10": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-01-16": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-17": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-01-23": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-24": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-02-09": {"mistake": "this day is a work day", "shift_days": 1},
     "1795-03-06": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-03-07": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-05-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
@@ -305,6 +307,8 @@ class RepublicDate:
     def is_rest_day(self) -> bool:
         """Return boolean whether current date is a rest day, either a holiday or a weekend day.
         Before 1754, that only includes Sundays, from 1754, it also includes Saturdays"""
+        if is_exception_work_day(self):
+            return False
         if self.is_holiday():
             return True
         elif self.year >= 1754 and self.month == 12 and self.day in [23, 27] and self.date.weekday() == 5:
@@ -367,6 +371,14 @@ def get_holidays(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union
     ]
     return holidays
 
+
+def is_exception_work_day(current_date: RepublicDate):
+    date_string = current_date.date.isoformat()
+    if date_string not in exception_dates:
+        return False
+    if exception_dates[date_string]['mistake'] == 'this day is a work day':
+        return True
+    return False
 
 def get_holiday_phrases(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
     """Return a list of holiday-specific phrases based on given year."""
@@ -438,14 +450,16 @@ def get_previous_day(current_date: RepublicDate, date_mapper: DateNameMapper = N
 
 
 def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMapper,
-                          num_dates: int = 3, include_year: bool = True) -> Dict[str, RepublicDate]:
+                          num_dates: int = 3, include_year: bool = True,
+                          loop_year: bool = False) -> Dict[str, RepublicDate]:
+    # print('\nget_next_date_strings - current_date:', current_date)
     date_strings = {}
     if not current_date:
         # if for some reason current_date is None, return an empty dict
         return date_strings
     loop_date = current_date
     for i in range(0, num_dates):
-        # print('start - loop_date:', loop_date, type(loop_date.date_string))
+        # print('\tstart - loop_date:', loop_date, type(loop_date.date_string))
         if isinstance(loop_date.date_string, str):
             if include_year:
                 date_strings[loop_date.date_year_string] = loop_date
@@ -456,12 +470,14 @@ def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMappe
             for date_string in loop_date_strings:
                 date_strings[date_string] = loop_date
         loop_date = get_next_day(loop_date, date_mapper)
-        # print('next_day - loop_date:', loop_date, type(loop_date.date_string))
+        # print('\tnext_day - loop_date:', loop_date, type(loop_date.date_string))
+        # print('\t\tdate_strings:', date_strings)
         if not loop_date:
             break
-        if loop_date.year != current_date.year:
+        if loop_year is False and loop_date.year != current_date.year:
             # avoid going beyond December 31 into the next year
             continue
+    # print('\nget_next_date_strings - current_date:', current_date)
     return date_strings
 
 
@@ -485,6 +501,6 @@ def derive_date_from_string(date_string: str, year: int, date_mapper: DateNameMa
     return date
 
 
-def get_shifted_date(current_date: RepublicDate, day_shift: int) -> RepublicDate:
+def get_shifted_date(current_date: RepublicDate, day_shift: int, date_mapper: DateNameMapper) -> RepublicDate:
     new_date = current_date.date + datetime.timedelta(days=day_shift)
-    return RepublicDate(new_date.year, new_date.month, new_date.day)
+    return RepublicDate(new_date.year, new_date.month, new_date.day, date_mapper=date_mapper)
