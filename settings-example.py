@@ -8,6 +8,7 @@ prov_api_key = '<your-prov-server-api-key>'
 anno_url_prefix = '<url-prefix-for-annotation-elasticsearch>'
 text_repo_url_prefix = '<url-prefix-for-text-repo-elasticsearch>'
 inventory_metadata_file = "data/inventories/inventory_metadata.json"
+ner_tagger_dir = 'resources/ner_taggers'
 
 # paths to model files
 lbd_model = '<path>/<to>/<models>/line_break_detector_model.pcl'
