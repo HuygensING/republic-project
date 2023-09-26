@@ -1,9 +1,12 @@
+import glob
 import os
+import re
 
 from flair.data import Sentence
 from flair.models import SequenceTagger
 
 from republic.extraction.extract_entities import Annotation
+from settings import ner_tagger_dir
 
 
 LAYER_COLOR = {
@@ -18,8 +21,27 @@ LAYER_COLOR = {
 }
 
 
-def load_tagger(model_dir: str) -> SequenceTagger:
-    return SequenceTagger.load(os.path.join(model_dir, 'final-model.pt'))
+def load_tagger(layer_name: str = None, model_dir: str = None) -> SequenceTagger:
+    if layer_name is not None:
+        tagger_dir = os.path.join(ner_tagger_dir, f'ner_tagger-layer_{layer_name}')
+        return SequenceTagger.load(os.path.join(tagger_dir, 'final-model.pt'))
+    elif model_dir:
+        return SequenceTagger.load(os.path.join(model_dir, 'final-model.pt'))
+    else:
+        raise ValueError("must pass either 'layer_name' or 'model_name'.")
+
+
+def get_best_tagger_dirs(project_dir: str):
+    flair_dir = os.path.join(project_dir, 'data/embeddings/flair_embeddings')
+    taggers_dir = os.path.join(flair_dir, "best_taggers")
+    tagger_dirs = glob.glob(os.path.join(taggers_dir, 'tdb_best_ner-layer*'))
+    tagger = {}
+    for tagger_dir in tagger_dirs:
+        tagger_model_name = os.path.split(tagger_dir)[-1]
+        if m := re.match(r'tdb_best_ner-layer_({[A-Z_]+})-', tagger_model_name):
+            layer = m.group(1)
+            tagger[layer] = tagger_dir
+    return tagger
 
 
 def tag_resolution(res_text: str, res_id: str, model: SequenceTagger, as_annotations: bool = True):
@@ -42,19 +64,19 @@ def tag_resolution(res_text: str, res_id: str, model: SequenceTagger, as_annotat
 
 
 def get_layer_test_file(layer_name, repo_dir: str):
-    gt_dir = os.path.join(repo_dir, 'ground_truth/entities/tag_de_besluiten')
-    layer_gt_dir = os.path.join(gt_dir, f'flair_training_{layer_name}')
+    gt_dir = os.path.join(repo_dir, 'ground_truth/entities/flair_training-17th_18th')
+    layer_gt_dir = os.path.join(gt_dir, f'flair_training_17th_18th_{layer_name}')
     return os.path.join(layer_gt_dir, 'test.txt')
 
 
-def get_token_tag(line):
+def get_token_tag(line: str):
     if line == '\n':
         return '', '<S>'
     token, tag = line.strip().split(' ')
     return token, tag
 
 
-def get_tokens_tags(test_file):
+def get_test_tokens_tags(test_file: str):
     with open(test_file, 'rt') as fh:
         tokens_tags = []
         docs = []
@@ -96,7 +118,7 @@ def get_tag_positions(tokens_tags):
 
 
 def read_test_file(test_file):
-    docs = get_tokens_tags(test_file)
+    docs = get_test_tokens_tags(test_file)
     for doc_tokens_tags in docs:
         tokens = [token for token, tag in doc_tokens_tags]
         text = ' '.join(tokens)

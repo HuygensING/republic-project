@@ -1,37 +1,30 @@
-from typing import Dict, Generator, List, Tuple, Union
+from typing import Dict, Generator, List, Set
 from collections import Counter
+from itertools import combinations
 import string
 import re
 
 import numpy as np
 import pagexml.model.physical_document_model as pdm
-import pagexml.helper.pagexml_helper as pagexml_helper
+from pagexml.helper.pagexml_helper import elements_overlap
 # import republic.model.physical_document_model as pdm
 
 
-def parse_points(points: Union[str, List[Tuple[int, int]]]) -> List[Tuple[int, int]]:
-    """Parse a string of PageXML image coordinates into a list of coordinates."""
-    if isinstance(points, str):
-        points = [point.split(',') for point in points.split(' ')]
-        return [(int(point[0]), int(point[1])) for point in points]
-    elif isinstance(points, list):
-        if len(points) == 0:
-            raise IndexError("point list cannot be empty")
-        for point in points:
-            if not isinstance(point, list) and not isinstance(point, tuple):
-                print(point)
-                print(type(point))
-                raise TypeError("List of points must be list of tuples with (int, int)")
-            if not isinstance(point[0], int) or not isinstance(point[1], int):
-                raise TypeError("List of points must be list of tuples with (int, int)")
-        return points
-
-
 def coords_overlap(item1: pdm.PhysicalStructureDoc, item2: pdm.PhysicalStructureDoc) -> int:
-    left = item1.coords.left if item1.coords.left > item2.coords.left else item2.coords.left
-    right = item1.coords.right if item1.coords.right < item2.coords.right else item2.coords.right
+    left = max([item1.coords.left, item2.coords.left])
+    right = min([item1.coords.right, item2.coords.right])
     # overlap must be positive, else there is no overlap
     return right - left if right - left > 0 else 0
+
+
+def make_baseline_string(line: pdm.PageXMLTextLine):
+    b = line.baseline
+    return f"{b.left: >4}-{b.right: <4}\t{b.top: >4}-{b.bottom: <4}"
+
+
+def make_coords_string(line: pdm.PageXMLTextLine):
+    c = line.coords
+    return f"{c.left: >4}-{c.right: <4}\t{c.top: >4}-{c.bottom: <4}"
 
 
 def get_median_normal_line_score(scores, default):
@@ -114,19 +107,16 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
     return merged_col
 
 
-def elements_overlap(element1: pdm.PageXMLDoc, element2: pdm.PageXMLDoc,
-                     threshold: float = 0.5) -> bool:
-    """Check if two elements have overlapping coordinates."""
-    v_overlap = pdm.get_vertical_overlap(element1.coords, element2.coords)
-    h_overlap = pdm.get_horizontal_overlap(element1.coords, element2.coords)
-    if v_overlap / element1.coords.height > threshold:
-        if h_overlap / element1.coords.width > threshold:
-            return True
-    if v_overlap / element2.coords.height > threshold:
-        if h_overlap / element2.coords.width > threshold:
-            return True
-    else:
-        return False
+def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[Set[pdm.PageXMLTextRegion]]:
+    tr_sets = []
+    in_overlapping = set()
+    for tr1, tr2 in combinations(text_regions, 2):
+        if elements_overlap(tr1, tr2, threshold=0.3) is False:
+            continue
+        tr_sets.append({tr1, tr2})
+        in_overlapping.update({tr1, tr2})
+    tr_sets.extend([{tr} for tr in text_regions if tr not in in_overlapping])
+    return tr_sets
 
 
 def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,

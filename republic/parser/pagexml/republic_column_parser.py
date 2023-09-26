@@ -4,9 +4,10 @@ from collections import Counter
 from typing import Dict, List
 
 import pagexml.model.physical_document_model as pdm
+import pagexml.helper.pagexml_helper as pagexml_helper
 
 # import republic.model.physical_document_model as pdm
-import republic.helper.pagexml_helper as pagexml_helper
+from republic.helper.pagexml_helper import merge_columns
 
 
 def within_column(line, column_range, overlap_threshold: float = 0.5):
@@ -40,7 +41,10 @@ def compute_pixel_dist(lines: List[pdm.PageXMLTextLine]) -> Counter:
     """Count how many lines are above each horizontal pixel coordinate."""
     pixel_dist = Counter()
     for line in lines:
-        pixel_dist.update([pixel for pixel in range(line.coords.left, line.coords.right + 1)])
+        if line.baseline:
+            pixel_dist.update([pixel for pixel in range(line.baseline.left, line.baseline.right + 1)])
+        else:
+            pixel_dist.update([pixel for pixel in range(line.coords.left, line.coords.right + 1)])
     return pixel_dist
 
 
@@ -48,27 +52,34 @@ def new_gap_pixel_interval(pixel: int) -> dict:
     return {"start": pixel, "end": pixel}
 
 
-def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config: dict) -> list:
+def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config: dict, debug: int = 0) -> list:
     common_pixels = sorted([pixel for pixel, freq in pixel_dist.items() if freq >= freq_threshold])
-    # print("common_pixels:", common_pixels)
+    if debug > 0:
+        print("determine_freq_gap_interval - common_pixels:", common_pixels)
     gap_pixel_intervals = []
     if len(common_pixels) == 0:
         return gap_pixel_intervals
     curr_interval = new_gap_pixel_interval(common_pixels[0])
-    # print("curr_interval:", curr_interval)
+    if debug > 0:
+        print("determine_freq_gap_interval - curr_interval:", curr_interval)
     prev_interval_end = 0
     for curr_index, curr_pixel in enumerate(common_pixels[:-1]):
         next_pixel = common_pixels[curr_index + 1]
-        # print("curr:", curr_pixel, "next:", next_pixel, "start:", curr_interval["start"],
-        #       "end:", curr_interval["end"], "prev_end:", prev_interval_end)
+        if debug > 0:
+            print("determine_freq_gap_interval - curr:", curr_pixel, "next:", next_pixel, "start:",
+                  curr_interval["start"], "end:", curr_interval["end"], "prev_end:", prev_interval_end)
         if next_pixel - curr_pixel < config["column_gap"]["gap_threshold"]:
             curr_interval["end"] = next_pixel
         else:
             # if curr_interval["end"] - curr_interval["start"] < config["column_gap"]["gap_threshold"]:
             if curr_interval["start"] - prev_interval_end < config["column_gap"]["gap_threshold"]:
-                # print("skipping interval:", curr_interval, "\tcurr_pixel:", curr_pixel, "next_pixel:", next_pixel)
+                if debug > 0:
+                    print("determine_freq_gap_interval - skipping interval:", curr_interval, "\tcurr_pixel:",
+                          curr_pixel, "next_pixel:", next_pixel)
                 continue
-            # print("adding interval:", curr_interval, "\tcurr_pixel:", curr_pixel, "next_pixel:", next_pixel)
+            if debug > 0:
+                print("determine_freq_gap_interval - adding interval:", curr_interval, "\tcurr_pixel:",
+                      curr_pixel, "next_pixel:", next_pixel)
             gap_pixel_intervals += [curr_interval]
             prev_interval_end = curr_interval["end"]
             curr_interval = new_gap_pixel_interval(next_pixel)
@@ -81,12 +92,12 @@ def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any],
     num_column_lines = len(lines) / 2 if len(lines) < 140 else 60
     gap_pixel_freq_threshold = int(num_column_lines * config["column_gap"]["gap_pixel_freq_ratio"])
     if debug > 0:
-        print("lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
-        print("freq_threshold:", gap_pixel_freq_threshold)
+        print("find_column_gaps - lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
+        print("find_column_gaps - freq_threshold:", gap_pixel_freq_threshold)
     gap_pixel_dist = compute_pixel_dist(lines)
-    # if debug > 0:
-    #     print("gap_pixel_dist:", gap_pixel_dist)
-    gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config)
+    if debug > 0:
+        print("find_column_gaps - gap_pixel_dist:", gap_pixel_dist)
+    gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config, debug=debug)
     return gap_pixel_intervals
 
 
@@ -249,7 +260,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
     for merge_set in merge_sets:
         if debug > 0:
             print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
-        merged_col = pagexml_helper.merge_columns(merge_set, "temp_id", merge_set[0].metadata)
+        merged_col = merge_columns(merge_set, "temp_id", merge_set[0].metadata)
         if text_region.parent and text_region.parent.id:
             merged_col.set_derived_id(text_region.parent.id)
             merged_col.set_parent(text_region.parent)

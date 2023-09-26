@@ -3,23 +3,19 @@ import os
 import pickle
 import multiprocessing
 
-from flair.models import SequenceTagger
-
 from republic.helper.utils import get_project_dir
 from republic.nlp.entities import tag_resolution
-from republic.nlp.tag_formulas import tag_inventory_formulas
+from republic.nlp.entities import load_tagger
 from republic.nlp.read import read_paragraphs
+from republic.nlp.tag_formulas import tag_inventory_formulas
 
 
-ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES', 'FORM'}
+NER_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES'}
+ENTITY_TYPES = NER_TYPES.union({'FORM'})
 
 
 def read_para_files(para_dir: str):
     return sorted(glob.glob(os.path.join(para_dir, 'resolution*.tsv.gz')))
-
-
-def load_model(model_dir: str):
-    return SequenceTagger.load(f'{model_dir}/final-model.pt')
 
 
 def tag_paragraph_formulas(task):
@@ -28,21 +24,26 @@ def tag_paragraph_formulas(task):
 
 def tag_paragraph_entities(task):
     inv_num = task['para_file'].split('-')[-1][:4]
-    entities_file = os.path.join(task['entities_dir'], f"entity_annotations-layer_{task['layer_name']}-inv_{inv_num}.pcl")
+    entities_file = os.path.join(task['entities_dir'],
+                                 f"entity_annotations-layer_{task['layer_name']}-inv_{inv_num}.pcl")
     annotations = []
     count = 0
     for year, para_id, para_type, text in read_paragraphs(task['para_file']):
         if para_type in {'marginalia'}:
             continue
-        if count % 100 == 0:
-            print(f"{task['layer_name']}\tinv: {inv_num}\tresolutions: {count: >8}\tannotations: {len(annotations): >8}")
         annos = tag_resolution(text, para_id, task['model'])
         annotations.extend(annos)
         count += 1
+        if count % 100 == 0:
+            print(f"{task['layer_name']}\tinv: {inv_num}\tresolutions: {count: >8}"
+                  f"\tannotations: {len(annotations): >8}")
     print(f"{task['layer_name']}\tinv: {inv_num}\tresolutions: {count: >8}\tannotations: {len(annotations): >8}")
     with open(entities_file, 'wb') as fh:
         pickle.dump(annotations, fh)
 
+
+def print_usage():
+    print(f'usage: {__name__} --layers=LAYER1:LAYER2')
 
 
 def parse_args():
@@ -51,7 +52,7 @@ def parse_args():
     try:
         opts, args = getopt.getopt(argv, 'l',
                                    ['layers='])
-        layers = ['single_layer']
+        layers = None
         for opt, arg in opts:
             if opt in {'-l', '--layers'}:
                 layers = arg
@@ -60,13 +61,15 @@ def parse_args():
                 else:
                     layers = [layers]
                 assert all([layer in ENTITY_TYPES for layer in layers])
+        if layers is None:
+            layers = NER_TYPES
+            print('no layer specified, using all NER layers')
         print('training layers:', layers)
         return layers
     except getopt.GetoptError:
         # Print something useful
-        print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
+        print_usage()
         sys.exit(2)
-
 
 
 def main():
@@ -89,15 +92,12 @@ def main():
         with multiprocessing.Pool(processes=num_processes) as pool:
             pool.map(tag_paragraph_formulas, tasks)
     else:
-        flair_dir = os.path.join(project_dir, 'data/embeddings/flair_embeddings')
         entities_dir = 'data/entities'
-        taggers_dir = os.path.join(flair_dir, "resources/taggers")
         para_dir = 'data/paragraphs/loghi'
         para_files = read_para_files(para_dir)
         print('num para files:', len(para_files))
         for layer_name in layers:
-            model_dir = os.path.join(taggers_dir, f'ner-tbd-{layer_name}-train_1.0-epochs_{num_epochs}')
-            model = load_model(model_dir)
+            model = load_tagger(layer_name=layer_name)
             for para_file in para_files:
                 task = {
                     'para_file': para_file,

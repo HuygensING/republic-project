@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Union
 import copy
 
 import pagexml.model.physical_document_model as pdm
+from pagexml.helper.pagexml_helper import elements_overlap
 
 from republic.helper.metadata_helper import make_iiif_region_url
 # import republic.model.physical_document_model as pdm
@@ -85,7 +86,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         # check if this text region overlaps with an existing column
         overlapping_column = None
         for column in columns:
-            overlap = pagexml_helper.coords_overlap(column, text_region)
+            overlap = pdm.get_horizontal_overlap(column, text_region)
             tr_overlap_frac = overlap / text_region.coords.width
             cl_overlap_frac = overlap / column.coords.width
             if min(tr_overlap_frac, cl_overlap_frac) > 0.5 and max(tr_overlap_frac, cl_overlap_frac) > 0.75:
@@ -750,7 +751,7 @@ def get_page_full_text_columns(page: pdm.PageXMLPage) -> List[pdm.PageXMLColumn]
     merged_columns = []
     for full_text_col in full_text_columns:
         for extra_col in extra_columns:
-            if pagexml_helper.elements_overlap(extra_col, full_text_col):
+            if elements_overlap(extra_col, full_text_col):
                 # merge columns into new full_text_col
                 # make sure multiple merges into the same full text
                 # columns are cumulative
