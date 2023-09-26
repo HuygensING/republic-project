@@ -707,6 +707,8 @@ def get_session_paragraph_line_groups(session_trs: List[pdm.PageXMLTextRegion],
         if debug > 0:
             print(f"{line.coords.top: >4}-{line.coords.bottom: <4}\t{line.metadata['line_class']: <20}\t{line.text}")
         para.append(line)
+        if debug > 0:
+            print(f"current paragraph has {len(para)} lines")
         if line.metadata['line_class'] == 'para_end':
             if check_lines_have_boundary_signals(para_lines, li, prev_line, debug=debug):
                 if len(para) > 0:
