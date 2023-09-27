@@ -217,19 +217,19 @@ def get_marginalia_columns(doc: pdm.PageXMLDoc) -> List[pdm.PageXMLColumn]:
         return []
 
 
-def is_noise_line(line: pdm.PageXMLTextLine, col: pdm.PageXMLColumn) -> bool:
+def is_noise_line(line: pdm.PageXMLTextLine, tr: pdm.PageXMLTextRegion) -> bool:
     if line.text is None:
         return True
-    indent = line.coords.left - col.coords.left
-    indent_frac = indent / col.coords.width
+    indent = line.coords.left - tr.coords.left
+    indent_frac = indent / tr.coords.width
     return len(line.text) < 4 and indent_frac > 0.8
 
 
-def is_insert_line(line: pdm.PageXMLTextLine, col: pdm.PageXMLColumn) -> bool:
+def is_insert_line(line: pdm.PageXMLTextLine, tr: pdm.PageXMLTextRegion) -> bool:
     if line.text is None:
         return True
-    indent = line.coords.left - col.coords.left
-    indent_frac = indent / col.coords.width
+    indent = line.coords.left - tr.coords.left
+    indent_frac = indent / tr.coords.width
     if len(line.text) < 4 and indent_frac > 0.8:
         return False
     return len(line.text) < 14 and indent_frac > 0.7
@@ -241,20 +241,20 @@ def get_line_base_dist(line1: pdm.PageXMLTextLine, line2: pdm.PageXMLTextLine) -
     return abs(left1[1] - left2[1])
 
 
-def get_lines_base_dist(lines: List[pdm.PageXMLTextLine], col: pdm.PageXMLColumn) -> Dict[str, any]:
-    # lines = sorted(col.lines + [line for tr in col.text_regions for line in tr.lines])
+def get_lines_base_dist(lines: List[pdm.PageXMLTextLine], tr: pdm.PageXMLTextRegion) -> Dict[str, any]:
+    # lines = sorted(tr.lines + [line for tr in tr.text_regions for line in tr.lines])
     # print('pre num lines', len(lines))
     # for line in lines:
-    #    print(is_noise_line(line, col), line.text)
-    special_lines = [line for line in lines if is_noise_line(line, col) or is_insert_line(line, col)]
+    #    print(is_noise_line(line, tr), line.text)
+    special_lines = [line for line in lines if is_noise_line(line, tr) or is_insert_line(line, tr)]
     base_dist = {}
     for curr_line in special_lines:
-        indent = curr_line.coords.left - col.coords.left
-        indent_frac = indent / col.coords.width
-        if is_noise_line(curr_line, col):
+        indent = curr_line.coords.left - tr.coords.left
+        indent_frac = indent / tr.coords.width
+        if is_noise_line(curr_line, tr):
             dist_to_prev = 0
             dist_to_next = 70
-        elif is_insert_line(curr_line, col):
+        elif is_insert_line(curr_line, tr):
             dist_to_prev = 0
             dist_to_next = 70
         else:
@@ -268,8 +268,8 @@ def get_lines_base_dist(lines: List[pdm.PageXMLTextLine], col: pdm.PageXMLColumn
     lines = [line for line in lines if line not in special_lines]
     lines.sort(key=lambda x: x.baseline.top)
     for li, curr_line in enumerate(lines):
-        indent = curr_line.coords.left - col.coords.left
-        indent_frac = indent / col.coords.width
+        indent = curr_line.coords.left - tr.coords.left
+        indent_frac = indent / tr.coords.width
         if li == 0:
             dist_to_prev = 2000
         else:

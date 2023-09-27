@@ -145,6 +145,8 @@ def do_page_type_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
     pages = rep_es.retrieve_inventory_pages(inv_num)
     rep_es.add_pagexml_page_types(inv_metadata, pages)
+    model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
+    nlc_gysbert = NeuralLineClassifier(model_dir)
     resolution_page_offset = 0
     for offset in inv_metadata["type_page_num_offsets"]:
         if offset["page_type"] == "resolution_page":
@@ -153,6 +155,13 @@ def do_page_type_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     for page in sorted(pages, key=lambda x: x["metadata"]["page_num"]):
         type_page_num = page.metadata["page_num"] - resolution_page_offset + 1
+        predicted_line_class = nlc_gysbert.classify_page_lines(page)
+        for tr in page.get_all_text_regions():
+            for line in tr.lines:
+                if line.id in predicted_line_class:
+                    line.metadata['line_class'] = predicted_line_class[line.id]
+                else:
+                    line.metadata['line_class'] = 'unknown'
         if type_page_num <= 0:
             page.metadata["page_type"].remove("resolution_page")
         else:
