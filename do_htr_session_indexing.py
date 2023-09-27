@@ -14,6 +14,9 @@ from republic.parser.logical.handwritten_session_parser import get_sessions
 from republic.parser.logical.handwritten_session_parser import make_session_paragraphs
 
 
+import argparse
+
+
 def make_inventory_query(inv_num):
     return {
         'bool': {
@@ -46,10 +49,6 @@ def get_inventory_session_data(inv_num, rep_es):
 
 
 def get_session_trs(session_metadata, rep_es):
-    docs = [
-        {'_id': doc_id} for doc_id in session_metadata['text_regions']
-    ]
-    # response = rep_es.es_anno.mget(docs, index='session_text_regions')
     session_trs = []
     for doc_id in session_metadata['text_regions']:
         doc = rep_es.es_anno.get(index='session_text_regions', id=doc_id)
@@ -168,4 +167,10 @@ def do_main(task):
 
 
 if __name__ == "__main__":
-    do_main()
+    parser = argparse.ArgumentParser(description='Process HTR sessions.')
+    parser.add_argument('task', metavar='t', type=str, nargs=1,
+                        help='a task to perform')
+    args = parser.parse_args()
+    print('task:', args.task)
+    # do_main(args.task)
+
