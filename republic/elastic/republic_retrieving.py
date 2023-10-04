@@ -233,7 +233,7 @@ class Retriever:
 
     def retrieve_inventory_pages(self, inventory_num: int) -> list:
         query = {'match': {'metadata.inventory_num': inventory_num}}
-        return self.retrieve_pages_by_query(query)
+        return self.retrieve_pages_by_query(query, size=None)
 
     def retrieve_scan_by_id(self, scan_id: str) -> Union[pdm.PageXMLScan, None]:
         if not self.es_anno.exists(index=self.config['scans_index'], id=scan_id):

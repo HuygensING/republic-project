@@ -44,7 +44,11 @@ def get_predicted_line_classes(page: pdm.PageXMLPage, line_classifier: NeuralLin
                     continue
             predicted_line_class[line.id] = line.metadata['line_class']
     elif len(classified) < len(lines) - 10:
-        predicted_line_class = line_classifier.classify_page_lines(page)
+        try:
+            predicted_line_class = line_classifier.classify_page_lines(page)
+        except Exception:
+            print(f'\tERROR classifying lines of page {page.id}')
+            raise
         if debug > 1:
             print('NON-CLASSIFIED LINSE FOR PAGE:', page.id, '\tLINES:', len(lines),
                   '\tCLASSIFIED:', len(classified), '\tNLC:', len(predicted_line_class))

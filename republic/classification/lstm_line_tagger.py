@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+import flair
 from flair.embeddings import TransformerDocumentEmbeddings
 from flair.data import Sentence
 import torch
@@ -90,7 +91,7 @@ class LSTMLineTagger(nn.Module):
                                config['char_vocab_size'],
                                config['line_class_size'],
                                config['bidirectional'])
-        model.load_state_dict(torch.load(config['model_file']))
+        model.load_state_dict(torch.load(config['model_file']), strict=False)
         model.eval()
         return model
 
@@ -187,7 +188,7 @@ class LSTMLineNgramTagger(nn.Module):
                                     config['ngram_vocab_sizes'],
                                     config['line_class_size'],
                                     config['bidirectional'])
-        model.load_state_dict(torch.load(config['model_file']))
+        model.load_state_dict(torch.load(config['model_file']), strict=False)
         model.eval()
         return model
 
@@ -236,6 +237,9 @@ class LSTMLineTaggerGysBERT(nn.Module):
         self.sentence_hidden_dim = sentence_hidden_dim
         self.bidirectional = bidirectional
         self.combined_hidden_dim = spatial_hidden_dim + char_hidden_dim + sentence_hidden_dim
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cpu")
+        flair.device = self.device
 
         if bidirectional is True:
             self.spatial_hidden_dim = self.spatial_hidden_dim * 2
@@ -271,6 +275,15 @@ class LSTMLineTaggerGysBERT(nn.Module):
         # The linear layer that maps from hidden state space to word space
         self.hidden2class = nn.Linear(self.combined_hidden_dim, line_class_size)
 
+        self.char_embeddings.to(self.device)
+        self.char_lstm.to(self.device)
+        self.sentence_embeddings.to(self.device)
+        self.sentence_lstm.to(self.device)
+        self.spatial_linear.to(self.device)
+        self.spatial_lstm.to(self.device)
+        self.combined_lstm.to(self.device)
+        self.hidden2class.to(self.device)
+
     @property
     def config(self):
         return {
@@ -297,21 +310,27 @@ class LSTMLineTaggerGysBERT(nn.Module):
                                       config['char_vocab_size'],
                                       config['line_class_size'],
                                       config['bidirectional'])
-        model.load_state_dict(torch.load(config['model_file']))
+        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # model.load_state_dict(torch.load(config['model_file'], map_location=device), strict=False)
+        model.load_state_dict(torch.load(config['model_file']), strict=False)
         model.eval()
         return model
 
-    @staticmethod
-    def init_hidden(size):
-        return (autograd.Variable(torch.zeros(1, size)),
-                autograd.Variable(torch.zeros(1, size)))
+    # @staticmethod
+    def init_hidden(self, size):
+        return (autograd.Variable(torch.zeros(1, size).to(self.device)),
+                autograd.Variable(torch.zeros(1, size).to(self.device)))
 
     def forward(self, spatial_features, char_features, line_texts: List[str]):
         # print(spatial_features.shape)
         # print(self.spatial_hidden)
         # print(spatial_features.view(len(spatial_features), 1, -1))
         # linear_output, self.spatial_hidden = self.spatial_linear(spatial_features, self.spatial_hidden)
-        char_embeds = self.char_embeddings(char_features)
+        try:
+            char_embeds = self.char_embeddings(char_features.to(self.device))
+        except RunTimeError:
+            print(char_features)
+            raise
         # print(char_embeds)
 
         # for line_text in line_texts:
@@ -320,11 +339,17 @@ class LSTMLineTaggerGysBERT(nn.Module):
         if isinstance(line_texts, list) and isinstance(line_texts[0], str):
             sentences = self.sentence_embeddings.embed([Sentence(line_text) for line_text in line_texts])
             sentence_embeds = torch.stack([sentence.embedding for sentence in sentences])
+            # sentence_embeds = sentence_embeds.to(self.device)
         else:
             sentence_embeds = line_texts
 
         char_lstm_output, self.char_hidden = self.char_lstm(char_embeds.view(len(char_features), -1))
+
+        sentence_embeds = sentence_embeds.to(self.device)
+
         sentence_lstm_output, self.sentence_hidden = self.sentence_lstm(sentence_embeds)
+
+        spatial_features = spatial_features.to(self.device)
         spatial_lstm_output, self.spatial_hidden = self.spatial_lstm(spatial_features, self.spatial_hidden)
 
         combined_hidden = torch.cat([spatial_lstm_output, char_lstm_output, sentence_lstm_output], dim=1)

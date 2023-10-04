@@ -34,42 +34,45 @@ def prep_embeddings(flair_dir: str,
                     use_context: bool = False,
                     use_finetuning: bool = False,
                     use_resolution: bool = False,
+                    use_char: bool = False,
                     use_gysbert: bool = False,
                     use_fasttext: bool = False,
                     model_max_length: int = 512):
     # resolution_bert = RobertaForMaskedLM.from_pretrained('data/models/resolution_bert')
-    # fasttext_embeddings = FastTextEmbeddings('data/embeddings/gensim/win_10')
-    # fasttext_embeddings = FastTextEmbeddings('data/embeddings/gensim/win_10/fasttext-dim_384-window_10-min_count_100-case_lower')
-    resolution_embeddings = TransformerWordEmbeddings('data/models/resolution_bert',
-                                                layers='-1',
-                                                subtoken_pooling="first",
-                                                fine_tune=use_finetuning,
-                                                use_context=use_context,
-                                                allow_long_sentences=False,
-                                                model_max_length=model_max_length)
-    gysbert_embeddings = TransformerWordEmbeddings('emanjavacas/GysBERT',
-                                                   layers="-1",
-                                                   subtoken_pooling="first",
-                                                   fine_tune=use_finetuning,
-                                                   use_context=use_context,
-                                                   allow_long_sentences=False,
-                                                   model_max_length=model_max_length)
-    embedding_types = [
-        FlairEmbeddings(f'{flair_dir}/resources/taggers/language_model_bw_char/best-lm.pt'),
-        FlairEmbeddings(f'{flair_dir}/resources/taggers/language_model_fw_char/best-lm.pt'),
-        # WordEmbeddings(''),
-        # CharacterEmbeddings(),
-        # resolution_bert,
-        # fasttext_embeddings,
-        # gysbert_embeddings
-    ]
+    embedding_types = []
+    if use_char:
+        char_bw = FlairEmbeddings(f'{flair_dir}/resources/taggers/language_model_bw_char/best-lm.pt')
+        char_fw = FlairEmbeddings(f'{flair_dir}/resources/taggers/language_model_fw_char/best-lm.pt')
+        embedding_types.extend([char_bw, char_fw])
+
     if use_fasttext:
+        embedding_dir = '/data/volume_2/embeddings/fasttext'
+        embedding_binary = 'fasttext-dim_384-window_10-min_count_100-case_lower.bin'
+        fasttext_embeddings = FastTextEmbeddings(f'{embedding_dir}/{embedding_binary}')
         embedding_types.append(fasttext_embeddings)
+
     if use_resolution:
+        resolution_embeddings = TransformerWordEmbeddings('data/models/resolution_bert',
+                                                    layers='-1',
+                                                    subtoken_pooling="first",
+                                                    fine_tune=use_finetuning,
+                                                    use_context=use_context,
+                                                    allow_long_sentences=False,
+                                                    model_max_length=model_max_length)
         embedding_types.append(resolution_embeddings)
+
     if use_gysbert:
+        gysbert_embeddings = TransformerWordEmbeddings('emanjavacas/GysBERT',
+                                                       layers="-1",
+                                                       subtoken_pooling="first",
+                                                       fine_tune=use_finetuning,
+                                                       use_context=use_context,
+                                                       allow_long_sentences=False,
+                                                       model_max_length=model_max_length)
         embedding_types.append(gysbert_embeddings)
 
+    if len(embedding_types) == 0:
+        return None
     return StackedEmbeddings(embeddings=embedding_types)
 
 
@@ -104,6 +107,7 @@ def prep_training(layer_name: str,
                   use_context: bool = False,
                   use_finetuning: bool = False,
                   use_resolution: bool = False,
+                  use_char: bool = False,
                   use_gysbert: bool = False,
                   use_fasttext: bool = False,
                   hidden_size=256, model_max_length=512):
@@ -118,10 +122,13 @@ def prep_training(layer_name: str,
                                  use_finetuning=use_finetuning,
                                  use_context=use_context,
                                  use_resolution=use_resolution,
+                                 use_char=use_char,
                                  use_gysbert=use_gysbert,
                                  use_fasttext=use_fasttext,
                                  model_max_length=model_max_length)
 
+    if embeddings is None:
+        return None
     return prep_trainer(corpus, hidden_size, embeddings,
                         use_crf=use_crf,
                         use_rnn=use_rnn,
@@ -129,10 +136,9 @@ def prep_training(layer_name: str,
 
 
 def train(trainer, layer_name: str, train_size: float = 1.0, learning_rate: float = 0.05,
-          mini_batch_size: int = 32, max_epochs: int = 10):
+          mini_batch_size: int = 32, max_epochs: int = 10, model_name = None):
     flair_dir = get_flair_dir()
-    model_dir = f'{flair_dir}/resources/taggers/ner-tbd-{layer_name}-' \
-        f'train_{train_size}-epochs_{max_epochs}'
+    model_dir = f'/data/volume_2/taggers/{model_name}-train_{train_size}-epochs_{max_epochs}'
     results = trainer.train(model_dir,
                             learning_rate=learning_rate,
                             mini_batch_size=mini_batch_size,

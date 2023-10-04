@@ -19,7 +19,7 @@ from republic.helper.utils import get_iso_utc_timestamp, get_commit_url
 def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     if isinstance(doc, dict) and 'type' in doc and doc['type'] == 'session':
         doc['index_timestamp'] = get_iso_utc_timestamp()
-    elif isinstance(doc, pdm.StructureDoc):
+    elif isinstance(doc, pdm.StructureDoc) or hasattr(doc, 'metadata'):
         doc.metadata['index_timestamp'] = get_iso_utc_timestamp()
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
@@ -31,7 +31,7 @@ def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
 def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     if isinstance(doc, dict) and 'type' in doc and doc['type'] == 'session':
         doc['code_commit'] = get_commit_url()
-    elif isinstance(doc, pdm.StructureDoc):
+    elif isinstance(doc, pdm.StructureDoc) or hasattr(doc, 'metadata'):
         doc.metadata['code_commit'] = get_commit_url()
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
