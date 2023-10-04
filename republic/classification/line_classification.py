@@ -18,7 +18,7 @@ from pagexml.parser import json_to_pagexml_page
 import republic.classification.lstm_line_tagger as line_tagger
 import republic.classification.page_features as page_features
 from republic.helper.metadata_helper import doc_id_to_iiif_url
-from republic.helper.text_helper import SkipgramSimilarity
+# from republic.helper.text_helper import SkipgramSimilarity
 from republic.parser.logical.paragraph_parser import split_paragraphs
 
 
@@ -101,8 +101,13 @@ class NeuralLineClassifier:
                 class_scores = self.lstm_line_tagger(features['spatial'], features['char'], features['sentence'])
             predict_scores, predict_classes = torch.max(class_scores, 1)
             predict_labels = [self.ix_to_class[pc.item()] for pc in predict_classes]
-            return {line_features['line_id']: line_class for line_features, line_class
-                    in zip(page_line_features, predict_labels)}
+        predicted_line_class = {line_features['line_id']: line_class for line_features, line_class
+                                in zip(page_line_features, predict_labels)}
+        for tr in page.get_all_text_regions():
+            if tr.has_type('marginalia'):
+                for line in tr.lines:
+                    predicted_line_class[line.id] = 'marginalia'
+        return predicted_line_class
 
 
 def save_neural_line_classifier(model_dir: str,

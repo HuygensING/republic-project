@@ -108,6 +108,8 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
         return None
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
+    model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
+    nlc_gysbert = NeuralLineClassifier(model_dir)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
         try:
             pages = pagexml_parser.split_pagexml_scan(scan, page_type_index)
@@ -137,6 +139,13 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                 for page_type in page_types:
                     page.add_type(page_type)
                 page.metadata['type'] = [ptype for ptype in page.type]
+            predicted_line_class = nlc_gysbert.classify_page_lines(page)
+            for tr in page.get_all_text_regions():
+                for line in tr.lines:
+                    if line.id in predicted_line_class:
+                        line.metadata['line_class'] = predicted_line_class[line.id]
+                    else:
+                        line.metadata['line_class'] = 'unknown'
             print('indexing page with id', page.id)
             prov_url = rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
             page.metadata['provenance_url'] = prov_url

@@ -229,7 +229,7 @@ def combine_stats(text_regions: List[pdm.PageXMLTextRegion]) -> Dict[str, int]:
         if hasattr(tr, 'extra'):
             if 'extra' not in combined_stats:
                 combined_stats['extra'] = 0
-            combined_stats['extra'] += tr_stats['extra']
+            combined_stats['extra'] += len(tr.extra)
     return combined_stats
 
 
