@@ -92,7 +92,7 @@ def main():
         with multiprocessing.Pool(processes=num_processes) as pool:
             pool.map(tag_paragraph_formulas, tasks)
     else:
-        entities_dir = 'data/entities'
+        entities_dir = 'data/entities/annotations'
         para_dir = 'data/paragraphs/loghi'
         para_files = read_para_files(para_dir)
         print('num para files:', len(para_files))
