@@ -125,17 +125,21 @@ def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,
     if hasattr(sub_doc, "text_regions"):
         for tr in sub_doc.text_regions:
             if tr_id_map and tr.id in tr_id_map:
-                order_number[tr.id] = super_doc.reading_order_number[tr_id_map[tr.id]]
+                order_number[tr.id] = int(super_doc.reading_order_number[tr_id_map[tr.id]])
             elif tr.id in super_doc.reading_order_number:
-                order_number[tr.id] = super_doc.reading_order_number[tr.id]
+                order_number[tr.id] = int(super_doc.reading_order_number[tr.id])
             else:
                 # If for some reason a text region is not in the reading order list
                 # just add it to the end of the reading order
                 super_doc.reading_order_number[tr.id] = len(super_doc.reading_order_number) + 1
                 order_number[tr.id] = super_doc.reading_order_number[tr.id]
+    try:
         for ti, tr_id in enumerate(sorted(order_number, key=lambda t: order_number[t])):
             sub_doc.reading_order_number[tr_id] = ti + 1
             sub_doc.reading_order[ti + 1] = tr_id
+    except TypeError:
+        print(f"ERROR - copy_reading_order - non-integer in reading order number: {order_number}")
+        raise
 
 
 def sort_regions_in_reading_order(doc: pdm.PageXMLDoc) -> List[pdm.PageXMLTextRegion]:
