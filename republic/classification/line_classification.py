@@ -88,7 +88,6 @@ class NeuralLineClassifier:
         if page.stats['lines'] == 0:
             return {}
         page_line_features = page_features.get_page_line_features(page, self.skip_sim)
-        print(page_line_features)
         if len(page_line_features) == 0:
             predicted_line_class = {}
         else:
