@@ -368,16 +368,17 @@ def get_sessions(sorted_pages: List[pdm.PageXMLPage], inv_num: int,
             continue
         # for window_line in session_searcher.sliding_window:
         #     print(window_line["text"])
-        if 'extract' in session_opening_elements:
-            # what follows in the sliding window is an extract from earlier days, which looks
-            # like a session opening but isn't. Reset the sliding window
+        if 'extract' in session_opening_elements or 'insertion' in session_opening_elements:
+            # what follows in the sliding window is an insertion of an external document, or an
+            # extract from , which looks like a session opening but isn't. Reset the sliding window
             session_searcher.reset_sliding_window()
             continue
-        if 'extract' in session_opening_elements:
+        if 'extract' in session_opening_elements or 'insertion' in session_opening_elements:
+            print('DEBUG - pagexml_session_parser.get_sessions - extract phrase in session_opening_elements:')
             for line_doc in session_searcher.sliding_window:
                 if not line_doc:
                     continue
-                print(line_doc['id'], line_doc['text'])
+                print('\t', line_doc['id'], line_doc['text'])
         # score the found session opening elements for how well
         # they match the order in which they are expected to appear
         # Empirically established threshold:

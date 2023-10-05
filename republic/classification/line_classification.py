@@ -87,22 +87,26 @@ class NeuralLineClassifier:
     def classify_page_lines(self, page: pdm.PageXMLPage):
         if page.stats['lines'] == 0:
             return {}
-        with torch.no_grad():
-            page_line_features = page_features.get_page_line_features(page, self.skip_sim)
-            # spatial_sequence, char_sequence, class_sequence = self.page_to_feature_sequences(page_line_features)
-            features = page_features.page_to_feature_sequences(page_line_features, self.char_to_ix,
-                                                               self.class_to_ix,
-                                                               line_fixed_length=self.config['char_line_size'])
-            if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTagger):
-                self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
-                class_scores = self.lstm_line_tagger(features['spatial'], features['char'])
-            if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTaggerGysBERT):
-                self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
-                class_scores = self.lstm_line_tagger(features['spatial'], features['char'], features['sentence'])
-            predict_scores, predict_classes = torch.max(class_scores, 1)
-            predict_labels = [self.ix_to_class[pc.item()] for pc in predict_classes]
-        predicted_line_class = {line_features['line_id']: line_class for line_features, line_class
-                                in zip(page_line_features, predict_labels)}
+        page_line_features = page_features.get_page_line_features(page, self.skip_sim)
+        print(page_line_features)
+        if len(page_line_features) == 0:
+            predicted_line_class = {}
+        else:
+            with torch.no_grad():
+                # spatial_sequence, char_sequence, class_sequence = self.page_to_feature_sequences(page_line_features)
+                features = page_features.page_to_feature_sequences(page_line_features, self.char_to_ix,
+                                                                   self.class_to_ix,
+                                                                   line_fixed_length=self.config['char_line_size'])
+                if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTagger):
+                    self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
+                    class_scores = self.lstm_line_tagger(features['spatial'], features['char'])
+                if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTaggerGysBERT):
+                    self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
+                    class_scores = self.lstm_line_tagger(features['spatial'], features['char'], features['sentence'])
+                predict_scores, predict_classes = torch.max(class_scores, 1)
+                predict_labels = [self.ix_to_class[pc.item()] for pc in predict_classes]
+            predicted_line_class = {line_features['line_id']: line_class for line_features, line_class
+                                    in zip(page_line_features, predict_labels)}
         for tr in page.get_all_text_regions():
             if tr.has_type('marginalia'):
                 for line in tr.lines:
@@ -411,7 +415,10 @@ def read_csv(csv_file: str) -> Generator[Dict[str, any], None, None]:
 def read_page_lines(csv_file: str) -> Generator[List[Dict[str, any]], None, None]:
     prev_page_id = None
     page_lines = []
-    for row in read_csv(csv_file):
+    for ri, row in enumerate(read_csv(csv_file)):
+        if 'page_id' not in row:
+            print(f"no page_id in row {ri+1} of file '{csv_file}'")
+            print(row)
         if row['page_id'] != prev_page_id:
             if len(page_lines) > 0:
                 yield page_lines
@@ -525,7 +532,8 @@ def load_ground_truth():
     line_class_set_file = os.path.join(gt_dir, 'republic_line_class_set.pcl')
     line_class_csv_marijn = os.path.join(gt_dir, 'htr_classified_lines_marijn.csv')
     line_class_csv_rosalie = os.path.join(gt_dir, 'htr_classified_lines_rosalie.csv')
-    gt_page_data = read_ground_truth_data([line_class_csv_marijn, line_class_csv_rosalie])
+    line_class_csv_secreet = os.path.join(gt_dir, 'htr_classified_lines-secret_resolutions-Rosalie-Nienke.tsv')
+    gt_page_data = read_ground_truth_data([line_class_csv_marijn, line_class_csv_rosalie, line_class_csv_secreet])
 
     gt_page_json_file = f'{gt_dir}/htr_page_json.jsonl.gz'
     gt_pages = read_page_json(gt_page_json_file)

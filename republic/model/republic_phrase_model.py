@@ -94,6 +94,11 @@ spelling_variants = {
 
 session_phrase_model = [
     {
+        'phrase': 'geinsereert.',
+        'start_year': 1585, 'end_year': 1796,
+        'label': 'insertion'
+    },
+    {
         'phrase': 'Extract uyt de Resolutien',
         'start_year': 1603, 'end_year': 1796,
         'label': 'extract',

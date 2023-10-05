@@ -322,7 +322,10 @@ def get_line_features(line, col, skip_sim: Dict[str, SkipgramSimilarity], base_d
 def get_page_line_features(page: pdm.PageXMLPage,
                            skip_sim: Dict[str, SkipgramSimilarity]) -> List[Dict[str, any]]:
     rows = []
-    for tr in sorted(page.text_regions + page.extra):
+    trs = [tr for col in page.columns for tr in col.text_regions]
+    trs.extend([tr for tr in page.extra if tr not in trs])
+    trs.extend([tr for tr in page.text_regions if tr not in trs])
+    for tr in trs:
         if 'marginalia' in tr.type:
             continue
         lines = [line for line in tr.get_lines()]
