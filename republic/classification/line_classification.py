@@ -91,21 +91,26 @@ class NeuralLineClassifier:
         if len(page_line_features) == 0:
             predicted_line_class = {}
         else:
-            with torch.no_grad():
-                # spatial_sequence, char_sequence, class_sequence = self.page_to_feature_sequences(page_line_features)
-                features = page_features.page_to_feature_sequences(page_line_features, self.char_to_ix,
-                                                                   self.class_to_ix,
-                                                                   line_fixed_length=self.config['char_line_size'])
-                if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTagger):
-                    self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
-                    class_scores = self.lstm_line_tagger(features['spatial'], features['char'])
-                if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTaggerGysBERT):
-                    self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
-                    class_scores = self.lstm_line_tagger(features['spatial'], features['char'], features['sentence'])
-                predict_scores, predict_classes = torch.max(class_scores, 1)
-                predict_labels = [self.ix_to_class[pc.item()] for pc in predict_classes]
-            predicted_line_class = {line_features['line_id']: line_class for line_features, line_class
-                                    in zip(page_line_features, predict_labels)}
+            try:
+                with torch.no_grad():
+                    # spatial_sequence, char_sequence, class_sequence = self.page_to_feature_sequences(page_line_features)
+                    features = page_features.page_to_feature_sequences(page_line_features, self.char_to_ix,
+                                                                       self.class_to_ix,
+                                                                       line_fixed_length=self.config['char_line_size'])
+                    if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTagger):
+                        self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
+                        class_scores = self.lstm_line_tagger(features['spatial'], features['char'])
+                    if isinstance(self.lstm_line_tagger, line_tagger.LSTMLineTaggerGysBERT):
+                        self.lstm_line_tagger.spatial_hidden = self.lstm_line_tagger.init_hidden(self.lstm_line_tagger.spatial_hidden_dim)
+                        class_scores = self.lstm_line_tagger(features['spatial'], features['char'], features['sentence'])
+                    predict_scores, predict_classes = torch.max(class_scores, 1)
+                    predict_labels = [self.ix_to_class[pc.item()] for pc in predict_classes]
+                predicted_line_class = {line_features['line_id']: line_class for line_features, line_class
+                                        in zip(page_line_features, predict_labels)}
+            except RuntimeError:
+                predicted_line_class = {}
+                print('ERROR in classify_line_pages for page', page.id)
+                raise
         for tr in page.get_all_text_regions():
             if tr.has_type('marginalia'):
                 for line in tr.lines:

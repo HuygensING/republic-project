@@ -209,6 +209,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
     lines = [line for line in text_region.get_lines()]
     column_ranges = find_column_gaps(lines, config, debug=debug)
     if debug > 0:
+        print('split_lines_on_column_gaps - text_region:', text_region.id, text_region.stats)
         print('split_lines_on_column_gaps - column_gap:', config['column_gap'])
         print("COLUMN RANGES:", column_ranges)
     column_ranges = [col_range for col_range in column_ranges if col_range["end"] - col_range["start"] >= 20]
@@ -323,7 +324,15 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         config["column_gap"]["gap_pixel_freq_ratio"] = 0.01
         if debug > 0:
             print('SPLITTING EXTRA')
-        extra_cols = split_lines_on_column_gaps(extra, config, debug=debug)
+        if extra.id == text_region.id and len(columns) == 0:
+            if debug > 0:
+                print('split_lines_on_column_gaps - extra equals text_region:')
+                print('\t', text_region.id, text_region.stats)
+                print('\t', extra.id, extra.stats)
+                print('split_lines_on_column_gaps - cannot split text_region, returning text_region')
+            extra_cols = [extra]
+        else:
+            extra_cols = split_lines_on_column_gaps(extra, config, debug=debug)
         for extra_col in extra_cols:
             if debug > 0:
                 print('\tEXTRA COL AFTER EXTRA SPLIT:', extra_col.stats)
