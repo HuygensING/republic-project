@@ -90,9 +90,10 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         # check if this text region overlaps with an existing column
         overlapping_column = None
         for column in columns:
+            print('COLUMN BOX:', page_doc.id, column.id, column.coords.box)
             overlap = pdm.get_horizontal_overlap(column, text_region)
             tr_overlap_frac = overlap / tr_width
-            cl_overlap_frac = overlap / column.coords.width
+            cl_overlap_frac = overlap / column.coords.width if column.coords.width > 0 else 0
             if min(tr_overlap_frac, cl_overlap_frac) > 0.5 and max(tr_overlap_frac, cl_overlap_frac) > 0.75:
                 overlapping_column = column
                 break
