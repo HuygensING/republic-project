@@ -73,6 +73,10 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
     # remove the text_regions as direct descendants of page
     page_doc.text_regions = []
     for text_region in text_regions:
+        # for zero width textregions, assume a single pixel width
+        tr_width = text_region.coords.width
+        if tr_width == 0:
+            tr_width = 1
         text_region.set_as_parent(text_region.lines)
         if text_region.lines and text_region.coords.width > max_column_width:
             # Wide text_regions are part of the header
@@ -87,7 +91,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         overlapping_column = None
         for column in columns:
             overlap = pdm.get_horizontal_overlap(column, text_region)
-            tr_overlap_frac = overlap / text_region.coords.width
+            tr_overlap_frac = overlap / tr_width
             cl_overlap_frac = overlap / column.coords.width
             if min(tr_overlap_frac, cl_overlap_frac) > 0.5 and max(tr_overlap_frac, cl_overlap_frac) > 0.75:
                 overlapping_column = column
@@ -98,7 +102,11 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
             overlapping_column.coords = pdm.parse_derived_coords(overlapping_column.text_regions)
         # if no, create a new column for this text region
         else:
-            column = pdm.PageXMLColumn(coords=pdm.parse_derived_coords([text_region]), metadata=column_metadata,
+            if text_region.coords.width > 0 and text_region.coords.height > 0:
+                coords = pdm.parse_derived_coords([text_region])
+            else:
+                coords = pdm.Coords([point for point in text_region.coords.points])
+            column = pdm.PageXMLColumn(coords=coords, metadata=column_metadata,
                                        text_regions=[text_region])
             columns += [column]
     for column in columns:

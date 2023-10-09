@@ -205,6 +205,7 @@ def make_derived_column(lines: List[pdm.PageXMLTextLine], metadata: dict, page_i
 def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                                config: Dict[str, any],
                                overlap_threshold: float = 0.5,
+                               ignore_bad_coordinate_lines: bool = True,
                                debug: int = 0) -> List[pdm.PageXMLColumn]:
     lines = [line for line in text_region.get_lines()]
     column_ranges = find_column_gaps(lines, config, debug=debug)
@@ -305,42 +306,49 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         print("EXTRA LINES AFTER:", len(extra_lines))
     extra = None
     if len(extra_lines) > 0:
+        coords = None
         try:
             coords = pdm.parse_derived_coords(extra_lines)
         except BaseException:
             for line in extra_lines:
-                print(line.coords.box, line.text)
-            raise ValueError('Cannot generate column coords for extra lines')
-        extra = pdm.PageXMLTextRegion(metadata=text_region.metadata, coords=coords,
-                                      lines=extra_lines)
-        if text_region.parent and text_region.parent.id:
-            extra.set_derived_id(text_region.parent.id)
-            extra.set_parent(text_region.parent)
-        else:
-            extra.set_derived_id(text_region.id)
-        # for line in extra.lines:
-        #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
-        config = copy.deepcopy(config)
-        config["column_gap"]["gap_pixel_freq_ratio"] = 0.01
-        if debug > 0:
-            print('SPLITTING EXTRA')
-        if extra.id == text_region.id and len(columns) == 0:
+                print('\tproblem with coords of extra line:', line.id, line.coords.box, line.text)
+                print('\tcoords:', line.coords)
+                print('\tin text_region', text_region.id)
+            coord_points = [point for line in extra_lines for point in line.coords.points]
+            coords = pdm.Coords(coord_points)
+            if ignore_bad_coordinate_lines is False:
+                raise ValueError('Cannot generate column coords for extra lines')
+        if coords is not None:
+            extra = pdm.PageXMLTextRegion(metadata=text_region.metadata, coords=coords,
+                                          lines=extra_lines)
+            if text_region.parent and text_region.parent.id:
+                extra.set_derived_id(text_region.parent.id)
+                extra.set_parent(text_region.parent)
+            else:
+                extra.set_derived_id(text_region.id)
+            # for line in extra.lines:
+            #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+            config = copy.deepcopy(config)
+            config["column_gap"]["gap_pixel_freq_ratio"] = 0.01
             if debug > 0:
-                print('split_lines_on_column_gaps - extra equals text_region:')
-                print('\t', text_region.id, text_region.stats)
-                print('\t', extra.id, extra.stats)
-                print('split_lines_on_column_gaps - cannot split text_region, returning text_region')
-            extra_cols = [extra]
-        else:
-            extra_cols = split_lines_on_column_gaps(extra, config, debug=debug)
-        for extra_col in extra_cols:
-            if debug > 0:
-                print('\tEXTRA COL AFTER EXTRA SPLIT:', extra_col.stats)
-            extra_col.set_parent(text_region.parent)
-            if text_region.parent:
-                extra_col.set_derived_id(text_region.parent.id)
-        columns += extra_cols
-        extra = None
+                print('SPLITTING EXTRA')
+            if extra.id == text_region.id and len(columns) == 0:
+                if debug > 0:
+                    print('split_lines_on_column_gaps - extra equals text_region:')
+                    print('\t', text_region.id, text_region.stats)
+                    print('\t', extra.id, extra.stats)
+                    print('split_lines_on_column_gaps - cannot split text_region, returning text_region')
+                extra_cols = [extra]
+            else:
+                extra_cols = split_lines_on_column_gaps(extra, config, debug=debug)
+            for extra_col in extra_cols:
+                if debug > 0:
+                    print('\tEXTRA COL AFTER EXTRA SPLIT:', extra_col.stats)
+                extra_col.set_parent(text_region.parent)
+                if text_region.parent:
+                    extra_col.set_derived_id(text_region.parent.id)
+            columns += extra_cols
+            extra = None
     if extra is not None:
         print('source doc:', text_region.id)
         print(extra)
