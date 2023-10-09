@@ -405,6 +405,8 @@ class SessionParagraphGenerator(ParagraphGenerator):
                                                                         curr_words, prev_words)
                 if len(prev_words) > 0:
                     prev_line_text = make_line_text(prev_line, do_merge, prev_words[-1], merge_word)
+                elif prev_line.text is None:
+                    prev_line_text = ''
                 else:
                     prev_line_text = make_line_text(prev_line, False, '', merge_word)
                 if prev_line.text is not None:
