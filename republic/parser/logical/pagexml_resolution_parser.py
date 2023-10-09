@@ -403,7 +403,10 @@ class SessionParagraphGenerator(ParagraphGenerator):
                 curr_words = para_helper.get_line_words(curr_line.text)
                 do_merge, merge_word = para_helper.determine_line_break(self.lbd,
                                                                         curr_words, prev_words)
-                prev_line_text = make_line_text(prev_line, do_merge, prev_words[-1], merge_word)
+                if len(prev_words) > 0:
+                    prev_line_text = make_line_text(prev_line, do_merge, prev_words[-1], merge_word)
+                else:
+                    prev_line_text = make_line_text(prev_line, False, '', merge_word)
                 if prev_line.text is not None:
                     line_range = make_line_range(text, prev_line, prev_line_text)
                     line_ranges.append(line_range)
