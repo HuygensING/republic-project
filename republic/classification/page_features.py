@@ -220,6 +220,8 @@ def get_marginalia_columns(doc: pdm.PageXMLDoc) -> List[pdm.PageXMLColumn]:
 def is_noise_line(line: pdm.PageXMLTextLine, tr: pdm.PageXMLTextRegion) -> bool:
     if line.text is None:
         return True
+    if line.coords.width == 0 or tr.coords.width == 0:
+        return True
     indent = line.coords.left - tr.coords.left
     indent_frac = indent / tr.coords.width
     return len(line.text) < 4 and indent_frac > 0.8
@@ -250,7 +252,7 @@ def get_lines_base_dist(lines: List[pdm.PageXMLTextLine], tr: pdm.PageXMLTextReg
     base_dist = {}
     for curr_line in special_lines:
         indent = curr_line.coords.left - tr.coords.left
-        indent_frac = indent / tr.coords.width
+        indent_frac = indent / tr.coords.width if tr.coords.width > 0 else -1
         if is_noise_line(curr_line, tr):
             dist_to_prev = 0
             dist_to_next = 70
