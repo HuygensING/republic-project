@@ -102,8 +102,9 @@ def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
                                        junksearcher=junksweeper,
                                     #    found_delegates=found_delegates,
                                        df=abbreviated_delegates)
-    runner = RunAll(es=es, 
-                    year=year, 
+    runner = RunAll(es=es,
+                    year=year,
+                    ekwz=ekwz,
                     source_index=source_index,
                     matchfnd=matchfinder)
     if verbose:
