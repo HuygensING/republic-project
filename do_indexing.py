@@ -307,23 +307,27 @@ def do_resolution_metadata_indexing(inv_num: int, year_start: int, year_end: int
     phrase_file = f'{repo_url}/blob/{get_commit_version()}/{relative_path}'
     prop_searchers = extract_res.generate_proposition_searchers()
     for resolution in rep_es.scroll_inventory_resolutions(inv_num):
-        phrase_matches = extract_res.extract_paragraph_phrase_matches(resolution.paragraphs[0],
-                                                                      [searcher])
-        new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
-                                                             prop_searchers['template'],
-                                                             prop_searchers['variable'])
-        prov_url = rep_es.post_provenance(source_ids=[resolution.id], target_ids=[resolution.id],
-                                          source_index='resolutions', target_index='resolutions',
-                                          source_external_urls=[phrase_file],
-                                          why='Enriching resolution with metadata derived from resolution phrases')
-        if 'prov_url' not in new_resolution.metadata:
-            new_resolution.metadata['prov_url'] = [prov_url]
-        if isinstance(new_resolution.metadata['prov_url'], str):
-            new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
-        if prov_url not in new_resolution.metadata['prov_url']:
-            new_resolution.metadata['prov_url'].append(prov_url)
-        print('\tadding resolution metadata for resolution', new_resolution.id)
-        rep_es.index_resolution(new_resolution)
+        try:
+            phrase_matches = extract_res.extract_paragraph_phrase_matches(resolution.paragraphs[0],
+                                                                        [searcher])
+            new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
+                                                                prop_searchers['template'],
+                                                                prop_searchers['variable'])
+            prov_url = rep_es.post_provenance(source_ids=[resolution.id], target_ids=[resolution.id],
+                                            source_index='resolutions', target_index='resolutions',
+                                            source_external_urls=[phrase_file],
+                                            why='Enriching resolution with metadata derived from resolution phrases')
+            if 'prov_url' not in new_resolution.metadata:
+                new_resolution.metadata['prov_url'] = [prov_url]
+            if isinstance(new_resolution.metadata['prov_url'], str):
+                new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
+            if prov_url not in new_resolution.metadata['prov_url']:
+                new_resolution.metadata['prov_url'].append(prov_url)
+            print('\tadding resolution metadata for resolution', new_resolution.id)
+            rep_es.index_resolution(new_resolution)
+        except BaseException:
+            print(f'ERROR - do_resolution_metadata_indexing - resolution.id: {resolution.id}')
+            raise
 
 
 def do_resolution_metadata_indexing_old(inv_num: int, year_start: int, year_end: int):
@@ -416,6 +420,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["type"] == "phrase_matches":
         do_resolution_phrase_match_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["type"] == "resolution_metadata":
+        rep_es.config['resolutions_index'] = 'full_resolutions'
         do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["type"] == "attendance_list_spans":
         do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
@@ -496,8 +501,12 @@ def main():
     start, end, indexing_steps, num_processes, index_label = parse_args()
     for indexing_step in indexing_steps:
         tasks = get_tasks(start, end, indexing_step, index_label)
-        with multiprocessing.Pool(processes=num_processes) as pool:
-            pool.map(process_inventory, tasks)
+        if num_processes > 1:
+            with multiprocessing.Pool(processes=num_processes) as pool:
+                pool.map(process_inventory, tasks)
+        else:
+            for task in tasks:
+                process_inventory(task)
         if indexing_step == "session_lines":
             for task in tasks:
                 do_session_lines_indexing(task["inv_num"], task["year_start"], task["year_end"])
