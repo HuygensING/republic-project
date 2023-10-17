@@ -38,8 +38,8 @@ copy settings-example.py settings.py
 
 Then, set up the virtual environment, installl required packages and fire up jupyter notebook:
 ```shell
-pipenv --python 3.8
-pipenv install -dev
+pipenv --python 3.10
+pipenv install -d
 pipenv run jupyter notebook
 ```
 
