@@ -86,9 +86,18 @@ If you want to use any of the packages in notebooks in the `notebook` directory,
 # can load the republic modules directly from the notebooks
 import os
 import sys
+
 repo_name = 'republic-project'
-repo_dir = os.path.split(os.getcwd())[0].split(repo_name)[0] + repo_name
-print(repo_dir)
+base_dir = os.path.split(os.getcwd())[0].split(repo_name)[0]
+repo_dir = os.path.join(base_dir, repo_name)
+
+print("adding project dir to path:", repo_dir)
+
 if repo_dir not in sys.path:
-    sys.path.append(repo_dir)
+    sys.path = [repo_dir] + sys.path
+else:
+    sys.path.remove(repo_dir)
+    sys.path = [repo_dir] + sys.path
+    
+
 ```
