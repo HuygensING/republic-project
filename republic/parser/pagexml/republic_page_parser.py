@@ -90,7 +90,8 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         # check if this text region overlaps with an existing column
         overlapping_column = None
         for column in columns:
-            print('COLUMN BOX:', page_doc.id, column.id, column.coords.box)
+            if debug > 0:
+                print('COLUMN BOX:', page_doc.id, column.id, column.coords.box)
             overlap = pdm.get_horizontal_overlap(column, text_region)
             tr_overlap_frac = overlap / tr_width
             cl_overlap_frac = overlap / column.coords.width if column.coords.width > 0 else 0
@@ -136,25 +137,45 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
     return new_page
 
 
-def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
+def get_page_split_widths(item: pdm.PhysicalStructureDoc, debug: int = 0) -> Tuple[int, int]:
     # odd_end, even_end = 4900, 2500
     scan_width = None
     # use scan width if it's available
     if 'scan_width' in item.metadata:
+        if debug > 0:
+            print(f'get_page_split_widths - scan_width in metadata of item {item.id} - '
+                  f'scan_width: {item.metadata["scan_width"]}')
         scan_width = item.metadata['scan_width']
     elif item.parent and 'scan_width' in item.parent.metadata:
+        if debug > 0:
+            print(f'get_page_split_widths - scan_width in metadata of item parent {item.parent.id} - '
+                  f'scan_width: {item.parent.metadata["scan_width"]}')
         scan_width = item.parent.metadata['scan_width']
     # otherwise, default to expected size
     elif 'normal_odd_end' in item.metadata:
+        if debug > 0:
+            print(f'get_page_split_widths - normal_odd_end in metadata of item {item.id} - '
+                  f'normal_odd_end: {item.metadata["normal_odd_end"]}')
         scan_width = item.metadata['normal_odd_end']
     elif item.parent and 'normal_odd_end' in item.parent.metadata:
+        if debug > 0:
+            print(f'get_page_split_widths - normal_odd_end in metadata of item parent {item.parent.id} - '
+                  f'normal_odd_end: {item.parent.metadata["normal_odd_end"]}')
         scan_width = item.parent.metadata['normal_odd_end']
     odd_end = scan_width
     if scan_width is None:
+        if debug > 0:
+            print(f'get_page_split_widths - scan_width is None, returning odd_end=0, even=0')
         odd_end, even_end = 0, 0
     elif "normal_odd_end" in item.metadata and scan_width > item.metadata['normal_odd_end']:
+        if debug > 0:
+            print(f'get_page_split_widths - scan_width is not None and scan_width {scan_width}'
+                  f' > normal_odd_end: {item.metadata["normal_odd_end"]}')
         even_end = item.metadata['normal_even_end']
     else:
+        if debug > 0:
+            print(f'get_page_split_widths - scan_width is not None, using half of scan_width + 100: '
+                  f'scan_width: {item.metadata["scan_width"]}')
         even_end = scan_width / 2 + 100
     return odd_end, even_end
 
@@ -582,10 +603,7 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     else:
         max_col_width = 2200
     if debug > 1:
-        print("split_scan_page - INITIAL EVEN:", pages[0].stats)
-        print('\t', pages[0].type)
-        print("split_scan_page - INITIAL ODD:", pages[1].stats)
-        print('\t', pages[1].type)
+        print(f"split_scan_pages - max_col_width: {max_col_width}")
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     trs = get_column_text_regions(scan_doc, max_col_width, config, debug=debug)
     tr_stats = combine_stats(trs)

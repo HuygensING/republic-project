@@ -31,7 +31,7 @@ def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
         raise
 
 
-def set_scan_type(scan: pdm.PageXMLDoc) -> None:
+def set_scan_type(scan: pdm.PageXMLDoc, inv_metadata: Dict[str, any] = None) -> None:
     inv_num = scan.metadata["inventory_num"]
     if 62 <= inv_num <= 456:
         scan.metadata["resolution_type"] = "ordinaris"
@@ -65,6 +65,10 @@ def set_scan_type(scan: pdm.PageXMLDoc) -> None:
         scan.metadata["normal_even_end"] = 2800
     else:
         raise ValueError(f'Unknown REPUBLIC inventory number: {inv_num}')
+    if inv_metadata and 'scan_width_stats' in inv_metadata:
+        inv_scan_width = inv_metadata['scan_width_stats']['scan_width_median']
+        scan.metadata["normal_odd_end"] = inv_scan_width
+        scan.metadata["normal_even_end"] = inv_scan_width / 2 + 100
     if scan.coords.right == 0:
         scan.metadata['scan_type'] = ['empty_scan']
     elif scan.coords.right <= scan.metadata["normal_even_end"]:
@@ -77,6 +81,7 @@ def set_scan_type(scan: pdm.PageXMLDoc) -> None:
 
 def get_scan_pagexml(pagexml_file: str,
                      pagexml_data: Union[str, None] = None,
+                     inv_metadata: Dict[str, any] = None,
                      debug: int = 0) -> pdm.PageXMLScan:
     try:
         scan_doc = pagexml_parser.parse_pagexml_file(pagexml_file, pagexml_data=pagexml_data)
@@ -104,7 +109,7 @@ def get_scan_pagexml(pagexml_file: str,
     scan_doc.id = metadata['id']
     for field in metadata:
         scan_doc.metadata[field] = metadata[field]
-    set_scan_type(scan_doc)
+    set_scan_type(scan_doc, inv_metadata=inv_metadata)
     set_document_children_derived_ids(scan_doc, scan_doc.id)
     pdm.set_parentage(scan_doc)
     # print('get_scan_pagexml - setting scan_id as metadata')

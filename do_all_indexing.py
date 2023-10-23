@@ -13,7 +13,7 @@ rep_es = initialize_es(host_type="internal", timeout=60)
 
 def index_scan(inv_file, file_content, inv_metadata):
         try:
-            scan = pagexml_parser.get_scan_pagexml(inv_file, inv_metadata, pagexml_data=file_content)
+            scan = pagexml_parser.get_scan_pagexml(inv_file, pagexml_data=file_content, inv_metadata=inv_metadata)
             # print(scan.id, scan.stats)
             rep_es.index_scan(scan)
         except (xml.parsers.expat.ExpatError, ValueError, IndexError, KeyError, TypeError, ElasticsearchException, AttributeError) as err:
@@ -68,4 +68,3 @@ if __name__ == "__main__":
                         #encoding='utf-8',
                         level=logging.DEBUG)
     main()
-
