@@ -110,13 +110,17 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
     text_page_num_map = map_text_page_nums(inv_metadata)
     model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
     nlc_gysbert = NeuralLineClassifier(model_dir)
+    page_count = 0
+    num_scans = inv_metadata['num_scans']
+    index = False
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
         try:
-            pages = pagexml_parser.split_pagexml_scan(scan, page_type_index)
+            pages = pagexml_parser.split_pagexml_scan(scan, page_type_index, debug=0)
         except BaseException:
             print('Error splitting pages of scan', scan.id)
             raise
         for page in pages:
+            page_count += 1
             if page.metadata['page_num'] in text_page_num_map:
                 page_num = page.metadata['page_num']
                 page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
@@ -146,7 +150,7 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                         line.metadata['line_class'] = predicted_line_class[line.id]
                     else:
                         line.metadata['line_class'] = 'unknown'
-            print('indexing page with id', page.id)
+            print(f'indexing page {page_count} (scan count {si+1} of {num_scans}) with id {page.id}')
             prov_url = rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
             page.metadata['provenance_url'] = prov_url
             rep_es.index_page(page)
@@ -496,8 +500,12 @@ def main():
     start, end, indexing_steps, num_processes, index_label = parse_args()
     for indexing_step in indexing_steps:
         tasks = get_tasks(start, end, indexing_step, index_label)
-        with multiprocessing.Pool(processes=num_processes) as pool:
-            pool.map(process_inventory, tasks)
+        if num_processes > 1:
+            with multiprocessing.Pool(processes=num_processes) as pool:
+                pool.map(process_inventory, tasks)
+        else:
+            for task in tasks:
+                process_inventory(task)
         if indexing_step == "session_lines":
             for task in tasks:
                 do_session_lines_indexing(task["inv_num"], task["year_start"], task["year_end"])
