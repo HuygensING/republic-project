@@ -146,7 +146,7 @@ def get_page_split_widths(scan: pdm.PageXMLScan, debug: int = 0) -> Tuple[int, i
     if 0.8 <= scan_width_norm_ratio <= 1.25:
         even_end = scan_width / 2 + 100
     else:
-        even_end = scan.metadta['normal_odd_end'] / 2 + 100
+        even_end = scan.metadata['normal_odd_end'] / 2 + 100
     return even_end, odd_end
 
 
