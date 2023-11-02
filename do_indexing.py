@@ -142,8 +142,7 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                 for page_type in page_types:
                     page.add_type(page_type)
                 page.metadata['type'] = [ptype for ptype in page.type]
-<<<<<<< HEAD
-            predicted_line_class = nlc_gysbert.classify_page_lines(page)
+            predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
             for tr in page.get_all_text_regions():
                 for line in tr.lines:
                     if line.id in predicted_line_class:
@@ -151,17 +150,6 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                     else:
                         line.metadata['line_class'] = 'unknown'
             print(f'indexing page {page_count} (scan count {si+1} of {num_scans}) with id {page.id}')
-=======
-            if nlc_gysbert:
-                predicted_line_class = nlc_gysbert.classify_page_lines(page)
-                for tr in page.get_all_text_regions():
-                    for line in tr.lines:
-                        if line.id in predicted_line_class:
-                            line.metadata['line_class'] = predicted_line_class[line.id]
-                        else:
-                            line.metadata['line_class'] = 'unknown'
-            print('indexing page with id', page.id)
->>>>>>> 32bdcce3e9fa7c7b96a2e9c43d12f40925173ed6
             prov_url = rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
             page.metadata['provenance_url'] = prov_url
             rep_es.index_page(page)
