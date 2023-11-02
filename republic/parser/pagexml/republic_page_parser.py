@@ -375,7 +375,7 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                         page = page_even
                         if debug > 0:
                             print('\t\t\t\tadding sub_tr to even')
-                    elif is_odd_side(sub_tr):
+                    elif is_odd_side(sub_tr, scan_doc):
                         side = 'odd'
                         page = page_odd
                         if debug > 0:
