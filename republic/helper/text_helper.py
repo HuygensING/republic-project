@@ -57,6 +57,12 @@ class ResolutionSentences:
         self.split_regex = r'\b' if include_punct else split_pattern
 
     def __iter__(self):
+        id_field = 'res_id'
+        if self.use_headers:
+            for header in self.use_headers:
+                if header.endswith('_id'):
+                    id_field = header
+                    break
         if self.tokenise_sentences:
             if self.debug > 0:
                 print('using sentences as document level')
@@ -67,9 +73,9 @@ class ResolutionSentences:
             reader = self.read_paragraphs()
         if self.as_doc is True:
             for doc in reader:
-                id_field = 'resolution_id' if 'resolution_id' in doc else 'res_id'
+                doc_id = doc[id_field] if id_field in doc else None
                 metadata = {field: doc[field] for field in doc if field not in {'text', id_field}}
-                doc = self.doc_tokenize.tokenize(doc['text'], doc[id_field])
+                doc = self.doc_tokenize.tokenize(doc['text'], doc_id)
                 doc.metadata = metadata
                 yield doc
         else:
@@ -95,12 +101,12 @@ class ResolutionSentences:
     def read_paragraphs(self):
         for para in read_resolution_paragraphs(self.res_files, includes_headers=self.includes_headers,
                                                headers=self.use_headers, pre_tokenise_func=self.pre_tokenise_func,
-                                               pre_tokenise_field=self.pre_tokenise_field):
+                                               pre_tokenise_field=self.pre_tokenise_field, debug=self.debug):
             yield para
 
     def read_sentences(self):
         for para in read_resolution_paragraphs(self.res_files, pre_tokenise_func=self.pre_tokenise_func,
-                                               pre_tokenise_field=self.pre_tokenise_field):
+                                               pre_tokenise_field=self.pre_tokenise_field, debug=self.debug):
             for si, sent in enumerate(sent_tokenize(para['text'])):
                 if self.to_ascii:
                     yield sent
@@ -624,12 +630,12 @@ def sent_to_vocab(sents: List[List[str]], min_freq: int = 5):
 
 def read_resolution_paragraphs(res_files, pre_tokenise_func: Callable = None, pre_tokenise_field: str = None,
                                includes_headers: bool = True, headers: List[str] = None,
-                               debug: bool = False):
+                               debug: int = 0):
     if pre_tokenise_func and not pre_tokenise_field:
         pre_tokenise_field = 'text'
     for res_file in res_files:
         opener = gzip.open if res_file.endswith('.gz') else open
-        if debug:
+        if debug > 0:
             print('parsing file', res_file)
         with opener(res_file, 'rt') as fh:
             if includes_headers is True and headers is None:
@@ -645,7 +651,7 @@ def read_resolution_paragraphs(res_files, pre_tokenise_func: Callable = None, pr
                     if pre_tokenise_func:
                         tokenized_doc = pre_tokenise_func(doc[pre_tokenise_field])
                         doc['tokens'] = tokenized_doc.tokens
-                        yield doc
+                    yield doc
 
 
 def write_rewrite_dictionary_json(rewrite_dict: Dict[str, str], dict_file: str):

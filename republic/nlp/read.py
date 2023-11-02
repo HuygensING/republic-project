@@ -3,11 +3,48 @@ import gzip
 import json
 import os
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 from dateutil.parser import parse as date_parse
 
 from republic.helper.utils import get_project_dir
+
+
+def read_tsv(fname: str, has_headers: bool = False, use_headers: str = None,
+             as_json: bool = False, ignore_warnings: bool = False):
+    open_func = gzip.open if fname.endswith('gz') else open
+    with open_func(fname, 'rt') as fh:
+        headers = None
+        if has_headers is True:
+            header_line = next(fh)
+            headers = header_line.strip('\n').split('\t')
+        for li, line in enumerate(fh):
+            # process headers (if present)
+            if headers is None and use_headers is None:
+                raise ValueError('Cannot return as JSON when file has no headers and "use_headers" is None')
+            elif headers is None:
+                headers = use_headers
+
+            # process columns
+            cols = line.strip('\n').split('\t')
+            if len(cols) != len(headers) and ignore_warnings is False:
+                print(f"line {li + 2}:", line)
+                raise IndexError(f"line {li + 2}: number of columns ({len(cols)}) is different "
+                                 f"from the number of headers ({len(headers)}).")
+
+            # check columns and headers align
+            elif len(cols) > len(headers):
+                proper_cols = cols[:len(headers)]
+                text = proper_cols[-1]
+                proper_cols[-1] = '\t'.join([text] + cols[len(headers):])
+                cols = proper_cols
+
+            # determine return type
+            if as_json:
+                yield {header: cols[hi] for hi, header in enumerate(headers)}
+            else:
+                yield cols
+    return None
 
 
 class ParaReader:
@@ -19,6 +56,8 @@ class ParaReader:
     def __iter__(self):
         for para_file in self.para_files:
             for para in read_paragraphs(para_file):
+                if self.ignorecase is True:
+                    para[-1] = para[-1].lower()
                 yield para
 
 
@@ -36,7 +75,7 @@ def make_plain_text_file(para_files, plan_text_filename: str):
                 fh.write(f'{text}\n')
 
 
-def read_para_files(para_dir: str, as_inv_dict: bool = False):
+def read_para_files_from_dir(para_dir: str, as_inv_dict: bool = False):
     para_files = glob.glob(os.path.join(para_dir, 'resolution*.tsv.gz'))
     if as_inv_dict:
         inv_dict = {}
@@ -46,6 +85,15 @@ def read_para_files(para_dir: str, as_inv_dict: bool = False):
         return inv_dict
     else:
         return para_files
+
+
+def read_paragraphs_from_files(para_files: Union[str, List[str]]):
+    if isinstance(para_files, str):
+        para_files = [para_files]
+    for para_file in para_files:
+        for para in read_paragraphs(para_file):
+            yield para
+    return None
 
 
 def read_metadata():
@@ -67,7 +115,7 @@ def read_metadata():
 
 def get_period_files(res_dir: str, periods: List[Tuple[int, int]] = None,
                      inv_period: Dict[int, Tuple[int, int]] = None):
-    period_files = defaultdict(list)
+    period_files = {}
     if inv_period is None:
         if periods is None:
             raise ValueError('must pass either periods or inv_period')
@@ -81,8 +129,10 @@ def get_period_files(res_dir: str, periods: List[Tuple[int, int]] = None,
         if inv_num in range(3244, 3286):
             # print('skipping double from second series', inv_num)
             continue
-        start, end = inv_period[inv_num]
-        period_files[f"{start}-{end}"].append(res_file)
+        period = inv_period[inv_num]
+        if period not in period_files:
+            period_files[period] = []
+        period_files[period].append(res_file)
     return period_files
 
 

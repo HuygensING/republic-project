@@ -102,8 +102,10 @@ def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
                                        junksearcher=junksweeper,
                                     #    found_delegates=found_delegates,
                                        df=abbreviated_delegates)
-    runner = RunAll(es=es, 
-                    year=year, 
+    runner = RunAll(es=es,
+                    year=year,
+                    ekwz=ekwz,
+                    found_delegates=found_delegates,
                     source_index=source_index,
                     matchfnd=matchfinder)
     if verbose:
@@ -298,7 +300,7 @@ class RunAll(object):
                 raise
             parse_delegates.delegates2spans(searchob, framed_gtlm=self.framed_gtlm)
         print("updating merged delegates database")
-        merged_deps = pd.merge(left=self.framed_gtlm, right=abbreviated_delegates, left_on="ref_id", right_on="id",
+        merged_deps = pd.merge(left=self.framed_gtlm, right=self.abbreviated_delegates, left_on="ref_id", right_on="id",
                                how="left")
         serializable_df = merged_deps[['ref_id', 'geboortejaar', 'sterfjaar', 'colleges', 'functions',
                                        'period', 'sg', 'was_gedeputeerde', 'p_interval', 'h_life', 'variants', 'name_x',
@@ -314,9 +316,9 @@ class RunAll(object):
     def delegates_from_fragments(self):
         self.fragmentsearcher = parse_delegates.DelegatesFromFragments(searchobs=self.searchobs,
                                                                        year=self.year,
-                                                                       junksweeper=junksweeper,
-                                                                       found=found_delegates,
-                                                                       df=abbreviated_delegates)
+                                                                       junksweeper=self.junksweeper,
+                                                                       found=self.found_delegates,
+                                                                       df=self.abbreviated_delegates)
         self.fragmentsearcher.run()
         parse_delegates.reverse_references(self.fragmentsearcher.xgroups,
                                            self.fragmentsearcher.match_records)

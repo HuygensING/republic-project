@@ -51,7 +51,7 @@ herensearcher = make_herensearcher(keywords=herenkeywords)
 
 def make_junksweeper(ekwz):
     provincies = ['Holland', 'Zeeland', 'West-Vriesland', 'Gelderland', 'Overijssel', 'Utrecht', 'Friesland']
-    months = month_names + month_names_late
+    months = month_names_early + month_names_late
     indexkeywords = months + provincies
     junksweeper = FuzzyPhraseSearcher(config=fuzzysearch_config)
     variants = [{'phrase': k, 'label':'junk', 'variants': v} for k, v in ekwz.items()]

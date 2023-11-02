@@ -3,7 +3,6 @@ import gzip
 import json
 import multiprocessing
 import os
-import time
 from typing import Dict, Union
 
 
@@ -24,7 +23,6 @@ import republic.extraction.extract_resolution_metadata as extract_res
 
 from republic.classification.line_classification import NeuralLineClassifier
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
-from republic.helper.metadata_helper import page_num_to_page_id
 from republic.helper.model_loader import load_line_break_detector
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
@@ -35,7 +33,6 @@ import republic.parser.logical.pagexml_session_parser as session_parser
 from republic.parser.logical.handwritten_session_parser import get_sessions
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as res_parser
-import republic.parser.logical.index_page_parser as index_parser
 
 
 # Get the Git repository commit hash for keeping provenance
@@ -108,11 +105,13 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
         return None
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
-    model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
-    nlc_gysbert = NeuralLineClassifier(model_dir)
     page_count = 0
     num_scans = inv_metadata['num_scans']
     index = False
+    nlc_gysbert = None
+    if inv_num < 3760 or inv_num > 3864:
+        model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
+        nlc_gysbert = NeuralLineClassifier(model_dir)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
         try:
             pages = pagexml_parser.split_pagexml_scan(scan, page_type_index, debug=0)
@@ -143,6 +142,7 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                 for page_type in page_types:
                     page.add_type(page_type)
                 page.metadata['type'] = [ptype for ptype in page.type]
+<<<<<<< HEAD
             predicted_line_class = nlc_gysbert.classify_page_lines(page)
             for tr in page.get_all_text_regions():
                 for line in tr.lines:
@@ -151,6 +151,17 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                     else:
                         line.metadata['line_class'] = 'unknown'
             print(f'indexing page {page_count} (scan count {si+1} of {num_scans}) with id {page.id}')
+=======
+            if nlc_gysbert:
+                predicted_line_class = nlc_gysbert.classify_page_lines(page)
+                for tr in page.get_all_text_regions():
+                    for line in tr.lines:
+                        if line.id in predicted_line_class:
+                            line.metadata['line_class'] = predicted_line_class[line.id]
+                        else:
+                            line.metadata['line_class'] = 'unknown'
+            print('indexing page with id', page.id)
+>>>>>>> 32bdcce3e9fa7c7b96a2e9c43d12f40925173ed6
             prov_url = rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
             page.metadata['provenance_url'] = prov_url
             rep_es.index_page(page)
@@ -311,23 +322,27 @@ def do_resolution_metadata_indexing(inv_num: int, year_start: int, year_end: int
     phrase_file = f'{repo_url}/blob/{get_commit_version()}/{relative_path}'
     prop_searchers = extract_res.generate_proposition_searchers()
     for resolution in rep_es.scroll_inventory_resolutions(inv_num):
-        phrase_matches = extract_res.extract_paragraph_phrase_matches(resolution.paragraphs[0],
-                                                                      [searcher])
-        new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
-                                                             prop_searchers['template'],
-                                                             prop_searchers['variable'])
-        prov_url = rep_es.post_provenance(source_ids=[resolution.id], target_ids=[resolution.id],
-                                          source_index='resolutions', target_index='resolutions',
-                                          source_external_urls=[phrase_file],
-                                          why='Enriching resolution with metadata derived from resolution phrases')
-        if 'prov_url' not in new_resolution.metadata:
-            new_resolution.metadata['prov_url'] = [prov_url]
-        if isinstance(new_resolution.metadata['prov_url'], str):
-            new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
-        if prov_url not in new_resolution.metadata['prov_url']:
-            new_resolution.metadata['prov_url'].append(prov_url)
-        print('\tadding resolution metadata for resolution', new_resolution.id)
-        rep_es.index_resolution(new_resolution)
+        try:
+            phrase_matches = extract_res.extract_paragraph_phrase_matches(resolution.paragraphs[0],
+                                                                        [searcher])
+            new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
+                                                                prop_searchers['template'],
+                                                                prop_searchers['variable'])
+            prov_url = rep_es.post_provenance(source_ids=[resolution.id], target_ids=[resolution.id],
+                                            source_index='resolutions', target_index='resolutions',
+                                            source_external_urls=[phrase_file],
+                                            why='Enriching resolution with metadata derived from resolution phrases')
+            if 'prov_url' not in new_resolution.metadata or new_resolution.metadata['prov_url'] is None:
+                new_resolution.metadata['prov_url'] = [prov_url]
+            if isinstance(new_resolution.metadata['prov_url'], str):
+                new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
+            if prov_url not in new_resolution.metadata['prov_url']:
+                new_resolution.metadata['prov_url'].append(prov_url)
+            print('\tadding resolution metadata for resolution', new_resolution.id)
+            rep_es.index_resolution(new_resolution)
+        except BaseException:
+            print(f'ERROR - do_resolution_metadata_indexing - resolution.id: {resolution.id}')
+            raise
 
 
 def do_resolution_metadata_indexing_old(inv_num: int, year_start: int, year_end: int):
@@ -420,8 +435,10 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["type"] == "phrase_matches":
         do_resolution_phrase_match_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["type"] == "resolution_metadata":
+        rep_es.config['resolutions_index'] = 'full_resolutions'
         do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["type"] == "attendance_list_spans":
+        rep_es.config['resolutions_index'] = 'full_resolutions'
         do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     else:
         raise ValueError(f'Unknown task type {task["type"]}')

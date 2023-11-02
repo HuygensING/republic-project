@@ -47,7 +47,7 @@ langdetect = "*"
 nltk = "*"
 scikit-learn = "*"
 torch = "*"
-pagexml-tools = "^0.4.0
+pagexml-tools = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 

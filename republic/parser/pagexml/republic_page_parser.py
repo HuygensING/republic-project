@@ -137,31 +137,21 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
     return new_page
 
 
-def get_page_split_widths(item: pdm.PhysicalStructureDoc) -> Tuple[int, int]:
-    # odd_end, even_end = 4900, 2500
-    scan_width = None
-    # use scan width if it's available
-    if 'scan_width' in item.metadata:
-        scan_width = item.metadata['scan_width']
-    elif item.parent and 'scan_width' in item.parent.metadata:
-        scan_width = item.parent.metadata['scan_width']
-    # otherwise, default to expected size
-    elif 'normal_odd_end' in item.metadata:
-        scan_width = item.metadata['normal_odd_end']
-    elif item.parent and 'normal_odd_end' in item.parent.metadata:
-        scan_width = item.parent.metadata['normal_odd_end']
+def get_page_split_widths(scan: pdm.PageXMLScan, debug: int = 0) -> Tuple[int, int]:
+    if hasattr(scan, 'coords') is False or scan.coords is None or scan.coords.points is None:
+        print(f'ERROR determining scan width in get_page_split_widths for scan {scan.id}')
+    scan_width = scan.coords.width
+    scan_width_norm_ratio = scan.coords.width / scan.metadata['normal_odd_end']
     odd_end = scan_width
-    if scan_width is None:
-        odd_end, even_end = 0, 0
-    elif "normal_odd_end" in item.metadata and scan_width > item.metadata['normal_odd_end']:
-        even_end = item.metadata['normal_even_end']
-    else:
+    if 0.8 <= scan_width_norm_ratio <= 1.25:
         even_end = scan_width / 2 + 100
-    return odd_end, even_end
+    else:
+        even_end = scan.metadta['normal_odd_end'] / 2 + 100
+    return even_end, odd_end
 
 
-def is_even_side(item: pdm.PhysicalStructureDoc, debug: int = 0) -> bool:
-    odd_end, even_end = get_page_split_widths(item)
+def is_even_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None, debug: int = 0) -> bool:
+    even_end, odd_end = get_page_split_widths(scan)
     if item.coords.right < even_end:
         return True
     elif item.coords.left > even_end:
@@ -179,8 +169,8 @@ def is_even_side(item: pdm.PhysicalStructureDoc, debug: int = 0) -> bool:
     return item.coords.left < even_end - 100 and item.coords.right < even_end
 
 
-def is_odd_side(item: pdm.PhysicalStructureDoc) -> bool:
-    odd_end, even_end = get_page_split_widths(item)
+def is_odd_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) -> bool:
+    even_end, odd_end = get_page_split_widths(scan)
     if item.coords.right < even_end:
         return False
     elif item.coords.left > even_end:
@@ -194,8 +184,8 @@ def is_odd_side(item: pdm.PhysicalStructureDoc) -> bool:
     return item.coords.left > even_end - 300 and item.coords.right > even_end
 
 
-def is_extra_side(item: pdm.PhysicalStructureDoc) -> bool:
-    odd_end, even_end = get_page_split_widths(item)
+def is_extra_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) -> bool:
+    even_end, odd_end = get_page_split_widths(scan)
     return item.coords.right > odd_end and item.coords.left > odd_end - 200
 
 
@@ -485,7 +475,7 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
         print('assign_trs_to_odd_even_pages - NUM UNDECIDED:', len(undecided))
         for tr in undecided:
             print('\t', tr.id, tr.stats)
-    assign_undecided(page_even, page_odd, undecided, page_type_index, debug=debug)
+    assign_undecided(scan_doc, page_even, page_odd, undecided, page_type_index, debug=debug)
     pages = []
     for page_doc in [page_even, page_odd]:
         if page_doc.coords:
@@ -500,7 +490,7 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
     return pages
 
 
-def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
+def assign_undecided(scan: pdm.PageXMLScan, page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
                      undecided: List[pdm.PageXMLTextRegion],
                      page_type_index: Dict[int, any], debug: int = 0):
     if 'normal_odd_end' in page_odd.metadata:
@@ -550,7 +540,7 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
             # print('\tundecided metadata:', undecided_tr.metadata)
             undecided_tr.metadata['normal_odd_end'] = page_odd.metadata['normal_odd_end']
             undecided_tr.metadata['normal_even_end'] = page_even.metadata['normal_even_end']
-            odd_end, even_end = get_page_split_widths(undecided_tr)
+            even_end, odd_end = get_page_split_widths(scan)
             # print(undecided_tr.parent.metadata)
             print("odd end:", odd_end, "\teven end:", even_end)
             print(undecided_tr.coords.box)
@@ -561,6 +551,8 @@ def assign_undecided(page_even: pdm.PageXMLPage, page_odd: pdm.PageXMLPage,
 def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] = None,
                      debug: int = 0) -> List[pdm.PageXMLPage]:
     scan_stats = combine_stats([scan_doc])
+    if 'scan_width' not in scan_doc.metadata:
+        scan_doc.metadata['scan_width'] = scan_doc.coords.width
     pages: List[pdm.PageXMLPage] = []
     if not scan_doc.text_regions:
         return pages
@@ -583,10 +575,7 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     else:
         max_col_width = 2200
     if debug > 1:
-        print("split_scan_page - INITIAL EVEN:", pages[0].stats)
-        print('\t', pages[0].type)
-        print("split_scan_page - INITIAL ODD:", pages[1].stats)
-        print('\t', pages[1].type)
+        print(f"split_scan_pages - max_col_width: {max_col_width}")
     # page_extra = initialize_pagexml_page(scan_doc, 'extra')
     trs = get_column_text_regions(scan_doc, max_col_width, config, debug=debug)
     tr_stats = combine_stats(trs)

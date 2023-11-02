@@ -528,7 +528,7 @@ def get_sessions(inv_id: str, pages, neural_line_classifier, ignorecase: bool = 
     period_start = inv_metadata['period_start']
     pages.sort(key=lambda page: page.id)
     date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
-    session_date_lines = get_session_date_lines_from_pages(pages)
+    session_date_lines = get_session_date_lines_from_pages(pages, debug=debug)
     if len(session_date_lines) == 0:
         print(f"WARNING - No session date lines found for "
               f"inventory {inv_metadata['inventory_num']} with {len(pages)} pages")
