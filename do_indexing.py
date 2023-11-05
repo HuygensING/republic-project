@@ -105,17 +105,21 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
         return None
     page_type_index = get_per_page_type_index(inv_metadata)
     text_page_num_map = map_text_page_nums(inv_metadata)
+    page_count = 0
+    num_scans = inv_metadata['num_scans']
+    index = False
     nlc_gysbert = None
     if inv_num < 3760 or inv_num > 3864:
         model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
         nlc_gysbert = NeuralLineClassifier(model_dir)
     for si, scan in enumerate(rep_es.retrieve_inventory_scans(inv_num)):
         try:
-            pages = pagexml_parser.split_pagexml_scan(scan, page_type_index)
+            pages = pagexml_parser.split_pagexml_scan(scan, page_type_index, debug=0)
         except BaseException:
             print('Error splitting pages of scan', scan.id)
             raise
         for page in pages:
+            page_count += 1
             if page.metadata['page_num'] in text_page_num_map:
                 page_num = page.metadata['page_num']
                 page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
@@ -138,15 +142,14 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
                 for page_type in page_types:
                     page.add_type(page_type)
                 page.metadata['type'] = [ptype for ptype in page.type]
-            if nlc_gysbert:
-                predicted_line_class = nlc_gysbert.classify_page_lines(page)
-                for tr in page.get_all_text_regions():
-                    for line in tr.lines:
-                        if line.id in predicted_line_class:
-                            line.metadata['line_class'] = predicted_line_class[line.id]
-                        else:
-                            line.metadata['line_class'] = 'unknown'
-            print('indexing page with id', page.id)
+            predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
+            for tr in page.get_all_text_regions():
+                for line in tr.lines:
+                    if line.id in predicted_line_class:
+                        line.metadata['line_class'] = predicted_line_class[line.id]
+                    else:
+                        line.metadata['line_class'] = 'unknown'
+            print(f'indexing page {page_count} (scan count {si+1} of {num_scans}) with id {page.id}')
             prov_url = rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
             page.metadata['provenance_url'] = prov_url
             rep_es.index_page(page)

@@ -35,29 +35,47 @@ def get_date_lines(date_trs):
     return [line for tr in date_trs for line in tr.lines if line.text]
 
 
-def check_line_starts_with_week_day_name(line: pdm.PageXMLTextLine, ignorecase: bool = False):
+def check_line_starts_with_week_day_name(line: pdm.PageXMLTextLine, ignorecase: bool = False, debug: int = 0):
     if line.text is None:
         return False
+    # print('ignorecase:', ignorecase)
     line_text = line.text.lower() if ignorecase else line.text
+    # print('line_text:', line_text)
     for set_version in week_day_names:
+        if debug > 1:
+            print('check_line_starts_with_week_day_name - set_version:', set_version)
+            print('check_line_starts_with_week_day_name - week_day_names:', week_day_names[set_version])
+            print('check_line_starts_with_week_day_name - line_text:', line_text)
         for week_day_name in week_day_names[set_version]:
-            week_day_name = week_day_name if ignorecase else week_day_name.lower()
+            week_day_name = week_day_name.lower() if ignorecase else week_day_name
+            # print('ignorecase:', ignorecase)
+            if debug > 1:
+                print(f'check_line_starts_with_week_day_name - line_text.startswith("{week_day_name}"):',
+                      line_text.startswith(week_day_name))
             if line_text.startswith(week_day_name):
                 return True
+        if debug > 1:
+            print('\n')
     return False
 
 
-def get_session_date_lines_from_pages(pages, ignorecase: bool = False):
+def get_session_date_lines_from_pages(pages, ignorecase: bool = False, debug: int = 0):
     date_trs = get_date_trs(pages)
+    if debug > 0:
+        print('get_session_date_lines_from_pages - num date_trs:', len(date_trs))
     date_lines = get_date_lines(date_trs)
-    return filter_session_date_lines(date_lines, ignorecase=ignorecase)
+    if debug > 0:
+        print('get_session_date_lines_from_pages - num date_lines:', len(date_lines))
+    return filter_session_date_lines(date_lines, ignorecase=ignorecase, debug=debug)
 
 
-def filter_session_date_lines(date_lines, ignorecase: bool = False):
+def filter_session_date_lines(date_lines, ignorecase: bool = False, debug: int = 0):
     session_date_lines = []
     for line in date_lines:
-        if check_line_starts_with_week_day_name(line, ignorecase=ignorecase):
+        if check_line_starts_with_week_day_name(line, ignorecase=ignorecase, debug=debug):
             session_date_lines.append(line)
+    if debug > 0:
+        print('filter_session_date_lines - num session_date_lines:', len(session_date_lines))
     return session_date_lines
 
 

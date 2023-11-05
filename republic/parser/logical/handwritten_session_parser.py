@@ -25,42 +25,31 @@ def generate_date_string(curr_date: RepublicDate, date_mapper: DateNameMapper):
     return get_next_date_strings(curr_date, date_mapper=date_mapper, num_dates=7)
 
 
-def get_predicted_line_classes(page: pdm.PageXMLPage, line_classifier: NeuralLineClassifier,
+def get_predicted_line_classes(page: pdm.PageXMLPage, 
+                               # line_classifier: NeuralLineClassifier,
                                debug: int = 0):
-    lines = page.get_lines()
-    classified = [line for line in lines if 'line_class' in line.metadata]
-    if len(classified) >= len(lines) - 10:
-        if debug > 1:
-            print('lines already classified for page', page.id)
-        predicted_line_class = {}
-        for line in page.get_lines():
-            if 'line_class' not in line.metadata:
-                if line.text and len(line.text) < 3:
-                    line.metadata['line_class'] = 'noise'
-                else:
-                    if debug > 1:
-                        print('\nMISSING LINE_CLASS:', line.text)
-                        print('\t', line.parent.type)
-                    continue
+    predicted_line_class = {}
+    for line in page.get_lines():
+        if 'line_class' not in line.metadata:
+            if line.text and len(line.text) < 3:
+                line.metadata['line_class'] = 'noise'
+            else:
+                line.metadata['line_class'] = 'unknown'
+                if debug > 1:
+                    print('\nMISSING LINE_CLASS:', line.text)
+                    print('\t', line.parent.type)
+        else:
             predicted_line_class[line.id] = line.metadata['line_class']
-    elif len(classified) < len(lines) - 10:
-        try:
-            predicted_line_class = line_classifier.classify_page_lines(page)
-        except Exception:
-            print(f'\tERROR classifying lines of page {page.id}')
-            raise
-        if debug > 1:
-            print('NON-CLASSIFIED LINSE FOR PAGE:', page.id, '\tLINES:', len(lines),
-                  '\tCLASSIFIED:', len(classified), '\tNLC:', len(predicted_line_class))
-            print('\t', page.stats, '\n')
-    else:
-        predicted_line_class = line_classifier.classify_page_lines(page)
     return predicted_line_class
 
 
-def sort_lines_by_class(page, line_classifier: NeuralLineClassifier, debug: int = 0):
+def sort_lines_by_class(page, 
+                        # line_classifier: NeuralLineClassifier, 
+                        debug: int = 0):
     class_lines = defaultdict(list)
-    predicted_line_class = get_predicted_line_classes(page, line_classifier)
+    predicted_line_class = get_predicted_line_classes(page, 
+                                                      # line_classifier
+                                                      )
     for col in sorted(page.columns, key=lambda c: c.coords.left):
         for tr in sorted(col.text_regions, key=lambda t: t.coords.top):
             if debug > 1:
@@ -426,7 +415,9 @@ def extract_best_date_match(matches: List[PhraseMatch]) -> Union[None, PhraseMat
     return best_match
 
 
-def find_session_dates(pages, inv_start_date, neural_line_classifier, date_mapper: DateNameMapper,
+def find_session_dates(pages, inv_start_date, 
+                       # neural_line_classifier, 
+                       date_mapper: DateNameMapper,
                        ignorecase: bool = True, debug: int = 0):
     date_strings = get_next_date_strings(inv_start_date, date_mapper, num_dates=7, include_year=False)
     config = {'ngram_size': 2, 'skip_size': 2, 'ignorecase': ignorecase}
@@ -450,7 +441,9 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier, date_mappe
             print('find_session_dates - page:', page.id)
         if 'inventory_id' not in page.metadata:
             page.metadata['inventory_id'] = f"{page.metadata['series_name']}_{page.metadata['inventory_num']}"
-        class_lines = sort_lines_by_class(page, neural_line_classifier, debug=debug)
+        class_lines = sort_lines_by_class(page, 
+                                          # neural_line_classifier, 
+                                          debug=debug)
         class_trs = make_classified_text_regions(class_lines, page, debug=debug)
         has_attendance = link_date_attendance(class_trs)
         has_marginalia = link_para_marginalia(class_trs)
@@ -521,14 +514,16 @@ def find_session_dates(pages, inv_start_date, neural_line_classifier, date_mappe
     return None
 
 
-def get_sessions(inv_id: str, pages, neural_line_classifier, ignorecase: bool = True,
+def get_sessions(inv_id: str, pages, 
+                 # neural_line_classifier, 
+                 ignorecase: bool = True,
                  debug: int = 0):
     print('get_sessions - num pages:', len(pages))
     inv_metadata = get_inventory_by_id(inv_id)
     period_start = inv_metadata['period_start']
     pages.sort(key=lambda page: page.id)
     date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
-    session_date_lines = get_session_date_lines_from_pages(pages)
+    session_date_lines = get_session_date_lines_from_pages(pages, debug=debug)
     if len(session_date_lines) == 0:
         print(f"WARNING - No session date lines found for "
               f"inventory {inv_metadata['inventory_num']} with {len(pages)} pages")
@@ -549,7 +544,8 @@ def get_sessions(inv_id: str, pages, neural_line_classifier, ignorecase: bool = 
     text_type = pages[0].metadata['text_type']
     session_num = 0
     for session_date, session_trs in find_session_dates(pages, inv_start_date,
-                                                        neural_line_classifier, date_mapper,
+                                                        # neural_line_classifier, 
+                                                        date_mapper,
                                                         ignorecase=ignorecase, debug=debug):
         # print('-------------')
         session_num += 1
