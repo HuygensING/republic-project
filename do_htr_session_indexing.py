@@ -223,7 +223,7 @@ def dummy_func(inv_num):
 
 def do_main(task, num_processes: int = 1):
     inv_nums = [inv_num for inv_num in range(3118, 3350)]
-    inv_nums = [inv_num for inv_num in range(3144, 3350)]
+    # inv_nums = [inv_num for inv_num in range(3144, 3350)]
     if task == 'index_sessions':
         for inv_num in inv_nums:
             index_inventory_sessions(inv_num)
@@ -240,7 +240,9 @@ def do_main(task, num_processes: int = 1):
     elif task == 'select_paragraphs':
         select_paragraphs()
     else:
-        raise ValueError(f'invalid task "{task}", must be "index_sessions" or "generate_paragraphs".')
+        tasks = ['index_sessions', 'generate_paragraphs', 'select_paragraphs']
+        tasks_string = ', '.join([f'"{task}"' for task in tasks])
+        raise ValueError(f'invalid task "{task}", must be one of {tasks_string}.')
 
 
 if __name__ == "__main__":
