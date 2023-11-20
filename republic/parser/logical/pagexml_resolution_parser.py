@@ -2,18 +2,18 @@ import copy
 from typing import Dict, Generator, List, Tuple, Union
 
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
-from langdetect import detect_langs, LangDetectException
 import pagexml.model.physical_document_model as pdm
 
 import republic.helper.paragraph_helper as para_helper
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
+from republic.helper.metadata_helper import doc_id_to_iiif_url
+from republic.helper.paragraph_helper import LineBreakDetector
+from republic.helper.text_helper import determine_language
 from republic.parser.logical.paragraph_parser import ParagraphGenerator
 from republic.parser.logical.paragraph_parser import is_paragraph_boundary
 from republic.parser.logical.paragraph_parser import is_resolution_gap
 from republic.parser.logical.paragraph_parser import running_id_generator
-from republic.helper.metadata_helper import doc_id_to_iiif_url
-from republic.helper.paragraph_helper import LineBreakDetector
 
 
 def same_column(line1: dict, line2: dict) -> bool:
@@ -163,63 +163,6 @@ def get_resolution_page_ids(res_doc: Union[rdm.Resolution, rdm.AttendanceList]) 
     return sorted(list(page_ids))
 
 
-def map_alt_langs(langs):
-    alt_langs = {
-        # Dutch is often confused with
-        'af': 'nl',  # Afrikaans
-        'da': 'nl',  # Danish
-        'no': 'nl',  # Norwegian
-        'sl': 'nl',  # Slovenian
-        'sv': 'nl',  # Swedish
-        # Latin is often confused with
-        'ca': 'la',  # Catalan
-        'es': 'la',  # Spanish
-        'it': 'la',  # Italian
-        'pt': 'la',  # Portuguese
-        'ro': 'la',  # Romanian
-    }
-    lang_dict = {lang.lang: lang for lang in langs}
-    lang_list = list(lang_dict.keys())
-    for lang in lang_list:
-        if lang in alt_langs:
-            main_lang = alt_langs[lang]
-            if main_lang not in lang_dict:
-                lang_dict[main_lang] = copy.deepcopy(lang_dict[lang])
-                lang_dict[main_lang].lang = main_lang
-            else:
-                lang_dict[main_lang].prob += lang_dict[lang].prob
-            lang_dict[lang].prob = 0.0
-            del lang_dict[lang]
-    return list(lang_dict.values())
-
-
-def determine_language(text):
-    try:
-        langs = detect_langs(text)
-        langs = map_alt_langs(langs)
-    except LangDetectException:
-        langs = []
-    langs.sort(key=lambda x: x.prob, reverse=True)
-    if len(langs) == 0:
-        text_lang = 'unknown'
-    elif len(langs) == 1:
-        if len(text) > 100:
-            text_lang = langs[0].lang
-        elif langs[0].lang in {'fr', 'nl'}:
-            text_lang = langs[0].lang
-        elif len(text) < 40:
-            text_lang = 'unknown'
-        else:
-            text_lang = 'unknown'
-    elif len(text) < 40:
-        text_lang = 'unknown'
-    elif langs[0].prob > 0.6 and langs[0].lang in {'fr', 'la', 'nl'}:
-        text_lang = langs[0].lang
-    else:
-        text_lang = 'unknown'
-    return text_lang
-
-
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher,
                             line_break_detector: LineBreakDetector = None,
@@ -295,11 +238,10 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         metadata['session_id'] = source_doc.id
         metadata['session_num'] = source_doc.metadata['session_num']
         metadata['inventory_num'] = source_doc.metadata['inventory_num']
-        metadata['president'] = source_doc.metadata['president']
-        metadata['session_year'] = source_doc.metadata['session_year']
-        metadata['session_month'] = source_doc.metadata['session_month']
-        metadata['session_day'] = source_doc.metadata['session_day']
-        metadata['session_weekday'] = source_doc.metadata['session_weekday']
+        fields = ['president', 'session_year', 'session_month', 'session_day', 'session_weekday']
+        for field in fields:
+            if field in source_doc.metadata:
+                metadata[field] = source_doc.metadata[field]
     return metadata
 
 

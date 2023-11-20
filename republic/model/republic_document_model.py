@@ -1,15 +1,15 @@
+import json
+import re
 from collections import Counter
 from typing import Dict, List, Set, Union
-import re
-import json
 
+import pagexml.model.physical_document_model as pdm
+import republic.helper.pagexml_helper as pagexml
 from fuzzy_search.phrase.phrase import Phrase
 from fuzzy_search.match.phrase_match import PhraseMatch
-import pagexml.model.physical_document_model as pdm
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
-import republic.helper.pagexml_helper as pagexml
 
 
 class RepublicDoc(pdm.LogicalStructureDoc):
@@ -20,6 +20,7 @@ class RepublicDoc(pdm.LogicalStructureDoc):
         super().__init__(doc_id=doc_id, doc_type='republic_doc', metadata=metadata,
                          lines=lines, text_regions=text_regions)
         self.main_type = "republic_doc"
+        self.linked_text_regions = []
         if lines:
             self.set_as_logical_parent(lines)
         if text_regions:
@@ -99,6 +100,7 @@ class RepublicParagraph(RepublicDoc):
         self.text_region_ids: Set[str] = set()
         if doc_type:
             self.add_type(doc_type)
+        self.main_type = 'republic_paragraph'
         if text_region_ids:
             self.text_region_ids = set(text_region_ids)
         else:
@@ -125,7 +127,9 @@ class RepublicParagraph(RepublicDoc):
             "stats": self.stats
         }
         if include_text_regions:
-            json_data["text_regions"] = self.text_regions
+            json_data["text_regions"] = [tr.json for tr in self.text_regions]
+        if self.linked_text_regions:
+            json_data["linked_text_regions"] = [tr.json for tr in self.linked_text_regions]
         return json_data
 
     def set_text_page_nums(self):
@@ -232,12 +236,15 @@ class ResolutionElementDoc(RepublicDoc):
             json_doc['lines'] = [line.json for line in self.lines]
         if self.scan_versions:
             json_doc["scan_versions"] = self.scan_versions
+        if self.linked_text_regions:
+            json_doc["linked_text_regions"] = [tr.json for tr in self.linked_text_regions]
         return json_doc
 
 
 class Session(ResolutionElementDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Dict = None,
+                 session_data: Dict = None,
                  session_type: str = "ordinaris", date_mapper: DateNameMapper = None,
                  paragraphs: List[RepublicParagraph] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
                  lines: List[pdm.PageXMLTextLine] = None,
@@ -245,9 +252,29 @@ class Session(ResolutionElementDoc):
         """A meeting session occurs on a specific day, with a president and attendants,
         and has textual content in the form of
          lines or possibly as Resolution objects."""
+        date_string = None
+        if session_data and 'metadata' in session_data and metadata is None:
+            metadata = session_data['metadata']
+            metadata['page_ids'] = [page_id for page_id in session_data['page_ids']]
+            metadata['scan_ids'] = [scan_id for scan_id in session_data['scan_ids']]
+            metadata['session_date'] = session_data['date']['session_date']
+        if session_data and 'date' in session_data:
+            date_string = session_data['date']['session_date']
+        elif metadata and 'date' in metadata:
+            date_string = metadata['date']['session_date']
+        elif metadata and 'session_date' in metadata:
+            date_string = metadata['session_date']
+        if date_string is None:
+            print('MISSING DATE:', doc_id)
+            print(metadata['date'])
+        # if 'metadata' in metadata:
+        #     metadata = metadata['metadata']
+
         super().__init__(doc_id=doc_id, doc_type='session', metadata=metadata, paragraphs=paragraphs,
                          text_regions=text_regions, lines=lines, evidence=evidence, **kwargs)
-        self.session_date = RepublicDate(date_string=metadata['session_date'], date_mapper=date_mapper)
+        self.session_date = RepublicDate(date_string=date_string, date_mapper=date_mapper)
+        # if 'page_ids' in metadata and 'page_ids' not in self.metadata:
+        #     self.metadata['page_ids'] = [page_id for page_id in metadata['page_ids']]
         self.main_type = "session"
         self.session_type = session_type
         if doc_type:
@@ -381,6 +408,7 @@ class AttendanceList(ResolutionElementDoc):
                          evidence=evidence)
         if doc_type:
             self.add_type(doc_type)
+        self.main_type = 'attendance_list'
         self.scan_versions = scan_versions if scan_versions else []
         self.session_date: Union[RepublicDate, None] = None
         self.text_region_ids: Set[str] = set()
@@ -405,7 +433,8 @@ class Resolution(ResolutionElementDoc):
                  lines: List[pdm.PageXMLTextLine] = None,
                  text_regions: List[pdm.PageXMLTextRegion] = None,
                  paragraphs: List[RepublicParagraph] = None,
-                 evidence: Union[List[dict], List[PhraseMatch]] = None):
+                 evidence: Union[List[dict], List[PhraseMatch]] = None,
+                 labels: List[Dict[str, str]] = None):
         """A resolution has textual content of the resolution, as well as an
         opening formula, decision information, and type information on the
         source document that instigated the discussion and resolution. Source
@@ -424,7 +453,9 @@ class Resolution(ResolutionElementDoc):
                          evidence=evidence)
         if doc_type:
             self.add_type(doc_type)
+        self.main_type = 'resolution'
         self.metadata['resolution_type'] = 'ordinaris'
+        self.labels = labels if labels else []
         self.scan_versions = scan_versions if scan_versions else []
         self.opening = None
         self.decision = None
@@ -440,6 +471,20 @@ class Resolution(ResolutionElementDoc):
     def __repr__(self):
         return f"Resolution({json.dumps(self.json, indent=4)}"
 
+    def add_label(self, label_string: str, label_type: str, provenance: dict = None):
+        for label in self.labels:
+            if label['label_string'] == label_string and label['label_type'] == label_type:
+                break
+        else:
+            label = {
+                'label_string': label_string,
+                'label_type': label_type
+            }
+            if provenance:
+                for field in provenance:
+                    label[field] = provenance[field]
+            self.labels.append(label)
+
     def set_proposition_type(self):
         if self.evidence:
             if self.metadata['proposition_type']:
@@ -447,6 +492,12 @@ class Resolution(ResolutionElementDoc):
             else:
                 self.proposition_type = get_proposition_type_from_evidence(self.evidence)
                 self.metadata['proposition_type'] = self.proposition_type
+
+    @property
+    def json(self):
+        json_doc = super().json
+        json_doc['labels'] = self.labels
+        return json_doc
 
 
 def json_to_republic_doc(json_doc: dict) -> RepublicDoc:
@@ -503,9 +554,15 @@ def json_to_republic_resolution(resolution_json: dict) -> Union[Resolution, Atte
             raise
         paragraphs.append(paragraph)
     text_regions, lines, evidence = json_to_physical_elements(resolution_json)
-    return Resolution(doc_id=resolution_json['id'], doc_type=resolution_json['type'],
-                      metadata=resolution_json['metadata'], evidence=evidence,
-                      paragraphs=paragraphs, text_regions=text_regions, lines=lines)
+    resolution = Resolution(doc_id=resolution_json['id'], doc_type=resolution_json['type'],
+                            metadata=resolution_json['metadata'], evidence=evidence,
+                            paragraphs=paragraphs, text_regions=text_regions, lines=lines)
+    if 'linked_text_regions' in resolution_json:
+        linked_json = resolution_json['linked_text_regions']
+        resolution.linked_text_regions = [pagexml.json_to_pagexml_text_region(tr_json) for tr_json in linked_json]
+    if 'labels' in resolution_json:
+        resolution.labels = [label for label in resolution_json['labels']]
+    return resolution
 
 
 def json_to_physical_elements(republic_json: dict):
