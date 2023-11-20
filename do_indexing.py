@@ -3,6 +3,7 @@ import gzip
 import json
 import multiprocessing
 import os
+from collections import defaultdict
 from typing import Dict, Union
 
 
@@ -31,6 +32,8 @@ import republic.model.resolution_phrase_model as rpm
 
 import republic.parser.logical.pagexml_session_parser as session_parser
 from republic.parser.logical.handwritten_session_parser import get_sessions
+from republic.parser.logical.handwritten_resolution_parser import make_opening_searcher
+from republic.parser.logical.handwritten_resolution_parser import get_session_resolutions
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 import republic.parser.logical.pagexml_resolution_parser as res_parser
 
@@ -286,6 +289,37 @@ def do_resolution_indexing(inv_num: int, year_start: int, year_end: int):
         print(err)
 
 
+def do_handwritten_resolution_indexing(inv_num: int, year_start: int, year_end: int):
+    print(f"Indexing handwritten PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
+    opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
+    inv_session_metas = rep_es.retrieve_inventory_session_metadata(inv_num)
+    inv_session_trs = defaultdict(list)
+    has_error = False
+    errors = []
+    for tr in rep_es.retrieve_inventory_session_text_regions(inv_num):
+        inv_session_trs[tr.metadata['session_id']].append(tr)
+    try:
+        for session_meta in inv_session_metas:
+            session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
+                                  text_regions=inv_session_trs[session_meta['id']])
+            # print('session_meta["id"]:', session_meta['id'])
+            # print('session.id:', session.id)
+            for resolution in get_session_resolutions(session, opening_searcher, debug=0):
+                prov_url = rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
+                                                  source_index='session_metadata', target_index='resolutions')
+                resolution.metadata['prov_url'] = prov_url
+                rep_es.index_resolution(resolution)
+                print('indexing handwritten resolution', resolution.id)
+                # rep_es.es_anno.index(index=res_index, id=res.id, document=res.json)
+    except BaseException as err:
+        print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
+        errors.append(err)
+        return None
+    print(f"finished indexing handwritten resolutions of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
+    for err in errors:
+        print(err)
+
+
 def do_resolution_phrase_match_indexing(inv_num: int, year_start: int, year_end: int):
     print(f"Indexing PageXML resolution phrase matches for inventory {inv_num} (years {year_start}-{year_end})...")
     searcher = res_parser.make_resolution_phrase_model_searcher()
@@ -415,6 +449,9 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         do_handwritten_session_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["type"] == "resolutions":
         do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
+    elif task["type"] == "handwritten_resolutions":
+        rep_es.config['resolutions_index'] = 'handwritten_resolutions'
+        do_handwritten_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["type"] == "full_resolutions":
         rep_es.config['resolutions_index'] = 'full_resolutions'
         do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
