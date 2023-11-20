@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from typing import Dict, List, Union
 
 import numpy as np
@@ -148,7 +149,7 @@ def get_per_page_type_index(inv_metadata: Dict[str, any]) -> Dict[int, Union[str
     return page_type
 
 
-def get_scan_id(inventory_metadata, scan_num):
+def get_scan_id(inventory_metadata: dict, scan_num: int):
     scan_num_str = (4 - len(str(scan_num))) * "0" + str(scan_num)
     return f'{inventory_metadata["series_name"]}_{inventory_metadata["inventory_num"]}_{scan_num_str}'
 
@@ -231,3 +232,40 @@ def load_greffiers():
     greffier_file = '../../data/attendance_lists/griffiers.json'
     with open(greffier_file, 'rt') as fh:
         return json.load(fh)
+
+
+def get_scan_id_from_element_id(line_id: str):
+    return line_id.split('-line-')[0]
+
+
+def group_line_ranges_by_scan(line_ranges):
+    scan_line_ranges = defaultdict(list)
+    for lr in line_ranges:
+        scan_id = get_scan_id_from_element_id(lr['line_id'])
+        scan_line_ranges[scan_id].append(lr)
+    return scan_line_ranges
+
+
+def get_line_id_bbox(line_id: str):
+    x, y, w, h = [int(ele) for ele in line_id.split('-')[-4:]]
+    return {'x': x, 'y': y, 'w': w, 'h': h, 'left': x, 'right': x+w, 'top': y, 'bottom': y+h}
+
+
+def get_line_ranges_bbox(line_ranges):
+    bboxes = [get_line_id_bbox(lr['line_id']) for lr in line_ranges]
+    left = min([bbox['left'] for bbox in bboxes])
+    right = max([bbox['right'] for bbox in bboxes])
+    top = min([bbox['top'] for bbox in bboxes])
+    bottom = max([bbox['bottom'] for bbox in bboxes])
+    return {'x': left, 'y': top, 'w': right-left, 'h': bottom-top,
+            'left': left, 'right': right, 'top': top, 'bottom': bottom}
+
+
+def get_para_tr_iiif_urls(para):
+    tr_iiif_urls = []
+    scan_line_ranges = group_line_ranges_by_scan(para.line_ranges)
+    for scan_id in scan_line_ranges:
+        bbox = get_line_ranges_bbox(scan_line_ranges[scan_id])
+        tr_iiif_url = coords_to_iiif_url(scan_id, bbox)
+        tr_iiif_urls.append(tr_iiif_url)
+    return tr_iiif_urls

@@ -11,10 +11,8 @@ import pagexml.parser as parser
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
 from republic.helper.metadata_helper import get_scan_id
-import republic.helper.pagexml_helper as pagexml
 from republic.model.republic_date import RepublicDate
 import republic.model.republic_document_model as rdm
-# import republic.model.physical_document_model as pdm
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 
 
@@ -77,7 +75,7 @@ def make_text_repo_inventory_query(inventory_num):
     }
 
 
-def make_inventory_query(inventory_num: int, size: int = 10):
+def make_inventory_query(inventory_num: int):
     return {
         'match': {
             'metadata.inventory_num': inventory_num
@@ -86,7 +84,7 @@ def make_inventory_query(inventory_num: int, size: int = 10):
 
 
 def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num: int) -> dict:
-    match_fields = [
+    query_fields = [
         {
             'match': {'metadata.inventory_num': inventory_num}
         },
@@ -99,7 +97,7 @@ def make_column_query(num_columns_min: int, num_columns_max: int, inventory_num:
             }
         }
     ]
-    return make_bool_query(match_fields)
+    return make_bool_query(query_fields)
 
 
 def make_range_query(field: str, start: int, end: int):
@@ -129,12 +127,12 @@ def make_text_page_num_query(page_num: str):
 
 def make_page_type_query(page_type: str, year: Union[int, None] = None,
                          inventory_num: Union[int, None] = None) -> dict:
-    match_fields = [{'match': {'type': page_type}}]
+    query_fields = [{'match': {'type': page_type}}]
     if inventory_num:
-        match_fields += [{'match': {'metadata.inventory_num': inventory_num}}]
+        query_fields += [{'match': {'metadata.inventory_num': inventory_num}}]
     if year:
-        match_fields += [{'match': {'metadata.year': year}}]
-    return make_bool_query(match_fields)
+        query_fields += [{'match': {'metadata.year': year}}]
+    return make_bool_query(query_fields)
 
 
 def select_latest_tesseract_version(versions: List[Dict[str, any]]) -> Dict[str, any]:
@@ -179,8 +177,9 @@ class Retriever:
 
     def retrieve_multi_docs_by_id(self, index: str, doc_ids: List[str]):
         docs = self.es_anno.mget(index=index, docs=doc_ids)
+        return docs
 
-    def scroll_hits(self, es: Elasticsearch, query: dict, index: str, doc_type: str = '_doc',
+    def scroll_hits(self, es: Elasticsearch, query: dict, index: str,
                     size: int = 100, scroll: str = '2m', show_total: bool = True) -> iter:
         if query is None:
             response = es.search(index=index, scroll=scroll, size=size)
@@ -273,10 +272,10 @@ class Retriever:
         response = self.es_anno.get(index=self.config['pages_index'], id=page_id)
         return parser.json_to_pagexml_page(response['_source'])
 
-    def retrieve_pages_by_query(self, query: dict, size: int = 10) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_query(self, query: dict, size: Union[int, None] = 10) -> List[pdm.PageXMLPage]:
         for hi, hit in enumerate(self.scroll_hits(self.es_anno, query,
                                                   self.config['pages_index'],
-                                                  '_doc', size=size)):
+                                                  size=size)):
             yield parser.json_to_pagexml_page(hit['_source'])
             if size is not None and (hi+1) == size:
                 break
@@ -288,21 +287,21 @@ class Retriever:
 
     def retrieve_page_by_page_number(self, page_num: int, year: int = None,
                                      inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
-        match_fields = [
+        query_fields = [
             {'match': {'metadata.page_num': page_num}},
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
-        query = make_bool_query(match_fields)
+        query = make_bool_query(query_fields)
         pages = [page for page in self.retrieve_pages_by_query(query)]
         return None if len(pages) == 0 else pages[0]
 
     def retrieve_page_by_text_page_number(self, text_page_num: int, year: int = None,
                                           inventory_num: int = None) -> Union[pdm.PageXMLPage, None]:
-        match_fields = [
+        query_fields = [
             {'match': {'metadata.text_page_num': text_page_num}},
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
-        query = make_bool_query(match_fields)
+        query = make_bool_query(query_fields)
         pages = self.retrieve_pages_by_query(query)
         return None if len(pages) == 0 else pages[0]
 
@@ -349,18 +348,18 @@ class Retriever:
 
     def retrieve_paragraph_by_type_page_number(self, page_number: int, year: int = None,
                                                inventory_num: int = None) -> list:
-        match_fields = [
+        query_fields = [
             {'match': {'metadata.type_page_num': page_number}},
             {'match': {'metadata.inventory_year': select_year_inv(year, inventory_num)}}
         ]
-        query = make_bool_query(match_fields)
+        query = make_bool_query(query_fields)
         return self.retrieve_paragraph_by_query(query)
 
     def retrieve_paragraphs_by_inventory(self, inventory_num: int) -> list:
-        match_fields = [
+        query_fields = [
             {'match': {'metadata.inventory_num': inventory_num}}
         ]
-        query = make_bool_query(match_fields)
+        query = make_bool_query(query_fields)
         return self.retrieve_paragraph_by_query(query)
 
     def retrieve_paragraph_by_query(self, query: dict):
@@ -412,6 +411,32 @@ class Retriever:
         else:
             return None
 
+    def retrieve_inventory_session_metadata(self, inv_num):
+        query = make_inventory_query(inv_num)
+        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata', size=10)]
+        docs = sorted(docs, key=lambda doc: int(doc['id'].split('-')[-1]))
+        return docs
+
+    def retrieve_inventory_session_text_regions(self, inv_num):
+        query = make_inventory_query(inv_num)
+        for hit in self.scroll_hits(self.es_anno, query, index='session_text_regions', size=100):
+            doc = hit['_source']
+            yield parser.json_to_pagexml_text_region(doc)
+
+    def retrieve_inventory_session_data(self, inv_num):
+        session_metadata_docs = self.retrieve_inventory_session_metadata(inv_num)
+        for session_metadata in session_metadata_docs:
+            session_trs = self.retrieve_session_trs(session_metadata)
+            yield session_metadata, session_trs
+
+    def retrieve_session_trs(self, session_metadata):
+        session_trs = []
+        for doc_id in session_metadata['text_regions']:
+            doc = self.es_anno.get(index='session_text_regions', id=doc_id)
+            session_tr = doc['_source']
+            session_trs.append(session_tr)
+        return session_trs
+
     def retrieve_resolution_by_id(self, resolution_id: str) -> Union[rdm.Resolution, None]:
         if self.es_anno.exists(index=self.config['resolutions_index'], id=resolution_id):
             response = self.es_anno.get(index=self.config['resolutions_index'], id=resolution_id)
@@ -421,11 +446,11 @@ class Retriever:
 
     def retrieve_resolutions_by_text_page_number(self, text_page_num: int, year: int = None,
                                                  inventory_num: int = None) -> List[rdm.Resolution]:
-        match_fields = [
+        query_fields = [
             {'match': {'metadata.text_page_num': text_page_num}},
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
-        query = make_bool_query(match_fields)
+        query = make_bool_query(query_fields)
         return self.retrieve_resolutions_by_query(query, size=1000)
 
     def scroll_resolutions_by_query(self, query: dict,
@@ -434,7 +459,8 @@ class Retriever:
                                     size=10, scroll=scroll):
             yield rdm.json_to_republic_resolution(hit['_source'])
 
-    def retrieve_resolutions_by_query(self, query: dict, size: int = 10, aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
+    def retrieve_resolutions_by_query(self, query: dict, size: int = 10,
+                                      aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
         if query and "query" in query:
             response = self.es_anno.search(index=self.config['resolutions_index'], body=query)
         else:
@@ -534,7 +560,7 @@ class Retriever:
                            num_hits: int = 10,
                            context_size: int = 3,
                            index: str = "resolutions",
-                           filters: List[Dict[str,any]] = None):
+                           filters: List[Dict[str, any]] = None):
         query = make_paragraph_term_query(term)
         if filters is not None:
             query["query"]["bool"]["must"] += filters

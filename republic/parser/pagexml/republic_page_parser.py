@@ -345,7 +345,12 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                     print(f"\tPAGE {side} STATS BEFORE ADDING DERIVED TR:", page.stats)
                     print(f"\t{side}:", text_region.id, text_region.type)
                     print('\t\t', text_region.stats)
-                page.add_child(text_region, as_extra=as_extra)
+                try:
+                    page.add_child(text_region, as_extra=as_extra)
+                except BaseException:
+                    print(f'Error add text_region {text_region.id} as child to page {page.id}, '
+                          f'text_region.coords.points: {text_region.coords.points}')
+                    raise
                 after_stats = page.stats
                 if text_region.stats['lines'] + before_stats['lines'] != after_stats['lines']:
                     print('assign_trs_to_odd_even_pages - BEFORE:', before_stats)

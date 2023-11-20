@@ -1,17 +1,19 @@
-from typing import Callable, Dict, List, Set, Union
-from collections import Counter, defaultdict
-import json
-import os
+import copy
 import gzip
-import re
-import pickle
-import unicodedata
+import json
 import math
+import os
+import pickle
+import re
+import unicodedata
+from collections import Counter, defaultdict
+from typing import Callable, Dict, List, Set, Union
 
 from fuzzy_search.tokenization.string import text2skipgrams
 from fuzzy_search.tokenization.token import Doc
 from fuzzy_search.tokenization.token import Tokenizer
 from nltk.tokenize import sent_tokenize
+from langdetect import detect_langs, LangDetectException
 import pagexml.model.physical_document_model as pdm
 
 
@@ -219,6 +221,63 @@ def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[No
                 distances_.append(dist + min((distances[i1], distances[i1 + 1], distances_[-1])))
         distances = distances_
     return distances[-1]
+
+
+def map_alt_langs(langs):
+    alt_langs = {
+        # Dutch is often confused with
+        'af': 'nl',  # Afrikaans
+        'da': 'nl',  # Danish
+        'no': 'nl',  # Norwegian
+        'sl': 'nl',  # Slovenian
+        'sv': 'nl',  # Swedish
+        # Latin is often confused with
+        'ca': 'la',  # Catalan
+        'es': 'la',  # Spanish
+        'it': 'la',  # Italian
+        'pt': 'la',  # Portuguese
+        'ro': 'la',  # Romanian
+    }
+    lang_dict = {lang.lang: lang for lang in langs}
+    lang_list = list(lang_dict.keys())
+    for lang in lang_list:
+        if lang in alt_langs:
+            main_lang = alt_langs[lang]
+            if main_lang not in lang_dict:
+                lang_dict[main_lang] = copy.deepcopy(lang_dict[lang])
+                lang_dict[main_lang].lang = main_lang
+            else:
+                lang_dict[main_lang].prob += lang_dict[lang].prob
+            lang_dict[lang].prob = 0.0
+            del lang_dict[lang]
+    return list(lang_dict.values())
+
+
+def determine_language(text):
+    try:
+        langs = detect_langs(text)
+        langs = map_alt_langs(langs)
+    except LangDetectException:
+        langs = []
+    langs.sort(key=lambda x: x.prob, reverse=True)
+    if len(langs) == 0:
+        text_lang = 'unknown'
+    elif len(langs) == 1:
+        if len(text) > 100:
+            text_lang = langs[0].lang
+        elif langs[0].lang in {'fr', 'nl'}:
+            text_lang = langs[0].lang
+        elif len(text) < 40:
+            text_lang = 'unknown'
+        else:
+            text_lang = 'unknown'
+    elif len(text) < 40:
+        text_lang = 'unknown'
+    elif langs[0].prob > 0.6 and langs[0].lang in {'fr', 'la', 'nl'}:
+        text_lang = langs[0].lang
+    else:
+        text_lang = 'unknown'
+    return text_lang
 
 
 pairs = {

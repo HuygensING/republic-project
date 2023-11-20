@@ -1,14 +1,10 @@
-import copy
 from collections import defaultdict
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 
 import pagexml.model.physical_document_model as pdm
-from pagexml.helper.pagexml_helper import make_text_region_text
 from fuzzy_search.match.phrase_match import PhraseMatch
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 
-import republic.model.republic_document_model as rdm
-# from republic.classification.line_classification import NeuralLineClassifier
 from republic.classification.page_features import get_line_base_dist
 from republic.helper.text_helper import is_duplicate
 from republic.helper.metadata_helper import coords_to_iiif_url
@@ -315,7 +311,7 @@ def make_classified_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine
         for line_group in line_groups[line_class]:
             try:
                 group_coords = pdm.parse_derived_coords(line_group)
-            except Exception:
+            except BaseException:
                 print('Cannot derive coords from line_group:')
                 lines_coords = [line.coords for line in line_group if line.coords]
                 points = [point for coords in lines_coords for point in coords.points]
@@ -579,86 +575,6 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True, debug: int = 0):
     return None
 
 
-def make_paragraph_text(lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
-    text, line_ranges = make_text_region_text(lines, word_break_chars='-„')
-    return text, line_ranges
-
-
-def make_session_paragraphs(session_metadata, session_trs, debug: int = 0):
-    paras = get_session_paragraph_line_groups(session_trs, debug=debug)
-    # print('make_session_paragraphs - len(paras):', len(paras))
-    doc_text_offset = 0
-    for pi, para in enumerate(paras):
-        para_type, para_lines = para
-        paragraph_id = f"{session_metadata['id']}-para-{pi+1}"
-        metadata = copy.deepcopy(session_metadata)
-        metadata['id'] = paragraph_id
-        metadata['type'] = "paragraph"
-        text_region_ids = []
-        for line in para_lines:
-            if line.metadata["parent_id"] not in text_region_ids:
-                text_region_ids.append(line.metadata["parent_id"])
-                if line.metadata['page_id'] not in metadata['page_ids']:
-                    metadata['page_ids'].append(line.metadata['page_id'])
-        text, line_ranges = make_paragraph_text(para_lines)
-        paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
-                                          text=text, line_ranges=line_ranges)
-        paragraph.metadata["start_offset"] = doc_text_offset
-        paragraph.metadata["para_type"] = para_type
-        paragraph.add_type(para_type)
-        doc_text_offset += len(paragraph.text)
-        yield paragraph
-    return None
-
-
-def check_lines_have_boundary_signals(lines: List[pdm.PageXMLTextLine], curr_index: int,
-                                      prev_line: pdm.PageXMLTextLine, debug: int = 0) -> bool:
-    if debug > 0:
-        print('check_lines_have_boundary_signals - curr_index:', curr_index)
-    if curr_index == -1:
-        curr_line = prev_line
-    else:
-        curr_line = lines[curr_index]
-    if curr_line is None:
-        return True
-    if debug > 0:
-        print('check_lines_have_boundary_signals - curr_line:', curr_line.metadata['line_class'], curr_line.text)
-    if curr_line.metadata['line_class'].startswith('para') is False:
-        if debug > 0:
-            print('\tno para line:', True)
-        return True
-    if curr_line.text is None:
-        if debug > 0:
-            print('\tno text:', True)
-        return True
-    if len(lines) == curr_index+1:
-        if debug > 0:
-            print('\tno next line:', True)
-        return True
-    if curr_line.text and curr_line.text[-1] == '.':
-        if debug > 0:
-            print('\tends with period:', True)
-        return True
-    next_line = lines[curr_index+1]
-    if debug > 0:
-        print('check_lines_have_boundary_signals - next_line:', next_line.metadata['line_class'], next_line.text)
-    if next_line.text is None:
-        if debug > 0:
-            print('\tno text:', True)
-        return True
-    if curr_line.text[-1] in '-„':
-        if debug > 0:
-            print('\tcurr line has word break:', False)
-        return False
-    if next_line.text[0].isalpha() and next_line.text[0].islower():
-        if debug > 0:
-            print('\tnext line starts with lower alpha:', False)
-        return False
-    if debug > 0:
-        print('\telse:', True)
-    return True
-
-
 def get_next_line(session_trs: List[pdm.PageXMLTextRegion], si: int, li: int) -> Union[pdm.PageXMLTextLine, None]:
     curr_tr = session_trs[si]
     if len(curr_tr.lines) > li+1:
@@ -669,39 +585,3 @@ def get_next_line(session_trs: List[pdm.PageXMLTextRegion], si: int, li: int) ->
         return next_text_lines[0]
     else:
         return None
-
-
-def get_session_paragraph_line_groups(session_trs: List[pdm.PageXMLTextRegion],
-                                      debug: int = 0):
-    paras = []
-    para = []
-    prev_line = None
-    para_trs = [tr for tr in session_trs if tr.has_type('para')]
-    other_trs = [tr for tr in session_trs if tr.has_type('para') is False]
-    para_lines = [line for tr in para_trs for line in tr.lines]
-    for si, session_tr in enumerate(other_trs):
-        paras.append((session_tr.metadata['text_region_class'], session_tr.lines))
-    for li, line in enumerate(para_lines):
-        if line.metadata['line_class'] == 'para_start':
-            if check_lines_have_boundary_signals(para_lines, li-1, prev_line, debug=debug):
-                if len(para) > 0:
-                    if debug > 0:
-                        print('reached para_start, adding previous as number', len(paras)+1)
-                    paras.append(('para', para))
-                para = []
-        if debug > 0:
-            print(f"{line.coords.top: >4}-{line.coords.bottom: <4}\t{line.metadata['line_class']: <20}\t{line.text}")
-        para.append(line)
-        if debug > 0:
-            print(f"current paragraph has {len(para)} lines")
-        if line.metadata['line_class'] == 'para_end':
-            if check_lines_have_boundary_signals(para_lines, li, prev_line, debug=debug):
-                if len(para) > 0:
-                    if debug > 0:
-                        print('reached para_end, adding current as number', len(paras)+1)
-                    paras.append(('para', para))
-                para = []
-        prev_line = line
-    if len(para) > 0:
-        paras.append(('para', para))
-    return paras
