@@ -8,6 +8,7 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from republic.classification.page_features import get_line_base_dist
 from republic.helper.text_helper import is_duplicate
 from republic.helper.metadata_helper import coords_to_iiif_url
+from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
@@ -474,6 +475,11 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     current_date = date_strings[best_match.phrase.phrase_string]
                     session_dates[current_date.isoformat()] = {
                         'session_date': current_date.isoformat(),
+                        'session_year': current_date.year,
+                        'session_month': current_date.month,
+                        'session_day': current_date.day,
+                        'session_weekday': current_date.day_name,
+                        'is_workday': current_date.is_work_day(),
                         'date_phrase_string': best_match.phrase.phrase_string,
                         'date_match_string': best_match.string,
                         'page_id': page.id,
@@ -544,17 +550,26 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True, debug: int = 0):
         '''
         session_metadata = {
             'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
+            'type': 'session',
             'session_id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
             'session_num': session_num,
-            'type': 'session',
+            'session_date': session_date['session_date'],
+            'session_year': session_date['session_year'],
+            'session_month': session_date['session_month'],
+            'session_day': session_date['session_day'],
+            'is_workday': session_date['is_workday'],
+            'session_weekday': session_date['session_weekday'],
             'inventory_id': session_trs[0].metadata['inventory_id'],
             'inventory_num': session_trs[0].metadata['inventory_num'],
             'series_name': session_trs[0].metadata['series_name'],
             'resolution_type': resolution_type,
+            "attendants_list_id": None,
+            "resolution_ids": [],
             'text_type': text_type
         }
         for session_tr in session_trs:
             session_tr.metadata['session_id'] = session_metadata['id']
+            session_tr.metadata['iiif_url'] = doc_id_to_iiif_url(session_tr.id)
         session = {
             'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
             'type': ['republic_doc', 'session'],

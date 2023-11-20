@@ -7,6 +7,7 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from pagexml.helper.pagexml_helper import make_text_region_text
 
 import republic.model.republic_document_model as rdm
+from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.text_helper import determine_language
 from republic.model.resolution_phrase_model import proposition_opening_phrases
 from republic.parser.logical.pagexml_resolution_parser import get_base_metadata
@@ -14,8 +15,6 @@ from republic.parser.logical.paragraph_parser import running_id_generator
 
 
 def make_opening_searcher(year_start: int, year_end: int, config: dict = None, debug: int = 0):
-    import fuzzy_search
-    print(fuzzy_search)
     opening_phrases = [phrase for phrase in proposition_opening_phrases if
                        phrase['start_year'] <= year_start and phrase['end_year'] >= year_end]
     if debug > 0:
@@ -149,6 +148,8 @@ def make_session_paragraphs(session: rdm.Session, debug: int = 0):
         paragraph.metadata["para_type"] = para_type
         paragraph.add_type(para_type)
         paragraph.text_regions = get_line_grouped_text_regions(paragraph, debug=debug)
+        for tr in paragraph.text_regions:
+            tr.metadata['iiif_url'] = doc_id_to_iiif_url(tr.id)
         doc_text_offset += len(paragraph.text)
         yield paragraph
     return None
@@ -229,6 +230,7 @@ def prep_resolution(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
     resolution.linked_text_regions = get_line_grouped_text_regions(resolution, debug=debug)
     link_marginalia(resolution, marg_trs, debug=debug)
     for linked_tr in resolution.linked_text_regions:
+        linked_tr.metadata['iiif_url'] = doc_id_to_iiif_url(linked_tr.id)
         if linked_tr.has_type('marginalia'):
             marginalium = ' '.join([line.text for line in linked_tr.lines if line.text is not None])
             resolution.add_label(marginalium, 'marginalia', provenance={'label_source': linked_tr.id})
