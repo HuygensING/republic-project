@@ -338,6 +338,7 @@ def do_resolution_phrase_match_indexing(inv_num: int, year_start: int, year_end:
 
 def do_resolution_metadata_indexing(inv_num: int, year_start: int, year_end: int):
     print(f"Indexing PageXML resolution metadata for inventory {inv_num} (years {year_start}-{year_end})...")
+    has_error = False
     searcher = res_parser.make_resolution_phrase_model_searcher()
     relative_path = rpm.__file__.split("republic-project/")[-1]
     repo_url = 'https://github.com/HuygensING/republic-project'
@@ -363,8 +364,11 @@ def do_resolution_metadata_indexing(inv_num: int, year_start: int, year_end: int
             print('\tadding resolution metadata for resolution', new_resolution.id)
             rep_es.index_resolution(new_resolution)
         except BaseException:
+            has_error = True
             print(f'ERROR - do_resolution_metadata_indexing - resolution.id: {resolution.id}')
-            raise
+            pass
+            # raise
+    print(f"finished indexing resolution metadata of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
 
 
 def do_resolution_metadata_indexing_old(inv_num: int, year_start: int, year_end: int):
@@ -412,19 +416,25 @@ def do_resolution_metadata_indexing_old(inv_num: int, year_start: int, year_end:
 
 def do_inventory_attendance_list_indexing(inv_num: int, year_start: int, year_end: int):
     print(f"Indexing attendance lists with spans for inventory {inv_num} (years {year_start}-{year_end})...")
+    has_error = False
     import run_attendancelist
-    for year in range(year_start, year_end+1):
-        att_spans_year = run_attendancelist.run(rep_es.es_anno, year, outdir=None,
-                                                verbose=True, tofile=False,
-                                                source_index=rep_es.config['resolutions_index'])
-        if att_spans_year is None:
-            return None
-        for span_list in att_spans_year:
-            # print(span_list['metadata']['zittingsdag_id'])
-            att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
-            att_list = rep_es.retrieve_attendance_list_by_id(att_id)
-            att_list.attendance_spans = span_list["spans"]
-            rep_es.index_attendance_list(att_list)
+    try:
+        for year in range(year_start, year_end+1):
+            att_spans_year = run_attendancelist.run(rep_es.es_anno, year, outdir=None,
+                                                    verbose=True, tofile=False,
+                                                    source_index=rep_es.config['resolutions_index'])
+            if att_spans_year is None:
+                return None
+            for span_list in att_spans_year:
+                # print(span_list['metadata']['zittingsdag_id'])
+                att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
+                att_list = rep_es.retrieve_attendance_list_by_id(att_id)
+                att_list.attendance_spans = span_list["spans"]
+                rep_es.index_attendance_list(att_list)
+    except BaseException:
+        has_error = True
+        pass
+    print(f"finished indexing attendance list spans of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
 
 
 def process_inventory(task: Dict[str, Union[str, int]]):
