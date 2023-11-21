@@ -572,10 +572,11 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True, debug: int = 0):
             session_tr.metadata['iiif_url'] = doc_id_to_iiif_url(session_tr.id)
         session = {
             'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'type': ['republic_doc', 'session'],
+            'type': ['republic_doc', 'logical_structure_doc', 'session'],
+            'domain': 'logical',
             'metadata': session_metadata,
             'date': session_date,
-            'text_regions': [tr.id for tr in session_trs],
+            'text_region_ids': [tr.id for tr in session_trs],
             'scan_ids': list(sorted(set([tr.metadata['scan_id'] for tr in session_trs]))),
             'page_ids': list(sorted(set([tr.metadata['page_id'] for tr in session_trs]))),
             'stats': {

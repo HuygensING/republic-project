@@ -192,7 +192,8 @@ def get_line_grouped_text_regions(republic_doc: rdm.RepublicDoc, debug: int = 0)
             print(f"get_line_grouped_text_regions - number of tr_grouped_lines: {len(tr_grouped_lines)}")
         for group_id in tr_grouped_lines:
             coords = pdm.parse_derived_coords(tr_grouped_lines[group_id])
-            group_tr = pdm.PageXMLTextRegion(doc_id=group_id, coords=coords, metadata=metadata[group_id])
+            group_tr = pdm.PageXMLTextRegion(doc_id=group_id, coords=coords, metadata=metadata[group_id],
+                                             lines=tr_grouped_lines[group_id])
             group_tr.metadata['parent_id'] = group_id
             res_trs.append(group_tr)
     return res_trs

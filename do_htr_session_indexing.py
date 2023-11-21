@@ -10,6 +10,7 @@ from collections import defaultdict
 from elasticsearch.helpers import bulk
 from pagexml.parser import json_to_pagexml_text_region
 
+import republic.model.republic_document_model as rdm
 from republic.elastic.republic_elasticsearch import initialize_es
 # from republic.classification.line_classification import NeuralLineClassifier
 from republic.model.inventory_mapping import get_inventory_by_num
@@ -81,6 +82,21 @@ def get_inventory_num_docs(rep_es, inv_num, index):
     return response['hits']['total']['value']
 
 
+def make_tr_indexing_action(rep_es, tr):
+    prov_url = rep_es.post_provenance(source_ids=tr.metadata['page_id'],
+                                      target_ids=tr.id,
+                                      source_index='pages', target_index='session_text_regions')
+    tr.metadata['prov_url'] = prov_url
+    add_timestamp(tr)
+    add_commit(tr)
+    action = {
+        '_index': 'session_text_regions',
+        '_id': tr.id,
+        '_source': tr.json
+    }
+    return action
+
+
 def index_inventory_sessions(inv_num):
     inv_metadata = get_inventory_by_num(inv_num)
     session_count = 0
@@ -112,18 +128,13 @@ def index_inventory_sessions(inv_num):
         actions = []
         for session_metadata, session_trs in get_sessions(inv_id, pages):
             session_count += 1
+            prov_url = rep_es.post_provenance(source_ids=session_metadata['page_ids'],
+                                              target_ids=session_metadata['id'],
+                                              source_index='pages', target_index='session_metadata')
+            session_metadata['prov_url'] = prov_url
             rep_es.index_session_metadata(session_metadata)
-            for tr in session_trs:
-                add_timestamp(tr)
-                add_commit(tr)
-                action = {
-                    '_index': 'session_text_regions',
-                    '_id': tr.id,
-                    '_source': tr.json
-                }
-                actions.append(action)
-                # rep_es.index_session_text_region(tr)
-                tr_count += 1
+            actions.extend([make_tr_indexing_action(rep_es, tr) for tr in session_trs])
+            tr_count += len(session_trs)
             if len(actions) > 50:
                 total_trs += len(actions)
                 bulk(rep_es.es_anno, actions)
@@ -157,9 +168,11 @@ def generate_paragraphs(inv_num, rep_es, index):
     with gzip.open(session_file, 'wt') as fh:
         for session_metadata in inv_session_metas:
             session_trs = inv_session_trs[session_metadata['id']]
-            session_trs = [tr for tr in session_trs if tr.id in session_metadata['text_regions']]
-            session_trs = sorted(session_trs, key=lambda x: session_metadata['text_regions'].index(x.id))
-            for para in make_session_paragraphs(session_metadata, session_trs, debug=0):
+            session_trs = [tr for tr in session_trs if tr.id in session_metadata['text_region_ids']]
+            session_trs = sorted(session_trs, key=lambda x: session_metadata['text_region_ids'].index(x.id))
+            session = rdm.Session(doc_id=session_metadata['id'], metadata=session_metadata,
+                                  text_regions=session_trs)
+            for para in make_session_paragraphs(session, debug=0):
                 row_string = '\t'.join([str(year), para.id, para.metadata['para_type'], para.text])
                 fh.write(f"{row_string}\n")
 

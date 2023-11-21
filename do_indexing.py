@@ -110,7 +110,6 @@ def do_page_indexing_pagexml(inv_num: int, year_start: int, year_end: int):
     text_page_num_map = map_text_page_nums(inv_metadata)
     page_count = 0
     num_scans = inv_metadata['num_scans']
-    index = False
     nlc_gysbert = None
     if inv_num < 3760 or inv_num > 3864:
         model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
@@ -247,10 +246,10 @@ def do_handwritten_session_indexing(inv_num: int, year_start: int, year_end: int
     print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
     pages = rep_es.retrieve_inventory_resolution_pages(inv_num)
     inv_metadata = rep_es.retrieve_inventory_metadata(inv_num)
-    model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
-    nlc_gysbert = NeuralLineClassifier(model_dir)
+    # model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
+    # nlc_gysbert = NeuralLineClassifier(model_dir)
     try:
-        for session_metadata, session_trs in get_sessions(inv_metadata['inventory_id'], pages, nlc_gysbert):
+        for session_metadata, session_trs in get_sessions(inv_metadata['inventory_id'], pages):
             # print(json.dumps(session_metadata, indent=4))
             rep_es.index_session_metadata(session_metadata)
             for tr in session_trs:
@@ -305,7 +304,8 @@ def do_handwritten_resolution_indexing(inv_num: int, year_start: int, year_end: 
             # print('session_meta["id"]:', session_meta['id'])
             # print('session.id:', session.id)
             for resolution in get_session_resolutions(session, opening_searcher, debug=0):
-                prov_url = rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
+                prov_url = rep_es.post_provenance(source_ids=[session.id] + [tr.id for tr in session.text_regions],
+                                                  target_ids=[resolution.id],
                                                   source_index='session_metadata', target_index='resolutions')
                 resolution.metadata['prov_url'] = prov_url
                 rep_es.index_resolution(resolution)
@@ -315,7 +315,8 @@ def do_handwritten_resolution_indexing(inv_num: int, year_start: int, year_end: 
         print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
         errors.append(err)
         return None
-    print(f"finished indexing handwritten resolutions of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
+    print(f"finished indexing handwritten resolutions of inventory {inv_num} "
+          f"with {'an error' if has_error else 'no errors'}")
     for err in errors:
         print(err)
 
@@ -347,14 +348,14 @@ def do_resolution_metadata_indexing(inv_num: int, year_start: int, year_end: int
     for resolution in rep_es.scroll_inventory_resolutions(inv_num):
         try:
             phrase_matches = extract_res.extract_paragraph_phrase_matches(resolution.paragraphs[0],
-                                                                        [searcher])
+                                                                          [searcher])
             new_resolution = extract_res.add_resolution_metadata(resolution, phrase_matches,
-                                                                prop_searchers['template'],
-                                                                prop_searchers['variable'])
+                                                                 prop_searchers['template'],
+                                                                 prop_searchers['variable'])
             prov_url = rep_es.post_provenance(source_ids=[resolution.id], target_ids=[resolution.id],
-                                            source_index='resolutions', target_index='resolutions',
-                                            source_external_urls=[phrase_file],
-                                            why='Enriching resolution with metadata derived from resolution phrases')
+                                              source_index='resolutions', target_index='resolutions',
+                                              source_external_urls=[phrase_file],
+                                              why='Enriching resolution with metadata derived from resolution phrases')
             if 'prov_url' not in new_resolution.metadata or new_resolution.metadata['prov_url'] is None:
                 new_resolution.metadata['prov_url'] = [prov_url]
             if isinstance(new_resolution.metadata['prov_url'], str):
@@ -368,7 +369,8 @@ def do_resolution_metadata_indexing(inv_num: int, year_start: int, year_end: int
             print(f'ERROR - do_resolution_metadata_indexing - resolution.id: {resolution.id}')
             pass
             # raise
-    print(f"finished indexing resolution metadata of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
+    print(f"finished indexing resolution metadata of inventory {inv_num} "
+          f"with {'an error' if has_error else 'no errors'}")
 
 
 def do_resolution_metadata_indexing_old(inv_num: int, year_start: int, year_end: int):
@@ -409,7 +411,7 @@ def do_resolution_metadata_indexing_old(inv_num: int, year_start: int, year_end:
         try:
             rep_es.index_resolution_metadata(new_resolution)
             rep_es.index_resolution(new_resolution)
-        except:
+        except BaseException:
             print('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, indent=4))
             raise
 
@@ -434,7 +436,8 @@ def do_inventory_attendance_list_indexing(inv_num: int, year_start: int, year_en
     except BaseException:
         has_error = True
         pass
-    print(f"finished indexing attendance list spans of inventory {inv_num} with {'an error' if has_error else 'no errors'}")
+    print(f"finished indexing attendance list spans of inventory {inv_num} "
+          f"with {'an error' if has_error else 'no errors'}")
 
 
 def process_inventory(task: Dict[str, Union[str, int]]):
