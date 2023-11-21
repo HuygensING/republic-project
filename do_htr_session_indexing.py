@@ -11,10 +11,10 @@ from elasticsearch.helpers import bulk
 from pagexml.parser import json_to_pagexml_text_region
 
 from republic.elastic.republic_elasticsearch import initialize_es
-from republic.classification.line_classification import NeuralLineClassifier
+# from republic.classification.line_classification import NeuralLineClassifier
 from republic.model.inventory_mapping import get_inventory_by_num
 from republic.parser.logical.handwritten_session_parser import get_sessions
-from republic.parser.logical.handwritten_session_parser import make_session_paragraphs
+from republic.parser.logical.handwritten_resolution_parser import make_session_paragraphs
 from republic.elastic.republic_indexing import add_timestamp, add_commit
 
 
@@ -100,9 +100,9 @@ def index_inventory_sessions(inv_num):
         print('WARNING - skipping inventory with no pages:', inv_num)
         return None
 
-    print(f'loading GysBERT model for inv_num {inv_num}')
-    model_dir = './data/models/neural_line_classification/nlc_gysbert_model'
-    nlc_gysbert = NeuralLineClassifier(model_dir)
+    # print(f'loading GysBERT model for inv_num {inv_num}')
+    # model_dir = './data/models/neural_line_classification/nlc_gysbert_model'
+    # nlc_gysbert = NeuralLineClassifier(model_dir)
 
     inv_id = f'NL-HaNA_1.01.02_{inv_num}'
 
@@ -110,7 +110,7 @@ def index_inventory_sessions(inv_num):
     print(f'started processing inventory {inv_num}')
     try:
         actions = []
-        for session_metadata, session_trs in get_sessions(inv_id, pages, nlc_gysbert):
+        for session_metadata, session_trs in get_sessions(inv_id, pages):
             session_count += 1
             rep_es.index_session_metadata(session_metadata)
             for tr in session_trs:
@@ -124,7 +124,7 @@ def index_inventory_sessions(inv_num):
                 actions.append(action)
                 # rep_es.index_session_text_region(tr)
                 tr_count += 1
-            if len(actions) > 500:
+            if len(actions) > 50:
                 total_trs += len(actions)
                 bulk(rep_es.es_anno, actions)
                 print(f'bulk indexing {len(actions)} ({total_trs} total) text regions for inventory {inv_num}')
@@ -135,7 +135,7 @@ def index_inventory_sessions(inv_num):
         print(f'finished processing inventory {inv_num}, with {session_count} sessions and {tr_count} trs')
     except Exception:
         print(f'Error processing inventory {inv_num}')
-        # raise
+        raise
 
 
 def generate_paragraphs(inv_num, rep_es, index):
@@ -166,7 +166,7 @@ def generate_paragraphs(inv_num, rep_es, index):
 
 def pick_session_ids(sessions, ignore_ids, num_picks: int = 3, random_seed: int = 25662):
     session_ids = sorted(sessions.keys())
-    session_idsd = [session_id for session_id in session_ids if session_id not in ignore_ids]
+    session_ids = [session_id for session_id in session_ids if session_id not in ignore_ids]
     picked_session_ids = []
     random.seed(random_seed)
     if len(session_ids) <= num_picks:
@@ -221,14 +221,20 @@ def dummy_func(inv_num):
     print('running', inv_num)
 
 
-def do_main(task, num_processes: int = 1):
-    inv_nums = [inv_num for inv_num in range(3118, 3350)]
+def do_main(task, inv_start: int = None, inv_end: int = None, num_processes: int = 1):
+    if inv_start is None:
+        inv_start = 3096
+    if inv_end is None:
+        inv_end = 3348
+    inv_nums = [inv_num for inv_num in range(inv_start, inv_end+1)]
     # inv_nums = [inv_num for inv_num in range(3144, 3350)]
     if task == 'index_sessions':
-        for inv_num in inv_nums:
-            index_inventory_sessions(inv_num)
-        # with multiprocessing.Pool(processes=num_processes) as pool:
-        #     pool.map(index_inventory_sessions, inv_nums)
+        if num_processes > 1:
+            with multiprocessing.Pool(processes=num_processes) as pool:
+                pool.map(index_inventory_sessions, inv_nums)
+        else:
+            for inv_num in inv_nums:
+                index_inventory_sessions(inv_num)
     elif task == 'generate_paragraphs':
         index = {
             'metadata': 'session_metadata_june_2023',
@@ -249,10 +255,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process HTR sessions.')
     parser.add_argument('task', metavar='t', type=str, nargs=1,
                         help='a task to perform')
+    parser.add_argument('start', metavar='s', type=int, nargs=1,
+                        help='the first inventory number of the range')
+    parser.add_argument('end', metavar='e', type=int, nargs=1,
+                        help='the last inventory number of the range')
     parser.add_argument('num_processes', metavar='n', type=int, nargs=1,
                         help='number of processes to run in parallel')
     args = parser.parse_args()
-    print('task:', args.task, type(args.task), '\tnum_processes:', args.num_processes)
+    print(f'task: {args.task}\tstart: {args.start}\tend: {args.end}\tnum_processes: {args.num_processes}')
     for task in args.task:
-        do_main(task, args.num_processes[0])
+        do_main(task, args.start[0], args.end[0], args.num_processes[0])
 
