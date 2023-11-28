@@ -34,6 +34,10 @@ def make_provenance_data(es_config, source_ids: List[str], target_ids: List[str]
     if source_es_url is None:
         source_es_url = es_config['elastic_config']['url']
     target_es_url = es_config['elastic_config']['url']
+    if isinstance(source_ids, str):
+        source_ids = [source_ids]
+    if isinstance(target_ids, str):
+        target_ids = [target_ids]
     source_urls = [f'{source_es_url}{source_index}/_doc/{source_id}' for source_id in source_ids]
     if source_external_urls is not None:
         source_urls += source_external_urls
