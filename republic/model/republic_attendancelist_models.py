@@ -95,7 +95,10 @@ class TextWithMetadata(object):
         """
         if 'attendance_list' in searchob['type']:
             # print('find_preslst_text from attendance_list')
-            text = '\n'.join([para['text'] for para in searchob['paragraphs']])
+            # HACK BY MARIJN (2023-12-18): join by whitespace instead of newline, to
+            # ensure regex patterns match
+            # text = '\n'.join([para['text'] for para in searchob['paragraphs']])
+            text = ' '.join([para['text'] for para in searchob['paragraphs']])
         elif 'session' in searchob['type']:
             # print('find_preslst_text from session')
             al = [p for p in searchob['annotations'] if 'attendance_list' in p['id']][0]

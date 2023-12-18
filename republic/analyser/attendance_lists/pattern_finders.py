@@ -25,7 +25,6 @@ def search_presidents(presentielijsten, from_scratch=True):
     ps = make_president_searcher()
     heren = []
     pat = "%s(.*)%s"  # pat = "%s.*(.*)%s"  # de presidenten
-    pats = []
     for T in list(presentielijsten.keys()):
         ob = presentielijsten[T].matched_text
         txt = ob.item
@@ -36,12 +35,14 @@ def search_presidents(presentielijsten, from_scratch=True):
 
 
 def make_president_searcher():
-    fuzzysearch_config = {'char_match_threshold': 0.5,
-                          'ngram_threshold': 0.5,
-                          'levenshtein_threshold': 0.4,
-                          'ignorecase': False,
-                          'ngram_size': 2,
-                          'skip_size': 2}
+    president_searcher_config = {
+        'char_match_threshold': 0.5,
+        'ngram_threshold': 0.5,
+        'levenshtein_threshold': 0.4,
+        'ignorecase': False,
+        'ngram_size': 2,
+        'skip_size': 2
+    }
     vs = ['PRASIDE Den Heere',
           'PRA ESIDE Den Heere',
           'PRA ZSIDE Den Heere'
@@ -62,19 +63,21 @@ def make_president_searcher():
            'P R A E S E N T I B U S',
            'P RAE SE N TI B U S',
            'PRA&SENTIBUS',
-           'PRAESEN','PRAES']
+           'PRAESEN',
+           'PRAES']
     pvs = ekwz['PRASENTIBUS'] + pvs
-    variants = [{'phrase': 'PRAESIDE Den Heere', 'label':'president', 'variants': vs},
-                {'phrase': 'PRAESENTIBUS', 'label':'presentibus', 'variants': pvs},
-                ]
-    president_searcher = FuzzyPhraseSearcher(phrase_model=variants, config=fuzzysearch_config)
+    variants = [
+        {'phrase': 'PRAESIDE Den Heere', 'label': 'president', 'variants': vs},
+        {'phrase': 'PRAESENTIBUS', 'label': 'presentibus', 'variants': pvs},
+    ]
+    president_searcher = FuzzyPhraseSearcher(phrase_model=variants, config=president_searcher_config)
     # president_searcher.index_phrase_model(phrase_model=variants)
     return president_searcher
 
 
 def get_president(ob, pat, ps, txt, debug=True):
     """TODO: split president getting and span setting"""
-    ofset = 0  # in case we find no president marker
+    offset = 0  # in case we find no president marker
     end = 0
     prez = ''
     prae = ''
@@ -82,7 +85,7 @@ def get_president(ob, pat, ps, txt, debug=True):
     presidents = [m for m in matches if m.label == 'president']
     president = best_match(presidents)
     if president:
-        ofset = getattr(president, "offset") or 0
+        offset = getattr(president, "offset") or 0
         prez = getattr(president, "string") or ''
     presentibi = [m for m in matches if m.label == 'presentibus']
     if presentibi:
@@ -90,18 +93,18 @@ def get_president(ob, pat, ps, txt, debug=True):
         prae = presentibus.string or ''
         end = getattr(presentibus, "offset") or len(txt)
     spns = {}
-    if ofset != 0:
-        preamble_span = (0, ofset - 1)
+    if offset != 0:
+        preamble_span = (0, offset - 1)
         preamble = txt[preamble_span[0]:preamble_span[1]]
         spns['preamble'] = (preamble, preamble_span)
-    pre_span = (ofset, ofset + len(prez))
+    pre_span = (offset, offset + len(prez))
     spns['pre'] = (prez, pre_span)
     presentibus_span = (end, end + len(prae))
     spns['presentibus'] = (prae, presentibus_span)
     searchpat = pat % (re.escape(prez), re.escape(prae))
-    r = re.search(searchpat, txt)
-    if r and r.group(1):
-        heer = r.group(1).strip()
+    regex_match = re.search(searchpat, txt)
+    if regex_match and regex_match.group(1):
+        heer = regex_match.group(1).strip()
         # rex = re.search('e?r?e\s', heer)
         # if rex:
         #     if rex.span()[0] == 0:
@@ -122,40 +125,71 @@ def get_president(ob, pat, ps, txt, debug=True):
             #     prespan = get_span_from_regex(prae)
             #     mt.set_span(prespan, "presentibus")
         return heer
+    else:
+        return None
 
 
 def make_province_searcher(config):
-    basephrase = [{'phrase':"extraordinaris Gedeputeerden uyt de provincie van",
-                  'label':'extraordinaris',
-                  'variants':[]}]
-    prefix = [{'phrase':'met een', 'label':'prefix','variants':['met twee', 'met drie', 'een ', 'twee ', 'drie'
-                                                                'vier', 'vijf']}]
-    provinces = [{'phrase': "Gelderlandt",'label':'province',
-                 'variants':["Hollandt ende West-Vrieslandt",
-                 "Utrecht",
-                 "Frieslandt",
-                 "Overijssel",
-                 "Groningen",
-                 "Zeelandt"]}]
+    basephrase = [
+        {
+            'phrase': "extraordinaris Gedeputeerden uyt de provincie van",
+            'label': 'extraordinaris',
+            'variants': []}
+    ]
+    prefix = [
+        {
+            'phrase': 'met een',
+            'label': 'prefix',
+            'variants':
+                ['met twee', 'met drie', 'een ', 'twee ', 'drie', 'vier', 'vijf']
+        }
+    ]
+    provinces = [
+        {
+            'phrase': "Gelderlandt",
+            'label': 'province',
+            'variants': [
+                "Hollandt ende West-Vrieslandt",
+                "Utrecht",
+                "Frieslandt",
+                "Overijssel",
+                "Groningen",
+                "Zeelandt"
+            ]
+        }
+    ]
     rps = ['Raadtpenslonaris',
-          'Raadtpenfionaris',
-          'Raudtpensionaris',
-          'Raaadtpensionaris',
-          'Raadtpensonaris',
-          'Raadtpensienaris',
-          'Raaatpensionaris',
-          'Raadtpensionaris']
+           'Raadtpenfionaris',
+           'Raudtpensionaris',
+           'Raaadtpensionaris',
+           'Raadtpensonaris',
+           'Raadtpensienaris',
+           'Raaatpensionaris',
+           'Raadtpensionaris']
 
-    raadp = [{'phrase': 'Raadtpensionaris', 'label': 'raadpensionaris', 'variants': rps}]
-    hrn = [{'phrase':'Den Heere', 'label': 'heere', 'variants':['Den Heere',
-                                                                'De Heeren'
-                                                                'Den Heeren',
-                                                                'De Heer']}]
-    nihil = [{'phrase':'Nihil actum est', 'label': 'nihil', 'variants':['Nihil actum est',
-                                                                        'Nibil actum est']}]
+    raadp = [
+        {
+            'phrase': 'Raadtpensionaris',
+            'label': 'raadpensionaris',
+            'variants': rps
+        }
+    ]
+    hrn = [
+        {
+            'phrase': 'Den Heere',
+            'label': 'heere',
+            'variants': ['Den Heere', 'De Heeren', 'Den Heeren', 'De Heer']
+        }
+    ]
+    nihil = [
+        {
+            'phrase': 'Nihil actum est',
+            'label': 'nihil',
+            'variants': ['Nihil actum est', 'Nibil actum est']
+        }
+    ]
     phrases = basephrase + prefix + provinces + raadp + hrn + nihil
     pmodel = PhraseModel(model=phrases, config=config)
-    # print(phrases, phrase_model)
     pr_searcher = FuzzyPhraseSearcher(phrase_model=pmodel, config=config)
     # pr_searcher.index_phrase_model(phrase_model=pmodel)
     return pr_searcher
@@ -163,17 +197,18 @@ def make_province_searcher(config):
 
 def match_prov(matches):
     foundtexts = []
-    bstr = [s for s in matches if s.label=='extraordinaris']
+    bstr = [s for s in matches if s.label == 'extraordinaris']
     for item in bstr:
-        o = item.offset
-        l = o + len(item.string)
-        pre_searchtext = [p.offset for p in matches if p.label=='prefix' and p.offset in range(o-10,o)]
-        if len(pre_searchtext)>0:
-            o = pre_searchtext[0]
-        post_searchtext = [p.offset + len(p.string) for p in matches if p.label=='province' and p.offset in range(l,l+30)]
+        offset = item.offset
+        end = offset + len(item.string)
+        pre_searchtext = [p.offset for p in matches if p.label == 'prefix' and p.offset in range(offset-10, offset)]
+        if len(pre_searchtext) > 0:
+            offset = pre_searchtext[0]
+        post_searchtext = [p.offset + len(p.string) for p in matches
+                           if p.label == 'province' and p.offset in range(end, end+30)]
         if len(post_searchtext) > 0:
-            l = post_searchtext[0]
-        foundtexts.append((o,l))
+            end = post_searchtext[0]
+        foundtexts.append((offset, end))
     return foundtexts
 
 
@@ -181,7 +216,6 @@ def search_provinces(presentielijsten, config=fuzzysearch_config):
     pr_searcher = make_province_searcher(config)
     for T in presentielijsten.keys():
         itm = presentielijsten[T]
-        itm.matched_text
         txt = itm.text
         mt = itm.matched_text
         provs = pr_searcher.find_matches(text=txt, include_variants=True)

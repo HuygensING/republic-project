@@ -608,6 +608,18 @@ proposition_opening_phrases = [
         'max_offset': 5
     },
     {
+        'phrase': 'Praeside en Praesentibus de Heeren',
+        'label': ['attendance:start', 'attendance:repeat'],
+        'start_year': 1588, 'end_year': 1704,
+        'max_offset': 5
+    },
+    {
+        'phrase': 'als in het ordinaris Register',
+        'label': ['attendance:start', 'attendance:repeat'],
+        'start_year': 1588, 'end_year': 1704,
+        'max_offset': 5
+    },
+    {
         'phrase': 'present de heeren',
         'label': ['attendance:start', 'attendance:deputies'],
         'start_year': 1588, 'end_year': 1704,

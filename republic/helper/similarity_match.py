@@ -93,7 +93,7 @@ def score_levenshtein_distance(s1, s2, use_confuse=False, max_distance: Union[No
     return distances[-1]
 
 
-def score_char_overlap(term1: int, term2: str) -> int:
+def score_char_overlap(term1: str, term2: str) -> int:
     """Count the number of overlapping character tokens in two strings."""
     num_char_matches = 0
     for char in term2:
@@ -103,15 +103,16 @@ def score_char_overlap(term1: int, term2: str) -> int:
     return num_char_matches
 
 
-def get_keyword_string(keyword):
+def get_keyword_string(keyword: Union[str, Keyword, dict], ignorecase: bool=False) -> str:
     if isinstance(keyword, str):
-        return keyword
+        keyword_string = keyword
     elif isinstance(keyword, Keyword):
-        return keyword.name
+        keyword_string = keyword.name
     elif isinstance(keyword, dict) and "keyword_string" in keyword:
-        return keyword["keyword_string"]
+        keyword_string = keyword["keyword_string"]
     else:
-        return None
+        raise TypeError(f"keyword must string, Keyword or dictionary, not {type(keyword)}")
+    return keyword_string.lower() if ignorecase else keyword_string
 
 
 def confuse_distance(c1, c2):
@@ -123,33 +124,62 @@ def confuse_distance(c1, c2):
         return 1
 
 
+def is_close_distance_keyword_pair(keyword1: str, keyword2: str, max_distance_ratio: float,
+                                   max_length_difference: int, min_char_overlap: float,
+                                   max_distance: int) -> bool:
+    if abs(len(keyword1) - len(keyword2)) > max_length_difference:
+        return False
+    # - keywords have low overlap in characters
+    char_overlap = score_char_overlap(keyword1, keyword2)
+    if char_overlap / len(keyword1) < min_char_overlap:
+        return False
+    distance = score_levenshtein_distance(keyword1, keyword2)
+    if distance < max_distance and (
+            distance / len(keyword1) < max_distance_ratio or distance / len(keyword2) < max_distance_ratio):
+        return True
+    return False
+
+
 class FuzzyKeywordGrouper(object):
-    def __init__(self, keyword_list: List[str]):
+
+    def __init__(self, keyword_list: List[str], max_distance_ratio: float = 0.3,
+                 max_length_difference: int = 3, min_char_overlap: float = 0.5,
+                 max_distance: int = 10, ignorecase: bool = False):
         self.keyword_list = keyword_list
+        self.ignorecase = ignorecase
+        self.max_distance_ratio = max_distance_ratio
+        self.max_distance = max_distance
+        self.max_length_difference = max_length_difference
+        self.min_char_overlap = min_char_overlap
         self.distance_list = self.find_close_distance_keywords()
 
     def find_close_distance_keywords(self, max_distance_ratio: float = 0.3,
                                      max_length_difference: int = 3, min_char_overlap: float = 0.5,
                                      max_distance: int = 10) -> Dict[str, List[str]]:
         """TODO: should we make the arguments into a config?"""
+        if max_distance_ratio is None:
+            max_distance_ratio = self.max_distance_ratio
+        if max_distance is None:
+            max_distance = self.max_distance
+        if max_length_difference is None:
+            max_length_difference = self.max_length_difference
+        if min_char_overlap is None:
+            min_char_overlap = self.min_char_overlap
         close_distance_keywords = defaultdict(list)
         for index, keyword1 in enumerate(self.keyword_list):
-            string1 = get_keyword_string(keyword1).lower()
+            string1 = get_keyword_string(keyword1, ignorecase=self.ignorecase)
             close_distance_keywords[keyword1] = []
             for keyword2 in self.keyword_list[index + 1:]:
-                string2 = get_keyword_string(keyword2).lower()
-                if abs(len(string1) - len(string2)) > max_length_difference: continue
-                # - keywords have low overlap in characters
-                char_overlap = score_char_overlap(string1, string2)
-                if char_overlap / len(string1) < min_char_overlap: continue
-                distance = score_levenshtein_distance(string1, string2)
-                if distance < max_distance and (
-                        distance / len(string1) < max_distance_ratio or distance / len(string2) < max_distance_ratio):
+                string2 = get_keyword_string(keyword2, ignorecase=self.ignorecase)
+                if is_close_distance_keyword_pair(string1, string2, max_distance_ratio=max_distance_ratio,
+                                                  max_length_difference=max_length_difference,
+                                                  min_char_overlap=min_char_overlap,
+                                                  max_distance=max_distance):
                     close_distance_keywords[keyword1].append(keyword2)
                     close_distance_keywords[keyword2].append(keyword1)
         return close_distance_keywords
 
-    def find_closer_terms(self, candidate, keyword, close_terms):
+    def find_closer_terms(self, candidate: str, keyword: str, close_terms: List[str]):
         closer_terms = {}
         keyword_distance = score_levenshtein_distance(keyword, candidate)
         # print("candidate:", candidate, "\tkeyword:", keyword)
@@ -159,7 +189,7 @@ class FuzzyKeywordGrouper(object):
             # print("close_term:", close_term, "\tdistance:", close_term_distance)
             if close_term_distance < keyword_distance:
                 closer_terms[close_term] = close_term_distance
-        return sorted(closer_terms, key=lambda closer_terms: closer_terms[1])
+        return sorted(closer_terms, key=lambda ct: closer_terms[ct])
 
     # def shorten_representation(self):
     #     G = nx.Graph()
