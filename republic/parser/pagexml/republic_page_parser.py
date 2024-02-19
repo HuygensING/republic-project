@@ -1,15 +1,18 @@
-from typing import Dict, List, Tuple, Union
 import copy
+from collections import Counter
+from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
 from pagexml.helper.pagexml_helper import elements_overlap
 
+import republic.helper.pagexml_helper as pagexml_helper
+import republic.parser.pagexml.republic_column_parser as column_parser
 from republic.helper.metadata_helper import make_iiif_region_url
 # import republic.model.physical_document_model as pdm
 from republic.config.republic_config import base_config
-from republic.parser.pagexml.republic_column_parser import split_lines_on_column_gaps
-from republic.parser.pagexml.republic_column_parser import determine_column_type
-import republic.helper.pagexml_helper as pagexml_helper
+# from republic.parser.pagexml.republic_column_parser import split_lines_on_column_gaps
+# from republic.parser.pagexml.republic_column_parser import determine_column_type
+# from republic.parser.pagexml.republic_column_parser import split_column_text_regions
 
 
 def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords) -> str:
@@ -56,7 +59,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
             config = copy.deepcopy(config)
             config["column_gap"]["gap_pixel_freq_ratio"] = 0.5
             # print('split_column_regions - column_gap:', config['column_gap'])
-            cols = split_lines_on_column_gaps(text_region, config, debug=debug)
+            cols = column_parser.split_lines_on_column_gaps(text_region, config, debug=debug)
             text_regions += cols
             for col in cols:
                 col.set_parent(page_doc)
@@ -212,6 +215,7 @@ def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str,
     if page_type_index and metadata['page_num'] in page_type_index:
         page_type = page_type_index[metadata['page_num']]
         page_doc.add_type(page_type)
+    assert 'page_num' in page_doc.metadata, f"page {page_doc.id} is missing 'page_num'"
     return page_doc
 
 
@@ -291,7 +295,7 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
             config = copy.deepcopy(config)
             config['column_gap']['gap_threshold'] = 20
             config['column_gap']['gap_pixel_freq_ratio'] = 0.5
-            cols = split_lines_on_column_gaps(tr, config, debug=debug)
+            cols = column_parser.split_lines_on_column_gaps(tr, config, debug=debug)
             if debug > 0:
                 for col in cols:
                     print("get_column_text_regions - after tr split -> COLUMN:", col.id)
@@ -368,7 +372,7 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXM
                     print('\tSPLITTING PAGE BOUNDARY OVERLAPPING REGION:', text_region.id, text_region.type)
                     print('\t', text_region.stats)
                     # print(config)
-                sub_trs = split_lines_on_column_gaps(text_region, config=config, debug=debug)
+                sub_trs = column_parser.split_lines_on_column_gaps(text_region, config=config, debug=debug)
                 if debug > 0:
                     print('\t\tnumber of sub text regions:', len(sub_trs))
                 for sub_tr in sub_trs:
@@ -748,7 +752,7 @@ def get_page_full_text_columns(page: pdm.PageXMLPage) -> List[pdm.PageXMLColumn]
     extra_columns = []
     for column in page.columns:
         try:
-            column_type = determine_column_type(column)
+            column_type = column_parser.determine_column_type(column)
         except TypeError:
             column_type = None
         if column_type == 'full_text':
@@ -771,3 +775,107 @@ def get_page_full_text_columns(page: pdm.PageXMLPage) -> List[pdm.PageXMLColumn]
         # keep tracked of the new merged columns
         merged_columns.append(full_text_col)
     return merged_columns
+
+
+def is_paragraph_line(line: pdm.PageXMLTextLine) -> bool:
+    if 'line_class' not in line.metadata:
+        return False
+    return line.metadata['line_class'].startswith('para_')
+
+
+def update_line_types(page: pdm.PageXMLPage, debug: int = 0) -> pdm.PageXMLPage:
+    """Update line class types when they are in conflict with the type of
+    their corresponding text region.
+
+    This is particulary for text regions labelled as attendance but with
+    lines classified as paragraph lines.
+    """
+    default_types = {'text_region', 'structure_doc', 'physical_structure_doc', 'pagexml_doc'}
+    para_trs = []
+    para_lines = []
+    indent_trs = []
+    new_page = copy.deepcopy(page)
+    for col in new_page.columns:
+        for tr in col.text_regions:
+            if tr.has_type('resolution'):
+                para_trs.append(tr)
+                para_lines.extend([line for line in tr.lines if is_paragraph_line(line)])
+                line_types = column_parser.get_main_line_types(tr.lines)
+                type_freq = Counter(line_types)
+                if 'attendance' in type_freq:
+                    para_lefts = [line.coords.left for line in tr.lines
+                                  if line.metadata['line_class'].startswith('para_')]
+                    for line in tr.lines:
+                        if line.metadata['line_class'] == 'attendance':
+                            indented = [left for left in para_lefts if left - line.coords.left > 100]
+                            if len(indented) == 0:
+                                line.metadata['line_class'] = 'para_mid'
+                                if debug > 0:
+                                    print(f"republic_page_parser.update_line_types - resolution tr {tr.id} "
+                                          f"has attendance line types but not left indented, updating to 'para_mid'")
+            elif tr.has_type('attendance') or tr.has_type('header'):
+                indent_trs.append(tr)
+    for indent_tr in indent_trs:
+        if indent_tr.has_type('attendance') or indent_tr.has_type('header'):
+            line_types = column_parser.get_main_line_types(indent_tr.lines)
+            if len(line_types) == 0:
+                if debug > 0:
+                    print(f"republic_page_parser.update_line_types - attendance tr {indent_tr.id} "
+                          f"has no main line types, updating to 'empty'")
+                indent_tr.type = {t for t in default_types}
+                indent_tr.add_type('empty')
+                continue
+            type_freq = Counter(line_types)
+            if 'date' in type_freq:
+                for line in indent_tr.lines:
+                    if line.metadata['line_class'] == 'date' and len(line.text) > 40:
+                        print('CUT LINE:', len(line.text), line.text)
+            if 'attendance' in type_freq and 'para' not in type_freq and indent_tr.has_type('attendance'):
+                if debug > 0:
+                    print(f"republic_page_parser.update_line_types - attendance tr {indent_tr.id} "
+                          f"has attendance lines, not updating line types")
+                continue
+            if 'para' not in type_freq and indent_tr.has_type('header'):
+                if debug > 0:
+                    print(f"republic_page_parser.update_line_types - header tr {indent_tr.id} "
+                          f"has no para lines, not updating line types")
+                continue
+            if 'para' in type_freq:
+                indent_lines = [para_line for para_line in para_lines
+                                if para_line.coords.left - indent_tr.coords.left > 100]
+                if indent_tr.has_type('attendance') and \
+                        (len(indent_lines) > 10 or len(indent_lines) / len(para_lines) > 0.5):
+                    if debug > 0:
+                        print(f"republic_page_parser.update_line_types - attendance tr {indent_tr.id} "
+                              f"has para lines and is to the left of other para lines, updating line "
+                              f"types to 'attendance'")
+                    for indent_line in indent_tr.lines:
+                        if indent_line.metadata['line_class'].startswith('para_'):
+                            indent_line.metadata['line_class'] = 'attendance'
+                if indent_tr.has_type('header') and indent_tr.has_type('date'):
+                    if debug > 0:
+                        print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
+                              f"has para lines, updating line types to 'date_header'")
+                    for indent_line in indent_tr.lines:
+                        indent_line.metadata['line_class'] = 'date_header'
+    return new_page
+
+
+def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = False,
+                                   debug: int = 0) -> pdm.PageXMLPage:
+    if update_type is True:
+        page = update_line_types(page, debug=debug)
+    new_extra = [tr for tr in page.extra] if page.extra else []
+    if debug > 0:
+        print(f"split_page_column_text_regions - new_extra: {new_extra}")
+    new_cols = [column_parser.split_column_text_regions(col, update_type=update_type, debug=debug)
+                for col in page.columns]
+    if debug > 0:
+        print(f"split_page_column_text_regions - new_cols: {new_cols}")
+    if len(new_extra + new_cols) == 0:
+        new_coords = pdm.Coords(page.coords.points) if page.coords else None
+    else:
+        new_coords = pdm.parse_derived_coords(new_extra + new_cols)
+    new_page = pdm.PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
+                               coords=new_coords, columns=new_cols, extra=new_extra)
+    return new_page

@@ -438,7 +438,7 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
-        'label': ['proposition_opening', 'proposition_type:voordarcht'],
+        'label': ['proposition_opening', 'proposition_type:voordracht'],
         'proposition_type': 'voordracht',
         'start_year': 1703, 'end_year': 1796,
         'max_offset': 10
