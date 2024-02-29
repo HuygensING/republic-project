@@ -6,10 +6,10 @@ from republic.nlp.lm import make_character_dictionary
 from republic.nlp.lm import make_train_test_split
 from republic.nlp.ner import prep_training
 from republic.nlp.ner import train
-from republic.nlp.read import ParaReader, read_para_files
+from republic.nlp.read import ParaReader, read_para_files_from_dir
 
 
-ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES', 'single_layer'}
+ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES', 'NAM', 'single_layer'}
 
 BEST_MODELS = [
         {'layer': 'COM', 'layer_model': 'COM', 'use_crf': True, 'use_rnn': True, 'reproject_embeddings': True, 'use_context': True, 'use_finetuning': True, 'use_char': True, 'use_fasttext': False, 'use_resolution': False, 'use_gysbert': True}, 
@@ -57,7 +57,8 @@ def train_layers(layers, train_size=1.0, mini_batch_size=32, max_epochs=10):
         'use_context',
         'use_finetuning',
         # 'use_resolution',
-        'use_gysbert',
+        # 'use_gysbert',
+        'use_gysbert2',
         'use_fasttext'
     ]
     for p in product([True,False],repeat=len(bool_options)):
@@ -65,6 +66,9 @@ def train_layers(layers, train_size=1.0, mini_batch_size=32, max_epochs=10):
         params['use_crf'] = True
         params['use_rnn'] = True
         params['use_resolution'] = False
+        params['use_gysbert'] = False
+        if params['use_gysbert2'] is False:
+            continue
         for layer in layers:
             print(f'training layer {layer}')
             print('params:', params)
@@ -78,6 +82,7 @@ def train_layers(layers, train_size=1.0, mini_batch_size=32, max_epochs=10):
                                 use_char=params['use_char'],
                                 use_fasttext=params['use_fasttext'],
                                 use_gysbert=params['use_gysbert'],
+                                use_gysbert2=params['use_gysbert2'],
                                 use_resolution=params['use_resolution'],
                                 use_finetuning=params['use_finetuning'],
                                 reproject_embeddings=params['reproject_embeddings'],
@@ -100,6 +105,7 @@ def train_entity_tagger(layer_name: str,
                         use_char: bool = False,
                         use_fasttext: bool = False,
                         use_gysbert: bool = False,
+                        use_gysbert2: bool = False,
                         model_name=None):
     trainer = prep_training(layer_name,
                             train_size=train_size,
@@ -109,6 +115,7 @@ def train_entity_tagger(layer_name: str,
                             use_resolution=use_resolution,
                             use_char=use_char,
                             use_gysbert=use_gysbert,
+                            use_gysbert2=use_gysbert2,
                             use_fasttext=use_fasttext,
                             use_crf=use_crf,
                             use_rnn=use_rnn,
@@ -201,8 +208,8 @@ def main():
     print('train_type:', train_type)
     if train_type == 'ner':
         print('layers to train:', layers)
-        # train_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
-        train_best_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+        train_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+        # train_best_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
     elif train_type == 'lm':
         do_train_lm()
     else:
