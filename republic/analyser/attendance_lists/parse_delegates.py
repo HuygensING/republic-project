@@ -14,7 +14,7 @@ from ...model.republic_attendancelist_models import TextWithMetadata
 from .searchers import nm_to_delen, herensearcher, junksweeper
 from ...helper.utils import reverse_dict, levenst_vals, score_match
 from ...model.republic_attendancelist_models import StringWithContext, Heer
-from ...data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+from ...data.delegate_database import abbreviated_delegates, found_delegates, read_ekwz
 from ...helper.similarity_match import FuzzyKeywordGrouper
 from .identify import iterative_search
 
@@ -23,7 +23,7 @@ pd.set_option('mode.chained_assignment', None)
 
 numpat = re.compile('[0-9]{2,}')
 
-transposed_graph = reverse_dict(ekwz)
+transposed_graph = reverse_dict(read_ekwz())
 keywords = list(abbreviated_delegates.name)
 kwrds = {key: nm_to_delen(key) for key in keywords}
 

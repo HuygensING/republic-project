@@ -336,12 +336,15 @@ class Retriever:
         pages = self.retrieve_pages_by_type('resolution_page', inventory_num, size=10000)
         return sorted(pages, key=lambda page: page.metadata['page_num'])
 
-    def retrieve_pagexml_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+    def retrieve_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
         try:
             resolution_start, resolution_end = self.get_pagexml_resolution_page_range(inventory_num)
         except TypeError:
             return []
         return self.retrieve_pages_by_page_number_range(resolution_start, resolution_end)
+
+    def retrieve_pagexml_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
+        return self.retrieve_resolution_pages(inventory_num)
 
     def retrieve_respect_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
         return self.retrieve_pages_by_type('respect_page', inventory_num)

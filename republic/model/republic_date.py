@@ -414,6 +414,7 @@ def is_exception_work_day(current_date: RepublicDate):
         return True
     return False
 
+
 def get_holiday_phrases(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
     """Return a list of holiday-specific phrases based on given year."""
     holidays = get_holidays(year, date_mapper=date_mapper)

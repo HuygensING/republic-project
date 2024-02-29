@@ -5,7 +5,7 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.phrase.phrase_model import PhraseModel
 
 from ...helper.utils import best_match
-from ...data.delegate_database import ekwz
+from ...data.delegate_database import read_ekwz
 
 
 fuzzysearch_config = {
@@ -35,6 +35,7 @@ def search_presidents(presentielijsten, from_scratch=True):
 
 
 def make_president_searcher():
+    ekwz = read_ekwz()
     president_searcher_config = {
         'char_match_threshold': 0.5,
         'ngram_threshold': 0.5,

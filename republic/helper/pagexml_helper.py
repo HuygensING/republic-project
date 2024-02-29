@@ -107,11 +107,12 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
     return merged_col
 
 
-def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[Set[pdm.PageXMLTextRegion]]:
+def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion],
+                                 overlap_threshold: float = 0.3) -> List[Set[pdm.PageXMLTextRegion]]:
     tr_sets = []
     in_overlapping = set()
     for tr1, tr2 in combinations(text_regions, 2):
-        if elements_overlap(tr1, tr2, threshold=0.3) is False:
+        if elements_overlap(tr1, tr2, threshold=overlap_threshold) is False:
             continue
         tr_sets.append({tr1, tr2})
         in_overlapping.update({tr1, tr2})

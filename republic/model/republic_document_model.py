@@ -223,7 +223,7 @@ class ResolutionElementDoc(RepublicDoc):
     def json(self):
         json_doc = {
             'id': self.id,
-            'type': self.type,
+            'type': list(self.type),
             'metadata': self.metadata,
             'evidence': [match.json() for match in self.evidence],
             'stats': self.stats
