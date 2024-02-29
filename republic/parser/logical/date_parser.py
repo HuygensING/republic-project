@@ -1,9 +1,12 @@
+import copy
 import re
 from collections import Counter
 from collections import defaultdict
 from typing import Dict, List, Set, Tuple
 
+import numpy as np
 import pagexml.model.physical_document_model as pdm
+import pagexml.analysis.layout_stats as page_layout
 
 from republic.model.republic_date_phrase_model import week_day_names
 from republic.model.republic_date_phrase_model import month_day_names
@@ -69,7 +72,8 @@ def get_session_date_lines_from_pages(pages, ignorecase: bool = False, debug: in
     return filter_session_date_lines(date_lines, ignorecase=ignorecase, debug=debug)
 
 
-def filter_session_date_lines(date_lines, ignorecase: bool = False, debug: int = 0):
+def filter_session_date_lines(date_lines: List[pdm.PageXMLTextLine], ignorecase: bool = False, debug: int = 0):
+    """Filter on lines that start with the name of a week day."""
     session_date_lines = []
     for line in date_lines:
         if check_line_starts_with_week_day_name(line, ignorecase=ignorecase, debug=debug):
@@ -77,6 +81,18 @@ def filter_session_date_lines(date_lines, ignorecase: bool = False, debug: int =
     if debug > 0:
         print('filter_session_date_lines - num session_date_lines:', len(session_date_lines))
     return session_date_lines
+
+
+def filter_session_date_trs(date_trs: List[pdm.PageXMLTextRegion], ignorecase: bool = False, debug: int = 0):
+    """Filter on trs that start with the name of a week day."""
+    session_date_trs = []
+    for date_tr in date_trs:
+        first_line = date_tr.lines[0]
+        if check_line_starts_with_week_day_name(first_line, ignorecase=ignorecase, debug=debug):
+            session_date_trs.append(date_tr)
+    if debug > 0:
+        print('filter_session_date_trs - num session_date_trs:', len(session_date_trs))
+    return session_date_trs
 
 
 def get_session_date_line_token_length(session_date_lines):
@@ -125,6 +141,16 @@ def get_pos_cat_freq(pos_tokens: Dict[int, List[str]], date_token_cat: Dict[str,
 def get_session_date_line_structure(session_date_lines: List[pdm.PageXMLTextLine],
                                     date_token_cat: Dict[str, Set[Tuple[str, str]]],
                                     inventory_id: str, ignorecase: bool = False):
+    """Returns a list of tuple specifing the format for each element of a date line.
+
+    Example:
+    [
+        ('week_day_name', 'roman_early'),
+        ('den', 'all'),
+        ('month_day_name', 'decimal_en'),
+        ('month_name', 'handwritten'),
+    ]
+    """
     line_token_length = get_session_date_line_token_length(session_date_lines)
     text_type = get_inventory_text_type(inventory_id)
     standard_lines = [line for line in session_date_lines if len(line.text.split(' ')) == line_token_length]
@@ -172,3 +198,42 @@ def get_date_token_cat(inv_num: int = None, inv_id: str = None, ignorecase: bool
                     date_token_cat[date_token].add((name_set, set_version))
 
     return date_token_cat
+
+
+def line_is_year(line: pdm.PageXMLTextLine) -> bool:
+    if line.text is None or line.text == '':
+        return False
+    if m := re.search(r"(\b1[567]\d{2}\b)", line.text):
+        year = m.group(1)
+        return len(year) / len(line.text) > 0.5
+    else:
+        return False
+
+
+def text_region_is_date(text_region: pdm.PageXMLTextRegion,
+                        date_line_fraction_threshold: float = 0.65) -> bool:
+    if text_region.stats['lines'] == 0:
+        return False
+    if text_region.has_type('date'):
+        return True
+    date_lines = []
+    for line in text_region.lines:
+        if 'line_class' in line.metadata and line.metadata['line_class'] == 'date':
+            date_lines.append(line)
+        elif line_is_year(line):
+            date_lines.append(date_lines)
+    return len(date_lines) / len(text_region.lines) > date_line_fraction_threshold
+
+
+def identify_session_dates_in_page(page: pdm.PageXMLPage, date_line_fraction_threshold: float = 0.65):
+    date_trs = []
+    for col in page.columns:
+        if col.stats['lines'] == 0:
+            return None
+        for tr in col.text_regions:
+            if text_region_is_date(tr, date_line_fraction_threshold=date_line_fraction_threshold):
+                date_trs.append(tr)
+    return date_trs
+
+
+

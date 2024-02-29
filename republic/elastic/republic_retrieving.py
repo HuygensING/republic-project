@@ -386,30 +386,35 @@ class Retriever:
             return [hit['_source'] for hit in response['hits']['hits']]
 
     def retrieve_sessions_by_query(self, query: dict) -> List[rdm.Session]:
-        response = self.es_anno.search(index=self.config['session_lines_index'], body=query)
+        response = self.es_anno.search(index=self.config['session_lines'], body=query)
         if response['hits']['total']['value'] == 0:
             return []
         else:
             docs = [hit['_source'] for hit in response['hits']['hits']]
             return [rdm.json_to_republic_session(doc) for doc in docs]
 
-    def retrieve_session_text_by_date(self, date: Union[str, RepublicDate]) -> Union[None, rdm.Session]:
+    def retrieve_session_text_by_date(self, date: Union[str, RepublicDate]) -> List[rdm.Session]:
         session_index = 'session_text'
-        return self.retrieve_session_by_date(date, session_index)
+        return self.retrieve_sessions_by_date(date, session_index)
 
-    def retrieve_session_lines_by_date(self, date: Union[str, RepublicDate]) -> Union[None, rdm.Session]:
+    def retrieve_session_lines_by_date(self, date: Union[str, RepublicDate]) -> List[rdm.Session]:
         session_index = 'session_lines'
-        return self.retrieve_session_by_date(date, session_index)
+        return self.retrieve_sessions_by_date(date, session_index)
 
-    def retrieve_session_by_date(self, date: Union[str, RepublicDate],
-                                 session_index: str) -> Union[None, rdm.Session]:
+    def retrieve_sessions_by_date(self, date: Union[str, RepublicDate],
+                                  session_index: str) -> List[rdm.Session]:
         date_string = date.isoformat() if isinstance(date, RepublicDate) else date
-        doc_id = f'session-{date_string}-num-1'
-        if self.es_anno.exists(index=session_index, id=doc_id):
-            response = self.es_anno.get(index=session_index, id=doc_id)
-            return rdm.json_to_republic_session(response['_source'])
-        else:
-            return None
+        doc_ids = [
+            f'session-{date_string}-ordinaris-num-1',
+            f'session-{date_string}-secreet-num-1',
+        ]
+        sessions = []
+        for doc_id in doc_ids:
+            if self.es_anno.exists(index=session_index, id=doc_id):
+                response = self.es_anno.get(index=session_index, id=doc_id)
+                session = rdm.json_to_republic_session(response['_source'])
+                sessions.append(session)
+        return sessions
 
     def retrieve_inventory_session_metadata(self, inv_num):
         query = make_inventory_query(inv_num)

@@ -122,9 +122,10 @@ def get_name_for_disambiguation(proposed, base_config, es=None, debug=False):
         candidate = [r for r in results['hits']['hits']]
     # think about this some more
     print('nr of candidates: {}'.format(results['hits']['total']))
-    if debug == True:
+    if debug is True:
         print(body)
     return candidate  # ([names, people])
+
 
 def one_match(matchgrp):
     """returns one (hopefully the  best) match from a list of matches"""
@@ -160,6 +161,7 @@ def check_overlap(a, b, minlen=1):
 
 check_overlap(range(10, 20), range(12, 30), minlen=1)
 
+
 def get_span_from_regex(r):
     m = r.group(0)
     s1 = r.string.find(m)
@@ -168,6 +170,7 @@ def get_span_from_regex(r):
 
 # merge lists from stackoverflow
 # https://stackoverflow.com/questions/9110837/python-simple-list-merging-based-on-intersections
+
 
 def merge(lsts):
     sets = [set(lst) for lst in lsts if lst]
@@ -187,6 +190,7 @@ def merge(lsts):
             results.append(common)
         sets = results
     return sets
+
 
 def reverse_dict(d):
     """this returns a reverse mapping of a dictionary with key:[values] as single_value:key dictionary
@@ -219,11 +223,13 @@ def levenst_vals(x, txt, threshold=0.8):
 # from scipy.special import softmax
 # from numpy import argmax
 
+
 # get best score from a fuzzy_search. This does not account for the length of a match
 def score_match(match):
     """score fuzzy_search phrase searcher matches"""
     result = sum([match.levenshtein_similarity, match.character_overlap, match.ngram_overlap, score_levenshtein_similarity_ratio(str(match.variant.exact_string),str(match.phrase.exact_string))])
     return result
+
 
 def best_match(matches=[]):
     """

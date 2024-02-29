@@ -123,11 +123,31 @@ def make_date_name_map(date_elements):
 class DateNameMapper:
 
     def __init__(self, inv_metadata: Dict[str, any], date_elements: List[Tuple[str, str]]):
+        """
+        Creates an object that can map date objects and date strings to dates used to announce
+        a new session in the resolutions. Dates are announced as <week_day> <month_day> <month_name>
+        or a variation of that, with each element constrained to a list of accepted values.
+
+        The values are specific in republic.model.republic_date_phrase_model.
+
+        Example:
+        [
+            ('week_day_name', 'roman_early'),
+            ('den', 'all'),
+            ('month_day_name', 'decimal_en'),
+            ('month_name', 'handwritten'),
+        ]
+
+        :param inv_metadata:
+        :param date_elements:
+        """
         self.inv_metadata = inv_metadata
         self.date_element_order = date_elements
         self.date_name_map = make_date_name_map(date_elements)
         self.include_year = self.date_name_map['include_year']
         self.include_den = self.date_name_map['include_den']
+        if self.include_year:
+            self.date_element_order
         self.index_week_day = {}
         self.index_month = {}
         self.index_month_day = {}
@@ -181,18 +201,25 @@ class DateNameMapper:
             'year': [year for year in range(self.inv_metadata['year_start'], self.inv_metadata['year_end']+1)]
         }
 
+        if debug > 1:
+            print(f'\nnames:\n{names}\n\n')
+
         month_start_day, month_num_days = monthrange(year, month)
 
+        # print(f'DateNameMapper.generate_day_string - year: {year}\tmonth: {month}\tday: {day}')
+        # print(f'\tmonth_num_days: {month_num_days}\tday - month_num_days: {day - month_num_days}')
         if 'month_day_name' in self.date_name_map:
             # index has a set, so copy to list to avoid updating the set itself
             names['month_day_name'] = [day for day in self.index_month_day[day]]
             if day - month_num_days == 0:
+                # print('\tlast:', [day for day in self.index_month_day[0]])
                 names['month_day_name'].extend([day for day in self.index_month_day[0]])
             elif day - month_num_days == -1:
                 names['month_day_name'].extend([day for day in self.index_month_day[-1]])
+                # print('\tbefore last:', [day for day in self.index_month_day[-1]])
         else:
             suffix = 'sten' if day in {1, 8} or day >= 20 else 'den'
-            month_day_names = [f'{day}{suffix}']
+            names['month_day_names'] = [f'{day}{suffix}']
         week_day_names = self.index_week_day[week_day]
         if debug > 0:
             print('generate_day_string - month_names:', names['month_name'])
@@ -200,10 +227,17 @@ class DateNameMapper:
             print('generate_day_string - week_day_names:', names['week_day_name'])
         day_strings = []
         for name_set, set_version in self.date_element_order:
+            # print(name_set, set_version)
+            if debug > 1:
+                print('name_set:', name_set)
             if len(day_strings) == 0:
                 day_strings = [name for name in names[name_set]]
+                if debug > 2:
+                    print('day_strings:', day_strings)
             else:
                 day_strings = [f"{day_string} {name}" for day_string in day_strings for name in names[name_set]]
+                if debug > 2:
+                    print('day_strings:', day_strings)
         return day_strings
 
 
@@ -257,11 +291,11 @@ class RepublicDate:
         return f'RepublicDate({self.date.strftime("%Y-%m-%d")})'
         # return f'RepublicDate({self.isoformat()})'
 
-    def __add__(self, other):
-        return self.date - other.date
+    def __add__(self, time_delta):
+        return self.date + time_delta
 
-    def __sub__(self, other):
-        return self.date - other.date
+    def __sub__(self, time_delta):
+        return self.date - time_delta
 
     def __lt__(self, other):
         return self.date < other.date
@@ -451,15 +485,17 @@ def get_previous_day(current_date: RepublicDate, date_mapper: DateNameMapper = N
 
 def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMapper,
                           num_dates: int = 3, include_year: bool = True,
-                          loop_year: bool = False) -> Dict[str, RepublicDate]:
-    # print('\nget_next_date_strings - current_date:', current_date)
+                          loop_year: bool = False, debug: int = 0) -> Dict[str, RepublicDate]:
+    if debug > 0:
+        print('\nget_next_date_strings - current_date:', current_date)
     date_strings = {}
     if not current_date:
         # if for some reason current_date is None, return an empty dict
         return date_strings
     loop_date = current_date
     for i in range(0, num_dates):
-        # print('\tstart - loop_date:', loop_date, type(loop_date.date_string))
+        if debug > 0:
+            print('\tstart - loop_date:', loop_date, type(loop_date.date_string))
         if isinstance(loop_date.date_string, str):
             if include_year:
                 date_strings[loop_date.date_year_string] = loop_date
@@ -470,14 +506,16 @@ def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMappe
             for date_string in loop_date_strings:
                 date_strings[date_string] = loop_date
         loop_date = get_next_day(loop_date, date_mapper)
-        # print('\tnext_day - loop_date:', loop_date, type(loop_date.date_string))
-        # print('\t\tdate_strings:', date_strings)
+        if debug > 0:
+            print('\tnext_day - loop_date:', loop_date, type(loop_date.date_string))
+            print('\t\tdate_strings:', date_strings)
         if not loop_date:
             break
         if loop_year is False and loop_date.year != current_date.year:
             # avoid going beyond December 31 into the next year
             continue
-    # print('\nget_next_date_strings - current_date:', current_date)
+    if debug > 0:
+        print('\nget_next_date_strings - current_date:', current_date)
     return date_strings
 
 

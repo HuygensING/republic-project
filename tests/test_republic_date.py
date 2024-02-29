@@ -1,81 +1,59 @@
-import datetime
+import json
 from unittest import TestCase
 
 import republic.model.republic_date as republic_date
+from republic.model.inventory_mapping import read_inventory_metadata
+
+
+class TestMakeDateNameMap(TestCase):
+
+    def setUp(self) -> None:
+        self.date_line_elements = [
+            ('week_day_name', 'handwritten'),
+            ('den', 'all'),
+            ('month_day_name', 'decimal_en'),
+            ('month_name', 'handwritten'),
+        ]
+
+    def test_make_date_name_map_returns_dict(self):
+        date_name_map = republic_date.make_date_name_map(self.date_line_elements)
+        self.assertEqual(dict, type(date_name_map))
+
+    def test_make_date_name_map_returns_dict_per_element(self):
+        date_name_map = republic_date.make_date_name_map(self.date_line_elements)
+        for ei, element in enumerate(date_name_map):
+            with self.subTest(ei):
+                if element in {'include_year', 'include_den'}:
+                    self.assertEqual(bool, type(date_name_map[element]))
+                else:
+                    self.assertEqual(dict, type(date_name_map[element]))
+
+    def test_make_date_name_map_can_include_year(self):
+        date_line_elements = [(key, val) for key, val in self.date_line_elements]
+        date_line_elements.append(('year', 'all'))
+        date_name_map = republic_date.make_date_name_map(date_line_elements)
+        self.assertEqual(True, date_name_map['include_year'])
 
 
 class TestDateNameMapInit(TestCase):
 
     def setUp(self) -> None:
-        self.text_type = 'handwritten'
-        self.res_type = 'ordinaris'
-        self.period_start = 1600
-        self.period_end = 1700
-        self.date_name_map = republic_date.default_date_name_map[0]
-        self.date_mapper = republic_date.DateNameMapper(text_type=self.text_type,
-                                                        resolution_type=self.res_type,
-                                                        period_start=self.period_start,
-                                                        period_end=self.period_end)
+        invs_meta = read_inventory_metadata()
+        self.inv_meta = {inv['inventory_num']: inv for inv in invs_meta}
+        self.date_line_elements = [
+            ('week_day_name', 'handwritten'),
+            ('den', 'all'),
+            ('month_day_name', 'decimal_en'),
+            ('month_name', 'handwritten'),
+        ]
+        self.date_mapper = republic_date.DateNameMapper(inv_metadata=self.inv_meta[3168],
+                                                        date_elements=self.date_line_elements)
 
     def test_date_name_map_uses_default(self):
-        date_mapper = republic_date.DateNameMapper(text_type=self.text_type,
-                                                   resolution_type=self.res_type,
-                                                   period_start=self.period_start,
-                                                   period_end=self.period_end)
-        self.assertEqual(self.text_type, date_mapper.date_name_map['text_type'])
-
-    def test_date_name_map_can_set_text_type(self):
-        text_type = 'printed'
-        period_start = 1705
-        period_end = 1796
-        date_mapper = republic_date.DateNameMapper(text_type=text_type,
-                                                   resolution_type=self.res_type,
-                                                   period_start=period_start,
-                                                   period_end=period_end)
-        self.assertEqual(text_type, date_mapper.text_type)
-
-    def test_date_name_map_can_set_resolution_type(self):
-        resolution_type = 'secreet'
-        date_mapper = republic_date.DateNameMapper(text_type=self.text_type,
-                                                   resolution_type=resolution_type,
-                                                   period_start=self.period_start,
-                                                   period_end=self.period_end)
-        self.assertEqual(resolution_type, date_mapper.resolution_type)
-
-    def test_date_name_map_checks_valid_text_type(self):
-        text_type = 'spoken'
-        self.assertRaises(ValueError, republic_date.DateNameMapper,
-                          text_type=text_type, resolution_type=self.res_type,
-                          period_start=self.period_start,
-                          period_end=self.period_end)
-
-    def test_date_name_map_checks_valid_resolution_type(self):
-        res_type = 'public'
-        self.assertRaises(ValueError, republic_date.DateNameMapper,
-                          text_type=self.text_type, resolution_type=res_type,
-                          period_start=self.period_start,
-                          period_end=self.period_end)
-
-    def test_date_name_map_checks_period_is_in_map(self):
-        period_start, period_end = 1200, 1300
-        self.assertRaises(ValueError, republic_date.DateNameMapper,
-                          text_type=self.text_type, resolution_type=self.res_type,
-                          period_start=period_start,
-                          period_end=period_end)
-
-
-class TestDateNameMapperSetMap(TestCase):
-
-    def setUp(self) -> None:
-        self.text_type = 'handwritten'
-        self.res_type = 'ordinaris'
-        self.period_start = 1600
-        self.period_end = 1700
-        self.date_name_map = republic_date.default_date_name_map[0]
-        self.date_mapper = republic_date.DateNameMapper(text_type=self.text_type,
-                                                        resolution_type=self.res_type,
-                                                        period_start=self.period_start,
-                                                        period_end=self.period_end)
+        self.date_mapper = republic_date.DateNameMapper(inv_metadata=self.inv_meta[3168],
+                                                        date_elements=self.date_line_elements)
+        date_strings = self.date_mapper.generate_day_string(1608, 12, 8)
+        self.assertIn('Lunae den 8en December', date_strings)
 
     def test_mapper_sets_week_day_names(self):
         self.assertEqual(True, 'Martis' in self.date_mapper.index_week_day[1])
@@ -104,6 +82,22 @@ class TestDateNameMapperSetMap(TestCase):
                                                            include_year=include_year)
         self.assertEqual(True, all([str(year) not in day_string for day_string in day_strings]))
 
+
+class TestDateNameMapYear(TestCase):
+
+    def setUp(self) -> None:
+        invs_meta = read_inventory_metadata()
+        self.inv_meta = {inv['inventory_num']: inv for inv in invs_meta}
+        self.date_line_elements = [
+            ('week_day_name', 'handwritten'),
+            ('den', 'all'),
+            ('month_day_name', 'roman_en'),
+            ('month_name', 'handwritten'),
+            ('year', 'all')
+        ]
+        self.date_mapper = republic_date.DateNameMapper(inv_metadata=self.inv_meta[3168],
+                                                        date_elements=self.date_line_elements)
+
     def test_mapper_can_generate_day_strings_with_year(self):
         year, month, day = 1612, 4, 19
         include_year = True
@@ -116,6 +110,7 @@ class TestDateNameMapperSetMap(TestCase):
         include_year = True
         day_strings = self.date_mapper.generate_day_string(year, month, day,
                                                            include_year=include_year)
+        print(day_strings)
         self.assertEqual(True, any(['Laesten' in day_string for day_string in day_strings]))
 
     def test_mapper_can_generate_correct_last_but_one_day_of_the_month(self):

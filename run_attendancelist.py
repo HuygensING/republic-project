@@ -1,29 +1,27 @@
 import os
 import json
+import logging
 from collections import Counter
 from collections import defaultdict
 
-from elasticsearch import Elasticsearch
 import networkx as nx
 import pandas as pd
-import logging
-from fuzzy_search.fuzzy_phrase_searcher import FuzzyPhraseSearcher
-from fuzzy_search.fuzzy_phrase_model import PhraseModel
+from elasticsearch import Elasticsearch
+from fuzzy_search import FuzzyPhraseSearcher
 
+import republic.analyser.attendance_lists.parse_delegates as parse_delegates
 from republic.elastic.attendancelist_retrieval import make_presentielijsten
 from republic.analyser.attendance_lists.pattern_finders import search_provinces, search_presidents, make_groslijst
 from republic.model.republic_attendancelist_models import MatchHeer
-import republic.analyser.attendance_lists.parse_delegates as parse_delegates
 from republic.analyser.attendance_lists.searchers import make_junksweeper
 from republic.helper.similarity_match import FuzzyKeywordGrouper
 from republic.helper.utils import reverse_dict
 
 
-
-
 def start_logger(outdir, year):
     print(f"logging to {os.path.join(outdir, 'attendancelist.log')}")
-    logging.basicConfig(filename=os.path.join(outdir, 'attendancelist.log'), level=logging.INFO)
+    logging.basicConfig(filename=os.path.join(outdir, 'attendancelist.log'),
+                        format='%(asctime)s %(message)s', level=logging.INFO)
     logging.info(f'{year} Started')
 
 
@@ -76,9 +74,6 @@ def list_tograph(inputlist: list):
     return g_heren
 
 
-
-
-
 # def prepare_found_delegates(framed_gtlm, found_delegates, year):
 #     framed_gtlm['vs'] = framed_gtlm.gentleobject.apply(lambda x: [e for e in x.variants['general']])
 #     framed_gtlm['ref_id'] = framed_gtlm.gentleobject.apply(lambda x: x.heerid)
@@ -90,21 +85,22 @@ def list_tograph(inputlist: list):
 
 def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
         source_index: str = 'resolutions'):
-    #do imports of resources here
-    #and construct the environment and databases
+    # do imports of resources here
+    # and construct the environment and databases
     from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
     junksweeper = make_junksweeper(ekwz=ekwz)
     transposed_graph = reverse_dict(ekwz)
-    keywords = list(abbreviated_delegates.name)
-    kwrds = {key: parse_delegates.nm_to_delen(key) for key in keywords}
+    # keywords = list(abbreviated_delegates.name)
+    # kwrds = {key: parse_delegates.nm_to_delen(key) for key in keywords}
     matchfinder = parse_delegates.FndMatch(year=0, rev_graph=transposed_graph,
-                                       searcher=parse_delegates.herensearcher,
-                                       junksearcher=junksweeper,
-                                    #    found_delegates=found_delegates,
-                                       df=abbreviated_delegates)
+                                           searcher=parse_delegates.herensearcher,
+                                           junksearcher=junksweeper,
+                                           # found_delegates=found_delegates,
+                                           df=abbreviated_delegates)
     runner = RunAll(es=es,
                     year=year,
                     ekwz=ekwz,
+                    abbreviated_delegates=abbreviated_delegates,
                     found_delegates=found_delegates,
                     source_index=source_index,
                     matchfnd=matchfinder)
@@ -120,13 +116,10 @@ def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
     #     print("- running gather_found_delegates")
     # runner.gather_found_delegates()
     # if verbose:
-    #     print("- running identification")
-    # runner.identify_delegates()
-    # if verbose:
     #     print("- running verification")
     # runner.verify_matches()
-    if verbose:
-        print("- running delegates_from_fragments")
+    # if verbose:
+    #     print("- running delegates_from_fragments")
 
     runner.delegates_from_fragments()
     yout = year_output(year, runner.searchobs)
@@ -186,7 +179,7 @@ class RunAll(object):
         print(len(presidents), 'found')
         self.presidents = [h.strip() for h in presidents]
         print("2.find provincial extraordinaris gedeputeerden")
-        ps = search_provinces(presentielijsten=self.searchobs)
+        search_provinces(presentielijsten=self.searchobs)
 
     def find_unmarked_text(self, sweep=True):
         print("3. finding unmarked text")
@@ -246,7 +239,6 @@ class RunAll(object):
 
     def identify_delegates(self):
         """make search objects from matched delegates that are in self.all_matched"""
-        matchsearch = FuzzyPhraseSearcher(config=fuzzysearch_config)
         kws = defaultdict(list)
         matcher = {}
         phrases = []
@@ -260,8 +252,9 @@ class RunAll(object):
             if keyword != '':
                 phrase = {'phrase': keyword, 'label': f"{label}({id})", 'variants': variants}
                 phrases.append(phrase)
-        phrase_model = PhraseModel(phrases=phrases, config=fuzzysearch_config)
-        matchsearch.index_phrase_model(phrase_model=phrase_model)
+        # phrase_model = PhraseModel(phrases=phrases, config=fuzzysearch_config)
+        # matchsearch.index_phrase_model(phrase_model=phrase_model)
+        matchsearch = FuzzyPhraseSearcher(phrase_list=phrases, config=fuzzysearch_config)
         return matchsearch
 
     def verify_matches(self):
@@ -296,7 +289,7 @@ class RunAll(object):
                                                   previously_matched=self.framed_gtlm,
                                                   match_search=matchsearch)
             except TypeError:
-                print (T, searchob.matched_text.item)
+                print(T, searchob.matched_text.item)
                 raise
             parse_delegates.delegates2spans(searchob, framed_gtlm=self.framed_gtlm)
         print("updating merged delegates database")

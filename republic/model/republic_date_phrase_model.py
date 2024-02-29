@@ -124,7 +124,7 @@ month_day_names = {
         'xxviijen': 28,
         'xxixen': 29,
         'xxxen': 30,
-        'xxxien': 30,
+        'xxxien': 31,
         'lesten': 0,
         'laesten': 0,
         'Laesten': 0,
@@ -162,10 +162,12 @@ month_day_names = {
         '28.': 28,
         '29.': 29,
         '30.': 30,
-        '31.': 31
+        '31.': 31,
+        'laetsten': 0
     },
     'decimal_en': {
         '1en': 1,
+        'eersten': 1,
         '2en': 2,
         '3en': 3,
         '4en': 4,
@@ -195,10 +197,12 @@ month_day_names = {
         '28en': 28,
         '29en': 29,
         '30en': 30,
-        '31en': 31
+        '31en': 31,
+        'laetsten': 0
     },
     'decimal_en_dot': {
         '1en.': 1,
+        'eersten.': 1,
         '2en.': 2,
         '3en.': 3,
         '4en.': 4,
@@ -228,7 +232,8 @@ month_day_names = {
         '28en.': 28,
         '29en.': 29,
         '30en.': 30,
-        '31en.': 31
+        '31en.': 31,
+        'laetsten.': 0
     },
     'decimal': {
         f"{i}": i for i in range(1, 32)

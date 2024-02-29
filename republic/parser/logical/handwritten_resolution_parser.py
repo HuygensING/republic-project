@@ -271,11 +271,12 @@ def get_session_resolutions(session: rdm.Session,
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
-                                        evidence=opening_matches)
+                                        #evidence=opening_matches
+                                        )
             # print('\tCreating new resolution with number:', resolution_number, resolution.id)
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches)
-            resolution.evidence += opening_matches
+            # resolution.evidence += opening_matches
         elif attendance_list:
             attendance_list.add_paragraph(paragraph, matches=[])
         else:

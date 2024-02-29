@@ -1,8 +1,10 @@
 import copy
 import re
 from collections import Counter
-from typing import Dict, List
+from typing import Dict, List, Set
 
+import numpy as np
+import pagexml.analysis.layout_stats as page_layout
 import pagexml.model.physical_document_model as pdm
 import pagexml.helper.pagexml_helper as pagexml_helper
 
@@ -354,3 +356,146 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         print(extra)
         raise TypeError(f'Extra is not None but {type(extra)}')
     return columns
+
+
+def make_new_tr(tr_lines: List[pdm.PageXMLTextLine], original_tr: pdm.PageXMLTextRegion,
+                update_type: bool = False, debug: int = 0) -> pdm.PageXMLTextRegion:
+    tr_coords = pdm.parse_derived_coords(tr_lines)
+    new_tr = pdm.PageXMLTextRegion(metadata=original_tr.metadata, coords=tr_coords, lines=tr_lines)
+    new_tr.type = {t for t in original_tr.type}
+    if update_type:
+        new_tr.type = update_text_region_type(new_tr, debug=debug)
+    new_tr.set_derived_id(original_tr.metadata['scan_id'])
+    return new_tr
+
+
+def get_main_line_types(lines: List[pdm.PageXMLTextLine]) -> List[str]:
+    line_types = [line.metadata['line_class'] for line in lines if line.metadata['line_class']
+                  not in {'empty', 'noise'}]
+    return [lt[:4] if lt.startswith('para_') else lt for lt in line_types]
+
+
+def update_text_region_type(text_region: pdm.PageXMLTextRegion, debug: int = 0) -> Set[str]:
+    tr_type = {'text_region', 'structure_doc', 'physical_structure_doc', 'main', 'pagexml_doc'}
+    line_types = get_main_line_types(text_region.lines)
+    type_freq = Counter(line_types)
+    if len(line_types) == 0:
+        main_type = 'empty'
+    elif len(type_freq) == 1:
+        main_type = list(type_freq.keys())[0]
+    else:
+        main_type, freq = type_freq.most_common(1)[0]
+        if main_type in {'para', 'date', 'attendance', 'marginalia'} and freq / sum(type_freq.values()) > 0.5:
+            main_type = main_type
+        else:
+            main_type = 'mix'
+    if main_type == 'para':
+        main_type = 'resolution'
+    tr_type.add(main_type)
+    if debug > 0:
+        print(f"republic_column_parser.update_text_region_type - main_type: {main_type}")
+        print(f"republic_column_parser.update_text_region_type - type_freq: {type_freq}")
+    return tr_type
+
+
+def split_column_text_regions(column: pdm.PageXMLColumn, update_type: bool = False,
+                              debug: int = 0) -> pdm.PageXMLColumn:
+    col_trs = []
+    if len(column.text_regions) == 0 and len(column.lines) > 0:
+        tr = make_new_tr(column.lines, column, debug=debug)
+        tr.set_parent(column)
+        column.text_regions.append(tr)
+        column.lines = []
+    if debug > 0:
+        print('\tCOL STATS:', column.stats)
+    for tr in column.text_regions:
+        new_trs = split_text_region_on_vertical_gap(tr, update_type=update_type, debug=debug)
+        if debug > 0:
+            print(f'split_column_text_regions - received {len(new_trs)} new trs from tr {tr.id}')
+            for new_tr in new_trs:
+                print(f'\tnew id:{new_tr.id}\tcoords.points: {new_tr.coords.points}')
+                print(f"\t{Counter([line.metadata['line_class'] for line in new_tr.lines])}")
+                print(f"\t{new_tr.type}")
+        col_trs.extend(new_trs)
+    col_trs.sort()
+    new_coords = pdm.parse_derived_coords(col_trs)
+    new_column = pdm.PageXMLColumn(doc_id=column.id, metadata=copy.deepcopy(column.metadata),
+                                   coords=new_coords, text_regions=col_trs)
+    new_column.type = {col_type for col_type in column.type}
+    new_column.set_parent(column.parent)
+    if debug > 0:
+        print(f'split_column_text_regions - new_column.id: {new_column.id}')
+        print(f'split_column_text_regions - new_column.coords.points: {new_column.coords.points}')
+        print('\n\n')
+    return new_column
+
+
+def is_line_class_boundary(prev_line: pdm.PageXMLTextLine, curr_line: pdm.PageXMLTextLine) -> bool:
+    if 'line_class' not in prev_line.metadata or 'line_class' not in curr_line.metadata:
+        return False
+    prev_class, curr_class = prev_line.metadata['line_class'], curr_line.metadata['line_class']
+    if prev_class in {'noise', 'empty', 'insert_omitted'} or curr_class in {'noise', 'empty', 'insert_omitted'}:
+        return False
+    if prev_class in {'date', 'attendance'} and curr_class.startswith('para_'):
+        return True
+    if prev_class.startswith('para_') and curr_class in {'date', 'attendance'}:
+        return True
+    return False
+
+
+def split_text_region_on_vertical_gap(text_region: pdm.PageXMLTextRegion,
+                                      update_type: bool = False,
+                                      debug: int = 0) -> List[pdm.PageXMLTextRegion]:
+    new_trs = []
+    line_heights = [page_layout.get_text_heights(line, debug=debug) for line in text_region.lines]
+    # line_heights = [lh for lh in line_heights if lh is not None]
+    all_distances = page_layout.get_line_distances(text_region.lines)
+    avg_distances = [dists.mean() for dists in all_distances]
+    if debug > 1:
+        print('split_text_region_on_vertical_gap - text_region avg_distances:', avg_distances)
+        print('split_text_region_on_vertical_gap - text_region line_heights:', line_heights)
+    lines = sorted(text_region.lines)
+    if len(lines) == 0:
+        return [copy.deepcopy(text_region)]
+    prev_line = lines[0]
+    tr_lines = [prev_line]
+    for li, curr_line in enumerate(lines[1:]):
+        avg_dist = avg_distances[li]
+        if line_heights[li-1] is None:
+            tr_lines.append(curr_line)
+            prev_line = curr_line
+            continue
+        if line_heights[li] is None:
+            tr_lines.append(curr_line)
+            continue
+        if debug > 1:
+            print(f"\tmedian line_heights: {np.median(line_heights[li-1])}\t{prev_line.text}")
+            print(f"\tmedian line_heights: {np.median(line_heights[li])}\t{curr_line.text}")
+        if avg_dist > np.median(line_heights[li]) * 2:
+            if debug > 0:
+                print(f"\tavg_dist: {avg_dist}\tBOUNDARY")
+            new_tr = make_new_tr(tr_lines, text_region, update_type=update_type, debug=debug)
+            new_trs.append(new_tr)
+            tr_lines = []
+        elif is_line_class_boundary(prev_line, curr_line):
+            if debug > 0:
+                print(f"\tprev_class: {prev_line.metadata['line_class']}"
+                      f"\t\tcurr_class: {curr_line.metadata['line_class']}\tBOUNDARY")
+            new_tr = make_new_tr(tr_lines, text_region, update_type=update_type, debug=debug)
+            new_trs.append(new_tr)
+            tr_lines = []
+        else:
+            if debug > 0:
+                print(f"\tavg_dist: {avg_dist}\tno boundary\tmedian line_height: {np.median(line_heights[li])}")
+        # print('\t\t', curr_line.text)
+        tr_lines.append(curr_line)
+        prev_line = curr_line
+    if len(tr_lines) > 0:
+        new_tr = make_new_tr(tr_lines, text_region, update_type=update_type, debug=debug)
+        new_trs.append(new_tr)
+    if len(new_trs) == 1:
+        if text_region.has_type('date') or text_region.has_type('attendance'):
+            new_trs[0].type = text_region.type
+    return new_trs
+
+

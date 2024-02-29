@@ -10,6 +10,7 @@ from numpy import argmax
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.tokenization.string import score_levenshtein_similarity_ratio
 
+from ...model.republic_attendancelist_models import TextWithMetadata
 from .searchers import nm_to_delen, herensearcher, junksweeper
 from ...helper.utils import reverse_dict, levenst_vals, score_match
 from ...model.republic_attendancelist_models import StringWithContext, Heer
@@ -52,8 +53,8 @@ def get_delegates_from_spans(ob):
     return result
 
 
-def matchwithlist(x, input):
-    res = [i for i in input if score_levenshtein_similarity_ratio(x, i) > 0.6]
+def matchwithlist(x, input_list):
+    res = [i for i in input_list if score_levenshtein_similarity_ratio(x, i) > 0.6]
     if len(res) > 0:
         return True
     else:
@@ -91,7 +92,7 @@ class DelegatesFromFragments(object):
         for ob in self.searchobs:
             so = self.searchobs[ob].matched_text
             jitems = ';'.join(so.get_unmatched_text())
-            items = [item.strip() for item in re.split(r'[;,\.]+', jitems) if
+            items = [item.strip() for item in re.split(r'[;,.]+', jitems) if
                      item.strip() != '' and len(item.strip()) > 2]
             for item in items:
                 contextitem = StringWithContext(item)
@@ -130,9 +131,9 @@ class DelegatesFromFragments(object):
                                     'pre_pattern': sc['otherpart'],
                                     'trailing_pattern': sc['lastpart']})
         self.keyframe = pd.DataFrame.from_records(scores2)
-        multiple_recog = self.keyframe.orig_key.value_counts() > 1
-        ambiv = list(multiple_recog.index)
-        self.keyframe.loc[self.keyframe.orig_key.isin(ambiv)]
+        # multiple_recog = self.keyframe.orig_key.value_counts() > 1
+        # ambiv = list(multiple_recog.index)
+        # self.keyframe.loc[self.keyframe.orig_key.isin(ambiv)]
         ks = [key for key in self.consolidated_groups.keys() if key not in self.suspected_items]
         both_keys = self.keyframe.loc[self.keyframe.trailing_pattern.isin(ks)]
         self.def_keys_with_subPatterns = [{'key': x[0], x[1]: x[1], x[2]: x[2]} for x in
@@ -309,7 +310,7 @@ class FndMatch(object):
                     candidate = iterative_search(name=found_heer.proposed_delegate, year=self.year, df=self.df)
                     found_heer.fill(candidate)
                 else:
-                    candidate = self.composite_name(candidates=n_candidates, heer='')
+                    candidate = self.composite_name(candidates=n_candidates, heer='', searchterm=searchterm)
                     found_heer.fill(candidate)
                 found_heer.probably_junk = self.is_heer_junk(heer)
         except ValueError:
@@ -455,7 +456,7 @@ def dedup_candidates(proposed_candidates: list,
                 if score:
                     try:
                         scores[d] = (score.levenshtein_similarity, p)
-                    except:
+                    except AttributeError:
                         print(score)
     if not scores:
         candidate = proposed_candidates
@@ -482,12 +483,12 @@ def dedup_candidates2(proposed_candidates: list, dayinterval: pd.Interval, df: p
     return res
 
 
-def delegates2spans(searchob, framed_gtlm):
+def delegates2spans(searchob: TextWithMetadata, framed_gtlm: pd.DataFrame):
     spans = searchob.matched_text.spans
     for span in spans:
         txt = searchob.matched_text.item[span.begin:span.end]
         msk = framed_gtlm.variants.apply(lambda x: levenst_vals(x, txt))
-        mres = framed_gtlm.loc[msk is True]
+        mres = framed_gtlm.loc[msk == True]
         if len(mres) > 0:
             span.set_pattern(txt)
             span.set_delegate(delegate_id=mres.ref_id.iat[0], delegate_name=mres.name.iat[0])
@@ -495,7 +496,7 @@ def delegates2spans(searchob, framed_gtlm):
             logging.info(f"not found {searchob}, {span}, {txt}")
 
 
-def match_previous(heer, res: pd.DataFrame, existing_herensearcher=herensearcher):
+def match_previous(heer: str, res: pd.DataFrame, existing_herensearcher=herensearcher):
     result = pd.DataFrame()
     r = existing_herensearcher.find_candidates(text=heer)
     if len(r) > 0:
@@ -503,7 +504,7 @@ def match_previous(heer, res: pd.DataFrame, existing_herensearcher=herensearcher
     return result
 
 
-def name_matcher(naam1, naam2, threshold):
+def name_matcher(naam1: str, naam2: str, threshold: float):
     result = False
     n1, n2 = sorted([naam1, naam2], key=lambda x: len(x))
     pat = regex.compile('(?P<otherpart>.*)(?P<namepart>' + regex.escape(n1) + '){e<=2}' + '(?P<lastpart>.*)',
@@ -617,7 +618,7 @@ itj = is_this_junk
 def sieve_keys(xgroups, js):
     js = js  # run_attendancelist.junksweeper
     suspects = []
-    pat_nonstring = re.compile("\w+[0-9\(\)]+\w+")
+    pat_nonstring = re.compile("\w+[0-9()]+\w+")
     for k in xgroups:
         check = False
         key = re.sub(pat_nonstring, '', k)
