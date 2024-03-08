@@ -10,7 +10,7 @@ import republic.model.republic_document_model as rdm
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.text_helper import determine_language
 from republic.model.resolution_phrase_model import proposition_opening_phrases
-from republic.parser.logical.pagexml_resolution_parser import get_base_metadata
+from republic.parser.logical.printed_resolution_parser import get_base_metadata
 from republic.parser.logical.paragraph_parser import running_id_generator
 
 
@@ -233,8 +233,8 @@ def prep_resolution(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
     for linked_tr in resolution.linked_text_regions:
         linked_tr.metadata['iiif_url'] = doc_id_to_iiif_url(linked_tr.id)
         if linked_tr.has_type('marginalia'):
-            marginalium = ' '.join([line.text for line in linked_tr.lines if line.text is not None])
-            resolution.add_label(marginalium, 'marginalia', provenance={'label_source': linked_tr.id})
+            marginalium_text = ' '.join([line.text for line in linked_tr.lines if line.text is not None])
+            resolution.add_label(marginalium_text, 'marginalia', provenance={'label_source': linked_tr.id})
 
 
 def get_session_resolutions(session: rdm.Session,

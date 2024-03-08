@@ -14,7 +14,7 @@ import republic.model.republic_document_model as rdm
 from republic.elastic.republic_elasticsearch import initialize_es
 # from republic.classification.line_classification import NeuralLineClassifier
 from republic.model.inventory_mapping import get_inventory_by_num
-from republic.parser.logical.handwritten_session_parser import get_sessions
+from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
 from republic.parser.logical.handwritten_resolution_parser import make_session_paragraphs
 from republic.elastic.republic_indexing import add_timestamp, add_commit
 
@@ -126,7 +126,7 @@ def index_inventory_sessions(inv_num):
     print(f'started processing inventory {inv_num}')
     try:
         actions = []
-        for session_metadata, session_trs in get_sessions(inv_id, pages):
+        for session_metadata, session_trs in get_handwritten_sessions(inv_id, pages):
             session_count += 1
             prov_url = rep_es.post_provenance(source_ids=session_metadata['page_ids'],
                                               target_ids=session_metadata['id'],

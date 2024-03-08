@@ -1,3 +1,4 @@
+import copy
 import json
 import re
 from collections import Counter
@@ -244,6 +245,7 @@ class ResolutionElementDoc(RepublicDoc):
 class Session(ResolutionElementDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Dict = None,
+                 date_metadata: Dict[str, any] = None,
                  session_data: Dict = None,
                  session_type: str = "ordinaris", date_mapper: DateNameMapper = None,
                  paragraphs: List[RepublicParagraph] = None, text_regions: List[pdm.PageXMLTextRegion] = None,
@@ -275,6 +277,7 @@ class Session(ResolutionElementDoc):
         self.session_date = RepublicDate(date_string=date_string, date_mapper=date_mapper)
         # if 'page_ids' in metadata and 'page_ids' not in self.metadata:
         #     self.metadata['page_ids'] = [page_id for page_id in metadata['page_ids']]
+        self.date_metadata = date_metadata
         self.main_type = "session"
         self.session_type = session_type
         if doc_type:
@@ -309,6 +312,8 @@ class Session(ResolutionElementDoc):
     def json(self) -> dict:
         """Return a JSON presentation of the session."""
         json_doc = super().json
+        if self.date_metadata:
+            json_doc['date_metadata'] = copy.deepcopy(self.date_metadata)
         if self.resolutions:
             json_doc['resolutions'] = [resolution.json for resolution in self.resolutions]
         return json_doc
@@ -492,6 +497,8 @@ class Resolution(ResolutionElementDoc):
             else:
                 self.proposition_type = get_proposition_type_from_evidence(self.evidence)
                 self.metadata['proposition_type'] = self.proposition_type
+        if 'proposition_type' not in self.metadata or self.metadata['proposition_type'] is None:
+            self.metadata['proposition_type'] = 'onbekend'
 
     @property
     def json(self):
@@ -586,8 +593,9 @@ def json_to_republic_session(session_json: dict) -> Session:
             paragraph = json_to_republic_resolution_paragraph(paragraph_json)
             paragraphs.append(paragraph)
     text_regions, lines, evidence = json_to_physical_elements(session_json)
+    date_metadata = session_json['date_metadata'] if 'date_metadata' in session_json else None
     return Session(doc_id=session_json['id'], doc_type=session_json['type'],
-                   metadata=session_json['metadata'], evidence=evidence,
+                   metadata=session_json['metadata'], date_metadata=date_metadata, evidence=evidence,
                    paragraphs=paragraphs, text_regions=text_regions, lines=lines)
 
 

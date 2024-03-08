@@ -224,6 +224,7 @@ def sort_lines_in_reading_order(doc: pdm.PageXMLDoc) -> Generator[pdm.PageXMLTex
                 line.metadata['column_id'] = text_region.metadata['column_id']
             if 'page_id' in text_region.metadata and 'page_id' not in line.metadata:
                 line.metadata['page_id'] = text_region.metadata['page_id']
+            line.metadata['text_region_id'] = text_region.id
         stacked_lines = horizontal_group_lines(text_region.lines)
         for lines in stacked_lines:
             for line in sorted(lines, key=lambda x: x.coords.left):

@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
 from fuzzy_search.match.phrase_match import PhraseMatch
 
-import republic.parser.logical.pagexml_session_parser as session_parser
+import republic.parser.logical.printed_session_parser as session_parser
 import republic.model.republic_document_model as rdm
 import republic.model.physical_document_model as pdm
 from republic.model.republic_date import RepublicDate
@@ -38,6 +38,12 @@ def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
         doc["code_commit"] = get_commit_url()
     else:
         doc['metadata']['code_commit'] = get_commit_url()
+
+
+def check_resolution(resolution: rdm.Resolution):
+    """Make sure the resolution contains the all the necessary data."""
+    if 'proposition_type' not in resolution.metadata or resolution.metadata['proposition_type'] is None:
+        resolution.metadata['proposition_type'] = 'onbekend'
 
 
 def get_pagexml_page_type(page: Union[pdm.PageXMLPage, Dict[str, any]],
@@ -170,6 +176,7 @@ class Indexer:
                        doc_body=session_tr.json)
 
     def index_resolution(self, resolution: rdm.Resolution):
+        check_resolution(resolution)
         print('\t', resolution.id, resolution.paragraphs[0].text[:60])
         self.index_doc(index=self.config['resolutions_index'],
                        doc_id=resolution.metadata['id'],

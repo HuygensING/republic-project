@@ -1,3 +1,4 @@
+from __future__ import annotations
 import copy
 import datetime
 import re
@@ -291,11 +292,25 @@ class RepublicDate:
         return f'RepublicDate({self.date.strftime("%Y-%m-%d")})'
         # return f'RepublicDate({self.isoformat()})'
 
-    def __add__(self, time_delta):
-        return self.date + time_delta
+    def __add__(self, other: Union[RepublicDate, datetime.date, datetime.timedelta]):
+        if isinstance(other, RepublicDate):
+            return self.date + other.date
+        elif isinstance(other, datetime.timedelta):
+            return self.date + other
+        elif isinstance(other, datetime.date):
+            return self.date + other
 
-    def __sub__(self, time_delta):
-        return self.date - time_delta
+    def __sub__(self, other: Union[RepublicDate, datetime.date, datetime.timedelta]):
+        if isinstance(other, RepublicDate):
+            return self.date - other.date
+        elif isinstance(other, datetime.timedelta):
+            return self.date - other
+        elif isinstance(other, datetime.date):
+            return self.date - other
+        else:
+            print('self:', self)
+            print('other:', other)
+            raise TypeError(f'other must be RepublicDate, datetime.date or datetime.timedelta, not {type(other)}')
 
     def __lt__(self, other):
         return self.date < other.date
@@ -429,12 +444,21 @@ def get_holiday_phrases(year: int, date_mapper: DateNameMapper) -> List[Dict[str
 
 
 def get_coming_holidays_phrases(current_date: RepublicDate,
-                                date_mapper: DateNameMapper) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
+                                date_mapper: DateNameMapper,
+                                debug: int = 0) -> List[Dict[str, Union[str, int, bool, RepublicDate]]]:
     """Return a list of holiday phrases in the next seven days."""
     year_holiday_phrases = get_holiday_phrases(current_date.year, date_mapper=date_mapper)
     coming_holiday_phrases: List[Dict[str, Union[str, int, bool, datetime.date]]] = []
     for holiday_phrase in year_holiday_phrases:
+        if debug > 0:
+            print("type(current_date):", type(current_date))
+            print("type(current_date.date):", type(current_date.date))
+            print("type(holiday_phrase['date']):", type(holiday_phrase['date']))
+            print("current_date:", current_date)
+            print("holiday_phrase['date']:", holiday_phrase['date'])
         date_diff = holiday_phrase['date'] - current_date
+        if debug > 0:
+            print('date_diff:', date_diff)
         if date_diff.days < 7:
             coming_holiday_phrases.append(holiday_phrase)
     return coming_holiday_phrases

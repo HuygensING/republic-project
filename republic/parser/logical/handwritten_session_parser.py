@@ -9,6 +9,7 @@ from fuzzy_search.match.phrase_match import PhraseMatch
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 
 import republic.helper.pagexml_helper as pagexml_helper
+import republic.model.republic_document_model as rdm
 import republic.parser.pagexml.republic_column_parser as column_parser
 from republic.classification.page_features import get_line_base_dist
 from republic.helper.text_helper import is_duplicate
@@ -20,6 +21,9 @@ from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_date import get_next_date_strings
 from republic.parser.pagexml.republic_page_parser import split_page_column_text_regions
+from republic.parser.logical.generic_session_parser import make_session_date_metadata
+from republic.parser.logical.generic_session_parser import make_session
+from republic.parser.logical.generic_session_parser import make_session_metadata
 from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_line_structure
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
@@ -579,7 +583,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
     date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     week_day_searcher = make_week_day_name_searcher(date_mapper, config)
     # date_searcher = FuzzyTokenSearcher(phrase_model=date_strings, config=config)
-    session_dates = {}
+    session_dates = defaultdict(list)
     session_trs = defaultdict(list)
     current_date = None
     jump_days = 0
@@ -674,23 +678,8 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     if debug > 2:
                         print(f'UPDATING CURRENT DATE from {current_date_string} to '
                               f'{date_strings[best_match.phrase.phrase_string].date.isoformat()}')
-                    session_dates[current_date.isoformat()] = {
-                        'session_date': current_date.isoformat(),
-                        'session_year': current_date.year,
-                        'session_month': current_date.month,
-                        'session_day': current_date.day,
-                        'session_weekday': current_date.day_name,
-                        'is_workday': current_date.is_work_day(),
-                        'date_phrase_string': best_match.phrase.phrase_string,
-                        'date_match_string': best_match.string,
-                        'page_id': page.id,
-                        'scan_id': page.metadata['scan_id'],
-                        'inventory_num': page.metadata['inventory_num'],
-                        'inventory_id': page.metadata['inventory_id'],
-                        'text_region_id': main_tr.id,
-                        'line_id': line.id,
-                        # 'text': line.text
-                    }
+                    date_metadata = make_session_date_metadata(current_date, best_match, line)
+                    session_dates[current_date.isoformat()].append(date_metadata)
                     session_trs[current_date.isoformat()].append(main_tr)
                     if debug > 2:
                         print(f'\tADDING main_tr to {current_date.date.isoformat()}')
@@ -717,14 +706,16 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         if debug > 0:
             print(f'\nprev_dates:', prev_dates)
         for prev_date in prev_dates:
-            yield session_dates[prev_date], session_trs[prev_date]
+            session_date_metadata = session_dates[prev_date].pop(0)
+            yield session_date_metadata, session_trs[prev_date]
             del session_trs[prev_date]
+            del session_dates[prev_date]
     yield session_dates[current_date.isoformat()], session_trs[current_date.isoformat()]
     return None
 
 
-def get_sessions(inv_id: str, pages, ignorecase: bool = True,
-                 num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
+def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
+                             num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
     print('get_sessions - num pages:', len(pages))
     inv_metadata = get_inventory_by_id(inv_id)
     period_start = inv_metadata['period_start']
@@ -758,7 +749,7 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True,
     session_finder = find_session_dates(pages, inv_start_date, date_mapper, ignorecase=ignorecase,
                                         num_past_dates=num_past_dates, num_future_dates=num_future_dates,
                                         debug=debug)
-    for session_date, session_trs in session_finder:
+    for session_date_metadata, session_trs in session_finder:
         # print('-------------')
         session_num += 1
         '''
@@ -773,46 +764,18 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True,
         else:
             session_num = 4
         '''
-        session_metadata = {
-            'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'type': 'session',
-            'session_id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'session_num': session_num,
-            'session_date': session_date['session_date'],
-            'session_year': session_date['session_year'],
-            'session_month': session_date['session_month'],
-            'session_day': session_date['session_day'],
-            'is_workday': session_date['is_workday'],
-            'session_weekday': session_date['session_weekday'],
-            'inventory_id': session_trs[0].metadata['inventory_id'],
-            'inventory_num': session_trs[0].metadata['inventory_num'],
-            'series_name': session_trs[0].metadata['series_name'],
-            'resolution_type': resolution_type,
-            "attendants_list_id": None,
-            "resolution_ids": [],
-            'text_type': text_type
-        }
+        session_metadata = make_session_metadata(inv_metadata, session_date_metadata, session_num, text_type)
+        session = make_session(inv_metadata, session_date_metadata, session_num, text_type, session_trs)
+        evidence = session_metadata['evidence']
         for session_tr in session_trs:
-            session_tr.metadata['session_id'] = session_metadata['id']
+            session_tr.metadata['session_id'] = session['id']
             session_tr.metadata['iiif_url'] = doc_id_to_iiif_url(session_tr.id)
-        session = {
-            'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'type': ['republic_doc', 'logical_structure_doc', 'session'],
-            'domain': 'logical',
-            'metadata': session_metadata,
-            'date': session_date,
-            'text_region_ids': [tr.id for tr in session_trs],
-            'scan_ids': list(sorted(set([tr.metadata['scan_id'] for tr in session_trs]))),
-            'page_ids': list(sorted(set([tr.metadata['page_id'] for tr in session_trs]))),
-            'stats': {
-                'words': sum([tr.stats['words'] for tr in session_trs]),
-                'lines': sum([tr.stats['lines'] for tr in session_trs]),
-                'text_regions': len(session_trs),
-                'pages': len(set([tr.metadata['page_id'] for tr in session_trs])),
-                'scans': len(set([tr.metadata['scan_id'] for tr in session_trs])),
-            }
-        }
-        yield session, session_trs
+        # del session_date_metadata['evidence']
+        session = rdm.Session(metadata=session_metadata, date_metadata=session_date_metadata,
+                              text_regions=session_trs,
+                              evidence=evidence,
+                              date_mapper=date_mapper)
+        yield session
     return None
 
 
