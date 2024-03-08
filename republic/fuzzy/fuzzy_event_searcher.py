@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from fuzzy_search.phrase.phrase_model import PhraseModel
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.search.token_searcher import FuzzyTokenSearcher
 from fuzzy_search.match.phrase_match import PhraseMatch
 
 # from republic.fuzzy.fuzzy_phrase_model import PhraseModel
@@ -35,10 +36,13 @@ class EventSearcher:
             self.sliding_window: List[Union[None, Dict[str, Union[str, int, list]]]] = [None] * self.window_size
 
     def add_searcher(self, searcher_config: dict, searcher_name: str,
-                     phrase_model: PhraseModel):
+                     phrase_model: PhraseModel, use_token_searcher: bool = True):
         """Add a fuzzy keyword searcher with its own config and phrase model"""
         # Create a new fuzzy keyword searcher
-        searcher = FuzzyPhraseSearcher(phrase_model=phrase_model, config=searcher_config)
+        if use_token_searcher is True:
+            searcher = FuzzyTokenSearcher(phrase_model=phrase_model, config=searcher_config)
+        else:
+            searcher = FuzzyPhraseSearcher(phrase_model=phrase_model, config=searcher_config)
         # searcher.index_phrase_model(phrase_model)
         # searcher.index_phrases(phrase_model.get_phrases())
         # make sure the EventSearcher knows which keywords and labels are registered
