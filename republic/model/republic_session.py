@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 from collections import defaultdict
 import copy
 import datetime
@@ -434,7 +434,7 @@ class SessionSearcher(EventSearcher):
         return status
 
     def parse_session_metadata(self, prev_session_metadata: Union[None, dict], inv_metadata: Dict[str, any],
-                               session_lines: List[pdm.PageXMLTextLine]) -> tuple[dict, dict]:
+                               session_lines: List[pdm.PageXMLTextLine]) -> Tuple[dict, dict]:
         """Turn session elements and sliding window into proper metadata."""
         # make sure local current_date is a copy and not a reference to the original object
         require_match = False if prev_session_metadata is None else True
