@@ -1,6 +1,7 @@
 from typing import Dict, List, Union
 from collections import defaultdict
 
+import fuzzy_search
 from fuzzy_search.phrase.phrase_model import PhraseModel
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.search.token_searcher import FuzzyTokenSearcher
@@ -36,7 +37,7 @@ class EventSearcher:
             self.sliding_window: List[Union[None, Dict[str, Union[str, int, list]]]] = [None] * self.window_size
 
     def add_searcher(self, searcher_config: dict, searcher_name: str,
-                     phrase_model: PhraseModel, use_token_searcher: bool = True):
+                     phrase_model: PhraseModel, use_token_searcher: bool = False):
         """Add a fuzzy keyword searcher with its own config and phrase model"""
         # Create a new fuzzy keyword searcher
         if use_token_searcher is True:

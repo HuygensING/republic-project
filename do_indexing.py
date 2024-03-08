@@ -82,6 +82,9 @@ def get_pages(inv_num: int, indexer: Indexer):
         os.mkdir(f"{indexer.base_dir}/pages")
     pages_file = f"{indexer.base_dir}/pages/{inv_num}.jsonl.gz"
     if os.path.exists(pages_file):
+        logger_string = f"Reading pages from file for inventory {inv_num}"
+        logger.info(logger_string)
+        print(logger_string)
         with gzip.open(pages_file, 'rt') as fh:
             pages = []
             for line in fh:
@@ -90,6 +93,9 @@ def get_pages(inv_num: int, indexer: Indexer):
                 pages.append(page)
         return pages
     else:
+        logger_string = f"Downloading pages from ES index for inventory {inv_num}"
+        logger.info(logger_string)
+        print(logger_string)
         pages = indexer.rep_es.retrieve_inventory_resolution_pages(inv_num)
         with gzip.open(pages_file, 'wt') as fh:
             for page in pages:
