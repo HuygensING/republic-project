@@ -1,3 +1,4 @@
+from __future__ import annotations
 import datetime
 import glob
 import gzip
@@ -30,6 +31,7 @@ import republic.model.resolution_phrase_model as rpm
 from republic.classification.line_classification import NeuralLineClassifier
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.model_loader import load_line_break_detector
+from republic.helper.pagexml_helper import json_to_pagexml_doc
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 
@@ -73,6 +75,28 @@ def zip_exists(inv_num: int, ocr_type: str, base_dir: str):
 
 def get_text_type(inv_num: int) -> str:
     return 'printed' if 400 <= inv_num <= 456 or 3760 <= inv_num <= 3864 else 'handwritten'
+
+
+def get_pages(inv_num: int, indexer: Indexer):
+    if os.path.exists(f"{indexer.base_dir}/pages") is False:
+        os.mkdir(f"{indexer.base_dir}/pages")
+    pages_file = f"{indexer.base_dir}/pages/{inv_num}.jsonl.gz"
+    if os.path.exists(pages_file):
+        with gzip.open(pages_file, 'rt') as fh:
+            pages = []
+            for line in fh:
+                page_json = json.loads(line)
+                page = json_to_pagexml_doc(page_json)
+                pages.append(page)
+        return pages
+    else:
+        pages = indexer.rep_es.retrieve_inventory_resolution_pages(inv_num)
+        with gzip.open(pages_file, 'wt') as fh:
+            for page in pages:
+                page_string = json.dumps(page.json)
+                fh.write(f"{page_string}\n")
+        return pages
+
 
 
 class Indexer:
@@ -208,10 +232,11 @@ class Indexer:
             self.rep_es.index_page(page)
 
     def get_sessions_from_pages(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
+        logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})..."
+        logger.info(logger_string)
         print(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
         inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
-        pages = self.rep_es.retrieve_inventory_resolution_pages(inv_num)
+        pages = get_pages(inv_num, self)
         pages.sort(key=lambda page: page.metadata['page_num'])
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
         text_type = get_text_type(inv_num)
@@ -222,25 +247,29 @@ class Indexer:
                 yield session
                 prev_session = session
         except Exception as err:
-            logger.info(f'last successful session: {prev_session.id}')
+            logger_string = f'last successful session: {prev_session.id}'
+            logger.info(logger_string)
             logger.info(prev_session.stats)
             logger.info(err)
             print(f"Error getting {text_type} {inv_num} session after {prev_session.id}")
 
     def write_sessions_to_files(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Writing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
+        logger_string = f"Writing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})..."
+        logger.info(logger_string)
         print(f"Writing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         session_inv_dir = f'{self.sessions_json_dir}/{inv_num}'
         if os.path.exists(session_inv_dir) is False:
             os.mkdir(session_inv_dir)
         for mi, session in enumerate(self.get_sessions_from_pages(inv_num, year_start, year_end)):
-            logger.info('session received from get_sessions:', session.id)
+            logger_string = 'session received from get_sessions:', session.id
+            logger.info(logger_string)
             print('session received from get_sessions:', session.id)
             date_string = None
             for match in session.evidence:
                 if match.has_label('session_date'):
                     date_string = match.string
-            logger.info('\tdate string:', date_string)
+            logger_string = f'\tdate string: {date_string}'
+            logger.info(logger_string)
             print('\tdate string:', date_string)
             json_file = os.path.join(session_inv_dir, f"session-{session.date.isoformat()}.json.gz")
             with gzip.open(json_file, 'wt') as fh:
@@ -578,8 +607,9 @@ def parse_args():
     argv = sys.argv[1:]
     # Define the getopt parameters
     try:
-        opts, args = getopt.getopt(argv, 's:e:i:n:l:', ['foperand', 'soperand'])
+        opts, args = getopt.getopt(argv, 's:e:i:n:l:b:', ['foperand', 'soperand'])
         start, end, indexing_step, num_processes, index_label = None, None, None, None, None
+        base_dir = 'data'
         for opt, arg in opts:
             if opt == '-n':
                 num_processes = int(arg)
@@ -591,15 +621,19 @@ def parse_args():
                 indexing_step = arg
             if opt == '-l':
                 index_label = arg
+            if opt == '-b':
+                base_dir = arg
+        print(start, end, indexing_step, num_processes)
         if not start or not end or not indexing_step or not num_processes:
-            print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> '
-                  '-n <num_processes> -l <label_index_name>')
+            print('usage: do_indexing.py -s <start_year> -e <end_year> -i <indexing_step> '
+                  '-n <num_processes> -l <label_index_name> -b <base_dir>')
             sys.exit(2)
         indexing_steps = indexing_step.split(';')
-        return start, end, indexing_steps, num_processes, index_label
-    except getopt.GetoptError:
+        return start, end, indexing_steps, num_processes, index_label, base_dir
+    except getopt.GetoptError as err:
         # Print something useful
-        print('usage: add.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes')
+        print('usage: do_indexing.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes> (optional) -l <index_label> -b <base_dir>')
+        print(err)
         sys.exit(2)
 
 
@@ -658,15 +692,13 @@ def main():
     if not host_type:
         host_type = "external"
     # Get the arguments from the command-line except the filename
-    start, end, indexing_steps, num_processes, index_label = parse_args()
+    start, end, indexing_steps, num_processes, index_label, base_dir = parse_args()
     steps_string = '-'.join(indexing_steps)
     log_file = f'indexing-{steps_string}-date-{datetime.date.today().isoformat()}.log'
-    logging.basicConfig(filename=log_file, encoding='utf-8',
-                        format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging.DEBUG)
+    #logging.basicConfig(filename=log_file, encoding='utf-8',
+    #                    format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
-
-    base_dir = "/data/republic/"
 
     for indexing_step in indexing_steps:
         tasks = get_tasks(start, end, indexing_step, index_label, host_type, base_dir)
