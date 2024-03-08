@@ -19,7 +19,7 @@ class EventSearcher:
         self.phrases = {}
         self.variants = {}
         self.labels = {}
-        self.searchers: Dict[str, FuzzyPhraseSearcher] = {}
+        self.searchers: Dict[str, Union[FuzzyPhraseSearcher, FuzzyTokenSearcher]] = {}
         self.phrase_models: Dict[str, PhraseModel] = {}
         self.max_offsets: Dict[str, int] = {}
         self.min_offsets: Dict[str, int] = {}
@@ -88,9 +88,16 @@ class EventSearcher:
     def search_document(self, doc: Dict[str, Union[str, int]],
                         searcher_name: str) -> List[PhraseMatch]:
         """Use a registered searcher to find fuzzy match for a document."""
-        matches: List[PhraseMatch] = []
+        proper_matches: List[PhraseMatch] = []
         # use the searcher to find fuzzy matches
-        for match in self.searchers[searcher_name].find_matches(doc, include_variants=True):
+        searcher = self.searchers[searcher_name]
+        if isinstance(searcher, FuzzyTokenSearcher):
+            matches = searcher.find_matches(doc)
+        elif isinstance(searcher, FuzzyPhraseSearcher):
+            matches = searcher.find_matches(doc, include_variants=True)
+        else:
+            return proper_matches
+        for match in matches:
             match_string = match.phrase.phrase_string
             # check if the phrase exceeds minimum or maximum offset thresholds
             if match_string in self.max_offsets and match.offset > self.max_offsets[match_string]:
@@ -104,8 +111,8 @@ class EventSearcher:
             # if the phrase has a label, add it to the match
             # if self.phrase_models[searcher_name].has_label(phrase):
             #     match['match_label'] = self.phrase_models[searcher_name].get_label(phrase)
-            matches += [match]
-        return matches
+            proper_matches.append(match)
+        return proper_matches
 
     def add_empty_document(self):
         """Append an empty placeholder document to the sliding window."""
