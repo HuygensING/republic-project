@@ -5,6 +5,7 @@ import re
 
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
+from elasticsearch.helpers import bulk
 from fuzzy_search.match.phrase_match import PhraseMatch
 
 import republic.parser.logical.printed_session_parser as session_parser
@@ -135,7 +136,26 @@ class Indexer:
             else:
                 self.es_anno.index(index=index, id=doc_id, document=doc_body)
         except ElasticsearchException:
-            print(f"Error indexing document {doc_id}")
+            print(f"Error indexing document {doc_id} with stats {doc_body['stats']}")
+            raise
+
+    def index_bulk_docs(self, index: str, docs: List[Dict[str, any]]) -> None:
+        actions = []
+        for doc in docs:
+            add_timestamp(doc)
+            add_commit(doc)
+            action = {
+                '_index': index,
+                '_id': doc['id'],
+                '_source': doc
+            }
+            actions.append(action)
+        try:
+            bulk(self.es_anno, actions)
+        except ElasticsearchException:
+            print(f"Error bulk indexing documents")
+            for doc in docs:
+                print(f"\t{doc['id']} with stats {doc['stats']}")
             raise
 
     def index_scan(self, scan: pdm.PageXMLScan):

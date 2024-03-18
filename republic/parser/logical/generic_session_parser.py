@@ -59,12 +59,15 @@ def make_session_date_metadata(current_date: RepublicDate, fuzzy_date_match: Phr
             session_date['inventory_num'] = date_line.metadata['inventory_num']
             session_date['inventory_id'] = date_line.metadata['inventory_id']
         elif date_line.parent is not None:
-            date_tr = date_line.parent
-            date_col = date_tr.parent
-            date_page = date_col.parent
+            # date_tr = date_line.parent
+            # print('date_tr:', date_tr)
+            # date_col = date_tr.parent
+            # print('date_col:', date_col)
+            # date_page = date_col.parent
             date_page = get_page_from_parentage(date_line)
             if date_page is None:
                 ValueError(f'no parent set in hierarchy above line {date_line.id}')
+            # print(date_page)
             # print(date_line.id, date_tr.id, date_col, date_col.parent.id)
             # print('inventory_num' in date_tr.metadata)
             # print('inventory_num' in date_tr.parent.metadata)

@@ -104,7 +104,6 @@ def get_pages(inv_num: int, indexer: Indexer):
         return pages
 
 
-
 class Indexer:
 
     def __init__(self, host_type: str, base_dir: str = 'data'):
@@ -238,7 +237,8 @@ class Indexer:
             self.rep_es.index_page(page)
 
     def get_sessions_from_pages(self, inv_num: int, year_start: int, year_end: int):
-        logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})..."
+        logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} " \
+                        f"(years {year_start}-{year_end})..."
         logger.info(logger_string)
         print(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
         inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
@@ -342,8 +342,15 @@ class Indexer:
                                             text_type, session.text_regions)
                 logger.info(f'indexing printed session {session.id} with date {session.date.isoformat()}')
                 print(f'indexing printed session {session.id} with date {session.date.isoformat()}')
+                prov_url = self.rep_es.post_provenance(source_ids=session_json['page_ids'], target_ids=[session.id],
+                                                       source_index='pages', target_index='session_metadata')
+                session_json['metadata']['prov_url'] = prov_url
+                session.metadata['prov_url'] = prov_url
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
+                    prov_url = self.rep_es.post_provenance(source_ids=[tr.metadata['page_id']], target_ids=[tr.id],
+                                                           source_index='pages', target_index='session_text_region')
+                    tr.metadata['prov_url'] = prov_url
                     self.rep_es.index_session_text_region(tr)
         except Exception as err:
             logger.error(err)
@@ -352,7 +359,7 @@ class Indexer:
             print('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
             return None
 
-    def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
+    def do_printed_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         opening_searcher, verb_searcher = res_parser.configure_resolution_searchers()
@@ -387,7 +394,7 @@ class Indexer:
         for err in errors:
             print(err)
 
-    def do_handwritten_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
+    def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing handwritten PageXML resolutions for inventory {inv_num} "
                     f"(years {year_start}-{year_end})...")
         print(f"Indexing handwritten PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -589,7 +596,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "handwritten_resolutions":
         indexer.rep_es.config['resolutions_index'] = 'handwritten_resolutions'
-        indexer.do_handwritten_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
+        indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "full_resolutions":
         indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
@@ -638,7 +645,8 @@ def parse_args():
         return start, end, indexing_steps, num_processes, index_label, base_dir
     except getopt.GetoptError as err:
         # Print something useful
-        print('usage: do_indexing.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes> (optional) -l <index_label> -b <base_dir>')
+        print('usage: do_indexing.py -s <start_year> -e <end_year> -i <indexing_step> -n <num_processes> '
+              '(optional) -l <index_label> -b <base_dir>')
         print(err)
         sys.exit(2)
 
@@ -701,8 +709,8 @@ def main():
     start, end, indexing_steps, num_processes, index_label, base_dir = parse_args()
     steps_string = '-'.join(indexing_steps)
     log_file = f'indexing-{steps_string}-date-{datetime.date.today().isoformat()}.log'
-    #logging.basicConfig(filename=log_file, encoding='utf-8',
-    #                    format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging.DEBUG)
+    # logging.basicConfig(filename=log_file, encoding='utf-8',
+    #                     format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
 

@@ -318,7 +318,7 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage], 
 
 
 def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
-                         inv_metadata: dict = None) -> Iterator[Session]:
+                         inv_metadata: dict = None, use_token_searcher: bool = False) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - check for large date jumps and short session docs
     if inv_metadata is None:
@@ -329,7 +329,7 @@ def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
     session_searcher = SessionSearcher(inv_metadata, current_date,
                                        session_phrase_model, window_size=30,
-                                       date_mapper=date_mapper)
+                                       date_mapper=date_mapper, use_token_searcher=use_token_searcher)
     session_lines: List[pdm.PageXMLTextLine] = []
     session_metadata, date_metadata = session_searcher.parse_session_metadata(None, inv_metadata, session_lines)
     gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)

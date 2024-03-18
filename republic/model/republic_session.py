@@ -98,7 +98,7 @@ class SessionSearcher(EventSearcher):
     def __init__(self, inventory_metadata: Dict[str, any], current_date: RepublicDate,
                  phrase_model_list: List[Dict[str, Union[str, int, List[str]]]],
                  date_mapper: DateNameMapper,
-                 window_size: int = 30, include_year: bool = False):
+                 window_size: int = 30, include_year: bool = False, use_token_searcher: bool = False):
         """SessionSearcher extends the generic event searcher to specifically search for the lines
         that express the opening of a new session in the resolutions."""
         super(self.__class__, self).__init__(window_size=window_size)
@@ -112,6 +112,7 @@ class SessionSearcher(EventSearcher):
         # set year of inventory
         self.year = current_date.year
         self.include_year = include_year
+        self.use_token_searcher = use_token_searcher
         # generate initial meeting date strings
         self.date_strings: Dict[str, RepublicDate] = get_next_date_strings(self.current_date, num_dates=7,
                                                                            include_year=include_year,
@@ -137,7 +138,8 @@ class SessionSearcher(EventSearcher):
         self.phrase_models: Dict[str, PhraseModel] = {'attendance_searcher': PhraseModel(model=attendance_phrases,
                                                                                          config=attendance_config)}
         # Add fuzzy searchers for attendance phrases
-        self.add_searcher(attendance_config, 'attendance_searcher', self.phrase_models['attendance_searcher'])
+        self.add_searcher(attendance_config, 'attendance_searcher', self.phrase_models['attendance_searcher'],
+                          use_token_searcher=self.use_token_searcher)
 
     def add_session_date_searcher(self, num_dates: int = 7) -> None:
         """Add a fuzzy searcher configured with a session date phrase model"""
@@ -150,7 +152,8 @@ class SessionSearcher(EventSearcher):
         date_phrases = [{'phrase': date_string, 'label': 'session_date'} for date_string in self.date_strings]
         date_phrases += [{'phrase': str(self.year), 'label': 'session_year'}]
         self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases, config=sessiondate_config)
-        self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'])
+        self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'],
+                          use_token_searcher=self.use_token_searcher)
         # when multiple date string match, only use the best matching one.
         self.searchers['date_searcher'].allow_overlapping_matches = False
 

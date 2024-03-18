@@ -15,12 +15,15 @@ from republic.parser.logical.paragraph_parser import running_id_generator
 
 
 def make_opening_searcher(year_start: int, year_end: int, config: dict = None, debug: int = 0):
+    # print('year_start:', year_start)
     opening_phrases = [phrase for phrase in proposition_opening_phrases if
                        phrase['start_year'] <= year_start and phrase['end_year'] >= year_end]
+    # print(opening_phrases)
     if debug > 0:
         print('number of opening phrases:', len(opening_phrases))
     if not config:
         config = {
+            'levenshtein_threshold': 0.7,
             'ngram_size': 3,
             'skip_size': 1,
             'include_variants': True
@@ -228,7 +231,7 @@ def prep_resolution(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
     resolution.metadata['lang'] = list({para.metadata['lang'] for para in resolution.paragraphs})
     resolution.set_proposition_type()
     resolution.metadata["page_ids"] = get_paragraph_page_ids(resolution.paragraphs)
-    resolution.linked_text_regions = get_line_grouped_text_regions(resolution, debug=debug)
+    # resolution.linked_text_regions = get_line_grouped_text_regions(resolution, debug=debug)
     link_marginalia(resolution, marg_trs, debug=debug)
     for linked_tr in resolution.linked_text_regions:
         linked_tr.metadata['iiif_url'] = doc_id_to_iiif_url(linked_tr.id)
@@ -255,6 +258,9 @@ def get_session_resolutions(session: rdm.Session,
             print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id}, debug=0)
         for match in opening_matches:
+            if match.phrase.max_start_offset < match.offset:
+                print('MATCH SHOULD NOT BE OPENING:', match)
+        for match in opening_matches:
             match.text_id = paragraph.id
             if debug > 0:
                 print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
@@ -271,7 +277,7 @@ def get_session_resolutions(session: rdm.Session,
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
-                                        #evidence=opening_matches
+                                        evidence=opening_matches
                                         )
             # print('\tCreating new resolution with number:', resolution_number, resolution.id)
         if resolution:
