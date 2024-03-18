@@ -87,7 +87,7 @@ class EventSearcher:
         return phrase in self.labels
 
     def search_document(self, doc: Dict[str, Union[str, int]],
-                        searcher_name: str) -> List[PhraseMatch]:
+                        searcher_name: str, debug: int = 0) -> List[PhraseMatch]:
         """Use a registered searcher to find fuzzy match for a document."""
         proper_matches: List[PhraseMatch] = []
         # use the searcher to find fuzzy matches
@@ -122,16 +122,22 @@ class EventSearcher:
             self.sliding_window = self.sliding_window[-self.window_size:]
         self.sliding_window += [None]
 
-    def add_document(self, doc_id: Union[str, int], doc_text: str, text_object: any = None):
+    def add_document(self, doc_id: Union[str, int], doc_text: str, text_object: any = None,
+                     debug: int = 1):
         """Add a text with identifier to the sliding window and run registered fuzzy searchers."""
-        matches: List[PhraseMatch] = []
-        doc = {'id': doc_id, 'text': doc_text, 'matches': matches}
+        doc_matches: List[PhraseMatch] = []
+        doc = {'id': doc_id, 'text': doc_text, 'matches': doc_matches}
+        if debug > 0:
+            print(f"fuzzy_event_searcher.add_document - doc:", doc_text)
         if text_object:
             doc['text_object'] = text_object
         # iterate over all registered searchers
         for searcher_name in self.searchers:
             # add the matches to the document
             doc['matches'] += self.search_document(doc, searcher_name)
+        if debug > 0:
+            for match in doc['matches']:
+                print(f"\n\tfuzzy_event_searcher.add_document - match:", match, '\n')
         # add the document to the sliding window,
         self.sliding_window += [doc]
         # if the window is too long, remove earliest docs to make room for the new doc

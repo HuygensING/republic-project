@@ -1,6 +1,8 @@
 import glob
 import os
 import re
+from dataclasses import dataclass
+from typing import Dict, List, Tuple
 
 from flair.data import Sentence
 from flair.models import SequenceTagger
@@ -19,6 +21,128 @@ LAYER_COLOR = {
     'COM': 'MediumSeaGreen',
     'NAM': 'Orange'
 }
+
+
+@dataclass
+class Token:
+    text: str
+    tag: str
+    char_offset: int
+    token_offset: int
+
+
+@dataclass
+class Phrase:
+    text: str
+    label: str
+    token_offset: int
+    tokens: List[Token]
+
+
+@dataclass
+class Entity:
+    text: str
+    tag: str
+    char_offset: int
+    token_offset: int
+    tokens: List[Token]
+
+
+@dataclass
+class Doc:
+    id: str
+    metadata: Dict[str, any]
+    text: str
+    tokens: List[Token]
+    entities: List[Entity]
+
+
+def line2token(line: str, char_offset: int, token_offset: int) -> Token:
+    word, tag = line.strip('\n').split('\t')
+    return Token(word, tag, char_offset, token_offset)
+
+
+def make_entity(tokens: List[Token]) -> Entity:
+    tag_type = tokens[0].tag[2:]
+    tagged_text = ' '.join([token.text for token in tokens])
+    return Entity(tagged_text, tag_type,
+                  tokens[0].char_offset, tokens[0].token_offset,
+                  [token for token in tokens])
+
+
+def extract_tagged_sequences(tokens):
+    sequences = []
+    sequence = []
+    for ti, token in enumerate(tokens):
+        if token.tag.startswith('B-'):
+            sequence = [token]
+        elif token.tag.startswith('I-'):
+            sequence.append(token)
+        elif token.tag.startswith('O'):
+            if len(sequence) > 0:
+                sequences.append(sequence)
+            sequence = []
+        else:
+            raise ValueError(f"invalid tag '{token.tag}'.")
+    if len(sequence) > 0:
+        sequences.append(sequence)
+    return sequences
+
+
+def extract_entities(tokens):
+    sequences = extract_tagged_sequences(tokens)
+    return [make_entity(sequence) for sequence in sequences]
+
+
+def read_tagged_file(fname: str) -> Doc:
+    with open(fname, 'rt') as fh:
+        tokens = []
+        char_offset = 0
+        for token_offset, line in enumerate(fh):
+            token = line2token(line, char_offset, token_offset)
+            char_offset = token.char_offset + len(token.text) + 1
+            tokens.append(token)
+    text = ' '.join([token.text for token in tokens])
+    entities = extract_entities(tokens)
+    session_id, metadata = parse_filename(fname)
+    return Doc(session_id, metadata, text, tokens, entities)
+
+
+def parse_filename(fname: str) -> Tuple[str, Dict[str, any]]:
+    session_id = fname.split('/')[-2][:-4]
+    if 'secreet-proef' in fname:
+        year, _, _, inv, _, session_num = session_id.split('-')
+    else:
+        year, _, inv, _, session_num = session_id.split('-')
+    metadata = {
+        'year': int(year),
+        'inventory_num': inv,
+        'session_num': int(session_num),
+        'source_file': fname
+    }
+    return session_id, metadata
+
+
+def make_phrase(tokens: List[Token], label: str):
+    phrase_text = ' '.join([token.text for token in tokens])
+    return Phrase(phrase_text, label, tokens[0].token_offset, [token for token in tokens])
+
+
+def get_entity_context(doc: Doc, entity: Entity, context_size: int):
+    entity_end = entity.token_offset + len(entity.tokens)
+    if entity.token_offset > context_size:
+        pre_start = entity.token_offset - context_size
+        pre_end = entity.token_offset
+        pre_phrase = make_phrase(doc.tokens[pre_start:pre_end], 'prefix')
+    else:
+        pre_phrase = None
+    if entity_end == len(doc.tokens) - 1:
+        post_phrase = None
+    else:
+        post_start = entity_end
+        post_end = post_start + context_size
+        post_phrase = make_phrase(doc.tokens[post_start:post_end], 'postfix')
+    return pre_phrase, post_phrase
 
 
 def load_tagger(layer_name: str = None, model_dir: str = None) -> SequenceTagger:
