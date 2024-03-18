@@ -237,6 +237,13 @@ class Indexer:
                 page.metadata["type_page_num"] = type_page_num
             self.rep_es.index_page(page)
 
+    def download_pages(self, inv_num: int, year_start: int, year_end: int):
+        logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})..."
+        logger.info(logger_string)
+        print(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
+        inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
+        pages = get_pages(inv_num, self)
+
     def get_sessions_from_pages(self, inv_num: int, year_start: int, year_end: int):
         logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})..."
         logger.info(logger_string)
@@ -564,6 +571,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     indexer.set_indexes(task["indexing_step"], task["index_label"])
     if task["indexing_step"] == "download":
         indexer.do_downloading(task["inv_num"], task["year_start"], task["year_end"])
+    elif task["indexing_step"] == "download_pages":
+        indexer.download_pages(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "scans_pages":
         indexer.do_scan_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_page_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
