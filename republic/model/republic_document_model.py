@@ -459,7 +459,10 @@ class Resolution(ResolutionElementDoc):
         if doc_type:
             self.add_type(doc_type)
         self.main_type = 'resolution'
-        self.metadata['resolution_type'] = 'ordinaris'
+        if 'resolution_type' not in metadata or metadata['resolution_type'] is None:
+            print(f'Error in generating resolution with id {doc_id}')
+            print(f'resolution metadata: {metadata}')
+            raise KeyError('No resolution_type in metadata')
         self.labels = labels if labels else []
         self.scan_versions = scan_versions if scan_versions else []
         self.opening = None

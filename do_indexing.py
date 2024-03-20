@@ -15,6 +15,7 @@ import sys
 
 sys.path.append('/data/republic/site-packages')
 
+import pagexml.model.physical_document_model as pdm
 from elasticsearch.exceptions import ElasticsearchException
 # from elasticsearch.exceptions import TransportError
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
@@ -31,7 +32,7 @@ import republic.model.resolution_phrase_model as rpm
 from republic.classification.line_classification import NeuralLineClassifier
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.model_loader import load_line_break_detector
-from republic.helper.pagexml_helper import json_to_pagexml_doc
+from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 
@@ -77,7 +78,7 @@ def get_text_type(inv_num: int) -> str:
     return 'printed' if 400 <= inv_num <= 456 or 3760 <= inv_num <= 3864 else 'handwritten'
 
 
-def get_pages(inv_num: int, indexer: Indexer):
+def get_pages(inv_num: int, indexer: Indexer) -> List[pdm.PageXMLPage]:
     if os.path.exists(f"{indexer.base_dir}/pages") is False:
         os.mkdir(f"{indexer.base_dir}/pages")
     pages_file = f"{indexer.base_dir}/pages/{inv_num}.jsonl.gz"
@@ -89,7 +90,7 @@ def get_pages(inv_num: int, indexer: Indexer):
             pages = []
             for line in fh:
                 page_json = json.loads(line)
-                page = json_to_pagexml_doc(page_json)
+                page = json_to_pagexml_page(page_json)
                 pages.append(page)
         return pages
     else:
@@ -254,9 +255,12 @@ class Indexer:
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
         text_type = get_text_type(inv_num)
         get_session_func = get_printed_sessions if text_type == 'printed' else get_handwritten_sessions
+        use_token_searcher = True if text_type == 'printed' else False
+        # include_variants not yet implemented in FuzzyTokenSearcher so use FuzzyPhraseSearcher
+        use_token_searcher = False
         prev_session = None
         try:
-            for session in get_session_func(inv_metadata['inventory_id'], pages):
+            for session in get_session_func(inv_metadata['inventory_id'], pages, use_token_searcher=use_token_searcher):
                 yield session
                 prev_session = session
         except Exception as err:
@@ -265,6 +269,7 @@ class Indexer:
             logger.info(prev_session.stats)
             logger.info(err)
             print(f"Error getting {text_type} {inv_num} session after {prev_session.id}")
+            raise
 
     def write_sessions_to_files(self, inv_num: int, year_start: int, year_end: int):
         logger_string = f"Writing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})..."
@@ -347,16 +352,18 @@ class Indexer:
             for session in get_session_gen:
                 session_json = make_session(inv_metadata, session.date_metadata, session.metadata['session_num'],
                                             text_type, session.text_regions)
-                logger.info(f'indexing printed session {session.id} with date {session.date.isoformat()}')
-                print(f'indexing printed session {session.id} with date {session.date.isoformat()}')
+                logger.info(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
+                print(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
                 prov_url = self.rep_es.post_provenance(source_ids=session_json['page_ids'], target_ids=[session.id],
-                                                       source_index='pages', target_index='session_metadata')
+                                                       source_index='pages', target_index='session_metadata',
+                                                       ignore_prov_errors=True)
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
                     prov_url = self.rep_es.post_provenance(source_ids=[tr.metadata['page_id']], target_ids=[tr.id],
-                                                           source_index='pages', target_index='session_text_region')
+                                                           source_index='pages', target_index='session_text_region',
+                                                           ignore_prov_errors=True)
                     tr.metadata['prov_url'] = prov_url
                     self.rep_es.index_session_text_region(tr)
         except Exception as err:
@@ -364,7 +371,7 @@ class Indexer:
             logger.error('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
             print(err)
             print('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
-            return None
+            raise
 
     def do_printed_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -410,6 +417,7 @@ class Indexer:
         inv_session_trs = defaultdict(list)
         has_error = False
         errors = []
+        self.rep_es.delete_by_inventory(inv_num, self.rep_es.config['resolutions_index'])
         for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
             inv_session_trs[tr.metadata['session_id']].append(tr)
         try:
@@ -429,8 +437,12 @@ class Indexer:
                     # self.rep_es.es_anno.index(index=res_index, id=res.id, document=res.json)
         except Exception as err:
             print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
+            logging.error(err)
+            print(err)
             errors.append(err)
-            return None
+            raise
+        logger.info(f"finished indexing handwritten resolutions of inventory {inv_num} "
+                    f"with {'an error' if has_error else 'no errors'}")
         print(f"finished indexing handwritten resolutions of inventory {inv_num} "
               f"with {'an error' if has_error else 'no errors'}")
         for err in errors:
@@ -574,6 +586,9 @@ class Indexer:
 
 
 def process_inventory(task: Dict[str, Union[str, int]]):
+    log_file = f"indexing-{task['indexing_step']}-date-{datetime.date.today().isoformat()}.log"
+    formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
+    setup_logger(logger, log_file, formatter, level=logging.DEBUG)
     indexer = Indexer(task["host_type"], base_dir=task["base_dir"])
     indexer.set_indexes(task["indexing_step"], task["index_label"])
     if task["indexing_step"] == "download":
@@ -716,18 +731,15 @@ def main():
         host_type = "external"
     # Get the arguments from the command-line except the filename
     start, end, indexing_steps, num_processes, index_label, base_dir = parse_args()
-    steps_string = '-'.join(indexing_steps)
-    log_file = f'indexing-{steps_string}-date-{datetime.date.today().isoformat()}.log'
     # logging.basicConfig(filename=log_file, encoding='utf-8',
     #                     format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
-    setup_logger(logger, log_file, formatter, level=logging.DEBUG)
 
     for indexing_step in indexing_steps:
         tasks = get_tasks(start, end, indexing_step, index_label, host_type, base_dir)
         if num_processes > 1:
             with multiprocessing.Pool(processes=num_processes) as pool:
-                pool.map(process_inventory, tasks)
+                # use a chunksize of 1 to ensure inventories are processed more or less in order.
+                pool.map(process_inventory, tasks, 1)
         else:
             for task in tasks:
                 process_inventory(task)

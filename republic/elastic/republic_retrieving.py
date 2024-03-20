@@ -652,3 +652,13 @@ class Retriever:
             query = {'query': {'match': {'text_id.keyword': para_id}}, 'size': 1000}
             phrase_matches += self.retrieve_phrase_matches_by_query(query)
         return phrase_matches
+
+    def delete_by_inventory(self, inv: int, index: str):
+        query = {
+            'query': {
+                'match': {'metadata.inventory_num': inv}
+            }
+        }
+        self.es_anno.delete_by_query(index, query)
+
+

@@ -2,6 +2,7 @@ from typing import Union, Dict, List
 import datetime
 import copy
 import re
+import time
 
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
@@ -127,19 +128,25 @@ class Indexer:
         self.es_text = es_text
         self.config = config
 
-    def index_doc(self, index: str, doc_id: str, doc_body: dict):
+    def index_doc(self, index: str, doc_id: str, doc_body: dict, max_retries: int = 5):
         add_timestamp(doc_body)
         add_commit(doc_body)
-        try:
-            if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
-                self.es_anno.index(index=index, id=doc_id, body=doc_body)
-            else:
-                self.es_anno.index(index=index, id=doc_id, document=doc_body)
-        except ElasticsearchException:
-            print(f"Error indexing document {doc_id} with stats {doc_body['stats']}")
-            raise
+        try_num = 0
+        while try_num < max_retries:
+            try:
+                if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
+                    self.es_anno.index(index=index, id=doc_id, body=doc_body)
+                else:
+                    self.es_anno.index(index=index, id=doc_id, document=doc_body)
+                break
+            except ElasticsearchException:
+                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {try_num}")
+                time.sleep(5)
+                if try_num >= max_retries:
+                    raise
+            try_num += 1
 
-    def index_bulk_docs(self, index: str, docs: List[Dict[str, any]]) -> None:
+    def index_bulk_docs(self, index: str, docs: List[Dict[str, any]], max_retries: int = 5) -> None:
         actions = []
         for doc in docs:
             add_timestamp(doc)
@@ -150,13 +157,20 @@ class Indexer:
                 '_source': doc
             }
             actions.append(action)
-        try:
-            bulk(self.es_anno, actions)
-        except ElasticsearchException:
-            print(f"Error bulk indexing documents")
-            for doc in docs:
-                print(f"\t{doc['id']} with stats {doc['stats']}")
-            raise
+        try_num = 0
+        while try_num < max_retries:
+            try:
+                bulk(self.es_anno, actions)
+                break
+            except ElasticsearchException:
+                print(f"Error bulk indexing documents")
+                for doc in docs:
+                    print(f"\t{doc['id']} with stats {doc['stats']}")
+                print(f"retry {try_num}")
+                time.sleep(5)
+                if try_num >= max_retries:
+                    raise
+                try_num += 1
 
     def index_scan(self, scan: pdm.PageXMLScan):
         if 'inventory_id' not in scan.metadata:

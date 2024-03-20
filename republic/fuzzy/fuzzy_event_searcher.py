@@ -123,7 +123,7 @@ class EventSearcher:
         self.sliding_window += [None]
 
     def add_document(self, doc_id: Union[str, int], doc_text: str, text_object: any = None,
-                     debug: int = 1):
+                     debug: int = 0):
         """Add a text with identifier to the sliding window and run registered fuzzy searchers."""
         doc_matches: List[PhraseMatch] = []
         doc = {'id': doc_id, 'text': doc_text, 'matches': doc_matches}

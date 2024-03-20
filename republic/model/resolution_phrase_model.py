@@ -466,7 +466,7 @@ proposition_opening_phrases = [
         ],
         'label': 'reviewed',
         'start_year': 1705, 'end_year': 1796,
-        'max_start_offset': 10
+        'max_start_offset': 4
     },
     {
         'phrase': 'De resolutien gisteren genomen',
@@ -477,7 +477,7 @@ proposition_opening_phrases = [
         ],
         'label': 'reviewed',
         'start_year': 1580, 'end_year': 1704,
-        'max_start_offset': 10
+        'max_start_offset': 4
     },
     {
         'phrase': 'Ontfangen een Brieff',

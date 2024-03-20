@@ -212,6 +212,9 @@ class SessionSearcher(EventSearcher):
                 continue
             # check if after the first date in line order, any later dates are found that are temporally
             # out of order (i.e. before the first date). If so, we're not in a meeting opening
+            for match in line['matches']:
+                if match.label is None:
+                    print('SessionSearcher.extract_attendance_matches - match has no label:', match)
             date_matches = [match for match in line['matches'] if match.has_label('session_date')]
             dates_ordered = True
             for date_match in date_matches:
@@ -232,7 +235,7 @@ class SessionSearcher(EventSearcher):
                 #     continue
                 opening_label = None
                 for label in match.label_list:
-                    if label not in session_opening_element_order and label != 'extract':
+                    if label not in session_opening_element_order and label not in {'extract', 'insertion'}:
                         continue
                     opening_label = label
                 # only add the match if there is no earlier match with the same label
@@ -315,12 +318,20 @@ class SessionSearcher(EventSearcher):
                 continue
             for match in line['matches']:
                 opening_label = None
-                for label in match.label_list:
-                    if label in session_opening_element_order:
-                        opening_label = label
-                    elif label == 'extract':
-                        opening_label = label
-                self.label_order += [{'index': line_index, 'label': opening_label}]
+                try:
+                    for label in match.label_list:
+                        if label in session_opening_element_order:
+                            opening_label = label
+                        elif label in {'extract', 'insertion'}:
+                            opening_label = label
+                    if opening_label is None:
+                        print('WARNING - SessionSearcher.get_session_opening_elements - opening_label is None')
+                        print(f'\tmatch.phrase has unknown label: {match.phrase.label}')
+                        continue
+                    self.label_order += [{'index': line_index, 'label': opening_label}]
+                except TypeError:
+                    print('Error - SessionSearcher.get_session_opening_elements - error in label for match', match)
+                    raise
 
         # print('label order:', self.label_order)
         self.extract_date_matches()
@@ -441,6 +452,7 @@ class SessionSearcher(EventSearcher):
         """Turn session elements and sliding window into proper metadata."""
         # make sure local current_date is a copy and not a reference to the original object
         require_match = False if prev_session_metadata is None else True
+        require_match = False
         try:
             date_match = self.get_session_date_match(require_match=require_match)
         except KeyError:
@@ -466,7 +478,7 @@ class SessionSearcher(EventSearcher):
             # print('shifting to:', current_date.isoformat())
         date_line = None
         for line in session_lines:
-            if line.id == date_match.text_id:
+            if date_match and line.id == date_match.text_id:
                 date_line = line
         if date_line is None:
             if len(session_lines) > 0:
