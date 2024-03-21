@@ -25,6 +25,7 @@ from republic.parser.logical.generic_session_parser import make_session
 
 def initialize_inventory_date(inv_metadata: dict, date_mapper: DateNameMapper) -> RepublicDate:
     year, month, day = [int(part) for part in inv_metadata['period_start'].split('-')]
+    print(f'initialize_inventory_date - year, month, day: {year} {month} {day}')
     return RepublicDate(year, month, day, date_mapper=date_mapper)
 
 
@@ -55,12 +56,12 @@ def stream_handwritten_page_lines(page: pdm.PageXMLPage,
             yield line
 
 
-def stream_resolution_page_lines(pages: List[pdm.PageXMLPage]) -> Generator[pdm.PageXMLTextLine, None, None]:
+def stream_resolution_page_lines(inventory_id: str, pages: List[pdm.PageXMLPage]) -> Generator[pdm.PageXMLTextLine, None, None]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
-    pages = sorted(pages, key=lambda x: x.metadata['page_num'])
-    for page in pages:
+    sorted_pages = sort_inventory_pages(inventory_id, pages)
+    for page in sorted_pages:
         if "text_type" in page.metadata and page.metadata["text_type"] == "handwritten":
             for line in stream_handwritten_page_lines(page):
                 yield line
@@ -128,6 +129,8 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
     session_text_page_nums = set()
     session_page_ids = set()
     for line in session_lines:
+        if 'inventory_num' not in line.metadata:
+            line.metadata['inventory_num'] = inv_metadata['inventory_num']
         if "column_id" not in line.metadata:
             print(line.id, line.parent.id, line.parent.type)
             print(line.parent.parent.id)
@@ -149,6 +152,10 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
                                             coords=coords, lines=text_region_lines[text_region_id])
         text_region.set_derived_id(text_region.metadata['scan_id'])
         text_region.metadata["iiif_url"] = doc_id_to_iiif_url(text_region.id)
+        if 'inventory_num' not in text_region.metadata:
+            text_region.metadata['inventory_num'] = inv_metadata['inventory_num']
+        if 'session_id' not in text_region.metadata:
+            text_region.metadata['session_id'] = session_metadata['session_id']
         # We're going from physical to logical structure here, so add a trace to the
         # logical structure elements about where they come from in the physical
         # structure, especially the printed page number needed for linking to locators
@@ -317,13 +324,58 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage], 
     return DateNameMapper(inv_metadata, date_line_structure)
 
 
+def sort_inventory_pages(inv_id: str, pages: List[pdm.PageXMLPage], debug: int = 0) -> List[pdm.PageXMLPage]:
+    sorted_pages = sorted(pages, key=lambda page: page.metadata['page_num'])
+    for page in sorted_pages:
+        if 'inventory-id' not in page.metadata:
+            if debug > 2:
+                print(f'printed_session_parser.sort_inventory_pages - page {page.id} metadata missing inventory {inv_id}')
+            page.metadata['inventory_id'] = inv_id
+    sort_swaps = {
+        'NL-HaNA_1.01.02_3845': [
+            {
+                'page_ids': [
+                    "NL-HaNA_1.01.02_3845_0287-page-572",
+                    "NL-HaNA_1.01.02_3845_0287-page-573",
+                    "NL-HaNA_1.01.02_3845_0288-page-574",
+                    "NL-HaNA_1.01.02_3845_0288-page-575",
+                    "NL-HaNA_1.01.02_3845_0289-page-576",
+                    "NL-HaNA_1.01.02_3845_0289-page-577",
+                ],
+                'index_order': [0, 3, 4, 1, 2, 5]
+            }
+        ]
+    }
+    page_ids = [page.id for page in sorted_pages]
+    if inv_id in sort_swaps:
+        print(f"printed_session_parser.sort_inventory_pages - sort_swaps for inventory {inv_id}")
+        for swap_set in sort_swaps[inv_id]:
+            first, last = swap_set['page_ids'][0], swap_set['page_ids'][-1]
+            fi, li = page_ids.index(first), page_ids.index(last)
+            if debug > 2:
+                print('\tnum_pages:', len(sorted_pages))
+                print('\tfi, li:', fi, li)
+            pre_pages = pages[:fi]
+            post_pages = pages[li+1:]
+            swap_pages = pages[fi:li+1]
+            if debug > 2:
+                print('\tlen(pre_pages):', len(pre_pages))
+                print('\tlen(post_pages):', len(post_pages))
+                print('\tlen(swap_pages):', len(swap_pages))
+            swapped_pages = [swap_pages[i] for i in swap_set['index_order']]
+            sorted_pages = pre_pages + swapped_pages + post_pages
+            if debug > 1:
+                print('swapped page_ids:', [page.id for page in swapped_pages])
+    return sorted_pages
+
+
 def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
                          inv_metadata: dict = None, use_token_searcher: bool = False) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - check for large date jumps and short session docs
     if inv_metadata is None:
         inv_metadata = get_inventory_by_id(inventory_id)
-    sorted_pages = sorted(pages, key=lambda page: page.id)
+    sorted_pages = sort_inventory_pages(inventory_id, pages)
     column_metadata = get_columns_metadata(sorted_pages)
     date_mapper = get_date_mapper(inv_metadata, sorted_pages)
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
@@ -335,7 +387,7 @@ def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
     gated_window = GatedWindow(window_size=10, open_threshold=500, shut_threshold=500)
     lines_skipped = 0
     print('indexing start for current date:', current_date.isoformat())
-    for li, line in enumerate(stream_resolution_page_lines(sorted_pages)):
+    for li, line in enumerate(stream_resolution_page_lines(inventory_id, sorted_pages)):
         # before modifying, make sure we're working on a copy
         # remove all word-level objects, as we only need the text
         line.words = []
@@ -436,9 +488,10 @@ def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
                                                                                           inv_metadata,
                                                                                           session_lines)
             except Exception as err:
-                print(f'Error parsing session metadata for session {session_doc.id}')
-                print(f'first session line: {session_lines[0].id}')
-                print(f'last session line: {session_lines[-1].id}')
+                debug_prefix = 'printed_session_parser.get_printed_sessions - '
+                print(f'{debug_prefix}Error parsing session metadata for session {session_doc.id}')
+                print(f'{debug_prefix}first session line: {session_lines[0].id}')
+                print(f'{debug_prefix}last session line: {session_lines[-1].id}')
                 print(err)
                 raise
             # reset the sliding window to search the next session opening

@@ -181,17 +181,18 @@ class DateNameMapper:
     def generate_day_string(self, year: int, month: int, day: int,
                             include_year: bool = None, include_den: bool = None,
                             debug: int = 0) -> Union[str, List[str], None]:
+        debug_prefix = 'DateNameMapper.generate_day_string'
         if include_year is None:
             include_year = self.include_year
         if include_den is None:
             include_den = self.include_den
         if debug > 0:
-            print('generate')
+            print(f'{debug_prefix} - 1. generate for {year} {month} {day}')
         day_strings = []
         try:
             date = datetime.date(year, month, day)
         except TypeError:
-            print(f'year: {year}\tmonth: {month}\tday: {day}')
+            print(f'Error generating date object for year: {year}\tmonth: {month}\tday: {day}')
             raise
         week_day = date.weekday()
         names = {
@@ -203,7 +204,7 @@ class DateNameMapper:
         }
 
         if debug > 1:
-            print(f'\nnames:\n{names}\n\n')
+            print(f'\n{debug_prefix} 2. names dict:\n{names}\n\n')
 
         month_start_day, month_num_days = monthrange(year, month)
 
@@ -223,22 +224,22 @@ class DateNameMapper:
             names['month_day_names'] = [f'{day}{suffix}']
         week_day_names = self.index_week_day[week_day]
         if debug > 0:
-            print('generate_day_string - month_names:', names['month_name'])
-            print('generate_day_string - month_day_names', names['month_day_name'])
-            print('generate_day_string - week_day_names:', names['week_day_name'])
+            print('generate_day_string - 3. month_names:', names['month_name'])
+            print('generate_day_string - 4. month_day_names', names['month_day_name'])
+            print('generate_day_string - 5. week_day_names:', names['week_day_name'])
         day_strings = []
         for name_set, set_version in self.date_element_order:
             # print(name_set, set_version)
             if debug > 1:
-                print('name_set:', name_set)
+                print(f'{debug_prefix} - 6. name_set:', name_set)
             if len(day_strings) == 0:
                 day_strings = [name for name in names[name_set]]
                 if debug > 2:
-                    print('day_strings:', day_strings)
+                    print(f'{debug_prefix} - 7. day_strings:', day_strings)
             else:
                 day_strings = [f"{day_string} {name}" for day_string in day_strings for name in names[name_set]]
                 if debug > 2:
-                    print('day_strings:', day_strings)
+                    print(f'{debug_prefix} - 7. day_strings:', day_strings)
         return day_strings
 
 
@@ -284,7 +285,10 @@ class RepublicDate:
         self.date_string = None
         self.date_year_string = None
         if date_mapper:
+            # print(f'RepublicDate - generate_day_string for date {date.isoformat()}')
             self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
+            if self.date_string is None:
+                print(f'RepublicDate - date_string is Noe for date {date.isoformat()}')
             self.date_year_string = date_mapper.generate_day_string(date.year, date.month, date.day,
                                                                     include_year=True)
 
@@ -511,8 +515,9 @@ def get_previous_day(current_date: RepublicDate, date_mapper: DateNameMapper = N
 def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMapper,
                           num_dates: int = 3, include_year: bool = True,
                           loop_year: bool = False, debug: int = 0) -> Dict[str, RepublicDate]:
+    debug_prefix = 'republic_date.get_next_date_strings'
     if debug > 0:
-        print('\nget_next_date_strings - current_date:', current_date)
+        print(f'{debug_prefix} - 1 current_date:', current_date)
     date_strings = {}
     if not current_date:
         # if for some reason current_date is None, return an empty dict
@@ -520,27 +525,33 @@ def get_next_date_strings(current_date: RepublicDate, date_mapper: DateNameMappe
     loop_date = current_date
     for i in range(0, num_dates):
         if debug > 0:
-            print('\tstart - loop_date:', loop_date, type(loop_date.date_string))
+            print('\tstart - 2. loop_date:', loop_date, type(loop_date.date_string))
         if isinstance(loop_date.date_string, str):
             if include_year:
                 date_strings[loop_date.date_year_string] = loop_date
+                if debug > 0:
+                    print(f'\t - 3. adding loop_date {loop_date.date_year_string}')
             else:
                 date_strings[loop_date.date_string] = loop_date
+                if debug > 0:
+                    print(f'\t - 3. adding loop_date {loop_date.date_string}')
         elif isinstance(loop_date.date_string, list):
             loop_date_strings = loop_date.date_year_string if include_year else loop_date.date_string
             for date_string in loop_date_strings:
                 date_strings[date_string] = loop_date
+                if debug > 0:
+                    print(f'\t - 3. adding loop_date {date_string}')
         loop_date = get_next_day(loop_date, date_mapper)
         if debug > 0:
-            print('\tnext_day - loop_date:', loop_date, type(loop_date.date_string))
-            print('\t\tdate_strings:', date_strings)
+            print('\tnext_day - 4. loop_date:', loop_date, type(loop_date.date_string))
+            print('\t\t - 5. date_strings:', date_strings.keys())
         if not loop_date:
             break
         if loop_year is False and loop_date.year != current_date.year:
             # avoid going beyond December 31 into the next year
             continue
     if debug > 0:
-        print('\nget_next_date_strings - current_date:', current_date)
+        print('\nget_next_date_strings - 6. current_date:', current_date)
     return date_strings
 
 

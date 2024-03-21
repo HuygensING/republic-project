@@ -407,7 +407,7 @@ class SessionParagraphGenerator(ParagraphGenerator):
         para_lines = []
         paragraphs = []
         doc_text_offset = 0
-        generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
+        generate_paragraph_id = running_id_generator(base_id=doc.id, suffix="-para-")
         if isinstance(doc, rdm.Session) and doc.date.date.year < 1705:
             resolution_gap = 120
             margin_trs = []

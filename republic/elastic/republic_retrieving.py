@@ -439,7 +439,7 @@ class Retriever:
 
     def retrieve_session_trs(self, session_metadata):
         session_trs = []
-        for doc_id in session_metadata['text_regions']:
+        for doc_id in session_metadata['text_region_ids']:
             doc = self.es_anno.get(index='session_text_regions', id=doc_id)
             session_tr = doc['_source']
             session_trs.append(session_tr)

@@ -28,6 +28,7 @@ sessiondate_config = {
     'ngram_size': 3,
     'skip_size': 1
 }
+
 attendance_config = {
     "char_match_threshold": 0.7,
     "ngram_threshold": 0.6,
@@ -141,19 +142,28 @@ class SessionSearcher(EventSearcher):
         self.add_searcher(attendance_config, 'attendance_searcher', self.phrase_models['attendance_searcher'],
                           use_token_searcher=self.use_token_searcher)
 
-    def add_session_date_searcher(self, num_dates: int = 7) -> None:
+    def add_session_date_searcher(self, num_dates: int = 7, debug: int = 0) -> None:
         """Add a fuzzy searcher configured with a session date phrase model"""
         # generate session date strings for the current day and next six days
+        if debug > 2:
+            print(f'SessionSearcher.add_session_date_searcher - current_date: {self.current_date}')
         self.date_strings = get_next_date_strings(self.current_date, num_dates=num_dates,
                                                   include_year=self.include_year,
                                                   date_mapper=self.date_mapper)
-        # print('SessionSearcher add_session_date_searcher - date_strings:', self.date_strings)
+        if debug > 2:
+            print(f'SessionSearcher add_session_date_searcher - date_strings:')
+            for date_string in self.date_strings:
+                print(f'\tdate_string: {date_string}\ttype: {type(self.date_strings[date_string].date_string)}')
         # generate session date phrases for the first week covered in this inventory
         date_phrases = [{'phrase': date_string, 'label': 'session_date'} for date_string in self.date_strings]
         date_phrases += [{'phrase': str(self.year), 'label': 'session_year'}]
+        if debug > 2:
+            print(f'SessionSearcher.add_session_date_searcher - date_phrases:')
+            for date_phrase in date_phrases:
+                print('\t', date_phrase)
         self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases, config=sessiondate_config)
         self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'],
-                          use_token_searcher=self.use_token_searcher)
+                          use_token_searcher=True)
         # when multiple date string match, only use the best matching one.
         self.searchers['date_searcher'].allow_overlapping_matches = False
 
@@ -204,6 +214,15 @@ class SessionSearcher(EventSearcher):
         if 'session_date' in self.session_opening_elements:
             date_match = self.get_session_date_match()
             # print('SessionSearcher - extract_attendance_matches - date_match:', date_match)
+            if date_match.phrase.phrase_string not in self.date_strings:
+                print(f'SessionSearcher.extract_attendance_matches - self.session_opening_elements: '
+                      f'{self.session_opening_elements}')
+                message = (f'SessionSearcher.extract_attendance_matches - No matching date_strings '
+                           f'for date match {date_match}')
+                message += '\n\tDate strings:'
+                for date_string in self.date_strings:
+                    message += f'\n\t\t{date_string}'
+                raise ValueError(message)
             first_date = self.date_strings[date_match.phrase.phrase_string]
             # print('SessionSearcher - extract_attendance_matches - first_date:', first_date)
             # first_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
@@ -488,11 +507,13 @@ class SessionSearcher(EventSearcher):
 
         session_date_json = make_session_date_metadata(current_date, date_match, date_line)
         self.session_num += 1
+        """
         if session_date_json['session_date'] not in self.sessions \
                 or len(self.sessions[session_date_json['session_date']]):
-            session_num = 1
+            self.session_num = 1
         else:
             session_num = self.sessions[session_date_json['session_date']][-1]['session_num'] + 1
+        """
         session_metadata = make_session_metadata(inv_metadata, session_date_json, self.session_num,
                                                  text_type='printed', includes_rest_day=includes_rest_day)
         session_date = current_date.isoformat()
@@ -600,13 +621,17 @@ class SessionSearcher(EventSearcher):
         # print('SessionSearcher - get_session_date_match - final date_match:', date_match)
         return date_match
 
-    def update_session_date(self, day_shift: Union[None, int] = None) -> RepublicDate:
+    def update_session_date(self, day_shift: Union[None, int] = None, debug: int = 0) -> RepublicDate:
         """Shift current date by day_shift days. If not day_shift is passed as argument,
         determine the number of days to shift current date based on found session date.
         If no day_shift is passed and not session date was found, keep current date."""
+        debug_prefix = 'SessionSearcher.update_session_date'
         if is_session_date_exception(self.current_date):
             day_shift = get_date_exception_shift(self.current_date)
             new_date = get_shifted_date(self.current_date, day_shift, date_mapper=self.date_mapper)
+            if debug > 1:
+                print(f"{debug_prefix} - date exception for {self.current_date.isoformat()}, "
+                      f"day_shift={day_shift}, new_date: {new_date.isoformat()}")
         elif day_shift:
             # print('update_session_date - shifting by passing a day shift:', day_shift)
             # if a day_shift is passed, this is an override, probably because of too large
@@ -614,7 +639,10 @@ class SessionSearcher(EventSearcher):
             new_date = get_shifted_date(self.current_date, day_shift, date_mapper=self.date_mapper)
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
-                new_date = get_next_workday(new_date)
+                new_date = get_next_workday(new_date, date_mapper=self.date_mapper)
+            if debug > 1:
+                print(f"{debug_prefix} - specific day_shift for {self.current_date.isoformat()}, "
+                      f"day_shift={day_shift}, new_date: {new_date.isoformat()}")
         elif self.has_session_date_match():
             # there is a session date match
             date_match = self.get_session_date_match()
@@ -628,9 +656,12 @@ class SessionSearcher(EventSearcher):
                 print('update_session_date - date_match:', date_match)
                 raise
             # new_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
+            if debug > 1:
+                print(f"{debug_prefix} - date_match for {self.current_date.isoformat()}, "
+                      f"date_match={date_match.phrase.phrase_string}, new_date: {new_date.isoformat()}")
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
-                new_date = get_next_workday(new_date)
+                new_date = get_next_workday(new_date, date_mapper=self.date_mapper)
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
             if is_session_date_exception(self.current_date):
@@ -648,6 +679,9 @@ class SessionSearcher(EventSearcher):
             #     print("SHIFTING BY TWO DAYS BECAUSE OF HIGH NUMBER OF SESSION LINES")
             #     day_shift = 2
             new_date = get_shifted_date(self.current_date, day_shift, date_mapper=self.date_mapper)
+            if debug > 1:
+                print(f"{debug_prefix} - default day_shift for {self.current_date.isoformat()}, "
+                      f"day_shift={day_shift}, new_date: {new_date.isoformat()}")
             if new_date.is_rest_day():
                 # if the matched date is a rest day, shift the new date forward to the next workday
                 new_date = get_next_workday(new_date, date_mapper=self.date_mapper)
@@ -665,6 +699,9 @@ class SessionSearcher(EventSearcher):
         # print('update_session_date - old current_date:', self.current_date.isoformat())
         self.current_date = new_date
         # print('update_session_date - new current_date:', self.current_date.isoformat())
+        if debug > 1:
+            print(f"{debug_prefix} - new current_date: {self.current_date.isoformat()}")
+            print(f'\t\t{self.current_date.date_string}')
         return self.current_date
 
     def get_current_date(self) -> RepublicDate:

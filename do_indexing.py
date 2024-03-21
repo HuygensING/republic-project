@@ -8,7 +8,7 @@ import logging.config
 import multiprocessing
 import os
 from collections import defaultdict
-from typing import Dict, List, Union
+from typing import Dict, Generator, List, Union
 
 
 import sys
@@ -27,6 +27,7 @@ import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
 
+import republic.helper.pagexml_helper as pagexml_helper
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 from republic.classification.line_classification import NeuralLineClassifier
@@ -36,13 +37,13 @@ from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 
-import republic.parser.logical.printed_resolution_parser as res_parser
+import republic.parser.logical.printed_resolution_parser as printed_res_parser
+import republic.parser.logical.handwritten_resolution_parser as hand_res_parser
 import republic.parser.logical.printed_session_parser as session_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
 from republic.parser.logical.handwritten_resolution_parser import make_opening_searcher
-from republic.parser.logical.handwritten_resolution_parser import get_session_resolutions
 from republic.parser.logical.printed_session_parser import get_printed_sessions
 
 # logging.config.dictConfig({
@@ -118,10 +119,17 @@ class Indexer:
         self.rep_es = republic_elasticsearch.initialize_es(host_type=host_type, timeout=60)
 
     def set_indexes(self, indexing_step: str, indexing_label: str):
+        if indexing_step in {'resolution_metadata', 'attendance_list_spans'}:
+            self.rep_es.config['resolutions_index'] = f"{self.rep_es.config['resolutions_index']}_{indexing_label}"
+            print(f"Indexer.set_indexes - setting resolutions_index index "
+                  f"name to {self.rep_es.config['resolutions_index']}")
+            return None
+        elif indexing_step == 'full_resolutions' and indexing_label is None:
+            self.rep_es.config['resolutions_index'] = 'full_resolutions'
         for key in self.rep_es.config:
             if key.startswith(indexing_step) and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
-                print(key, self.rep_es.config[key])
+                print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
 
     def has_sections(self, inv_num: int):
         inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
@@ -130,7 +138,7 @@ class Indexer:
     def index_session_resolutions(self, session: rdm.Session,
                                   opening_searcher: FuzzyPhraseSearcher,
                                   verb_searcher: FuzzyPhraseSearcher) -> None:
-        for resolution in res_parser.get_session_resolutions(session, opening_searcher, verb_searcher):
+        for resolution in printed_res_parser.get_session_resolutions(session, opening_searcher, verb_searcher):
             self.rep_es.index_resolution(resolution)
 
     def do_downloading(self, inv_num: int, year_start: int, year_end: int):
@@ -344,6 +352,7 @@ class Indexer:
         print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         inv_metadata = get_inventory_by_num(inv_num)
         text_type = get_text_type(inv_num)
+        errors = []
         if from_files is True:
             get_session_gen = self.get_sessions_from_files(inv_num, year_start, year_end)
         else:
@@ -357,6 +366,7 @@ class Indexer:
                 prov_url = self.rep_es.post_provenance(source_ids=session_json['page_ids'], target_ids=[session.id],
                                                        source_index='pages', target_index='session_metadata',
                                                        ignore_prov_errors=True)
+                print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
                 self.rep_es.index_session_metadata(session_json)
@@ -369,18 +379,52 @@ class Indexer:
         except Exception as err:
             logger.error(err)
             logger.error('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
+            errors.append(err)
             print(err)
             print('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
-            raise
+            # raise
+        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
+        logger.info(f"finished indexing sessions of inventory {inv_num} with {error_label}")
+        print(f"finished indexing sessions of inventory {inv_num} with {error_label}")
+
+    def get_inventory_sessions(self, inv_num: int) -> Generator[rdm.Session, None, None]:
+        inv_session_metas = self.rep_es.retrieve_inventory_session_metadata(inv_num)
+        inv_session_trs = defaultdict(list)
+        for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
+            if 'session_id' not in tr.metadata:
+                continue
+            inv_session_trs[tr.metadata['session_id']].append(tr)
+        for session_meta in inv_session_metas:
+            try:
+                session_id = session_meta['id']
+                if session_id not in inv_session_trs:
+                    print(f're-indexing text regions for session {session_id}')
+                    session_trs_json = self.rep_es.retrieve_session_trs(session_meta)
+                    session_trs = [pagexml_helper.json_to_pagexml_text_region(tr_json) for tr_json in session_trs_json]
+                    for tr in session_trs:
+                        tr.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
+                        tr.metadata['session_id'] = session_id
+                        for line in tr.lines:
+                            line.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
+                    self.rep_es.index_bulk_docs('session_text_regions', [tr.json for tr in session_trs])
+                    inv_session_trs[session_id] = session_trs
+                session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
+                                      text_regions=inv_session_trs[session_meta['id']])
+                yield session
+            except (TypeError, KeyError) as err:
+                logger.error(f"Error generation session {session_meta['id']} from metadata and text regions")
+                logger.error(err)
+                raise
 
     def do_printed_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
-        opening_searcher, verb_searcher = res_parser.configure_resolution_searchers()
+        opening_searcher, verb_searcher = printed_res_parser.configure_resolution_searchers()
         has_error = False
         line_break_detector = load_line_break_detector()
+        self.rep_es.delete_by_inventory(inv_num, self.rep_es.config['resolutions_index'])
         errors = []
-        for session in self.rep_es.retrieve_inventory_sessions_with_lines(inv_num):
+        for session in self.get_inventory_sessions(inv_num):
             logger.info(f"indexing resolutions for session {session.id}")
             print(f"indexing resolutions for session {session.id}")
             if "index_timestamp" not in session.metadata:
@@ -389,70 +433,79 @@ class Indexer:
                 print("DELETING SESSION WITH ID", session.id)
                 continue
             try:
-                for resolution in res_parser.get_session_resolutions(session, opening_searcher,
-                                                                     verb_searcher,
-                                                                     line_break_detector=line_break_detector):
-                    prov_url = self.rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
-                                                           source_index='session_lines', target_index='resolutions')
+                for resolution in printed_res_parser.get_session_resolutions(session, opening_searcher,
+                                                                             verb_searcher,
+                                                                             line_break_detector=line_break_detector):
+                    try:
+                        prov_url = self.rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
+                                                               source_index='session_lines', target_index='resolutions',
+                                                               ignore_prov_errors=True)
+                    except Exception as err:
+                        logger.error(f'Error posting provenance for resolution {resolution.id}')
+                        logger.error(err)
+                        errors.append(err)
+                        prov_url = None
                     resolution.metadata['prov_url'] = prov_url
                     logger.info(f"indexing resolution {resolution.id}")
                     self.rep_es.index_resolution(resolution)
             except (TypeError, KeyError) as err:
                 errors.append(err)
+                logging.error('Error parsing resolutions for inv_num', inv_num)
+                logging.error(err)
                 # pass
                 raise
-        logger.info(f"finished indexing resolutions of inventory {inv_num} with "
-                    f"{'an error' if has_error else 'no errors'}")
-        print(f"finished indexing resolutions of inventory {inv_num} with "
-              f"{'an error' if has_error else 'no errors'}")
+        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
+        logger.info(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
+        print(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
         for err in errors:
             print(err)
 
-    def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
+    def do_handwritten_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing handwritten PageXML resolutions for inventory {inv_num} "
                     f"(years {year_start}-{year_end})...")
         print(f"Indexing handwritten PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
-        inv_session_metas = self.rep_es.retrieve_inventory_session_metadata(inv_num)
-        inv_session_trs = defaultdict(list)
         has_error = False
         errors = []
-        self.rep_es.delete_by_inventory(inv_num, self.rep_es.config['resolutions_index'])
-        for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
-            inv_session_trs[tr.metadata['session_id']].append(tr)
-        try:
-            for session_meta in inv_session_metas:
-                session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
-                                      text_regions=inv_session_trs[session_meta['id']])
+        for session in self.get_inventory_sessions(inv_num):
+            try:
                 # print('session_meta["id"]:', session_meta['id'])
-                # print('session.id:', session.id)
-                for resolution in get_session_resolutions(session, opening_searcher, debug=0):
+                print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
+                for resolution in hand_res_parser.get_session_resolutions(session, opening_searcher, debug=1):
                     source_ids = [session.id] + [tr.id for tr in session.text_regions]
                     prov_url = self.rep_es.post_provenance(source_ids=source_ids,
                                                            target_ids=[resolution.id],
-                                                           source_index='session_metadata', target_index='resolutions')
+                                                           source_index='session_metadata', target_index='resolutions',
+                                                           ignore_prov_errors=True)
                     resolution.metadata['prov_url'] = prov_url
                     self.rep_es.index_resolution(resolution)
                     print('indexing handwritten resolution', resolution.id)
                     # self.rep_es.es_anno.index(index=res_index, id=res.id, document=res.json)
-        except Exception as err:
-            print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
-            logging.error(err)
-            print(err)
-            errors.append(err)
-            raise
-        logger.info(f"finished indexing handwritten resolutions of inventory {inv_num} "
-                    f"with {'an error' if has_error else 'no errors'}")
-        print(f"finished indexing handwritten resolutions of inventory {inv_num} "
-              f"with {'an error' if has_error else 'no errors'}")
+            except Exception as err:
+                print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
+                logging.error('Error parsing resolutions for inv_num', inv_num)
+                logging.error(err)
+                print(err)
+                errors.append(err)
+                raise
+        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
+        logger.info(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
+        print(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
         for err in errors:
             print(err)
+
+    def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
+        self.rep_es.delete_by_inventory(inv_num, self.rep_es.config['resolutions_index'])
+        if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
+            self.do_printed_resolution_indexing(inv_num, year_start, year_end)
+        else:
+            self.do_handwritten_resolution_indexing(inv_num, year_start, year_end)
 
     def do_resolution_phrase_match_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolution phrase matches for inventory "
                     f"{inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML resolution phrase matches for inventory {inv_num} (years {year_start}-{year_end})...")
-        searcher = res_parser.make_resolution_phrase_model_searcher()
+        searcher = printed_res_parser.make_resolution_phrase_model_searcher()
         for resolution in self.rep_es.scroll_inventory_resolutions(inv_num):
             print('indexing phrase matches for resolution', resolution.metadata['id'])
             num_paras = len(resolution.paragraphs)
@@ -468,8 +521,8 @@ class Indexer:
     def do_resolution_metadata_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolution metadata for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML resolution metadata for inventory {inv_num} (years {year_start}-{year_end})...")
-        has_error = False
-        searcher = res_parser.make_resolution_phrase_model_searcher()
+        errors = []
+        searcher = printed_res_parser.make_resolution_phrase_model_searcher()
         relative_path = rpm.__file__.split("republic-project/")[-1]
         repo_url = 'https://github.com/HuygensING/republic-project'
         phrase_file = f'{repo_url}/blob/{get_commit_version()}/{relative_path}'
@@ -496,16 +549,15 @@ class Indexer:
                 print('\tadding resolution metadata for resolution', new_resolution.id)
                 self.rep_es.index_resolution(new_resolution)
             except Exception as err:
-                has_error = True
+                errors.append(err)
                 logger.error(err)
                 logger.error(f'ERROR - do_resolution_metadata_indexing - resolution.id: {resolution.id}')
                 print(f'ERROR - do_resolution_metadata_indexing - resolution.id: {resolution.id}')
                 pass
                 # raise
-        logger.info(f"finished indexing resolution metadata of inventory {inv_num} "
-                    f"with {'an error' if has_error else 'no errors'}")
-        print(f"finished indexing resolution metadata of inventory {inv_num} "
-              f"with {'an error' if has_error else 'no errors'}")
+        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
+        logger.info(f"finished indexing resolution metadata of inventory {inv_num} with {error_label}")
+        print(f"finished indexing resolution metadata of inventory {inv_num} with {error_label}")
 
     def do_resolution_metadata_indexing_old(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolution metadata for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -558,7 +610,8 @@ class Indexer:
     def do_inventory_attendance_list_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing attendance lists with spans for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing attendance lists with spans for inventory {inv_num} (years {year_start}-{year_end})...")
-        has_error = False
+        errors = []
+        # print('do_inventory_attendance_list_indexing - index:', self.rep_es.config['resolutions_index'])
         import run_attendancelist
         for year in range(year_start, year_end + 1):
             try:
@@ -569,20 +622,21 @@ class Indexer:
                     return None
                 for span_list in att_spans_year:
                     # print(span_list['metadata']['zittingsdag_id'])
+                    # print(span_list['spans'])
                     att_id = f'{span_list["metadata"]["zittingsdag_id"]}-attendance_list'
                     att_list = self.rep_es.retrieve_attendance_list_by_id(att_id)
                     att_list.attendance_spans = span_list["spans"]
+                    print(f"re-indexing attendance list {att_list.id} with {len(span_list['spans'])} spans")
                     self.rep_es.index_attendance_list(att_list)
             except Exception as err:
-                has_error = True
+                errors.append(err)
                 logger.error(err)
-                logger.error(f'issue with attendance lists for year {year}')
-                print(f'issue with attendance lists for year {year}')
-                pass
-        logger.info(f"finished indexing attendance list spans of inventory {inv_num} "
-                    f"with {'an error' if has_error else 'no errors'}")
-        print(f"finished indexing attendance list spans of inventory {inv_num} "
-              f"with {'an error' if has_error else 'no errors'}")
+                logger.error(f'Error - issue with attendance lists for year {year}')
+                print(f'Error - issue with attendance lists for year {year}')
+                raise
+        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
+        logger.info(f"finished indexing attendance lists of inventory {inv_num} with {error_label}")
+        print(f"finished indexing attendance lists of inventory {inv_num} with {error_label}")
 
 
 def process_inventory(task: Dict[str, Union[str, int]]):
@@ -591,6 +645,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
     indexer = Indexer(task["host_type"], base_dir=task["base_dir"])
     indexer.set_indexes(task["indexing_step"], task["index_label"])
+    # print('process_inventory - index:', indexer.rep_es.config['resolutions_index'])
     if task["indexing_step"] == "download":
         indexer.do_downloading(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "download_pages":
@@ -622,17 +677,17 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         indexer.rep_es.config['resolutions_index'] = 'handwritten_resolutions'
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "full_resolutions":
-        indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
+        # indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "phrase_matches":
         indexer.do_resolution_phrase_match_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "resolution_metadata":
-        indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
+        # indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
         indexer.do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "attendance_list_spans":
-        indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
+        # indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
         indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     else:
         raise ValueError(f'Unknown task type {task["indexing_step"]}')
