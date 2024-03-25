@@ -180,11 +180,12 @@ class Retriever:
         return docs
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str,
-                    size: int = 100, scroll: str = '2m', show_total: bool = True) -> iter:
+                    size: int = 100, scroll: str = '2m', show_total: bool = True,
+                    sort: List[str]=None) -> iter:
         if query is None:
-            response = es.search(index=index, scroll=scroll, size=size)
+            response = es.search(index=index, scroll=scroll, size=size, sort=sort)
         else:
-            response = es.search(index=index, scroll=scroll, size=size, query=query)
+            response = es.search(index=index, scroll=scroll, size=size, query=query, sort=sort)
         self.scroll_id = response['_scroll_id']
         scroll_size = response['hits']['total']
         if type(scroll_size) == dict:
@@ -199,7 +200,7 @@ class Retriever:
             for hit in response['hits']['hits']:
                 yield hit
             try:
-                response = es.scroll(scroll_id=self.scroll_id, scroll=scroll)
+                response = es.scroll(scroll_id=self.scroll_id, scroll=scroll, sort=sort)
             except ElasticsearchException:
                 print("retrieval failed for query:")
                 print(query)
@@ -240,9 +241,9 @@ class Retriever:
         response = self.es_anno.get(index=self.config['scans_index'], id=scan_id)
         return parser.json_to_pagexml_scan(response['_source'])
 
-    def retrieve_scans_by_query(self, query: dict) -> List[pdm.PageXMLScan]:
+    def retrieve_scans_by_query(self, query: dict, sort: List[str] = None) -> List[pdm.PageXMLScan]:
         for hit in self.scroll_hits(self.es_anno, query, self.config['scans_index'],
-                                    size=2, scroll='5m'):
+                                    size=2, scroll='5m', sort=sort):
             yield parser.json_to_pagexml_scan(hit['_source'])
         # response = self.es_anno.search(index=self.config['scans_index'], body=query)
         # return parse_hits_as_scans(response)
@@ -253,7 +254,7 @@ class Retriever:
         print('retrieve_text_repo_scans_by_inventory - inventory_num:', inventory_num)
         query = make_text_repo_inventory_query(inventory_num)
         print('retrieve_text_repo_scans_by_inventory - query:', query)
-        for hi, hit in enumerate(self.scroll_hits(self.es_text, query, index='file', size=2)):
+        for hi, hit in enumerate(self.scroll_hits(self.es_text, query, index='file', size=2, sort=['id.keyword'])):
             doc = hit['_source']
             versions = get_tesseract_versions(doc)
             if len(versions) == 0:
@@ -272,10 +273,10 @@ class Retriever:
         response = self.es_anno.get(index=self.config['pages_index'], id=page_id)
         return parser.json_to_pagexml_page(response['_source'])
 
-    def retrieve_pages_by_query(self, query: dict, size: Union[int, None] = 10) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_query(self, query: dict, size: Union[int, None] = 10, sort: List[str] = None) -> List[pdm.PageXMLPage]:
         for hi, hit in enumerate(self.scroll_hits(self.es_anno, query,
                                                   self.config['pages_index'],
-                                                  size=size)):
+                                                  size=size, sort=sort)):
             yield parser.json_to_pagexml_page(hit['_source'])
             if size is not None and (hi+1) == size:
                 break
@@ -374,7 +375,7 @@ class Retriever:
     def retrieve_inventory_sessions_with_lines(self, inventory_num: int) -> Generator[rdm.Session, None, None]:
         query = make_inventory_query(inventory_num=inventory_num)
         for hit in self.scroll_hits(self.es_anno, query, self.config['session_lines_index'],
-                                    size=2, scroll='10m'):
+                                    size=2, scroll='10m', sort=['id.keyword']):
             session = rdm.json_to_republic_session(hit['_source'])
             yield session
 
@@ -421,7 +422,7 @@ class Retriever:
 
     def retrieve_inventory_session_metadata(self, inv_num):
         query = make_inventory_query(inv_num)
-        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata', size=10)]
+        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata', size=10, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: int(doc['id'].split('-')[-1]))
         return docs
 
@@ -462,7 +463,7 @@ class Retriever:
         return self.retrieve_resolutions_by_query(query, size=1000)
 
     def scroll_resolutions_by_query(self, query: dict,
-                                    scroll: str = '1m') -> Generator[rdm.Resolution, None, None]:
+                                    scroll: str = '1m', sort: List[str] = None) -> Generator[rdm.Resolution, None, None]:
         for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolutions_index'],
                                     size=10, scroll=scroll):
             yield rdm.json_to_republic_resolution(hit['_source'])
@@ -489,7 +490,7 @@ class Retriever:
             {'match': {'metadata.inventory_num': inventory_num}},
             {'match': {'metadata.type': 'resolution'}}
         ])
-        for resolution in self.scroll_resolutions_by_query(query, scroll='20m'):
+        for resolution in self.scroll_resolutions_by_query(query, scroll='20m', sort=['id.keyword']):
             yield resolution
 
     def retrieve_attendance_list_by_id(self, att_id: str) -> rdm.AttendanceList:
