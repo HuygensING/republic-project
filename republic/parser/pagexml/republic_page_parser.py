@@ -330,11 +330,10 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
     return trs
 
 
-def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, trs: List[pdm.PageXMLTextRegion],
+def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, page_even: pdm.PageXMLPage,
+                                 page_odd: pdm.PageXMLPage, trs: List[pdm.PageXMLTextRegion],
                                  page_type_index: Dict[int, any], config: Dict[str, any],
                                  debug: int = 0) -> List[pdm.PageXMLPage]:
-    page_even = initialize_pagexml_page(scan_doc, 'even', page_type_index)
-    page_odd = initialize_pagexml_page(scan_doc, 'odd', page_type_index)
     tr_id_map = {}
     undecided = []
     append_count = 0
@@ -580,9 +579,10 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     scan_stats = combine_stats([scan_doc])
     if 'scan_width' not in scan_doc.metadata:
         scan_doc.metadata['scan_width'] = scan_doc.coords.width
-    pages: List[pdm.PageXMLPage] = []
+    page_even = initialize_pagexml_page(scan_doc, 'even', page_type_index)
+    page_odd = initialize_pagexml_page(scan_doc, 'odd', page_type_index)
     if not scan_doc.text_regions:
-        return pages
+        return [page_even, page_odd]
     config = copy.deepcopy(base_config)
     if 3760 <= scan_doc.metadata['inventory_num'] <= 3864:
         max_col_width = 1000
@@ -622,7 +622,8 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
     if debug > 0:
         print('split_scan_page - scan_stats:', scan_stats)
         print('split_scan_page - tr_stats:', tr_stats)
-    pages = assign_trs_to_odd_even_pages(scan_doc, trs, page_type_index, config, debug=debug)
+    pages = assign_trs_to_odd_even_pages(scan_doc, page_even, page_odd, trs,
+                                         page_type_index, config, debug=debug)
     page_stats = combine_stats(pages)
     if debug > 0:
         print('split_scan_page - page_stats:', page_stats)
