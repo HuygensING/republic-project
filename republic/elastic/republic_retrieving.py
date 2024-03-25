@@ -659,6 +659,6 @@ class Retriever:
                 'match': {'metadata.inventory_num': inv}
             }
         }
-        self.es_anno.delete_by_query(index, query)
+        return self.es_anno.delete_by_query(index, query)
 
 
