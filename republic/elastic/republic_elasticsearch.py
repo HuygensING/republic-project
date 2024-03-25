@@ -46,14 +46,15 @@ def text_repo_es_config():
 
 class RepublicElasticsearch(Retriever, Indexer):
 
-    def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict, host_type: str):
+    def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict, host_type: str = 'external'):
         super().__init__(es_anno, es_text, config)
         self.es_text_config = text_repo_es_config()
-        self.es_anno_config = set_elasticsearch_config('external')
+        self.es_anno_config = set_elasticsearch_config(host_type)
 
     def post_provenance(self, source_ids: List[str], target_ids: List[str], source_index: str,
                         target_index: str, source_es_url: str = None,
-                        source_external_urls: List[str] = None, why: str = None):
+                        source_external_urls: List[str] = None, why: str = None,
+                        ignore_prov_errors: bool = False):
         data = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids,
                                     target_ids=target_ids, source_index=source_index,
                                     target_index=target_index, source_es_url=source_es_url,
@@ -63,7 +64,8 @@ class RepublicElasticsearch(Retriever, Indexer):
         if response.status_code == 201:
             return f"{settings.prov_host_url}/{response.headers['Location'][1:]}"
         if response.status_code != 201:
-            print('PROVENANCE SERVER ERROR', response.status_code, response.reason)
+            if not ignore_prov_errors:
+                print('PROVENANCE SERVER ERROR', response.status_code, response.reason)
             return None
 
 

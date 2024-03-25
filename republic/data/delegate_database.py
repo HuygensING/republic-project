@@ -1,17 +1,22 @@
-import pandas as pd
-import json
 import ast
+import json
+import os
+
+import pandas as pd
+
 from .datamangler import make_abbreviated_delegates
 from .abbr_delegates_to_pandas import abbreviated_delegates_from_excel
-from .stopwords import stopwords
-import pkg_resources
+from .stopwords import stopwords as default_stopwords
+
+from republic.helper.utils import get_project_dir
 
 
-# DATA_PATH = pkg_resources.resource_filename('__name__', 'data/csvs')
-PICKLE_FILE = pkg_resources.resource_filename(__name__, 'csvs/abbreviated_delegates.parquet')
-PICKLE_FILE_FOUND = pkg_resources.resource_filename(__name__, 'csvs/found_deputies.parquet')
-EXCEL_FILE_FOUND = pkg_resources.resource_filename(__name__, 'csvs/found_deputies.excel')
-JUNK_JSON = pkg_resources.resource_filename(__name__, 'json/republic_junk.json')
+project_dir = get_project_dir()
+DATA_DIR = os.path.join(project_dir, 'republic/data')
+PICKLE_FILE = os.path.join(DATA_DIR, 'csvs/abbreviated_delegates.parquet')
+PICKLE_FILE_FOUND = os.path.join(DATA_DIR, 'csvs/found_deputies.parquet')
+EXCEL_FILE_FOUND = os.path.join(DATA_DIR, 'csvs/found_deputies.excel')
+JUNK_JSON = os.path.join(DATA_DIR, 'json/republic_junk.json')
 
 
 def get_raa_db():
@@ -46,7 +51,7 @@ def get_raa_db():
 abbreviated_delegates = get_raa_db()
 
 
-def make_previously_matched(abbreviated_delegates=abbreviated_delegates, stopwords=stopwords):
+def make_previously_matched():
     try:
         previously_matched = pd.read_parquet(PICKLE_FILE_FOUND)
     except (OSError, ValueError):
@@ -57,8 +62,12 @@ def make_previously_matched(abbreviated_delegates=abbreviated_delegates, stopwor
 
 found_delegates = make_previously_matched()
 
-with open(JUNK_JSON, 'r') as rj:
-    ekwz = json.load(fp=rj)
+
+def read_ekwz():
+    with open(JUNK_JSON, 'r') as rj:
+        ekwz = json.load(fp=rj)
+    return ekwz
+
 
 def variant2str(variant):
     if type(variant) == str:
@@ -69,7 +78,8 @@ def variant2str(variant):
         except AttributeError:
             pass
 
-def save_db(serializable_df):
+
+def save_db(serializable_df: pd.DataFrame):
     serializable_df.variants = serializable_df.variants.apply(lambda x: [variant2str(n) for n in x])
     serializable_df.to_parquet(PICKLE_FILE_FOUND)
 

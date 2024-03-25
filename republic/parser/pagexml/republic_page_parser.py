@@ -3,24 +3,26 @@ from collections import Counter
 from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
-from pagexml.helper.pagexml_helper import elements_overlap
+from fuzzy_search import FuzzyPhraseSearcher
+from pagexml.helper.pagexml_helper import regions_overlap
 
 import republic.helper.pagexml_helper as pagexml_helper
 import republic.parser.pagexml.republic_column_parser as column_parser
-from republic.helper.metadata_helper import make_iiif_region_url
 # import republic.model.physical_document_model as pdm
+from republic.helper.metadata_helper import make_iiif_region_url
 from republic.config.republic_config import base_config
+from republic.parser.logical.date_parser import check_line_starts_with_week_day_name
 # from republic.parser.pagexml.republic_column_parser import split_lines_on_column_gaps
 # from republic.parser.pagexml.republic_column_parser import determine_column_type
 # from republic.parser.pagexml.republic_column_parser import split_column_text_regions
 
 
-def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords) -> str:
+def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords, margin: int = 100) -> str:
     region = {
-        'left': coords.left - 100,
-        'top': coords.top - 100,
-        'width': coords.width + 200,
-        'height': coords.height + 200,
+        'left': coords.left - margin if coords.left > margin else 0,
+        'top': coords.top - margin if coords.top > margin else 0,
+        'width': coords.width + 2 * margin,
+        'height': coords.height + 2 * margin,
     }
     return make_iiif_region_url(jpg_url, region)
 
@@ -150,7 +152,7 @@ def get_page_split_widths(scan: pdm.PageXMLScan, debug: int = 0) -> Tuple[int, i
         even_end = scan_width / 2 + 100
     else:
         even_end = scan.metadata['normal_odd_end'] / 2 + 100
-    return even_end, odd_end
+    return int(even_end), int(odd_end)
 
 
 def is_even_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None, debug: int = 0) -> bool:
@@ -196,6 +198,7 @@ def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str,
                             page_type_index: Dict[int, any]) -> pdm.PageXMLPage:
     """Initialize a pagexml page type document based on the scan metadata."""
     metadata = copy.copy(scan_doc.metadata)
+    even_end, odd_end = get_page_split_widths(scan_doc)
     if 'doc_type' in metadata:
         del metadata['doc_type']
     metadata['type'] = 'page'
@@ -203,14 +206,22 @@ def initialize_pagexml_page(scan_doc: pdm.PageXMLScan, side: str,
     if side == 'odd':
         metadata['page_num'] = scan_doc.metadata['scan_num'] * 2 - 1
         metadata['id'] = f"{scan_doc.metadata['id']}-page-{metadata['page_num']}"
+        region = [even_end, scan_doc.coords.top, odd_end, scan_doc.coords.bottom]
     elif side == 'even':
         metadata['page_num'] = scan_doc.metadata['scan_num'] * 2 - 2
         metadata['id'] = f"{scan_doc.metadata['id']}-page-{metadata['page_num']}"
+        region = [scan_doc.coords.left, scan_doc.coords.top, even_end, scan_doc.coords.bottom]
     else:
         metadata['page_num'] = scan_doc.metadata['scan_num'] * 2 - 2
         metadata['id'] = f"{scan_doc.metadata['id']}-page-{metadata['page_num']}-extra"
+        region = [odd_end, scan_doc.coords.top, scan_doc.coords.right, scan_doc.coords.bottom]
     metadata['scan_id'] = scan_doc.metadata['id']
-    page_doc = pdm.PageXMLPage(doc_id=metadata['id'], metadata=metadata, text_regions=[])
+    points = [
+        (region[0], region[1]), (region[0], region[3]),
+        (region[2], region[3]), (region[2], region[1])
+    ]
+    coords = pdm.Coords(points)
+    page_doc = pdm.PageXMLPage(doc_id=metadata['id'], metadata=metadata, coords=coords, text_regions=[])
     page_doc.set_parent(scan_doc)
     if page_type_index and metadata['page_num'] in page_type_index:
         page_type = page_type_index[metadata['page_num']]
@@ -766,7 +777,7 @@ def get_page_full_text_columns(page: pdm.PageXMLPage) -> List[pdm.PageXMLColumn]
     merged_columns = []
     for full_text_col in full_text_columns:
         for extra_col in extra_columns:
-            if elements_overlap(extra_col, full_text_col):
+            if regions_overlap(extra_col, full_text_col):
                 # merge columns into new full_text_col
                 # make sure multiple merges into the same full text
                 # columns are cumulative
@@ -783,18 +794,19 @@ def is_paragraph_line(line: pdm.PageXMLTextLine) -> bool:
     return line.metadata['line_class'].startswith('para_')
 
 
-def update_line_types(page: pdm.PageXMLPage, debug: int = 0) -> pdm.PageXMLPage:
+def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhraseSearcher,
+                      copy_page: bool = True, debug: int = 0) -> pdm.PageXMLPage:
     """Update line class types when they are in conflict with the type of
     their corresponding text region.
 
-    This is particulary for text regions labelled as attendance but with
+    This is particularly for text regions labelled as attendance but with
     lines classified as paragraph lines.
     """
     default_types = {'text_region', 'structure_doc', 'physical_structure_doc', 'pagexml_doc'}
     para_trs = []
     para_lines = []
     indent_trs = []
-    new_page = copy.deepcopy(page)
+    new_page = copy.deepcopy(page) if copy_page is True else page
     for col in new_page.columns:
         for tr in col.text_regions:
             if tr.has_type('resolution'):
@@ -815,6 +827,8 @@ def update_line_types(page: pdm.PageXMLPage, debug: int = 0) -> pdm.PageXMLPage:
                                           f"has attendance line types but not left indented, updating to 'para_mid'")
             elif tr.has_type('attendance') or tr.has_type('header'):
                 indent_trs.append(tr)
+    if len(para_lines) == 0:
+        return new_page
     for indent_tr in indent_trs:
         if indent_tr.has_type('attendance') or indent_tr.has_type('header'):
             line_types = column_parser.get_main_line_types(indent_tr.lines)
@@ -853,18 +867,31 @@ def update_line_types(page: pdm.PageXMLPage, debug: int = 0) -> pdm.PageXMLPage:
                         if indent_line.metadata['line_class'].startswith('para_'):
                             indent_line.metadata['line_class'] = 'attendance'
                 if indent_tr.has_type('header') and indent_tr.has_type('date'):
-                    if debug > 0:
-                        print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
-                              f"has para lines, updating line types to 'date_header'")
+                    update_type = 'date_header'
                     for indent_line in indent_tr.lines:
-                        indent_line.metadata['line_class'] = 'date_header'
+                        if check_line_starts_with_week_day_name(indent_line, week_day_name_searcher):
+                            if debug > 0:
+                                print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
+                                      f"has week day date lines, updating line types to 'date'")
+                            update_type = 'date'
+                            indent_tr.remove_type('header')
+                            indent_tr.add_type('main')
+                            break
+                    else:
+                        if debug > 0:
+                            print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
+                                  f"has para lines, updating line types to '{update_type}'")
+                    for indent_line in indent_tr.lines:
+                        indent_line.metadata['line_class'] = update_type
     return new_page
 
 
 def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = False,
-                                   debug: int = 0) -> pdm.PageXMLPage:
+                                   week_day_name_searcher: FuzzyPhraseSearcher = None,
+                                   copy_page: bool = True, debug: int = 0) -> pdm.PageXMLPage:
     if update_type is True:
-        page = update_line_types(page, debug=debug)
+        page = update_line_types(page, week_day_name_searcher=week_day_name_searcher,
+                                 copy_page=copy_page, debug=debug)
     new_extra = [tr for tr in page.extra] if page.extra else []
     if debug > 0:
         print(f"split_page_column_text_regions - new_extra: {new_extra}")
@@ -872,10 +899,17 @@ def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = Fa
                 for col in page.columns]
     if debug > 0:
         print(f"split_page_column_text_regions - new_cols: {new_cols}")
-    if len(new_extra + new_cols) == 0:
-        new_coords = pdm.Coords(page.coords.points) if page.coords else None
-    else:
+    if page.coords:
+        new_coords = pdm.Coords([point for point in page.coords.points])
+    elif len(new_cols + new_extra) > 0:
         new_coords = pdm.parse_derived_coords(new_extra + new_cols)
+    else:
+        new_coords = None
     new_page = pdm.PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
                                coords=new_coords, columns=new_cols, extra=new_extra)
     return new_page
+
+
+
+
+

@@ -7,7 +7,9 @@ from typing import Dict, List, Set, Tuple
 import numpy as np
 import pagexml.model.physical_document_model as pdm
 import pagexml.analysis.layout_stats as page_layout
+from fuzzy_search import FuzzyPhraseSearcher
 
+from republic.helper.pagexml_helper import make_baseline_string as mbs
 from republic.model.republic_date_phrase_model import week_day_names
 from republic.model.republic_date_phrase_model import month_day_names
 from republic.model.republic_date_phrase_model import month_names
@@ -38,7 +40,9 @@ def get_date_lines(date_trs):
     return [line for tr in date_trs for line in tr.lines if line.text]
 
 
-def check_line_starts_with_week_day_name(line: pdm.PageXMLTextLine, ignorecase: bool = False, debug: int = 0):
+def check_line_starts_with_week_day_name(line: pdm.PageXMLTextLine,
+                                         week_day_name_searcher: FuzzyPhraseSearcher = None,
+                                         ignorecase: bool = False, debug: int = 0):
     if line.text is None:
         return False
     # print('ignorecase:', ignorecase)
@@ -59,24 +63,41 @@ def check_line_starts_with_week_day_name(line: pdm.PageXMLTextLine, ignorecase: 
                 return True
         if debug > 1:
             print('\n')
+    if week_day_name_searcher is not None:
+        matches = week_day_name_searcher.find_matches(line.text)
+        if debug > 1:
+            print('check_line_starts_with_week_day_name - fuzzy matching with week day names')
+            for match in matches:
+                print('check_line_starts_with_week_day_name - week_day_name match:', match)
+        if len(matches) > 0:
+            return True
     return False
 
 
-def get_session_date_lines_from_pages(pages, ignorecase: bool = False, debug: int = 0):
+def get_session_date_lines_from_pages(pages, week_day_name_searcher: FuzzyPhraseSearcher = None,
+                                      ignorecase: bool = False, debug: int = 0):
     date_trs = get_date_trs(pages)
     if debug > 0:
         print('get_session_date_lines_from_pages - num date_trs:', len(date_trs))
+    if debug > 1:
+        for date_tr in date_trs:
+            print('\tdate_tr:', date_tr.id)
     date_lines = get_date_lines(date_trs)
     if debug > 0:
         print('get_session_date_lines_from_pages - num date_lines:', len(date_lines))
-    return filter_session_date_lines(date_lines, ignorecase=ignorecase, debug=debug)
+    if debug > 1:
+        for date_line in date_lines:
+            print(f'\tdate_line: {mbs(date_line)}\t{date_line.text}')
+    return filter_session_date_lines(date_lines, week_day_name_searcher=week_day_name_searcher,
+                                     ignorecase=ignorecase, debug=debug)
 
 
-def filter_session_date_lines(date_lines: List[pdm.PageXMLTextLine], ignorecase: bool = False, debug: int = 0):
+def filter_session_date_lines(date_lines: List[pdm.PageXMLTextLine], week_day_name_searcher: FuzzyPhraseSearcher = None,
+                              ignorecase: bool = False, debug: int = 0):
     """Filter on lines that start with the name of a week day."""
     session_date_lines = []
     for line in date_lines:
-        if check_line_starts_with_week_day_name(line, ignorecase=ignorecase, debug=debug):
+        if check_line_starts_with_week_day_name(line, week_day_name_searcher=week_day_name_searcher, ignorecase=ignorecase, debug=debug):
             session_date_lines.append(line)
     if debug > 0:
         print('filter_session_date_lines - num session_date_lines:', len(session_date_lines))
@@ -151,7 +172,12 @@ def get_session_date_line_structure(session_date_lines: List[pdm.PageXMLTextLine
         ('month_name', 'handwritten'),
     ]
     """
-    line_token_length = get_session_date_line_token_length(session_date_lines)
+    try:
+        line_token_length = get_session_date_line_token_length(session_date_lines)
+    except ValueError:
+        print(f'Error getting date_line_structure for inventory {inventory_id}')
+        print(f'number of session_date_lines:', len(session_date_lines))
+        raise
     text_type = get_inventory_text_type(inventory_id)
     standard_lines = [line for line in session_date_lines if len(line.text.split(' ')) == line_token_length]
     pos_tokens = get_standard_date_line_pos_tokens(standard_lines, ignorecase=ignorecase)

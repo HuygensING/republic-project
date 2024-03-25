@@ -1,7 +1,7 @@
 import copy
 import re
 from collections import Counter
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Union
 
 import numpy as np
 import pagexml.analysis.layout_stats as page_layout
@@ -199,7 +199,8 @@ def determine_column_type(column: pdm.PageXMLColumn) -> str:
 def make_derived_column(lines: List[pdm.PageXMLTextLine], metadata: dict, page_id: str) -> pdm.PageXMLColumn:
     """Make a new PageXMLColumn based on a set of lines, column metadata and a page_id."""
     coords = pdm.parse_derived_coords(lines)
-    column = pdm.PageXMLColumn(metadata=metadata, coords=coords, lines=lines)
+    tr = pdm.PageXMLTextRegion(metadata=metadata, coords=coords, lines=lines)
+    column = pdm.PageXMLColumn(metadata=metadata, coords=coords, text_regions=[tr])
     column.set_derived_id(page_id)
     return column
 
@@ -246,9 +247,12 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         if len(lines) == 0:
             continue
         coords = pdm.parse_derived_coords(lines)
-        column = pdm.PageXMLColumn(doc_type=copy.deepcopy(text_region.type),
+        tr = pdm.PageXMLTextRegion(doc_type=copy.deepcopy(text_region.type),
                                    metadata=copy.deepcopy(text_region.metadata),
                                    coords=coords, lines=lines)
+        column = pdm.PageXMLColumn(doc_type=copy.deepcopy(text_region.type),
+                                   metadata=copy.deepcopy(text_region.metadata),
+                                   coords=coords, text_regions=[tr])
         if text_region.parent and text_region.parent.id:
             column.set_derived_id(text_region.parent.id)
             column.set_parent(text_region.parent)
@@ -308,7 +312,6 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         print("EXTRA LINES AFTER:", len(extra_lines))
     extra = None
     if len(extra_lines) > 0:
-        coords = None
         try:
             coords = pdm.parse_derived_coords(extra_lines)
         except BaseException:
@@ -361,6 +364,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
 def make_new_tr(tr_lines: List[pdm.PageXMLTextLine], original_tr: pdm.PageXMLTextRegion,
                 update_type: bool = False, debug: int = 0) -> pdm.PageXMLTextRegion:
     tr_coords = pdm.parse_derived_coords(tr_lines)
+    tr_lines.sort()
     new_tr = pdm.PageXMLTextRegion(metadata=original_tr.metadata, coords=tr_coords, lines=tr_lines)
     new_tr.type = {t for t in original_tr.type}
     if update_type:
@@ -370,7 +374,7 @@ def make_new_tr(tr_lines: List[pdm.PageXMLTextLine], original_tr: pdm.PageXMLTex
 
 
 def get_main_line_types(lines: List[pdm.PageXMLTextLine]) -> List[str]:
-    line_types = [line.metadata['line_class'] for line in lines if line.metadata['line_class']
+    line_types = [line.metadata['line_class'] for line in lines if 'line_class' in line.metadata and line.metadata['line_class']
                   not in {'empty', 'noise'}]
     return [lt[:4] if lt.startswith('para_') else lt for lt in line_types]
 
@@ -443,23 +447,86 @@ def is_line_class_boundary(prev_line: pdm.PageXMLTextLine, curr_line: pdm.PageXM
     return False
 
 
+def get_previous_content_line(line_index: int, lines: List[pdm.PageXMLTextLine]) -> Union[pdm.PageXMLTextLine, None]:
+    for prev_index in range(line_index - 1, 0, -1):
+        prev_line = lines[prev_index]
+        if 'line_class' not in prev_line.metadata or prev_line.metadata['line_class'] != 'noise':
+            return prev_line
+    return None
+
+
+def get_next_content_line(line_index: int, lines: List[pdm.PageXMLTextLine]) -> Union[pdm.PageXMLTextLine, None]:
+    for next_index in range(line_index + 1, len(lines)):
+        next_line = lines[next_index]
+        if 'line_class' not in next_line.metadata or next_line.metadata['line_class'] != 'noise':
+            return next_line
+    return None
+
+
+def separate_noise_lines(text_region: pdm.PageXMLTextRegion) -> Dict[str, any]:
+    lines = {
+        'content': [],
+        'noise': []
+    }
+    sorted_lines = sorted(text_region.lines)
+    for li, line in enumerate(sorted_lines):
+        if 'line_class' not in line.metadata:
+            lines['content'].append(line)
+        elif line.metadata['line_class'] == 'noise':
+            prev_line = get_previous_content_line(li, sorted_lines)
+            next_line = get_next_content_line(li, sorted_lines)
+            if prev_line:
+                assert prev_line.id != line.id, "current line and prev_line are the same"
+            if next_line:
+                assert next_line.id != line.id, "current line and next_line are the same"
+            if prev_line and next_line:
+                closest = prev_line if pdm.vertical_distance(line, prev_line) < pdm.vertical_distance(line, next_line) \
+                    else next_line
+                lines['noise'].append((line, closest))
+            elif prev_line:
+                lines['noise'].append((line, prev_line))
+            elif next_line:
+                lines['noise'].append((line, next_line))
+            else:
+                lines['noise'].append((line, None))
+        else:
+            lines['content'].append(line)
+    return lines
+
+
 def split_text_region_on_vertical_gap(text_region: pdm.PageXMLTextRegion,
                                       update_type: bool = False,
                                       debug: int = 0) -> List[pdm.PageXMLTextRegion]:
     new_trs = []
-    line_heights = [page_layout.get_text_heights(line, debug=debug) for line in text_region.lines]
+    separated_lines = separate_noise_lines(text_region)
+    content_lines = separated_lines['content']
+    noise_line_links = separated_lines['noise']
+    if debug > 2:
+        for nl, ll in noise_line_links:
+            print('noise link:')
+            print('\tnoise line:', nl)
+            print('\tlink line:', ll)
+    line_heights = [page_layout.get_text_heights(line, debug=debug) for line in content_lines]
     # line_heights = [lh for lh in line_heights if lh is not None]
-    all_distances = page_layout.get_line_distances(text_region.lines)
+    all_distances = page_layout.get_line_distances(content_lines)
+    if debug > 2:
+        for line in content_lines:
+            print('\tline:', line.text)
+        print('distances:', all_distances)
     avg_distances = [dists.mean() for dists in all_distances]
     if debug > 1:
         print('split_text_region_on_vertical_gap - text_region avg_distances:', avg_distances)
         print('split_text_region_on_vertical_gap - text_region line_heights:', line_heights)
-    lines = sorted(text_region.lines)
-    if len(lines) == 0:
+    if len(content_lines) == 0:
         return [copy.deepcopy(text_region)]
-    prev_line = lines[0]
+    prev_line = content_lines[0]
     tr_lines = [prev_line]
-    for li, curr_line in enumerate(lines[1:]):
+    for li, curr_line in enumerate(content_lines[1:]):
+        if debug > 2:
+            print('\n---------------')
+            print('prev_line:', prev_line.text)
+            print('curr_line:', curr_line.text)
+            print('-----------------')
         avg_dist = avg_distances[li]
         if line_heights[li-1] is None:
             tr_lines.append(curr_line)
@@ -496,6 +563,18 @@ def split_text_region_on_vertical_gap(text_region: pdm.PageXMLTextRegion,
     if len(new_trs) == 1:
         if text_region.has_type('date') or text_region.has_type('attendance'):
             new_trs[0].type = text_region.type
+    for noise_line, link_line in noise_line_links:
+        if link_line is None:
+            new_tr = make_new_tr([noise_line], text_region)
+            new_tr.add_type('noise')
+            new_trs.append(new_tr)
+        else:
+            added = False
+            for tr in new_trs:
+                if link_line in tr.lines:
+                    tr.add_child(noise_line)
+                    added = True
+                    tr.lines.sort()
+            assert added is True, (f"no textregion found containing link line {link_line.id} "
+                                   f"on page {link_line.metadata['page_id']}")
     return new_trs
-
-

@@ -2,8 +2,8 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.phrase.phrase_model import PhraseModel
 
 from ...model.republic_date_phrase_model import month_names_early, month_names_late
-from ...data.delegate_database import abbreviated_delegates, ekwz
-from ...data.stopwords import stopwords
+from ...data.delegate_database import get_raa_db, read_ekwz
+from ...data.stopwords import stopwords as default_stopwords
 
 
 fuzzysearch_config = {
@@ -16,14 +16,23 @@ fuzzysearch_config = {
 }
 
 
-def nm_to_delen(naam, stopwords=stopwords):
+def nm_to_delen(naam, stopwords=None):
+    if stopwords is None:
+        stopwords = default_stopwords
     nms = [n for n in naam.split(' ') if n not in stopwords]
     return nms
 
-def delegates_to_keywords(abbreviated_delegates,
-                          stopwords=stopwords,
-                          exclude=['Heeren', 'van', 'met', 'Holland']):
+
+def delegates_to_keywords(abbreviated_delegates=None,
+                          stopwords=None,
+                          exclude=None):
     """TODO: better exclude"""
+    if abbreviated_delegates is None:
+        abbreviated_delegates = get_raa_db()
+    if stopwords is None:
+        stopwords = default_stopwords
+    if exclude is None:
+        exclude = ['Heeren', 'van', 'met', 'Holland']
     stopwords.extend(exclude)
     keywords = list(abbreviated_delegates.name)
     kwrds = {key: nm_to_delen(key) for key in keywords}
@@ -31,10 +40,13 @@ def delegates_to_keywords(abbreviated_delegates,
     return nwkw
 
 
-herenkeywords = delegates_to_keywords(abbreviated_delegates)
+herenkeywords = delegates_to_keywords(get_raa_db())
 
 
-def make_herensearcher(keywords=herenkeywords):
+def make_herensearcher(keywords=None):
+    if keywords is None:
+        abbreviated_delegates = get_raa_db()
+        keywords = delegates_to_keywords(abbreviated_delegates)
     fuzzysearch_config = {'char_match_threshold': 0.7,
                           'ngram_threshold': 0.5,
                           'levenshtein_threshold': 0.5,
@@ -47,7 +59,9 @@ def make_herensearcher(keywords=herenkeywords):
     herensearcher.index_phrase_model(phrase_model=phrase_model)
     return herensearcher
 
+
 herensearcher = make_herensearcher(keywords=herenkeywords)
+
 
 def make_junksweeper(ekwz):
     provincies = ['Holland', 'Zeeland', 'West-Vriesland', 'Gelderland', 'Overijssel', 'Utrecht', 'Friesland']
@@ -60,4 +74,5 @@ def make_junksweeper(ekwz):
     junksweeper.index_phrase_model(phrase_model=phrase_model)
     return junksweeper
 
-junksweeper = make_junksweeper(ekwz)
+
+junksweeper = make_junksweeper(read_ekwz())

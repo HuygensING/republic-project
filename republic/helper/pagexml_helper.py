@@ -6,7 +6,7 @@ import re
 
 import numpy as np
 import pagexml.model.physical_document_model as pdm
-from pagexml.helper.pagexml_helper import elements_overlap
+from pagexml.helper.pagexml_helper import regions_overlap
 # import republic.model.physical_document_model as pdm
 
 
@@ -107,16 +107,64 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
     return merged_col
 
 
-def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion]) -> List[Set[pdm.PageXMLTextRegion]]:
-    tr_sets = []
+def merge_overlapping_sets(merge_with: Dict[any, Set[any]]):
+    change = True
+    while change is True:
+        change = False
+        for tr1 in merge_with:
+            add_merge = set()
+            for tr2 in merge_with[tr1]:
+                for tr3 in merge_with[tr2]:
+                    if tr3 != tr1 and tr3 not in merge_with[tr1]:
+                        add_merge.add(tr3)
+            if len(add_merge) > 0:
+                change = True
+                merge_with[tr1].update(add_merge)
+    return merge_with
+
+
+def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion],
+                                 overlap_threshold: float = 0.3, debug: int = 0) -> List[Set[pdm.PageXMLTextRegion]]:
+    # tr_sets = []
+    from collections import defaultdict
+    merge_with = defaultdict(set)
     in_overlapping = set()
     for tr1, tr2 in combinations(text_regions, 2):
-        if elements_overlap(tr1, tr2, threshold=0.3) is False:
+        if regions_overlap(tr1, tr2, threshold=overlap_threshold) is False:
             continue
-        tr_sets.append({tr1, tr2})
-        in_overlapping.update({tr1, tr2})
-    tr_sets.extend([{tr} for tr in text_regions if tr not in in_overlapping])
-    return tr_sets
+        merge_with[tr1].add(tr2)
+        merge_with[tr2].add(tr1)
+        # tr_sets.append({tr1, tr2})
+        in_overlapping.update([tr1, tr2])
+    if debug > 3:
+        print('merge_with before:')
+        for tr in merge_with:
+            print('\tHEAD', tr.id)
+            print(f'\tMERGE WITH {[mtr.id for mtr in merge_with[tr]]}')
+    merge_with = merge_overlapping_sets(merge_with)
+    if debug > 3:
+        print('merge_with after:')
+        for tr in merge_with:
+            print('\tHEAD', tr.id)
+            print(f'\tMERGE WITH {[mtr.id for mtr in merge_with[tr]]}')
+    merge_sets = []
+    skip = set()
+    for tr in merge_with:
+        if tr in skip:
+            # print(f'skipping tr {tr.id} and linked {[mtr.id for mtr in merge_with[tr]]}')
+            continue
+        merge_set = {tr}.union(merge_with[tr])
+        merge_sets.append(merge_set)
+        skip.add(tr)
+        skip.update(merge_with[tr])
+    merge_sets.extend([{tr} for tr in text_regions if tr not in in_overlapping])
+    num_trs = sum(len(merge_set) for merge_set in merge_sets)
+    assert num_trs == len(text_regions), "merge_sets contain more text regions than given"
+    return merge_sets
+    # tr_sets.extend([{tr} for tr in text_regions if tr not in in_overlapping])
+    # num_trs = sum(len(tr_set) for tr_set in tr_sets)
+    # assert num_trs == len(text_regions), "tr_sets contain more text regions than given"
+    # return tr_sets
 
 
 def copy_reading_order(super_doc: pdm.PageXMLDoc, sub_doc: pdm.PageXMLDoc,
@@ -223,6 +271,7 @@ def sort_lines_in_reading_order(doc: pdm.PageXMLDoc) -> Generator[pdm.PageXMLTex
                 line.metadata['column_id'] = text_region.metadata['column_id']
             if 'page_id' in text_region.metadata and 'page_id' not in line.metadata:
                 line.metadata['page_id'] = text_region.metadata['page_id']
+            line.metadata['text_region_id'] = text_region.id
         stacked_lines = horizontal_group_lines(text_region.lines)
         for lines in stacked_lines:
             for line in sorted(lines, key=lambda x: x.coords.left):

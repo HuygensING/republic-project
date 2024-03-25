@@ -1,8 +1,10 @@
 from typing import Dict, List, Union
 from collections import defaultdict
 
+import fuzzy_search
 from fuzzy_search.phrase.phrase_model import PhraseModel
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
+from fuzzy_search.search.token_searcher import FuzzyTokenSearcher
 from fuzzy_search.match.phrase_match import PhraseMatch
 
 # from republic.fuzzy.fuzzy_phrase_model import PhraseModel
@@ -18,7 +20,7 @@ class EventSearcher:
         self.phrases = {}
         self.variants = {}
         self.labels = {}
-        self.searchers: Dict[str, FuzzyPhraseSearcher] = {}
+        self.searchers: Dict[str, Union[FuzzyPhraseSearcher, FuzzyTokenSearcher]] = {}
         self.phrase_models: Dict[str, PhraseModel] = {}
         self.max_offsets: Dict[str, int] = {}
         self.min_offsets: Dict[str, int] = {}
@@ -35,10 +37,13 @@ class EventSearcher:
             self.sliding_window: List[Union[None, Dict[str, Union[str, int, list]]]] = [None] * self.window_size
 
     def add_searcher(self, searcher_config: dict, searcher_name: str,
-                     phrase_model: PhraseModel):
+                     phrase_model: PhraseModel, use_token_searcher: bool = False):
         """Add a fuzzy keyword searcher with its own config and phrase model"""
         # Create a new fuzzy keyword searcher
-        searcher = FuzzyPhraseSearcher(phrase_model=phrase_model, config=searcher_config)
+        if use_token_searcher is True:
+            searcher = FuzzyTokenSearcher(phrase_model=phrase_model, config=searcher_config)
+        else:
+            searcher = FuzzyPhraseSearcher(phrase_model=phrase_model, config=searcher_config)
         # searcher.index_phrase_model(phrase_model)
         # searcher.index_phrases(phrase_model.get_phrases())
         # make sure the EventSearcher knows which keywords and labels are registered
@@ -82,11 +87,18 @@ class EventSearcher:
         return phrase in self.labels
 
     def search_document(self, doc: Dict[str, Union[str, int]],
-                        searcher_name: str) -> List[PhraseMatch]:
+                        searcher_name: str, debug: int = 0) -> List[PhraseMatch]:
         """Use a registered searcher to find fuzzy match for a document."""
-        matches: List[PhraseMatch] = []
+        proper_matches: List[PhraseMatch] = []
         # use the searcher to find fuzzy matches
-        for match in self.searchers[searcher_name].find_matches(doc, include_variants=True):
+        searcher = self.searchers[searcher_name]
+        if isinstance(searcher, FuzzyTokenSearcher):
+            matches = searcher.find_matches(doc)
+        elif isinstance(searcher, FuzzyPhraseSearcher):
+            matches = searcher.find_matches(doc, include_variants=True)
+        else:
+            return proper_matches
+        for match in matches:
             match_string = match.phrase.phrase_string
             # check if the phrase exceeds minimum or maximum offset thresholds
             if match_string in self.max_offsets and match.offset > self.max_offsets[match_string]:
@@ -100,8 +112,8 @@ class EventSearcher:
             # if the phrase has a label, add it to the match
             # if self.phrase_models[searcher_name].has_label(phrase):
             #     match['match_label'] = self.phrase_models[searcher_name].get_label(phrase)
-            matches += [match]
-        return matches
+            proper_matches.append(match)
+        return proper_matches
 
     def add_empty_document(self):
         """Append an empty placeholder document to the sliding window."""
@@ -110,16 +122,22 @@ class EventSearcher:
             self.sliding_window = self.sliding_window[-self.window_size:]
         self.sliding_window += [None]
 
-    def add_document(self, doc_id: Union[str, int], doc_text: str, text_object: any = None):
+    def add_document(self, doc_id: Union[str, int], doc_text: str, text_object: any = None,
+                     debug: int = 0):
         """Add a text with identifier to the sliding window and run registered fuzzy searchers."""
-        matches: List[PhraseMatch] = []
-        doc = {'id': doc_id, 'text': doc_text, 'matches': matches}
+        doc_matches: List[PhraseMatch] = []
+        doc = {'id': doc_id, 'text': doc_text, 'matches': doc_matches}
+        if debug > 0:
+            print(f"fuzzy_event_searcher.add_document - doc:", doc_text)
         if text_object:
             doc['text_object'] = text_object
         # iterate over all registered searchers
         for searcher_name in self.searchers:
             # add the matches to the document
             doc['matches'] += self.search_document(doc, searcher_name)
+        if debug > 0:
+            for match in doc['matches']:
+                print(f"\n\tfuzzy_event_searcher.add_document - match:", match, '\n')
         # add the document to the sliding window,
         self.sliding_window += [doc]
         # if the window is too long, remove earliest docs to make room for the new doc

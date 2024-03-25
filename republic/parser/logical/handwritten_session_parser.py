@@ -1,37 +1,48 @@
+import copy
 import datetime
 import re
 from collections import defaultdict
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
 from fuzzy_search.match.phrase_match import PhraseMatch
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.search.token_searcher import FuzzyTokenSearcher
 
+import republic.helper.pagexml_helper as pagexml_helper
+import republic.model.republic_document_model as rdm
+import republic.parser.pagexml.republic_column_parser as column_parser
 from republic.classification.page_features import get_line_base_dist
 from republic.helper.text_helper import is_duplicate
 from republic.helper.metadata_helper import coords_to_iiif_url
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.model.inventory_mapping import get_inventory_by_id
+from republic.model.inventory_mapping import get_inventory_by_num
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_date import get_next_date_strings
 from republic.parser.pagexml.republic_page_parser import split_page_column_text_regions
+from republic.parser.logical.generic_session_parser import make_session_date_metadata
+from republic.parser.logical.generic_session_parser import make_session
+from republic.parser.logical.generic_session_parser import make_session_metadata
 from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_line_structure
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
 
 
-date_jumps = {
-    "1617-08-09": [365],
-    "1632-12-22": [-250],
-    "1632-05-04": [0, 365],
+DATE_JUMPS = {
+    ("4560", "1602-11-10"): [-250],
+    ("4562", "1617-08-09"): [365],
+    ("4562", "1632-12-22"): [-250],
+    ("4562", "1632-05-04"): [0, 365],
+    ("4610", "1701-02-16"): [-10],
 }
 
 
-def calculate_date_jump(current_date: RepublicDate) -> int:
-    if current_date.isoformat() in date_jumps:
-        return date_jumps[current_date.isoformat()].pop(0)
+def calculate_date_jump(inventory_num: Union[int, str], current_date: RepublicDate,
+                        date_jumps: Dict[Tuple[str, str], any]) -> int:
+    if (str(inventory_num), current_date.isoformat()) in date_jumps:
+        return date_jumps[(str(inventory_num), current_date.isoformat())].pop(0)
     else:
         return 0
 
@@ -148,9 +159,11 @@ def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False):
     return class_lines, near_extract_intro
 
 
-def merge_line_class_trs(class_trs, line_class: str, page: pdm.PageXMLPage, distance_threshold: int = 400):
+def merge_line_class_trs(class_trs, line_class: str, page: pdm.PageXMLPage, distance_threshold: int = 400,
+                         debug: int = 0):
     """Check if pairs of text regions of the same class should be merged.
     This is only for attendance lists and session date references."""
+    check_parentage(page)
     if len(class_trs) > 1:
         merged_trs = []
         prev_tr = class_trs[0]
@@ -165,8 +178,20 @@ def merge_line_class_trs(class_trs, line_class: str, page: pdm.PageXMLPage, dist
                 merge_tr = pdm.PageXMLTextRegion(coords=merge_coords, lines=merge_lines, metadata=metadata)
                 merge_tr.add_type(line_class)
                 merge_tr.set_derived_id(merge_lines[0].metadata['scan_id'])
+                merge_tr.parent = prev_tr.parent
+                merge_tr.set_as_parent(merge_lines)
                 merge_tr.metadata['text_region_class'] = curr_tr.metadata['text_region_class']
                 merge_tr.metadata['text_region_links'] = []
+                prev_tr.lines = []
+                curr_tr.lines = []
+                if debug > 2:
+                    print(f'created merge_tr: {merge_tr.id} from prev_tr {prev_tr.id} and curr_tr {curr_tr}')
+                    for col in page.columns:
+                        print(f'  tr.id: {col.id}\tpage.id: {page.id}')
+                        for tr in col.text_regions:
+                            print(f'    tr.id: {tr.id}\tcol.id: {col.id}')
+                            for line in tr.lines:
+                                print(f'\tline.id: {line.id}\ttr.id: {tr.id}')
                 prev_tr = merge_tr
             else:
                 # print('ADDING MERGED TR')
@@ -176,6 +201,7 @@ def merge_line_class_trs(class_trs, line_class: str, page: pdm.PageXMLPage, dist
                 prev_tr = curr_tr
         # print('ADDING FINAL TR')
         merged_trs.append(prev_tr)
+        check_parentage(page)
         return merged_trs
     else:
         return class_trs
@@ -351,17 +377,15 @@ def split_para_lines_on_date_gaps(line_groups: Dict[str, List[List[pdm.PageXMLTe
 
 def make_classified_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine]],
                                  page: pdm.PageXMLPage, debug: int = 0) -> Dict[str, List[pdm.PageXMLTextRegion]]:
+    check_page_parentage(page)
     class_trs = defaultdict(list)
     line_groups: Dict[str, List[List[pdm.PageXMLTextLine]]] = defaultdict(list)
     for line_class in class_lines:
         line_groups[line_class] = split_lines_on_vertical_gaps(class_lines[line_class], debug=debug)
-    if 'para' in line_groups:
-        for group in line_groups['para']:
-            continue
-            # for line in group:
-            #     if line.text and re.match(r"", line.text):
-            #         pass
+    check_page_parentage(page)
     for line_class in line_groups:
+        if debug > 2:
+            print('line_class:', line_class)
         if line_class == 'para' and 'date' in class_lines and len(class_lines['date']) > 0:
             line_groups[line_class] = split_para_lines_on_date_gaps(line_groups, debug=debug)
         for line_group in line_groups[line_class]:
@@ -375,11 +399,24 @@ def make_classified_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine
                     group_coords = None
                 else:
                     group_coords = pdm.Coords(points)
+            col = line_group[0].parent.parent
+            for line in line_group:
+                if line.parent is None:
+                    print('MISSING PARENT FOR LINE:', line.id)
+                parent_tr = line.parent
+                if isinstance(parent_tr, pdm.PageXMLTextRegion):
+                    parent_tr.lines.remove(line)
             group_metadata = make_text_region_metadata(line_class, group_coords, page)
             group_tr = pdm.PageXMLTextRegion(coords=group_coords, lines=line_group, metadata=group_metadata)
             group_tr.add_type(line_class)
             group_tr.set_derived_id(line_group[0].metadata['scan_id'])
+            group_tr.set_as_parent(line_group)
+            if isinstance(col, pdm.PageXMLColumn):
+                group_tr.parent = col
+            else:
+                raise ValueError(f'parent {col.id} of text region is not of type PageXMLColumn')
             class_trs[line_class].append(group_tr)
+        check_page_parentage(page)
     for line_class in ['date', 'attendance']:
         class_trs[line_class] = merge_line_class_trs(class_trs[line_class], line_class, page)
     return class_trs
@@ -466,7 +503,6 @@ def extract_best_date_match(matches: List[PhraseMatch], current_date: RepublicDa
         if match.levenshtein_similarity != best_sim:
             break
         best_matches.append(match)
-    best_match = None
     if len(best_matches) > 1:
         best_delta = datetime.timedelta(days=36500)
         best_date, best_match = None, None
@@ -477,12 +513,183 @@ def extract_best_date_match(matches: List[PhraseMatch], current_date: RepublicDa
                 continue
             if time_delta < best_delta:
                 best_delta = time_delta
-                best_date = match_date
                 best_match = match
-            print('MULTIPLE BEST MATCHES:', match)
+            # print('MULTIPLE BEST MATCHES:', match)
     else:
         best_match = sorted_matches[0]
     return best_match
+
+
+def make_week_day_name_searcher(date_mapper: DateNameMapper, config: Dict[str, any]) -> FuzzyPhraseSearcher:
+    phrase_list = []
+    for week_day_name in date_mapper.date_name_map['week_day_name']:
+        phrase = {
+            'phrase': week_day_name,
+            'max_start_offset': 3
+        }
+        phrase_list.append(phrase)
+    week_day_name_searcher = FuzzyPhraseSearcher(phrase_list=phrase_list,
+                                                 config=config)
+    return week_day_name_searcher
+
+
+def process_handwritten_columns(columns: List[pdm.PageXMLColumn], page: pdm.PageXMLPage):
+    """Process all columns of a page and merge columns that are horizontally overlapping."""
+    merge_sets = column_parser.find_overlapping_columns(columns)
+    # print(merge_sets)
+    merge_cols = {col for merge_set in merge_sets for col in merge_set}
+    non_overlapping_cols = [col for col in columns if col not in merge_cols]
+    for merge_set in merge_sets:
+        # print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
+        merged_col = pagexml_helper.merge_columns(merge_set, "temp_id", merge_set[0].metadata)
+        merged_col.set_derived_id(page.id)
+        merged_col.set_parent(page)
+        non_overlapping_cols.append(merged_col)
+    return non_overlapping_cols
+
+
+def process_handwritten_text_regions(text_regions: List[pdm.PageXMLTextRegion], column: pdm.PageXMLColumn,
+                                     debug: int = 0):
+    """Process all text regions of a columns and merge regions that are overlapping."""
+    if debug > 3:
+        print(f'process_handwritten_text_regions - start with {len(text_regions)} trs')
+    non_overlapping_trs = []
+    for tr in text_regions:
+        check_parentage(tr)
+    merge_sets = pagexml_helper.get_overlapping_text_regions(text_regions, overlap_threshold=0.5)
+    assert sum(len(ms) for ms in merge_sets) == len(text_regions), "merge_sets contain more text regions that given"
+    if debug > 3:
+        for merge_set in merge_sets:
+            print('process_handwritten_text_regions - merge_set size:', len(merge_set))
+    for merge_set in merge_sets:
+        if len(merge_set) == 1:
+            tr = merge_set.pop()
+            if debug > 3:
+                print(f'process_handwritten_text_regions - adding tr at index {len(non_overlapping_trs)}:', tr.id)
+            check_parentage(tr)
+            non_overlapping_trs.append(tr)
+            continue
+        # print("MERGING OVERLAPPING TEXTREGION:", [tr.id for tr in merge_set])
+        lines = [line for tr in merge_set for line in tr.lines]
+        if len(lines) == 0:
+            if debug > 3:
+                print('process_handwritten_text_regions - no lines for merge_set of text regions with ids:',
+                      [tr.id for tr in text_regions])
+            coords = pdm.parse_derived_coords(list(merge_set))
+        else:
+            coords = pdm.parse_derived_coords(lines)
+        merged_tr = pdm.PageXMLTextRegion(doc_id="temp_id", metadata=merge_set.pop().metadata,
+                                          coords=coords, lines=lines)
+        # print(merged_tr)
+        merged_tr.set_derived_id(column.metadata['scan_id'])
+        merged_tr.set_parent(column)
+        merged_tr.set_as_parent(lines)
+        check_parentage(merged_tr)
+        if debug > 3:
+            print(f'process_handwritten_text_regions - adding merged tr at index {len(non_overlapping_trs)}:',
+                  merged_tr.id)
+            for line in merged_tr.lines:
+                print('\t', line.id, line.parent.id)
+        non_overlapping_trs.append(merged_tr)
+    if debug > 3:
+        print(f'process_handwritten_text_regions - end with {len(non_overlapping_trs)} trs')
+    for ti, tr in enumerate(non_overlapping_trs):
+        try:
+            check_parentage(tr)
+        except ValueError:
+            print(ti, tr.id)
+            raise
+    return non_overlapping_trs
+
+
+def process_handwritten_page(page, week_day_name_searcher: FuzzyPhraseSearcher = None, debug: int = 0):
+    """Split and/or merge columns and overlapping text regions of handwritten
+    resolution pages and correct line classes for session dates, attendance
+    lists, date headers and paragraphs. """
+    check_parentage(page)
+    page = copy.deepcopy(page)
+    page.columns = process_handwritten_columns(page.columns, page)
+    check_parentage(page)
+    for col in page.columns:
+        # print(f'\n{col.id}\n')
+        col.text_regions = process_handwritten_text_regions(col.text_regions, col)
+    check_parentage(page)
+    page = split_page_column_text_regions(page, week_day_name_searcher=week_day_name_searcher,
+                                          update_type=True, copy_page=False, debug=debug)
+    check_parentage(page)
+    return page
+
+
+def make_inventory_date_name_mapper(inv_num: int, pages: List[pdm.PageXMLPage]):
+    """Return a date name mapper for a given inventory that returns likely date representations
+    for a given date, based on the date format found in the pages of the inventory."""
+    inv_meta = get_inventory_by_num(inv_num)
+    date_token_cat = get_date_token_cat(inv_num=inv_meta['inventory_num'], ignorecase=True)
+    session_date_lines = get_session_date_lines_from_pages(pages, debug=0)
+    date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat,
+                                                          inv_meta['inventory_id'])
+    try:
+        date_mapper = DateNameMapper(inv_meta, date_line_structure)
+    except Exception:
+        print(f'Error creating DateNameMapper for inventory {inv_num}')
+        print(f'with date_line_structure:', date_line_structure)
+        print(f'with session_date_lines:', [line.text for line in session_date_lines])
+        raise
+    return date_mapper
+
+
+def process_handwritten_pages(inv, pages, ignorecase: bool = True):
+    date_mapper = make_inventory_date_name_mapper(inv, pages)
+    config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
+    new_pages = [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
+                                          debug=0) for page in pages]
+    return new_pages
+
+
+def check_parentage(doc: pdm.PageXMLDoc):
+    """Check that a documents descendants have proper parentage set."""
+    # print('doc.id:', doc.id)
+    if isinstance(doc, pdm.PageXMLPage):
+        for column in doc.columns:
+            if column.parent is None:
+                raise ValueError(f"no parent set for column {column.id} in page {doc.id}")
+            if column.parent != doc:
+                raise ValueError(f"wrong parent set for column {column.id} in page {doc.id}")
+            check_parentage(column)
+        for tr in doc.extra:
+            if tr.parent is None:
+                raise ValueError(f"no parent set for text_region {tr.id} in page {doc.id}")
+            if tr.parent != doc:
+                raise ValueError(f"wrong parent set for text_region {tr.id} in page {doc.id}")
+            check_parentage(tr)
+    elif isinstance(doc, pdm.PageXMLColumn):
+        for tr in doc.text_regions:
+            if tr.parent is None:
+                raise ValueError(f"no parent set for tr {tr.id} in column {doc.id}")
+            if tr.parent != doc:
+                raise ValueError(f"wrong parent set for tr {tr.id} in column {doc.id}")
+            check_parentage(tr)
+    elif isinstance(doc, pdm.PageXMLTextRegion):
+        for line in doc.lines:
+            if line.parent is None:
+                raise ValueError(f"no parent set for line {line.id} in text_region {doc.id}")
+            if line.parent != doc:
+                print('line parent:', line.parent.id)
+                raise ValueError(f"wrong parent set for line {line.id} in text_region {doc.id}")
+
+
+def check_page_parentage(page: pdm.PageXMLPage):
+    for col in page.columns:
+        if col.parent != page:
+            raise ValueError(f"no parent set for column {col.id} in page {page.id}")
+        for tr in col.text_regions:
+            if tr.parent != col:
+                raise ValueError(f"no parent set for text_region {tr.id} in page {page.id}")
+            for line in tr.lines:
+                if line.parent != tr:
+                    raise ValueError(f"no parent set for line {line.id} in page {page.id}")
+    return None
 
 
 def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
@@ -491,15 +698,26 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
     date_strings = get_next_date_strings(inv_start_date, date_mapper, num_dates=num_future_dates, include_year=False)
     # for dt in date_strings:
     #     print(dt, date_strings[dt])
-    config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-    date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
-    # date_searcher = FuzzyTokenSearcher(phrase_model=date_strings, config=config)
-    session_dates = {}
+    date_jumps = copy.deepcopy(DATE_JUMPS)
+    if 3096 <= pages[0].metadata['inventory_num'] <= 3350:
+        config = {'ngram_size': 2, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
+    else:
+        config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+        date_searcher = FuzzyTokenSearcher(phrase_model=date_strings, config=config)
+    if debug > 0:
+        print('find_session_dates - initial date_strings:', date_strings.keys())
+    print(date_searcher.phrase_model.token_in_phrase)
+    if debug > 0:
+        print(f"{pages[0].metadata['inventory_num']}\tstart_date: {inv_start_date}\tnumber of pages: {len(pages)}")
+
+    session_dates = defaultdict(list)
     session_trs = defaultdict(list)
     current_date = None
     jump_days = 0
     num_lines_since_extract_intro = 0
     for pi, page in enumerate(pages):
+        page = copy.deepcopy(page)
         if page.stats['words'] == 0:
             continue
         try:
@@ -510,11 +728,12 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
             print(pi, page.id, pages[pi - 2].id)
             print(page.stats, pages[pi - 2].stats)
             raise
-        page = split_page_column_text_regions(page, debug=0)
+        # page = split_page_column_text_regions(page, debug=0)
         if debug > 0:
             print('\n\n---------------------------------------')
             print('find_session_dates - page:', page.id)
-        print('find_session_dates - page:', page.id)
+        check_page_parentage(page)
+        # print('find_session_dates - page:', page.id)
         if 'inventory_id' not in page.metadata:
             page.metadata['inventory_id'] = f"{page.metadata['series_name']}_{page.metadata['inventory_num']}"
         class_lines, near_extract_intro = sort_lines_by_class(page, near_extract_intro=near_extract_intro,
@@ -531,19 +750,27 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                 if num_lines_since_extract_intro > 10:
                     near_extract_intro = False
                     num_lines_since_extract_intro = 0
+        check_page_parentage(page)
         if debug > 0:
             print(f'\tAFTER - near_extract_intro: {near_extract_intro}')
             print(f'\tAFTER - num_lines_since_extract_intro: {num_lines_since_extract_intro}\n')
+        check_page_parentage(page)
         class_trs = make_classified_text_regions(class_lines, page, debug=debug)
+        check_page_parentage(page)
         has_attendance = link_date_attendance(class_trs)
+        check_page_parentage(page)
         has_marginalia = link_para_marginalia(class_trs, debug=debug)
+        check_page_parentage(page)
         unlinked_att_trs, unlinked_marg_trs = link_classified_text_regions(class_trs, debug=debug)
-        if len(unlinked_att_trs) > 0:
-            print('find_session_dates - unlinked_att_trs:', len(unlinked_att_trs), page.id)
-        if len(unlinked_marg_trs) > 0:
-            print('find_session_dates - unlinked_marg_trs:', len(unlinked_marg_trs), page.id)
+        check_page_parentage(page)
+        if debug > 0:
+            if len(unlinked_att_trs) > 0:
+                print('find_session_dates - unlinked_att_trs:', len(unlinked_att_trs), page.id)
+            if len(unlinked_marg_trs) > 0:
+                print('find_session_dates - unlinked_marg_trs:', len(unlinked_marg_trs), page.id)
         main_trs = sorted(class_trs['date'] + class_trs['para'], key=lambda tr: tr.coords.top)
 
+        check_page_parentage(page)
         for main_tr in main_trs:
             if debug > 0:
                 print('\nfind_session_dates - main_tr:', main_tr.coords.box)
@@ -568,7 +795,9 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     continue
                 if debug > 0:
                     print(f"\t{line.metadata['line_class']: <12}    {line.text}")
-                line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text})
+                line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text}, debug=0)
+                # for match in line_matches:
+                #     print(match)
                 filtered_matches = [match for match in line_matches if match.offset < 50]
                 filtered_matches = [match for match in filtered_matches if
                                     abs(len(match.string) - len(line.text)) < 50]
@@ -580,40 +809,28 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     if debug > 1:
                         print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
                               best_match.levenshtein_similarity)
-                    print('\n--------------------------------\n')
-                    print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
-                          best_match.levenshtein_similarity)
-                    print(f'\t{current_date.isoformat()}')
-                    print('\n--------------------------------\n')
+                    # print('\n--------------------------------\n')
+                    if debug > 0:
+                        print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
+                              best_match.levenshtein_similarity)
+                    print(f'\tdate: {current_date.isoformat()}\tpage: {page.id}')
+                    # print('\n--------------------------------\n')
                     if debug > 2:
                         print(f'UPDATING CURRENT DATE from {current_date_string} to '
                               f'{date_strings[best_match.phrase.phrase_string].date.isoformat()}')
-                    session_dates[current_date.isoformat()] = {
-                        'session_date': current_date.isoformat(),
-                        'session_year': current_date.year,
-                        'session_month': current_date.month,
-                        'session_day': current_date.day,
-                        'session_weekday': current_date.day_name,
-                        'is_workday': current_date.is_work_day(),
-                        'date_phrase_string': best_match.phrase.phrase_string,
-                        'date_match_string': best_match.string,
-                        'page_id': page.id,
-                        'scan_id': page.metadata['scan_id'],
-                        'inventory_id': page.metadata['inventory_id'],
-                        'text_region_id': main_tr.id,
-                        'line_id': line.id,
-                        # 'text': line.text
-                    }
+                    date_metadata = make_session_date_metadata(current_date, best_match, line)
+                    session_dates[current_date.isoformat()].append(date_metadata)
                     session_trs[current_date.isoformat()].append(main_tr)
                     if debug > 2:
                         print(f'\tADDING main_tr to {current_date.date.isoformat()}')
                     if debug > 0:
                         print('find_session_dates - found date:', current_date, best_match.string, page.id)
-                    jump_days = calculate_date_jump(current_date)
+                    jump_days = calculate_date_jump(page.metadata['inventory_num'], current_date, date_jumps)
                     delta = datetime.timedelta(days=-num_past_dates + jump_days)
                     start_day = current_date.date + delta
                     start_day = RepublicDate(start_day.year, start_day.month, start_day.day, date_mapper=date_mapper)
-                    print(f"jump: {jump_days}\tdelta: {delta}\tstart_day: {start_day}")
+                    if debug > 0:
+                        print(f"jump: {jump_days}\tdelta: {delta}\tstart_day: {start_day}")
                     if debug > 1:
                         print(f'current_date: {current_date.date.isoformat()}\tstart_day: {start_day.date.isoformat()}')
                     date_strings = get_next_date_strings(start_day, date_mapper,
@@ -630,30 +847,60 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         if debug > 0:
             print(f'\nprev_dates:', prev_dates)
         for prev_date in prev_dates:
-            yield session_dates[prev_date], session_trs[prev_date]
+            session_date_metadata = session_dates[prev_date].pop(0)
+            yield session_date_metadata, session_trs[prev_date]
             del session_trs[prev_date]
-    yield session_dates[current_date.isoformat()], session_trs[current_date.isoformat()]
+            del session_dates[prev_date]
+    yield session_dates[current_date.isoformat()].pop(0), session_trs[current_date.isoformat()]
     return None
 
 
-def get_sessions(inv_id: str, pages, ignorecase: bool = True,
-                 num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
-    print('get_sessions - num pages:', len(pages))
-    inv_metadata = get_inventory_by_id(inv_id)
-    period_start = inv_metadata['period_start']
-    pages.sort(key=lambda page: page.id)
+def process_handwritten_page_dates(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
+                                   ignorecase: bool = True):
+    processed_pages = process_handwritten_pages(inv_metadata['inventory_num'], pages,
+                                                ignorecase=ignorecase)
+    date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
+
+    session_date_lines = get_session_date_lines_from_pages(processed_pages, debug=0)
+    date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat,
+                                                          inv_metadata['inventory_id'])
+
+    date_mapper = DateNameMapper(inv_metadata, date_line_structure)
+    config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
+    return [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
+                                     debug=0) for page in processed_pages]
+
+
+def get_inventory_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
+                              ignorecase: bool = True, debug: int = 0):
     date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
     session_date_lines = get_session_date_lines_from_pages(pages, debug=debug)
     if len(session_date_lines) == 0:
         print(f"WARNING - No session date lines found for "
               f"inventory {inv_metadata['inventory_num']} with {len(pages)} pages")
         return None
-    date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat, inv_id)
+    date_line_structure = get_session_date_line_structure(session_date_lines,
+                                                          date_token_cat, inv_metadata['inventory_id'])
     if 'week_day_name' not in [element[0] for element in date_line_structure]:
         print('WARNING - missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
         return None
 
-    date_mapper = DateNameMapper(inv_metadata, date_line_structure)
+    return DateNameMapper(inv_metadata, date_line_structure)
+
+
+def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
+                             num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
+    print('get_sessions - num pages:', len(pages))
+    inv_metadata = get_inventory_by_id(inv_id)
+    period_start = inv_metadata['period_start']
+    pages.sort(key=lambda page: page.id)
+    pages = process_handwritten_pages(inv_metadata, pages[start_index:end_index], ignorecase)
+    date_mapper = get_inventory_date_mapper(inv_metadata, pages, ignorecase=ignorecase, debug=debug)
+    config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
+    pages = [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
+                                      debug=0) for page in pages]
 
     # year_start_date = RepublicDate(date_string=inv_metadata['period_start'], date_mapper=date_mapper)
     # date_strings = get_next_date_strings(year_start_date, date_mapper, num_dates=7)
@@ -666,7 +913,7 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True,
     session_finder = find_session_dates(pages, inv_start_date, date_mapper, ignorecase=ignorecase,
                                         num_past_dates=num_past_dates, num_future_dates=num_future_dates,
                                         debug=debug)
-    for session_date, session_trs in session_finder:
+    for session_date_metadata, session_trs in session_finder:
         # print('-------------')
         session_num += 1
         '''
@@ -681,46 +928,18 @@ def get_sessions(inv_id: str, pages, ignorecase: bool = True,
         else:
             session_num = 4
         '''
-        session_metadata = {
-            'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'type': 'session',
-            'session_id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'session_num': session_num,
-            'session_date': session_date['session_date'],
-            'session_year': session_date['session_year'],
-            'session_month': session_date['session_month'],
-            'session_day': session_date['session_day'],
-            'is_workday': session_date['is_workday'],
-            'session_weekday': session_date['session_weekday'],
-            'inventory_id': session_trs[0].metadata['inventory_id'],
-            'inventory_num': session_trs[0].metadata['inventory_num'],
-            'series_name': session_trs[0].metadata['series_name'],
-            'resolution_type': resolution_type,
-            "attendants_list_id": None,
-            "resolution_ids": [],
-            'text_type': text_type
-        }
+        session_metadata = make_session_metadata(inv_metadata, session_date_metadata, session_num, text_type)
+        session = make_session(inv_metadata, session_date_metadata, session_num, text_type, session_trs)
+        evidence = session_metadata['evidence']
         for session_tr in session_trs:
-            session_tr.metadata['session_id'] = session_metadata['id']
+            session_tr.metadata['session_id'] = session['id']
             session_tr.metadata['iiif_url'] = doc_id_to_iiif_url(session_tr.id)
-        session = {
-            'id': f'session-{inv_metadata["inventory_num"]}-num-{session_num}',
-            'type': ['republic_doc', 'logical_structure_doc', 'session'],
-            'domain': 'logical',
-            'metadata': session_metadata,
-            'date': session_date,
-            'text_region_ids': [tr.id for tr in session_trs],
-            'scan_ids': list(sorted(set([tr.metadata['scan_id'] for tr in session_trs]))),
-            'page_ids': list(sorted(set([tr.metadata['page_id'] for tr in session_trs]))),
-            'stats': {
-                'words': sum([tr.stats['words'] for tr in session_trs]),
-                'lines': sum([tr.stats['lines'] for tr in session_trs]),
-                'text_regions': len(session_trs),
-                'pages': len(set([tr.metadata['page_id'] for tr in session_trs])),
-                'scans': len(set([tr.metadata['scan_id'] for tr in session_trs])),
-            }
-        }
-        yield session, session_trs
+        # del session_date_metadata['evidence']
+        session = rdm.Session(metadata=session_metadata, date_metadata=session_date_metadata,
+                              text_regions=session_trs,
+                              evidence=evidence,
+                              date_mapper=date_mapper)
+        yield session
     return None
 
 

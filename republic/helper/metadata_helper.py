@@ -39,6 +39,15 @@ def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
     }
 
 
+def update_region_with_margin(region: List[int], add_margin: int) -> List[int]:
+    return [
+        region[0] - add_margin if region[0] > add_margin else 0,
+        region[1] - add_margin if region[1] > add_margin else 0,
+        region[2] + 2 * add_margin,
+        region[3] + 2 * add_margin
+    ]
+
+
 def make_iiif_region_url(jpg_url: str,
                          region: Union[None, List[int], Dict[str, int]] = None,
                          add_margin: Union[None, int] = None) -> str:
@@ -59,7 +68,7 @@ def make_iiif_region_url(jpg_url: str,
         print('invalid region:', region)
         raise ValueError('region must be None, list of 4 integers, of dict with keys "left", "top", "width", "height"')
     if add_margin:
-        region = [region[0] - add_margin, region[1] - add_margin, region[2] + 2*add_margin, region[3] + 2*add_margin]
+        region = update_region_with_margin(region, add_margin)
     region = ','.join([str(coord) for coord in region])
     return jpg_url + f"/{region}/full/0/default.jpg"
 

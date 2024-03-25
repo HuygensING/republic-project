@@ -36,6 +36,7 @@ def prep_embeddings(flair_dir: str,
                     use_resolution: bool = False,
                     use_char: bool = False,
                     use_gysbert: bool = False,
+                    use_gysbert2: bool = False,
                     use_fasttext: bool = False,
                     model_max_length: int = 512):
     # resolution_bert = RobertaForMaskedLM.from_pretrained('data/models/resolution_bert')
@@ -70,6 +71,16 @@ def prep_embeddings(flair_dir: str,
                                                        allow_long_sentences=False,
                                                        model_max_length=model_max_length)
         embedding_types.append(gysbert_embeddings)
+
+    if use_gysbert2:
+        gysbert2_embeddings = TransformerWordEmbeddings('emanjavacas/GysBERT-v2-2m',
+                                                       layers="-1",
+                                                       subtoken_pooling="first",
+                                                       fine_tune=use_finetuning,
+                                                       use_context=use_context,
+                                                       allow_long_sentences=False,
+                                                       model_max_length=model_max_length)
+        embedding_types.append(gysbert2_embeddings)
 
     if len(embedding_types) == 0:
         return None
@@ -109,6 +120,7 @@ def prep_training(layer_name: str,
                   use_resolution: bool = False,
                   use_char: bool = False,
                   use_gysbert: bool = False,
+                  use_gysbert2: bool = False,
                   use_fasttext: bool = False,
                   hidden_size=256, model_max_length=512):
     project_dir = get_project_dir()
@@ -124,6 +136,7 @@ def prep_training(layer_name: str,
                                  use_resolution=use_resolution,
                                  use_char=use_char,
                                  use_gysbert=use_gysbert,
+                                 use_gysbert2=use_gysbert2,
                                  use_fasttext=use_fasttext,
                                  model_max_length=model_max_length)
 

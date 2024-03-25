@@ -238,7 +238,11 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         metadata['session_id'] = source_doc.id
         metadata['session_num'] = source_doc.metadata['session_num']
         metadata['inventory_num'] = source_doc.metadata['inventory_num']
-        fields = ['president', 'session_year', 'session_month', 'session_day', 'session_weekday']
+        fields = [
+            'president',
+            'session_year', 'session_month', 'session_day', 'session_weekday',
+            'resolution_type'
+        ]
         for field in fields:
             if field in source_doc.metadata:
                 metadata[field] = source_doc.metadata[field]
@@ -403,7 +407,7 @@ class SessionParagraphGenerator(ParagraphGenerator):
         para_lines = []
         paragraphs = []
         doc_text_offset = 0
-        generate_paragraph_id = running_id_generator(base_id=doc.metadata["id"], suffix="-para-")
+        generate_paragraph_id = running_id_generator(base_id=doc.id, suffix="-para-")
         if isinstance(doc, rdm.Session) and doc.date.date.year < 1705:
             resolution_gap = 120
             margin_trs = []

@@ -1,8 +1,12 @@
-import pandas as pd
-import pkg_resources
+import os
 
-PICKLE_FILE = pkg_resources.resource_filename(__name__, 'csvs/gedeputeerden_uitgebreid.pickle')
-EXCEL_FILE = pkg_resources.resource_filename(__name__, 'csvs/gedeputeerden_uitgebreid.xlsx')
+import pandas as pd
+
+from republic.helper.utils import get_project_dir
+
+
+project_dir = get_project_dir()
+DATA_DIR = os.path.join(project_dir, 'republic/data')
 
 
 def hypothetical_life(x):  # x is row from dataframe, but I don't know how to declare the type
@@ -56,10 +60,14 @@ def maxmin(x):
 
 
 def make_abbreviated_delegates():
+    # PICKLE_FILE = pkg_resources.resource_filename(__name__, 'csvs/gedeputeerden_uitgebreid.pickle')
+    # EXCEL_FILE = pkg_resources.resource_filename(__name__, 'csvs/gedeputeerden_uitgebreid.xlsx')
+    pickle_file = os.path.join(DATA_DIR, 'csvs/gedeputeerden_uitgebreid.pickle')
+    excel_file = os.path.join(DATA_DIR, 'csvs/gedeputeerden_uitgebreid.xlsx')
     try:
-        df = pd.read_pickle(PICKLE_FILE)
+        df = pd.read_pickle(pickle_file)
     except (IOError, TypeError):
-        df = pd.read_excel(EXCEL_FILE)
+        df = pd.read_excel(excel_file)
         df['van_p'] = df.van.apply(lambda x: pd.Period(x, freq="D")) # this should be possible with to_period, but gives an error
         df['tot_p'] = df.tot.apply(lambda x: pd.Period(x, freq="D"))
         df['geboortedatum_p'] = df.geboortedatum.apply(lambda x: pd.Period(x, freq="D"))
