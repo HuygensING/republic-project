@@ -131,20 +131,20 @@ class Indexer:
     def index_doc(self, index: str, doc_id: str, doc_body: dict, max_retries: int = 5):
         add_timestamp(doc_body)
         add_commit(doc_body)
-        try_num = 0
-        while try_num < max_retries:
+        retry_num = 0
+        while retry_num < max_retries:
             try:
                 if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
-                    self.es_anno.index(index=index, id=doc_id, body=doc_body)
+                    response = self.es_anno.index(index=index, id=doc_id, body=doc_body)
                 else:
-                    self.es_anno.index(index=index, id=doc_id, document=doc_body)
-                break
+                    response = self.es_anno.index(index=index, id=doc_id, document=doc_body)
+                return response
             except ElasticsearchException:
-                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {try_num}")
+                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {retry_num}")
                 time.sleep(5)
-                if try_num >= max_retries:
+                if retry_num >= max_retries:
                     raise
-            try_num += 1
+            retry_num += 1
 
     def index_bulk_docs(self, index: str, docs: List[Dict[str, any]], max_retries: int = 5) -> None:
         actions = []
@@ -277,14 +277,17 @@ class Indexer:
     def delete_es_index(self, index: str):
         if self.es_anno.indices.exists(index=index):
             print(f' index{index} exists, deleting')
-            self.es_anno.indices.delete(index=index)
+            print(self.es_anno.indices.delete(index=index))
 
-    def clone_index(self, original_index: str, new_index: str) -> None:
+    def clone_index(self, original_index: str, new_index: str, delete_original: bool = False,
+                    force: bool = False) -> None:
         # 1. make sure the clone index doesn't exist
         if self.es_anno.indices.exists(index=new_index):
-            # raise ValueError("index already exists")
-            print("deleting clone index:", new_index)
-            print(self.es_anno.indices.delete(index=new_index))
+            if force is True:
+                print("deleting clone index:", new_index)
+                print(self.es_anno.indices.delete(index=new_index))
+            else:
+                raise ValueError("index already exists")
         # 2. set original index to read-only
         print(f"setting original index {original_index} to read-only")
         print(self.es_anno.indices.put_settings(index=original_index, body={"index.blocks.write": True}))
@@ -292,5 +295,11 @@ class Indexer:
         print(f"cloning original index {original_index} to {new_index}")
         print(self.es_anno.indices.clone(index=original_index, target=new_index))
         # 4. set original index to read-write
-        print(f"setting original index {original_index} to read-write")
-        print(self.es_anno.indices.put_settings(index=original_index, body={"index.blocks.write": False}))
+        if delete_original is True:
+            print(f"deleting original index {original_index}")
+            print(self.es_anno.indices.delete(index=original_index))
+        else:
+            print(f"setting original index {original_index} to read-write")
+            print(self.es_anno.indices.put_settings(index=original_index, body={"index.blocks.write": False}))
+            print(f"setting new index {original_index} to read-write")
+            print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.write": False}))

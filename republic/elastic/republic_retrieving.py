@@ -200,7 +200,7 @@ class Retriever:
             for hit in response['hits']['hits']:
                 yield hit
             try:
-                response = es.scroll(scroll_id=self.scroll_id, scroll=scroll, sort=sort)
+                response = es.scroll(scroll_id=self.scroll_id, scroll=scroll)
             except ElasticsearchException:
                 print("retrieval failed for query:")
                 print(query)
@@ -229,7 +229,7 @@ class Retriever:
 
     def retrieve_inventory_scans(self, inventory_num: int) -> list:
         query = {'match': {'metadata.inventory_num': inventory_num}}
-        return self.retrieve_scans_by_query(query)
+        return self.retrieve_scans_by_query(query, sort=['id.keyword'])
 
     def retrieve_inventory_pages(self, inventory_num: int) -> list:
         query = {'match': {'metadata.inventory_num': inventory_num}}

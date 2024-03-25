@@ -87,7 +87,8 @@ def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
         source_index: str = 'resolutions'):
     # do imports of resources here
     # and construct the environment and databases
-    from republic.data.delegate_database import abbreviated_delegates, found_delegates, ekwz
+    from republic.data.delegate_database import abbreviated_delegates, found_delegates, read_ekwz
+    ekwz = read_ekwz()
     junksweeper = make_junksweeper(ekwz=ekwz)
     transposed_graph = reverse_dict(ekwz)
     # keywords = list(abbreviated_delegates.name)
@@ -123,6 +124,7 @@ def run(es: Elasticsearch, year=0, outdir='', tofile=True, verbose=True,
 
     runner.delegates_from_fragments()
     yout = year_output(year, runner.searchobs)
+    # print('run_attendaneclist.run - number of records in yout:', len(yout))
     if tofile is True:
         outname = f'{outdir}/{year}_out.json'
         if verbose:
@@ -313,6 +315,10 @@ class RunAll(object):
                                                                        found=self.found_delegates,
                                                                        df=self.abbreviated_delegates)
         self.fragmentsearcher.run()
+        # print('RunAll.delegates_from_fragments - fragmentsearcher.xgroups:',
+        #       len(self.fragmentsearcher.xgroups))
+        # print('RunAll.delegates_from_fragments - fragmentsearcher.match_records:',
+        #       len(self.fragmentsearcher.match_records))
         parse_delegates.reverse_references(self.fragmentsearcher.xgroups,
                                            self.fragmentsearcher.match_records)
 
