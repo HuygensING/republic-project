@@ -135,16 +135,17 @@ class Indexer:
         while try_num < max_retries:
             try:
                 if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
-                    self.es_anno.index(index=index, id=doc_id, body=doc_body)
+                    response = self.es_anno.index(index=index, id=doc_id, body=doc_body)
                 else:
-                    self.es_anno.index(index=index, id=doc_id, document=doc_body)
-                break
-            except ElasticsearchException:
+                    response = self.es_anno.index(index=index, id=doc_id, document=doc_body)
+                return response
+            except ElasticsearchException as err:
                 print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {try_num}")
+                print(err)
                 time.sleep(5)
-                if try_num >= max_retries:
-                    raise
             try_num += 1
+            if try_num >= max_retries:
+                raise
 
     def index_bulk_docs(self, index: str, docs: List[Dict[str, any]], max_retries: int = 5) -> None:
         actions = []
