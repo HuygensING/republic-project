@@ -12,7 +12,10 @@ from republic.nlp.ner import train
 from republic.nlp.read import ParaReader, read_para_files_from_dir
 
 
-ENTITY_TYPES = {'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES', 'NAM', 'single_layer'}
+ENTITY_TYPES = {
+    'HOE', 'PER', 'COM', 'ORG', 'LOC', 'DAT', 'RES', 'NAM', 'single_layer',
+    'FORWARD', 'DEC_START', 'RES_START', 'INCOMP', 'REF_PREV', 'VERB'
+}
 
 BEST_MODELS = [
         {
@@ -95,7 +98,7 @@ def train_layers(layers: List[str], data_dir: Dict[str, str], train_size=1.0, mi
         'use_gysbert2',
         'use_fasttext'
     ]
-    for p in product([True,False],repeat=len(bool_options)):
+    for p in product([True, False], repeat=len(bool_options)):
         params = dict(zip(bool_options, p))
         params['use_crf'] = True
         params['use_rnn'] = True
@@ -186,17 +189,19 @@ def parse_args():
     # Define the getopt parameters
     try:
         opts, args = getopt.getopt(argv, 'g:e:l:s:r:m:t',
-                                   ['gt_dir=', 'epochs=', 'layers=', 'train_size=', 'learning_rate=', 'mini_batch_size=', 'type='])
+                                   ['gt_dir=', 'epochs=', 'layers=', 'train_size=',
+                                    'learning_rate=', 'mini_batch_size=', 'type='])
         train_type = None
-        gt_base_dir = 'ground_truth/entities/flair_training-17th_18th'
+        gt_base_dir = None
         layers = ['single_layer']
         train_size = 1.0
         learing_rate = 0.05
         mini_batch_size = 16
         max_epochs = 10
+        print(opts)
         for opt, arg in opts:
             if opt in {'-g', '--gt_dir'}:
-                gt_base_dir = int(arg)
+                gt_base_dir = arg
             if opt in {'-e', '--epochs'}:
                 max_epochs = int(arg)
             if opt in {'-l', '--layers'}:
@@ -215,7 +220,11 @@ def parse_args():
             if opt in {'-m', '--mini_batch_size'}:
                 mini_batch_size = int(arg)
             if opt in {'-t', '--type'}:
+                print('option -t passed')
                 train_type = arg
+        if train_type == 'ner' and gt_base_dir is None:
+            raise ValueError('training a NER tagger requires passing a ground truth dir (-g or --gt_dir) '
+                             'inside ./ground_truth')
         return layers, gt_base_dir, train_size, learing_rate, mini_batch_size, max_epochs, train_type
     except getopt.GetoptError:
         # Print something useful
@@ -248,7 +257,7 @@ def get_data_dir(layers: List[str], gt_base_dir: str) -> Dict[str, str]:
     data_dir = {}
     for layer_name in layers:
         assert os.path.exists(project_dir), f"the project directory {project_dir} doesn't exist"
-        data_dir[layer_name] = f'{project_dir}/ground_truth/entities/flair_training-17th_18th/flair_training_17th_18th_{layer_name}'
+        data_dir[layer_name] = f'{project_dir}/ground_truth/{gt_base_dir}/flair_training/flair_training_{layer_name}'
         assert os.path.exists(data_dir[layer_name]), f"the data directory {data_dir[layer_name]} doesn't exist"
     return data_dir
 
@@ -257,8 +266,9 @@ def main():
     layers, gt_base_dir, train_size, learing_rate, mini_batch_size, max_epochs, train_type = parse_args()
     print('train_type:', train_type)
     if train_type == 'ner':
+        data_dir = get_data_dir(layers, gt_base_dir)
         print('layers to train:', layers)
-        train_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+        train_layers(layers, data_dir, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
         # train_best_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
     elif train_type == 'lm':
         do_train_lm()
@@ -269,6 +279,4 @@ def main():
 if __name__ == "__main__":
     import getopt
     import sys
-    print('bla')
     main()
-

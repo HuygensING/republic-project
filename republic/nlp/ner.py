@@ -10,6 +10,7 @@ from flair.trainers import ModelTrainer
 from transformers import RobertaForMaskedLM
 
 from republic.helper.utils import get_project_dir
+from settings import ner_base_dir
 
 
 def prep_corpus(data_dir: str, layer_name: str, train_size: float):
@@ -45,19 +46,19 @@ def prep_embeddings(flair_dir: str,
         embedding_types.extend([char_bw, char_fw])
 
     if use_fasttext:
-        embedding_dir = '/data/volume_2/embeddings/fasttext'
+        embedding_dir = f'{ner_base_dir}/embeddings/fasttext'
         embedding_binary = 'fasttext-dim_384-window_10-min_count_100-case_lower.bin'
         fasttext_embeddings = FastTextEmbeddings(f'{embedding_dir}/{embedding_binary}')
         embedding_types.append(fasttext_embeddings)
 
     if use_resolution:
         resolution_embeddings = TransformerWordEmbeddings('data/models/resolution_bert',
-                                                    layers='-1',
-                                                    subtoken_pooling="first",
-                                                    fine_tune=use_finetuning,
-                                                    use_context=use_context,
-                                                    allow_long_sentences=False,
-                                                    model_max_length=model_max_length)
+                                                          layers='-1',
+                                                          subtoken_pooling="first",
+                                                          fine_tune=use_finetuning,
+                                                          use_context=use_context,
+                                                          allow_long_sentences=False,
+                                                          model_max_length=model_max_length)
         embedding_types.append(resolution_embeddings)
 
     if use_gysbert:
@@ -72,12 +73,12 @@ def prep_embeddings(flair_dir: str,
 
     if use_gysbert2:
         gysbert2_embeddings = TransformerWordEmbeddings('emanjavacas/GysBERT-v2-2m',
-                                                       layers="-1",
-                                                       subtoken_pooling="first",
-                                                       fine_tune=use_finetuning,
-                                                       use_context=use_context,
-                                                       allow_long_sentences=False,
-                                                       model_max_length=model_max_length)
+                                                        layers="-1",
+                                                        subtoken_pooling="first",
+                                                        fine_tune=use_finetuning,
+                                                        use_context=use_context,
+                                                        allow_long_sentences=False,
+                                                        model_max_length=model_max_length)
         embedding_types.append(gysbert2_embeddings)
 
     if len(embedding_types) == 0:
@@ -148,7 +149,7 @@ def prep_training(layer_name: str,
 def train(trainer, layer_name: str, train_size: float = 1.0, learning_rate: float = 0.05,
           mini_batch_size: int = 32, max_epochs: int = 10, model_name = None):
     flair_dir = get_flair_dir()
-    model_dir = f'/data/volume_2/taggers/{model_name}-train_{train_size}-epochs_{max_epochs}'
+    model_dir = f'{ner_base_dir}/taggers/{model_name}-train_{train_size}-epochs_{max_epochs}'
     results = trainer.train(model_dir,
                             learning_rate=learning_rate,
                             mini_batch_size=mini_batch_size,
