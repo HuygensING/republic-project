@@ -1,0 +1,53 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+gepresenteert	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+hillebrant	O	O	B-PER	O	O	O	O	O	hillebrant Dircxs Hillebrants, ende Remmert Getsens, beleyders van slants Equipagie in Vrieslandt
+Dircxs	O	O	I-PER	O	O	O	O	O
+Hillebrants	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+Remmert	O	O	I-PER	O	O	O	O	O
+Getsens	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+beleyders	B-HOE	O	I-PER	O	O	O	O	O	beleyders van slants Equipagie in Vrieslandt
+van	I-HOE	O	I-PER	O	O	O	O	O
+slants	I-HOE	O	I-PER	O	O	O	O	O
+Equipagie	I-HOE	O	I-PER	O	O	O	O	O
+in	I-HOE	O	I-PER	O	O	O	O	O
+Vrieslandt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Vrieslandt
+versoeckende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+omme	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+verhaelt	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haren	O	O	O	O	O	O	O	O
+dienst	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+bewint	O	O	O	O	O	O	O	O
+ontslagen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+moogen	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+synde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+opgehouden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

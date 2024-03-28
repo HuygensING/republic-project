@@ -1,0 +1,103 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Synde	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+mimute	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+responsiue	O	O	O	O	O	O	O	O
+geformeert	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+syn	B-HOE	O	B-PER	O	O	O	O	O	syn hoocheyt d'heer Prins van Orangre
+hoocheyt	I-HOE	O	I-PER	O	O	O	O	O
+d'heer	I-HOE	O	I-PER	O	O	O	O	O
+Prins	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Orangre	I-HOE	B-LOC	I-PER	O	O	O	O	O	Orangre
+in	O	O	O	O	O	O	O	O
+dato	O	O	O	O	O	O	O	O
+19	O	O	O	O	B-DAT	O	O	O	19. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+op	O	O	O	O	O	O	O	O
+seeckeren	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Commandeur	B-HOE	O	B-PER	O	O	O	O	O	Commandeur
+Golstein	O	O	I-PER	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Maestricht	O	B-LOC	O	O	O	O	O	O	Maestricht
+den	O	O	O	O	O	O	O	O
+14	O	O	O	O	B-DAT	O	O	O	14 derselver Maent
+derselver	O	O	O	O	I-DAT	O	O	O
+Maent	O	O	O	O	I-DAT	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+bewuste	O	O	O	O	O	O	O	O
+conspiratie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+verscheyden	O	O	O	O	O	O	O	O
+Geestelicke	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+persoonen	O	O	O	O	O	O	O	O
+binnen	O	O	O	O	O	O	O	O
+Maestricht	O	B-LOC	O	O	O	O	O	O	Maestricht
+voornt	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gevolge	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+aencleven	O	O	O	O	O	O	O	O
+vandien	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+versoucken	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+committeren	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	B-HOE	O	B-PER	O	O	O	O	O	heeren Graeff van Culenburch Terestein ende Schoonenborch
+Graeff	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Culenburch	I-HOE	B-LOC	I-PER	O	O	O	O	O	Culenburch Terestein ende Schoonenborch
+Terestein	I-HOE	I-LOC	I-PER	O	O	O	O	O
+ende	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Schoonenborch	I-HOE	I-LOC	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+noopende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+inhout	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+responsiuen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Saecke	O	O	O	O	O	O	O	O
+selffs	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+communiceren	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+hoochgemelte	O	O	O	O	O	O	O	O
+hoocheijt	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

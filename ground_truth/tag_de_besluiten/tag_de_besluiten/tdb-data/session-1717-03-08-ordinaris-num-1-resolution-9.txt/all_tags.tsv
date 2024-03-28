@@ -1,0 +1,197 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Raden	O	O	O	B-ORG	O	O	O	O	Raden des Furstendoms Gelre ende Graafschaps Zutphen
+des	O	O	O	I-ORG	O	O	O	O
+Furstendoms	O	B-LOC	O	I-ORG	O	O	O	O	Furstendoms Gelre ende Graafschaps Zutphen
+Gelre	O	I-LOC	O	I-ORG	O	O	O	O
+ende	O	I-LOC	O	I-ORG	O	O	O	O
+Graafschaps	O	I-LOC	O	I-ORG	O	O	O	O
+Zutphen	O	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Arnhem	O	B-LOC	O	O	O	O	O	O	Arnhem
+den	O	O	O	O	O	O	O	O
+vierden	O	O	O	O	B-DAT	O	O	O	vierden deser loopende maandt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+dienende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+antwoordt	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Mistsive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+eersten	O	O	O	O	B-DAT	O	O	O	eersten daar te vooren
+daar	O	O	O	O	I-DAT	O	O	O
+te	O	O	O	O	I-DAT	O	O	O
+vooren	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+geleyde	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Leathes, Minister van sijne Majesteyt den Koningh van Groot-Brittannien
+Leathes	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Minister	B-HOE	O	I-PER	O	O	O	O	O	Minister van sijne Majesteyt den Koningh van Groot-Brittannien
+van	I-HOE	O	I-PER	O	O	O	O	O
+sijne	B-HOE	O	B-PER	O	O	O	O	O	sijne Majesteyt den Koningh van Groot-Brittannien
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Koningh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot-Brittannien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot-Brittannien
+,	O	O	O	O	O	O	O	O
+waar	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+versochten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Magistraat	O	O	O	B-ORG	O	O	O	O	Magistraat der Stadt Arnhem
+der	O	O	O	I-ORG	O	O	O	O
+Stadt	O	B-LOC	O	I-ORG	O	O	O	O	Stadt Arnhem
+Arnhem	O	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+anders	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+vrught	O	O	O	O	O	O	O	O
+mocht	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+saack	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+heenen	O	O	O	O	O	O	O	O
+wierde	O	O	O	O	O	O	O	O
+gedirigeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Baron van Gortz
+Baron	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Gortz	I-HOE	B-LOC	I-PER	O	O	O	O	O	Gortz
+by	O	O	O	O	O	O	O	O
+provisie	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+detentie	O	O	O	O	O	O	O	O
+ge	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+Rouden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+detentie	O	O	O	O	O	O	O	O
+goede	O	O	O	O	O	O	O	O
+sorge	O	O	O	O	O	O	O	O
+mochte	O	O	O	O	O	O	O	O
+gedragen	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Raden
+Raden	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dewyl	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Staten der voornoemde Provincie
+Staten	O	O	O	I-ORG	O	O	O	O
+der	O	O	O	I-ORG	O	O	O	O
+voornoemde	O	O	O	I-ORG	O	O	O	O
+Provincie	O	O	O	I-ORG	O	O	O	O
+den	O	O	O	O	O	O	O	O
+volgenden	O	O	O	O	O	O	O	O
+dagh	O	O	O	O	O	O	O	O
+binnen	O	O	O	O	O	O	O	O
+Zutphen	O	B-LOC	O	O	O	O	O	O	Zutphen
+stonden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+vergaderen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geresolveert	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Bylage	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Heeren	O	O	O	O	O	O	O	O
+Staten	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+brengen	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+inmiddels	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+meergemelde	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+communicatie	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+gegeven	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Magistraat	O	O	O	B-ORG	O	O	O	O	Magistraat der Stadt Arnhem
+der	O	O	O	I-ORG	O	O	O	O
+Stadt	O	B-LOC	O	I-ORG	O	O	O	O	Stadt Arnhem
+Arnhem	O	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+eynde	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+inhoude	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+dien	O	O	O	O	O	O	O	O
+behoorelijcke	O	O	O	O	O	O	O	O
+reflexie	O	O	O	O	O	O	O	O
+gekefden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+maken	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

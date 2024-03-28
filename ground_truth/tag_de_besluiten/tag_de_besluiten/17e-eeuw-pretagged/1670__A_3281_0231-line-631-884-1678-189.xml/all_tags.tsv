@@ -1,0 +1,206 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Hoochschout	B-HOE	O	B-PER	O	O	O	O	O	Hoochschout
+Groulart	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Maestricht	O	B-LOC	O	O	O	O	O	O	Maestricht
+den	O	O	O	O	O	O	O	O
+vijffden	O	O	O	O	B-DAT	O	O	O	vijffden deses
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+responsive	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Brieff	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+achtsten	O	O	O	O	B-DAT	O	O	O	achtsten februarij lestleden
+februarij	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+dienvolgens	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Johanna	O	O	B-PER	O	O	O	O	O	Johanna van Han, moeder van het Clooster genaemt St. Annendael, binnen Mastricht
+van	O	O	I-PER	O	O	O	O	O
+Han	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+moeder	B-HOE	O	I-PER	O	O	O	O	O	moeder van het Clooster genaemt St. Annendael, binnen Mastricht
+van	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Clooster	I-HOE	O	I-PER	O	O	O	O	B-NAM	Clooster genaemt St. Annendael
+genaemt	I-HOE	O	I-PER	O	O	O	O	I-NAM
+St.	I-HOE	O	I-PER	O	O	O	O	I-NAM
+Annendael	I-HOE	O	I-PER	O	O	O	O	I-NAM
+,	I-HOE	O	I-PER	O	O	O	O	O
+binnen	I-HOE	O	I-PER	O	O	O	O	O
+Mastricht	I-HOE	B-LOC	I-PER	O	O	O	O	O	Mastricht
+voornoemt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+clachten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Hoochschout	B-HOE	O	B-PER	O	O	O	O	O	Hoochschout Montaigne vande Luijcksche iijde
+Montaigne	I-HOE	O	I-PER	O	O	O	O	O
+vande	I-HOE	O	I-PER	O	O	O	O	O
+Luijcksche	I-HOE	O	I-PER	O	O	O	O	O
+iijde	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+eersten	O	O	O	O	B-DAT	O	O	O	eersten februarij voorschreve
+februarij	O	O	O	O	I-DAT	O	O	O
+voorschreve	O	O	O	O	I-DAT	O	O	O
+sonder	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+minste	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+gemelten	O	O	O	O	O	O	O	O
+Hoochschout	B-HOE	O	B-PER	O	O	O	O	O	Hoochschout
+,	O	O	I-PER	O	O	O	O	O
+Groulart	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Suppliante	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+mede	B-HOE	O	O	O	O	O	O	O	mede Suster
+Suster	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+per	O	O	O	O	O	O	O	O
+force	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+sijne	B-HOE	O	O	O	O	O	O	O	sijne Dienaers
+Dienaers	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Clooster	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+halen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+wagen	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Stadt	O	O	O	O	O	O	O	O
+voeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+strijdende	O	O	O	O	O	O	O	O
+sulcx	O	O	O	O	O	O	O	O
+tegens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Capitulatie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+alle	O	O	O	O	O	O	O	O
+recht	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+reden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+specialick	O	O	O	O	O	O	O	O
+tegens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Sententie	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Heeren	B-HOE	O	O	O	O	O	O	O	Heeren hare Ho:Mo: Commissarisen Deciseurs
+hare	I-HOE	O	O	O	O	O	O	O
+Ho	I-HOE	O	O	O	O	O	O	O
+:	I-HOE	O	O	O	O	O	O	O
+Mo	I-HOE	O	O	O	O	O	O	O
+:	I-HOE	O	O	O	O	O	O	O
+Commissarisen	I-HOE	O	O	O	O	O	O	O
+Deciseurs	I-HOE	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+date	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+veerthienden	O	O	O	O	B-DAT	O	O	O	veerthienden September 1660
+September	O	O	O	O	I-DAT	O	O	O
+1660	O	O	O	O	I-DAT	O	O	O
+:	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Jurudictie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+Staet	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+Stadt	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Heeren	B-HOE	O	B-PER	O	O	O	B-COM	O	Heeren van Brakell
+van	I-HOE	O	I-PER	O	O	O	I-COM	O
+Brakell	I-HOE	B-LOC	I-PER	O	O	O	I-COM	O	Brakell
+,	O	O	O	O	O	O	I-COM	O
+ende	O	O	O	O	O	O	I-COM	O
+andere	O	O	O	O	O	O	I-COM	O
+hare	O	O	O	O	O	O	I-COM	O
+Ho	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Mo	O	O	O	O	O	O	I-COM	O
+:	O	O	O	O	O	O	I-COM	O
+Gedeputeerden	O	O	O	O	O	O	I-COM	O
+tot	O	O	O	O	O	O	I-COM	O
+de	O	O	O	O	O	O	I-COM	O
+saecken	O	O	O	O	O	O	I-COM	O
+vande	O	O	O	O	O	O	I-COM	O
+Landen	O	B-LOC	O	O	O	O	I-COM	O	Landen van Overmaze
+van	O	I-LOC	O	O	O	O	I-COM	O
+Overmaze	O	I-LOC	O	O	O	O	I-COM	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+visiteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+examineren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+sonder	O	O	O	O	O	O	O	O
+resumptie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,133 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opt	O	O	O	O	O	O	O	O
+aenhouden	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Misnoechde	B-HOE	O	O	O	O	O	O	O	Misnoechde Participanten
+Participanten	I-HOE	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+gepresenteert	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+xxvijen	O	O	O	O	B-DAT	O	O	O	xxvijen. Octobris lestleden
+.	O	O	O	O	I-DAT	O	O	O
+Octobris	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+meest	O	O	O	O	O	O	O	O
+tenderende	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+becomen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+genieten	O	O	O	O	O	O	O	O
+inde	O	O	O	O	O	O	O	O
+Camer	O	O	O	B-ORG	O	O	O	O	Camer van Amsterdam
+van	O	O	O	I-ORG	O	O	O	O
+Amsterdam	O	B-LOC	O	I-ORG	O	O	O	O	Amsterdam
+de	O	O	O	O	O	O	O	O
+vier	O	O	O	O	O	O	O	O
+hooftparticipanten	B-HOE	O	O	O	O	O	O	O	hooftparticipanten
+,	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+ampliatie	O	O	O	O	O	O	O	O
+vant	O	O	O	O	O	O	O	O
+Octroy	O	O	O	O	O	O	O	O
+toegestaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mitsgadere	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+verclaringe	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+dependentie	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+qualiteyt	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+hooftparticipanten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+conformiteyt	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+hooftparticipanten	B-HOE	O	O	O	O	O	O	O	hooftparticipanten geeligeert inde Cameren van Middelborch, Hoorn, ende Delft
+geeligeert	I-HOE	O	O	O	O	O	O	O
+inde	I-HOE	O	O	O	O	O	O	O
+Cameren	I-HOE	O	O	B-ORG	O	O	O	O	Cameren van Middelborch, Hoorn, ende Delft
+van	I-HOE	O	O	I-ORG	O	O	O	O
+Middelborch	I-HOE	B-LOC	O	I-ORG	O	O	O	O	Middelborch, Hoorn, ende Delft
+,	I-HOE	I-LOC	O	I-ORG	O	O	O	O
+Hoorn	I-HOE	I-LOC	O	I-ORG	O	O	O	O
+,	I-HOE	I-LOC	O	I-ORG	O	O	O	O
+ende	I-HOE	I-LOC	O	I-ORG	O	O	O	O
+Delft	I-HOE	I-LOC	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Gelyck	O	O	O	O	O	O	O	O
+mede	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+d'antwoort	O	O	O	O	O	O	O	O
+byde	O	O	O	O	O	O	O	O
+Bewinthebberen	O	O	O	B-ORG	O	O	O	O	Bewinthebberen vande Oostindische Compe
+vande	O	O	O	I-ORG	O	O	O	O
+Oostindische	O	O	O	I-ORG	O	O	O	O
+Compe	O	O	O	I-ORG	O	O	O	O
+.	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+xven	O	O	O	O	B-DAT	O	O	O	xven. Novembris lestleden
+.	O	O	O	O	I-DAT	O	O	O
+Novembris	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+daerop	O	O	O	O	O	O	O	O
+gegeven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Ende	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+committeren	O	O	O	O	O	O	O	O
+gelyck	O	O	O	O	O	O	O	O
+gecommitteert	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	B-HOE	O	B-PER	O	O	O	O	O	heeren van Noortwycke Beaumont, ende Schafter
+van	I-HOE	O	I-PER	O	O	O	O	O
+Noortwycke	I-HOE	B-LOC	I-PER	O	O	O	O	O	Noortwycke
+Beaumont	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	I-HOE	I-LOC	I-PER	O	O	O	O	O
+ende	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Schafter	I-HOE	I-LOC	I-PER	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Supplten	O	O	O	O	O	O	O	O
+mitsgaders	O	O	O	O	O	O	O	O
+d'antwoort	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Bewinthebberen	B-HOE	O	O	O	O	O	O	O	Bewinthebberen
+te	O	O	O	O	O	O	O	O
+confereren	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Octroy	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ampliatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+dien	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daervan	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

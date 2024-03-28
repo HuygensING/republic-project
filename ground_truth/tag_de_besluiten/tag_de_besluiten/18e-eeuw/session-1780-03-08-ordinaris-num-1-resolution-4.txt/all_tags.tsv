@@ -1,0 +1,31 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Commissaris	B-HOE	O	B-PER	O	O	O	O	O	Commissaris Generaal over geheel Provence Provence
+Generaal	I-HOE	O	I-PER	O	O	O	O	O
+over	I-HOE	O	I-PER	O	O	O	O	O
+geheel	I-HOE	O	I-PER	O	O	O	O	O
+Provence	I-HOE	B-LOC	I-PER	O	O	O	O	O	Provence Provence
+Provence	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Bugnot	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Marseille	O	B-LOC	O	O	O	O	O	O	Marseille
+den	O	O	O	O	O	O	O	O
+25	O	O	O	O	B-DAT	O	O	O	25 der voorleeden maand
+der	O	O	O	O	I-DAT	O	O	O
+voorleeden	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

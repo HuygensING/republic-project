@@ -1,0 +1,30 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+La	O	O	O	O	O	O	O	O
+reqe	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Raspar	O	O	B-PER	O	O	O	O	O	Raspar Huys et Augusty gerebald
+Huys	O	O	I-PER	O	O	O	O	O
+et	O	O	I-PER	O	O	O	O	O
+Augusty	O	O	I-PER	O	O	O	O	O
+gerebald	O	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Coopluyden	B-HOE	O	O	O	O	O	O	O	Coopluyden est mnise es mains du Recepueur du domaine Cabo
+est	I-HOE	O	O	O	O	O	O	O
+mnise	I-HOE	O	O	O	O	O	O	O
+es	I-HOE	O	O	O	O	O	O	O
+mains	I-HOE	O	O	O	O	O	O	O
+du	I-HOE	O	O	O	O	O	O	O
+Recepueur	I-HOE	O	O	O	O	O	O	O
+du	I-HOE	O	O	O	O	O	O	O
+domaine	I-HOE	B-LOC	O	O	O	O	O	O	domaine Cabo
+Cabo	I-HOE	I-LOC	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+pour	O	O	O	O	O	O	O	O
+luy	O	O	O	O	O	O	O	O
+oy	O	O	O	O	O	O	O	O
+estre	O	O	O	O	O	O	O	O
+ordonne	O	O	O	O	O	O	O	O
+comme	O	O	O	O	O	O	O	O
+De	O	O	O	O	O	O	O	O
+raison	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,56 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van lartensleben
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+lartensleben	I-HOE	B-LOC	I-PER	O	O	O	O	O	lartensleben
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mog. Minister Plenipotentiaris by de drie Geestelyke Churfursten, mitsgaders by de Opper - Rhynsche, Neder- Rhynische en westphaalsche Creytzen
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mog	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+Minister	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+by	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+drie	I-HOE	O	I-PER	B-ORG	O	O	O	O	drie Geestelyke Churfursten
+Geestelyke	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Churfursten	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+mitsgaders	I-HOE	O	I-PER	O	O	O	O	O
+by	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Opper	I-HOE	B-LOC	I-PER	O	O	O	O	O	Opper - Rhynsche, Neder- Rhynische en westphaalsche Creytzen
+-	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Rhynsche	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Neder	I-HOE	I-LOC	I-PER	O	O	O	O	O
+-	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Rhynische	I-HOE	I-LOC	I-PER	O	O	O	O	O
+en	I-HOE	I-LOC	I-PER	O	O	O	O	O
+westphaalsche	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Creytzen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Mentz	O	B-LOC	O	O	O	O	O	O	Mentz
+den	O	O	O	O	O	O	O	O
+28	O	O	O	O	B-DAT	O	O	O	28 der voorleede maand
+der	O	O	O	O	I-DAT	O	O	O
+voorleede	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

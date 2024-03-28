@@ -1,0 +1,68 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie ter Admiraliteyt op de Maaze
+ter	O	O	O	I-ORG	O	O	O	O
+Admiraliteyt	O	O	O	I-ORG	O	O	O	O
+op	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Maaze	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Rotterdam	O	B-LOC	O	O	O	O	O	O	Rotterdam
+den	O	O	O	O	O	O	O	O
+sevenden	O	O	O	O	B-DAT	O	O	O	sevenden deser loopende maandt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sedert	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+laatste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+dertighsten	O	O	O	O	B-DAT	O	O	O	dertighsten Januarii laatstleden
+Januarii	O	O	O	O	I-DAT	O	O	O
+laatstleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+vernomen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+Schepen	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+Schuyten	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+Oost-Indische	O	O	O	O	O	O	O	O
+Waaren	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+Oostende	O	B-LOC	O	O	O	O	O	O	Oostende
+of	O	O	O	O	O	O	O	O
+Vlaandesen	O	B-LOC	O	O	O	O	O	O	Vlaandesen
+in	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+District	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Collegie	O	O	O	O	O	O	O	O
+zyn	O	O	O	O	O	O	O	O
+aange	O	O	O	O	O	O	O	O
+komen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

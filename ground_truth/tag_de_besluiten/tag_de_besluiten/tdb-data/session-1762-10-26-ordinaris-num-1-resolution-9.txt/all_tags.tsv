@@ -1,0 +1,48 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+cen	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haare	B-HOE	O	B-PER	O	O	O	O	O	haare Koningblijcke Hoogbeyd de Princesse
+Koningblijcke	I-HOE	O	I-PER	O	O	O	O	O
+Hoogbeyd	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Princesse	I-HOE	O	I-PER	O	O	O	O	O
+Amelie	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+sonder	O	O	O	O	O	O	O	O
+expressie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Plaats	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+datum	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+recreditif	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heer	O	O	B-PER	O	O	O	O	O	Heer Boreel, haar Hoogh Mogende geweesen extraordinaris Ambassadeur an Plenipotentiaris aan het Hof van Gnioot-Brittannien
+Boreel	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoogh Mogende geweesen extraordinaris Ambassadeur an Plenipotentiaris aan het Hof van Gnioot-Brittannien
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+geweesen	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+an	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van Gnioot-Brittannien
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Gnioot-Brittannien	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Gnioot-Brittannien
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O

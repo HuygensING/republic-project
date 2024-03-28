@@ -1,0 +1,36 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Pieter	O	O	B-PER	O	O	O	O	O	Pieter de Cock Inwonende Burger der Stede Hulst
+de	O	O	I-PER	O	O	O	O	O
+Cock	O	O	I-PER	O	O	O	O	O
+Inwonende	B-HOE	O	I-PER	O	O	O	O	O	Inwonende Burger der Stede Hulst
+Burger	I-HOE	O	I-PER	O	O	O	O	O
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stede	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stede Hulst
+Hulst	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+bedieninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Stockhouderschap	B-HOE	O	O	O	O	O	O	O	Stockhouderschap
+aldaer	O	O	O	O	O	O	O	O
+voorden	O	O	O	O	O	O	O	O
+tijt	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+drie	O	O	O	O	O	O	O	O
+jaren	O	O	O	O	O	O	O	O
+gecontinueert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+affgeslagen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

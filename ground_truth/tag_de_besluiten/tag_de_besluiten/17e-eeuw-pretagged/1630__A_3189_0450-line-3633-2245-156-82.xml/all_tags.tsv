@@ -1,0 +1,17 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+O	O	O	O	O	O	O	O	O
+Synde	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+weduwe	B-HOE	O	O	O	O	O	O	O	weduwe van Capn. Breeder
+van	I-HOE	O	O	O	O	O	O	O
+Capn	B-HOE	O	B-PER	O	O	O	O	O	Capn
+.	I-HOE	O	I-PER	O	O	O	O	O
+Breeder	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+suppliante	O	O	O	O	O	O	O	O

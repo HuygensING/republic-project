@@ -1,0 +1,87 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Gedeputeerden vande provincie van Vrieslandt
+Gedeputeerden	O	O	O	I-ORG	O	O	O	O
+vande	O	O	O	I-ORG	O	O	O	O
+provincie	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Vrieslandt	O	B-LOC	O	I-ORG	O	O	O	O	Vrieslandt
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+voorgedragen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+zij	O	O	O	O	O	O	O	O
+heeren	O	O	O	O	O	O	O	O
+Gedeputeerden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+behagen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	O	O	O	O	O	O	O	O
+Staten	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+principalen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geconsenteert	O	O	O	O	O	O	O	O
+hebbende	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	B-RES	O	O	hare Hoogh Mogende resolutien van den eenentwintigsten ende tweeentwintigsten februarij laastleden
+Hoogh	O	O	O	O	O	I-RES	O	O
+Mogende	O	O	O	O	O	I-RES	O	O
+resolutien	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+eenentwintigsten	O	O	O	O	B-DAT	I-RES	O	O	eenentwintigsten ende tweeentwintigsten februarij laastleden
+ende	O	O	O	O	I-DAT	I-RES	O	O
+tweeentwintigsten	O	O	O	O	I-DAT	I-RES	O	O
+februarij	O	O	O	O	I-DAT	I-RES	O	O
+laastleden	O	O	O	O	I-DAT	I-RES	O	O
+,	O	O	O	O	O	O	O	O
+rakende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+erken	O	O	O	O	O	O	O	O
+„	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tenisse	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Coning	B-HOE	O	B-PER	O	O	O	O	O	Coning van Spaigne
+van	I-HOE	O	I-PER	O	O	O	O	O
+Spaigne	I-HOE	B-LOC	I-PER	O	O	O	O	O	Spaigne
+,	O	O	O	O	O	O	O	O
+alsnu	O	O	O	O	O	O	O	O
+geauthoriseert	O	O	O	O	O	O	O	O
+waren	O	O	O	O	O	O	O	O
+omdat	O	O	O	O	O	O	O	O
+behagen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+zuijveren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+naam	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+hooggemelte	O	O	O	O	O	O	O	O
+heeren	O	O	O	O	O	O	O	O
+Staten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+nevens	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+provincien	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+consenteren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

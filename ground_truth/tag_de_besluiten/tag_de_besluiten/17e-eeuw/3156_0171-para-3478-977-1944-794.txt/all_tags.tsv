@@ -1,0 +1,49 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Item	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Dheer	O	O	B-PER	O	O	O	O	O	Dheer Corn
+Corn	O	O	I-PER	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+twaelff	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+tsestich	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+costen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Rouwcleederen	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heeren	B-HOE	O	O	O	O	O	O	O	heeren Gecommitteerden
+Gecommitteerden	I-HOE	O	O	O	O	O	O	O
+totte	O	O	O	O	O	O	O	O
+begrauenisse	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Welgebooren	B-HOE	O	B-PER	O	O	O	O	O	Welgebooren heere Graue van Hoenloo
+heere	I-HOE	O	I-PER	O	O	O	O	O
+Graue	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Hoenloo	I-HOE	B-LOC	I-PER	O	O	O	O	O	Hoenloo
+goeder	O	O	O	O	O	O	O	O
+memorien	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+derseluer	O	O	O	O	O	O	O	O
+Dienaeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+daertoe	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+elcken	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+seuen	O	O	O	O	O	O	O	O
+heeren	O	O	O	O	O	O	O	O
+toe	O	O	O	O	O	O	O	O
+toegeleet	O	O	O	O	O	O	O	O
+zyn	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+tachtentich	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Haersolte, haer Hoogh Mogende extraordinaris Envoyé aen de Hoven van de Koningen van Sweeden ende Poolen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Haersolte	I-HOE	B-LOC	I-PER	O	O	O	O	O	Haersolte
+,	I-HOE	O	I-PER	O	O	O	O	O
+haer	I-HOE	O	I-PER	O	O	O	O	O
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+aen	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+Hoven	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hoven van de Koningen van Sweeden ende Poolen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+de	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koningen	B-HOE	O	B-PER	I-ORG	O	O	O	O	Koningen van Sweeden ende Poolen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Sweeden	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Sweeden
+ende	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Poolen	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Poolen
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Dantzick	O	B-LOC	O	O	O	O	O	O	Dantzick
+den	O	O	O	O	O	O	O	O
+23	O	O	O	O	B-DAT	O	O	O	23. der voorlede maendt
+.	O	O	O	O	I-DAT	O	O	O
+der	O	O	O	O	I-DAT	O	O	O
+voorlede	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

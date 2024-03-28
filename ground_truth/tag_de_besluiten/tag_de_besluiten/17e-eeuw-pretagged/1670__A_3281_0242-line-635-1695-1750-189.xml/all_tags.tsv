@@ -1,0 +1,37 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	B-PER	O	O	O	O	O	Secretaris
+Rompl	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Paris	O	B-LOC	O	O	O	O	O	O	Paris
+den	O	O	O	O	O	O	O	O
+sevenden	O	O	O	O	B-DAT	O	O	O	sevenden deses
+deses	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+gelijck	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missive	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+selven	O	O	O	O	O	O	O	O
+date	O	O	O	O	O	O	O	O
+geadresseert	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Ruijsch	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

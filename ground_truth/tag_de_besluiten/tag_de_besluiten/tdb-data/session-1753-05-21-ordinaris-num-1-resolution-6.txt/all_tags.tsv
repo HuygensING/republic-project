@@ -1,0 +1,211 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+IS	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+geleesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Micolaas	O	O	B-PER	O	O	O	O	O	Micolaas Zynen, als in Huwelijk hebbende Maria Roesing, naaste Bloedverwant van Johannes, Soone van wylen Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+Zynen	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+als	B-HOE	O	I-PER	O	O	O	O	O	als in Huwelijk hebbende Maria Roesing, naaste Bloedverwant van Johannes, Soone van wylen Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+in	I-HOE	O	I-PER	O	O	O	O	O
+Huwelijk	I-HOE	O	I-PER	O	O	O	O	O
+hebbende	I-HOE	O	I-PER	O	O	O	O	O
+Maria	I-HOE	O	B-PER	O	O	O	O	O	Maria Roesing, naaste Bloedverwant van Johannes, Soone van wylen Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+Roesing	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+naaste	B-HOE	O	I-PER	O	O	O	O	O	naaste Bloedverwant van Johannes, Soone van wylen Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+Bloedverwant	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Johannes	I-HOE	O	B-PER	O	O	O	O	O	Johannes, Soone van wylen Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+,	I-HOE	O	I-PER	O	O	O	O	O
+Soone	B-HOE	O	I-PER	O	O	O	O	O	Soone van wylen Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+van	I-HOE	O	I-PER	O	O	O	O	O
+wylen	I-HOE	O	I-PER	O	O	O	O	O
+Johan	I-HOE	O	B-PER	O	O	O	O	O	Johan van Ophuysen, in leeven Schoolmeester te Gemonde
+van	I-HOE	O	I-PER	O	O	O	O	O
+Ophuysen	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+in	B-HOE	O	I-PER	O	O	O	O	O	in leeven Schoolmeester te Gemonde
+leeven	I-HOE	O	I-PER	O	O	O	O	O
+Schoolmeester	I-HOE	O	I-PER	O	O	O	O	O
+te	I-HOE	O	I-PER	O	O	O	O	O
+Gemonde	I-HOE	B-LOC	I-PER	O	O	O	O	O	Gemonde
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Jan	O	O	B-PER	O	O	O	O	O	Jan van Lieshout, als naaste van den Bloede van wylen Juicob van Lieshour, in leeven Canonick van het Capittel van Eyndhoven
+van	O	O	I-PER	O	O	O	O	O
+Lieshout	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+als	B-HOE	O	I-PER	O	O	O	O	O	als naaste van den Bloede van wylen Juicob van Lieshour, in leeven Canonick van het Capittel van Eyndhoven
+naaste	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Bloede	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+wylen	I-HOE	O	I-PER	O	O	O	O	O
+Juicob	I-HOE	O	B-PER	O	O	O	O	O	Juicob van Lieshour, in leeven Canonick van het Capittel van Eyndhoven
+van	I-HOE	O	I-PER	O	O	O	O	O
+Lieshour	I-HOE	O	I-PER	O	O	O	O	O
+,	I-HOE	O	I-PER	O	O	O	O	O
+in	B-HOE	O	I-PER	O	O	O	O	O	in leeven Canonick van het Capittel van Eyndhoven
+leeven	I-HOE	O	I-PER	O	O	O	O	O
+Canonick	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Capittel	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Eyndhoven	I-HOE	B-LOC	I-PER	O	O	O	O	O	Eyndhoven
+,	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Johannes	O	O	B-PER	O	O	O	O	O	Johannes van Ophuysen
+van	O	O	I-PER	O	O	O	O	O
+Ophuysen	O	O	I-PER	O	O	O	O	O
+hidde	O	O	O	O	O	O	O	O
+geconfereert	O	O	O	O	O	O	O	O
+soondmige	O	O	O	O	O	O	O	O
+Beurse	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+Bencficie	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Canonick	O	O	O	O	O	O	O	O
+gefundeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+laatstelijck	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+Willem	O	O	B-PER	O	O	O	O	O	Willem van Ophuysen
+van	O	O	I-PER	O	O	O	O	O
+Ophuysen	O	O	I-PER	O	O	O	O	O
+reeds	O	O	O	O	O	O	O	O
+wis	O	O	O	O	O	O	O	O
+geprofiteert	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+beseeten	O	O	O	O	O	O	O	O
+geweest	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dan	O	O	O	O	O	O	O	O
+welck	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Willem	O	O	B-PER	O	O	O	O	O	Willem van Ophuysen
+van	O	O	I-PER	O	O	O	O	O
+Ophuysen	O	O	I-PER	O	O	O	O	O
+reeds	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+gekoomen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+geapprobeerden	O	O	O	O	O	O	O	O
+itaat	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+blyckende	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Acte	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+collatie	O	O	O	O	O	O	O	O
+neevens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreeve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+gevoeght	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+derhalven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreeve	O	O	O	O	O	O	O	O
+gedaane	O	O	O	O	O	O	O	O
+coilatie	O	O	O	O	O	O	O	O
+gelieven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+approbeeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Rentmeester	B-HOE	O	O	O	O	O	O	O	Rentmeester en Ontfanger der Beursen over de Stad en Meyerye van 's Hertogenbosch
+en	I-HOE	O	O	O	O	O	O	O
+Ontfanger	I-HOE	O	O	O	O	O	O	O
+der	I-HOE	O	O	O	O	O	O	O
+Beursen	I-HOE	O	O	O	O	O	O	O
+over	I-HOE	O	O	O	O	O	O	O
+de	I-HOE	O	O	O	O	O	O	O
+Stad	I-HOE	B-LOC	O	O	O	O	O	O	Stad en Meyerye van 's Hertogenbosch
+en	I-HOE	I-LOC	O	O	O	O	O	O
+Meyerye	I-HOE	I-LOC	O	O	O	O	O	O
+van	I-HOE	I-LOC	O	O	O	O	O	O
+'	I-HOE	I-LOC	O	O	O	O	O	O
+s	I-HOE	I-LOC	O	O	O	O	O	O
+Hertogenbosch	I-HOE	I-LOC	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+authorisceren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+beraalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Beurse	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+Beneficie	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Copie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreeve	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Ont-Fanger	B-HOE	O	B-PER	O	O	O	O	O	Ont-Fanger
+'	O	O	I-PER	O	O	O	O	O
+s	O	O	I-PER	O	O	O	O	O
+Gravesande	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+desselfs	O	O	O	O	O	O	O	O
+berigt	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laaten	O	O	O	O	O	O	O	O
+toekoomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

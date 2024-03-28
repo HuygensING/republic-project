@@ -1,0 +1,64 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+voorts	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+geresolueert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Commis	B-HOE	O	B-PER	O	O	O	O	O	Commis
+vander	O	O	I-PER	O	O	O	O	O
+Does	O	O	I-PER	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+ordonneren	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+alhier	O	O	O	O	O	O	O	O
+ouer	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+brengen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+goude	O	O	O	O	O	O	O	O
+kettingh	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+Commissaris	B-HOE	O	B-PER	O	O	O	O	O	Commissaris
+Jan	O	O	I-PER	O	O	O	O	O
+Neyen	O	O	I-PER	O	O	O	O	O
+ontfangen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+ander	O	O	O	O	O	O	O	O
+casken	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+voorscreuen	O	O	O	O	O	O	O	O
+Tresorier	B-HOE	O	O	O	O	O	O	O	Tresorier
+geconsigneert	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+bewaert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+byde	O	O	O	O	O	O	O	O
+heeren	O	O	O	B-ORG	O	O	O	O	heeren Staten gnael
+Staten	O	O	O	I-ORG	O	O	O	O
+gnael	O	O	O	I-ORG	O	O	O	O
+geresolueert	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+wat	O	O	O	O	O	O	O	O
+daermede	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+dienen	O	O	O	O	O	O	O	O
+gedaen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

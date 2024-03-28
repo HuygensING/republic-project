@@ -1,0 +1,51 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Haeften
+van	I-HOE	O	I-PER	O	O	O	O	O
+Haeften	I-HOE	B-LOC	I-PER	O	O	O	O	O	Haeften
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mog. extraordinaris Envoyé en Plenipotentiaris aan het Hof van zyne Keizerlyke Majesteit
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mog	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van zyne Keizerlyke Majesteit
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+zyne	B-HOE	O	B-PER	I-ORG	O	O	O	O	zyne Keizerlyke Majesteit
+Keizerlyke	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Majesteit	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Weenen	O	B-LOC	O	O	O	O	O	O	Weenen
+den	O	O	O	O	O	O	O	O
+4	O	O	O	O	B-DAT	O	O	O	4 deezer loopende maand
+deezer	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Grissier	B-HOE	O	B-PER	O	O	O	O	O	Grissier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

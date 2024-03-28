@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+Misiiven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere vander Hoop
+vander	I-HOE	O	I-PER	O	O	O	O	O
+Hoop	I-HOE	B-LOC	I-PER	O	O	O	O	O	Hoop
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mog. Minister te Luyk
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mog	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+Minister	I-HOE	O	I-PER	O	O	O	O	O
+te	I-HOE	O	I-PER	O	O	O	O	O
+Luyk	I-HOE	B-LOC	I-PER	O	O	O	O	O	Luyk
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+3	O	O	O	O	B-DAT	O	O	O	3 een 5 deeser loopende maand
+een	O	O	O	O	I-DAT	O	O	O
+5	O	O	O	O	I-DAT	O	O	O
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+laatste	O	O	O	O	O	O	O	O
+geaddresleert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

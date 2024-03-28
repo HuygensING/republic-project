@@ -1,0 +1,81 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Broeders	B-HOE	O	O	O	O	O	O	O	Broeders ende Onderlingen vande Bussenschutters gilde der Stadt Maestricht
+ende	I-HOE	O	O	O	O	O	O	O
+Onderlingen	I-HOE	O	O	O	O	O	O	O
+vande	I-HOE	O	O	O	O	O	O	O
+Bussenschutters	I-HOE	O	O	B-ORG	O	O	O	O	Bussenschutters gilde der Stadt Maestricht
+gilde	I-HOE	O	O	I-ORG	O	O	O	O
+der	I-HOE	O	O	I-ORG	O	O	O	O
+Stadt	I-HOE	B-LOC	O	I-ORG	O	O	O	O	Stadt Maestricht
+Maestricht	I-HOE	I-LOC	O	I-ORG	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+verhaelt	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hun	O	O	O	O	O	O	O	O
+gepermitteert	O	O	O	O	O	O	O	O
+moge	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+hun	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+gilde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ofte	O	O	O	O	O	O	O	O
+confrairie	O	O	O	O	O	O	O	O
+wederomme	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+rusten	O	O	O	O	O	O	O	O
+Ende	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+train	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+brengen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+wetten	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+Ordonnantien	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Magistraet	O	O	O	B-ORG	O	O	O	O	Magistraet
+aldaer	O	O	O	O	O	O	O	O
+geprescribeert	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+vstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voors	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+heere	O	O	B-PER	O	O	O	O	O	heere Rsijngrave, Gouverneur der Stadt maestricht
+Rsijngrave	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Gouverneur	B-HOE	O	I-PER	O	O	O	O	O	Gouverneur der Stadt maestricht
+der	I-HOE	O	I-PER	O	O	O	O	O
+Stadt	I-HOE	B-LOC	I-PER	O	O	O	O	O	Stadt maestricht
+maestricht	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+berust	O	O	O	O	O	O	O	O

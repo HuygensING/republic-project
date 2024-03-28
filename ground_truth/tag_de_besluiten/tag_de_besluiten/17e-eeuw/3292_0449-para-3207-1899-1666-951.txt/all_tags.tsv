@@ -1,0 +1,65 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Sijnde	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergadering	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Adriaen	O	O	B-PER	O	O	O	O	O	Adriaen van Vlissegem Procureurpostulerende voorde Vierscharen van Hulst ende hulsterambacht
+van	O	O	I-PER	O	O	O	O	O
+Vlissegem	O	O	I-PER	O	O	O	O	O
+Procureurpostulerende	B-HOE	O	I-PER	O	O	O	O	O	Procureurpostulerende voorde Vierscharen van Hulst ende hulsterambacht
+voorde	I-HOE	O	I-PER	O	O	O	O	O
+Vierscharen	I-HOE	O	I-PER	B-ORG	O	O	O	O	Vierscharen van Hulst ende hulsterambacht
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Hulst	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Hulst ende hulsterambacht
+ende	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+hulsterambacht	I-HOE	I-LOC	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+notaris	B-HOE	O	O	O	O	O	O	O	notaris
+gecreeert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogh	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+tselve	O	O	O	O	O	O	O	O
+amptinde	O	O	O	O	O	O	O	O
+quartieren	O	B-LOC	O	O	O	O	O	O	quartieren van Vlaenderen
+van	O	I-LOC	O	O	O	O	O	O
+Vlaenderen	O	I-LOC	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+‛	O	O	O	O	O	O	O	O
+exerceren	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+teconsenteren	O	O	O	O	O	O	O	O
+int	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+versoeck	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+dienvolgens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+gerequireerde	O	O	O	O	O	O	O	O
+Acte	O	O	O	O	O	O	O	O
+vacreatie	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+behoeve	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+ingewoonlijcke	O	O	O	O	O	O	O	O
+forme	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

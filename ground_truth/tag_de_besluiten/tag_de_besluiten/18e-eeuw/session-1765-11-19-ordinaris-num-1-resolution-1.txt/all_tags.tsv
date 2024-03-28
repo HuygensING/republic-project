@@ -1,0 +1,39 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Mauricius, haar Hoog Mogende Minister by den Neder -Saxischen Kreytz
+Mauricius	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mogende Minister by den Neder -Saxischen Kreytz
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+Minister	I-HOE	O	I-PER	O	O	O	O	O
+by	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Neder	I-HOE	B-LOC	I-PER	O	O	O	O	O	Neder -Saxischen Kreytz
+-	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Saxischen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Kreytz	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Hamburg	O	B-LOC	O	O	O	O	O	O	Hamburg
+den	O	O	O	O	B-DAT	O	O	O	den vyftienden deeser loopende maand
+vyftienden	O	O	O	O	I-DAT	O	O	O
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

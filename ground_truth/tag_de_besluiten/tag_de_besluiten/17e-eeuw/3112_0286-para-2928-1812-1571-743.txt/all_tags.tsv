@@ -1,0 +1,36 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opde	O	O	O	O	O	O	O	O
+brieuen	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+LantRaet	O	O	O	B-ORG	O	O	O	O	LantRaet
+vanden	O	O	O	O	O	O	O	O
+pxben	O	O	O	O	B-DAT	O	O	O	pxben. Mey
+.	O	O	O	O	I-DAT	O	O	O
+Mey	O	O	O	O	I-DAT	O	O	O
+geresolueert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+schryuen	O	O	O	O	O	O	O	O
+voer	O	O	O	O	O	O	O	O
+Antwoorde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+heur	O	O	O	O	O	O	O	O
+dagelix	O	O	O	O	O	O	O	O
+es	O	O	O	O	O	O	O	O
+verwachtende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+opde	O	O	O	O	O	O	O	O
+saecke	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+henre	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+vermelt	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+alle	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+orden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+setellen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

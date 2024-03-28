@@ -1,0 +1,54 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	B-HOE	O	B-PER	O	O	O	O	O	den Keyser
+Keyser	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Weenen	O	B-LOC	O	O	O	O	O	O	Weenen
+den	O	O	O	O	O	O	O	O
+vier	O	O	O	O	B-DAT	O	O	O	vier en twintighsten der voorleden maendt
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+der	O	O	O	O	I-DAT	O	O	O
+voorleden	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+creditif	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Prince van Savoyen
+Prince	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Savoyen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Savoyen
+.	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verklaren	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Prince van Savoyen
+Prince	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Savoyen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Savoyen
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+aengenaem	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

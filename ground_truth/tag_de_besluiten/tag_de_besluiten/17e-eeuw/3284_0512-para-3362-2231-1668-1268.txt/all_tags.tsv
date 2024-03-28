@@ -1,0 +1,91 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Dat	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+niettemin	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Erffgenamen	B-HOE	O	O	O	O	O	O	O	Erffgenamen buijten Indien
+buijten	I-HOE	O	O	O	O	O	O	O
+Indien	I-HOE	B-LOC	O	O	O	O	O	O	Indien
+vrij	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+behooren	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+staen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+(	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+wanneer	O	O	O	O	O	O	O	O
+sij	O	O	O	O	O	O	O	O
+kennisse	O	O	O	O	O	O	O	O
+crijgen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+datijmant	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+gemelte	O	O	O	O	O	O	O	O
+Compagnies	B-HOE	O	O	B-ORG	O	O	O	O	Compagnies
+Dienaren	I-HOE	O	O	O	O	O	O	O
+in	I-HOE	O	O	O	O	O	O	O
+Indien	I-HOE	B-LOC	O	O	O	O	O	O	Indien
+soude	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+overleden	O	O	O	O	O	O	O	O
+)	O	O	O	O	O	O	O	O
+wiens	O	O	O	O	O	O	O	O
+Effgenamen	B-HOE	O	O	O	O	O	O	O	Effgenamen
+sij	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ofte	O	O	O	O	O	O	O	O
+pretenderen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+persoon	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+committeren	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Boedel	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+nalatenschap	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+voorschreven	O	O	O	O	O	O	O	O
+overleden	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+Indien	O	B-LOC	O	O	O	O	O	O	Indien
+te	O	O	O	O	O	O	O	O
+redderen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+administreren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+veel	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+verre	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Curateur	B-HOE	O	O	O	O	O	O	O	Curateur
+,	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+gemelte	O	O	O	O	O	O	O	O
+Compagnie	O	O	O	B-ORG	O	O	O	O	Compagnie
+aengestelt	O	O	O	O	O	O	O	O
+alsdan	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+albereijts	O	O	O	O	O	O	O	O
+geredder	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

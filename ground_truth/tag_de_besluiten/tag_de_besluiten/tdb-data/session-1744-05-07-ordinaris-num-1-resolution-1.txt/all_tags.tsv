@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Mifsive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Consul	B-HOE	O	B-PER	O	O	O	O	O	Consul
+Gerbrands	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Tripoli	O	B-LOC	O	O	O	O	O	O	Tripoli
+den	O	O	O	O	O	O	O	O
+aght	O	O	O	O	B-DAT	O	O	O	aght en twintighsten February laatstleeden
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+February	O	O	O	O	I-DAT	O	O	O
+laatstleeden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+bencevens	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Duplicaat	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+voorige	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+dertighsten	O	O	O	O	B-DAT	O	O	O	dertighsten October des voorleeden jaars
+October	O	O	O	O	I-DAT	O	O	O
+des	O	O	O	O	I-DAT	O	O	O
+voorleeden	O	O	O	O	I-DAT	O	O	O
+jaars	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

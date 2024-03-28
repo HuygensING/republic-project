@@ -1,0 +1,18 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Accorde	O	O	O	O	O	O	O	O
+passeport	O	O	O	O	O	O	O	O
+a	O	O	O	O	O	O	O	O
+francisco	O	O	B-PER	O	O	O	O	O	francisco Lucoy Courrier de Portugal portlant lres de facteur du Roy de Portugal
+Lucoy	O	O	I-PER	O	O	O	O	O
+Courrier	B-HOE	O	I-PER	O	O	O	O	O	Courrier de Portugal portlant lres de facteur du Roy de Portugal
+de	I-HOE	O	I-PER	O	O	O	O	O
+Portugal	I-HOE	B-LOC	I-PER	O	O	O	O	O	Portugal
+portlant	I-HOE	O	I-PER	O	O	O	O	O
+lres	I-HOE	O	I-PER	O	O	O	O	O
+de	I-HOE	O	I-PER	O	O	O	O	O
+facteur	I-HOE	O	I-PER	O	O	O	O	O
+du	I-HOE	O	I-PER	O	O	O	O	O
+Roy	B-HOE	O	B-PER	O	O	O	O	O	Roy de Portugal
+de	I-HOE	O	I-PER	O	O	O	O	O
+Portugal	I-HOE	B-LOC	I-PER	O	O	O	O	O	Portugal
+.	O	O	O	O	O	O	O	O

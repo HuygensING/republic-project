@@ -1,0 +1,26 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Het	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+douagiere	B-HOE	O	B-PER	O	O	O	O	O	douagiere van Steintiert weduwe wylen den heer Graeff van Bentem
+van	I-HOE	O	I-PER	O	O	O	O	O
+Steintiert	I-HOE	O	I-PER	O	O	O	O	O
+weduwe	I-HOE	O	I-PER	O	O	O	O	O
+wylen	B-HOE	O	B-PER	O	O	O	O	O	wylen den heer Graeff van Bentem
+den	I-HOE	O	I-PER	O	O	O	O	O
+heer	I-HOE	O	I-PER	O	O	O	O	O
+Graeff	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Bentem	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bentem
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+prouisie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+viures	O	O	O	O	O	O	O	O
+vryte	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+uytvoeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+opgehouden	O	O	O	O	O	O	O	O

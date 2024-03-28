@@ -1,0 +1,48 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+Missiven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere Verelst, haar Hoogh Mogende extraordinaris Envoyé en Plenipotentiaris maan het Hof van sijne Majesteyt den Koningh van Pruyssen
+Verelst	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoogh Mogende extraordinaris Envoyé en Plenipotentiaris maan het Hof van sijne Majesteyt den Koningh van Pruyssen
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+maan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van sijne Majesteyt den Koningh van Pruyssen
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+sijne	B-HOE	O	B-PER	I-ORG	O	O	O	O	sijne Majesteyt den Koningh van Pruyssen
+Majesteyt	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koningh	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Pruyssen	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Pruyssen
+,	O	O	O	O	O	O	O	O
+geschreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Berlyn	O	B-LOC	O	O	O	O	O	O	Berlyn
+den	O	O	O	O	O	O	O	O
+seeven	O	O	O	O	B-DAT	O	O	O	seeven en twintighsten der voorleede maand
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+der	O	O	O	O	I-DAT	O	O	O
+voorleede	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

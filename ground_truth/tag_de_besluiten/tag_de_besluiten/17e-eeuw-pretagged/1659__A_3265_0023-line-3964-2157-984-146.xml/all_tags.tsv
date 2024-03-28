@@ -1,0 +1,17 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+mare	O	O	O	O	O	O	O	O
+lita	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+M1	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Maestricht	O	B-LOC	O	O	O	O	O	O	Maestricht
+Elysabeth	O	O	B-PER	O	O	O	O	O	Elysabeth ten haeff C Wassij
+ten	O	O	I-PER	O	O	O	O	O
+haeff	O	O	I-PER	O	O	O	O	O
+C	O	O	I-PER	O	O	O	O	O
+Wassij	O	O	I-PER	O	O	O	O	O
+vide	O	O	O	O	O	O	O	O
+lita	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+2	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

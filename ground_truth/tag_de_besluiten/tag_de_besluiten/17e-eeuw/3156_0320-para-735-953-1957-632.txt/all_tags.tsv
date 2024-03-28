@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+IItem	O	O	O	O	O	O	O	O
+datmen	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+revoceren	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Commissien	B-HOE	O	O	O	O	O	O	O	Commissien
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+d'heeren	B-HOE	O	O	O	O	O	O	O	d'heeren Gesanten des Conincx van Sweeden
+Gesanten	I-HOE	O	O	O	O	O	O	O
+des	I-HOE	O	O	O	O	O	O	O
+Conincx	B-HOE	O	B-PER	O	O	O	O	O	Conincx van Sweeden
+van	I-HOE	O	I-PER	O	O	O	O	O
+Sweeden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Sweeden
+syn	O	O	O	O	O	O	O	O
+geconsenteert	O	O	O	O	O	O	O	O
+totte	O	O	O	O	O	O	O	O
+lichtinge	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+landen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+vier	O	O	O	O	O	O	O	O
+hondert	O	O	O	O	O	O	O	O
+soldaten	B-HOE	O	O	O	O	O	O	O	soldaten
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+behoorlycke	O	O	O	O	O	O	O	O
+pasport	O	O	O	O	O	O	O	O
+vuytten	O	O	O	O	O	O	O	O
+dienst	O	O	O	O	O	O	O	O
+gescheyden	O	O	O	O	O	O	O	O
+zyn	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+wyle	O	O	O	O	O	O	O	O
+beselue	O	O	O	O	O	O	O	O
+Gesanten	B-HOE	O	O	O	O	O	O	O	Gesanten
+haer	O	O	O	O	O	O	O	O
+consent	O	O	O	O	O	O	O	O
+excederen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+contravenieren	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

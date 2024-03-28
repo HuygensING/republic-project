@@ -1,0 +1,228 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	O	O	O	O	O	O	Secretaris van den Heere Grave van Rechteren, haar Hoog Mogende extraordinaris Envoyé en Plenipotentiaris aan het Hot van Spagne
+van	I-HOE	O	O	O	O	O	O	O
+den	I-HOE	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Rechteren
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Rechteren	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rechteren
+,	I-HOE	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mogende extraordinaris Envoyé en Plenipotentiaris aan het Hot van Spagne
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Plenipotentiaris	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hot	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hot van Spagne
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Spagne	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Spagne
+,	O	O	O	O	O	O	O	O
+gefchreeven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Madrid	O	B-LOC	O	O	O	O	O	O	Madrid
+den	O	O	O	O	O	O	O	O
+10	O	O	O	O	B-DAT	O	O	O	10 deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+geaddresseert	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Griffier	B-HOE	O	B-PER	O	O	O	O	O	Griffier
+Fagel	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+anderen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+Vrydag	O	O	O	O	B-DAT	O	O	O	Vrydag te voren
+te	O	O	O	O	I-DAT	O	O	O
+voren	O	O	O	O	I-DAT	O	O	O
+met	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Courier	B-HOE	O	B-PER	O	O	O	O	O	Courier
+ten	O	O	I-PER	O	O	O	O	O
+Hove	O	O	I-PER	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+tyding	O	O	O	O	O	O	O	O
+aangebragt	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Hertoginne	B-HOE	O	B-PER	O	O	O	O	O	Hertoginne van Parma
+van	I-HOE	O	I-PER	O	O	O	O	O
+Parma	I-HOE	O	I-PER	O	O	O	O	O
+gelukkiglyk	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Prins	B-HOE	O	O	O	O	O	O	O	Prins
+bevallen	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+men	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Madrid	O	B-LOC	O	O	O	O	O	O	Madrid
+op	O	O	O	O	O	O	O	O
+Koninglyke	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+drie	O	O	O	O	O	O	O	O
+agter	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+volgende	O	O	O	O	O	O	O	O
+avonden	O	O	O	O	O	O	O	O
+geillumineert	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+welk	O	O	O	O	O	O	O	O
+ook	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Hotel	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Rechreren
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Rechreren	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rechreren
+geschied	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+verfoekende	O	O	O	O	O	O	O	O
+derhalven	O	O	O	O	O	O	O	O
+uit	O	O	O	O	O	O	O	O
+desselfs	O	O	O	O	O	O	O	O
+naam	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+permissie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+kosten	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+llluminatien	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+aanstaande	O	O	O	O	O	O	O	O
+halfjarige	O	O	O	O	O	O	O	O
+Declaratie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Rechteren
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Rechteren	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rechteren
+in	O	O	O	O	O	O	O	O
+reekening	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gebragt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	O	O	O	O	O	O	Secretaris van den Heere Grave van Rechteren
+van	I-HOE	O	O	O	O	O	O	O
+den	I-HOE	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Rechteren
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Rechteren	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rechteren
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gerescribeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+permitteeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+kostem	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorsz	O	O	O	O	O	O	O	O
+llluminatien	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+aanstaande	O	O	O	O	O	O	O	O
+Declaratie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+voornoemde	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Rechteren
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Rechteren	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rechteren
+worden	O	O	O	O	O	O	O	O
+gebragt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+alwaar	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+sullen	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gevalideert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+En	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+Extract	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+deese	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Raad	O	O	O	B-ORG	O	O	O	O	Raad van Staate en de Generaliteits Reekenkamer
+van	O	O	O	I-ORG	O	O	O	O
+Staate	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Generaliteits	O	O	O	I-ORG	O	O	O	O
+Reekenkamer	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+strekken	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+selver	O	O	O	O	O	O	O	O
+narigtinga	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

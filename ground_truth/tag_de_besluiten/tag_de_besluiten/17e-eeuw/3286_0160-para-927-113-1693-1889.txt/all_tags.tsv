@@ -1,0 +1,139 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+bekent	O	O	O	O	O	O	O	O
+gemaeckt	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+eenigh	O	O	O	O	O	O	O	O
+onbenoegen	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+voorgevallen	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+receptie	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer van Werckendam
+van	I-HOE	O	I-PER	O	O	O	O	O
+Werckendam	I-HOE	B-LOC	I-PER	O	O	O	O	O	Werckendam
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Ho:Mo: Extraordinaris Ambassadeur aenden Coningh van Denemarcken
+Ho	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Mo	I-HOE	O	I-PER	O	O	O	O	O
+:	I-HOE	O	I-PER	O	O	O	O	O
+Extraordinaris	I-HOE	O	I-PER	O	O	O	O	O
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+aenden	I-HOE	O	I-PER	O	O	O	O	O
+Coningh	B-HOE	O	B-PER	O	O	O	O	O	Coningh van Denemarcken
+van	I-HOE	O	I-PER	O	O	O	O	O
+Denemarcken	I-HOE	B-LOC	I-PER	O	O	O	O	O	Denemarcken
+gedaen	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere van Bloemendael
+van	I-HOE	O	I-PER	O	O	O	O	O
+Bloemendael	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bloemendael
+,	O	O	I-PER	O	O	O	O	O
+Extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	Extraordinaris Envoijé vanden Heere Churfurst van Brandenburgh
+Envoijé	I-HOE	O	I-PER	O	O	O	O	O
+vanden	I-HOE	O	I-PER	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Churfurst van Brandenburgh
+Churfurst	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Brandenburgh	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brandenburgh
+aenden	O	O	O	O	O	O	O	O
+Hoochstgedachten	B-HOE	O	O	O	O	O	O	O	Hoochstgedachten Coningh
+Coningh	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+eene	O	O	O	O	O	O	O	O
+visite	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+geme	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+heer	B-HOE	O	B-PER	O	O	O	O	O	heer van Bloemendael
+van	I-HOE	O	I-PER	O	O	O	O	O
+Bloemendael	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bloemendael
+aen	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer van Werckendam
+van	I-HOE	O	I-PER	O	O	O	O	O
+Werckendam	I-HOE	B-LOC	I-PER	O	O	O	O	O	Werckendam
+gegeven	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemen	O	O	O	O	O	O	O	O
+heer	B-HOE	O	B-PER	O	O	O	O	O	heer van Werckendam
+van	I-HOE	O	I-PER	O	O	O	O	O
+Werckendam	I-HOE	B-LOC	I-PER	O	O	O	O	O	Werckendam
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+toegesonden	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	B-RES	O	O	haer Ho:Mo: resolutie vanden 7en. November 1671
+Ho	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+resolutie	O	O	O	O	O	I-RES	O	O
+vanden	O	O	O	O	O	I-RES	O	O
+7en	O	O	O	O	B-DAT	I-RES	O	O	7en. November 1671
+.	O	O	O	O	I-DAT	I-RES	O	O
+November	O	O	O	O	I-DAT	I-RES	O	O
+1671	O	O	O	O	I-DAT	I-RES	O	O
+.	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+rangh	O	O	O	O	O	O	O	O
+tusschen	O	O	O	O	O	O	O	O
+haer	B-HOE	O	O	O	O	O	O	O	haer Ho:Mo: Ambassadeurs
+Ho	I-HOE	O	O	O	O	O	O	O
+:	I-HOE	O	O	O	O	O	O	O
+Mo	I-HOE	O	O	O	O	O	O	O
+:	I-HOE	O	O	O	O	O	O	O
+Ambassadeurs	I-HOE	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Extraordinaris	B-HOE	O	O	O	O	O	O	O	Extraordinaris Envoijées van andere Coningen ende Princen
+Envoijées	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+andere	I-HOE	O	O	O	O	O	O	O
+Coningen	I-HOE	O	O	O	O	O	O	O
+ende	I-HOE	O	O	O	O	O	O	O
+Princen	I-HOE	O	O	O	O	O	O	O
+definierende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+ordre	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+reguleren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+gepasseerde	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+geme	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer Bloemendael
+Bloemendael	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bloemendael
+ten	O	O	O	O	O	O	O	O
+besten	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+excuseren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O

@@ -1,0 +1,44 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+d'heer	O	O	B-PER	O	O	O	O	O	d'heer Coren Raedt van State
+Coren	O	O	I-PER	O	O	O	O	O
+Raedt	B-HOE	O	I-PER	O	O	O	O	O	Raedt van State
+van	I-HOE	O	I-PER	O	O	O	O	O
+State	I-HOE	O	I-PER	O	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+wederom	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+willen	O	O	O	O	O	O	O	O
+transporteren	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Deuenter	O	B-LOC	O	O	O	O	O	O	Deuenter
+om	O	O	O	O	O	O	O	O
+aldaer	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+bestaden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+maeckende	O	O	O	O	O	O	O	O
+geordonneerde	O	O	O	O	O	O	O	O
+buyten	O	O	O	O	O	O	O	O
+wercken	O	O	O	O	O	O	O	O
+ouer	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+hauen	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+sulcke	O	O	O	O	O	O	O	O
+proportie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+nyet	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+excederen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+gedestineerde	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+twaelff	O	O	O	O	O	O	O	O
+duysent	O	O	O	O	O	O	O	O
+guldens	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

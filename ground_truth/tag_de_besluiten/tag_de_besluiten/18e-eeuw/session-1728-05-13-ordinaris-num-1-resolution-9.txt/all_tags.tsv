@@ -1,0 +1,149 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Coslegie	O	O	O	B-ORG	O	O	O	O	Coslegie ter Admiraliteyt te Amsterdam
+ter	O	O	O	I-ORG	O	O	O	O
+Admiraliteyt	O	O	O	I-ORG	O	O	O	O
+te	O	O	O	I-ORG	O	O	O	O
+Amsterdam	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+twaalfden	O	O	O	O	B-DAT	O	O	O	twaalfden deser loopende maandt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maandt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+gevolge	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+voldoeninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	B-RES	O	O	haar Hoogh Mog. Resolutie en Aanschryvinge van den eersten daar te vooren
+Hoogh	O	O	O	O	O	I-RES	O	O
+Mog	O	O	O	O	O	I-RES	O	O
+.	O	O	O	O	O	I-RES	O	O
+Resolutie	O	O	O	O	O	I-RES	O	O
+en	O	O	O	O	O	I-RES	O	O
+Aanschryvinge	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	B-DAT	I-RES	O	O	den eersten daar te vooren
+eersten	O	O	O	O	I-DAT	I-RES	O	O
+daar	O	O	O	O	I-DAT	I-RES	O	O
+te	O	O	O	O	I-DAT	I-RES	O	O
+vooren	O	O	O	O	I-DAT	I-RES	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Collegie	O	O	O	B-ORG	O	O	O	O	Collegie
+sigh	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+geinformeert	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Directeuren	B-HOE	O	O	O	O	O	O	O	Directeuren van den Levantschen handel
+van	I-HOE	O	O	O	O	O	O	O
+den	I-HOE	O	O	O	O	O	O	O
+Levantschen	I-HOE	O	O	O	O	O	O	O
+handel	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+wanneer	O	O	O	O	O	O	O	O
+gereedt	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+wesen	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Praesenten	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+aanbevolen	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Esquadre	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Schout	B-HOE	O	O	O	O	O	O	O	Schout by Nacht
+by	I-HOE	O	O	O	O	O	O	O
+Nacht	I-HOE	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+versonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+welcke	O	O	O	O	O	O	O	O
+Directeuren	B-HOE	O	O	O	O	O	O	O	Directeuren
+haar	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Laakenen	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+behoorende	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+aanstaande	O	O	O	O	B-DAT	O	O	O	aanstaande Sondagh den sestienden deser
+Sondagh	O	O	O	O	I-DAT	O	O	O
+den	O	O	O	O	I-DAT	O	O	O
+sestienden	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+na	O	O	O	O	O	O	O	O
+Texel	O	B-LOC	O	O	O	O	O	O	Texel
+versonde	O	O	O	O	O	O	O	O
+konde	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+waar	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gemelde	O	O	O	O	O	O	O	O
+Collegie	O	B-LOC	O	O	O	O	O	O	Collegie
+met	O	O	O	O	O	O	O	O
+overlegh	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+voornoemden	O	O	O	O	O	O	O	O
+Schout	B-HOE	O	O	O	O	O	O	O	Schout by Nacht
+by	I-HOE	O	O	O	O	O	O	O
+Nacht	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+volgens	O	O	O	O	O	O	O	O
+authorisatie	O	O	O	O	O	O	O	O
+door	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+selve	O	O	O	O	O	O	O	O
+verleendt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+selfs	O	O	O	O	O	O	O	O
+zeyldagh	O	O	O	O	O	O	O	O
+uyt	O	O	O	O	O	O	O	O
+Texel	O	B-LOC	O	O	O	O	O	O	Texel
+vastgestelt	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+eerste	O	O	O	O	O	O	O	O
+goede	O	O	O	O	O	O	O	O
+windt	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+negentienden	O	O	O	O	B-DAT	O	O	O	negentienden deser
+deser	O	O	O	O	I-DAT	O	O	O
+WAAK	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

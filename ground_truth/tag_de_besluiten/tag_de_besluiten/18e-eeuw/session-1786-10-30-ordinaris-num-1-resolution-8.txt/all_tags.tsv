@@ -1,0 +1,147 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Rechteren
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Rechteren	I-HOE	B-LOC	I-PER	O	O	O	O	O	Rechteren
+,	O	O	I-PER	O	O	O	O	O
+haar	B-HOE	O	I-PER	O	O	O	O	O	haar Hoog Mog. Ambassadeur aan het Hof van sijne Majesteit den Koning van Spagne
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mog	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van sijne Majesteit den Koning van Spagne
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+sijne	B-HOE	O	B-PER	I-ORG	O	O	O	O	sijne Majesteit den Koning van Spagne
+Majesteit	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Koning	I-HOE	O	I-PER	I-ORG	O	O	O	O
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Spagne	I-HOE	B-LOC	I-PER	I-ORG	O	O	O	O	Spagne
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+St	O	B-LOC	O	O	O	O	O	O	St. lldefonse
+.	O	I-LOC	O	O	O	O	O	O
+lldefonse	O	I-LOC	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+9	O	O	O	O	B-DAT	O	O	O	9 deeser loopende maand
+deeser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maand	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+nader	O	O	O	O	O	O	O	O
+aandringende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+noodsaakelykheid	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+navolging	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+Hoven	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+bekwaam	O	O	O	O	O	O	O	O
+Persoon	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+Hollander	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+stellen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+plaats	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Agent	B-HOE	O	B-PER	O	O	O	O	O	Agent
+Spino	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dewelke	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+ander	O	O	O	O	O	O	O	O
+Ampt	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+begunstigt	O	O	O	O	O	O	O	O
+;	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+daar	O	O	O	O	O	O	O	O
+toe	O	O	O	O	O	O	O	O
+voorslaande	O	O	O	O	O	O	O	O
+desselfs	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	B-PER	O	O	O	O	O	Secretaris
+Aubert	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+zy	O	O	O	O	O	O	O	O
+onder	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+benaming	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Agent	B-HOE	O	O	O	O	O	O	O	Agent of van Consul Generaal
+of	I-HOE	O	O	O	O	O	O	O
+van	I-HOE	O	O	O	O	O	O	O
+Consul	I-HOE	O	O	O	O	O	O	O
+Generaal	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+wel	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+aldaar	O	O	O	O	O	O	O	O
+bekende	O	O	O	O	O	O	O	O
+benaming	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Chargé	B-HOE	O	O	O	O	O	O	O	Chargé des affaires de Commerce
+des	I-HOE	O	O	O	O	O	O	O
+affaires	I-HOE	O	O	O	O	O	O	O
+de	I-HOE	O	O	O	O	O	O	O
+Commerce	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Heeren	O	O	O	B-ORG	O	O	O	O	Heeren Gedeputeerden van de Provincien van Holland en Westvriesland en van Zeeland
+Gedeputeerden	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	I-ORG	O	O	O	O
+Provincien	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Holland	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+Westvriesland	O	O	O	I-ORG	O	O	O	O
+en	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Zeeland	O	O	O	I-ORG	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorse	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+Bylaage	O	O	O	O	O	O	O	O
+Copielyk	O	O	O	O	O	O	O	O
+overgenoomen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+haaren	O	O	O	O	O	O	O	O
+breeder	O	O	O	O	O	O	O	O
+gecommuniceert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

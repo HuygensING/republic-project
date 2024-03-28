@@ -1,0 +1,46 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren Brunincx, Vosbergen en Schaffer
+Brunincx	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Vosbergen	O	O	I-PER	O	O	O	O	O
+en	O	O	I-PER	O	O	O	O	O
+Schaffer	O	O	I-PER	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+versocht	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+gecommitteert	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+syn	B-HOE	O	O	O	O	O	O	O	syn Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+spreken	O	O	O	O	O	O	O	O
+over	O	O	O	O	O	O	O	O
+t'stuck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+wisse	O	O	O	O	O	O	O	O
+„	O	O	O	O	O	O	O	O
+linge	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+gevangenen	B-HOE	O	O	O	O	O	O	O	gevangenen
+,	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+soyants	O	O	O	O	O	O	O	O
+syde	O	O	O	O	O	O	O	O
+sittende	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+hieropte	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+E	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+advis	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+consideratien	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+rapport	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,76 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ONtfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere vanden Bergh
+vanden	I-HOE	O	I-PER	O	O	O	O	O
+Bergh	I-HOE	B-LOC	I-PER	O	O	O	O	O	Bergh
+,	O	O	I-PER	O	O	O	O	O
+haer	B-HOE	O	I-PER	O	O	O	O	O	haer Hoogh Mogende Gedeputeerde te Brussel
+Hoogh	I-HOE	O	I-PER	O	O	O	O	O
+Mogende	I-HOE	O	I-PER	O	O	O	O	O
+Gedeputeerde	I-HOE	O	I-PER	O	O	O	O	O
+te	I-HOE	O	I-PER	O	O	O	O	O
+Brussel	I-HOE	B-LOC	I-PER	O	O	O	O	O	Brussel
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Brussel	O	B-LOC	O	O	O	O	O	O	Brussel
+den	O	O	O	O	O	O	O	O
+tweeden	O	O	O	O	B-DAT	O	O	O	tweeden deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+nevens	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+Bylagen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+antwoordt	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+drie	O	O	O	O	B-DAT	O	O	O	drie en twintighsten der voorlede maendt
+en	O	O	O	O	I-DAT	O	O	O
+twintighsten	O	O	O	O	I-DAT	O	O	O
+der	O	O	O	O	I-DAT	O	O	O
+voorlede	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+raeckende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+wanbetalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Regiment	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Hartop	O	O	B-PER	O	O	O	O	O	Hartop
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+andere	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+laste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Spaensche	O	B-LOC	O	O	O	O	O	O	Spaensche Nederlanden
+Nederlanden	O	I-LOC	O	O	O	O	O	O
+staende	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAER	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

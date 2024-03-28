@@ -1,0 +1,30 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Geresolueert	O	O	O	O	O	O	O	O
+opt	O	O	O	O	O	O	O	O
+mondelingh	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+verzoeck	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+heere	O	O	B-PER	O	O	O	O	O	heere van Dort
+van	O	O	I-PER	O	O	O	O	O
+Dort	O	B-LOC	I-PER	O	O	O	O	O	Dort
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+heeren	O	O	B-PER	O	O	O	O	O	heeren Bryuen, Meetkercke, ende Asperen
+Bryuen	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Meetkercke	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+ende	O	O	I-PER	O	O	O	O	O
+Asperen	O	O	I-PER	O	O	O	O	O
+zullen	O	O	O	O	O	O	O	O
+oversien	O	O	O	O	O	O	O	O
+zyne	O	O	O	O	O	O	O	O
+stucken	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+doen	O	O	O	O	O	O	O	O
+Rapport	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

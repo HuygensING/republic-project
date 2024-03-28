@@ -1,0 +1,74 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+DE	O	O	O	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer van Wassenaer
+van	I-HOE	O	I-PER	O	O	O	O	O
+Wassenaer	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wassenaer
+,	O	O	I-PER	O	O	O	O	O
+ter	B-HOE	O	I-PER	O	O	O	O	O	ter Vergaderinge praesideerende
+Vergaderinge	I-HOE	O	I-PER	O	O	O	O	O
+praesideerende	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+heeft	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+voorgedraagen	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+bekend	O	O	O	O	O	O	O	O
+gemaakt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heer	B-HOE	O	B-PER	O	O	O	O	O	Heer van Haeften
+van	I-HOE	O	I-PER	O	O	O	O	O
+Haeften	I-HOE	B-LOC	I-PER	O	O	O	O	O	Haeften
+,	O	O	I-PER	O	O	O	O	O
+gaande	B-HOE	O	I-PER	O	O	O	O	O	gaande als haar Hoog Mog. Ambassadeur na het Hof van den Turkschen Keiser
+als	I-HOE	O	I-PER	O	O	O	O	O
+haar	I-HOE	O	I-PER	O	O	O	O	O
+Hoog	I-HOE	O	I-PER	O	O	O	O	O
+Mog	I-HOE	O	I-PER	O	O	O	O	O
+.	I-HOE	O	I-PER	O	O	O	O	O
+Ambassadeur	I-HOE	O	I-PER	O	O	O	O	O
+na	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	B-ORG	O	O	O	O	Hof van den Turkschen Keiser
+van	I-HOE	O	I-PER	I-ORG	O	O	O	O
+den	I-HOE	O	I-PER	I-ORG	O	O	O	O
+Turkschen	B-HOE	O	B-PER	I-ORG	O	O	O	O	Turkschen Keiser
+Keiser	I-HOE	O	I-PER	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+was	O	O	O	O	O	O	O	O
+geweest	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+haar	O	O	O	O	O	O	O	O
+Hoog	O	O	O	O	O	O	O	O
+Mog	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+kennisle	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+geeven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+aanstaande	O	O	O	O	O	O	O	O
+vertrek	O	O	O	O	O	O	O	O
+na	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Plaats	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+destinatie	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+WAAR	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

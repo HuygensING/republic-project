@@ -1,0 +1,60 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Opde	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Burgemeester	O	O	O	B-ORG	O	O	O	O	Burgemeester ende Schepenen van Axel, ende den Ambachte vandien
+ende	O	O	O	I-ORG	O	O	O	O
+Schepenen	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+Axel	O	B-LOC	O	I-ORG	O	O	O	O	Axel, ende den Ambachte vandien
+,	O	I-LOC	O	I-ORG	O	O	O	O
+ende	O	I-LOC	O	I-ORG	O	O	O	O
+den	O	I-LOC	O	I-ORG	O	O	O	O
+Ambachte	O	I-LOC	O	I-ORG	O	O	O	O
+vandien	O	I-LOC	O	I-ORG	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+voordeselve	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+Mandement	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+cas	O	O	O	O	O	O	O	O
+d'appel	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+clausule	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+inhibitie	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+relieff	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+concessie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+seecker	O	O	O	O	O	O	O	O
+mandement	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Rade	O	O	O	B-ORG	O	O	O	O	Rade van Vlaenderen
+van	O	O	O	I-ORG	O	O	O	O
+Vlaenderen	O	B-LOC	O	I-ORG	O	O	O	O	Vlaenderen
+verleent	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+Jacob	O	O	B-PER	O	O	O	O	O	Jacob Pieters Wadde
+Pieters	O	O	I-PER	O	O	O	O	O
+Wadde	O	O	I-PER	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

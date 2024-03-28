@@ -1,0 +1,70 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+eenen	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Petrus	O	O	B-PER	O	O	O	O	O	Petrus Aloy siis Episcopus Trirariensis mincuis Spostelicus
+Aloy	O	O	I-PER	O	O	O	O	O
+siis	O	O	I-PER	O	O	O	O	O
+Episcopus	B-HOE	O	I-PER	O	O	O	O	O	Episcopus Trirariensis mincuis Spostelicus
+Trirariensis	I-HOE	O	I-PER	O	O	O	O	O
+mincuis	I-HOE	O	I-PER	O	O	O	O	O
+Spostelicus	I-HOE	O	I-PER	O	O	O	O	O
+gesn	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+luyck	O	B-LOC	O	O	O	O	O	O	luyck
+den	O	O	O	O	O	O	O	O
+4	O	O	O	O	B-DAT	O	O	O	4. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+houdende	O	O	O	O	O	O	O	O
+responsiue	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+Het	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Richart	O	O	B-PER	O	O	O	O	O	Richart Doucot Ingenieur
+Doucot	O	O	I-PER	O	O	O	O	O
+Ingenieur	B-HOE	O	I-PER	O	O	O	O	O	Ingenieur
+van	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+betalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+1046t	O	O	O	O	O	O	O	O
+by	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+annis	O	O	O	O	B-DAT	O	O	O	annis 1625. ende 1626
+1625	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	I-DAT	O	O	O
+ende	O	O	O	O	I-DAT	O	O	O
+1626	O	O	O	O	I-DAT	O	O	O
+int	O	O	O	O	O	O	O	O
+leger	O	O	O	O	O	O	O	O
+verdient	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+gestelt	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+handen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+om	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+disponeren	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Supplt	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+syn	O	O	O	O	O	O	O	O
+achterwesen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verhelpen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

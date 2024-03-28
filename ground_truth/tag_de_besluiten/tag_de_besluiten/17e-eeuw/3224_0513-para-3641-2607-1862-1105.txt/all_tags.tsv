@@ -1,0 +1,108 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+seeckere	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heer	O	O	B-PER	O	O	O	O	O	heer Richardt, Raet vanden Coninck van Spaignen
+Richardt	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Raet	B-HOE	O	I-PER	O	O	O	O	O	Raet vanden Coninck van Spaignen
+vanden	I-HOE	O	I-PER	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Spaignen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Spaignen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Spaignen
+,	O	O	O	O	O	O	O	O
+desselfs	O	O	O	O	O	O	O	O
+Secretaris	B-HOE	O	O	O	O	O	O	O	Secretaris
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+sijne	O	O	O	O	O	O	O	O
+Ambassade	B-HOE	O	O	O	O	O	O	O	Ambassade aen desen Staet
+aen	I-HOE	O	O	O	O	O	O	O
+desen	I-HOE	O	O	O	O	O	O	O
+Staet	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+clachten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+vscheijde	O	O	O	O	O	O	O	O
+Schepen	O	O	O	O	O	O	O	O
+deser	O	O	O	O	O	O	O	O
+landen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+Texel	O	B-LOC	O	O	O	O	O	O	Texel
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+daer	O	O	O	O	O	O	O	O
+ontrent	O	O	O	O	O	O	O	O
+geladen	O	O	O	O	O	O	O	O
+souden	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+alleen	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+alderhande	O	O	O	O	O	O	O	O
+soorte	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Vivres	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+maer	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+ammunitie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Oorloge	O	O	O	O	O	O	O	O
+ten	O	O	O	O	O	O	O	O
+dienste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Portugal	O	B-LOC	O	O	O	O	O	O	Portugal
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Geinteresseerden	B-HOE	O	O	O	O	O	O	O	Geinteresseerden
+souden	O	O	O	O	O	O	O	O
+pretenderen	O	O	O	O	O	O	O	O
+Convoij	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+frauden	O	O	O	O	O	O	O	O
+vrijelijck	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+Vlegen	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+vstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+Copielijck	O	O	O	O	O	O	O	O
+gesonden	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Admiraliteit	O	O	O	B-ORG	O	O	O	O	Admiraliteit tot Amsterdam
+tot	O	O	O	I-ORG	O	O	O	O
+Amsterdam	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

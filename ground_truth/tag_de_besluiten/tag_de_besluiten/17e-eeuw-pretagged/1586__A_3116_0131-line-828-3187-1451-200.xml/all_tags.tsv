@@ -1,0 +1,68 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Die	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Zeelaet	O	B-LOC	O	O	O	O	O	O	Zeelaet
+op	O	O	O	O	O	O	O	O
+daierde	O	O	O	O	O	O	O	O
+heure	O	O	O	O	O	O	O	O
+opinne	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+geproponeerde	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Zyne	B-HOE	O	O	O	O	O	O	O	Zyne Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+opgisteren	O	O	O	O	B-DAT	O	O	O	opgisteren
+gedaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+aengaende	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Restanten	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+Coute	O	O	O	O	O	O	O	O
+verschenen	O	O	O	O	O	O	O	O
+Inden	O	O	O	O	O	O	O	O
+Jaere	O	O	O	O	B-DAT	O	O	O	Jaere lxxxv
+lxxxv	O	O	O	O	I-DAT	O	O	O
+.	O	O	O	O	O	O	O	O
+Syn	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+vreden	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+Zyne	B-HOE	O	O	O	O	O	O	O	Zyne Excie
+Excie	I-HOE	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+zelue	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+executeren	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+innen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+zelue	O	O	O	O	O	O	O	O
+temployeren	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+betaelinge	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+tachterheyt	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+schepen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Cirlooge	O	B-LOC	O	O	O	O	O	O	Cirlooge
+ende	O	O	O	O	O	O	O	O
+schipsvolck	O	O	O	O	O	O	O	O
+totten	O	O	O	O	O	O	O	O
+xim	O	O	O	O	B-DAT	O	O	O	xim January lxxx vj
+January	O	O	O	O	I-DAT	O	O	O
+lxxx	O	O	O	O	I-DAT	O	O	O
+vj	O	O	O	O	I-DAT	O	O	O
+geuallen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+midts	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+eexecutie	O	O	O	O	O	O	O	O
+sae	O	O	O	O	O	O	O	O
+generael	O	O	O	O	O	O	O	O
+zyn1	O	O	O	O	O	O	O	O

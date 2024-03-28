@@ -1,0 +1,185 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+ls	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+Vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Nicolaes	O	O	B-PER	O	O	O	O	O	Nicolaes Clignet, Postmeester tot Leyden
+Clignet	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Postmeester	B-HOE	O	I-PER	O	O	O	O	O	Postmeester tot Leyden
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Leyden	I-HOE	B-LOC	I-PER	O	O	O	O	O	Leyden
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+voldoeninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+Resolutie	O	O	O	O	O	B-RES	O	O	Resolutie van den negen en twintighsten October laetstleden
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+negen	O	O	O	O	B-DAT	I-RES	O	O	negen en twintighsten October laetstleden
+en	O	O	O	O	I-DAT	I-RES	O	O
+twintighsten	O	O	O	O	I-DAT	I-RES	O	O
+October	O	O	O	O	I-DAT	I-RES	O	O
+laetstleden	O	O	O	O	I-DAT	I-RES	O	O
+,	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+penningen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+alimentatie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Sevenoisen	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Religie	O	O	O	O	O	O	O	O
+(	O	O	O	O	O	O	O	O
+genaemt	O	O	O	O	O	O	O	O
+Camisards	O	O	O	O	O	O	O	O
+)	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Landen	O	B-LOC	O	O	O	O	O	O	Landen van den Hertogh van Wirtenbergh
+van	O	I-LOC	O	O	O	O	O	O
+den	O	I-LOC	O	O	O	O	O	O
+Hertogh	B-HOE	I-LOC	B-PER	O	O	O	O	O	Hertogh van Wirtenbergh
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Wirtenbergh	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wirtenbergh
+sich	O	O	O	O	O	O	O	O
+onthoudende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+hadde	O	O	O	O	O	O	O	O
+overgemaeckt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+dewelcke	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+leven	O	O	O	O	O	O	O	O
+hadden	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+vyf	O	O	O	O	B-DAT	O	O	O	vyf en twintighstem deser maendt November
+en	O	O	O	O	I-DAT	O	O	O
+twintighstem	O	O	O	O	I-DAT	O	O	O
+deser	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+November	O	O	O	O	I-DAT	O	O	O
+;	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+doordien	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+voorschreven	O	O	O	O	O	O	O	O
+tijdt	O	O	O	O	O	O	O	O
+nu	O	O	O	O	O	O	O	O
+eerstdaeghs	O	O	O	O	O	O	O	O
+stont	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+expireren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Hoogh	O	O	O	O	O	O	O	O
+Mogende	O	O	O	O	O	O	O	O
+geliefden	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+Suppliant	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verleenen	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+selver	O	O	O	O	O	O	O	O
+verdere	O	O	O	O	O	O	O	O
+ordres	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+of	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+voorschreve	O	O	O	O	O	O	O	O
+Sevenoisen	O	O	O	O	O	O	O	O
+noch	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+maendt	O	O	O	O	O	O	O	O
+onderhoudt	O	O	O	O	O	O	O	O
+soude	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+besorgen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ondertusschen	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+bescheyt	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Hngelandt	O	B-LOC	O	O	O	O	O	O	Hngelandt
+,	O	O	O	O	O	O	O	O
+ofte	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Hertogh van Marlborough
+Hertogh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Marlborough	I-HOE	B-LOC	I-PER	O	O	O	O	O	Marlborough
+,	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+hare	O	O	O	O	O	O	O	O
+saecle	O	O	O	O	O	O	O	O
+mochte	O	O	O	O	O	O	O	O
+inkomen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+zynde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+authoriseren	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemelden	O	O	O	O	O	O	O	O
+Postmeester	B-HOE	O	B-PER	O	O	O	O	O	Postmeester
+Clignet	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Camisarts	B-HOE	O	O	O	O	O	O	O	Camisarts
+,	O	O	O	O	O	O	O	O
+tegenwoordigh	O	O	O	O	O	O	O	O
+geëtablisseert	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Lande	O	B-LOC	O	O	O	O	O	O	Lande van den Heere Hertogh van Wirtenbergh
+van	O	I-LOC	O	O	O	O	O	O
+den	O	I-LOC	O	O	O	O	O	O
+Heere	O	I-LOC	O	O	O	O	O	O
+Hertogh	B-HOE	I-LOC	B-PER	O	O	O	O	O	Hertogh van Wirtenbergh
+van	I-HOE	I-LOC	I-PER	O	O	O	O	O
+Wirtenbergh	I-HOE	B-LOC	I-PER	O	O	O	O	O	Wirtenbergh
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+noch	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+maendt	O	O	O	O	O	O	O	O
+onderhoudt	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+verstrecken	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

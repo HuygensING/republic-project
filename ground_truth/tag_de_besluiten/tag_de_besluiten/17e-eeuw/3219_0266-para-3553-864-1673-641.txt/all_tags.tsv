@@ -1,0 +1,41 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+missiven	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+d'Heeren	B-HOE	O	O	O	O	O	O	O	d'Heeren haer Hooch mogentheden extraordinaris ambassadeurs in Pruijssen
+haer	I-HOE	O	O	O	O	O	O	O
+Hooch	I-HOE	O	O	O	O	O	O	O
+mogentheden	I-HOE	O	O	O	O	O	O	O
+extraordinaris	I-HOE	O	O	O	O	O	O	O
+ambassadeurs	I-HOE	O	O	O	O	O	O	O
+in	I-HOE	O	O	O	O	O	O	O
+Pruijssen	I-HOE	B-LOC	O	O	O	O	O	O	Pruijssen
+,	O	O	O	O	O	O	O	O
+beijde	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+Marienburch	O	B-LOC	O	O	O	O	O	O	Marienburch
+d'eene	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+23e	O	O	O	O	B-DAT	O	O	O	23e. ende d'andere den Seven en twintichsten Martij lestleden
+.	O	O	O	O	I-DAT	O	O	O
+ende	O	O	O	O	I-DAT	O	O	O
+d'andere	O	O	O	O	I-DAT	O	O	O
+den	O	O	O	O	I-DAT	O	O	O
+Seven	O	O	O	O	I-DAT	O	O	O
+en	O	O	O	O	I-DAT	O	O	O
+twintichsten	O	O	O	O	I-DAT	O	O	O
+Martij	O	O	O	O	I-DAT	O	O	O
+lestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+advertentie	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+egeen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,52 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+eenen	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+heere	B-HOE	O	B-PER	O	O	O	O	O	heere Ambass
+Ambass	I-HOE	O	I-PER	O	O	O	O	O
+.	O	O	I-PER	O	O	O	O	O
+Canon	O	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gedateert	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+naestlesten	O	O	O	O	B-DAT	O	O	O	naestlesten January laestleden
+January	O	O	O	O	I-DAT	O	O	O
+laestleden	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+ouden	O	O	O	O	O	O	O	O
+style	O	O	O	O	O	O	O	O
+daerby	O	O	O	O	O	O	O	O
+hy	O	O	O	O	O	O	O	O
+alnoch	O	O	O	O	O	O	O	O
+insisteert	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+redenen	O	O	O	O	O	O	O	O
+daerinne	O	O	O	O	O	O	O	O
+verhaelt	O	O	O	O	O	O	O	O
+opde	O	O	O	O	O	O	O	O
+sendinge	O	O	O	O	O	O	O	O
+naer	O	O	O	O	O	O	O	O
+Engelandt	O	B-LOC	O	O	O	O	O	O	Engelandt
+tot	O	O	O	O	O	O	O	O
+nederlegginge	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+differenten	O	O	O	O	O	O	O	O
+swenende	O	O	O	O	O	O	O	O
+tusschen	O	O	O	O	O	O	O	O
+die	O	O	O	O	O	O	O	O
+Engelsche	B-HOE	O	O	O	O	O	O	O	Engelsche Coopluyden
+Coopluyden	I-HOE	O	O	O	O	O	O	O
+Aduentiniers	B-HOE	O	O	O	O	O	O	O	Aduentiniers
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Lakenneeringe	B-HOE	O	O	O	O	O	O	O	Lakenneeringe in dese Landen
+in	I-HOE	O	O	O	O	O	O	O
+dese	I-HOE	O	O	O	O	O	O	O
+Landen	I-HOE	O	O	O	O	O	O	O
+&	O	O	O	O	O	O	O	O
+anderssints	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

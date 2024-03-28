@@ -1,0 +1,30 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ende	O	O	O	O	O	O	O	O
+aengesien	O	O	O	O	O	O	O	O
+dese	O	O	O	O	O	O	O	O
+feijtelicheden	O	O	O	O	O	O	O	O
+met	O	O	O	O	O	O	O	O
+openwaere	O	O	O	O	O	O	O	O
+comminatien	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+dreijgementen	O	O	O	O	O	O	O	O
+tegens	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Stadt	O	B-LOC	O	O	O	O	O	O	Stadt van Basselt
+van	O	I-LOC	O	O	O	O	O	O
+Basselt	O	I-LOC	O	O	O	O	O	O
+waren	O	O	O	O	O	O	O	O
+gepleecht	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+deselve	O	O	O	O	O	O	O	O
+Stat	O	O	O	O	O	O	O	O
+miet	O	O	O	O	O	O	O	O
+goet	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+vertrouwt	O	O	O	O	O	O	O	O
+Guarnisoen	O	O	O	O	O	O	O	O
+mochte	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+versien	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,71 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Missive	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Graven	B-HOE	O	B-PER	O	O	O	O	O	Graven Ernst en Statius Philip van Benthem
+Ernst	I-HOE	O	I-PER	O	O	O	O	O
+en	I-HOE	O	I-PER	O	O	O	O	O
+Statius	I-HOE	O	I-PER	O	O	O	O	O
+Philip	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Benthem	I-HOE	B-LOC	I-PER	O	O	O	O	O	Benthem
+,	O	O	O	O	O	O	O	O
+geschreven	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Leger	O	O	O	O	O	O	O	O
+voor	O	O	O	O	O	O	O	O
+Douay	O	B-LOC	O	O	O	O	O	O	Douay
+den	O	O	O	O	O	O	O	O
+sevenden	O	O	O	O	B-DAT	O	O	O	sevenden deser loopende maendt
+deser	O	O	O	O	I-DAT	O	O	O
+loopende	O	O	O	O	I-DAT	O	O	O
+maendt	O	O	O	O	I-DAT	O	O	O
+,	O	O	O	O	O	O	O	O
+houdende	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+gevolge	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+voldoeninge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	B-RES	O	O	haer Hoogh Mogende Resolutie van den vier en twintighsten Junii jonghstleden
+Hoogh	O	O	O	O	O	I-RES	O	O
+Mogende	O	O	O	O	O	I-RES	O	O
+Resolutie	O	O	O	O	O	I-RES	O	O
+van	O	O	O	O	O	I-RES	O	O
+den	O	O	O	O	O	I-RES	O	O
+vier	O	O	O	O	B-DAT	I-RES	O	O	vier en twintighsten Junii jonghstleden
+en	O	O	O	O	I-DAT	I-RES	O	O
+twintighsten	O	O	O	O	I-DAT	I-RES	O	O
+Junii	O	O	O	O	I-DAT	I-RES	O	O
+jonghstleden	O	O	O	O	I-DAT	I-RES	O	O
+,	O	O	O	O	O	O	O	O
+der	O	O	O	O	O	O	O	O
+selver	O	O	O	O	O	O	O	O
+bericht	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Godefroy	O	O	B-PER	O	O	O	O	O	Godefroy Bachman, oudt Collonel van het Regiment van Coehorn
+Bachman	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+oudt	B-HOE	O	I-PER	O	O	O	O	O	oudt Collonel van het Regiment van Coehorn
+Collonel	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Regiment	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Coehorn	I-HOE	B-LOC	I-PER	O	O	O	O	O	Coehorn
+:	O	O	O	O	O	O	O	O
+Waer	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+geen	O	O	O	O	O	O	O	O
+resolutie	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+gevallen	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

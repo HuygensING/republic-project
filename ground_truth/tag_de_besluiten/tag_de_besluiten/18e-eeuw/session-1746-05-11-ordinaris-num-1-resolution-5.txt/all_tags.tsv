@@ -1,0 +1,89 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+OP	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Memorie	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	O	O	B-PER	O	O	O	O	O	Heere de Debrose, extraordinaris Envoyé van sijne Majesteyt den Koningh van Polen, als Churfurst van Saxen
+de	O	O	I-PER	O	O	O	O	O
+Debrose	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+extraordinaris	B-HOE	O	I-PER	O	O	O	O	O	extraordinaris Envoyé van sijne Majesteyt den Koningh van Polen, als Churfurst van Saxen
+Envoyé	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+sijne	B-HOE	O	B-PER	O	O	O	O	O	sijne Majesteyt den Koningh van Polen, als Churfurst van Saxen
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+den	I-HOE	O	I-PER	O	O	O	O	O
+Koningh	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Polen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Polen
+,	I-HOE	O	I-PER	O	O	O	O	O
+als	I-HOE	O	I-PER	O	O	O	O	O
+Churfurst	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Saxen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Saxen
+.	O	O	I-PER	O	O	O	O	O
+DES	O	O	O	O	O	O	O	O
+pna	O	O	O	O	O	O	O	O
+voorgaande	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goedgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaan	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+Pasport	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+behoorlijke	O	O	O	O	O	O	O	O
+forma	O	O	O	O	O	O	O	O
+zal	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+gedepecheert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+om	O	O	O	O	O	O	O	O
+drie	O	O	O	O	O	O	O	O
+Paarden	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+twee	O	O	O	O	O	O	O	O
+Honden	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+Rotterdam	O	B-LOC	O	O	O	O	O	O	Rotterdam
+gedebarqueert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+toebehoorende	O	O	O	O	O	O	O	O
+aan	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Heere	B-HOE	O	B-PER	O	O	O	O	O	Heere Grave van Flemmingh
+Grave	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Flemmingh	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Minister	B-HOE	O	I-PER	O	O	O	O	O	Minister van hoogstgedaghte sijne Majesteyt aan het Hof van Groot-Brittannien
+van	I-HOE	O	I-PER	O	O	O	O	O
+hoogstgedaghte	I-HOE	O	I-PER	O	O	O	O	O
+sijne	B-HOE	O	B-PER	O	O	O	O	O	sijne Majesteyt aan het Hof van Groot-Brittannien
+Majesteyt	I-HOE	O	I-PER	O	O	O	O	O
+aan	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Hof	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+Groot-Brittannien	I-HOE	B-LOC	I-PER	O	O	O	O	O	Groot-Brittannien
+,	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+moogen	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+-	O	O	O	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+uytvoeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+vry	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+zonder	O	O	O	O	O	O	O	O
+betaalinge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+s	O	O	O	O	O	O	O	O
+Lands	O	O	O	O	O	O	O	O
+gereghtigheyt	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

@@ -1,0 +1,64 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Synde	O	O	O	O	O	O	O	O
+andermael	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+voortgebracht	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+gisteren	O	O	O	O	B-DAT	O	O	O	gisteren
+gepresenteert	O	O	O	O	O	O	O	O
+ut	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+naem	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+wegen	O	O	O	O	O	O	O	O
+Damiel	O	O	B-PER	O	O	O	O	O	Damiel kutsch gewesene Ambts verwalter ende Lantschryver tot Crutzenach Inde palts
+kutsch	O	O	I-PER	O	O	O	O	O
+gewesene	B-HOE	O	I-PER	O	O	O	O	O	gewesene Ambts verwalter ende Lantschryver tot Crutzenach Inde palts
+Ambts	I-HOE	O	I-PER	O	O	O	O	O
+verwalter	I-HOE	O	I-PER	O	O	O	O	O
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Lantschryver	I-HOE	O	I-PER	O	O	O	O	O
+tot	I-HOE	O	I-PER	O	O	O	O	O
+Crutzenach	I-HOE	B-LOC	I-PER	O	O	O	O	O	Crutzenach Inde palts
+Inde	I-HOE	I-LOC	I-PER	O	O	O	O	O
+palts	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+nae	O	O	O	O	O	O	O	O
+voorgaende	O	O	O	O	O	O	O	O
+deliberatie	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+verstaen	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+Supplt	O	O	O	O	O	O	O	O
+mits	O	O	O	O	O	O	O	O
+desen	O	O	O	O	O	O	O	O
+tot	O	O	O	O	O	O	O	O
+reysgelt	O	O	O	O	O	O	O	O
+toe	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+leggen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+somme	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+dertich	O	O	O	O	O	O	O	O
+gul	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+waer	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+Ordonnantie	O	O	O	O	O	O	O	O
+sal	O	O	O	O	O	O	O	O
+worden	O	O	O	O	O	O	O	O
+gedepescheert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

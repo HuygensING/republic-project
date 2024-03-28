@@ -1,0 +1,105 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Is	O	O	O	O	O	O	O	O
+ter	O	O	O	O	O	O	O	O
+vergaderinge	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+requeste	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Wolffert	O	O	B-PER	O	O	O	O	O	Wolffert van Borsselen, Bailliu der Steede schepenen der selver Steden
+van	O	O	I-PER	O	O	O	O	O
+Borsselen	O	B-LOC	I-PER	O	O	O	O	O	Borsselen
+,	O	O	I-PER	O	O	O	O	O
+Bailliu	B-HOE	O	I-PER	O	O	O	O	O	Bailliu der Steede schepenen der selver Steden
+der	I-HOE	O	I-PER	O	O	O	O	O
+Steede	I-HOE	O	I-PER	O	O	O	O	O
+schepenen	I-HOE	O	I-PER	O	O	O	O	O
+der	I-HOE	O	I-PER	O	O	O	O	O
+selver	I-HOE	O	I-PER	O	O	O	O	O
+Steden	I-HOE	O	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+ambachten	O	O	O	O	O	O	O	O
+hun	O	O	O	O	O	O	O	O
+gevoecht	O	O	O	O	O	O	O	O
+hebbende	O	O	O	O	O	O	O	O
+versoeckende	O	O	O	O	O	O	O	O
+mandement	O	O	O	O	O	O	O	O
+daerbij	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+raede	O	O	O	B-ORG	O	O	O	O	raede van Vlaenderen
+van	O	O	O	I-ORG	O	O	O	O
+Vlaenderen	O	B-LOC	O	I-ORG	O	O	O	O	Vlaenderen
+geordonneert	O	O	O	O	O	O	O	O
+werde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+inhouden	O	O	O	O	O	O	O	O
+vant	O	O	O	O	O	O	O	O
+‛	O	O	O	O	O	O	O	O
+originele	O	O	O	O	O	O	O	O
+Mandement	O	O	O	O	O	O	O	O
+penael	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+omme	O	O	O	O	O	O	O	O
+actie	O	O	O	O	O	O	O	O
+geinstitueert	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+werden	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+gemelten	O	O	O	O	O	O	O	O
+Raede	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+—	O	O	O	O	O	O	O	O
+jegens	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+Bailliu	B-HOE	O	O	O	O	O	O	O	Bailliu
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+desselfs	O	O	O	O	O	O	O	O
+substituijt	O	O	O	O	O	O	O	O
+geobtineert	O	O	O	O	O	O	O	O
+bij	O	O	O	O	O	O	O	O
+Lieven	O	O	B-PER	O	O	O	O	O	Lieven Weijtinck, Burger, ende — Ingeseten der Steede Neusen
+Weijtinck	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Burger	B-HOE	O	I-PER	O	O	O	O	O	Burger, ende — Ingeseten der Steede Neusen
+,	I-HOE	O	I-PER	O	O	O	O	O
+ende	I-HOE	O	I-PER	O	O	O	O	O
+—	I-HOE	O	I-PER	O	O	O	O	O
+Ingeseten	I-HOE	O	I-PER	O	O	O	O	O
+der	I-HOE	O	I-PER	O	O	O	O	O
+Steede	I-HOE	B-LOC	I-PER	O	O	O	O	O	Steede Neusen
+Neusen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+voornoemt	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+executeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ofte	O	O	O	O	O	O	O	O
+daermede	O	O	O	O	O	O	O	O
+voort	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+vaeren	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+nochte	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+termijnen	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+laten	O	O	O	O	O	O	O	O
+houden	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Waerop	O	O	O	O	O	O	O	O
+gedelibereert	O	O	O	O	O	O	O	O
+sijnde	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Is	O	O	O	O	O	O	O	O
+goetgevonden	O	O	O	O	O	O	O	O

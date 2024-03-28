@@ -1,0 +1,155 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+De	O	O	O	O	O	O	O	O
+resolutien	O	O	O	O	O	O	O	O
+op	O	O	O	O	O	O	O	O
+Saterdach	O	O	O	O	B-DAT	O	O	O	Saterdach lestleden
+lestleden	O	O	O	O	I-DAT	O	O	O
+genoomen	O	O	O	O	O	O	O	O
+sijn	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+geresumeert	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+gelijck	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+gelesen	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+gearresteert	O	O	O	O	O	O	O	O
+is	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+Concept	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Magistraet	O	O	O	B-ORG	O	O	O	O	Magistraet der Stadt Maestricht
+der	O	O	O	I-ORG	O	O	O	O
+Stadt	O	B-LOC	O	I-ORG	O	O	O	O	Stadt Maestricht
+Maestricht	O	I-LOC	O	I-ORG	O	O	O	O
+in	O	O	O	O	O	O	O	O
+saecken	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Fisbach	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Item	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Heer	O	O	B-PER	O	O	O	O	O	Heer Hamball Zee Stadt, Douverneur ende Stadthouder van het Coninckrijck Noorwegen
+Hamball	O	O	I-PER	O	O	O	O	O
+Zee	O	O	I-PER	O	O	O	O	O
+Stadt	O	O	I-PER	O	O	O	O	O
+,	O	O	I-PER	O	O	O	O	O
+Douverneur	B-HOE	O	I-PER	O	O	O	O	O	Douverneur ende Stadthouder van het Coninckrijck Noorwegen
+ende	I-HOE	O	I-PER	O	O	O	O	O
+Stadthouder	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+het	I-HOE	O	I-PER	O	O	O	O	O
+Coninckrijck	I-HOE	B-LOC	I-PER	O	O	O	O	O	Coninckrijck Noorwegen
+Noorwegen	I-HOE	I-LOC	I-PER	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+spruijtende	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	B-RES	O	O	haer Hooch Mo: resolutien vanden 19e. deses
+Hooch	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+resolutien	O	O	O	O	O	I-RES	O	O
+vanden	O	O	O	O	O	I-RES	O	O
+19e	O	O	O	O	B-DAT	I-RES	O	O	19e. deses
+.	O	O	O	O	I-DAT	I-RES	O	O
+deses	O	O	O	O	I-DAT	I-RES	O	O
+,	O	O	O	O	O	O	O	O
+Item	O	O	O	O	O	O	O	O
+t	O	O	O	O	O	O	O	O
+'	O	O	O	O	O	O	O	O
+concept	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+aende	O	O	O	O	O	O	O	O
+Lerckmr	B-HOE	O	O	O	O	O	O	O	Lerckmr. vande gereformeerde Nederlantsche kercken binnen maestricht
+.	I-HOE	O	O	O	O	O	O	O
+vande	I-HOE	O	O	O	O	O	O	O
+gereformeerde	I-HOE	O	O	B-ORG	O	O	O	O	gereformeerde Nederlantsche kercken binnen maestricht
+Nederlantsche	I-HOE	O	O	I-ORG	O	O	O	O
+kercken	I-HOE	O	O	I-ORG	O	O	O	O
+binnen	I-HOE	O	O	I-ORG	O	O	O	O
+maestricht	I-HOE	B-LOC	O	I-ORG	O	O	O	O	maestricht
+in	O	O	O	O	O	O	O	O
+saecken	O	O	O	O	O	O	O	O
+vant	O	O	O	O	O	O	O	O
+'	O	O	O	B-ORG	O	O	O	O	' Capittel van St. Servaes
+Capittel	O	O	O	I-ORG	O	O	O	O
+van	O	O	O	I-ORG	O	O	O	O
+St.	O	O	O	I-ORG	O	O	O	O
+Servaes	O	O	O	I-ORG	O	O	O	O
+,	O	O	O	O	O	O	O	O
+Iem	O	O	O	O	O	O	O	O
+t'Concept	O	O	O	O	O	O	O	O
+vanden	O	O	O	O	O	O	O	O
+brieff	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+Hertoch	B-HOE	O	B-PER	O	O	O	O	O	Hertoch van Nieuburch
+van	I-HOE	O	I-PER	O	O	O	O	O
+Nieuburch	I-HOE	B-LOC	I-PER	O	O	O	O	O	Nieuburch
+met	O	O	O	O	O	O	O	O
+bijvouginge	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+clausulen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+saecken	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+Senden	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Gulich	O	B-LOC	O	O	O	O	O	O	Gulich ende Berch
+ende	O	I-LOC	O	O	O	O	O	O
+Berch	O	I-LOC	O	O	O	O	O	O
+Item	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Concepten	O	O	O	O	O	O	O	O
+vande	O	O	O	O	O	O	O	O
+brieven	O	O	O	O	O	O	O	O
+aenden	O	O	O	O	O	O	O	O
+Coninck	B-HOE	O	B-PER	O	O	O	O	O	Coninck van Poolen
+van	I-HOE	O	I-PER	O	O	O	O	O
+Poolen	I-HOE	B-LOC	I-PER	O	O	O	O	O	Poolen
+,	O	O	O	O	O	O	O	O
+et	O	O	O	O	O	O	O	O
+Mutatis	O	O	O	O	O	O	O	O
+Mutandes	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+des	O	O	O	O	O	O	O	O
+Rijcxs	B-HOE	B-LOC	O	O	O	O	O	O	Rijcxs Poolen
+Poolen	I-HOE	I-LOC	O	O	O	O	O	O
+Cancellier	I-HOE	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+als	O	O	O	O	O	O	O	O
+oock	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Stadt	O	B-LOC	O	O	O	O	O	O	Stadt Dantswijck
+Dantswijck	O	I-LOC	O	O	O	O	O	O
+respective	O	O	O	O	O	O	O	O
+in	O	O	O	O	O	O	O	O
+saecken	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Jeremias	O	O	B-PER	O	O	O	O	O	Jeremias Bandewius cum socijs
+Bandewius	O	O	I-PER	O	O	O	O	O
+cum	O	O	I-PER	O	O	O	O	O
+socijs	O	O	I-PER	O	O	O	O	O
+spruijtende	O	O	O	O	O	O	O	O
+uijt	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	B-RES	O	O	haer Ho:Mo: resolutien vanden 20e. derselver Maent
+Ho	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+Mo	O	O	O	O	O	I-RES	O	O
+:	O	O	O	O	O	I-RES	O	O
+resolutien	O	O	O	O	O	I-RES	O	O
+vanden	O	O	O	O	O	I-RES	O	O
+20e	O	O	O	O	B-DAT	I-RES	O	O	20e. derselver Maent
+.	O	O	O	O	I-DAT	I-RES	O	O
+derselver	O	O	O	O	I-DAT	I-RES	O	O
+Maent	O	O	O	O	I-DAT	I-RES	O	O

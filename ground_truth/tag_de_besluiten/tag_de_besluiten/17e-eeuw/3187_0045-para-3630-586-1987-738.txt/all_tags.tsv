@@ -1,0 +1,74 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Ontfangen	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+missiue	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Raedt	O	O	O	B-ORG	O	O	O	O	Raedt van State
+van	O	O	O	I-ORG	O	O	O	O
+State	O	O	O	I-ORG	O	O	O	O
+gedateert	O	O	O	O	O	O	O	O
+den	O	O	O	O	O	O	O	O
+xxijen	O	O	O	O	B-DAT	O	O	O	xxijen. deses
+.	O	O	O	O	I-DAT	O	O	O
+deses	O	O	O	O	I-DAT	O	O	O
+daerby	O	O	O	O	O	O	O	O
+geaduiseert	O	O	O	O	O	O	O	O
+wert	O	O	O	O	O	O	O	O
+opte	O	O	O	O	O	O	O	O
+req.te	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+aen	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+gepresenteert	O	O	O	O	O	O	O	O
+byden	O	O	O	O	O	O	O	O
+Solliciteur	B-HOE	O	B-PER	O	O	O	O	O	Solliciteur
+Meurskens	O	O	I-PER	O	O	O	O	O
+en	O	O	O	O	O	O	O	O
+eenige	O	O	O	O	O	O	O	O
+fransche	B-HOE	O	O	O	O	O	O	O	fransche capiteynen
+capiteynen	I-HOE	O	O	O	O	O	O	O
+d'eene	O	O	O	O	O	O	O	O
+tegen	O	O	O	O	O	O	O	O
+d'ander	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+de	O	O	O	O	O	O	O	O
+Capiteynen	B-HOE	O	O	O	O	O	O	O	Capiteynen
+heuren	O	O	O	O	O	O	O	O
+solliciteur	B-HOE	O	O	O	O	O	O	O	solliciteur
+mogen	O	O	O	O	O	O	O	O
+verlaten	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+eerst	O	O	O	O	O	O	O	O
+voldaen	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+ende	O	O	O	O	O	O	O	O
+soo	O	O	O	O	O	O	O	O
+niet	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+dat	O	O	O	O	O	O	O	O
+sy	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+moeten	O	O	O	O	O	O	O	O
+voldoen	O	O	O	O	O	O	O	O
+,	O	O	O	O	O	O	O	O
+alvoorens	O	O	O	O	O	O	O	O
+hem	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+mogen	O	O	O	O	O	O	O	O
+verlaeten	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O
+waermede	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+Ho	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+Mo	O	O	O	O	O	O	O	O
+:	O	O	O	O	O	O	O	O
+haer	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+geconformeert	O	O	O	O	O	O	O	O
+.	O	O	O	O	O	O	O	O

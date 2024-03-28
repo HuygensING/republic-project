@@ -1,0 +1,19 @@
+Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
+Van	O	O	O	O	O	O	O	O
+gelycken	O	O	O	O	O	O	O	O
+wort	O	O	O	O	O	O	O	O
+affgeslaogen	O	O	O	O	O	O	O	O
+het	O	O	O	O	O	O	O	O
+versouck	O	O	O	O	O	O	O	O
+van	O	O	O	O	O	O	O	O
+Jannitgen	O	O	B-PER	O	O	O	O	O	Jannitgen Boswel wede. van DanitBoswel
+Boswel	O	O	I-PER	O	O	O	O	O
+wede	B-HOE	O	I-PER	O	O	O	O	O	wede. van DanitBoswel
+.	I-HOE	O	I-PER	O	O	O	O	O
+van	I-HOE	O	I-PER	O	O	O	O	O
+DanitBoswel	I-HOE	O	B-PER	O	O	O	O	O	DanitBoswel
+omme	O	O	O	O	O	O	O	O
+te	O	O	O	O	O	O	O	O
+hebben	O	O	O	O	O	O	O	O
+een	O	O	O	O	O	O	O	O
+stuckgelt	O	O	O	O	O	O	O	O
