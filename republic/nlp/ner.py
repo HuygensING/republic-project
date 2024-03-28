@@ -12,9 +12,7 @@ from transformers import RobertaForMaskedLM
 from republic.helper.utils import get_project_dir
 
 
-def prep_corpus(project_dir: str, layer_name: str, train_size: float):
-    data_dir = f'{project_dir}/ground_truth/entities/flair_training-17th_18th/flair_training_17th_18th_{layer_name}'
-    assert os.path.exists(data_dir), f"the data directory {data_dir} doesn't exist"
+def prep_corpus(data_dir: str, layer_name: str, train_size: float):
     train_file = os.path.join(data_dir, f'train_{train_size}.txt')
     test_file = os.path.join(data_dir, 'test.txt')
     validate_file = os.path.join(data_dir, 'validate.txt')
@@ -111,6 +109,7 @@ def get_flair_dir():
 
 
 def prep_training(layer_name: str,
+                  data_dir: str,
                   train_size: float = 1.0,
                   use_crf: bool = False,
                   use_rnn: bool = False,
@@ -123,12 +122,10 @@ def prep_training(layer_name: str,
                   use_gysbert2: bool = False,
                   use_fasttext: bool = False,
                   hidden_size=256, model_max_length=512):
-    project_dir = get_project_dir()
-    assert os.path.exists(project_dir), f"the project directory {project_dir} doesn't exist"
     flair_dir = get_flair_dir()
     assert os.path.exists(flair_dir), f"the flair directory {flair_dir} doesn't exist"
 
-    corpus: Corpus = prep_corpus(project_dir, layer_name, train_size)
+    corpus: Corpus = prep_corpus(data_dir, layer_name, train_size)
 
     embeddings = prep_embeddings(flair_dir,
                                  use_finetuning=use_finetuning,

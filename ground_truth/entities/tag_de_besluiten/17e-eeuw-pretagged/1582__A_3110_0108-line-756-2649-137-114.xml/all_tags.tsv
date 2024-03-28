@@ -1,8 +1,0 @@
-Token	Hoedanigheid	Plaats - Politieke Entiteit	Persoonsaanduiding	Organisatie	Datum	Resolutieverwijzing	Commissie	Overige Naam	Annotatie
-O	O	O	O	O	O	O	O	O
-Is	O	O	O	O	O	O	O	O
-geresolueert	O	O	O	O	O	O	O	O
-dat	O	O	O	O	O	O	O	O
-de	O	O	O	O	O	O	O	O
-ghene	O	O	O	O	O	O	O	O
-gedeputeert	B-HOE	O	O	O	O	O	O	O	gedeputeert
