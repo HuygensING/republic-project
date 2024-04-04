@@ -193,14 +193,16 @@ def get_layer_test_file(layer_name, repo_dir: str):
     return os.path.join(layer_gt_dir, 'test.txt')
 
 
-def get_token_tag(line: str):
+def get_token_tag(line: str, separator: str, debug: int = 0):
     if line == '\n':
         return '', '<S>'
-    token, tag = line.strip().split(' ')
+    token, tag = line.strip().split(separator)
+    if debug > 2:
+        print(f"token: {token}\ttag: {tag}")
     return token, tag
 
 
-def get_test_tokens_tags(test_file: str):
+def get_test_tokens_tags(test_file: str, separator: str, debug: int = 0):
     with open(test_file, 'rt') as fh:
         tokens_tags = []
         docs = []
@@ -208,8 +210,19 @@ def get_test_tokens_tags(test_file: str):
             if line == '\n':
                 if len(tokens_tags) > 0:
                     docs.append(tokens_tags)
+                    if debug > 1:
+                        print(f'entities.get_test_token_tags - adding doc with {len(tokens_tags)} tokens and tags')
                 tokens_tags = []
-            tokens_tags.append(get_token_tag(line))
+            try:
+                tokens_tags.append(get_token_tag(line, separator, debug=debug))
+            except Exception:
+                print(f'using separator: #{separator}#')
+                print('invalid tag line:', line)
+                raise
+        if len(tokens_tags) > 0:
+            docs.append(tokens_tags)
+            if debug > 1:
+                print(f'entities.get_test_token_tags - adding doc with {len(tokens_tags)} tokens and tags')
     return docs
 
 
@@ -241,8 +254,10 @@ def get_tag_positions(tokens_tags):
     return tag_position
 
 
-def read_test_file(test_file):
-    docs = get_test_tokens_tags(test_file)
+def read_test_file(test_file, separator: str = ' ', debug: int = 0):
+    docs = get_test_tokens_tags(test_file, separator, debug=debug)
+    if debug > 0:
+        print(f"entities.read_test_file - read {len(docs)}, of which {len([doc for doc in docs if len(doc) > 0])} non-empty.")
     for doc_tokens_tags in docs:
         tokens = [token for token, tag in doc_tokens_tags]
         text = ' '.join(tokens)

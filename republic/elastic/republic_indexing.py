@@ -140,11 +140,11 @@ class Indexer:
                     response = self.es_anno.index(index=index, id=doc_id, document=doc_body)
                 return response
             except ElasticsearchException as err:
-                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {try_num}")
+                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {retry_num}")
                 print(err)
                 time.sleep(5)
-            try_num += 1
-            if try_num >= max_retries:
+            retry_num += 1
+            if retry_num >= max_retries:
                 raise
 
     def index_bulk_docs(self, index: str, docs: List[Dict[str, any]], max_retries: int = 5) -> None:
@@ -302,5 +302,5 @@ class Indexer:
         else:
             print(f"setting original index {original_index} to read-write")
             print(self.es_anno.indices.put_settings(index=original_index, body={"index.blocks.write": False}))
-            print(f"setting new index {original_index} to read-write")
-            print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.write": False}))
+        print(f"setting new index {original_index} to read-write")
+        print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.write": False}))
