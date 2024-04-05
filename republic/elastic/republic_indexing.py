@@ -132,6 +132,7 @@ class Indexer:
         add_timestamp(doc_body)
         add_commit(doc_body)
         retry_num = 0
+        error = None
         while retry_num < max_retries:
             try:
                 if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
@@ -142,10 +143,11 @@ class Indexer:
             except ElasticsearchException as err:
                 print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {retry_num}")
                 print(err)
+                error = err
                 time.sleep(5)
             retry_num += 1
             if retry_num >= max_retries:
-                raise
+                raise error
 
     def index_bulk_docs(self, index: str, docs: List[Dict[str, any]], max_retries: int = 5) -> None:
         actions = []
@@ -302,5 +304,8 @@ class Indexer:
         else:
             print(f"setting original index {original_index} to read-write")
             print(self.es_anno.indices.put_settings(index=original_index, body={"index.blocks.write": False}))
+            print(self.es_anno.indices.put_settings(index=original_index,
+                                                    body={"index.blocks.read_only_allow_delete": False}))
         print(f"setting new index {original_index} to read-write")
         print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.write": False}))
+        print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.read_only_allow_delete": False}))
