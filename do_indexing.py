@@ -126,6 +126,8 @@ class Indexer:
             return None
         elif indexing_step == 'full_resolutions' and indexing_label is None:
             self.rep_es.config['resolutions_index'] = 'full_resolutions'
+        if indexing_label is None:
+            return None
         for key in self.rep_es.config:
             if key.startswith(indexing_step) and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
