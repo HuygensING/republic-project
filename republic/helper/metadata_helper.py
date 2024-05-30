@@ -141,19 +141,19 @@ def correct_section_types(inv_metadata):
 
 def get_per_page_type_index(inv_metadata: Dict[str, any]) -> Dict[int, Union[str, List[str]]]:
     if "num_pages" not in inv_metadata:
+        print(f'Warning: num_pages property is missing for inventory {inv_metadata["inventory_num"]}')
         return {}
     if inv_metadata['num_pages'] is None:
-        print(f'Warning: num_pages property is None for inventory{inv_metadata["inventory_num"]}')
-        return {}
+        print(f'Warning: num_pages property is None for inventory {inv_metadata["inventory_num"]}')
+        # return {}
+        inv_metadata['num_pages'] = inv_metadata['num_scans'] * 2 + 2
     page_type = {page_num: 'unknown' for page_num in np.arange(inv_metadata['num_pages'] + 1)}
-    if 'title_page_nums' not in inv_metadata:
-        return page_type
-    for page_num in inv_metadata['title_page_nums']:
-        page_type[page_num] = 'title_page'
-    for section in inv_metadata['sections']:
+    title_page_nums = inv_metadata['title_page_nums'] if 'title_page_nums' in inv_metadata else []
+    sections = inv_metadata['sections'] if 'sections' in inv_metadata else []
+    for section in sections:
         for page_num in np.arange(section['start'], section['end'] + 1):
             page_type[page_num] = section['page_type']
-            if page_num in inv_metadata['title_page_nums']:
+            if page_num in title_page_nums:
                 page_type[page_num] = [section['page_type'], 'title_page']
     return page_type
 
