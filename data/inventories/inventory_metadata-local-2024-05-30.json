@@ -15460,9 +15460,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4542"
+        "updated": "2024-05-30T17:07:38.645339",
+        "index_timestamp": "2024-05-30T15:07:38.645368Z",
+        "inventory_id": "NL-HaNA_1.01.02_4542",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 1077
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4543,
@@ -15484,9 +15492,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4543"
+        "updated": "2024-05-30T17:07:38.749242",
+        "index_timestamp": "2024-05-30T15:07:38.749281Z",
+        "inventory_id": "NL-HaNA_1.01.02_4543",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 1329
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4544,
@@ -15508,9 +15524,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4544"
+        "updated": "2024-05-30T17:07:38.793916",
+        "index_timestamp": "2024-05-30T15:07:38.793981Z",
+        "inventory_id": "NL-HaNA_1.01.02_4544",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 1129
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4545,
@@ -15532,9 +15556,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4545"
+        "updated": "2024-05-30T17:07:38.833847",
+        "index_timestamp": "2024-05-30T15:07:38.833905Z",
+        "inventory_id": "NL-HaNA_1.01.02_4545",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 991
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4546,
@@ -15556,9 +15588,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4546"
+        "updated": "2024-05-30T17:07:38.881438",
+        "index_timestamp": "2024-05-30T15:07:38.881473Z",
+        "inventory_id": "NL-HaNA_1.01.02_4546",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 1337
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4547,
@@ -15580,9 +15620,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4547"
+        "updated": "2024-05-30T17:07:38.924689",
+        "index_timestamp": "2024-05-30T15:07:38.924727Z",
+        "inventory_id": "NL-HaNA_1.01.02_4547",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 1287
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4548,
@@ -15604,9 +15652,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4548"
+        "updated": "2024-05-30T17:07:38.966312",
+        "index_timestamp": "2024-05-30T15:07:38.966380Z",
+        "inventory_id": "NL-HaNA_1.01.02_4548",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 981
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4549,
@@ -15628,9 +15684,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4549"
+        "updated": "2024-05-30T17:07:39.035690",
+        "index_timestamp": "2024-05-30T15:07:39.035858Z",
+        "inventory_id": "NL-HaNA_1.01.02_4549",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 783
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4560,
@@ -17688,9 +17752,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4618"
+        "updated": "2024-05-30T17:07:39.080466",
+        "index_timestamp": "2024-05-30T15:07:39.080582Z",
+        "inventory_id": "NL-HaNA_1.01.02_4618",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 5,
+                "end": 1135
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4619,
@@ -17712,9 +17784,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4619"
+        "updated": "2024-05-30T17:07:39.132698",
+        "index_timestamp": "2024-05-30T15:07:39.132795Z",
+        "inventory_id": "NL-HaNA_1.01.02_4619",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 195
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4620,
@@ -17736,9 +17816,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4620"
+        "updated": "2024-05-30T17:07:39.222319",
+        "index_timestamp": "2024-05-30T15:07:39.222377Z",
+        "inventory_id": "NL-HaNA_1.01.02_4620",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 7,
+                "end": 818
+            },
+            {
+                "page_type": "index_page",
+                "start": 823,
+                "end": 877
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4621,
@@ -17760,9 +17853,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4621"
+        "updated": "2024-05-30T17:07:39.264867",
+        "index_timestamp": "2024-05-30T15:07:39.264919Z",
+        "inventory_id": "NL-HaNA_1.01.02_4621",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 189
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4622,
@@ -17784,9 +17885,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4622"
+        "updated": "2024-05-30T17:07:39.341519",
+        "index_timestamp": "2024-05-30T15:07:39.341570Z",
+        "inventory_id": "NL-HaNA_1.01.02_4622",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 61
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 65,
+                "end": 863
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4623,
@@ -17808,9 +17922,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4623"
+        "updated": "2024-05-30T17:07:39.381084",
+        "index_timestamp": "2024-05-30T15:07:39.381133Z",
+        "inventory_id": "NL-HaNA_1.01.02_4623",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 201
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4624,
@@ -17832,9 +17954,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4624"
+        "updated": "2024-05-30T17:07:39.455416",
+        "index_timestamp": "2024-05-30T15:07:39.455462Z",
+        "inventory_id": "NL-HaNA_1.01.02_4624",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 60
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 65,
+                "end": 682
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4625,
@@ -17856,9 +17991,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4625"
+        "updated": "2024-05-30T17:07:39.495862",
+        "index_timestamp": "2024-05-30T15:07:39.495919Z",
+        "inventory_id": "NL-HaNA_1.01.02_4625",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 187
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4626,
@@ -17880,9 +18023,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4626"
+        "updated": "2024-05-30T17:07:39.572432",
+        "index_timestamp": "2024-05-30T15:07:39.572470Z",
+        "inventory_id": "NL-HaNA_1.01.02_4626",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 43
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 47,
+                "end": 556
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4627,
@@ -17904,9 +18060,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4627"
+        "updated": "2024-05-30T17:07:39.608907",
+        "index_timestamp": "2024-05-30T15:07:39.608947Z",
+        "inventory_id": "NL-HaNA_1.01.02_4627",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 177
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4628,
@@ -17928,9 +18092,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4628"
+        "updated": "2024-05-30T17:07:39.683056",
+        "index_timestamp": "2024-05-30T15:07:39.683107Z",
+        "inventory_id": "NL-HaNA_1.01.02_4628",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 50
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 55,
+                "end": 641
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4629,
@@ -17952,9 +18129,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4629"
+        "updated": "2024-05-30T17:07:39.721971",
+        "index_timestamp": "2024-05-30T15:07:39.722019Z",
+        "inventory_id": "NL-HaNA_1.01.02_4629",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 193
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4630,
@@ -17976,9 +18161,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4630"
+        "updated": "2024-05-30T17:07:39.800519",
+        "index_timestamp": "2024-05-30T15:07:39.800559Z",
+        "inventory_id": "NL-HaNA_1.01.02_4630",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 40
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 45,
+                "end": 567
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4631,
@@ -18000,9 +18198,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4631"
+        "updated": "2024-05-30T17:07:39.839705",
+        "index_timestamp": "2024-05-30T15:07:39.839744Z",
+        "inventory_id": "NL-HaNA_1.01.02_4631",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 183
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4632,
@@ -18024,9 +18230,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4632"
+        "updated": "2024-05-30T17:07:39.909756",
+        "index_timestamp": "2024-05-30T15:07:39.909791Z",
+        "inventory_id": "NL-HaNA_1.01.02_4632",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 48
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 53,
+                "end": 822
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4633,
@@ -18048,9 +18267,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4633"
+        "updated": "2024-05-30T17:07:39.944268",
+        "index_timestamp": "2024-05-30T15:07:39.944303Z",
+        "inventory_id": "NL-HaNA_1.01.02_4633",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 173
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4634,
@@ -18072,9 +18299,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4634"
+        "updated": "2024-05-30T17:07:40.016283",
+        "index_timestamp": "2024-05-30T15:07:40.016318Z",
+        "inventory_id": "NL-HaNA_1.01.02_4634",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 59
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 63,
+                "end": 885
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4635,
@@ -18096,9 +18336,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4635"
+        "updated": "2024-05-30T17:07:40.064842",
+        "index_timestamp": "2024-05-30T15:07:40.064894Z",
+        "inventory_id": "NL-HaNA_1.01.02_4635",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 171
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4636,
@@ -18120,9 +18368,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4636"
+        "updated": "2024-05-30T17:07:40.142231",
+        "index_timestamp": "2024-05-30T15:07:40.142275Z",
+        "inventory_id": "NL-HaNA_1.01.02_4636",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 31
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 502
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4637,
@@ -18144,9 +18405,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4637"
+        "updated": "2024-05-30T17:07:40.180460",
+        "index_timestamp": "2024-05-30T15:07:40.180508Z",
+        "inventory_id": "NL-HaNA_1.01.02_4637",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 150
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4638,
@@ -18168,9 +18437,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4638"
+        "updated": "2024-05-30T17:07:40.256047",
+        "index_timestamp": "2024-05-30T15:07:40.256081Z",
+        "inventory_id": "NL-HaNA_1.01.02_4638",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 40
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 45,
+                "end": 685
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4639,
@@ -18192,9 +18474,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4639"
+        "updated": "2024-05-30T17:07:40.297200",
+        "index_timestamp": "2024-05-30T15:07:40.297240Z",
+        "inventory_id": "NL-HaNA_1.01.02_4639",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 165
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4640,
@@ -18216,9 +18506,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4640"
+        "updated": "2024-05-30T17:07:40.371390",
+        "index_timestamp": "2024-05-30T15:07:40.371429Z",
+        "inventory_id": "NL-HaNA_1.01.02_4640",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 29
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 33,
+                "end": 587
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4641,
@@ -18240,9 +18543,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4641"
+        "updated": "2024-05-30T17:07:40.407755",
+        "index_timestamp": "2024-05-30T15:07:40.407794Z",
+        "inventory_id": "NL-HaNA_1.01.02_4641",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 175
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4642,
@@ -18264,9 +18575,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4642"
+        "updated": "2024-05-30T17:07:40.483605",
+        "index_timestamp": "2024-05-30T15:07:40.483652Z",
+        "inventory_id": "NL-HaNA_1.01.02_4642",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 21
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 299
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4643,
@@ -18288,9 +18612,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4643"
+        "updated": "2024-05-30T17:07:40.525309",
+        "index_timestamp": "2024-05-30T15:07:40.525370Z",
+        "inventory_id": "NL-HaNA_1.01.02_4643",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 142
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4644,
@@ -18312,9 +18644,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4644"
+        "updated": "2024-05-30T17:07:40.615619",
+        "index_timestamp": "2024-05-30T15:07:40.615657Z",
+        "inventory_id": "NL-HaNA_1.01.02_4644",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 29,
+                "end": 473
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4645,
@@ -18336,9 +18681,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4645"
+        "updated": "2024-05-30T17:07:40.649705",
+        "index_timestamp": "2024-05-30T15:07:40.649740Z",
+        "inventory_id": "NL-HaNA_1.01.02_4645",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 143
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4646,
@@ -18363,9 +18716,32 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4646"
+        "updated": "2024-05-30T17:07:40.797062",
+        "index_timestamp": "2024-05-30T15:07:40.797102Z",
+        "inventory_id": "NL-HaNA_1.01.02_4646",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 24
+            },
+            {
+                "page_type": "index_page",
+                "start": 29,
+                "end": 42
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 47,
+                "end": 389
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 393,
+                "end": 617
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4647,
@@ -18387,9 +18763,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4647"
+        "updated": "2024-05-30T17:07:40.833957",
+        "index_timestamp": "2024-05-30T15:07:40.834009Z",
+        "inventory_id": "NL-HaNA_1.01.02_4647",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 142
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4648,
@@ -18411,9 +18795,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4648"
+        "updated": "2024-05-30T17:07:40.871282",
+        "index_timestamp": "2024-05-30T15:07:40.871336Z",
+        "inventory_id": "NL-HaNA_1.01.02_4648",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 139
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4649,
@@ -18435,9 +18827,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4649"
+        "updated": "2024-05-30T17:07:40.948794",
+        "index_timestamp": "2024-05-30T15:07:40.948842Z",
+        "inventory_id": "NL-HaNA_1.01.02_4649",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 17
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 21,
+                "end": 204
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4650,
@@ -18459,9 +18864,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4650"
+        "updated": "2024-05-30T17:07:40.986905",
+        "index_timestamp": "2024-05-30T15:07:40.986966Z",
+        "inventory_id": "NL-HaNA_1.01.02_4650",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 155
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4651,
@@ -18483,9 +18896,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4651"
+        "updated": "2024-05-30T17:07:41.087125",
+        "index_timestamp": "2024-05-30T15:07:41.087182Z",
+        "inventory_id": "NL-HaNA_1.01.02_4651",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 12
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 17,
+                "end": 135
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4652,
@@ -18507,9 +18933,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4652"
+        "updated": "2024-05-30T17:07:41.124824",
+        "index_timestamp": "2024-05-30T15:07:41.124916Z",
+        "inventory_id": "NL-HaNA_1.01.02_4652",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 132
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4653,
@@ -18531,9 +18965,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4653"
+        "updated": "2024-05-30T17:07:41.202823",
+        "index_timestamp": "2024-05-30T15:07:41.202871Z",
+        "inventory_id": "NL-HaNA_1.01.02_4653",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 20
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 290
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4654,
@@ -18555,9 +19002,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4654"
+        "updated": "2024-05-30T17:07:41.238114",
+        "index_timestamp": "2024-05-30T15:07:41.238147Z",
+        "inventory_id": "NL-HaNA_1.01.02_4654",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 101
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4655,
@@ -18579,9 +19034,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4655"
+        "updated": "2024-05-30T17:07:41.309862",
+        "index_timestamp": "2024-05-30T15:07:41.309904Z",
+        "inventory_id": "NL-HaNA_1.01.02_4655",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 23
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 335
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4656,
@@ -18603,9 +19071,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4656"
+        "updated": "2024-05-30T17:07:41.345254",
+        "index_timestamp": "2024-05-30T15:07:41.345330Z",
+        "inventory_id": "NL-HaNA_1.01.02_4656",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 157
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4657,
@@ -18627,9 +19103,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4657"
+        "updated": "2024-05-30T17:07:41.426654",
+        "index_timestamp": "2024-05-30T15:07:41.426712Z",
+        "inventory_id": "NL-HaNA_1.01.02_4657",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 24
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 351
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4658,
@@ -18651,9 +19140,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4658"
+        "updated": "2024-05-30T17:07:41.470709",
+        "index_timestamp": "2024-05-30T15:07:41.470773Z",
+        "inventory_id": "NL-HaNA_1.01.02_4658",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 163
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4659,
@@ -18675,9 +19172,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4659"
+        "updated": "2024-05-30T17:07:41.575352",
+        "index_timestamp": "2024-05-30T15:07:41.575412Z",
+        "inventory_id": "NL-HaNA_1.01.02_4659",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 23
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 461
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4660,
@@ -18699,9 +19209,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4660"
+        "updated": "2024-05-30T17:07:41.619438",
+        "index_timestamp": "2024-05-30T15:07:41.619477Z",
+        "inventory_id": "NL-HaNA_1.01.02_4660",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 161
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4661,
@@ -18723,9 +19241,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4661"
+        "updated": "2024-05-30T17:07:41.689413",
+        "index_timestamp": "2024-05-30T15:07:41.689454Z",
+        "inventory_id": "NL-HaNA_1.01.02_4661",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 31
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 33,
+                "end": 616
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4662,
@@ -18747,9 +19278,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4662"
+        "updated": "2024-05-30T17:07:41.724307",
+        "index_timestamp": "2024-05-30T15:07:41.724355Z",
+        "inventory_id": "NL-HaNA_1.01.02_4662",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 167
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4663,
@@ -18771,9 +19310,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4663"
+        "updated": "2024-05-30T17:07:41.805734",
+        "index_timestamp": "2024-05-30T15:07:41.805779Z",
+        "inventory_id": "NL-HaNA_1.01.02_4663",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 25
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 351
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4664,
@@ -18795,9 +19347,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4664"
+        "updated": "2024-05-30T17:07:41.849034",
+        "index_timestamp": "2024-05-30T15:07:41.849096Z",
+        "inventory_id": "NL-HaNA_1.01.02_4664",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 163
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4665,
@@ -18819,9 +19379,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4665"
+        "updated": "2024-05-30T17:07:41.931873",
+        "index_timestamp": "2024-05-30T15:07:41.931938Z",
+        "inventory_id": "NL-HaNA_1.01.02_4665",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 31,
+                "end": 334
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4666,
@@ -18843,9 +19416,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4666"
+        "updated": "2024-05-30T17:07:41.977351",
+        "index_timestamp": "2024-05-30T15:07:41.977432Z",
+        "inventory_id": "NL-HaNA_1.01.02_4666",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 147
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4667,
@@ -18867,9 +19448,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4667"
+        "updated": "2024-05-30T17:07:42.077385",
+        "index_timestamp": "2024-05-30T15:07:42.077483Z",
+        "inventory_id": "NL-HaNA_1.01.02_4667",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 3,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 31,
+                "end": 468
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4668,
@@ -18891,9 +19485,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4668"
+        "updated": "2024-05-30T17:07:42.131444",
+        "index_timestamp": "2024-05-30T15:07:42.131515Z",
+        "inventory_id": "NL-HaNA_1.01.02_4668",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 131
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4669,
@@ -18915,9 +19517,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4669"
+        "updated": "2024-05-30T17:07:42.212638",
+        "index_timestamp": "2024-05-30T15:07:42.212679Z",
+        "inventory_id": "NL-HaNA_1.01.02_4669",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 29
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 33,
+                "end": 566
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4670,
@@ -18939,9 +19554,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4670"
+        "updated": "2024-05-30T17:07:42.247340",
+        "index_timestamp": "2024-05-30T15:07:42.247376Z",
+        "inventory_id": "NL-HaNA_1.01.02_4670",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 150
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4671,
@@ -18963,9 +19586,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4671"
+        "updated": "2024-05-30T17:07:42.319914",
+        "index_timestamp": "2024-05-30T15:07:42.319945Z",
+        "inventory_id": "NL-HaNA_1.01.02_4671",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 31
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 516
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4672,
@@ -18987,9 +19623,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4672"
+        "updated": "2024-05-30T17:07:42.353265",
+        "index_timestamp": "2024-05-30T15:07:42.353306Z",
+        "inventory_id": "NL-HaNA_1.01.02_4672",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 150
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4673,
@@ -19011,9 +19655,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4673"
+        "updated": "2024-05-30T17:07:42.387418",
+        "index_timestamp": "2024-05-30T15:07:42.387458Z",
+        "inventory_id": "NL-HaNA_1.01.02_4673",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 154
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4674,
@@ -19035,9 +19687,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4674"
+        "updated": "2024-05-30T17:07:42.455683",
+        "index_timestamp": "2024-05-30T15:07:42.455716Z",
+        "inventory_id": "NL-HaNA_1.01.02_4674",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 36
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 41,
+                "end": 514
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4675,
@@ -19059,9 +19724,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4675"
+        "updated": "2024-05-30T17:07:42.534329",
+        "index_timestamp": "2024-05-30T15:07:42.534367Z",
+        "inventory_id": "NL-HaNA_1.01.02_4675",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 31
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 471
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4676,
@@ -19083,9 +19761,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4676"
+        "updated": "2024-05-30T17:07:42.569662",
+        "index_timestamp": "2024-05-30T15:07:42.569707Z",
+        "inventory_id": "NL-HaNA_1.01.02_4676",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 159
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4677,
@@ -19107,9 +19793,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4677"
+        "updated": "2024-05-30T17:07:42.646114",
+        "index_timestamp": "2024-05-30T15:07:42.646167Z",
+        "inventory_id": "NL-HaNA_1.01.02_4677",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 34
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 39,
+                "end": 469
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4678,
@@ -19131,9 +19830,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4678"
+        "updated": "2024-05-30T17:07:42.683899",
+        "index_timestamp": "2024-05-30T15:07:42.683936Z",
+        "inventory_id": "NL-HaNA_1.01.02_4678",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 161
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4679,
@@ -19155,9 +19862,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4679"
+        "updated": "2024-05-30T17:07:42.758476",
+        "index_timestamp": "2024-05-30T15:07:42.758521Z",
+        "inventory_id": "NL-HaNA_1.01.02_4679",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 32
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 500
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4680,
@@ -19179,9 +19899,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4680"
+        "updated": "2024-05-30T17:07:42.793413",
+        "index_timestamp": "2024-05-30T15:07:42.793446Z",
+        "inventory_id": "NL-HaNA_1.01.02_4680",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 148
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4681,
@@ -19203,9 +19931,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4681"
+        "updated": "2024-05-30T17:07:42.864880",
+        "index_timestamp": "2024-05-30T15:07:42.864914Z",
+        "inventory_id": "NL-HaNA_1.01.02_4681",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 29
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 33,
+                "end": 501
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4682,
@@ -19227,9 +19968,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4682"
+        "updated": "2024-05-30T17:07:42.900841",
+        "index_timestamp": "2024-05-30T15:07:42.900876Z",
+        "inventory_id": "NL-HaNA_1.01.02_4682",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 160
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4683,
@@ -19251,9 +20000,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4683"
+        "updated": "2024-05-30T17:07:42.982616",
+        "index_timestamp": "2024-05-30T15:07:42.982655Z",
+        "inventory_id": "NL-HaNA_1.01.02_4683",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 31,
+                "end": 375
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4684,
@@ -19275,9 +20037,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4684"
+        "updated": "2024-05-30T17:07:43.020475",
+        "index_timestamp": "2024-05-30T15:07:43.020534Z",
+        "inventory_id": "NL-HaNA_1.01.02_4684",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 155
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4685,
@@ -19299,9 +20069,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4685"
+        "updated": "2024-05-30T17:07:43.097388",
+        "index_timestamp": "2024-05-30T15:07:43.097455Z",
+        "inventory_id": "NL-HaNA_1.01.02_4685",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 21
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 405
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4686,
@@ -19323,9 +20106,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4686"
+        "updated": "2024-05-30T17:07:43.142262",
+        "index_timestamp": "2024-05-30T15:07:43.142299Z",
+        "inventory_id": "NL-HaNA_1.01.02_4686",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 153
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4687,
@@ -19347,9 +20138,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4687"
+        "updated": "2024-05-30T17:07:43.213994",
+        "index_timestamp": "2024-05-30T15:07:43.214030Z",
+        "inventory_id": "NL-HaNA_1.01.02_4687",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 19
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 260
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4688,
@@ -19371,9 +20175,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4688"
+        "updated": "2024-05-30T17:07:43.250968",
+        "index_timestamp": "2024-05-30T15:07:43.251000Z",
+        "inventory_id": "NL-HaNA_1.01.02_4688",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 150
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4689,
@@ -19395,9 +20207,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4689"
+        "updated": "2024-05-30T17:07:43.320516",
+        "index_timestamp": "2024-05-30T15:07:43.320548Z",
+        "inventory_id": "NL-HaNA_1.01.02_4689",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 31,
+                "end": 495
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4690,
@@ -19419,9 +20244,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4690"
+        "updated": "2024-05-30T17:07:43.354002",
+        "index_timestamp": "2024-05-30T15:07:43.354035Z",
+        "inventory_id": "NL-HaNA_1.01.02_4690",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 164
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4691,
@@ -19443,9 +20276,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4691"
+        "updated": "2024-05-30T17:07:43.432661",
+        "index_timestamp": "2024-05-30T15:07:43.432698Z",
+        "inventory_id": "NL-HaNA_1.01.02_4691",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 23
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 326
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4692,
@@ -19467,9 +20313,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4692"
+        "updated": "2024-05-30T17:07:43.466268",
+        "index_timestamp": "2024-05-30T15:07:43.466307Z",
+        "inventory_id": "NL-HaNA_1.01.02_4692",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 169
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4693,
@@ -19491,9 +20345,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4693"
+        "updated": "2024-05-30T17:07:43.535168",
+        "index_timestamp": "2024-05-30T15:07:43.535207Z",
+        "inventory_id": "NL-HaNA_1.01.02_4693",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 19
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 397
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4694,
@@ -19515,9 +20382,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4694"
+        "updated": "2024-05-30T17:07:43.571016",
+        "index_timestamp": "2024-05-30T15:07:43.571052Z",
+        "inventory_id": "NL-HaNA_1.01.02_4694",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 161
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4695,
@@ -19539,9 +20414,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4695"
+        "updated": "2024-05-30T17:07:43.650488",
+        "index_timestamp": "2024-05-30T15:07:43.650560Z",
+        "inventory_id": "NL-HaNA_1.01.02_4695",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 48
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 53,
+                "end": 1020
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4696,
@@ -19563,9 +20451,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4696"
+        "updated": "2024-05-30T17:07:43.710993",
+        "index_timestamp": "2024-05-30T15:07:43.711042Z",
+        "inventory_id": "NL-HaNA_1.01.02_4696",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 162
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4697,
@@ -19587,9 +20483,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4697"
+        "updated": "2024-05-30T17:07:43.781574",
+        "index_timestamp": "2024-05-30T15:07:43.781597Z",
+        "inventory_id": "NL-HaNA_1.01.02_4697",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 97
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 101,
+                "end": 1464
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4698,
@@ -19611,9 +20520,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4698"
+        "updated": "2024-05-30T17:07:43.817112",
+        "index_timestamp": "2024-05-30T15:07:43.817157Z",
+        "inventory_id": "NL-HaNA_1.01.02_4698",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 203
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4699,
@@ -19635,9 +20552,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4699"
+        "updated": "2024-05-30T17:07:43.894655",
+        "index_timestamp": "2024-05-30T15:07:43.894693Z",
+        "inventory_id": "NL-HaNA_1.01.02_4699",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 93
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 97,
+                "end": 1650
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4700,
@@ -19659,9 +20589,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4700"
+        "updated": "2024-05-30T17:07:43.930647",
+        "index_timestamp": "2024-05-30T15:07:43.930685Z",
+        "inventory_id": "NL-HaNA_1.01.02_4700",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4701,
@@ -19683,9 +20621,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4701"
+        "updated": "2024-05-30T17:07:44.003356",
+        "index_timestamp": "2024-05-30T15:07:44.003401Z",
+        "inventory_id": "NL-HaNA_1.01.02_4701",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 86
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 89,
+                "end": 1404
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4702,
@@ -19707,9 +20658,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4702"
+        "updated": "2024-05-30T17:07:44.044483",
+        "index_timestamp": "2024-05-30T15:07:44.044532Z",
+        "inventory_id": "NL-HaNA_1.01.02_4702",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 257
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4703,
@@ -19731,9 +20690,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4703"
+        "updated": "2024-05-30T17:07:44.123511",
+        "index_timestamp": "2024-05-30T15:07:44.123570Z",
+        "inventory_id": "NL-HaNA_1.01.02_4703",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 79
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 83,
+                "end": 1259
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4704,
@@ -19755,9 +20727,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4704"
+        "updated": "2024-05-30T17:07:44.160996",
+        "index_timestamp": "2024-05-30T15:07:44.161031Z",
+        "inventory_id": "NL-HaNA_1.01.02_4704",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4705,
@@ -19779,9 +20759,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4705"
+        "updated": "2024-05-30T17:07:44.230576",
+        "index_timestamp": "2024-05-30T15:07:44.230625Z",
+        "inventory_id": "NL-HaNA_1.01.02_4705",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 47
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 51,
+                "end": 985
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4706,
@@ -19803,9 +20796,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4706"
+        "updated": "2024-05-30T17:07:44.267929",
+        "index_timestamp": "2024-05-30T15:07:44.267974Z",
+        "inventory_id": "NL-HaNA_1.01.02_4706",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 225
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4707,
@@ -19827,9 +20828,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4707"
+        "updated": "2024-05-30T17:07:44.340254",
+        "index_timestamp": "2024-05-30T15:07:44.340290Z",
+        "inventory_id": "NL-HaNA_1.01.02_4707",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 43
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 45,
+                "end": 619
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4708,
@@ -19851,9 +20865,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4708"
+        "updated": "2024-05-30T17:07:44.378856",
+        "index_timestamp": "2024-05-30T15:07:44.378909Z",
+        "inventory_id": "NL-HaNA_1.01.02_4708",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4709,
@@ -19875,9 +20897,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4709"
+        "updated": "2024-05-30T17:07:44.456022",
+        "index_timestamp": "2024-05-30T15:07:44.456059Z",
+        "inventory_id": "NL-HaNA_1.01.02_4709",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 33
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 370
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4710,
@@ -19899,9 +20934,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4710"
+        "updated": "2024-05-30T17:07:44.494764",
+        "index_timestamp": "2024-05-30T15:07:44.494803Z",
+        "inventory_id": "NL-HaNA_1.01.02_4710",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 221
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4711,
@@ -19923,9 +20966,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4711"
+        "updated": "2024-05-30T17:07:44.571679",
+        "index_timestamp": "2024-05-30T15:07:44.571736Z",
+        "inventory_id": "NL-HaNA_1.01.02_4711",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 33
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 37,
+                "end": 427
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4712,
@@ -19947,9 +21003,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4712"
+        "updated": "2024-05-30T17:07:44.611087",
+        "index_timestamp": "2024-05-30T15:07:44.611132Z",
+        "inventory_id": "NL-HaNA_1.01.02_4712",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4713,
@@ -19971,9 +21035,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4713"
+        "updated": "2024-05-30T17:07:44.690496",
+        "index_timestamp": "2024-05-30T15:07:44.690540Z",
+        "inventory_id": "NL-HaNA_1.01.02_4713",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 30
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 33,
+                "end": 459
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4714,
@@ -19995,9 +21072,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4714"
+        "updated": "2024-05-30T17:07:44.730912",
+        "index_timestamp": "2024-05-30T15:07:44.730966Z",
+        "inventory_id": "NL-HaNA_1.01.02_4714",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4715,
@@ -20019,9 +21104,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4715"
+        "updated": "2024-05-30T17:07:44.808011",
+        "index_timestamp": "2024-05-30T15:07:44.808056Z",
+        "inventory_id": "NL-HaNA_1.01.02_4715",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 31
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 340
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4716,
@@ -20043,9 +21141,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4716"
+        "updated": "2024-05-30T17:07:44.848905",
+        "index_timestamp": "2024-05-30T15:07:44.848977Z",
+        "inventory_id": "NL-HaNA_1.01.02_4716",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 225
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4717,
@@ -20067,9 +21173,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4717"
+        "updated": "2024-05-30T17:07:44.937135",
+        "index_timestamp": "2024-05-30T15:07:44.937178Z",
+        "inventory_id": "NL-HaNA_1.01.02_4717",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 35
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 37,
+                "end": 435
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4718,
@@ -20091,9 +21210,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4718"
+        "updated": "2024-05-30T17:07:44.975106",
+        "index_timestamp": "2024-05-30T15:07:44.975143Z",
+        "inventory_id": "NL-HaNA_1.01.02_4718",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 221
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4719,
@@ -20115,9 +21242,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4719"
+        "updated": "2024-05-30T17:07:45.050684",
+        "index_timestamp": "2024-05-30T15:07:45.050722Z",
+        "inventory_id": "NL-HaNA_1.01.02_4719",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 27
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 29,
+                "end": 457
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4720,
@@ -20139,9 +21279,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4720"
+        "updated": "2024-05-30T17:07:45.088213",
+        "index_timestamp": "2024-05-30T15:07:45.088264Z",
+        "inventory_id": "NL-HaNA_1.01.02_4720",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4721,
@@ -20163,9 +21311,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4721"
+        "updated": "2024-05-30T17:07:45.163874",
+        "index_timestamp": "2024-05-30T15:07:45.163918Z",
+        "inventory_id": "NL-HaNA_1.01.02_4721",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 20
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 209
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4722,
@@ -20187,9 +21348,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4722"
+        "updated": "2024-05-30T17:07:45.204784",
+        "index_timestamp": "2024-05-30T15:07:45.204842Z",
+        "inventory_id": "NL-HaNA_1.01.02_4722",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4723,
@@ -20211,9 +21380,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4723"
+        "updated": "2024-05-30T17:07:45.291637",
+        "index_timestamp": "2024-05-30T15:07:45.291682Z",
+        "inventory_id": "NL-HaNA_1.01.02_4723",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 19
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 259
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4724,
@@ -20235,9 +21417,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4724"
+        "updated": "2024-05-30T17:07:45.324736",
+        "index_timestamp": "2024-05-30T15:07:45.324779Z",
+        "inventory_id": "NL-HaNA_1.01.02_4724",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4725,
@@ -20259,9 +21449,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4725"
+        "updated": "2024-05-30T17:07:45.394881",
+        "index_timestamp": "2024-05-30T15:07:45.394921Z",
+        "inventory_id": "NL-HaNA_1.01.02_4725",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 343
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4726,
@@ -20283,9 +21486,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4726"
+        "updated": "2024-05-30T17:07:45.432338",
+        "index_timestamp": "2024-05-30T15:07:45.432375Z",
+        "inventory_id": "NL-HaNA_1.01.02_4726",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4727,
@@ -20307,9 +21518,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4727"
+        "updated": "2024-05-30T17:07:45.506384",
+        "index_timestamp": "2024-05-30T15:07:45.506417Z",
+        "inventory_id": "NL-HaNA_1.01.02_4727",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 21
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 179
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4728,
@@ -20331,9 +21555,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4728"
+        "updated": "2024-05-30T17:07:45.541434",
+        "index_timestamp": "2024-05-30T15:07:45.541471Z",
+        "inventory_id": "NL-HaNA_1.01.02_4728",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4729,
@@ -20355,9 +21587,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4729"
+        "updated": "2024-05-30T17:07:45.611626",
+        "index_timestamp": "2024-05-30T15:07:45.611659Z",
+        "inventory_id": "NL-HaNA_1.01.02_4729",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 29
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 31,
+                "end": 230
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4730,
@@ -20379,9 +21624,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4730"
+        "updated": "2024-05-30T17:07:45.655985",
+        "index_timestamp": "2024-05-30T15:07:45.656068Z",
+        "inventory_id": "NL-HaNA_1.01.02_4730",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4731,
@@ -20403,9 +21656,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4731"
+        "updated": "2024-05-30T17:07:45.767570",
+        "index_timestamp": "2024-05-30T15:07:45.767660Z",
+        "inventory_id": "NL-HaNA_1.01.02_4731",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 28
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 29,
+                "end": 361
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4732,
@@ -20427,9 +21693,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4732"
+        "updated": "2024-05-30T17:07:45.809308",
+        "index_timestamp": "2024-05-30T15:07:45.809344Z",
+        "inventory_id": "NL-HaNA_1.01.02_4732",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4733,
@@ -20451,9 +21725,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4733"
+        "updated": "2024-05-30T17:07:45.882577",
+        "index_timestamp": "2024-05-30T15:07:45.882615Z",
+        "inventory_id": "NL-HaNA_1.01.02_4733",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 25
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 29,
+                "end": 366
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4734,
@@ -20475,9 +21762,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4734"
+        "updated": "2024-05-30T17:07:45.916812",
+        "index_timestamp": "2024-05-30T15:07:45.916852Z",
+        "inventory_id": "NL-HaNA_1.01.02_4734",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4735,
@@ -20499,9 +21794,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4735"
+        "updated": "2024-05-30T17:07:45.988993",
+        "index_timestamp": "2024-05-30T15:07:45.989035Z",
+        "inventory_id": "NL-HaNA_1.01.02_4735",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 32
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 33,
+                "end": 271
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4736,
@@ -20523,9 +21831,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4736"
+        "updated": "2024-05-30T17:07:46.027799",
+        "index_timestamp": "2024-05-30T15:07:46.027860Z",
+        "inventory_id": "NL-HaNA_1.01.02_4736",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4737,
@@ -20547,9 +21863,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4737"
+        "updated": "2024-05-30T17:07:46.114765",
+        "index_timestamp": "2024-05-30T15:07:46.114811Z",
+        "inventory_id": "NL-HaNA_1.01.02_4737",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 22
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 249
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4738,
@@ -20571,9 +21900,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4738"
+        "updated": "2024-05-30T17:07:46.149201",
+        "index_timestamp": "2024-05-30T15:07:46.149245Z",
+        "inventory_id": "NL-HaNA_1.01.02_4738",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4739,
@@ -20595,9 +21932,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4739"
+        "updated": "2024-05-30T17:07:46.217727",
+        "index_timestamp": "2024-05-30T15:07:46.217761Z",
+        "inventory_id": "NL-HaNA_1.01.02_4739",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 20
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 150
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4740,
@@ -20619,9 +21969,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4740"
+        "updated": "2024-05-30T17:07:46.253646",
+        "index_timestamp": "2024-05-30T15:07:46.253686Z",
+        "inventory_id": "NL-HaNA_1.01.02_4740",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4741,
@@ -20643,9 +22001,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4741"
+        "updated": "2024-05-30T17:07:46.328735",
+        "index_timestamp": "2024-05-30T15:07:46.328801Z",
+        "inventory_id": "NL-HaNA_1.01.02_4741",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 20
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 320
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4742,
@@ -20667,9 +22038,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4742"
+        "updated": "2024-05-30T17:07:46.367968",
+        "index_timestamp": "2024-05-30T15:07:46.368019Z",
+        "inventory_id": "NL-HaNA_1.01.02_4742",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4743,
@@ -20691,9 +22070,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4743"
+        "updated": "2024-05-30T17:07:46.446475",
+        "index_timestamp": "2024-05-30T15:07:46.446548Z",
+        "inventory_id": "NL-HaNA_1.01.02_4743",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 30
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 35,
+                "end": 371
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4744,
@@ -20715,9 +22107,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4744"
+        "updated": "2024-05-30T17:07:46.502539",
+        "index_timestamp": "2024-05-30T15:07:46.502606Z",
+        "inventory_id": "NL-HaNA_1.01.02_4744",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4745,
@@ -20739,9 +22139,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4745"
+        "updated": "2024-05-30T17:07:46.586278",
+        "index_timestamp": "2024-05-30T15:07:46.586327Z",
+        "inventory_id": "NL-HaNA_1.01.02_4745",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 21
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 266
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4746,
@@ -20763,9 +22176,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4746"
+        "updated": "2024-05-30T17:07:46.624288",
+        "index_timestamp": "2024-05-30T15:07:46.624335Z",
+        "inventory_id": "NL-HaNA_1.01.02_4746",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4747,
@@ -20787,9 +22208,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4747"
+        "updated": "2024-05-30T17:07:46.696958",
+        "index_timestamp": "2024-05-30T15:07:46.697005Z",
+        "inventory_id": "NL-HaNA_1.01.02_4747",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 35
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 39,
+                "end": 373
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4748,
@@ -20811,9 +22245,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4748"
+        "updated": "2024-05-30T17:07:46.731972",
+        "index_timestamp": "2024-05-30T15:07:46.732010Z",
+        "inventory_id": "NL-HaNA_1.01.02_4748",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4749,
@@ -20835,9 +22277,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4749"
+        "updated": "2024-05-30T17:07:46.807275",
+        "index_timestamp": "2024-05-30T15:07:46.807319Z",
+        "inventory_id": "NL-HaNA_1.01.02_4749",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 23
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 249
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4750,
@@ -20859,9 +22314,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4750"
+        "updated": "2024-05-30T17:07:46.843412",
+        "index_timestamp": "2024-05-30T15:07:46.843461Z",
+        "inventory_id": "NL-HaNA_1.01.02_4750",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 171
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4751,
@@ -20883,9 +22346,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4751"
+        "updated": "2024-05-30T17:07:46.939583",
+        "index_timestamp": "2024-05-30T15:07:46.939624Z",
+        "inventory_id": "NL-HaNA_1.01.02_4751",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 16
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 17,
+                "end": 243
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4752,
@@ -20907,9 +22383,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4752"
+        "updated": "2024-05-30T17:07:46.973308",
+        "index_timestamp": "2024-05-30T15:07:46.973353Z",
+        "inventory_id": "NL-HaNA_1.01.02_4752",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 187
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4753,
@@ -20931,9 +22415,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4753"
+        "updated": "2024-05-30T17:07:47.049892",
+        "index_timestamp": "2024-05-30T15:07:47.049930Z",
+        "inventory_id": "NL-HaNA_1.01.02_4753",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 20
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 264
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4754,
@@ -20955,9 +22452,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4754"
+        "updated": "2024-05-30T17:07:47.088165",
+        "index_timestamp": "2024-05-30T15:07:47.088212Z",
+        "inventory_id": "NL-HaNA_1.01.02_4754",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4755,
@@ -20979,9 +22484,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4755"
+        "updated": "2024-05-30T17:07:47.163507",
+        "index_timestamp": "2024-05-30T15:07:47.163552Z",
+        "inventory_id": "NL-HaNA_1.01.02_4755",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 20
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 23,
+                "end": 250
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4756,
@@ -21003,9 +22521,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4756"
+        "updated": "2024-05-30T17:07:47.205207",
+        "index_timestamp": "2024-05-30T15:07:47.205273Z",
+        "inventory_id": "NL-HaNA_1.01.02_4756",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 225
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4757,
@@ -21027,9 +22553,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4757"
+        "updated": "2024-05-30T17:07:47.287965",
+        "index_timestamp": "2024-05-30T15:07:47.288005Z",
+        "inventory_id": "NL-HaNA_1.01.02_4757",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 17
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 19,
+                "end": 238
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4758,
@@ -21051,9 +22590,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4758"
+        "updated": "2024-05-30T17:07:47.328875",
+        "index_timestamp": "2024-05-30T15:07:47.328930Z",
+        "inventory_id": "NL-HaNA_1.01.02_4758",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4759,
@@ -21075,9 +22622,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4759"
+        "updated": "2024-05-30T17:07:47.478020",
+        "index_timestamp": "2024-05-30T15:07:47.478114Z",
+        "inventory_id": "NL-HaNA_1.01.02_4759",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 13
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 15,
+                "end": 256
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4760,
@@ -21099,9 +22659,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4760"
+        "updated": "2024-05-30T17:07:47.535065",
+        "index_timestamp": "2024-05-30T15:07:47.535173Z",
+        "inventory_id": "NL-HaNA_1.01.02_4760",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4761,
@@ -21123,9 +22691,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4761"
+        "updated": "2024-05-30T17:07:47.676229",
+        "index_timestamp": "2024-05-30T15:07:47.676270Z",
+        "inventory_id": "NL-HaNA_1.01.02_4761",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 26
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 27,
+                "end": 361
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4762,
@@ -21147,9 +22728,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4762"
+        "updated": "2024-05-30T17:07:47.715639",
+        "index_timestamp": "2024-05-30T15:07:47.715692Z",
+        "inventory_id": "NL-HaNA_1.01.02_4762",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4763,
@@ -21171,9 +22760,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4763"
+        "updated": "2024-05-30T17:07:47.793403",
+        "index_timestamp": "2024-05-30T15:07:47.793473Z",
+        "inventory_id": "NL-HaNA_1.01.02_4763",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 19
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 21,
+                "end": 262
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4764,
@@ -21195,9 +22797,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4764"
+        "updated": "2024-05-30T17:07:47.834705",
+        "index_timestamp": "2024-05-30T15:07:47.834750Z",
+        "inventory_id": "NL-HaNA_1.01.02_4764",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 221
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4765,
@@ -21219,9 +22829,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4765"
+        "updated": "2024-05-30T17:07:47.917116",
+        "index_timestamp": "2024-05-30T15:07:47.917163Z",
+        "inventory_id": "NL-HaNA_1.01.02_4765",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 17
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 19,
+                "end": 225
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4766,
@@ -21243,9 +22866,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4766"
+        "updated": "2024-05-30T17:07:47.956384",
+        "index_timestamp": "2024-05-30T15:07:47.956431Z",
+        "inventory_id": "NL-HaNA_1.01.02_4766",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4767,
@@ -21267,9 +22898,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4767"
+        "updated": "2024-05-30T17:07:48.032704",
+        "index_timestamp": "2024-05-30T15:07:48.032750Z",
+        "inventory_id": "NL-HaNA_1.01.02_4767",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 24
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 25,
+                "end": 466
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4768,
@@ -21291,9 +22935,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4768"
+        "updated": "2024-05-30T17:07:48.072401",
+        "index_timestamp": "2024-05-30T15:07:48.072456Z",
+        "inventory_id": "NL-HaNA_1.01.02_4768",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 223
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4769,
@@ -21315,9 +22967,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4769"
+        "updated": "2024-05-30T17:07:48.146249",
+        "index_timestamp": "2024-05-30T15:07:48.146301Z",
+        "inventory_id": "NL-HaNA_1.01.02_4769",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 43
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 47,
+                "end": 643
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4770,
@@ -21339,9 +23004,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4770"
+        "updated": "2024-05-30T17:07:48.185913",
+        "index_timestamp": "2024-05-30T15:07:48.185961Z",
+        "inventory_id": "NL-HaNA_1.01.02_4770",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 339
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4771,
@@ -21363,9 +23036,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4771"
+        "updated": "2024-05-30T17:07:48.260597",
+        "index_timestamp": "2024-05-30T15:07:48.260636Z",
+        "inventory_id": "NL-HaNA_1.01.02_4771",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 63
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 65,
+                "end": 1409
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4772,
@@ -21387,9 +23073,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4772"
+        "updated": "2024-05-30T17:07:48.298500",
+        "index_timestamp": "2024-05-30T15:07:48.298542Z",
+        "inventory_id": "NL-HaNA_1.01.02_4772",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 175
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4773,
@@ -21411,9 +23105,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4773"
+        "updated": "2024-05-30T17:07:48.379074",
+        "index_timestamp": "2024-05-30T15:07:48.379120Z",
+        "inventory_id": "NL-HaNA_1.01.02_4773",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 50
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 53,
+                "end": 708
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4774,
@@ -21435,9 +23142,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4774"
+        "updated": "2024-05-30T17:07:48.436708",
+        "index_timestamp": "2024-05-30T15:07:48.436746Z",
+        "inventory_id": "NL-HaNA_1.01.02_4774",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 211
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4775,
@@ -21459,9 +23174,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4775"
+        "updated": "2024-05-30T17:07:48.503980",
+        "index_timestamp": "2024-05-30T15:07:48.504023Z",
+        "inventory_id": "NL-HaNA_1.01.02_4775",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 68
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 69,
+                "end": 1083
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4776,
@@ -21483,9 +23211,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4776"
+        "updated": "2024-05-30T17:07:48.538627",
+        "index_timestamp": "2024-05-30T15:07:48.538673Z",
+        "inventory_id": "NL-HaNA_1.01.02_4776",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 343
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4777,
@@ -21507,9 +23243,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4777"
+        "updated": "2024-05-30T17:07:48.610425",
+        "index_timestamp": "2024-05-30T15:07:48.610458Z",
+        "inventory_id": "NL-HaNA_1.01.02_4777",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 88
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 89,
+                "end": 1945
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4778,
@@ -21531,9 +23280,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4778"
+        "updated": "2024-05-30T17:07:48.652072",
+        "index_timestamp": "2024-05-30T15:07:48.652133Z",
+        "inventory_id": "NL-HaNA_1.01.02_4778",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 341
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4779,
@@ -21555,9 +23312,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4779"
+        "updated": "2024-05-30T17:07:48.725756",
+        "index_timestamp": "2024-05-30T15:07:48.725834Z",
+        "inventory_id": "NL-HaNA_1.01.02_4779",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 38
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 39,
+                "end": 633
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4780,
@@ -21579,9 +23349,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4780"
+        "updated": "2024-05-30T17:07:48.761971",
+        "index_timestamp": "2024-05-30T15:07:48.762022Z",
+        "inventory_id": "NL-HaNA_1.01.02_4780",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 181
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4781,
@@ -21627,9 +23405,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4782"
+        "updated": "2024-05-30T17:07:48.798828",
+        "index_timestamp": "2024-05-30T15:07:48.798878Z",
+        "inventory_id": "NL-HaNA_1.01.02_4782",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 177
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4783,
@@ -21651,9 +23437,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4783"
+        "updated": "2024-05-30T17:07:48.870701",
+        "index_timestamp": "2024-05-30T15:07:48.870749Z",
+        "inventory_id": "NL-HaNA_1.01.02_4783",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 65
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 67,
+                "end": 996
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4784,
@@ -21675,9 +23474,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4784"
+        "updated": "2024-05-30T17:07:48.908794",
+        "index_timestamp": "2024-05-30T15:07:48.908839Z",
+        "inventory_id": "NL-HaNA_1.01.02_4784",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 183
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4785,
@@ -21699,9 +23506,22 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4785"
+        "updated": "2024-05-30T17:07:48.975229",
+        "index_timestamp": "2024-05-30T15:07:48.975268Z",
+        "inventory_id": "NL-HaNA_1.01.02_4785",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 47
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 49,
+                "end": 571
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4786,
@@ -21723,9 +23543,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4786"
+        "updated": "2024-05-30T17:07:49.008550",
+        "index_timestamp": "2024-05-30T15:07:49.008587Z",
+        "inventory_id": "NL-HaNA_1.01.02_4786",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 185
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4787,
@@ -21747,9 +23575,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4787"
+        "updated": "2024-05-30T17:07:49.044036",
+        "index_timestamp": "2024-05-30T15:07:49.044067Z",
+        "inventory_id": "NL-HaNA_1.01.02_4787",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 5,
+                "end": 662
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4788,
@@ -21771,9 +23607,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4788"
+        "updated": "2024-05-30T17:07:49.081462",
+        "index_timestamp": "2024-05-30T15:07:49.081513Z",
+        "inventory_id": "NL-HaNA_1.01.02_4788",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 183
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4789,
@@ -21795,9 +23639,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4789"
+        "updated": "2024-05-30T17:07:49.117117",
+        "index_timestamp": "2024-05-30T15:07:49.117153Z",
+        "inventory_id": "NL-HaNA_1.01.02_4789",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 183
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4790,
@@ -21819,9 +23671,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4790"
+        "updated": "2024-05-30T17:07:49.150485",
+        "index_timestamp": "2024-05-30T15:07:49.150528Z",
+        "inventory_id": "NL-HaNA_1.01.02_4790",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 193
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4791,
@@ -21843,9 +23703,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4791"
+        "updated": "2024-05-30T17:07:49.183023",
+        "index_timestamp": "2024-05-30T15:07:49.183064Z",
+        "inventory_id": "NL-HaNA_1.01.02_4791",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 5,
+                "end": 1238
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4792,
@@ -21867,9 +23735,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4792"
+        "updated": "2024-05-30T17:07:49.216224",
+        "index_timestamp": "2024-05-30T15:07:49.216262Z",
+        "inventory_id": "NL-HaNA_1.01.02_4792",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 199
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4793,
@@ -21891,9 +23767,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4793"
+        "updated": "2024-05-30T17:07:49.250071",
+        "index_timestamp": "2024-05-30T15:07:49.250100Z",
+        "inventory_id": "NL-HaNA_1.01.02_4793",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 1,
+                "end": 1072
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4794,
@@ -21915,9 +23799,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4794"
+        "updated": "2024-05-30T17:07:49.284721",
+        "index_timestamp": "2024-05-30T15:07:49.284770Z",
+        "inventory_id": "NL-HaNA_1.01.02_4794",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 225
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4795,
@@ -21939,9 +23831,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4795"
+        "updated": "2024-05-30T17:07:49.321895",
+        "index_timestamp": "2024-05-30T15:07:49.321938Z",
+        "inventory_id": "NL-HaNA_1.01.02_4795",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 5,
+                "end": 1016
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4796,
@@ -21963,9 +23863,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4796"
+        "updated": "2024-05-30T17:07:49.357547",
+        "index_timestamp": "2024-05-30T15:07:49.357588Z",
+        "inventory_id": "NL-HaNA_1.01.02_4796",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 5,
+                "end": 227
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4797,
@@ -21987,9 +23895,17 @@
         "inventory_index": null,
         "inventory_doc_type": null,
         "created": "2022-01-24T09:24:00",
-        "updated": null,
-        "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4797"
+        "updated": "2024-05-30T17:07:49.392633",
+        "index_timestamp": "2024-05-30T15:07:49.392671Z",
+        "inventory_id": "NL-HaNA_1.01.02_4797",
+        "sections": [
+            {
+                "page_type": "resolution_page",
+                "start": 3,
+                "end": 362
+            }
+        ],
+        "code_commit": "https://github.com/HuygensING/republic-project/commit/afb936c621de186680922c6dc056236b31524b2b"
     },
     {
         "inventory_num": 4806,
