@@ -1,0 +1,14 @@
+# generic ignore
+out/
+namenindex/*
+*.pyc
+*.lock
+
+#specific ignore
+*.json
+*.xlsx
+
+# never commit real settings
+settings.py
+__pycache__/*
+
