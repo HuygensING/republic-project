@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List, Tuple, Union
 from collections import defaultdict
 import copy
@@ -163,18 +164,23 @@ class SessionSearcher(EventSearcher):
                 print('\t', date_phrase)
         self.phrase_models['date_searcher'] = PhraseModel(model=date_phrases, config=sessiondate_config)
         self.add_searcher(sessiondate_config, 'date_searcher', self.phrase_models['date_searcher'],
-                          use_token_searcher=True)
+                          use_token_searcher=self.use_token_searcher)
         # when multiple date string match, only use the best matching one.
         self.searchers['date_searcher'].allow_overlapping_matches = False
 
     def update_session_date_searcher(self,
                                      current_date: Union[None, RepublicDate] = None,
-                                     num_dates: int = 7) -> None:
+                                     num_dates: int = 7, debug: int = 0) -> None:
         """Update the session date searcher with a new set of date strings."""
         # update current date
         if current_date:
             self.current_date = current_date
-        self.add_session_date_searcher(num_dates=num_dates)
+        if debug > 0:
+            print(f"republic_session.SessionSearcher.update_session_date_searhcher - "
+                  f"self.current_date: {self.current_date}")
+        self.add_session_date_searcher(num_dates=num_dates, debug=debug)
+        if debug > 0:
+            print('\t', self.searchers['date_searcher'].phrase_model.phrase_index.keys())
 
     def extract_date_matches(self) -> None:
         """Extract matches with session date labels and add the corresponding
@@ -420,7 +426,7 @@ class SessionSearcher(EventSearcher):
             # First session of the year has no previous session, so no date shift
             return status
         if len(self.sessions[prev_session_metadata['session_date']]) == 0:
-            print('NO SESSIONS ON PREVIOUS DATE')
+            print('SessionSearcher.check_date_shift_validity - NO SESSIONS ON PREVIOUS DATE')
             return status
         # prev_session_info = self.sessions[prev_session_metadata['session_date']][-1]
         # prev_session_num_lines = prev_session_info['num_lines']
@@ -449,7 +455,7 @@ class SessionSearcher(EventSearcher):
                 # and the number of lines for the previous two sessions is low,
                 # something went wrong and the date should be pushed back by a week.
                 status = 'set_back'
-                print('DATE IS SET BACK')
+                print('SessionSearcher.check_date_shift_validity - DATE IS SET BACK')
                 # update the current session date in the searcher
                 self.update_session_date(day_shift=-7)
                 # update the searcher with new date strings for the next seven days
@@ -463,11 +469,15 @@ class SessionSearcher(EventSearcher):
                 # and the previous session document has few lines
                 # it is likely mis-recognized. This date will be quarantined.
                 status = 'quarantined'
-                print('DATE IS QUARANTINED')
+                print('SessionSearcher.check_date_shift_validity - DATE IS QUARANTINED')
+                print(f'\tworkday_shift: {workday_shift}')
+                print(f'\tcurrent_date: {self.current_date.isoformat()}')
+                print(f'\tprev_date: {prev_date.isoformat()}')
         return status
 
     def parse_session_metadata(self, prev_session_metadata: Union[None, dict], inv_metadata: Dict[str, any],
-                               session_lines: List[pdm.PageXMLTextLine]) -> Tuple[dict, dict]:
+                               session_lines: List[pdm.PageXMLTextLine], skip_rest_days: bool = True,
+                               debug: int = 0) -> Tuple[dict, dict]:
         """Turn session elements and sliding window into proper metadata."""
         # make sure local current_date is a copy and not a reference to the original object
         require_match = False if prev_session_metadata is None else True
@@ -475,7 +485,7 @@ class SessionSearcher(EventSearcher):
         try:
             date_match = self.get_session_date_match(require_match=require_match)
         except KeyError:
-            print('parse_session_metadata - self.session_opening_elements', self.session_opening_elements)
+            print('SessionSearcher.parse_session_metadata - self.session_opening_elements', self.session_opening_elements)
             raise
         try:
             date_shift_status = self.check_date_shift_validity(prev_session_metadata)
@@ -487,25 +497,50 @@ class SessionSearcher(EventSearcher):
         current_date = copy.copy(self.current_date)
         includes_rest_day = False
         prev_date, prev_prev_date = self.get_prev_dates()
+        if debug > 0:
+            print(f"SessionSearcher.parse_session_metadata - date_match: {date_match}")
+            if date_match:
+                print(f'SessionSearcher.parse_session_metadata - date_match.string: {date_match.string}')
+                print(f'SessionSearcher.parse_session_metadata - date_match.text_id: {date_match.text_id}')
+            print(f"SessionSearcher.parse_session_metadata - self.current_date: {self.current_date}")
+            print(f"SessionSearcher.parse_session_metadata - prev_date: {prev_date}\n")
         if current_date.is_rest_day() and prev_date and not is_session_date_exception(prev_date):
             # print('current date is rest, shifting')
             # If the current date is a rest day, the subsequent session is on the next work day
             includes_rest_day = True
-            next_work_day = get_next_workday(self.current_date)
-            if next_work_day:
-                current_date = next_work_day
-            # print('shifting to:', current_date.isoformat())
+            if skip_rest_days is True:
+                next_work_day = get_next_workday(self.current_date)
+                if next_work_day:
+                    current_date = next_work_day
+                # print('shifting to:', current_date.isoformat())
         date_line = None
         for line in session_lines:
             if date_match and line.id == date_match.text_id:
                 date_line = line
+                if debug > 1:
+                    print('SessionSearcher.parse_session_metadata - date_line.id matches date_match.text_id')
+                    print(f'SessionSearcher.parse_session_metadata - date_line.id: {date_line.id}')
+                    print(f'SessionSearcher.parse_session_metadata - date_line.metadata["text_region_id"]: '
+                          f'{date_line.metadata["text_region_id"]}')
         if date_line is None:
             if len(session_lines) > 0:
                 date_line = session_lines[0]
+                if debug > 1:
+                    print('SessionSearcher.parse_session_metadata - date_line is first session line')
+                    print(f'SessionSearcher.parse_session_metadata - date_line.id: {date_line.id}')
             elif require_match:
                 raise ValueError(f'No date_line found for date {current_date.isoformat()}')
 
+        if debug > 1:
+            print(f"SessionSearcher.parse_session_metadata - current_date: {current_date.isoformat()}")
+            print(f"SessionSearcher.parse_session_metadata - date_match: {date_match}")
+            if date_match:
+                print(f"SessionSearcher.parse_session_metadata - date_match.text_id: {date_match.text_id}")
+            print(f"SessionSearcher.parse_session_metadata - date_line: {date_line}")
         session_date_json = make_session_date_metadata(current_date, date_match, date_line)
+        if debug > 1:
+            print(f"SessionSearcher.parse_session_metadata - session_date_json")
+            print(json.dumps(session_date_json, indent=4))
         self.session_num += 1
         """
         if session_date_json['session_date'] not in self.sessions \
@@ -517,6 +552,8 @@ class SessionSearcher(EventSearcher):
         session_metadata = make_session_metadata(inv_metadata, session_date_json, self.session_num,
                                                  text_type='printed', includes_rest_day=includes_rest_day)
         session_date = current_date.isoformat()
+        if debug > 1:
+            print(f"SessionSearcher.parse_session_metadata - session_date: {session_date}")
         session_num = len(self.sessions[session_date]) + 1
         self.sessions[session_date].append({'session_num': session_num, 'num_lines': 0})
         """
@@ -651,9 +688,9 @@ class SessionSearcher(EventSearcher):
             try:
                 new_date = self.date_strings[date_match.phrase.phrase_string]
             except KeyError:
-                print('update_session_date - date_strings:', self.date_strings)
-                print('update_session_date - current_date:', self.current_date)
-                print('update_session_date - date_match:', date_match)
+                print(f'{debug_prefix} - date_strings:', self.date_strings)
+                print(f'{debug_prefix} - current_date:', self.current_date)
+                print(f'{debug_prefix} - date_match:', date_match)
                 raise
             # new_date = derive_date_from_string(date_match.phrase.phrase_string, self.year)
             if debug > 1:

@@ -21,7 +21,7 @@ class TestColumnParser(unittest.TestCase):
             for tr in col.text_regions:
                 print('\told_tr:', tr.id)
         num_old_col_trs = [3, 1]
-        num_new_col_trs = [3, 5]
+        num_new_col_trs = [4, 5]
         for ci, old_col in enumerate(page.columns):
             new_col = col_parser.split_column_text_regions(old_col, debug=1)
             with self.subTest(ci):

@@ -125,7 +125,19 @@ class ResolutionSentences:
 def calculate_word_freq(res_sents: ResolutionSentences) -> Counter:
     word_freq = Counter()
     for si, sent in enumerate(res_sents):
-        word_freq.update(sent)
+        try:
+            if len(sent) == 0:
+                continue
+            if isinstance(sent, Doc):
+                word_freq.update([token.n for token in sent.tokens])
+            elif isinstance(sent, list) and isinstance(sent[0], str):
+                word_freq.update(sent)
+            else:
+                print(sent)
+                raise TypeError('unexpected type in res_sents, expected list of strings or Doc')
+        except IndexError:
+            print('Error in sent:', sent)
+            raise
     return word_freq
 
 

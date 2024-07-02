@@ -82,16 +82,29 @@ exception_dates = {
     "1795-01-17": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-01-23": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-24": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-01-30": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-01-31": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-02-09": {"mistake": "this day is a work day", "shift_days": 1},
     "1795-03-06": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-03-07": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-03-20": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-03-21": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-04-03": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-04-04": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-04-10": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-04-11": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-04-17": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-04-18": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-05-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-05-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-05-29": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-05-30": {"mistake": "next Sunday is a work day", "shift_days": 1},
-    "1795-06-27": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-06-26": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-06-27": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-07-03": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-07-10": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-07-17": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-07-18": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-07-31": {"mistake": "next Sunday is a work day", "shift_days": 2},
     "1795-08-07": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-09-04": {"mistake": "next Saturday is a work day", "shift_days": 1},
@@ -99,10 +112,18 @@ exception_dates = {
     "1795-11-06": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-12-04": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-12-11": {"mistake": "next Sunday is a work day", "shift_days": 2},
+    "1796-01-22": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1796-01-23": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1796-02-19": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1796-02-20": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1796-02-26": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1796-02-27": {"mistake": "next Sunday is a work day", "shift_days": 1},
 }
 
 
-def make_date_name_map(date_elements):
+def make_date_name_map(date_elements: List[Tuple[str, str]], debug: int = 0):
+    if debug > 1:
+        print(f'republic_date.make_date_name_map - received date_elements: {date_elements}')
     date_structure = {
         'week_day_name': None,
         'month_day_name': None,
@@ -123,7 +144,7 @@ def make_date_name_map(date_elements):
 
 class DateNameMapper:
 
-    def __init__(self, inv_metadata: Dict[str, any], date_elements: List[Tuple[str, str]]):
+    def __init__(self, inv_metadata: Dict[str, any], date_elements: List[Tuple[str, str]], debug: int = 0):
         """
         Creates an object that can map date objects and date strings to dates used to announce
         a new session in the resolutions. Dates are announced as <week_day> <month_day> <month_name>
@@ -144,7 +165,11 @@ class DateNameMapper:
         """
         self.inv_metadata = inv_metadata
         self.date_element_order = date_elements
+        if debug > 3:
+            print('DateNameMapper - date_elements:', date_elements)
         self.date_name_map = make_date_name_map(date_elements)
+        if debug > 3:
+            print('DateNameMapper - self.date_name_map:', self.date_name_map)
         self.include_year = self.date_name_map['include_year']
         self.include_den = self.date_name_map['include_den']
         if self.include_year:
@@ -152,9 +177,12 @@ class DateNameMapper:
         self.index_week_day = {}
         self.index_month = {}
         self.index_month_day = {}
-        self._set_week_day_name_map()
-        self._set_month_name_map()
-        if 'month_day_name' in self.date_name_map:
+        if 'week_day_name' in self.date_name_map and self.date_name_map['week_day_name'] is not None:
+            # print(f'republic_date.DateNameMapper.__init__ - self.date_name_map: {self.date_name_map}')
+            self._set_week_day_name_map()
+        if 'month_name' in self.date_name_map and self.date_name_map['month_name'] is not None:
+            self._set_month_name_map()
+        if 'month_day_name' in self.date_name_map and self.date_name_map['month_day_name'] is not None:
             self._set_month_day_name_map()
 
     def _set_week_day_name_map(self):
@@ -297,7 +325,7 @@ class RepublicDate:
         # return f'RepublicDate({self.isoformat()})'
 
     def __add__(self, other: Union[RepublicDate, datetime.date, datetime.timedelta]):
-        if isinstance(other, RepublicDate):
+        if isinstance(other, RepublicDate) or other.__class__.__name__ == 'RepublicDate':
             return self.date + other.date
         elif isinstance(other, datetime.timedelta):
             return self.date + other
@@ -305,15 +333,16 @@ class RepublicDate:
             return self.date + other
 
     def __sub__(self, other: Union[RepublicDate, datetime.date, datetime.timedelta]):
-        if isinstance(other, RepublicDate):
+        if isinstance(other, RepublicDate) or other.__class__.__name__ == 'RepublicDate':
             return self.date - other.date
         elif isinstance(other, datetime.timedelta):
             return self.date - other
         elif isinstance(other, datetime.date):
             return self.date - other
         else:
-            print('self:', self)
-            print('other:', other)
+            print('self:', self, type(self), self.__class__.__name__)
+            print('other:', other, type(other), other.__class__.__name__)
+            print('type(self) == type(other):', type(self) == type(other))
             raise TypeError(f'other must be RepublicDate, datetime.date or datetime.timedelta, not {type(other)}')
 
     def __lt__(self, other):
@@ -372,7 +401,7 @@ class RepublicDate:
         elif self.year >= 1754 and self.date.weekday() == 5:
             # 5 is Saturday
             return True
-        elif self.date.weekday() == 'Dominica':
+        elif self.date.weekday() == 6:
             # 6 is Sunday
             return True
         else:
@@ -422,6 +451,8 @@ def get_holidays(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union
         {'holiday': 'tweede Pinksterdag', 'date': RepublicDate(year, pentecost_monday.month,
                                                                pentecost_monday.day, date_mapper=date_mapper)},
     ]
+    if year == 1705:
+        holidays.append({'holiday': 'Vast- en Bededag', 'date': RepublicDate(year, 6, 24, date_mapper=date_mapper)})
     return holidays
 
 
@@ -460,6 +491,10 @@ def get_coming_holidays_phrases(current_date: RepublicDate,
             print("type(holiday_phrase['date']):", type(holiday_phrase['date']))
             print("current_date:", current_date)
             print("holiday_phrase['date']:", holiday_phrase['date'])
+        if holiday_phrase['date'].__class__.__name__ != 'RepublicDate':
+            print('holiday_phrase["date"] must be a RepublicDate:', type(holiday_phrase['date']))
+        if current_date.__class__.__name__ != 'RepublicDate':
+            print('current_date is not RepublicDate:', type(current_date))
         date_diff = holiday_phrase['date'] - current_date
         if debug > 0:
             print('date_diff:', date_diff)

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Union, List, Dict, Generator
 import re
 
@@ -231,9 +232,9 @@ class Retriever:
         query = {'match': {'metadata.inventory_num': inventory_num}}
         return self.retrieve_scans_by_query(query, sort=['id.keyword'])
 
-    def retrieve_inventory_pages(self, inventory_num: int) -> list:
+    def retrieve_inventory_pages(self, inventory_num: int, **kwargs) -> list:
         query = {'match': {'metadata.inventory_num': inventory_num}}
-        return self.retrieve_pages_by_query(query, sort=['id.keyword'], size=None)
+        return self.retrieve_pages_by_query(query, sort=['id.keyword'], size=None, **kwargs)
 
     def retrieve_scan_by_id(self, scan_id: str) -> Union[pdm.PageXMLScan, None]:
         if not self.es_anno.exists(index=self.config['scans_index'], id=scan_id):
@@ -273,10 +274,11 @@ class Retriever:
         response = self.es_anno.get(index=self.config['pages_index'], id=page_id)
         return parser.json_to_pagexml_page(response['_source'])
 
-    def retrieve_pages_by_query(self, query: dict, size: Union[int, None] = 10, sort: List[str] = None) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_query(self, query: dict, size: Union[int, None] = 10,
+                                sort: List[str] = None, **kwargs) -> List[pdm.PageXMLPage]:
         for hi, hit in enumerate(self.scroll_hits(self.es_anno, query,
                                                   self.config['pages_index'],
-                                                  size=size, sort=sort)):
+                                                  size=size, sort=sort, **kwargs)):
             yield parser.json_to_pagexml_page(hit['_source'])
             if size is not None and (hi+1) == size:
                 break
@@ -314,12 +316,16 @@ class Retriever:
             select_year_inv(year=year, inventory_num=inventory_num)
         ]
         query = make_bool_query(bool_elements)
-        pages = self.retrieve_pages_by_query(query)
+        pages = []
+        for hi, hit in enumerate(self.scroll_hits(self.es_anno, query, 'pages', size=10)):
+            page = parser.json_to_pagexml_page(hit['_source'])
+            pages.append(page)
+        # pages = self.retrieve_pages_by_query(query)
         return sorted(pages, key=lambda x: x.metadata['page_num'])
 
-    def retrieve_pages_by_type(self, page_type: str, inventory_num: int, size: int = 10) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_type(self, page_type: str, inventory_num: int, size: Union[int, None] = None, **kwargs) -> List[pdm.PageXMLPage]:
         query = make_page_type_query(page_type, inventory_num=inventory_num)
-        return self.retrieve_pages_by_query(query, size=size)
+        return self.retrieve_pages_by_query(query, size=size, **kwargs)
 
     def retrieve_pages_by_number_of_columns(self, num_columns_min: int,
                                             num_columns_max: int, inventory_config: dict) -> list:
@@ -329,8 +335,8 @@ class Retriever:
     def retrieve_title_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
         return self.retrieve_pages_by_type('title_page', inventory_num)
 
-    def retrieve_index_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
-        pages = self.retrieve_pages_by_type('index_page', inventory_num)
+    def retrieve_index_pages(self, inventory_num: int, **kwargs) -> List[pdm.PageXMLPage]:
+        pages = self.retrieve_pages_by_type('index_page', inventory_num, size=None, **kwargs)
         return sorted(pages, key=lambda page: page.metadata['page_num'])
 
     def retrieve_inventory_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
@@ -342,7 +348,8 @@ class Retriever:
             resolution_start, resolution_end = self.get_pagexml_resolution_page_range(inventory_num)
         except TypeError:
             return []
-        return self.retrieve_pages_by_page_number_range(resolution_start, resolution_end)
+        return self.retrieve_pages_by_page_number_range(resolution_start, resolution_end,
+                                                        inventory_num=inventory_num)
 
     def retrieve_pagexml_resolution_pages(self, inventory_num: int) -> List[pdm.PageXMLPage]:
         return self.retrieve_resolution_pages(inventory_num)
@@ -372,6 +379,17 @@ class Retriever:
                                        body=query)
         return [hit['_source'] for hit in response['hits']['hits']] if 'hits' in response['hits'] else []
 
+    def retrieve_inventory_sessions(self, inv_num: int) -> Generator[rdm.Session, None, None]:
+        inv_session_metas = self.retrieve_inventory_session_metadata(inv_num)
+        inv_session_trs = defaultdict(list)
+        for tr in self.retrieve_inventory_session_text_regions(inv_num):
+            if 'session_id' not in tr.metadata:
+                continue
+            inv_session_trs[tr.metadata['session_id']].append(tr)
+        for session_meta in inv_session_metas:
+            yield rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
+                              text_regions=inv_session_trs[session_meta['id']])
+
     def retrieve_inventory_sessions_with_lines(self, inventory_num: int) -> Generator[rdm.Session, None, None]:
         query = make_inventory_query(inventory_num=inventory_num)
         for hit in self.scroll_hits(self.es_anno, query, self.config['session_lines_index'],
@@ -389,13 +407,27 @@ class Retriever:
         else:
             return [hit['_source'] for hit in response['hits']['hits']]
 
+    def retrieve_session_metadata_by_query(self, query: Dict[str, any]):
+        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata',
+                                                           size=10, sort=['id.keyword'])]
+        docs = sorted(docs, key=lambda doc: doc['id'])
+        return docs
+
     def retrieve_sessions_by_query(self, query: dict) -> List[rdm.Session]:
+        session_metas = self.retrieve_session_metadata_by_query(query)
+        for session_meta in session_metas:
+            session_trs = self.retrieve_session_trs_by_metadata(session_meta, as_json=False)
+            session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
+                                  text_regions=session_trs)
+            yield session
+        """
         response = self.es_anno.search(index=self.config['session_lines'], body=query)
         if response['hits']['total']['value'] == 0:
             return []
         else:
             docs = [hit['_source'] for hit in response['hits']['hits']]
             return [rdm.json_to_republic_session(doc) for doc in docs]
+        """
 
     def retrieve_session_text_by_date(self, date: Union[str, RepublicDate]) -> List[rdm.Session]:
         session_index = 'session_text'
@@ -422,7 +454,8 @@ class Retriever:
 
     def retrieve_inventory_session_metadata(self, inv_num):
         query = make_inventory_query(inv_num)
-        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata', size=10, sort=['id.keyword'])]
+        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata',
+                                                           size=10, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: int(doc['id'].split('-')[-1]))
         return docs
 
@@ -435,16 +468,21 @@ class Retriever:
     def retrieve_inventory_session_data(self, inv_num):
         session_metadata_docs = self.retrieve_inventory_session_metadata(inv_num)
         for session_metadata in session_metadata_docs:
-            session_trs = self.retrieve_session_trs(session_metadata)
+            session_trs = self.retrieve_session_trs_by_metadata(session_metadata, as_json=True)
             yield session_metadata, session_trs
 
-    def retrieve_session_trs(self, session_metadata):
+    def retrieve_session_trs_by_id(self, text_region_ids: List[str], as_json: bool = False):
         session_trs = []
-        for doc_id in session_metadata['text_region_ids']:
+        for doc_id in text_region_ids:
             doc = self.es_anno.get(index='session_text_regions', id=doc_id)
             session_tr = doc['_source']
+            if as_json is False:
+                session_tr = parser.json_to_pagexml_text_region(session_tr)
             session_trs.append(session_tr)
         return session_trs
+
+    def retrieve_session_trs_by_metadata(self, session_metadata, as_json: bool = False):
+        return self.retrieve_session_trs_by_id(session_metadata['text_region_ids'], as_json=as_json)
 
     def retrieve_resolution_by_id(self, resolution_id: str) -> Union[rdm.Resolution, None]:
         if self.es_anno.exists(index=self.config['resolutions_index'], id=resolution_id):
@@ -617,6 +655,13 @@ class Retriever:
 
     def get_pagexml_resolution_page_range(self, inv_num: int) -> Union[None, tuple]:
         inv_metadata = self.retrieve_inventory_metadata(inv_num)
+        if 'type_page_num_offsets' not in inv_metadata and 'sections' in inv_metadata:
+            inv_metadata['type_page_num_offsets'] = []
+            for section in inv_metadata['sections']:
+                inv_metadata['type_page_num_offsets'].append({
+                    "page_type": section["page_type"],
+                    "page_num_offset": section['start']
+                })
         try:
             offsets = [offset['page_num_offset'] for offset in inv_metadata['type_page_num_offsets']]
             resolution_start = 0
@@ -629,6 +674,10 @@ class Retriever:
             else:
                 resolution_end = inv_metadata['num_pages'] - 1
             return resolution_start, resolution_end
+        except KeyError:
+            import json
+            print(f'invalid type_page_num_offsets format for inv_num {inv_num}:')
+            print(json.dumps(inv_metadata, indent=4))
         except IndexError:
             return None
 
