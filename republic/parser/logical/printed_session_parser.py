@@ -15,6 +15,7 @@ from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import get_next_workday
 from republic.model.republic_date import get_next_date_strings
+from republic.model.republic_date import exception_dates
 from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
@@ -24,6 +25,7 @@ from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_line_structure
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
+from republic.parser.logical.generic_logical_parser import copy_line
 
 
 def initialize_inventory_date(inv_metadata: dict, date_mapper: DateNameMapper, debug: int = 0) -> RepublicDate:
@@ -120,12 +122,6 @@ def find_session_line(line_id: str, session_lines: List[pdm.PageXMLTextLine]) ->
         if line.id == line_id:
             return line
     raise IndexError(f'Line with id {line_id} not in session lines.')
-
-
-def copy_line(line: pdm.PageXMLTextLine) -> pdm.PageXMLTextLine:
-    return pdm.PageXMLTextLine(doc_id=line.id, metadata=copy.deepcopy(line.metadata),
-                               coords=copy.deepcopy(line.coords), baseline=copy.deepcopy(line.baseline),
-                               xheight=line.xheight, conf=line.conf, text=line.text)
 
 
 def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[str, any],
@@ -510,19 +506,34 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
     session_lines_map = {}
     stream_line_count = 0
 
+    start_lines = [ss['date_line'] for ss in session_starts]
+
+    start_lines_set = set(start_lines)
+    repetition_dates = [date for date in exception_dates if 'repetition' in exception_dates[date]]
+    exception_session_dates = set()
+    exception_multi = 0
+
     for li, line in enumerate(stream_resolution_page_lines(inv_id, sorted_pages)):
         stream_line_count += 1
+        if next_start is None and line.id in start_lines_set:
+            print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                  f"\tline {line.id} is session start but next_start is None")
         if next_start is not None and line.id == next_start['date_line']:
             if current_date.isoformat() in session_lines_map:
-                if debug > 1:
+                if debug > 0:
                     print(f"printed_session_parser.map_session_lines_from_session_starts\n"
-                      f"\tcurrent_date {current_date.isoformat()} already in session_lines_map")
+                          f"\tcurrent_date {current_date.isoformat()} already in session_lines_map")
                 session_lines_map[current_date.isoformat()].extend(session_lines)
+                if current_date.isoformat() in exception_session_dates:
+                    exception_multi += 1
+                elif current_date.isoformat() in repetition_dates:
+                    exception_multi += 1
             else:
                 session_lines_map[current_date.isoformat()] = session_lines
             session_lines = []
             if debug > 1:
-                print(f"line number {li} line.id: {line.id}\ttext: {line.text}")
+                print(f"printed_session_parser.map_session_lines_from_session_starts - "
+                      f"line number {li} line.id: {line.id}\ttext: {line.text}")
             # Reasoning behind setting the date:
             # - if no date string was found in the session start detection, assume the date
             #    assigned to the session is correct
@@ -538,20 +549,23 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
             #   correct and use the found date.
             if next_start['date_string'] is None:
                 current_date = RepublicDate(date_string=next_start['session_date'])
+                exception_session_dates.add(current_date.isoformat())
                 if debug > 1:
                     print(f"\tdate_string is None, use session.date {next_start['session_date']}")
             elif next_start['date'] != next_start['session_date']:
                 if date_strings[next_start['date_string']].is_rest_day():
                     current_date = date_strings[next_start['date_string']]
-                    if debug > 1:
+                    exception_session_dates.add(current_date.isoformat())
+                    if debug > 0:
                         print(f"\tdate {next_start['date']} is not session_date {next_start['session_date']}"
                               f" and is a rest day, use date {next_start['date']}")
                 else:
                     # probably a date exception, see above
-                    if debug > 1:
+                    if debug > 0:
                         print(f"\tdate {next_start['date']} is not session_date {next_start['session_date']}"
                               f" and is not a rest day, use session_date {next_start['session_date']}")
                     current_date = RepublicDate(date_string=next_start['session_date'])
+                    exception_session_dates.add(current_date.isoformat())
             else:
                 if debug > 1:
                     print(f"\tdate {next_start['date']} is session_date {next_start['session_date']}"
@@ -567,19 +581,21 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
                           f"\n\tis_rest_day: {date_strings[next_start['date_string']].is_rest_day()}")
                     print()
                 else:
-                    print('map_session_lines_from_session_starts - next_start:', next_start)
+                    print('printed_session_parser.map_session_lines_from_session_starts - next_start:', next_start)
         session_lines.append(line)
     session_lines_map[current_date.isoformat()] = session_lines
     map_line_count = sum([len(session_lines_map[session_date]) for session_date in session_lines_map])
 
     if map_line_count != stream_line_count:
         raise ValueError(f"map_line_count {map_line_count} is not equal to stream_line_count {stream_line_count}")
-    num_mapped = len(session_lines_map)
+    num_mapped = len(session_lines_map) + exception_multi
     # the number of mapped sessions can be 1 bigger than the number of session_starts
     # because the first session is not always identified as a start (because the title
     # lines on the title page mess up the columns
     if num_mapped < len(session_starts) or num_mapped > len(session_starts) + 1:
-        raise ValueError(f"number of mapped sessions {len(session_lines_map)} is not equal to "
+        print('printed_session_parser.map_session_lines_from_session_starts - number of '
+              f'repeated exception dates: {exception_multi}')
+        raise ValueError(f"number of mapped sessions {num_mapped} is not equal to "
                          f"the number of session starts {len(session_starts)}")
 
     return session_lines_map

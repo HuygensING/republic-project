@@ -471,7 +471,8 @@ class ParagraphGenerator:
                 if line.metadata['page_id'] not in metadata['page_ids']:
                     metadata['page_ids'].append(line.metadata['page_id'])
         text, line_ranges = self.make_paragraph_text(para_lines)
-        paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
+        paragraph = rdm.RepublicParagraph(metadata=metadata,
+                                          # lines=para_lines,
                                           text=text, line_ranges=line_ranges)
         paragraph.metadata["start_offset"] = doc_text_offset
         return paragraph

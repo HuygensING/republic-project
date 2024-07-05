@@ -22,6 +22,8 @@ exception_dates = {
     "1705-09-11": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1706-02-01": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1706-05-21": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1706-06-01": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1706-08-12": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1710-06-07": {"mistake": "next work day is a Sunday", "shift_days": 1},
     "1713-03-13": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1714-05-03": {"mistake": "next day matches with Martis instead of Veneris", "shift_days": 1},

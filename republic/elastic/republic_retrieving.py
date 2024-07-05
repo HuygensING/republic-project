@@ -437,6 +437,18 @@ class Retriever:
         session_index = 'session_lines'
         return self.retrieve_sessions_by_date(date, session_index)
 
+    def retrieve_session_by_id(self, session_id: str) -> Union[rdm.Session, None]:
+        query = {
+            'match': {'id.keyword': session_id}
+        }
+        sessions = [session for session in self.retrieve_sessions_by_query(query)]
+        if len(sessions) == 1:
+            return sessions[0]
+        elif len(sessions) == 0:
+            return None
+        else:
+            raise ValueError(f"multiple sessions with id {session_id}.")
+
     def retrieve_sessions_by_date(self, date: Union[str, RepublicDate],
                                   session_index: str) -> List[rdm.Session]:
         date_string = date.isoformat() if isinstance(date, RepublicDate) else date

@@ -11,6 +11,7 @@ import republic.model.resolution_phrase_model as rpm
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.paragraph_helper import LineBreakDetector
 from republic.helper.text_helper import determine_language
+from republic.parser.logical.generic_logical_parser import copy_lines
 from republic.parser.logical.paragraph_parser import ParagraphGenerator
 from republic.parser.logical.paragraph_parser import is_paragraph_boundary
 from republic.parser.logical.paragraph_parser import is_resolution_gap
@@ -294,14 +295,22 @@ def make_paragraph_text_regions(para_lines: List[pdm.PageXMLTextLine],
     para_trs = []
     for tr_id in tr_lines:
         coords = pdm.parse_derived_coords(tr_lines[tr_id])
-        # print('make_paragraphs - tr_id:', tr_id)
-        # print('make_paragraphs - tr_lines[0].parent.id:', tr_lines[tr_id][0].parent.id)
-        # print('make_paragraphs - tr_lines[0].parent.metadata:', tr_lines[tr_id][0].parent.metadata)
-        # print('make_paragraphs - tr_lines[0].metadata:', tr_lines[tr_id][0].metadata)
-        # print()
+        if debug > 1:
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_id:',
+                  tr_id)
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_lines[0].parent.id:',
+                  tr_lines[tr_id][0].parent.id)
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_lines[0].parent.metadata:',
+                  tr_lines[tr_id][0].parent.metadata)
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_lines[0].metadata:',
+                  tr_lines[tr_id][0].metadata)
+            print()
         orig_tr = tr_lines[tr_id][0].parent
-        tr = pdm.PageXMLTextRegion(coords=coords, metadata=copy.deepcopy(orig_tr.metadata))
+        tr = pdm.PageXMLTextRegion(coords=coords, metadata=copy.deepcopy(orig_tr.metadata),
+                                   lines=copy_lines(tr_lines[tr_id]))
         tr.set_derived_id(orig_tr.parent.id)
+        for line in tr.lines:
+            line.metadata['text_region_id'] = tr.id
         para_trs.append(tr)
     return para_trs
 
@@ -357,7 +366,8 @@ class SessionParagraphGenerator(ParagraphGenerator):
         text, line_ranges = self.make_paragraph_text(para_lines)
 
         para_trs = make_paragraph_text_regions(para_lines, debug=debug)
-        paragraph = rdm.RepublicParagraph(lines=copy.deepcopy(para_lines), metadata=metadata,
+        paragraph = rdm.RepublicParagraph(metadata=metadata,
+                                          # lines=copy_lines(para_lines),
                                           text=text, line_ranges=line_ranges, text_regions=para_trs)
         paragraph.metadata["start_offset"] = doc_text_offset
         paragraph.metadata["iiif_url"] = []
