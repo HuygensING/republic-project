@@ -406,17 +406,13 @@ class Indexer:
                 print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
-                print(f'Indexer.do_session_indexing - session_metadata_index: '
-                      f'{self.rep_es.config["session_metadata_index"]}')
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
                     prov_url = self.rep_es.post_provenance(source_ids=[tr.metadata['page_id']], target_ids=[tr.id],
                                                            source_index='pages', target_index='session_text_region',
                                                            ignore_prov_errors=True)
                     tr.metadata['prov_url'] = prov_url
-                    print(f'Indexer.do_session_indexing - session_text_region_index: '
-                          f'{self.rep_es.config["session_text_region_index"]}')
-                    self.rep_es.index_session_text_region(tr)
+                self.rep_es.index_session_text_regions(session.text_regions)
         except Exception as err:
             logger.error(err)
             logger.error('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)

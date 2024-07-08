@@ -212,6 +212,13 @@ class Indexer:
                        doc_id=session_tr.id,
                        doc_body=session_tr.json)
 
+    def index_session_text_regions(self, session_trs: List[pdm.PageXMLTextRegion]):
+        trs_json = [tr.json for tr in session_trs]
+        self.index_bulk_docs(self.config['session_text_region_index'], trs_json)
+        # self.index_doc(index=self.config['session_text_region_index'],
+        #                doc_id=session_tr.id,
+        #                doc_body=session_tr.json)
+
     def index_resolution(self, resolution: rdm.Resolution):
         check_resolution(resolution)
         print('\t', resolution.id, resolution.paragraphs[0].text[:60])
