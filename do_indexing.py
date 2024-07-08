@@ -412,7 +412,7 @@ class Indexer:
                                                            source_index='pages', target_index='session_text_region',
                                                            ignore_prov_errors=True)
                     tr.metadata['prov_url'] = prov_url
-                    self.rep_es.index_session_text_region(tr)
+                self.rep_es.index_session_text_regions(session.text_regions)
         except Exception as err:
             logger.error(err)
             logger.error('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
