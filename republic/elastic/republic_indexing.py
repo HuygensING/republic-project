@@ -203,12 +203,12 @@ class Indexer:
                        doc_body=session_text_doc)
 
     def index_session_metadata(self, metadata: dict):
-        self.index_doc(index='session_metadata',
+        self.index_doc(index=self.config['session_metadata_index'],
                        doc_id=metadata['id'],
                        doc_body=metadata)
 
     def index_session_text_region(self, session_tr: pdm.PageXMLTextRegion):
-        self.index_doc(index='session_text_regions',
+        self.index_doc(index=self.config['session_text_region_index'],
                        doc_id=session_tr.id,
                        doc_body=session_tr.json)
 

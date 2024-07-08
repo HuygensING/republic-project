@@ -26,7 +26,6 @@ from republic.helper.utils import get_commit_version
 import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
-
 import republic.helper.pagexml_helper as pagexml_helper
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
@@ -34,12 +33,12 @@ from republic.classification.line_classification import NeuralLineClassifier
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.model_loader import load_line_break_detector
 from republic.helper.pagexml_helper import json_to_pagexml_page
+from republic.helper.utils import get_project_dir
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 
 import republic.parser.logical.printed_resolution_parser as printed_res_parser
 import republic.parser.logical.handwritten_resolution_parser as hand_res_parser
-import republic.parser.logical.printed_session_parser as session_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
@@ -106,6 +105,19 @@ def get_pages(inv_num: int, indexer: Indexer) -> List[pdm.PageXMLPage]:
         return pages
 
 
+def get_session_starts(inv_id: str):
+    project_dir = get_project_dir()
+    print(f"do_indexing.get_session_starts - project_dir: {project_dir}")
+    session_starts_file = os.path.join(project_dir, f"ground_truth/sessions/session_starts-{inv_id}.json")
+    print(f"do_indexing.get_session_starts - session_starts_file: {session_starts_file}")
+
+    if os.path.exists(session_starts_file):
+        with open(session_starts_file, 'rt') as fh:
+            return json.load(fh)
+    else:
+        return None
+
+
 class Indexer:
 
     def __init__(self, host_type: str, base_dir: str = 'data'):
@@ -119,6 +131,8 @@ class Indexer:
         self.rep_es = republic_elasticsearch.initialize_es(host_type=host_type, timeout=60)
 
     def set_indexes(self, indexing_step: str, indexing_label: str):
+        print(f'Indexer.set_indexes - indexing_step: {indexing_step}')
+        print(f'Indexer.set_indexes - indexing_label: {indexing_label}')
         if indexing_step in {'resolution_metadata', 'attendance_list_spans'}:
             self.rep_es.config['resolutions_index'] = f"{self.rep_es.config['resolutions_index']}_{indexing_label}"
             print(f"Indexer.set_indexes - setting resolutions_index index "
@@ -126,10 +140,16 @@ class Indexer:
             return None
         elif indexing_step == 'full_resolutions' and indexing_label is None:
             self.rep_es.config['resolutions_index'] = 'full_resolutions'
+            print(f"Indexer.set_indexes - setting resolutions_index index "
+                  f"name to {self.rep_es.config['resolutions_index']}")
         if indexing_label is None:
+            print(f'Indexer.set_indexes - indexing_label is None: {indexing_label}')
             return None
         for key in self.rep_es.config:
-            if key.startswith(indexing_step) and key.endswith("_index"):
+            if key.startswith("session") and key.endswith("_index"):
+                self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
+                print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
+            elif key.startswith(indexing_step) and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
                 print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
 
@@ -248,29 +268,43 @@ class Indexer:
             self.rep_es.index_page(page)
 
     def download_pages(self, inv_num: int, year_start: int, year_end: int):
-        logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})..."
+        logger_string = f"Downloading PageXML pages for " \
+                        f"inventory {inv_num} (years {year_start}-{year_end})..."
         logger.info(logger_string)
         print(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
-        inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
-        pages = get_pages(inv_num, self)
+        get_pages(inv_num, self)
 
-    def get_sessions_from_pages(self, inv_num: int, year_start: int, year_end: int):
+    def get_sessions_from_pages(self, inv_num: int, year_start: int, year_end: int, from_starts: bool = False):
         logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} " \
                         f"(years {year_start}-{year_end})..."
         logger.info(logger_string)
         print(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
-        inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
+
+        inv_metadata = get_inventory_by_num(inv_num)
+        inv_id = inv_metadata['inventory_id']
+        text_type = get_text_type(inv_num)
+        if from_starts is True:
+            session_starts = get_session_starts(inv_id)
+            if session_starts is None:
+                logger.warning(f"WARNING - No sessions starts for inventory {inv_num}")
+                print(f"WARNING - No sessions starts for inventory {inv_num}")
+                return None
+        else:
+            session_starts = None
+
         pages = get_pages(inv_num, self)
         pages.sort(key=lambda page: page.metadata['page_num'])
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
-        text_type = get_text_type(inv_num)
+
         get_session_func = get_printed_sessions if text_type == 'printed' else get_handwritten_sessions
-        use_token_searcher = True if text_type == 'printed' else False
+        # use_token_searcher = True if text_type == 'printed' else False
         # include_variants not yet implemented in FuzzyTokenSearcher so use FuzzyPhraseSearcher
         use_token_searcher = False
         prev_session = None
         try:
-            for session in get_session_func(inv_metadata['inventory_id'], pages, use_token_searcher=use_token_searcher):
+            for session in get_session_func(inv_metadata['inventory_id'], pages,
+                                            session_starts=session_starts,
+                                            use_token_searcher=use_token_searcher):
                 yield session
                 prev_session = session
         except Exception as err:
@@ -349,7 +383,8 @@ class Indexer:
             session_text_doc = make_session_text_version(session, resolutions)
             self.rep_es.index_session_with_text(session_text_doc)
 
-    def do_session_indexing(self, inv_num: int, year_start: int, year_end: int, from_files: bool = False):
+    def do_session_indexing(self, inv_num: int, year_start: int, year_end: int, from_files: bool = False,
+                            from_starts: bool = False):
         logger.info(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         inv_metadata = get_inventory_by_num(inv_num)
@@ -358,7 +393,7 @@ class Indexer:
         if from_files is True:
             get_session_gen = self.get_sessions_from_files(inv_num, year_start, year_end)
         else:
-            get_session_gen = self.get_sessions_from_pages(inv_num, year_start, year_end)
+            get_session_gen = self.get_sessions_from_pages(inv_num, year_start, year_end, from_starts=from_starts)
         try:
             for session in get_session_gen:
                 session_json = make_session(inv_metadata, session.date_metadata, session.metadata['session_num'],
@@ -371,12 +406,16 @@ class Indexer:
                 print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
+                print(f'Indexer.do_session_indexing - session_metadata_index: '
+                      f'{self.rep_es.config["session_metadata_index"]}')
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
                     prov_url = self.rep_es.post_provenance(source_ids=[tr.metadata['page_id']], target_ids=[tr.id],
                                                            source_index='pages', target_index='session_text_region',
                                                            ignore_prov_errors=True)
                     tr.metadata['prov_url'] = prov_url
+                    print(f'Indexer.do_session_indexing - session_text_region_index: '
+                          f'{self.rep_es.config["session_text_region_index"]}')
                     self.rep_es.index_session_text_region(tr)
         except Exception as err:
             logger.error(err)
@@ -401,7 +440,7 @@ class Indexer:
                 session_id = session_meta['id']
                 if session_id not in inv_session_trs:
                     print(f're-indexing text regions for session {session_id}')
-                    session_trs_json = self.rep_es.retrieve_session_trs(session_meta)
+                    session_trs_json = self.rep_es.retrieve_session_trs_by_metadata(session_meta)
                     session_trs = [pagexml_helper.json_to_pagexml_text_region(tr_json) for tr_json in session_trs_json]
                     for tr in session_trs:
                         tr.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
@@ -646,6 +685,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
     indexer = Indexer(task["host_type"], base_dir=task["base_dir"])
+    print("TASK:", task)
     indexer.set_indexes(task["indexing_step"], task["index_label"])
     # print('process_inventory - index:', indexer.rep_es.config['resolutions_index'])
     if task["indexing_step"] == "download":
@@ -672,7 +712,11 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["indexing_step"] == "sessions_indexing_from_files":
         indexer.do_session_indexing(task["inv_num"], task["year_start"], task["year_end"], from_files=True)
     elif task["indexing_step"] == "sessions_indexing_from_pages":
-        indexer.do_session_indexing(task["inv_num"], task["year_start"], task["year_end"], from_files=False)
+        indexer.do_session_indexing(task["inv_num"], task["year_start"], task["year_end"], from_files=False,
+                                    from_starts=False)
+    elif task["indexing_step"] == "sessions_indexing_from_starts":
+        indexer.do_session_indexing(task["inv_num"], task["year_start"], task["year_end"], from_files=False,
+                                    from_starts=True)
     elif task["indexing_step"] == "resolutions":
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "handwritten_resolutions":
@@ -702,7 +746,7 @@ def parse_args():
     # Define the getopt parameters
     try:
         opts, args = getopt.getopt(argv, 's:e:i:n:l:b:', ['foperand', 'soperand'])
-        start, end, indexing_step, num_processes, index_label = None, None, None, None, None
+        start, end, indexing_step, num_processes, index_label = None, None, None, None, "staging"
         base_dir = 'data'
         for opt, arg in opts:
             if opt == '-n':

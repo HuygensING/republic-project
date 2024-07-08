@@ -601,10 +601,29 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
     return session_lines_map
 
 
-def get_printed_sessions_from_session_starts(inventory_id: str, session_starts: List[Dict[str, any]],
-                                             pages: List[pdm.PageXMLPage], inv_metadata: Dict[str, any] = None,
+def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
+                         session_starts: List[Dict[str, any]] = None,
+                         inv_metadata: Dict[str, any] = None, start_date: str = None,
+                         use_token_searcher: bool = False, start_page_idx: int = 0,
+                         debug: int = 0, report_progress: bool = True) -> Generator[Session, None, None]:
+    if session_starts is not None:
+        print(f'printed_session_parser.get_printed_sessions - number of session_starts: {len(session_starts)}')
+        session_gen = get_printed_sessions_from_session_starts(inventory_id, pages, session_starts,
+                                                               inv_metadata=inv_metadata, start_date=start_date,
+                                                               debug=debug)
+    else:
+        session_gen = get_printed_sessions_from_pages(inventory_id, pages, inv_metadata=inv_metadata,
+                                                      use_token_searcher=use_token_searcher, start_date=start_date,
+                                                      start_page_idx=start_page_idx, debug=debug,
+                                                      report_progress=report_progress)
+    for session in session_gen:
+        yield session
+
+
+def get_printed_sessions_from_session_starts(inventory_id: str, pages: List[pdm.PageXMLPage],
+                                             session_starts: List[Dict[str, any]], inv_metadata: Dict[str, any] = None,
                                              start_date: str = None,
-                                             debug: int = 0) -> Session:
+                                             debug: int = 0) -> Generator[Session, None, None]:
     if inv_metadata is None:
         inv_metadata = get_inventory_by_id(inventory_id)
     sorted_pages = sorted(pages, key=lambda p: p.id)
@@ -652,10 +671,10 @@ def get_printed_sessions_from_session_starts(inventory_id: str, session_starts: 
         prev_meta = session_meta
 
 
-def get_printed_sessions(inventory_id: str, pages: List[pdm.PageXMLPage],
-                         inv_metadata: dict = None, use_token_searcher: bool = False,
-                         start_date: str = None, start_page_idx: int = 0,
-                         debug: int = 0, report_progress: bool = True) -> Iterator[Session]:
+def get_printed_sessions_from_pages(inventory_id: str, pages: List[pdm.PageXMLPage],
+                                    inv_metadata: dict = None, start_date: str = None,
+                                    use_token_searcher: bool = False, start_page_idx: int = 0,
+                                    debug: int = 0, report_progress: bool = True) -> Iterator[Session]:
     # TO DO: IMPROVEMENTS
     # - check for large date jumps and short session docs
     if inv_metadata is None:

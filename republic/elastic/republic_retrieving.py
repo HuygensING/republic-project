@@ -408,7 +408,8 @@ class Retriever:
             return [hit['_source'] for hit in response['hits']['hits']]
 
     def retrieve_session_metadata_by_query(self, query: Dict[str, any]):
-        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata',
+        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query,
+                                                           index=self.config['session_metadata_index'],
                                                            size=10, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: doc['id'])
         return docs
@@ -416,7 +417,11 @@ class Retriever:
     def retrieve_sessions_by_query(self, query: dict) -> List[rdm.Session]:
         session_metas = self.retrieve_session_metadata_by_query(query)
         for session_meta in session_metas:
-            session_trs = self.retrieve_session_trs_by_metadata(session_meta, as_json=False)
+            try:
+                session_trs = self.retrieve_session_trs_by_metadata(session_meta, as_json=False)
+            except NotFoundError:
+                print(f"Error retrieving session text regions for session {session_meta['id']}")
+                raise
             session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
                                   text_regions=session_trs)
             yield session
@@ -466,14 +471,15 @@ class Retriever:
 
     def retrieve_inventory_session_metadata(self, inv_num):
         query = make_inventory_query(inv_num)
-        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query, index='session_metadata',
+        docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query,
+                                                           index=self.config['session_metadata_index'],
                                                            size=10, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: int(doc['id'].split('-')[-1]))
         return docs
 
     def retrieve_inventory_session_text_regions(self, inv_num):
         query = make_inventory_query(inv_num)
-        for hit in self.scroll_hits(self.es_anno, query, index='session_text_regions', size=100):
+        for hit in self.scroll_hits(self.es_anno, query, index=self.config['session_text_region_index'], size=100):
             doc = hit['_source']
             yield parser.json_to_pagexml_text_region(doc)
 
@@ -486,10 +492,18 @@ class Retriever:
     def retrieve_session_trs_by_id(self, text_region_ids: List[str], as_json: bool = False):
         session_trs = []
         for doc_id in text_region_ids:
-            doc = self.es_anno.get(index='session_text_regions', id=doc_id)
+            doc = self.es_anno.get(index=self.config['session_text_region_index'], id=doc_id)
             session_tr = doc['_source']
             if as_json is False:
                 session_tr = parser.json_to_pagexml_text_region(session_tr)
+            session_trs.append(session_tr)
+        return session_trs
+
+    def retrieve_session_trs_by_query(self, query: Dict[str, any]):
+        session_trs = []
+        for hit in self.scroll_hits(self.es_anno, query=query, index=self.config['session_text_region_index'],
+                                    size=10, show_total=False):
+            session_tr = parser.json_to_pagexml_text_region(hit['_source'])
             session_trs.append(session_tr)
         return session_trs
 
@@ -715,12 +729,15 @@ class Retriever:
             phrase_matches += self.retrieve_phrase_matches_by_query(query)
         return phrase_matches
 
+    def delete_by_query(self, index: str, query: Dict[str, any]):
+        return self.es_anno.delete_by_query(index, query)
+
     def delete_by_inventory(self, inv: int, index: str):
         query = {
             'query': {
                 'match': {'metadata.inventory_num': inv}
             }
         }
-        return self.es_anno.delete_by_query(index, query)
+        return self.delete_by_query(index, query)
 
 

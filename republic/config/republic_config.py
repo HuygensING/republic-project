@@ -50,6 +50,8 @@ def set_inventory_indexes(config: dict) -> None:
     config['scan_index'] = 'scans'
     config['paragraph_index'] = 'paragraphs'
     config['session_index'] = 'sessions'
+    config['session_metadata_index'] = 'session_metadata'
+    config['session_text_region_index'] = 'session_text_region'
     config['session_lines_index'] = 'session_lines'
     config['session_text_index'] = 'session_text'
     config['resolution_index'] = 'resolutions'

@@ -850,6 +850,7 @@ def get_inventory_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.Page
 
 
 def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
+                             session_starts: List[Dict[str, any]] = None,
                              num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
     print('get_sessions - num pages:', len(pages))
     inv_metadata = get_inventory_by_id(inv_id)
