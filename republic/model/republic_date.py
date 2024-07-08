@@ -462,6 +462,8 @@ def is_exception_work_day(current_date: RepublicDate):
     date_string = current_date.date.isoformat()
     if date_string not in exception_dates:
         return False
+    if 'mistake' not in exception_dates[date_string]:
+        return False
     if exception_dates[date_string]['mistake'] == 'this day is a work day':
         return True
     return False

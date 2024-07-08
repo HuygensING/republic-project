@@ -1,7 +1,19 @@
-from typing import List
+from typing import Dict, List
+
+import pagexml.model.physical_document_model as pdm
 
 import republic.model.republic_document_model as rdm
 from republic.elastic.republic_elasticsearch import RepublicElasticsearch
+
+
+def check_pages_to_resolutions(session: rdm.Session, session_meta: Dict[str, any],
+                               session_trs: List[pdm.PageXMLTextRegion]):
+    # check that session has some evidence
+    if session.evidence is None or (isinstance(session.evidence, list) and len(session.evidence) == 0):
+        raise ValueError(f"No evidence for session {session.id}")
+    # check that session_meta has same evidence
+
+    return None
 
 
 def check_session_to_resolutions(session: rdm.Session, resolutions: List[rdm.Resolution],

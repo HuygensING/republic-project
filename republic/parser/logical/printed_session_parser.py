@@ -446,7 +446,7 @@ def map_session_starts_from_sessions(inventory_id: str, pages: List[pdm.PageXMLP
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
     # print(inventory_id, current_date)
     date_strings = get_next_date_strings(current_date, num_dates=366, include_year=False, date_mapper=date_mapper)
-    # print(date_strings.keys())
+    # print('date_strings:', date_strings.keys())
     session_starts = []
     for si, session in enumerate(sessions):
         found_date_lines = []
@@ -487,13 +487,15 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
     date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=0)
 
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
+
+    date_strings = get_next_date_strings(current_date, num_dates=366, include_year=False, date_mapper=date_mapper)
+    # print('date_strings:', date_strings.keys())
     while current_date.is_rest_day():
         if debug > 1:
             print('REST DAY:', current_date.isoformat())
         current_date = get_next_workday(current_date)
     if debug > 1:
         print('CURRENT DAY:', current_date.isoformat())
-    date_strings = get_next_date_strings(current_date, num_dates=366, include_year=False, date_mapper=date_mapper)
 
     inv_id = inv_metadata['inventory_id']
     start_iterator = make_start_iterator(session_starts)
