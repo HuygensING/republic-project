@@ -31,6 +31,7 @@ import republic.helper.pagexml_helper as pagexml_helper
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 from republic.classification.line_classification import NeuralLineClassifier
+from republic.classification.content_classification import get_header_dates
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.model_loader import load_line_break_detector
 from republic.helper.pagexml_helper import json_to_pagexml_page
@@ -45,6 +46,9 @@ from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
 from republic.parser.logical.handwritten_resolution_parser import make_opening_searcher
 from republic.parser.logical.printed_session_parser import get_printed_sessions
+from republic.parser.pagexml.page_date_parser import process_handwritten_pages
+from republic.parser.pagexml.page_date_parser import classify_page_date_regions
+from republic.parser.pagexml.page_date_parser import load_date_region_classifier
 
 # logging.config.dictConfig({
 #     'version': 1,
@@ -115,9 +119,9 @@ def write_pages(pages_file: str, pages: List[pdm.PageXMLPage]):
 
 
 def get_last_pages(inv_num: int, indexer: Indexer):
-    raw_pages_file = f"{indexer.base_dir}/pages/page_json/pages-{inv_num}.jsonl.gz"
+    raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
     preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
-    pages_file = preprocessed_pages_file
+    pages_file = None
     if os.path.exists(preprocessed_pages_file):
         if os.path.exists(raw_pages_file):
             # compare timestamps, take latest
@@ -134,35 +138,23 @@ def get_last_pages(inv_num: int, indexer: Indexer):
         logger_string = f"Reading {page_state} pages from file for inventory {inv_num}"
         logger.info(logger_string)
         print(logger_string)
-        pages = []
         with gzip.open(pages_file, 'rt') as fh:
             for line in fh:
                 page_json = json.loads(line)
                 page = json_to_pagexml_page(page_json)
-                pages.append(page)
-        return pages
-    else:
-        return None
+                yield page
+    return None
 
 
-def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> List[pdm.PageXMLPage]:
+def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> Generator[pdm.PageXMLPage, None, None]:
     if os.path.exists(f"{indexer.base_dir}/pages") is False:
         os.mkdir(f"{indexer.base_dir}/pages")
-    pages = get_last_pages(inv_num, indexer)
-    """
-    pages_file = f"{indexer.base_dir}/pages/page_json/pages-{inv_num}.jsonl.gz"
-    if os.path.exists(pages_file):
-        logger_string = f"Reading pages from file for inventory {inv_num}"
-        logger.info(logger_string)
-        print(logger_string)
-        with gzip.open(pages_file, 'rt') as fh:
-            pages = []
-            for line in fh:
-                page_json = json.loads(line)
-                page = json_to_pagexml_page(page_json)
-                pages.append(page)
-    """
-    if pages is None:
+    page_generator = get_last_pages(inv_num, indexer)
+    if page_generator is not None:
+        for page in page_generator:
+            if page_type is None or page.has_type(page_type):
+                yield page
+    else:
         logger_string = f"Downloading pages from ES index for inventory {inv_num}"
         logger.info(logger_string)
         print(logger_string)
@@ -172,9 +164,9 @@ def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> List[pdm
             for page in pages:
                 page_string = json.dumps(page.json)
                 fh.write(f"{page_string}\n")
-    if page_type is not None:
-        pages = filter_pages(pages, page_type)
-    return pages
+                if page_type is not None and page.has_type(page_type):
+                    yield page
+    return None
 
 
 def get_session_starts(inv_id: str):
@@ -188,6 +180,42 @@ def get_session_starts(inv_id: str):
             return json.load(fh)
     else:
         return None
+
+
+def upate_page_metadata(page: pdm.PageXMLPage,
+                        text_page_num_map: Dict[int, Dict[str, Union[int, str]]],
+                        page_type_index: Dict[int, Union[str, List[str]]],
+                        nlc_gysbert: NeuralLineClassifier = None):
+    if page.metadata['page_num'] in text_page_num_map:
+        page_num = page.metadata['page_num']
+        page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
+        page.metadata['skip'] = text_page_num_map[page_num]['skip']
+        if text_page_num_map[page_num]['problem'] is not None:
+            page.metadata['problem'] = text_page_num_map[page_num]['problem']
+    if page_type_index is None:
+        page.add_type('unknown')
+        page.metadata['type'] = [ptype for ptype in page.type]
+    elif page.metadata['page_num'] not in page_type_index:
+        page.add_type("empty_page")
+        page.metadata['type'] = [ptype for ptype in page.type]
+        page.metadata['skip'] = True
+        # print("page without page_num:", page.id)
+        # print("\tpage stats:", page.stats)
+    else:
+        page_types = page_type_index[page.metadata['page_num']]
+        if isinstance(page_types, str):
+            page_types = [page_types]
+        for page_type in page_types:
+            page.add_type(page_type)
+        page.metadata['type'] = [ptype for ptype in page.type]
+    predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
+    for tr in page.get_all_text_regions():
+        for line in tr.lines:
+            line.metadata['text_region_id'] = tr.id
+            if line.id in predicted_line_class:
+                line.metadata['line_class'] = predicted_line_class[line.id]
+            else:
+                line.metadata['line_class'] = 'unknown'
 
 
 class Indexer:
@@ -259,24 +287,27 @@ class Indexer:
                 logger.error("ZeroDivisionError for scan", scan.id)
                 print("ZeroDivisionError for scan", scan.id)
 
-    def do_page_indexing_pagexml(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
-        print(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
+    def get_inventory_metadata(self, inv_num: int):
         try:
-            inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
+            return self.rep_es.retrieve_inventory_metadata(inv_num)
         except ValueError:
-            logger.info(f"Skipping page indexing for inventory {inv_num} (years {year_start}-{year_end})...")
-            print(f"Skipping page indexing for inventory {inv_num} (years {year_start}-{year_end})...")
             return None
+
+    def do_page_extracting_from_scan(self, inv_num: int):
+        inv_metadata = self.get_inventory_metadata(inv_num)
         page_type_index = get_per_page_type_index(inv_metadata)
         text_page_num_map = map_text_page_nums(inv_metadata)
         page_count = 0
-        num_scans = inv_metadata['num_scans']
         nlc_gysbert = None
         if inv_num < 3760 or inv_num > 3864:
             model_dir = 'data/models/neural_line_classification/nlc_gysbert_model'
             nlc_gysbert = NeuralLineClassifier(model_dir)
         for si, scan in enumerate(self.rep_es.retrieve_inventory_scans(inv_num)):
+            if 'scan_width' not in scan.metadata:
+                scan.metadata['scan_width'] = scan.coords.width
+                scan.metadata['scan_height'] = scan.coords.height
+            if 'scan_num' not in scan.metadata:
+                scan.metadata['scan_num'] = int(scan.id.split('_')[-1])
             try:
                 pages = pagexml_parser.split_pagexml_scan(scan, page_type_index, debug=0)
             except Exception as err:
@@ -286,44 +317,82 @@ class Indexer:
                 raise
             for page in pages:
                 page_count += 1
-                if page.metadata['page_num'] in text_page_num_map:
-                    page_num = page.metadata['page_num']
-                    page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
-                    page.metadata['skip'] = text_page_num_map[page_num]['skip']
-                    if text_page_num_map[page_num]['problem'] is not None:
-                        page.metadata['problem'] = text_page_num_map[page_num]['problem']
-                if page_type_index is None:
-                    page.add_type('unknown')
-                    page.metadata['type'] = [ptype for ptype in page.type]
-                elif page.metadata['page_num'] not in page_type_index:
-                    page.add_type("empty_page")
-                    page.metadata['type'] = [ptype for ptype in page.type]
-                    page.metadata['skip'] = True
-                    # print("page without page_num:", page.id)
-                    # print("\tpage stats:", page.stats)
-                else:
-                    page_types = page_type_index[page.metadata['page_num']]
-                    if isinstance(page_types, str):
-                        page_types = [page_types]
-                    for page_type in page_types:
-                        page.add_type(page_type)
-                    page.metadata['type'] = [ptype for ptype in page.type]
-                predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
-                for tr in page.get_all_text_regions():
-                    for line in tr.lines:
-                        line.metadata['text_region_id'] = tr.id
-                        if line.id in predicted_line_class:
-                            line.metadata['line_class'] = predicted_line_class[line.id]
-                        else:
-                            line.metadata['line_class'] = 'unknown'
-                logger.info(f'indexing page {page_count} (scan count {si+1} of {num_scans}) with id {page.id}')
-                print(f'indexing page {page_count} (scan count {si+1} of {num_scans}) with id {page.id}')
-                prov_url = self.rep_es.post_provenance([scan.id], [page.id], 'scans', 'pages')
-                page.metadata['provenance_url'] = prov_url
-                self.rep_es.index_page(page)
+                upate_page_metadata(page, text_page_num_map, page_type_index, nlc_gysbert)
+                yield page
             if (si+1) % 100 == 0:
-                logger.info(si+1, "scans processed")
-                print(si+1, "scans processed")
+                logger.info(f"{si+1} scans processed")
+                print(f"{si+1} scans processed")
+
+    def do_page_writing(self, inv_num: int, year_start: int, year_end: int):
+        inv_metadata = self.get_inventory_metadata(inv_num)
+        num_scans = inv_metadata['num_scans']
+        logger.info(f"Writing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
+        print(f"Writing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
+        raw_page_dir = 'data/pages/raw_page_json'
+        preprocessed_page_dir = 'data/pages/preprocessed_page_json'
+        if os.path.exists(raw_page_dir) is False:
+            os.mkdir(raw_page_dir)
+        if os.path.exists(preprocessed_page_dir) is False:
+            os.mkdir(preprocessed_page_dir)
+        raw_page_file = f"{raw_page_dir}/raw_pages-{inv_num}.jsonl.gz"
+        raw_pages = []
+        for pi, page in enumerate(self.do_page_extracting_from_scan(inv_num)):
+            page_count = pi + 1
+            raw_pages.append(page)
+            message = (f"extracting page {page_count} (scan {page.metadata['scan_num']} "
+                       f"of {num_scans}) with id {page.id}")
+            logger.info(message)
+            print(message)
+        write_pages(raw_page_file, raw_pages)
+
+        if get_text_type(inv_num) == 'printed' or inv_metadata['content_type'] != 'resolutions':
+            return None
+        message = f"preprocessing handwritten pages"
+        logger.info(message)
+        print(f"number of raw pages: {len(raw_pages)}")
+        res_pages = filter_pages(raw_pages, 'resolution_page')
+        other_pages = [page for page in raw_pages if page not in res_pages]
+        print(f"number of res_pages: {len(res_pages)}\tnumber of other pages: {len(other_pages)}")
+
+        date_region_classifier = load_date_region_classifier()
+        date_trs = get_header_dates(res_pages)
+        print(f"inv {inv_num}  number of date text_regions in raw pages: {len(date_trs)}")
+
+        date_tr_type_map = classify_page_date_regions(res_pages, date_region_classifier)
+        preprocessed_page_file = f"{preprocessed_page_dir}/preprocessed_pages-{inv_num}.jsonl.gz"
+        preprocessed_pages = process_handwritten_pages(inv_metadata['inventory_id'], res_pages,
+                                                       date_tr_type_map=date_tr_type_map, ignorecase=False,
+                                                       debug=0)
+
+        date_trs = get_header_dates(preprocessed_pages)
+        print(f"inv {inv_num}  number of date text_regions in preprocessed pages: {len(date_trs)}")
+
+        preprocessed_pages.extend(other_pages)
+        preprocessed_pages = sorted(preprocessed_pages, key=lambda p: p.id)
+        write_pages(preprocessed_page_file, preprocessed_pages)
+
+    def do_page_indexing_pagexml(self, inv_num: int, year_start: int, year_end: int,
+                                 page_generator: Generator[pdm.PageXMLPage, None, None]):
+        logger.info(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
+        print(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
+        inv_metadata = self.get_inventory_metadata(inv_num)
+        num_scans = inv_metadata['num_scans']
+        for pi, page in enumerate(page_generator):
+            page_count = pi + 1
+            message = f"indexing page {page_count} (scan {page.metadata['scan_num']} of {num_scans}) with id {page.id}"
+            logger.info(message)
+            print(message)
+            prov_url = self.rep_es.post_provenance([page.metadata['scan_id']], [page.id], 'scans', 'pages')
+            page.metadata['provenance_url'] = prov_url
+            self.rep_es.index_page(page)
+
+    def do_page_indexing_pagexml_from_file(self, inv_num: int, year_start: int, year_end: int):
+        page_generator = get_pages(inv_num, self)
+        self.do_page_indexing_pagexml(inv_num, year_start, year_end, page_generator)
+
+    def do_page_indexing_pagexml_from_scans(self, inv_num: int, year_start: int, year_end: int):
+        page_generator = self.do_page_extracting_from_scan(inv_num)
+        self.do_page_indexing_pagexml(inv_num, year_start, year_end, page_generator)
 
     def do_page_type_indexing_pagexml(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Updating page types for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -370,7 +439,7 @@ class Indexer:
         else:
             session_starts = None
 
-        pages = get_pages(inv_num, self, page_type='resolution_page')
+        pages = [page for page in get_pages(inv_num, self, page_type='resolution_page')]
         pages.sort(key=lambda page: page.metadata['page_num'])
         print(f'inventory {inv_num} - number of pages: {len(pages)}')
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
@@ -759,6 +828,13 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
     indexer = Indexer(task["host_type"], base_dir=task["base_dir"])
+    inv_metadata = indexer.get_inventory_metadata(task['inv_num'])
+    if inv_metadata is None:
+        message = f"Skipping {task['indexing_step']} for inventory {task['inv_num']} " \
+                  f"(years {task['year_start']}-{task['year_end']})..."
+        logger.info(message)
+        print(message)
+        return None
     print("TASK:", task)
     indexer.set_indexes(task["indexing_step"], task["index_label"])
     # print('process_inventory - index:', indexer.rep_es.config['resolutions_index'])
@@ -768,11 +844,14 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         indexer.download_pages(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "scans_pages":
         indexer.do_scan_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
-        indexer.do_page_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
+        indexer.do_page_indexing_pagexml_from_scans(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "scans":
         indexer.do_scan_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
+    elif task["indexing_step"] == "write_pages":
+        indexer.do_page_writing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "pages":
-        indexer.do_page_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
+        indexer.do_page_writing(task["inv_num"], task["year_start"], task["year_end"])
+        indexer.do_page_indexing_pagexml_from_file(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "page_types":
         indexer.do_page_type_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "session_files":

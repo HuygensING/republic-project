@@ -528,7 +528,8 @@ def assign_undecided(scan: pdm.PageXMLScan, page_even: pdm.PageXMLPage, page_odd
             undecided_tr.metadata['normal_even_end'] = page_odd.metadata['normal_even_end']
     for page_doc in [page_even, page_odd]:
         if page_doc.metadata['page_num'] not in page_type_index:
-            print('missing page_type for page', page_doc.id)
+            if debug > 0:
+                print('missing page_type for page', page_doc.id)
         elif 'title_page' in page_type_index[page_doc.metadata['page_num']]:
             separate_title_lines(page_doc, debug=debug)
         if not page_doc.coords:
@@ -920,8 +921,8 @@ def parse_title_page_columns(page: pdm.PageXMLPage) -> pdm.PageXMLPage:
             elif line.coords.left > 3400 and line.coords.right >= 3600:
                 right_col_lines.append(line)
             else:
-                print(line.coords.box)
-                print(line.text)
+                print("republic_page_parser.parse_title_page_columns - \n\tline.coords.box:", line.coords.box)
+                print('\tline.text:', line.text)
                 raise TypeError('cannot select appropriate column')
         if len(left_col_lines) > 0:
             left_column = make_derived_column(left_col_lines, column.metadata, page.metadata['scan_id'])
@@ -950,6 +951,9 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
 
     This is particularly for text regions labelled as attendance but with
     lines classified as paragraph lines.
+
+    If a week_day_name_searcher is passed, line classes will be updated to date if they contain
+    a weekday name.
     """
     default_types = {'text_region', 'structure_doc', 'physical_structure_doc', 'pagexml_doc'}
     para_trs = []
@@ -1039,16 +1043,25 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
 def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = False,
                                    week_day_name_searcher: FuzzyPhraseSearcher = None,
                                    copy_page: bool = True, debug: int = 0) -> pdm.PageXMLPage:
+    """Split the text regions in columns of a page into multiple text regions if they contain
+    large vertical gaps.
+
+    If update_type is set to True, the text region type will also be updated based in the
+    line_classes of its lines.
+
+    If a week_day_name_searcher is passed, line classes will be updated to date if they contain
+    a weekday name.
+    """
     if update_type is True:
         page = update_line_types(page, week_day_name_searcher=week_day_name_searcher,
                                  copy_page=copy_page, debug=debug)
     new_extra = [tr for tr in page.extra] if page.extra else []
     if debug > 0:
-        print(f"split_page_column_text_regions - new_extra: {new_extra}")
+        print(f"split_page_column_text_regions.split_page_column_text_regions - new_extra: {new_extra}")
     new_cols = [column_parser.split_column_text_regions(col, update_type=update_type, debug=debug)
                 for col in page.columns]
     if debug > 0:
-        print(f"split_page_column_text_regions - new_cols: {new_cols}")
+        print(f"split_page_column_text_regions.split_page_column_text_regions - new_cols: {new_cols}")
     if page.coords:
         new_coords = pdm.Coords([point for point in page.coords.points])
     elif len(new_cols + new_extra) > 0:

@@ -1,7 +1,6 @@
 from typing import Union, Dict, List
 import datetime
 import copy
-import re
 import time
 
 from elasticsearch import Elasticsearch
@@ -9,10 +8,8 @@ from elasticsearch.exceptions import ElasticsearchException
 from elasticsearch.helpers import bulk
 from fuzzy_search.match.phrase_match import PhraseMatch
 
-import republic.parser.logical.printed_session_parser as session_parser
 import republic.model.republic_document_model as rdm
 import republic.model.physical_document_model as pdm
-from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import get_per_page_type_index
 from republic.helper.annotation_helper import make_match_hash_id
 from republic.helper.utils import get_iso_utc_timestamp, get_commit_url
@@ -62,65 +59,6 @@ def normalize_lemma(lemma: str) -> str:
     return lemma
 
 
-def add_missing_dates(prev_date: RepublicDate, session: rdm.Session):
-    missing = (session.date - prev_date).days - 1
-    if missing > 0:
-        print('missing days:', missing)
-    for diff in range(1, missing + 1):
-        # create a new meeting doc for the missing date, with data copied from the current meeting
-        # as most likely the missing date is a non-meeting date with 'nihil actum est'
-        missing_date = prev_date.date + datetime.timedelta(days=diff)
-        missing_date = RepublicDate(missing_date.year, missing_date.month, missing_date.day)
-        missing_session = copy.deepcopy(session)
-        missing_session.metadata['id'] = f'session-{missing_date.isoformat()}-session-1'
-        missing_session.id = missing_session.metadata['id']
-        missing_session.metadata['session_date'] = missing_date.isoformat()
-        missing_session.metadata['year'] = missing_date.year
-        missing_session.metadata['session_month'] = missing_date.month
-        missing_session.metadata['session_day'] = missing_date.day
-        missing_session.metadata['session_weekday'] = missing_date.day_name
-        missing_session.metadata['is_workday'] = missing_date.is_work_day()
-        missing_session.metadata['session'] = None
-        missing_session.metadata['president'] = None
-        missing_session.metadata['attendants_list_id'] = None
-        evidence_lines = set([evidence['line_id'] for evidence in missing_session.evidence])
-        keep_columns = []
-        num_lines = 0
-        num_words = 0
-        missing_session.lines = []
-        for column in missing_session.columns:
-            keep_textregions = []
-            for textregion in column['textregions']:
-                keep_lines = []
-                for line in textregion['lines']:
-                    if len(evidence_lines) > 0:
-                        keep_lines += [line]
-                        missing_session.lines += [line]
-                        num_lines += 1
-                        if line['text']:
-                            num_words += len([word for word in re.split(r'\W+', line['text']) if word != ''])
-                    else:
-                        break
-                    if line['metadata']['id'] in evidence_lines:
-                        evidence_lines.remove(line['metadata']['id'])
-                textregion['lines'] = keep_lines
-                if len(textregion['lines']) > 0:
-                    textregion['coords'] = pdm.parse_derived_coords(textregion['lines'])
-                    keep_textregions += [textregion]
-            column['textregions'] = keep_textregions
-            if len(column['textregions']) > 0:
-                column['coords'] = pdm.parse_derived_coords(column['textregions'])
-                keep_columns += [column]
-        missing_session.columns = keep_columns
-        missing_session.metadata['num_columns'] = len(missing_session.columns)
-        missing_session.metadata['num_lines'] = num_lines
-        missing_session.metadata['num_words'] = num_words
-        missing_session.scan_versions = session_parser.get_session_scans_version(missing_session)
-        session_parser.clean_lines(missing_session.lines, clean_copy=False)
-        print('missing session:', missing_session.id)
-        yield missing_session
-
-
 class Indexer:
 
     def __init__(self, es_anno: Elasticsearch, es_text: Elasticsearch, config: dict):
@@ -141,7 +79,10 @@ class Indexer:
                     response = self.es_anno.index(index=index, id=doc_id, document=doc_body)
                 return response
             except ElasticsearchException as err:
-                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {retry_num}")
+                if 'stats' in doc_body:
+                    print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {retry_num}")
+                else:
+                    print(f"Error indexing document {doc_id} in index {index}, retry {retry_num}")
                 print(err)
                 error = err
                 time.sleep(5)

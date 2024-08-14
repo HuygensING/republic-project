@@ -8,7 +8,7 @@ import torch
 # import republic.model.physical_document_model as pdm
 from republic.helper.text_helper import SkipgramSimilarity
 from republic.model.republic_date_phrase_model import week_day_names
-from republic.model.republic_date import month_names_early, month_names_late
+from republic.model.republic_date_phrase_model import month_names_early, month_names_late
 
 
 SPATIAL_FIELDS = [

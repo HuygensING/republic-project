@@ -3,6 +3,8 @@ from typing import Dict, List
 import pagexml.model.physical_document_model as pdm
 from fuzzy_search import PhraseMatch
 
+import republic.model.republic_document_model as rdm
+from republic.analyser.quality_control import check_session
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.model.republic_date import RepublicDate
 
@@ -131,3 +133,10 @@ def make_session(inv_metadata: Dict[str, any], session_date: Dict[str, any],
         }
     }
     return session
+
+
+def make_session_from_meta_and_trs(session_meta: Dict[str, any],
+                                   session_trs: List[pdm.PageXMLTextRegion]) -> rdm.Session:
+    return rdm.Session(doc_id=session_meta['id'], metadata=session_meta['metadata'],
+                       date_metadata=session_meta['date'], evidence=session_meta['evidence'],
+                       text_regions=session_trs)

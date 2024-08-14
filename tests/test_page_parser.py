@@ -5,7 +5,7 @@ from pagexml.parser import json_to_pagexml_page, read_pagexml_file
 
 import republic.parser.pagexml.republic_page_parser as page_parser
 from republic.parser.logical.handwritten_session_parser import make_week_day_name_searcher
-from republic.parser.logical.handwritten_session_parser import make_inventory_date_name_mapper
+from republic.parser.pagexml.page_date_parser import make_inventory_date_name_mapper
 
 
 class TestPageParser(unittest.TestCase):

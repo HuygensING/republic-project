@@ -165,7 +165,7 @@ proposition_opening_phrases = [
         'phrase': 'IS ter Vergaderinge gelesen de Requeste van ',
         'label': [
             'proposition_opening',
-            'proposition_type:requeste'
+            'proposition_type:rekest'
         ],
         'variants': [
             'IS ter Vergaderinge geëxhibeert een Resolutie van'
@@ -244,7 +244,7 @@ proposition_opening_phrases = [
         ],
         'label': [
             'proposition_opening',
-            'proposition_type:requeste'
+            'proposition_type:rekest'
         ],
         'proposition_type': 'requeste',
         'start_year': 1703, 'end_year': 1796,
@@ -351,7 +351,7 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'BY resumptie gedelibereert zynde op de Requeste ',
-        'label': ['proposition_opening', 'proposition_type:requeste'],
+        'label': ['proposition_opening', 'proposition_type:rekest'],
         'proposition_type': 'requeste',
         'start_year': 1703, 'end_year': 1796,
         'max_start_offset': 10
@@ -379,7 +379,7 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'De requeste van ',
-        'label': ['proposition_opening', 'proposition_type:requeste'],
+        'label': ['proposition_opening', 'proposition_type:rekest'],
         'proposition_type': 'requeste',
         'start_year': 1703, 'end_year': 1796,
         'max_start_offset': 2
@@ -600,7 +600,7 @@ proposition_opening_phrases = [
         'variants': [
             'Het versouck van'
         ],
-        'label': ['proposition:opening', 'proposition_type:requeste'],
+        'label': ['proposition:opening', 'proposition_type:rekest'],
         'start_year': 1580, 'end_year': 1704,
         'max_start_offset': 5
     },

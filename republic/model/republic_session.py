@@ -115,6 +115,7 @@ class SessionSearcher(EventSearcher):
         self.year = current_date.year
         self.include_year = include_year
         self.use_token_searcher = use_token_searcher
+        self.exception_dates = exception_dates
         # generate initial meeting date strings
         self.date_strings: Dict[str, RepublicDate] = get_next_date_strings(self.current_date, num_dates=7,
                                                                            include_year=include_year,
@@ -504,7 +505,7 @@ class SessionSearcher(EventSearcher):
                 print(f'SessionSearcher.parse_session_metadata - date_match.text_id: {date_match.text_id}')
             print(f"SessionSearcher.parse_session_metadata - self.current_date: {self.current_date}")
             print(f"SessionSearcher.parse_session_metadata - prev_date: {prev_date}\n")
-        if current_date.is_rest_day() and prev_date and not is_session_date_exception(prev_date):
+        if current_date.is_rest_day() and prev_date and not is_session_date_exception(prev_date, self.exception_dates):
             # print('current date is rest, shifting')
             # If the current date is a rest day, the subsequent session is on the next work day
             includes_rest_day = True
@@ -663,8 +664,9 @@ class SessionSearcher(EventSearcher):
         determine the number of days to shift current date based on found session date.
         If no day_shift is passed and not session date was found, keep current date."""
         debug_prefix = 'SessionSearcher.update_session_date'
-        if is_session_date_exception(self.current_date):
-            day_shift = get_date_exception_shift(self.current_date)
+        if is_session_date_exception(self.current_date, self.exception_dates):
+            day_shift = get_date_exception_shift(self.current_date, self.exception_dates)
+            del self.exception_dates[self.current_date.isoformat()]
             new_date = get_shifted_date(self.current_date, day_shift, date_mapper=self.date_mapper)
             if debug > 1:
                 print(f"{debug_prefix} - date exception for {self.current_date.isoformat()}, "
@@ -701,8 +703,9 @@ class SessionSearcher(EventSearcher):
                 new_date = get_next_workday(new_date, date_mapper=self.date_mapper)
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
-            if is_session_date_exception(self.current_date):
-                day_shift = get_date_exception_shift(self.current_date)
+            if is_session_date_exception(self.current_date, self.exception_dates):
+                day_shift = get_date_exception_shift(self.current_date, self.exception_dates)
+                del self.exception_dates[self.current_date.isoformat()]
                 new_date = get_shifted_date(self.current_date, day_shift, date_mapper=self.date_mapper)
         else:
             # No date string was found and none has been passed in the method call,
@@ -724,9 +727,10 @@ class SessionSearcher(EventSearcher):
                 new_date = get_next_workday(new_date, date_mapper=self.date_mapper)
             # There are some know exceptions where the printed date in the resolutions is incorrect
             # So far as they are known, they are listed in the date exceptions above
-            if is_session_date_exception(self.current_date):
+            if is_session_date_exception(self.current_date, self.exception_dates):
                 try:
-                    day_shift = get_date_exception_shift(self.current_date)
+                    day_shift = get_date_exception_shift(self.current_date, self.exception_dates)
+                    del self.exception_dates[self.current_date.isoformat()]
                     new_date = get_shifted_date(self.current_date, day_shift, date_mapper=self.date_mapper)
                 except KeyError:
                     pass

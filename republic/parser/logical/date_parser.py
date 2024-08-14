@@ -81,6 +81,8 @@ def make_month_name_searcher(date_mapper: DateNameMapper, config: Dict[str, any]
 
 def make_week_day_name_searcher(date_mapper: DateNameMapper, config: Dict[str, any]) -> FuzzyPhraseSearcher:
     phrase_list = []
+    if date_mapper.date_name_map['week_day_name'] is None:
+        return None
     for week_day_name in date_mapper.date_name_map['week_day_name']:
         phrase = {
             'phrase': week_day_name,
@@ -115,23 +117,23 @@ def line_starts_with_week_day_name(line: pdm.PageXMLTextLine,
     line_text = line.text.lower() if ignorecase else line.text
     # print('line_text:', line_text)
     for set_version in week_day_names:
-        if debug > 1:
+        if debug > 2:
             print('line_starts_with_week_day_name - set_version:', set_version)
             print('line_starts_with_week_day_name - week_day_names:', week_day_names[set_version])
             print('line_starts_with_week_day_name - line_text:', line_text)
         for week_day_name in week_day_names[set_version]:
             week_day_name = week_day_name.lower() if ignorecase else week_day_name
             # print('ignorecase:', ignorecase)
-            if debug > 1:
+            if debug > 2:
                 print(f'line_starts_with_week_day_name - line_text.startswith("{week_day_name}"):',
                       line_text.startswith(week_day_name))
             if line_text.startswith(week_day_name):
                 return True
-        if debug > 1:
+        if debug > 2:
             print('\n')
     if week_day_name_searcher is not None:
         matches = week_day_name_searcher.find_matches(line.text)
-        if debug > 1:
+        if debug > 2:
             print('line_starts_with_week_day_name - fuzzy matching with week day names')
             for match in matches:
                 print('line_starts_with_week_day_name - week_day_name match:', match)
@@ -149,7 +151,7 @@ def line_has_day_month(line: pdm.PageXMLTextLine,
     found_month_name = None
     if month_name_searcher is not None:
         matches = month_name_searcher.find_matches(line.text, skip_exact_matching=False)
-        if debug > 1:
+        if debug > 2:
             print('line_has_day_month - fuzzy matching with month day names')
             for match in matches:
                 print('line_has_day_month - month_day_name match:', match)
@@ -158,7 +160,7 @@ def line_has_day_month(line: pdm.PageXMLTextLine,
             found_month_name = best_match.phrase.phrase_string
     if found_month_name is None:
         for set_version in month_names:
-            if debug > 1:
+            if debug > 2:
                 print('line_has_day_month - set_version:', set_version)
                 print('line_has_day_month - month_names:', month_names[set_version])
                 print('line_has_day_month - line_text:', line_text)
@@ -166,36 +168,47 @@ def line_has_day_month(line: pdm.PageXMLTextLine,
                 month_name = month_name.lower() if ignorecase else month_name
                 pattern = r"\b" + month_name + r"\b"
                 match = re.search(pattern, line_text, re.IGNORECASE) if ignorecase else re.search(pattern, line_text)
-                if debug > 1:
+                if debug > 2:
                     print(f'line_has_day_month - matching month {month_name} with line:', line_text)
                 if match:
                     if debug > 1:
                         print(f'\t month {month_name} matches with line:', line_text)
                     found_month_name = month_name
-            if debug > 1:
+            if debug > 2:
                 print('\n')
     if found_month_name is not None:
         month_prefix = line_text.split(found_month_name)[0]
         if debug > 1:
             print(f"line_has_day_month - month_prefix: {month_prefix}")
-        return re.match(r"\b\d+\b", month_prefix) is not None
+        if re.search(r"\b\d+\b", month_prefix):
+            return True
+        elif re.search(r"\b[xvij]+(e|en)?\b", month_prefix):
+            return True
+        return re.search(r"\b\d+\b", month_prefix) is not None
     else:
         return False
 
 
-def get_session_date_lines_from_pages(pages,
+def get_session_date_lines_from_pages(pages: List[pdm.PageXMLPage],
+                                      filter_date_starts: bool = True, date_tr_type_map: Dict[str, str] = None,
                                       month_name_searcher: FuzzyPhraseSearcher = None,
                                       week_day_name_searcher: FuzzyPhraseSearcher = None,
                                       ignorecase: bool = False, debug: int = 0):
     date_trs = get_date_trs(pages)
     if debug > 0:
-        print('get_session_date_lines_from_pages - num date_trs:', len(date_trs))
-    if debug > 1:
+        print('date_parser.get_session_date_lines_from_pages - num date_trs:', len(date_trs))
+    if filter_date_starts is True:
+        if date_tr_type_map is None:
+            print("WARNING - date_parser.get_session_date_lines_from_pages "
+                  "has filter_date_starts=True but no date_tr_type_map")
+        else:
+            date_trs = [tr for tr in date_trs if tr.id in date_tr_type_map and date_tr_type_map[tr.id] == 'start']
+    if debug > 2:
         for date_tr in date_trs:
             print('\tdate_tr:', date_tr.id)
     date_lines = get_date_lines(date_trs)
     if debug > 0:
-        print('get_session_date_lines_from_pages - num date_lines:', len(date_lines))
+        print('date_parser.get_session_date_lines_from_pages - num date_lines:', len(date_lines))
     if debug > 1:
         for date_line in date_lines:
             print(f'\tdate_line: {mbs(date_line)}\t{date_line.text}')
@@ -215,10 +228,10 @@ def filter_session_date_lines(date_lines: List[pdm.PageXMLTextLine],
         if week_day_required and line_starts_with_week_day_name(line, week_day_name_searcher=week_day_name_searcher,
                                                                 ignorecase=ignorecase, debug=debug):
             session_date_lines.append(line)
-        elif line_has_day_month(line, month_name_searcher=month_name_searcher, ignorecase=ignorecase):
+        elif line_has_day_month(line, month_name_searcher=month_name_searcher, ignorecase=ignorecase, debug=debug):
             session_date_lines.append(line)
     if debug > 0:
-        print('filter_session_date_lines - num session_date_lines:', len(session_date_lines))
+        print('date_parser.filter_session_date_lines - num session_date_lines:', len(session_date_lines))
     return session_date_lines
 
 
@@ -257,8 +270,10 @@ def filter_session_date_trs(date_trs: List[pdm.PageXMLTextRegion],
     return session_date_trs
 
 
-def get_session_date_line_token_length(session_date_lines):
+def get_session_date_line_token_length(session_date_lines: List[pdm.PageXMLTextLine], debug: int = 0):
     line_token_lengths = [len(line.text.split(' ')) for line in session_date_lines]
+    if debug > 0:
+        print(f"date_parser.get_session_date_line_token_length - length dist: {Counter(line_token_lengths)}")
     return max(line_token_lengths, key=line_token_lengths.count)
 
 
@@ -289,7 +304,7 @@ def get_pos_cat_freq(pos_tokens: Dict[int, List[str]], date_token_cat: Dict[str,
                             continue
                     # print(pos, token, name_set, set_version)
                     pos_cat_freq[pos].update([(name_set, set_version)])
-            elif token == 'den':
+            elif token.lower() == 'den':
                 pos_cat_freq[pos].update([('den', 'all')])
             elif re.match(r'^[xvij]+[ae]?n?$', token):
                 pos_cat_freq[pos].update([('month_day_name', 'roman_early')])
@@ -302,7 +317,8 @@ def get_pos_cat_freq(pos_tokens: Dict[int, List[str]], date_token_cat: Dict[str,
 
 def get_session_date_line_structure(session_date_lines: List[pdm.PageXMLTextLine],
                                     date_token_cat: Dict[str, Set[Tuple[str, str]]],
-                                    inventory_id: str, ignorecase: bool = False):
+                                    inventory_id: str, ignorecase: bool = False,
+                                    debug: int = 0):
     """Returns a list of tuple specifing the format for each element of a date line.
 
     Example:
@@ -314,7 +330,7 @@ def get_session_date_line_structure(session_date_lines: List[pdm.PageXMLTextLine
     ]
     """
     try:
-        line_token_length = get_session_date_line_token_length(session_date_lines)
+        line_token_length = get_session_date_line_token_length(session_date_lines, debug=debug)
     except ValueError:
         print(f'Error getting date_line_structure for inventory {inventory_id}')
         print(f'number of session_date_lines:', len(session_date_lines))
@@ -322,6 +338,12 @@ def get_session_date_line_structure(session_date_lines: List[pdm.PageXMLTextLine
     text_type = get_inventory_text_type(inventory_id)
     standard_lines = [line for line in session_date_lines if len(line.text.split(' ')) == line_token_length]
     pos_tokens = get_standard_date_line_pos_tokens(standard_lines, ignorecase=ignorecase)
+    if debug > 0:
+        print(f"date_parser.get_session_date_line_structure")
+        print(f"\tline_token_length: {line_token_length}")
+        print(f"\ttext_type: {text_type}")
+        print(f"\tstandard_lines: {len(standard_lines)}")
+        print(f"\tpos_tokens: {pos_tokens}")
     pos_cat_freq, pos_other_freq = get_pos_cat_freq(pos_tokens, date_token_cat, text_type)
     date_elements = [pos_cat_freq[pos].most_common(1)[0][0] for pos in pos_cat_freq]
     return date_elements

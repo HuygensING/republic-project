@@ -9,12 +9,13 @@ from fuzzy_search.match.phrase_match import PhraseMatch
 import pagexml.model.physical_document_model as pdm
 import pagexml.parser as parser
 
+import republic.model.republic_document_model as rdm
+import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from settings import text_repo_url
 from republic.download.text_repo import TextRepo
 from republic.helper.metadata_helper import get_scan_id
 from republic.model.republic_date import RepublicDate
-import republic.model.republic_document_model as rdm
-import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
+from republic.parser.logical.generic_session_parser import make_session_from_meta_and_trs
 
 
 def get_docs(response: Dict[str, any]) -> List[dict]:
@@ -387,8 +388,7 @@ class Retriever:
                 continue
             inv_session_trs[tr.metadata['session_id']].append(tr)
         for session_meta in inv_session_metas:
-            yield rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
-                              text_regions=inv_session_trs[session_meta['id']])
+            yield make_session_from_meta_and_trs(session_meta, inv_session_trs[session_meta['id']])
 
     def retrieve_inventory_sessions_with_lines(self, inventory_num: int) -> Generator[rdm.Session, None, None]:
         query = make_inventory_query(inventory_num=inventory_num)
@@ -397,7 +397,7 @@ class Retriever:
             session = rdm.json_to_republic_session(hit['_source'])
             yield session
 
-    def retrieve_pagexml_sessions(self, inventory_num: int) -> List[dict]:
+    def retrieve_pagexml_sessions(self, inventory_num: int) -> List[rdm.Session]:
         query = make_inventory_query(inventory_num)
         response = self.es_anno.search(index=self.config['session_index'],
                                        doc_type=self.config['session_doc_type'],
@@ -405,7 +405,7 @@ class Retriever:
         if response['hits']['total']['value'] == 0:
             return []
         else:
-            return [hit['_source'] for hit in response['hits']['hits']]
+            return [rdm.json_to_republic_session(hit['_source']) for hit in response['hits']['hits']]
 
     def retrieve_session_metadata_by_query(self, query: Dict[str, any]):
         docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query,
@@ -422,9 +422,7 @@ class Retriever:
             except NotFoundError:
                 print(f"Error retrieving session text regions for session {session_meta['id']}")
                 raise
-            session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
-                                  text_regions=session_trs)
-            yield session
+            yield make_session_from_meta_and_trs(session_meta, session_trs)
         """
         response = self.es_anno.search(index=self.config['session_lines'], body=query)
         if response['hits']['total']['value'] == 0:

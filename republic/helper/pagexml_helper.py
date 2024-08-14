@@ -10,6 +10,11 @@ from pagexml.helper.pagexml_helper import regions_overlap
 # import republic.model.physical_document_model as pdm
 
 
+def box_to_coords(x: int, y: int, w: int, h: int):
+    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y+h)]
+    return pdm.Coords(coords)
+
+
 def coords_overlap(item1: pdm.PhysicalStructureDoc, item2: pdm.PhysicalStructureDoc) -> int:
     left = max([item1.coords.left, item2.coords.left])
     right = min([item1.coords.right, item2.coords.right])
@@ -51,6 +56,8 @@ def set_line_alignment(column: pdm.PageXMLColumn):
         lines = [line for text_region in column.text_regions for line in text_region.lines]
     else:
         lines = column.lines
+    if len(lines) == 0:
+        return None
     lefts = [line.coords.left for line in lines]
     rights = [line.coords.right for line in lines]
     widths = [line.coords.width for line in lines]
@@ -121,6 +128,17 @@ def merge_overlapping_sets(merge_with: Dict[any, Set[any]]):
                 change = True
                 merge_with[tr1].update(add_merge)
     return merge_with
+
+
+def region_baselines_overlap(tr1: pdm.PageXMLTextRegion, tr2: pdm.PageXMLTextRegion,
+                             overlap_threshold) -> bool:
+    tr1_baseline_points = [point for line in tr1.lines for point in line.baseline.points]
+    tr1_baseline_coords = pdm.Coords(tr1_baseline_points)
+    tr1_baseline_hull = pdm.PageXMLTextRegion(coords=tr1_baseline_coords)
+    tr2_baseline_points = [point for line in tr2.lines for point in line.baseline.points]
+    tr2_baseline_coords = pdm.Coords(tr2_baseline_points)
+    tr2_baseline_hull = pdm.PageXMLTextRegion(coords=tr2_baseline_coords)
+    return regions_overlap(tr1_baseline_hull, tr2_baseline_hull, threshold=overlap_threshold)
 
 
 def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion],
@@ -421,3 +439,48 @@ def json_to_pagexml_doc(json_doc: dict) -> pdm.PageXMLDoc:
         return json_to_pagexml_line(json_doc)
     if 'word' in json_doc['type']:
         return json_to_pagexml_word(json_doc)
+
+
+def check_parentage(doc: pdm.PageXMLDoc):
+    """Check that a documents descendants have proper parentage set."""
+    # print('doc.id:', doc.id)
+    if isinstance(doc, pdm.PageXMLPage):
+        for column in doc.columns:
+            if column.parent is None:
+                raise ValueError(f"no parent set for column {column.id} in page {doc.id}")
+            if column.parent != doc:
+                raise ValueError(f"wrong parent set for column {column.id} in page {doc.id}")
+            check_parentage(column)
+        for tr in doc.extra:
+            if tr.parent is None:
+                raise ValueError(f"no parent set for text_region {tr.id} in page {doc.id}")
+            if tr.parent != doc:
+                raise ValueError(f"wrong parent set for text_region {tr.id} in page {doc.id}")
+            check_parentage(tr)
+    elif isinstance(doc, pdm.PageXMLColumn):
+        for tr in doc.text_regions:
+            if tr.parent is None:
+                raise ValueError(f"no parent set for tr {tr.id} in column {doc.id}")
+            if tr.parent != doc:
+                raise ValueError(f"wrong parent set for tr {tr.id} in column {doc.id}")
+            check_parentage(tr)
+    elif isinstance(doc, pdm.PageXMLTextRegion):
+        for line in doc.lines:
+            if line.parent is None:
+                raise ValueError(f"no parent set for line {line.id} in text_region {doc.id}")
+            if line.parent != doc:
+                print('line parent:', line.parent.id)
+                raise ValueError(f"wrong parent set for line {line.id} in text_region {doc.id}")
+
+
+def check_page_parentage(page: pdm.PageXMLPage):
+    for col in page.columns:
+        if col.parent != page:
+            raise ValueError(f"no parent set for column {col.id} in page {page.id}")
+        for tr in col.text_regions:
+            if tr.parent != col:
+                raise ValueError(f"no parent set for text_region {tr.id} in page {page.id}")
+            for line in tr.lines:
+                if line.parent != tr:
+                    raise ValueError(f"no parent set for line {line.id} in page {page.id}")
+    return None

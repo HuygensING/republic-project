@@ -1,12 +1,23 @@
 import json
 from collections import defaultdict
-from typing import Dict, List, Union
+from collections import Counter
+from typing import Dict, List, Union, Set
 
 import numpy as np
-from pagexml.model.physical_document_model import Coords
+import pagexml.model.physical_document_model as pdm
 
 from settings import image_host_url
 from republic.model.inventory_mapping import get_inventory_by_num
+
+
+KNOWN_TYPES = {
+    'marginalia': 0,
+    'date': 1,
+    'attendance': 2,
+    'date_header': 3,
+    'page_number': 4,
+    'resolution': 5
+}
 
 
 def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
@@ -29,7 +40,10 @@ def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
                                      inventory_metadata["inventory_num"], jpg_file)
     jpg_url = image_host_url + "/iiif/{}/{}/{}".format(inventory_metadata["series_name"],
                                                        inventory_metadata["inventory_num"], jpg_file)
-    viewer_url = viewer_baseurl + "?imagesetuuid=" + inventory_metadata["inventory_uuid"] + "&uri=" + jpg_url
+    if 'inventory_uuid' in inventory_metadata and inventory_metadata['inventory_uuid'] is not None:
+        viewer_url = viewer_baseurl + "?imagesetuuid=" + inventory_metadata["inventory_uuid"] + "&uri=" + jpg_url
+    else:
+        viewer_url = None
     return {
         "jpg_url": jpg_url,
         "jpg_filepath": jpg_filepath,
@@ -74,10 +88,10 @@ def make_iiif_region_url(jpg_url: str,
 
 
 def coords_to_iiif_url(scan_id: str,
-                       coords: Union[List[int], Dict[str, int], Coords] = None, margin=100):
+                       coords: Union[List[int], Dict[str, int], pdm.Coords] = None, margin=100):
     base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
     inv_num = scan_id_to_inv_num(scan_id)
-    if isinstance(coords, Coords):
+    if isinstance(coords, pdm.Coords):
         coords = [coords.x, coords.y, coords.w, coords.h]
     elif isinstance(coords, dict):
         coords = [coords["x"], coords["y"], coords["w"], coords["h"]]
@@ -281,3 +295,49 @@ def get_para_tr_iiif_urls(para):
         tr_iiif_url = coords_to_iiif_url(scan_id, bbox)
         tr_iiif_urls.append(tr_iiif_url)
     return tr_iiif_urls
+
+
+def get_resolution_sections(inv_meta: Dict[str, any]) -> List[Dict[str, any]]:
+    if 'sections' not in inv_meta or len(inv_meta['sections']) == 0:
+        return []
+    return [section for section in inv_meta['sections'] if section['page_type'] == 'resolution_page']
+
+
+def get_resolution_page_nums(inv_meta: Dict[str, any]):
+    res_sections = get_resolution_sections(inv_meta)
+    return [pn for sec in res_sections for pn in range(sec['start'], sec['end'] + 1)]
+
+
+def map_line_class_to_tr_class(line_class: str):
+    lc_map = {
+        'para_mid': 'resolution',
+        'para_start': 'resolution',
+        'para_end': 'resolution'
+    }
+    return lc_map[line_class] if line_class in lc_map else line_class
+
+
+def get_line_class_dist(lines: List[pdm.PageXMLTextLine]) -> Counter:
+    """Count the frequency of line classes for a list of lines"""
+    lcs = [map_line_class_to_tr_class(line.metadata['line_class']) for line in lines]
+    return Counter(lcs)
+
+
+def get_majority_line_class(lines: List[pdm.PageXMLTextLine]) -> Union[str, None]:
+    """Return the most frequent line class for a list of lines. When there are
+    multiple most frequent line classes, pick the first in order of known types.
+
+    Assumption: the line classes are sorted by specificity. If a list of lines has
+    equal numbers of lines with date and with resolution, assume that date is the
+    more relevant one."""
+    lc_freq = get_line_class_dist(lines)
+    max_freq = max(lc_freq.values())
+    max_classes = [lc for lc in lc_freq if lc_freq[lc] == max_freq]
+    for known_type in KNOWN_TYPES:
+        if known_type in max_classes:
+            return known_type
+    return None
+
+
+def get_tr_known_types(tr: pdm.PageXMLTextRegion) -> Set[str]:
+    return set([tr_type for tr_type in KNOWN_TYPES if tr.has_type(tr_type)])

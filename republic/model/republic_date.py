@@ -8,7 +8,6 @@ from dateutil.easter import easter
 from dateutil.parser import parse
 from typing import Dict, List, Tuple, Union
 
-from republic.model.republic_date_phrase_model import month_names_late, month_names_early
 from republic.model.republic_date_phrase_model import week_day_names, month_names
 from republic.model.republic_date_phrase_model import holiday_phrases
 from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
@@ -24,14 +23,23 @@ exception_dates = {
     "1706-05-21": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1706-06-01": {"repetition": "next session is on the same day", "shift_days": 0},
     "1706-08-12": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1708-07-13": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1708-11-29": {"repetition": "next session is on the same day", "shift_days": 0},
     "1710-06-07": {"mistake": "next work day is a Sunday", "shift_days": 1},
+    "1710-07-23": {"repetition": "next session is on the same day", "shift_days": 0},
     "1713-03-13": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1713-03-22": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1713-06-26": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1714-05-03": {"mistake": "next day matches with Martis instead of Veneris", "shift_days": 1},
     "1714-06-07": {"mistake": "next day matches with Martis instead of Veneris", "shift_days": 1},
+    "1714-08-14": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1714-09-26": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1714-12-18": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1716-02-27": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1716-12-07": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1718-05-23": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1719-01-26": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1721-11-03": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1722-12-28": {"mistake": "avoid jump back", "shift_days": 2},
     "1723-10-01": {"mistake": "next day matches Martis instead of Sabbathi", "shift_days": 1},
     "1730-05-15": {"mistake": "next day has wrong week day name", "shift_days": 1},
@@ -39,9 +47,12 @@ exception_dates = {
     "1732-12-22": {"mistake": "next day is misrecognized", "shift_days": 1},
     "1734-04-15": {"mistake": "next day is misrecognized", "shift_days": 1},
     "1735-10-11": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1743-07-06": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1744-02-29": {"repetition": "next session is on the same day", "shift_days": 0},
     "1744-03-27": {"mistake": "next day is misrecognized", "shift_days": 1},
     "1747-11-13": {"mistake": "next day is misrecognized (Jovis instead of Martis)", "shift_days": 1},
     "1750-02-07": {"mistake": "next day is misrecognized", "shift_days": 3},
+    "1761-08-10": {"mistake": "next day has wrong week day name", "shift_days": 1},
     # OCR problems solved with March 2021 batch
     # "1762-11-11": {"mistake": "heavy bleed through on many pages", "shift_days": 11},
     # "1765-05-29": {"mistake": "heavy bleed through on many pages", "shift_days": 6},
@@ -54,10 +65,19 @@ exception_dates = {
     # "1777-10-09": {"mistake": "OCR output is missing columns", "shift_days": 5},
     # "1778-04-21": {"mistake": "OCR output is missing columns", "shift_days": 9},
     "1778-10-26": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1780-01-18": {"mistake": "next day has wrong week day name", "shift_days": 1},
     "1780-12-23": {"mistake": "christmas day has session", "shift_days": 2},
     "1780-12-25": {"mistake": "christmas day has session", "shift_days": 1},
-    "1787-05-10": {"mistake": "next Saturday is a work day", "shift_days": 2},
+    "1783-08-28": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1784-08-25": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1784-10-15": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1786-09-12": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1786-09-25": {"mistake": "next day has wrong week day name", "shift_days": 1},
+    "1787-05-11": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1787-05-12": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1787-05-13": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1787-06-04": {"repetition": "next session is on the same day", "shift_days": 0},
+    "1787-06-15": {"repetition": "next session is on the same day", "shift_days": 0},
     # OCR problems solved with March 2021 batch
     # "1788-12-24": {"mistake": "OCR problems, skip whole week", "shift_days": 7},
     "1791-02-15": {"mistake": "next day has wrong week day name", "shift_days": 1},
@@ -65,6 +85,7 @@ exception_dates = {
     "1791-12-01": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1792-03-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1792-03-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1793-03-04": {"mistake": "next day has wrong week day name", "shift_days": 1},
     # OCR problems solved with March 2021 batch
     # "1794-03-24": {"mistake": "OCR problems, skip whole week", "shift_days": 7},
     "1794-06-27": {"mistake": "next Sunday is a work day", "shift_days": 2},
@@ -82,16 +103,20 @@ exception_dates = {
     "1795-01-10": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-01-16": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-17": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-01-22": {"repetition": "next session is on the same day", "shift_days": 0},
     "1795-01-23": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-24": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-01-27": {"repetition": "next session is on the same day", "shift_days": 0},
     "1795-01-30": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-01-31": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-02-09": {"mistake": "this day is a work day", "shift_days": 1},
+    "1795-03-04": {"repetition": "next session is on the same day", "shift_days": 0},
     "1795-03-06": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-03-07": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-03-20": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-03-21": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-04-03": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-04-02": {"repetition": "next session is on the same day", "shift_days": 0},
     "1795-04-04": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-04-10": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-04-11": {"mistake": "next Sunday is a work day", "shift_days": 1},
@@ -99,6 +124,7 @@ exception_dates = {
     "1795-04-18": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-05-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-05-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1795-05-27": {"repetition": "next session is on the same day", "shift_days": 0},
     "1795-05-29": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-05-30": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-06-26": {"mistake": "next Saturday is a work day", "shift_days": 1},
@@ -109,6 +135,7 @@ exception_dates = {
     "1795-07-18": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1795-07-31": {"mistake": "next Sunday is a work day", "shift_days": 2},
     "1795-08-07": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1795-08-28": {"repetition": "next session is on the same day", "shift_days": 0},
     "1795-09-04": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-10-30": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1795-11-06": {"mistake": "next Saturday is a work day", "shift_days": 1},
@@ -120,6 +147,7 @@ exception_dates = {
     "1796-02-20": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1796-02-26": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1796-02-27": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1796-02-29": {"repetition": "next session is on the same day", "shift_days": 0},
 }
 
 
@@ -170,6 +198,8 @@ class DateNameMapper:
         if debug > 3:
             print('DateNameMapper - date_elements:', date_elements)
         self.date_name_map = make_date_name_map(date_elements)
+        if self.date_name_map is None:
+            print(f"republic_date.DateNameMapper")
         if debug > 3:
             print('DateNameMapper - self.date_name_map:', self.date_name_map)
         self.include_year = self.date_name_map['include_year']
@@ -455,6 +485,8 @@ def get_holidays(year: int, date_mapper: DateNameMapper) -> List[Dict[str, Union
     ]
     if year == 1705:
         holidays.append({'holiday': 'Vast- en Bededag', 'date': RepublicDate(year, 6, 24, date_mapper=date_mapper)})
+    if year == 1710:
+        holidays.append({'holiday': 'Vast- en Bededag', 'date': RepublicDate(year, 5, 14, date_mapper=date_mapper)})
     return holidays
 
 
@@ -507,18 +539,24 @@ def get_coming_holidays_phrases(current_date: RepublicDate,
     return coming_holiday_phrases
 
 
-def is_session_date_exception(current_date: RepublicDate) -> bool:
+def is_session_date_exception(current_date: RepublicDate,
+                              unused_exception_dates: Dict[str, Dict[str, any]]) -> bool:
     date = current_date.isoformat()
-    return date in exception_dates
+    return date in unused_exception_dates
 
 
-def get_date_exception_shift(current_date: RepublicDate) -> int:
+def get_date_exception_shift(current_date: RepublicDate,
+                             unused_exception_dates: Dict[str, Dict[str, any]]) -> int:
     date = current_date.isoformat()
-    return exception_dates[date]["shift_days"]
+    return unused_exception_dates[date]["shift_days"]
 
 
-def get_next_workday(current_date: RepublicDate, date_mapper: DateNameMapper = None) -> Union[RepublicDate, None]:
+def get_next_workday(current_date: RepublicDate, date_mapper: DateNameMapper = None,
+                     debug: int = 0) -> Union[RepublicDate, None]:
     next_day = get_next_day(current_date, date_mapper)
+    if debug > 0:
+        print(f"republic_date.get_next_workday - initial current_date: {current_date.isoformat()}")
+        print(f"republic_date.get_next_workday - initial next_day: {next_day.isoformat()}")
     loop_count = 0
     while next_day.is_rest_day():
         if loop_count > 7:
@@ -529,6 +567,9 @@ def get_next_workday(current_date: RepublicDate, date_mapper: DateNameMapper = N
         if next_day.year != current_date.year:
             return None
         loop_count += 1
+    if debug > 0:
+        print(f"republic_date.get_next_workday - final current_date: {current_date.isoformat()}")
+        print(f"republic_date.get_next_workday - final next_day: {next_day.isoformat()}")
     return next_day
 
 

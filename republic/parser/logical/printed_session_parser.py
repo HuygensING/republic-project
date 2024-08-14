@@ -1,4 +1,5 @@
 import copy
+import datetime
 import json
 import re
 from typing import List, Dict, Generator, Iterator, Tuple, Union
@@ -9,6 +10,8 @@ from fuzzy_search.match.phrase_match import PhraseMatch
 # from pagexml.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
 # from pagexml.model.physical_document_model import parse_derived_coords
 
+import republic.model.republic_document_model as  rdm
+from republic.analyser.quality_control import check_session
 from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_phrase_model import session_phrase_model
 from republic.model.republic_date import RepublicDate, derive_date_from_string
@@ -130,6 +133,8 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
                          session_searcher: SessionSearcher, column_metadata: Dict[str, dict],
                          page_index: Dict[str, pdm.PageXMLPage], debug: int = 0) -> iter:
     evidence = session_metadata['evidence']
+    if evidence is None or len(evidence) == 0:
+        print(f"WARNING - session {session_metadata['session_id']} has no evidence")
     # print('\ngenerate_session_doc - evidence:', [match.phrase.phrase_string for match in evidence])
     # print('\n')
     date_line_id = session_date_metadata['line_id']
@@ -142,6 +147,8 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
     for line in session_lines:
         if 'inventory_num' not in line.metadata:
             line.metadata['inventory_num'] = inv_metadata['inventory_num']
+        if 'inventory_id' not in line.metadata:
+            line.metadata['inventory_id'] = inv_metadata['inventory_id']
         if "column_id" not in line.metadata:
             print(line.id, line.parent.id, line.parent.type)
             print(line.parent.parent.id)
@@ -174,6 +181,8 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         text_region.metadata["iiif_url"] = doc_id_to_iiif_url(text_region.id)
         if 'inventory_num' not in text_region.metadata:
             text_region.metadata['inventory_num'] = inv_metadata['inventory_num']
+        if 'inventory_id' not in text_region.metadata:
+            text_region.metadata['inventory_id'] = inv_metadata['inventory_id']
         if 'session_id' not in text_region.metadata:
             text_region.metadata['session_id'] = session_metadata['session_id']
         # We're going from physical to logical structure here, so add a trace to the
@@ -484,25 +493,34 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
     if inv_metadata is None:
         inv_metadata = get_inventory_by_id(inventory_id)
     sorted_pages = sorted(pages, key=lambda p: p.id)
+
+    start_iterator = make_start_iterator(session_starts)
+    next_start = start_iterator()
+
     date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=0)
 
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
+    first_date = current_date.isoformat()
 
     date_strings = get_next_date_strings(current_date, num_dates=366, include_year=False, date_mapper=date_mapper)
     # print('date_strings:', date_strings.keys())
-    while current_date.is_rest_day():
-        if debug > 1:
-            print('REST DAY:', current_date.isoformat())
-        current_date = get_next_workday(current_date)
-    if debug > 1:
-        print('CURRENT DAY:', current_date.isoformat())
+    if next_start is not None and next_start['date'] > current_date.isoformat():
+        if debug > 0:
+            print('map_session_lines_from_session_starts - next_start date is not initial date:', current_date.isoformat())
+        current_date = date_strings[next_start['date_string']]
+    elif next_start is None:
+        if debug > 0:
+            print('map_session_lines_from_session_starts - next_start date is not initial date:', current_date.isoformat())
+        while current_date.is_rest_day() and (next_start is None or current_date.isoformat() < next_start['date']):
+            if debug > 0:
+                print('map_session_lines_from_session_starts - REST DAY:', current_date.isoformat())
+            current_date = get_next_workday(current_date, debug=debug)
+        if debug > 0:
+            print('map_session_lines_from_session_starts - CURRENT DAY:', current_date.isoformat())
 
     inv_id = inv_metadata['inventory_id']
-    start_iterator = make_start_iterator(session_starts)
-    next_start = start_iterator()
-    if debug > 1:
+    if debug > 0:
         print('map_session_lines_from_session_starts - first next_start:', next_start['date'])
-    sorted_pages = sorted(pages, key=lambda p: p.id)
 
     session_lines = []
     session_lines_map = {}
@@ -512,11 +530,23 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
 
     start_lines_set = set(start_lines)
     repetition_dates = [date for date in exception_dates if 'repetition' in exception_dates[date]]
+    mistake_dates = [date for date in exception_dates if 'mistake' in exception_dates[date]]
+    if debug > 0:
+        print('printed_session_parser.map_session_lines_from_session_starts - repetition_dates:', repetition_dates)
+        print('printed_session_parser.map_session_lines_from_session_starts - mistake_dates:', mistake_dates)
+        print('a')
     exception_session_dates = set()
     exception_multi = 0
+    accept_double = set()
 
     for li, line in enumerate(stream_resolution_page_lines(inv_id, sorted_pages)):
+        if debug > 2 and (li+1) % 1000 == 0:
+            print(f"line {li+1} - {line.id}: {line.text}")
         stream_line_count += 1
+        if debug > 2:
+            if next_start and line.id == next_start['date_line']:
+                print(f"line {li+1}: dates in session_lines_map: {session_lines_map.keys()}")
+                print()
         if next_start is None and line.id in start_lines_set:
             print(f"printed_session_parser.map_session_lines_from_session_starts\n"
                   f"\tline {line.id} is session start but next_start is None")
@@ -524,13 +554,51 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
             if current_date.isoformat() in session_lines_map:
                 if debug > 0:
                     print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                          f"\tnext_start {next_start['date']}\n"
                           f"\tcurrent_date {current_date.isoformat()} already in session_lines_map")
-                session_lines_map[current_date.isoformat()].extend(session_lines)
                 if current_date.isoformat() in exception_session_dates:
+                    if debug > 0:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                              f"\tmulti, date in exception_session_dates {current_date.isoformat()}")
                     exception_multi += 1
                 elif current_date.isoformat() in repetition_dates:
+                    if debug > 0:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                              f"\tmulti, date in repetition_dates for {current_date.isoformat()}")
+                    accept_double.add(current_date.isoformat())
+                    repetition_dates.remove(current_date.isoformat())
                     exception_multi += 1
+                elif len(session_lines) < 10 and len(session_lines_map[current_date.isoformat()]) < 10:
+                    if debug > 0:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                              f"\tmulti, short sessions for {current_date.isoformat()}")
+                        print(f"\t{len(session_lines)} and {len(session_lines_map[current_date.isoformat()])}")
+                    exception_multi += 1
+                elif len(session_lines_map) < 2:
+                    if debug > 0:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                              f"\tmulti, first sessions for {current_date.isoformat()}")
+                        print(f"\t{len(session_lines)} and {len(session_lines_map[current_date.isoformat()])} lines")
+                    exception_multi += 1
+                elif current_date.isoformat() in accept_double:
+                    # for the second time a repetition date is encountered
+                    if debug > 0:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                              f"\tmulti, date in accept_double for {current_date.isoformat()}")
+                    accept_double.remove(current_date.isoformat())
+                else:
+                    if debug > 0:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                              f"\tmulti, not in exceptions {current_date.isoformat()} already in session_lines_map")
+                        print(f"\t", next_start)
+                if debug > 0:
+                    print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                          f"\tadding {len(session_lines)} lines to current date {current_date.isoformat()}")
+                session_lines_map[current_date.isoformat()].extend(session_lines)
             else:
+                if debug > 1:
+                    print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                          f"\tadding {len(session_lines)} lines to current date {current_date.isoformat()}")
                 session_lines_map[current_date.isoformat()] = session_lines
             session_lines = []
             if debug > 1:
@@ -550,12 +618,16 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
             # - if a date string was found and it is the same as the session date, assume it is
             #   correct and use the found date.
             if next_start['date_string'] is None:
-                current_date = RepublicDate(date_string=next_start['session_date'])
+                if debug > 1:
+                    print(f"\tupdating current date to next_start['date'] {next_start['date']}")
+                current_date = RepublicDate(date_string=next_start['date'])
                 exception_session_dates.add(current_date.isoformat())
                 if debug > 1:
                     print(f"\tdate_string is None, use session.date {next_start['session_date']}")
             elif next_start['date'] != next_start['session_date']:
                 if date_strings[next_start['date_string']].is_rest_day():
+                    if debug > 1:
+                        print(f"\tupdating current date to next_start['date_string'] {next_start['date_string']}")
                     current_date = date_strings[next_start['date_string']]
                     exception_session_dates.add(current_date.isoformat())
                     if debug > 0:
@@ -566,13 +638,17 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
                     if debug > 0:
                         print(f"\tdate {next_start['date']} is not session_date {next_start['session_date']}"
                               f" and is not a rest day, use session_date {next_start['session_date']}")
+                        print(f"\tupdating current date to next_start['session_date'] {next_start['session_date']}")
                     current_date = RepublicDate(date_string=next_start['session_date'])
                     exception_session_dates.add(current_date.isoformat())
             else:
                 if debug > 1:
                     print(f"\tdate {next_start['date']} is session_date {next_start['session_date']}"
                           f", use session_date {next_start['session_date']}")
-                current_date = date_strings[next_start['date_string']]
+                if debug > 1:
+                    print(f"\tupdating current date to next_start['session_date'] {next_start['session_date']}")
+                current_date = RepublicDate(date_string=next_start['session_date'])
+                # current_date = date_strings[next_start['date_string']]
             next_start = start_iterator()
             if debug > 1:
                 if next_start is not None:
@@ -580,12 +656,20 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
                           f"\n\tsession_date {next_start['session_date']}\n\tdate {next_start['date']}"
                           f"\n\tdate_string {next_start['date_string']}"
                           f"\n\tdate_strings(date_string): {date_strings[next_start['date_string']]}"
-                          f"\n\tis_rest_day: {date_strings[next_start['date_string']].is_rest_day()}")
+                          f"\n\tis_rest_day: {date_strings[next_start['date_string']].is_rest_day()}"
+                          f"\n\tcurrent_date: {current_date.isoformat()}"
+                          )
                     print()
                 else:
                     print('printed_session_parser.map_session_lines_from_session_starts - next_start:', next_start)
         session_lines.append(line)
-    session_lines_map[current_date.isoformat()] = session_lines
+    if current_date.isoformat() in session_lines_map:
+        if debug > 0:
+            print(f"printed_session_parser.map_session_lines_from_session_starts\n"
+                  f"\tcurrent_date {current_date.isoformat()} already in session_lines_map")
+        session_lines_map[current_date.isoformat()].extend(session_lines)
+    else:
+        session_lines_map[current_date.isoformat()] = session_lines
     map_line_count = sum([len(session_lines_map[session_date]) for session_date in session_lines_map])
 
     if map_line_count != stream_line_count:
@@ -669,6 +753,9 @@ def get_printed_sessions_from_session_starts(inventory_id: str, pages: List[pdm.
                                                                           skip_rest_days=False, debug=0)
         session_doc = generate_session_doc(inv_metadata, session_meta, date_meta, session_lines_map[session_date],
                                            session_searcher, column_metadata, page_index)
+        if debug > 2:
+            print("printed_session_parser.generate_session_doc - doing quality control")
+        check_session(session_doc)
         yield session_doc
         prev_meta = session_meta
 
@@ -843,3 +930,62 @@ def get_session_scans_version(session: Session) -> List:
         scans_version[line.metadata['doc_id']]['doc_id'] = line.metadata['doc_id']
     # print("session scans versions:", scans_version)
     return list(scans_version.values())
+
+
+def add_missing_dates(prev_date: RepublicDate, session: rdm.Session):
+    missing = (session.date - prev_date).days - 1
+    if missing > 0:
+        print('missing days:', missing)
+    for diff in range(1, missing + 1):
+        # create a new meeting doc for the missing date, with data copied from the current meeting
+        # as most likely the missing date is a non-meeting date with 'nihil actum est'
+        missing_date = prev_date.date + datetime.timedelta(days=diff)
+        missing_date = RepublicDate(missing_date.year, missing_date.month, missing_date.day)
+        missing_session = copy.deepcopy(session)
+        missing_session.metadata['id'] = f'session-{missing_date.isoformat()}-session-1'
+        missing_session.id = missing_session.metadata['id']
+        missing_session.metadata['session_date'] = missing_date.isoformat()
+        missing_session.metadata['year'] = missing_date.year
+        missing_session.metadata['session_month'] = missing_date.month
+        missing_session.metadata['session_day'] = missing_date.day
+        missing_session.metadata['session_weekday'] = missing_date.day_name
+        missing_session.metadata['is_workday'] = missing_date.is_work_day()
+        missing_session.metadata['session'] = None
+        missing_session.metadata['president'] = None
+        missing_session.metadata['attendants_list_id'] = None
+        evidence_lines = set([evidence['line_id'] for evidence in missing_session.evidence])
+        keep_columns = []
+        num_lines = 0
+        num_words = 0
+        missing_session.lines = []
+        for column in missing_session.columns:
+            keep_textregions = []
+            for textregion in column['textregions']:
+                keep_lines = []
+                for line in textregion['lines']:
+                    if len(evidence_lines) > 0:
+                        keep_lines += [line]
+                        missing_session.lines += [line]
+                        num_lines += 1
+                        if line['text']:
+                            num_words += len([word for word in re.split(r'\W+', line['text']) if word != ''])
+                    else:
+                        break
+                    if line['metadata']['id'] in evidence_lines:
+                        evidence_lines.remove(line['metadata']['id'])
+                textregion['lines'] = keep_lines
+                if len(textregion['lines']) > 0:
+                    textregion['coords'] = pdm.parse_derived_coords(textregion['lines'])
+                    keep_textregions += [textregion]
+            column['textregions'] = keep_textregions
+            if len(column['textregions']) > 0:
+                column['coords'] = pdm.parse_derived_coords(column['textregions'])
+                keep_columns += [column]
+        missing_session.columns = keep_columns
+        missing_session.metadata['num_columns'] = len(missing_session.columns)
+        missing_session.metadata['num_lines'] = num_lines
+        missing_session.metadata['num_words'] = num_words
+        missing_session.scan_versions = get_session_scans_version(missing_session)
+        clean_lines(missing_session.lines, clean_copy=False)
+        print('missing session:', missing_session.id)
+        yield missing_session

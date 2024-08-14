@@ -9,6 +9,7 @@ import pagexml.model.physical_document_model as pdm
 import pagexml.helper.pagexml_helper as pagexml_helper
 
 # import republic.model.physical_document_model as pdm
+import republic.helper.metadata_helper as meta_helper
 from republic.helper.pagexml_helper import merge_columns
 
 
@@ -199,8 +200,8 @@ def determine_column_type(column: pdm.PageXMLColumn) -> str:
 def make_derived_column(lines: List[pdm.PageXMLTextLine], metadata: dict, page_id: str) -> pdm.PageXMLColumn:
     """Make a new PageXMLColumn based on a set of lines, column metadata and a page_id."""
     coords = pdm.parse_derived_coords(lines)
-    tr = pdm.PageXMLTextRegion(metadata=metadata, coords=coords, lines=lines)
-    column = pdm.PageXMLColumn(metadata=metadata, coords=coords, text_regions=[tr])
+    tr = pdm.PageXMLTextRegion(metadata=copy.deepcopy(metadata), coords=coords, lines=lines)
+    column = pdm.PageXMLColumn(metadata=copy.deepcopy(metadata), coords=coords, text_regions=[tr])
     column.set_derived_id(page_id)
     return column
 
@@ -340,7 +341,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             if ignore_bad_coordinate_lines is False:
                 raise ValueError('Cannot generate column coords for extra lines')
         if coords is not None:
-            extra = pdm.PageXMLTextRegion(metadata=text_region.metadata, coords=coords,
+            extra = pdm.PageXMLTextRegion(metadata=copy.deepcopy(text_region.metadata), coords=coords,
                                           lines=extra_lines)
             if text_region.parent and text_region.parent.id:
                 extra.set_derived_id(text_region.parent.id)
@@ -391,9 +392,12 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
 
 def make_new_tr(tr_lines: List[pdm.PageXMLTextLine], original_tr: pdm.PageXMLTextRegion,
                 update_type: bool = False, debug: int = 0) -> pdm.PageXMLTextRegion:
+    """Generate a new PageXMLTextRegion instance for a give set of lines. Update its type based on
+    the line_classes of the lines."""
     tr_coords = pdm.parse_derived_coords(tr_lines)
     tr_lines.sort()
-    new_tr = pdm.PageXMLTextRegion(metadata=original_tr.metadata, coords=tr_coords, lines=tr_lines)
+    new_tr = pdm.PageXMLTextRegion(metadata=copy.deepcopy(original_tr.metadata),
+                                   coords=tr_coords, lines=tr_lines)
     new_tr.type = {t for t in original_tr.type}
     if update_type:
         new_tr.type = update_text_region_type(new_tr, debug=debug)
@@ -408,6 +412,7 @@ def get_main_line_types(lines: List[pdm.PageXMLTextLine]) -> List[str]:
 
 
 def update_text_region_type(text_region: pdm.PageXMLTextRegion, debug: int = 0) -> Set[str]:
+    """Determine the type of text region based on the line_classes of its lines."""
     tr_type = {'text_region', 'structure_doc', 'physical_structure_doc', 'main', 'pagexml_doc'}
     line_types = get_main_line_types(text_region.lines)
     type_freq = Counter(line_types)
@@ -419,6 +424,10 @@ def update_text_region_type(text_region: pdm.PageXMLTextRegion, debug: int = 0) 
         main_type, freq = type_freq.most_common(1)[0]
         if main_type in {'para', 'date', 'attendance', 'marginalia'} and freq / sum(type_freq.values()) > 0.5:
             main_type = main_type
+        elif main_type != 'date' and 'date' in type_freq and type_freq['date'] == type_freq[main_type]:
+            main_type = 'date'
+        elif main_type == 'date':
+            main_type = 'date'
         else:
             main_type = 'mix'
     if main_type == 'para':
@@ -430,20 +439,33 @@ def update_text_region_type(text_region: pdm.PageXMLTextRegion, debug: int = 0) 
     return tr_type
 
 
+def split_text_region_by_line_type(tr: pdm.PageXMLTextRegion) -> List[pdm.PageXMLTextRegion]:
+    split_trs = []
+    for line in tr.lines:
+        tr_class = meta_helper.map_line_class_to_tr_class(line.metadata['line_class'])
+
+    return split_trs
+
+
 def split_column_text_regions(column: pdm.PageXMLColumn, update_type: bool = False,
                               debug: int = 0) -> pdm.PageXMLColumn:
+    """Split the text regions of a column into multiple regions if they contain large vertical gaps.
+    If update_type is set to True, the text regions type will also be updated based on the line_classes
+    of their lines."""
     col_trs = []
     if len(column.text_regions) == 0 and len(column.lines) > 0:
+        # make sure column has only text_regions as children
+        # all lines should be part of text regions
         tr = make_new_tr(column.lines, column, debug=debug)
         tr.set_parent(column)
         column.text_regions.append(tr)
         column.lines = []
     if debug > 0:
-        print('split_column_text_regions\tCOL STATS:', column.stats)
+        print('republic_column_parser.split_column_text_regions\tCOL STATS:', column.stats)
     for tr in column.text_regions:
         new_trs = split_text_region_on_vertical_gap(tr, update_type=update_type, debug=debug)
         if debug > 0:
-            print(f'split_column_text_regions - received {len(new_trs)} new trs from tr {tr.id}')
+            print(f'republic_column_parser.split_column_text_regions - received {len(new_trs)} new trs from tr {tr.id}')
             for new_tr in new_trs:
                 print(f'\tnew id:{new_tr.id}\tcoords.points: {new_tr.coords.points}')
                 print(f"\t{Counter([line.metadata['line_class'] for line in new_tr.lines])}")
@@ -456,8 +478,9 @@ def split_column_text_regions(column: pdm.PageXMLColumn, update_type: bool = Fal
     new_column.type = {col_type for col_type in column.type}
     new_column.set_parent(column.parent)
     if debug > 0:
-        print(f'split_column_text_regions - new_column.id: {new_column.id}')
-        print(f'split_column_text_regions - new_column.coords.points: {new_column.coords.points}')
+        print(f'republic_column_parser.split_column_text_regions - new_column.id: {new_column.id}')
+        print(f'republic_column_parser.split_column_text_regions - '
+              f'new_column.coords.points: {new_column.coords.points}')
         print('\n\n')
     return new_column
 
@@ -478,7 +501,7 @@ def is_line_class_boundary(prev_line: pdm.PageXMLTextLine, curr_line: pdm.PageXM
 def get_previous_content_line(line_index: int, lines: List[pdm.PageXMLTextLine]) -> Union[pdm.PageXMLTextLine, None]:
     for prev_index in range(line_index - 1, 0, -1):
         prev_line = lines[prev_index]
-        if 'line_class' not in prev_line.metadata or prev_line.metadata['line_class'] != 'noise':
+        if is_noise_linse(prev_line) is False:
             return prev_line
     return None
 
@@ -486,65 +509,83 @@ def get_previous_content_line(line_index: int, lines: List[pdm.PageXMLTextLine])
 def get_next_content_line(line_index: int, lines: List[pdm.PageXMLTextLine]) -> Union[pdm.PageXMLTextLine, None]:
     for next_index in range(line_index + 1, len(lines)):
         next_line = lines[next_index]
-        if 'line_class' not in next_line.metadata or next_line.metadata['line_class'] != 'noise':
+        if is_noise_linse(next_line) is False:
             return next_line
     return None
 
 
-def separate_noise_lines(text_region: pdm.PageXMLTextRegion) -> Dict[str, any]:
+def is_noise_linse(line: pdm.PageXMLTextLine) -> bool:
+    if 'line_class' not in line.metadata:
+        return False
+    return line.metadata['line_class'] in {'noise', 'empty'}
+
+
+def separate_noise_lines(text_region: pdm.PageXMLTextRegion, debug: int = 0) -> Dict[str, any]:
     lines = {
         'content': [],
         'noise': []
     }
     sorted_lines = sorted(text_region.lines)
+    noise_lines = [line for line in sorted_lines if is_noise_linse(line)]
+    lines['content'] = [line for line in sorted_lines if line not in noise_lines]
     for li, line in enumerate(sorted_lines):
-        if 'line_class' not in line.metadata:
-            lines['content'].append(line)
-        elif line.metadata['line_class'] == 'noise':
-            prev_line = get_previous_content_line(li, sorted_lines)
-            next_line = get_next_content_line(li, sorted_lines)
-            if prev_line:
-                assert prev_line.id != line.id, "current line and prev_line are the same"
-            if next_line:
-                assert next_line.id != line.id, "current line and next_line are the same"
-            if prev_line and next_line:
-                closest = prev_line if pdm.vertical_distance(line, prev_line) < pdm.vertical_distance(line, next_line) \
-                    else next_line
-                lines['noise'].append((line, closest))
-            elif prev_line:
-                lines['noise'].append((line, prev_line))
-            elif next_line:
-                lines['noise'].append((line, next_line))
-            else:
-                lines['noise'].append((line, None))
+        if is_noise_linse(line) is False:
+            continue
+        prev_line = get_previous_content_line(li, sorted_lines)
+        next_line = get_next_content_line(li, sorted_lines)
+        if prev_line:
+            assert prev_line.id != line.id, "current line and prev_line are the same"
+        if next_line:
+            assert next_line.id != line.id, "current line and next_line are the same"
+        if prev_line and next_line:
+            closest = prev_line if pdm.vertical_distance(line, prev_line) < pdm.vertical_distance(line, next_line) \
+                else next_line
+            if debug > 2:
+                print(f"linking noise line {line.id} to closest {closest.id}")
+            lines['noise'].append((line, closest))
+        elif prev_line:
+            if debug > 2:
+                print(f"linking noise line {line.id} to prev {prev_line.id}")
+            lines['noise'].append((line, prev_line))
+        elif next_line:
+            if debug > 2:
+                print(f"linking noise line {line.id} to next {next_line.id}")
+            lines['noise'].append((line, next_line))
         else:
-            lines['content'].append(line)
+            if debug > 2:
+                print(f"linking noise line {line.id} to None")
+            lines['noise'].append((line, None))
     return lines
 
 
 def split_text_region_on_vertical_gap(text_region: pdm.PageXMLTextRegion,
                                       update_type: bool = False,
                                       debug: int = 0) -> List[pdm.PageXMLTextRegion]:
+    """Split text region into multiple text regions if the lines contain a large vertical gap."""
     new_trs = []
     separated_lines = separate_noise_lines(text_region)
     content_lines = separated_lines['content']
     noise_line_links = separated_lines['noise']
+    if debug > 0:
+        print(f'\nrepublic_column_parser.split_text_region_on_vertical_gap - tr: {text_region.id}')
     if debug > 2:
         for nl, ll in noise_line_links:
-            print('noise link:')
+            print('republic_column_parser.split_text_region_on_vertical_gap:')
+            print('    noise link:')
             print('\tnoise line:', nl)
             print('\tlink line:', ll)
     line_heights = [page_layout.get_text_heights(line, debug=debug) for line in content_lines]
     # line_heights = [lh for lh in line_heights if lh is not None]
     all_distances = page_layout.get_line_distances(content_lines)
     if debug > 2:
+        print('republic_column_parser.split_text_region_on_vertical_gap:')
         for line in content_lines:
             print('\tline:', line.text)
-        print('distances:', all_distances)
+        print('    distances:', all_distances)
     avg_distances = [dists.mean() for dists in all_distances]
     if debug > 1:
-        print('split_text_region_on_vertical_gap - text_region avg_distances:', avg_distances)
-        print('split_text_region_on_vertical_gap - text_region line_heights:', line_heights)
+        print('republic_column_parser.split_text_region_on_vertical_gap - text_region avg_distances:', avg_distances)
+        print('republic_column_parser.split_text_region_on_vertical_gap - text_region line_heights:', line_heights)
     if len(content_lines) == 0:
         return [copy.deepcopy(text_region)]
     prev_line = content_lines[0]
