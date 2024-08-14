@@ -41,6 +41,7 @@ import republic.parser.logical.printed_resolution_parser as printed_res_parser
 import republic.parser.logical.handwritten_resolution_parser as hand_res_parser
 import republic.parser.logical.printed_session_parser as session_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
+import republic.parser.pagexml.republic_page_parser as page_parser
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
 from republic.parser.logical.handwritten_resolution_parser import make_opening_searcher
@@ -119,13 +120,15 @@ class Indexer:
         self.rep_es = republic_elasticsearch.initialize_es(host_type=host_type, timeout=60)
 
     def set_indexes(self, indexing_step: str, indexing_label: str):
-        if indexing_step in {'resolution_metadata', 'attendance_list_spans'}:
+        if indexing_step in {'resolution_metadata', 'attendance_list_spans'} and indexing_label is not None:
             self.rep_es.config['resolutions_index'] = f"{self.rep_es.config['resolutions_index']}_{indexing_label}"
             print(f"Indexer.set_indexes - setting resolutions_index index "
                   f"name to {self.rep_es.config['resolutions_index']}")
             return None
         elif indexing_step == 'full_resolutions' and indexing_label is None:
             self.rep_es.config['resolutions_index'] = 'full_resolutions'
+        if indexing_label is None:
+            return None
         for key in self.rep_es.config:
             if key.startswith(indexing_step) and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
