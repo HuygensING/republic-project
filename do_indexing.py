@@ -8,6 +8,7 @@ import logging.config
 import multiprocessing
 import os
 from collections import defaultdict
+from collections import Counter
 from typing import Dict, Generator, List, Union
 
 
@@ -35,6 +36,7 @@ from republic.helper.model_loader import load_line_break_detector
 from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.helper.utils import get_project_dir
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
+from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_text_annotation_model import make_session_text_version
 
 import republic.parser.logical.printed_resolution_parser as printed_res_parser
@@ -78,10 +80,78 @@ def get_text_type(inv_num: int) -> str:
     return 'printed' if 400 <= inv_num <= 456 or 3760 <= inv_num <= 3864 else 'handwritten'
 
 
-def get_pages(inv_num: int, indexer: Indexer) -> List[pdm.PageXMLPage]:
+def get_page_content_type(page: pdm.PageXMLPage) -> str:
+    # default_types = ['structure_doc', 'physical_structure_doc', 'text_region', 'pagexml_doc', 'page']
+    content_types = ['resolution_page', 'index_page', 'respect_page']
+    page_content_types = [pt for pt in page.metadata['type'] if pt in content_types]
+    if len(page_content_types) > 1:
+        raise TypeError(f"page {page.id} has multiple content types: {page_content_types}")
+    elif len(page_content_types) == 0:
+        return 'unknown'
+    else:
+        return page_content_types[0]
+
+
+def filter_pages(pages: List[pdm.PageXMLPage], page_type: str):
+    if len(pages) == 0:
+        return pages
+    inv_meta = get_inventory_by_num(pages[0].metadata['inventory_num'])
+    content_types = [get_page_content_type(page) for page in pages]
+    content_type_freq = Counter(content_types)
+    for section in inv_meta['sections']:
+        if section['page_type'] != page_type:
+            continue
+        if section['page_type'] not in content_type_freq:
+            print(f"do_indexing.filter_pages - content_type_freq: {content_type_freq}")
+            raise TypeError(f"do_indexing.filter_pages - no pages of type {section['page_type']} for "
+                            f"inventory {inv_meta['inventory_num']}")
+    return [page for page in pages if page.has_type(page_type)]
+
+
+def write_pages(pages_file: str, pages: List[pdm.PageXMLPage]):
+    with gzip.open(pages_file, 'wt') as fh:
+        for page in pages:
+            page_string = json.dumps(page.json)
+            fh.write(f"{page_string}\n")
+
+
+def get_last_pages(inv_num: int, indexer: Indexer):
+    raw_pages_file = f"{indexer.base_dir}/pages/page_json/pages-{inv_num}.jsonl.gz"
+    preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
+    pages_file = preprocessed_pages_file
+    if os.path.exists(preprocessed_pages_file):
+        if os.path.exists(raw_pages_file):
+            # compare timestamps, take latest
+            prep_stat = os.stat(preprocessed_pages_file)
+            raw_stat = os.stat(raw_pages_file)
+            pages_file = preprocessed_pages_file if prep_stat.st_mtime > raw_stat.st_mtime else raw_pages_file
+        else:
+            pages_file = preprocessed_pages_file
+    elif os.path.exists(raw_pages_file):
+        # create preprocessed pages file?
+        pages_file = raw_pages_file
+    page_state = 'preprocessed' if 'preprocessed' in pages_file else 'raw'
+    if os.path.exists(pages_file):
+        logger_string = f"Reading {page_state} pages from file for inventory {inv_num}"
+        logger.info(logger_string)
+        print(logger_string)
+        pages = []
+        with gzip.open(pages_file, 'rt') as fh:
+            for line in fh:
+                page_json = json.loads(line)
+                page = json_to_pagexml_page(page_json)
+                pages.append(page)
+        return pages
+    else:
+        return None
+
+
+def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> List[pdm.PageXMLPage]:
     if os.path.exists(f"{indexer.base_dir}/pages") is False:
         os.mkdir(f"{indexer.base_dir}/pages")
-    pages_file = f"{indexer.base_dir}/pages/{inv_num}.jsonl.gz"
+    pages = get_last_pages(inv_num, indexer)
+    """
+    pages_file = f"{indexer.base_dir}/pages/page_json/pages-{inv_num}.jsonl.gz"
     if os.path.exists(pages_file):
         logger_string = f"Reading pages from file for inventory {inv_num}"
         logger.info(logger_string)
@@ -92,17 +162,20 @@ def get_pages(inv_num: int, indexer: Indexer) -> List[pdm.PageXMLPage]:
                 page_json = json.loads(line)
                 page = json_to_pagexml_page(page_json)
                 pages.append(page)
-        return pages
-    else:
+    """
+    if pages is None:
         logger_string = f"Downloading pages from ES index for inventory {inv_num}"
         logger.info(logger_string)
         print(logger_string)
-        pages = indexer.rep_es.retrieve_inventory_resolution_pages(inv_num)
+        pages_file = f"{indexer.base_dir}/pages/page_json/pages-{inv_num}.jsonl.gz"
+        pages = [page for page in indexer.rep_es.retrieve_inventory_pages(inv_num)]
         with gzip.open(pages_file, 'wt') as fh:
             for page in pages:
                 page_string = json.dumps(page.json)
                 fh.write(f"{page_string}\n")
-        return pages
+    if page_type is not None:
+        pages = filter_pages(pages, page_type)
+    return pages
 
 
 def get_session_starts(inv_id: str):
@@ -148,10 +221,10 @@ class Indexer:
         for key in self.rep_es.config:
             if key.startswith("session") and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
-                print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
+                # print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
             elif key.startswith(indexing_step) and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
-                print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
+                # print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
 
     def has_sections(self, inv_num: int):
         inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
@@ -292,9 +365,11 @@ class Indexer:
         else:
             session_starts = None
 
-        pages = get_pages(inv_num, self)
+        pages = get_pages(inv_num, self, page_type='resolution_page')
         pages.sort(key=lambda page: page.metadata['page_num'])
+        print(f'inventory {inv_num} - number of pages: {len(pages)}')
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
+        print(f'inventory {inv_num} - number of non-skipped pages: {len(pages)}')
 
         get_session_func = get_printed_sessions if text_type == 'printed' else get_handwritten_sessions
         # use_token_searcher = True if text_type == 'printed' else False
@@ -304,7 +379,7 @@ class Indexer:
         try:
             for session in get_session_func(inv_metadata['inventory_id'], pages,
                                             session_starts=session_starts,
-                                            use_token_searcher=use_token_searcher):
+                                            use_token_searcher=use_token_searcher, debug=1):
                 yield session
                 prev_session = session
         except Exception as err:
@@ -742,7 +817,7 @@ def parse_args():
     # Define the getopt parameters
     try:
         opts, args = getopt.getopt(argv, 's:e:i:n:l:b:', ['foperand', 'soperand'])
-        start, end, indexing_step, num_processes, index_label = None, None, None, None, "staging"
+        start, end, indexing_step, num_processes, index_label = None, None, None, None, None
         base_dir = 'data'
         for opt, arg in opts:
             if opt == '-n':
@@ -833,6 +908,8 @@ def main():
 
     for indexing_step in indexing_steps:
         tasks = get_tasks(start, end, indexing_step, index_label, host_type, base_dir)
+        if 'session' in indexing_step or 'resolution' in indexing_step and index_label is None:
+            index_label = "staging"
         if num_processes > 1:
             with multiprocessing.Pool(processes=num_processes) as pool:
                 # use a chunksize of 1 to ensure inventories are processed more or less in order.
