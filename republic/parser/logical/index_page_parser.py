@@ -6,7 +6,7 @@ import re
 import numpy as np
 
 import republic.model.physical_document_model as pdm
-import republic.parser.pagexml.republic_pagexml_parser as page_parser
+import republic.parser.pagexml.republic_page_parser as page_parser
 import republic.helper.pagexml_helper as page_helper
 from republic.helper.annotation_helper import make_hash_id
 from republic.helper.metadata_helper import coords_to_iiif_url
@@ -28,7 +28,9 @@ def categorise_line_dist(lines: List[dict]):
         print(dist, freq)
 
 
-def is_page_ref_line(line: dict) -> False:
+def is_page_ref_line(line: str) -> False:
+    if line is None or len(line) == 0:
+        return False
     if line[0].isdigit():
         return True
     if len(line) >= 3 and line[0].isalpha() and line[1].isalpha() and line[2].isalpha():
@@ -255,25 +257,37 @@ def filter_index_line_type(line_types: Set[str]) -> str:
     return 'unknown_line_type'
 
 
-def get_index_lines(column: pdm.PageXMLColumn) -> List[pdm.PageXMLTextLine]:
+def get_index_lines(column: pdm.PageXMLColumn, debug: int = 0) -> List[pdm.PageXMLTextLine]:
     """Return the lines that are part of the index content for a given column.
     That is, filter out lines that are outliers."""
     index_lines = []
+    column_lines = [line for tr in column.text_regions for line in tr.lines]
     # very small columns are not proper index columns
     if column.coords.w < 700:
+        if debug > 1:
+            print(f"index_page_parser.get_index_lines - width {column.coords.width} under 700 pixels, "
+                  f"small column {column.id}")
         return index_lines
     # columns with very few lines don't have enough information
     # for proper classification
-    if len(column.lines) < 5:
+    if len(column_lines) < 5:
+        if debug > 1:
+            print(f"index_page_parser.get_index_lines - column has fewer than 5 lines, {column.id}")
         return index_lines
     column_left = column.coords.x
-    median_line_left = np.median([line.coords.x for line in column.lines])
+    median_line_left = np.median([line.coords.x for line in column_lines])
     if column.coords.w > 1000 and median_line_left > column_left + 200:
         column_left = median_line_left
+    if debug > 1:
+        print(f"index_page_parser.get_index_lines - column_left: {column_left}"
+              f"\tmedian_line_left: {median_line_left}")
     # print('get_lines:', len(column.get_lines()))
     # for line in sorted(column.get_lines(), key=lambda x: x.baseline.y):
     for line in page_helper.horizontally_merge_lines(column.get_lines()):
         dist = line.baseline.x - column_left
+        if debug > 1:
+            print(f"index_page_parser.get_index_lines - dist: {dist}, "
+                  f"line.baseline.x: {line.baseline.x}, text: {line.text}")
         if line.baseline.bottom < 450 and len(line.text) < 5:
             # This is likely part of the I N D E X header
             continue
@@ -293,16 +307,21 @@ def get_index_lines(column: pdm.PageXMLColumn) -> List[pdm.PageXMLTextLine]:
     return index_lines
 
 
-def parse_inventory_index_page(page: pdm.PageXMLPage) -> Generator[pdm.PageXMLTextLine, None, None]:
+def parse_inventory_index_page(page: pdm.PageXMLPage, debug: int = 0) -> Generator[pdm.PageXMLTextLine, None, None]:
     """Return a list of lines with index line types for a given index page."""
     # process the columns from left to right
     full_text_columns = page_parser.get_page_full_text_columns(page)
+    if debug > 1:
+        print(f"index_page_parser.parse_inventory_index_page - "
+              f"{len(full_text_columns)} full_text columns on page {page.id}")
     for column in sorted(full_text_columns, key=lambda x: x.coords.x):
-        index_lines = get_index_lines(column)
+        index_lines = get_index_lines(column, debug=debug)
         if len(column.get_lines()) - len(index_lines) > 10:
-            print('LARGE NUMBER OF NON-INDEX LINES:', column.id)
-            print('column bounding box:', column.coords.box)
-            print()
+            if debug > 0:
+                print("index_page_parser.parse_inventory_index_page - ")
+                print('\tLARGE NUMBER OF NON-INDEX LINES:', column.id)
+                print('\tcolumn bounding box:', column.coords.box)
+                print()
         categorised_lines = categorise_index_lines(index_lines)
         for line_info in categorised_lines:
             line = line_info["line"]
@@ -330,7 +349,7 @@ def initialise_index_entry(lemma: str = None,
     }
 
 
-def parse_inventory_index_pages(pages: List[pdm.PageXMLPage]) -> List[dict]:
+def parse_inventory_index_pages(pages: List[pdm.PageXMLPage], debug: int = 0) -> List[dict]:
     """Parse the index entries from a list of index pages."""
     entries = []
     entry = initialise_index_entry(inventory_num=pages[0].metadata["inventory_num"],
@@ -338,9 +357,10 @@ def parse_inventory_index_pages(pages: List[pdm.PageXMLPage]) -> List[dict]:
                                    scan_id=pages[0].metadata["scan_id"])
     for page in pages:
         if page_parser.is_title_page(page):
-            print('TITLE PAGE:', page.id)
+            if debug > 0:
+                print('index_page_parser.parse_inventory_index_pages - TITLE PAGE:', page.id)
             page = page_parser.parse_title_page_columns(page)
-        for line in parse_inventory_index_page(page):
+        for line in parse_inventory_index_page(page, debug=debug):
             if line.has_type('repeat_lemma'):
                 if entry['lemma'] is not None:
                     entries.append(entry)

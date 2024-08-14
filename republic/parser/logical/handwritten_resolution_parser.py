@@ -32,7 +32,7 @@ def make_opening_searcher(year_start: int, year_end: int, config: dict = None, d
 
 
 def make_paragraph_text(lines: List[pdm.PageXMLTextLine]) -> Tuple[str, List[Dict[str, any]]]:
-    text, line_ranges = make_text_region_text(lines, word_break_chars='-„')
+    text, line_ranges = make_text_region_text(lines, word_break_chars='-„=')
     return text, line_ranges
 
 

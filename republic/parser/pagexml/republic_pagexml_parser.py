@@ -1,21 +1,13 @@
 from typing import Dict, List, Union
 
-import pagexml
 import pagexml.parser as pagexml_parser
 import pagexml.model.physical_document_model as pdm
-import pagexml.helper.pagexml_helper as pagexml_helper
 import pagexml.analysis.layout_stats as layout_helper
 
 import republic.parser.republic_file_parser as file_parser
-# import republic.parser.pagexml.generic_pagexml_parser as pagexml_parser
 from republic.parser.pagexml.republic_page_parser import split_scan_pages
 from republic.parser.pagexml.republic_page_parser import derive_pagexml_page_iiif_url
 from republic.parser.pagexml.republic_page_parser import split_column_regions
-from republic.parser.pagexml.republic_column_parser import is_full_text_column
-from republic.parser.pagexml.republic_column_parser import is_text_column
-from republic.parser.pagexml.republic_column_parser import make_derived_column
-# import republic.model.physical_document_model as pdm
-# import republic.helper.pagexml_helper as pagexml_helper
 
 
 def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
@@ -181,24 +173,22 @@ def set_document_children_derived_ids(doc: pdm.PageXMLDoc, scan_id: str):
                 inner_region.metadata[id_field] = id_value
                 inner_region.set_derived_id(scan_id)
                 for line in inner_region.lines:
-                    if line.id is None:
-                        line.set_derived_id(scan_id)
-                    line.metadata[id_field] = id_value
-                    if 'scan_id' in text_region.metadata:
-                        line.metadata['scan_id'] = text_region.metadata['scan_id']
-                    if 'page_id' in text_region.metadata:
-                        line.metadata['page_id'] = text_region.metadata['page_id']
-                    line.set_derived_id(scan_id)
+                    derive_line_metadata_from_region(line, text_region, id_field, id_value, scan_id)
         if hasattr(text_region, 'lines'):
             for line in text_region.lines:
-                if line.id is None:
-                    line.set_derived_id(scan_id)
-                line.metadata[id_field] = id_value
-                if 'scan_id' in text_region.metadata:
-                    line.metadata['scan_id'] = text_region.metadata['scan_id']
-                if 'page_id' in text_region.metadata:
-                    line.metadata['page_id'] = text_region.metadata['page_id']
-                line.set_derived_id(scan_id)
+                derive_line_metadata_from_region(line, text_region, id_field, id_value, scan_id)
+
+
+def derive_line_metadata_from_region(line: pdm.PageXMLTextLine, text_region: pdm.PageXMLTextRegion,
+                                     id_field: str, id_value: str, scan_id: str) -> None:
+    if line.id is None:
+        line.set_derived_id(scan_id)
+    line.metadata[id_field] = id_value
+    if 'scan_id' in text_region.metadata:
+        line.metadata['scan_id'] = text_region.metadata['scan_id']
+    if 'page_id' in text_region.metadata:
+        line.metadata['page_id'] = text_region.metadata['page_id']
+    line.set_derived_id(scan_id)
 
 
 def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any],
@@ -286,84 +276,3 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
                 line.metadata['page_id'] = text_region.metadata['page_id']
                 line.set_derived_id(scan_doc.id)
     return pages
-
-
-def has_overlapping_columns(page: pdm.PageXMLPage) -> bool:
-    """Determine whether a page has columns that
-    mostly overlap with each other"""
-    for ci, curr_column in enumerate(page.columns):
-        if ci == len(page.columns) - 1:
-            break
-        for next_column in page.columns[ci + 1:]:
-            if pagexml_helper.elements_overlap(curr_column, next_column, threshold=0.8):
-                print('Overlapping columns!')
-                print('\t', curr_column.coords.box)
-                print('\t', next_column.coords.box)
-    return False
-
-
-def has_text_columns(page: pdm.PageXMLPage, num_page_cols: int = 2) -> bool:
-    for column in page.columns:
-        if is_full_text_column(column, num_page_cols=num_page_cols):
-            return True
-    return False
-
-
-def is_title_page(page: pdm.PageXMLPage) -> bool:
-    """Check whether a page is a Republic title page."""
-    # title pages are always on the right side of the scan
-    # and have an uneven page number
-    if page.metadata['page_num'] % 2 == 0:
-        return False
-    num_title_lines = 0
-    for line in page.get_lines():
-        if line.coords.left < 3500 and line.coords.right > 3600:
-            if line.coords.width / len(line.text) > 30:
-                num_title_lines += 1
-    return num_title_lines > 2
-
-
-def parse_title_page_columns(page: pdm.PageXMLPage) -> pdm.PageXMLPage:
-    extra_columns = page.extra
-    text_columns = []
-    for column in page.columns:
-        if not is_text_column(column):
-            extra_columns.append(column)
-            continue
-        if column.stats['lines'] < 10:
-            extra_columns.append(column)
-            continue
-        if column.coords.width < 1000:
-            text_columns.append(column)
-            continue
-        lines = sorted(column.get_lines(), key=lambda x_line: x_line.coords.y)
-        last_title_line_index = -1
-        for li, line in enumerate(lines):
-            if line.coords.left < 3400 and line.coords.right > 3600:
-                last_title_line_index = li
-        title_lines = lines[:last_title_line_index + 1]
-        if len(title_lines) > 0:
-            title_column = make_derived_column(title_lines, column.metadata, page.id)
-            extra_columns.append(title_column)
-        body_lines = lines[last_title_line_index + 1:]
-        left_col_lines, right_col_lines = [], []
-        for line in body_lines:
-            if line.coords.right < 3600:
-                left_col_lines.append(line)
-            elif line.coords.left > 3400 and line.coords.right >= 3600:
-                right_col_lines.append(line)
-            else:
-                print(line.coords.box)
-                print(line.text)
-                raise TypeError('cannot select appropriate column')
-        if len(left_col_lines) > 0:
-            left_column = make_derived_column(left_col_lines, column.metadata, page.metadata['scan_id'])
-            text_columns.append(left_column)
-        if len(right_col_lines) > 0:
-            right_column = make_derived_column(right_col_lines, column.metadata, page.metadata['scan_id'])
-            text_columns.append(right_column)
-    new_page_coords = pdm.parse_derived_coords(extra_columns + text_columns)
-    new_page = pdm.PageXMLPage(metadata=page.metadata, coords=new_page_coords, columns=text_columns,
-                               text_regions=page.text_regions, extra=extra_columns)
-    new_page.set_derived_id(page.metadata['scan_id'])
-    return new_page

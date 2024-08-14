@@ -132,6 +132,7 @@ class Indexer:
         add_timestamp(doc_body)
         add_commit(doc_body)
         retry_num = 0
+        error = None
         while retry_num < max_retries:
             try:
                 if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
@@ -140,12 +141,13 @@ class Indexer:
                     response = self.es_anno.index(index=index, id=doc_id, document=doc_body)
                 return response
             except ElasticsearchException as err:
-                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {try_num}")
+                print(f"Error indexing document {doc_id} with stats {doc_body['stats']}, retry {retry_num}")
                 print(err)
+                error = err
                 time.sleep(5)
-            try_num += 1
-            if try_num >= max_retries:
-                raise
+            retry_num += 1
+            if retry_num >= max_retries:
+                raise error
 
     def index_bulk_docs(self, index: str, docs: List[Dict[str, any]], max_retries: int = 5) -> None:
         actions = []
@@ -201,14 +203,21 @@ class Indexer:
                        doc_body=session_text_doc)
 
     def index_session_metadata(self, metadata: dict):
-        self.index_doc(index='session_metadata',
+        self.index_doc(index=self.config['session_metadata_index'],
                        doc_id=metadata['id'],
                        doc_body=metadata)
 
     def index_session_text_region(self, session_tr: pdm.PageXMLTextRegion):
-        self.index_doc(index='session_text_regions',
+        self.index_doc(index=self.config['session_text_region_index'],
                        doc_id=session_tr.id,
                        doc_body=session_tr.json)
+
+    def index_session_text_regions(self, session_trs: List[pdm.PageXMLTextRegion]):
+        trs_json = [tr.json for tr in session_trs]
+        self.index_bulk_docs(self.config['session_text_region_index'], trs_json)
+        # self.index_doc(index=self.config['session_text_region_index'],
+        #                doc_id=session_tr.id,
+        #                doc_body=session_tr.json)
 
     def index_resolution(self, resolution: rdm.Resolution):
         check_resolution(resolution)
@@ -302,5 +311,8 @@ class Indexer:
         else:
             print(f"setting original index {original_index} to read-write")
             print(self.es_anno.indices.put_settings(index=original_index, body={"index.blocks.write": False}))
-            print(f"setting new index {original_index} to read-write")
-            print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.write": False}))
+            print(self.es_anno.indices.put_settings(index=original_index,
+                                                    body={"index.blocks.read_only_allow_delete": False}))
+        print(f"setting new index {original_index} to read-write")
+        print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.write": False}))
+        print(self.es_anno.indices.put_settings(index=new_index, body={"index.blocks.read_only_allow_delete": False}))

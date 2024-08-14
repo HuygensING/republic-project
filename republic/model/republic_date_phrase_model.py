@@ -242,13 +242,17 @@ month_day_names = {
 
 month_names = {
     'printed_early': {
-        'Januarij': 1,
-        'Februarij': 2,
+        # 'Januarij': 1,
+        'Januarii': 1,
+        # 'Februarij': 2,
+        'Februarii': 2,
         'Maart': 3,
         'April': 4,
         'Mey': 5,
-        'Junij': 6,
-        'Julij': 7,
+        # 'Junij': 6,
+        'Junii': 6,
+        # 'Julij': 7,
+        'Julii': 7,
         'Augusti': 8,
         'September': 9,
         'October': 10,
@@ -336,6 +340,7 @@ month_names = {
 
 week_day_names = {
     'printed_early': {
+        "Luna": 0,
         "Lunae": 0,
         "Martis": 1,
         "Mercurii": 2,
@@ -345,6 +350,7 @@ week_day_names = {
         "Dominica": 6
     },
     'printed_late': {
+        "Luna": 0,
         "Lunae": 0,
         "Martis": 1,
         "Mercurii": 2,

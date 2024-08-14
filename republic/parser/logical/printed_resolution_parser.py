@@ -1,4 +1,5 @@
 import copy
+from collections import defaultdict
 from typing import Dict, Generator, List, Tuple, Union
 
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
@@ -10,6 +11,7 @@ import republic.model.resolution_phrase_model as rpm
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.paragraph_helper import LineBreakDetector
 from republic.helper.text_helper import determine_language
+from republic.parser.logical.generic_logical_parser import copy_lines
 from republic.parser.logical.paragraph_parser import ParagraphGenerator
 from republic.parser.logical.paragraph_parser import is_paragraph_boundary
 from republic.parser.logical.paragraph_parser import is_resolution_gap
@@ -166,7 +168,7 @@ def get_resolution_page_ids(res_doc: Union[rdm.Resolution, rdm.AttendanceList]) 
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher,
                             line_break_detector: LineBreakDetector = None,
-                            word_break_chars: str = None) -> Generator[rdm.Resolution, None, None]:
+                            word_break_chars: str = None, debug: int = 0) -> Generator[rdm.Resolution, None, None]:
     resolution = None
     resolution_number = 0
     attendance_list = None
@@ -174,7 +176,9 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
     session_offset = 0
     para_generator = SessionParagraphGenerator(line_break_detector=line_break_detector,
                                                word_break_chars=word_break_chars)
-    for paragraph in para_generator.get_paragraphs(session):
+    for paragraph in para_generator.get_paragraphs(session, debug=debug):
+        if debug > 0:
+            print('get_session_resolution - paragraph from get_paragraphs:', paragraph.id)
         paragraph.metadata['lang'] = determine_language(paragraph.text)
         # print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
@@ -283,17 +287,49 @@ def make_line_range(text: str, line: pdm.PageXMLTextLine, line_text: str) -> Dic
     }
 
 
+def make_paragraph_text_regions(para_lines: List[pdm.PageXMLTextLine],
+                                debug: int = 0) -> List[pdm.PageXMLTextRegion]:
+    tr_lines = defaultdict(list)
+    for line in para_lines:
+        tr_lines[line.metadata['text_region_id']].append(line)
+    para_trs = []
+    for tr_id in tr_lines:
+        coords = pdm.parse_derived_coords(tr_lines[tr_id])
+        if debug > 1:
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_id:',
+                  tr_id)
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_lines[0].parent.id:',
+                  tr_lines[tr_id][0].parent.id)
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_lines[0].parent.metadata:',
+                  tr_lines[tr_id][0].parent.metadata)
+            print('printed_resolution_parser.make_paragraph_text_regions - tr_lines[0].metadata:',
+                  tr_lines[tr_id][0].metadata)
+            print()
+        orig_tr = tr_lines[tr_id][0].parent
+        tr = pdm.PageXMLTextRegion(coords=coords, metadata=copy.deepcopy(orig_tr.metadata),
+                                   lines=copy_lines(tr_lines[tr_id]))
+        tr.set_derived_id(orig_tr.parent.id)
+        for line in tr.lines:
+            line.metadata['text_region_id'] = tr.id
+        para_trs.append(tr)
+    return para_trs
+
+
 class SessionParagraphGenerator(ParagraphGenerator):
 
     def __init__(self, line_break_detector: LineBreakDetector = None, word_break_chars: str = None):
         super().__init__(line_break_detector=line_break_detector, word_break_chars=word_break_chars)
 
-    def get_paragraphs(self, session: rdm.Session,
-                       prev_line: Union[None, dict] = None) -> Generator[rdm.RepublicParagraph, None, None]:
+    def get_paragraphs(self, session: rdm.Session, prev_line: Union[None, dict] = None,
+                       debug: int = 0) -> Generator[rdm.RepublicParagraph, None, None]:
         if hasattr(session, 'paragraphs') and session.paragraphs:
+            if debug > 0:
+                print('SessionParagraphGenerator.get_paragraphs - session has paragraphs')
             for paragraph in session.paragraphs:
                 yield paragraph
         else:
+            if debug > 0:
+                print('SessionParagraphGenerator.get_paragraphs - session has text_regions')
             text_page_num_map = {}
             page_num_map = {}
             for tr in session.text_regions:
@@ -310,7 +346,8 @@ class SessionParagraphGenerator(ParagraphGenerator):
             elif session.date.date.year < 1705 or session.date.date.year >= 1711:
                 paragraphs = self.get_paragraphs_with_vertical_space(session, prev_line=prev_line,
                                                                      text_page_num_map=text_page_num_map,
-                                                                     page_num_map=page_num_map)
+                                                                     page_num_map=page_num_map,
+                                                                     debug=debug)
             else:
                 paragraphs = []
             for paragraph in paragraphs:
@@ -318,7 +355,7 @@ class SessionParagraphGenerator(ParagraphGenerator):
                 yield paragraph
 
     def make_paragraph(self, doc: rdm.RepublicDoc, doc_text_offset: int, paragraph_id: str,
-                       para_lines: List[pdm.PageXMLTextLine]) -> rdm.RepublicParagraph:
+                       para_lines: List[pdm.PageXMLTextLine], debug: int = 0) -> rdm.RepublicParagraph:
         metadata = get_base_metadata(doc, paragraph_id, "resolution_paragraph")
         text_region_ids = []
         for line in para_lines:
@@ -327,8 +364,11 @@ class SessionParagraphGenerator(ParagraphGenerator):
                 if line.metadata['page_id'] not in metadata['page_ids']:
                     metadata['page_ids'].append(line.metadata['page_id'])
         text, line_ranges = self.make_paragraph_text(para_lines)
-        paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
-                                          text=text, line_ranges=line_ranges)
+
+        para_trs = make_paragraph_text_regions(para_lines, debug=debug)
+        paragraph = rdm.RepublicParagraph(metadata=metadata,
+                                          # lines=copy_lines(para_lines),
+                                          text=text, line_ranges=line_ranges, text_regions=para_trs)
         paragraph.metadata["start_offset"] = doc_text_offset
         paragraph.metadata["iiif_url"] = []
         for text_region_id in text_region_ids:
@@ -403,7 +443,8 @@ class SessionParagraphGenerator(ParagraphGenerator):
 
     def get_paragraphs_with_vertical_space(self, doc: rdm.RepublicDoc, prev_line: Union[None, dict] = None,
                                            text_page_num_map: Dict[str, int] = None,
-                                           page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
+                                           page_num_map: Dict[str, int] = None,
+                                           debug: int = 0) -> List[rdm.RepublicParagraph]:
         para_lines = []
         paragraphs = []
         doc_text_offset = 0
@@ -422,7 +463,9 @@ class SessionParagraphGenerator(ParagraphGenerator):
         else:
             resolution_gap = 80
             lines = [line for line in doc.get_lines()]
-        # print('getting paragraphs with vertical space')
+        if debug > 0:
+            print('SessionParagraphGenerator.get_paragraph_with_vertical_space - getting paragraphs with vertical space')
+            print(f'SessionParagraphGenerator.get_paragraph_with_vertical_space - num lines: {len(lines)}')
         for li, line in enumerate(lines):
             if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
                 line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]

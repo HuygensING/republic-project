@@ -127,7 +127,7 @@ class EventSearcher:
         """Add a text with identifier to the sliding window and run registered fuzzy searchers."""
         doc_matches: List[PhraseMatch] = []
         doc = {'id': doc_id, 'text': doc_text, 'matches': doc_matches}
-        if debug > 0:
+        if debug > 3:
             print(f"fuzzy_event_searcher.add_document - doc:", doc_text)
         if text_object:
             doc['text_object'] = text_object
@@ -135,7 +135,11 @@ class EventSearcher:
         for searcher_name in self.searchers:
             # add the matches to the document
             doc['matches'] += self.search_document(doc, searcher_name)
-        if debug > 0:
+            if debug > 2 and len(doc['matches']) > 0:
+                print(f"EventSearcher.add_document - searcher {searcher_name} - doc: {doc['text']}")
+                for match in doc['matches']:
+                    print(f"EventSearcher.add_document - searcher {searcher_name} - match: {match.string}")
+        if debug > 3:
             for match in doc['matches']:
                 print(f"\n\tfuzzy_event_searcher.add_document - match:", match, '\n')
         # add the document to the sliding window,

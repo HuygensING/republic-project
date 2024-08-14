@@ -8,13 +8,12 @@ from pagexml.helper.pagexml_helper import regions_overlap
 
 import republic.helper.pagexml_helper as pagexml_helper
 import republic.parser.pagexml.republic_column_parser as column_parser
-# import republic.model.physical_document_model as pdm
+from republic.parser.pagexml.republic_column_parser import is_full_text_column
+from republic.parser.pagexml.republic_column_parser import is_text_column
+from republic.parser.pagexml.republic_column_parser import make_derived_column
 from republic.helper.metadata_helper import make_iiif_region_url
 from republic.config.republic_config import base_config
-from republic.parser.logical.date_parser import check_line_starts_with_week_day_name
-# from republic.parser.pagexml.republic_column_parser import split_lines_on_column_gaps
-# from republic.parser.pagexml.republic_column_parser import determine_column_type
-# from republic.parser.pagexml.republic_column_parser import split_column_text_regions
+from republic.parser.logical.date_parser import line_starts_with_week_day_name
 
 
 def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords, margin: int = 100) -> str:
@@ -148,6 +147,9 @@ def get_page_split_widths(scan: pdm.PageXMLScan, debug: int = 0) -> Tuple[int, i
     scan_width = scan.coords.width
     scan_width_norm_ratio = scan.coords.width / scan.metadata['normal_odd_end']
     odd_end = scan_width
+    if debug > 2:
+        print(f"republic_page_parser.get_page_split_widths - scan_width: {scan_width}\t"
+              f"normal_odd_end: {scan.metadata['normal_odd_end']}")
     if 0.8 <= scan_width_norm_ratio <= 1.25:
         even_end = scan_width / 2 + 100
     else:
@@ -311,7 +313,8 @@ def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, confi
                 for col in cols:
                     print("get_column_text_regions - after tr split -> COLUMN:", col.id)
                     for line in col.lines:
-                        print(f"\tget_column_text_regions - LINE {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
+                        print(f"\tget_column_text_regions - LINE {line.coords.left}-{line.coords.right}"
+                              f"\t{line.coords.y}\t{line.text}")
             trs += cols
         if debug > 0:
             print('\nADDED TRS:')
@@ -789,13 +792,158 @@ def get_page_full_text_columns(page: pdm.PageXMLPage) -> List[pdm.PageXMLColumn]
     return merged_columns
 
 
+def has_overlapping_columns(page: pdm.PageXMLPage) -> bool:
+    """Determine whether a page has columns that
+    mostly overlap with each other"""
+    for ci, curr_column in enumerate(page.columns):
+        if ci == len(page.columns) - 1:
+            break
+        for next_column in page.columns[ci + 1:]:
+            if pagexml_helper.regions_overlap(curr_column, next_column, threshold=0.8):
+                print('Overlapping columns!')
+                print('\t', curr_column.coords.box)
+                print('\t', next_column.coords.box)
+    return False
+
+
+def has_text_columns(page: pdm.PageXMLPage, num_page_cols: int = 2) -> bool:
+    for column in page.columns:
+        if is_full_text_column(column, num_page_cols=num_page_cols):
+            return True
+    return False
+
+
+def is_printed_title_line(line: pdm.PageXMLTextLine) -> bool:
+    if line.coords.left >= 3500 or line.coords.right <= 3600:
+        return False
+    return line.coords.width / len(line.text) > 30
+
+
+def is_title_page(page: pdm.PageXMLPage, debug: int = 0) -> bool:
+    """Check whether a page is a Republic title page."""
+    # title pages are always on the right side of the scan
+    # and have an uneven page number
+    if page.metadata['page_num'] % 2 == 0:
+        if debug > 1:
+            print('republic_page_parser.is_title_page - page number is even, no title page')
+        return False
+    num_title_lines = 0
+    for line in page.get_lines():
+        if is_printed_title_line(line):
+            if debug > 2:
+                print('republic_page_parser.is_title_page - line characters are wider than 30 pixels')
+                print(f"\twidth: {line.coords.width}\ttext: {line.text}")
+            num_title_lines += 1
+    if debug > 1:
+        print(f'republic_page_parser.is_title_page - {num_title_lines} lines '
+              f'with wide characters on page {page.id}')
+    return num_title_lines > 2
+
+
+def restructure_title_page(page: pdm.PageXMLPage, config: Dict[str, any], debug: int = 0) -> pdm.PageXMLPage:
+    lines = [line for col in page.columns for line in col.get_lines()]
+    lines.extend([line for tr in page.extra for line in tr.lines])
+    lines = sorted(lines, key=lambda line: line.baseline.y)
+    cat_lines = {
+        'title': [line for line in lines if is_printed_title_line(line)]
+    }
+    mbs = pagexml_helper.make_baseline_string
+    if debug > 0:
+        print(f"republic_page_parser.restructure_title_page - title lines: {len(cat_lines['title'])}")
+    if debug > 1:
+        for line in cat_lines['title']:
+            print(f"\ttitle\t{mbs(line)}\t{line.text}")
+    if len(cat_lines['title']) == 0:
+        raise ValueError(f"page {page.id} has no printed title lines.")
+    title_bottom = min([line.baseline.bottom for line in cat_lines['title']])
+    if debug > 0:
+        print(f"republic_page_parser.restructure_title_page - title_bottom: {title_bottom}")
+    cat_lines['main'] = [line for line in lines if line not in cat_lines['title']
+                         and line.baseline.bottom > title_bottom]
+    cat_lines['extra'] = [line for line in lines if line not in cat_lines['title'] and line not in cat_lines['main']]
+    if debug > 0:
+        print(f"republic_page_parser.restructure_main_page - main lines: {len(cat_lines['main'])}")
+        if debug > 1:
+            for line in cat_lines['main']:
+                print(f"\tmain\t{mbs(line)}\t{line.text}")
+        print(f"republic_page_parser.restructure_extra_page - extra lines: {len(cat_lines['extra'])}")
+        if debug > 1:
+            for line in cat_lines['extra']:
+                print(f"\textra\t{mbs(line)}\t{line.text}")
+    columns: List[pdm.PageXMLColumn] = []
+    extra = []
+    for cat in cat_lines:
+        if len(cat_lines[cat]) > 0:
+            coords = pdm.parse_derived_coords(cat_lines[cat])
+            metadata = copy.deepcopy(cat_lines[cat][0].parent.metadata)
+            tr = pdm.PageXMLTextRegion(metadata=metadata, coords=coords, lines=cat_lines[cat])
+            tr.add_type('extra')
+            if cat == 'title':
+                tr.add_type('title')
+            if cat == 'main':
+                new_cols = column_parser.split_lines_on_column_gaps(tr, config, debug=debug)
+                columns.extend(new_cols)
+            else:
+                extra.append(tr)
+    new_page = pdm.PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
+                               coords=copy.deepcopy(page.coords), columns=columns, extra=extra)
+    return new_page
+
+
+def parse_title_page_columns(page: pdm.PageXMLPage) -> pdm.PageXMLPage:
+    extra_columns = page.extra
+    text_columns = []
+    for column in page.columns:
+        if not is_text_column(column):
+            extra_columns.append(column)
+            continue
+        if column.stats['lines'] < 10:
+            extra_columns.append(column)
+            continue
+        if column.coords.width < 1000:
+            text_columns.append(column)
+            continue
+        lines = sorted(column.get_lines(), key=lambda x_line: x_line.coords.y)
+        last_title_line_index = -1
+        for li, line in enumerate(lines):
+            if line.coords.left < 3400 and line.coords.right > 3600:
+                last_title_line_index = li
+        title_lines = lines[:last_title_line_index + 1]
+        if len(title_lines) > 0:
+            title_column = make_derived_column(title_lines, column.metadata, page.id)
+            extra_columns.append(title_column)
+        body_lines = lines[last_title_line_index + 1:]
+        left_col_lines, right_col_lines = [], []
+        for line in body_lines:
+            if line.coords.right < 3600:
+                left_col_lines.append(line)
+            elif line.coords.left > 3400 and line.coords.right >= 3600:
+                right_col_lines.append(line)
+            else:
+                print(line.coords.box)
+                print(line.text)
+                raise TypeError('cannot select appropriate column')
+        if len(left_col_lines) > 0:
+            left_column = make_derived_column(left_col_lines, column.metadata, page.metadata['scan_id'])
+            text_columns.append(left_column)
+        if len(right_col_lines) > 0:
+            right_column = make_derived_column(right_col_lines, column.metadata, page.metadata['scan_id'])
+            text_columns.append(right_column)
+    new_page_coords = pdm.parse_derived_coords(extra_columns + text_columns)
+    new_page = pdm.PageXMLPage(metadata=page.metadata, coords=new_page_coords, columns=text_columns,
+                               text_regions=page.text_regions, extra=extra_columns)
+    new_page.set_derived_id(page.metadata['scan_id'])
+    return new_page
+
+
 def is_paragraph_line(line: pdm.PageXMLTextLine) -> bool:
     if 'line_class' not in line.metadata:
         return False
     return line.metadata['line_class'].startswith('para_')
 
 
-def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhraseSearcher,
+def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhraseSearcher = None,
+                      month_name_searcher: FuzzyPhraseSearcher = None,
                       copy_page: bool = True, debug: int = 0) -> pdm.PageXMLPage:
     """Update line class types when they are in conflict with the type of
     their corresponding text region.
@@ -870,7 +1018,8 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
                 if indent_tr.has_type('header') and indent_tr.has_type('date'):
                     update_type = 'date_header'
                     for indent_line in indent_tr.lines:
-                        if check_line_starts_with_week_day_name(indent_line, week_day_name_searcher):
+                        if week_day_name_searcher and line_starts_with_week_day_name(indent_line,
+                                                                                     week_day_name_searcher):
                             if debug > 0:
                                 print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
                                       f"has week day date lines, updating line types to 'date'")
@@ -909,8 +1058,3 @@ def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = Fa
     new_page = pdm.PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
                                coords=new_coords, columns=new_cols, extra=new_extra)
     return new_page
-
-
-
-
-

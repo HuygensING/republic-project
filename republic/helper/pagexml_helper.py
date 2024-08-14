@@ -248,7 +248,7 @@ def horizontally_merge_lines(lines: List[pdm.PageXMLTextLine]) -> List[pdm.PageX
         coords = pdm.parse_derived_coords(line_group)
         baseline = pdm.Baseline([point for line in line_group for point in line.baseline.points])
         line = pdm.PageXMLTextLine(metadata=line_group[0].metadata, coords=coords, baseline=baseline,
-                                   text=' '.join([line.text for line in line_group]))
+                                   text=' '.join([line.text for line in line_group if line.text is not None]))
         line.set_derived_id(line_group[0].metadata['parent_id'])
         horizontally_merged_lines.append(line)
     return horizontally_merged_lines

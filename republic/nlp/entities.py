@@ -191,20 +191,24 @@ def tag_resolution(res_text: str, res_id: str, model: SequenceTagger, as_annotat
         return text
 
 
-def get_layer_test_file(layer_name, repo_dir: str):
-    gt_dir = os.path.join(repo_dir, 'ground_truth/entities/flair_training-17th_18th')
-    layer_gt_dir = os.path.join(gt_dir, f'flair_training_17th_18th_{layer_name}')
+def get_layer_test_file(layer_name, ground_truth_dir: str):
+    gt_dir = os.path.join(ground_truth_dir, 'flair_training')
+    layer_gt_dir = os.path.join(gt_dir, f'flair_training_{layer_name}')
     return os.path.join(layer_gt_dir, 'test.txt')
 
 
-def get_token_tag(line: str):
+def get_token_tag(line: str, separator: str, num_splits: int = 1, debug: int = 0):
     if line == '\n':
-        return '', '<S>'
-    token, tag = line.strip().split(' ')
-    return token, tag
+        space_layers = ['<S>'] * num_splits
+        return [''] + space_layers
+    token_tags = line.strip().split(separator, num_splits)
+    if debug > 2:
+        token, tags = token_tags[0], token_tags[1:]
+        print(f"entities.get_token_tag - token: {token}\ttag: {tags}")
+    return token_tags
 
 
-def get_test_tokens_tags(test_file: str):
+def get_test_tokens_tags(test_file: str, separator: str, num_splits: int = 1, debug: int = 0):
     with open(test_file, 'rt') as fh:
         tokens_tags = []
         docs = []
@@ -212,23 +216,41 @@ def get_test_tokens_tags(test_file: str):
             if line == '\n':
                 if len(tokens_tags) > 0:
                     docs.append(tokens_tags)
+                    # print(tokens_tags)
+                    if debug > 0:
+                        print(f'entities.get_test_tokens_tags - adding doc with {len(tokens_tags)} tokens and tags')
                 tokens_tags = []
-            tokens_tags.append(get_token_tag(line))
+            try:
+                tokens_tags.append(get_token_tag(line, separator, num_splits=num_splits, debug=debug))
+            except Exception:
+                print(f'using separator: #{separator}#')
+                print('invalid tag line:', line)
+                raise
+        if len(tokens_tags) > 0:
+            docs.append(tokens_tags)
+            if debug > 0:
+                print(f'entities.get_test_tokens_tags - adding doc with {len(tokens_tags)} tokens and tags')
     return docs
 
 
-def get_tag_positions(tokens_tags):
+def get_tag_positions(tokens_tags: List[Tuple[str, str]], debug: int = 0):
     text = ''
     tag_position = {}
     in_tag = False
     start_pos, end_pos, tag_type = None, None, None
     prev_tag_type = None
+    if debug > 1:
+        print('entities.get_tag_positions - len(tokens_tags):', len(tokens_tags))
     for token, tag in tokens_tags:
-        tag_type = tag[2:] if len(tag) > 2 else None
+        tag_type = tag[2:] if len(tag) > 2 and tag != '<S>' else None
+        added = False
         if tag_type != prev_tag_type:
-            if start_pos and prev_tag_type is not None:
+            if start_pos is not None and prev_tag_type is not None:
                 end_pos = len(text)
+                if debug > 1:
+                    print('entities.get_tag_positions - curr != prev - adding tag_position:', (start_pos, end_pos), prev_tag_type)
                 tag_position[(start_pos, end_pos)] = prev_tag_type
+                added = True
             start_pos = len(text) if tag_type is not None else 0
             end_pos = None
         if tag.startswith('B-'):
@@ -236,22 +258,54 @@ def get_tag_positions(tokens_tags):
             start_pos = len(text)
             end_pos = None
         elif tag == 'O':
-            if start_pos and prev_tag_type is not None:
+            if start_pos is not None and prev_tag_type is not None and added is False:
                 end_pos = len(text)
                 tag_position[(start_pos, end_pos)] = prev_tag_type
+                if debug > 1:
+                    print('entities.get_tag_positions - tag == "O" - adding tag_position:', (start_pos, end_pos),
+                          prev_tag_type)
             start_pos, end_pos, tag_type = None, None, None
         prev_tag_type = tag_type
         text = f'{text} {token}'
+        if debug > 1:
+            print('entities.get_tag_positions - start_pos:', start_pos)
+            print('entities.get_tag_positions - end_pos:', end_pos)
+            print('entities.get_tag_positions - tag:', tag)
+            print('entities.get_tag_positions - tag_type:', tag_type)
+            print('entities.get_tag_positions - prev_tag_type:', prev_tag_type)
+            print('entities.get_tag_positions - tag_position:', tag_position)
+            print('entities.get_tag_positions - len(text):', len(text))
+            print('entities.get_tag_positions - text:', text)
+            print('\n')
+            if len(text) > 1000:
+                # continue
+                break
     return tag_position
 
 
-def read_test_file(test_file):
-    docs = get_test_tokens_tags(test_file)
+def read_test_file(test_file, separator: str = ' ', num_splits: int = 1, debug: int = 0):
+    docs = get_test_tokens_tags(test_file, separator, num_splits=num_splits, debug=debug)
+    if debug > 0:
+        print(f"entities.read_test_file - read {len(docs)}, of which {len([doc for doc in docs if len(doc) > 0])} non-empty.")
     for doc_tokens_tags in docs:
-        tokens = [token for token, tag in doc_tokens_tags]
+        tokens = [token for token, *tags in doc_tokens_tags]
         text = ' '.join(tokens)
-        tag_position = get_tag_positions(doc_tokens_tags)
-        yield {'text': text, 'tag_position': tag_position, 'filename': test_file}
+        tag_positions = []
+        if debug > 1:
+            print('doc_tokens_tags:', doc_tokens_tags[:10])
+        for split in range(0, num_splits):
+            split_doc_tokens_tags = []
+            for token, *tags in doc_tokens_tags:
+                split_doc_tokens_tags.append((token, tags[split]))
+            if debug > 1:
+                print('split_doc_tokens_tags:', split_doc_tokens_tags[:10])
+            split_tag_position = get_tag_positions(split_doc_tokens_tags, debug=debug)
+            if debug > 1:
+                print('split_tag_position:', split_tag_position)
+            tag_positions.append(split_tag_position)
+        if len(tag_positions) == 1:
+            tag_positions = tag_positions[0]
+        yield {'text': text, 'tag_position': tag_positions, 'filename': test_file}
 
 
 def get_tagged_positions(sentence):
@@ -264,10 +318,15 @@ def get_tagged_positions(sentence):
     return tagged_position
 
 
-def highlight_tagged_text_positions(text, tag_position):
+def highlight_tagged_text_positions(text, tag_position, layer_color: Dict[str, str] = None,
+                                    debug: int = 0):
+    if layer_color is None:
+        layer_color = LAYER_COLOR
     for start, end in sorted(tag_position.keys(), key=lambda x: x[1], reverse=True):
         tag_type = tag_position[(start, end)]
-        color = LAYER_COLOR[tag_type]
+        if debug > 1:
+            print('entities.highlight_tagged_text_positions - (start, end):', (start, end))
+        color = layer_color[tag_type]
         before, tag, after = text[:start], text[start:end], text[end:]
         text = f"{before}<font color='{color}'>{tag}</font>{after}"
     return f"<p>{text}</p>"

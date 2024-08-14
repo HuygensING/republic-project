@@ -23,3 +23,7 @@ class TestDateParser(unittest.TestCase):
         line = pdm.PageXMLTextLine(text='the year is 1781')
         self.assertEqual(False, date_parser.line_is_year(line))
 
+    def test_line_has_month_name_recognises_month(self):
+        line = pdm.PageXMLTextLine(text='28 Maart.')
+        self.assertEqual(True, date_parser.line_has_day_month(line, debug=2))
+

@@ -28,6 +28,8 @@ from republic.parser.logical.generic_session_parser import make_session_metadata
 from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_line_structure
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
+from republic.parser.logical.date_parser import make_week_day_name_searcher
+from republic.parser.logical.date_parser import extract_best_date_match
 
 
 DATE_JUMPS = {
@@ -491,48 +493,6 @@ def split_lines_on_vertical_gaps(lines: List[pdm.PageXMLTextLine],
     return line_groups
 
 
-def extract_best_date_match(matches: List[PhraseMatch], current_date: RepublicDate,
-                            jump_days: int, date_strings: Dict[str, RepublicDate]) -> Union[None, PhraseMatch]:
-    if len(matches) == 0:
-        return None
-    expected_date = current_date + datetime.timedelta(days=jump_days)
-    sorted_matches = sorted(matches, key=lambda m: m.levenshtein_similarity, reverse=True)
-    best_sim = sorted_matches[0].levenshtein_similarity
-    best_matches = []
-    for match in sorted_matches:
-        if match.levenshtein_similarity != best_sim:
-            break
-        best_matches.append(match)
-    if len(best_matches) > 1:
-        best_delta = datetime.timedelta(days=36500)
-        best_date, best_match = None, None
-        for match in best_matches:
-            match_date = date_strings[match.variant.phrase_string]
-            time_delta = match_date - expected_date
-            if time_delta < datetime.timedelta(days=0):
-                continue
-            if time_delta < best_delta:
-                best_delta = time_delta
-                best_match = match
-            # print('MULTIPLE BEST MATCHES:', match)
-    else:
-        best_match = sorted_matches[0]
-    return best_match
-
-
-def make_week_day_name_searcher(date_mapper: DateNameMapper, config: Dict[str, any]) -> FuzzyPhraseSearcher:
-    phrase_list = []
-    for week_day_name in date_mapper.date_name_map['week_day_name']:
-        phrase = {
-            'phrase': week_day_name,
-            'max_start_offset': 3
-        }
-        phrase_list.append(phrase)
-    week_day_name_searcher = FuzzyPhraseSearcher(phrase_list=phrase_list,
-                                                 config=config)
-    return week_day_name_searcher
-
-
 def process_handwritten_columns(columns: List[pdm.PageXMLColumn], page: pdm.PageXMLPage):
     """Process all columns of a page and merge columns that are horizontally overlapping."""
     merge_sets = column_parser.find_overlapping_columns(columns)
@@ -620,12 +580,12 @@ def process_handwritten_page(page, week_day_name_searcher: FuzzyPhraseSearcher =
     return page
 
 
-def make_inventory_date_name_mapper(inv_num: int, pages: List[pdm.PageXMLPage]):
+def make_inventory_date_name_mapper(inv_num: int, pages: List[pdm.PageXMLPage], debug: int = 0):
     """Return a date name mapper for a given inventory that returns likely date representations
     for a given date, based on the date format found in the pages of the inventory."""
     inv_meta = get_inventory_by_num(inv_num)
     date_token_cat = get_date_token_cat(inv_num=inv_meta['inventory_num'], ignorecase=True)
-    session_date_lines = get_session_date_lines_from_pages(pages, debug=0)
+    session_date_lines = get_session_date_lines_from_pages(pages, debug=debug)
     date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat,
                                                           inv_meta['inventory_id'])
     try:
@@ -638,8 +598,8 @@ def make_inventory_date_name_mapper(inv_num: int, pages: List[pdm.PageXMLPage]):
     return date_mapper
 
 
-def process_handwritten_pages(inv, pages, ignorecase: bool = True):
-    date_mapper = make_inventory_date_name_mapper(inv, pages)
+def process_handwritten_pages(inv, pages, ignorecase: bool = True, debug: int = 0):
+    date_mapper = make_inventory_date_name_mapper(inv, pages, debug=debug)
     config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
     week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
     new_pages = [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
@@ -890,12 +850,14 @@ def get_inventory_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.Page
 
 
 def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
+                             session_starts: List[Dict[str, any]] = None,
                              num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
     print('get_sessions - num pages:', len(pages))
     inv_metadata = get_inventory_by_id(inv_id)
     period_start = inv_metadata['period_start']
     pages.sort(key=lambda page: page.id)
-    pages = process_handwritten_pages(inv_metadata, pages[start_index:end_index], ignorecase)
+    pages = process_handwritten_pages(inv_metadata, pages, ignorecase)
+    # pages = process_handwritten_pages(inv_metadata, pages[start_index:end_index], ignorecase)
     date_mapper = get_inventory_date_mapper(inv_metadata, pages, ignorecase=ignorecase, debug=debug)
     config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
     week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)

@@ -437,8 +437,8 @@ class ParagraphGenerator:
 
     def __init__(self, line_break_detector: WordBreakDetector = None,
                  word_break_chars: str = None, use_left_indent: bool = False,
-                 use_right_indent: bool = False,
-                 resolution_gap: int = None):
+                 use_right_indent: bool = False, resolution_gap: int = None,
+                 debug: int = 0):
         self.lbd = line_break_detector
         self.word_break_chars = word_break_chars
         self.use_left_indent = use_left_indent
@@ -446,13 +446,14 @@ class ParagraphGenerator:
         self.resolution_gap = resolution_gap
 
     def get_paragraphs(self, doc: Union[pdm.PageXMLTextRegion, rdm.RepublicDoc],
-                       prev_line: Union[None, dict] = None) -> Generator[rdm.RepublicParagraph, None, None]:
+                       prev_line: Union[None, dict] = None,
+                       debug: int = 0) -> Generator[rdm.RepublicParagraph, None, None]:
         if self.use_left_indent:
             paragraphs = self.get_paragraphs_with_left_indent(doc, prev_line=prev_line)
         elif self.use_right_indent:
             paragraphs = self.get_paragraphs_with_right_indent(doc, prev_line=prev_line)
         else:
-            paragraphs = self.get_paragraphs_with_vertical_space(doc, prev_line=prev_line)
+            paragraphs = self.get_paragraphs_with_vertical_space(doc, prev_line=prev_line, debug=debug)
         for paragraph in paragraphs:
             paragraph.metadata['doc_id'] = doc.id
             yield paragraph
@@ -470,7 +471,8 @@ class ParagraphGenerator:
                 if line.metadata['page_id'] not in metadata['page_ids']:
                     metadata['page_ids'].append(line.metadata['page_id'])
         text, line_ranges = self.make_paragraph_text(para_lines)
-        paragraph = rdm.RepublicParagraph(lines=para_lines, metadata=metadata,
+        paragraph = rdm.RepublicParagraph(metadata=metadata,
+                                          # lines=para_lines,
                                           text=text, line_ranges=line_ranges)
         paragraph.metadata["start_offset"] = doc_text_offset
         return paragraph
@@ -522,7 +524,8 @@ class ParagraphGenerator:
     def get_paragraphs_with_vertical_space(self, doc: Union[pdm.PageXMLTextRegion, rdm.RepublicDoc],
                                            prev_line: Union[None, dict] = None,
                                            text_page_num_map: Dict[str, int] = None,
-                                           page_num_map: Dict[str, int] = None) -> List[rdm.RepublicParagraph]:
+                                           page_num_map: Dict[str, int] = None,
+                                           debug: int = 0) -> List[rdm.RepublicParagraph]:
         para_lines = []
         paragraphs = []
         doc_text_offset = 0
@@ -544,8 +547,9 @@ class ParagraphGenerator:
         else:
             resolution_gap = 80
             lines = [line for line in doc.get_lines()]
-        print('getting paragraphs with vertical space')
-        print('number of lines:', len(lines))
+        if debug > 0:
+            print('ParagraphGenerator.get_paragraphs_with_vertical_space - getting paragraphs with vertical space')
+            print('ParagraphGenerator.get_paragraphs_with_vertical_space - num lines:', len(lines))
         for li, line in enumerate(lines):
             if text_page_num_map is not None and line.metadata["parent_id"] in text_page_num_map:
                 line.metadata["text_page_num"] = text_page_num_map[line.metadata["parent_id"]]

@@ -56,18 +56,18 @@ def new_gap_pixel_interval(pixel: int) -> dict:
 
 def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config: dict, debug: int = 0) -> list:
     common_pixels = sorted([pixel for pixel, freq in pixel_dist.items() if freq >= freq_threshold])
-    if debug > 0:
+    if debug > 2:
         print("determine_freq_gap_interval - common_pixels:", common_pixels)
     gap_pixel_intervals = []
     if len(common_pixels) == 0:
         return gap_pixel_intervals
     curr_interval = new_gap_pixel_interval(common_pixels[0])
-    if debug > 0:
+    if debug > 2:
         print("determine_freq_gap_interval - curr_interval:", curr_interval)
     prev_interval_end = 0
     for curr_index, curr_pixel in enumerate(common_pixels[:-1]):
         next_pixel = common_pixels[curr_index + 1]
-        if debug > 0:
+        if debug > 2:
             print("determine_freq_gap_interval - curr:", curr_pixel, "next:", next_pixel, "start:",
                   curr_interval["start"], "end:", curr_interval["end"], "prev_end:", prev_interval_end)
         if next_pixel - curr_pixel < config["column_gap"]["gap_threshold"]:
@@ -75,11 +75,11 @@ def determine_freq_gap_interval(pixel_dist: Counter, freq_threshold: int, config
         else:
             # if curr_interval["end"] - curr_interval["start"] < config["column_gap"]["gap_threshold"]:
             if curr_interval["start"] - prev_interval_end < config["column_gap"]["gap_threshold"]:
-                if debug > 0:
+                if debug > 2:
                     print("determine_freq_gap_interval - skipping interval:", curr_interval, "\tcurr_pixel:",
                           curr_pixel, "next_pixel:", next_pixel)
                 continue
-            if debug > 0:
+            if debug > 2:
                 print("determine_freq_gap_interval - adding interval:", curr_interval, "\tcurr_pixel:",
                       curr_pixel, "next_pixel:", next_pixel)
             gap_pixel_intervals += [curr_interval]
@@ -93,11 +93,11 @@ def find_column_gaps(lines: List[pdm.PageXMLTextLine], config: Dict[str, any],
                      debug: int = 0):
     num_column_lines = len(lines) / 2 if len(lines) < 140 else 60
     gap_pixel_freq_threshold = int(num_column_lines * config["column_gap"]["gap_pixel_freq_ratio"])
-    if debug > 0:
+    if debug > 2:
         print("find_column_gaps - lines:", len(lines), "gap_pixel_freq_ratio:", config["column_gap"]["gap_pixel_freq_ratio"])
         print("find_column_gaps - freq_threshold:", gap_pixel_freq_threshold)
     gap_pixel_dist = compute_pixel_dist(lines)
-    if debug > 0:
+    if debug > 2:
         print("find_column_gaps - gap_pixel_dist:", gap_pixel_dist)
     gap_pixel_intervals = determine_freq_gap_interval(gap_pixel_dist, gap_pixel_freq_threshold, config, debug=debug)
     return gap_pixel_intervals
@@ -205,13 +205,29 @@ def make_derived_column(lines: List[pdm.PageXMLTextLine], metadata: dict, page_i
     return column
 
 
+def add_line_to_column(line: pdm.PageXMLTextLine, column: pdm.PageXMLColumn) -> None:
+    for tr in column.text_regions:
+        if pdm.is_horizontally_overlapping(line, tr, threshold=0.1) and \
+                pdm.is_vertically_overlapping(line, tr, threshold=0.1):
+            tr.lines.append(line)
+            tr.lines.sort()
+            return None
+    new_tr = pdm.PageXMLTextRegion(metadata=copy.deepcopy(column.metadata),
+                                   coords=pdm.parse_derived_coords([line]),
+                                   lines=[line])
+    column.text_regions.append(new_tr)
+    column.text_regions.sort()
+
+
 def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                                config: Dict[str, any],
                                overlap_threshold: float = 0.5,
                                ignore_bad_coordinate_lines: bool = True,
                                debug: int = 0) -> List[pdm.PageXMLColumn]:
     lines = [line for line in text_region.get_lines()]
-    column_ranges = find_column_gaps(lines, config, debug=debug)
+    if 'scan_id' not in text_region.metadata:
+        raise KeyError(f'no "scan_id" in text_region {text_region.id}')
+    column_ranges = find_column_gaps(lines, config, debug=debug-1)
     if debug > 0:
         print('split_lines_on_column_gaps - text_region:', text_region.id, text_region.stats)
         print('split_lines_on_column_gaps - column_gap:', config['column_gap'])
@@ -296,9 +312,9 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                     best_overlap = overlap
                     # print('\t\tBEST', best_column)
         if best_column is not None and pdm.is_horizontally_overlapping(line, best_column):
-            best_column.lines.append(line)
+            add_line_to_column(line, best_column)
             append_count += 1
-            best_column.coords = pdm.parse_derived_coords(best_column.lines)
+            best_column.coords = pdm.parse_derived_coords(best_column.text_regions)
             if text_region.parent:
                 best_column.set_derived_id(text_region.parent.id)
         else:
@@ -330,14 +346,21 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                 extra.set_derived_id(text_region.parent.id)
                 extra.set_parent(text_region.parent)
             else:
-                extra.set_derived_id(text_region.id)
+                extra.set_derived_id(text_region.metadata['scan_id'])
             # for line in extra.lines:
             #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             config = copy.deepcopy(config)
             config["column_gap"]["gap_pixel_freq_ratio"] = 0.01
             if debug > 0:
-                print('SPLITTING EXTRA')
+                print('split_lines_on_column_gaps - SPLITTING EXTRA')
             if extra.id == text_region.id and len(columns) == 0:
+                if debug > 0:
+                    print('split_lines_on_column_gaps - extra equals text_region:')
+                    print('\t', text_region.id, text_region.stats)
+                    print('\t', extra.id, extra.stats)
+                    print('split_lines_on_column_gaps - cannot split text_region, returning text_region')
+                extra_cols = [extra]
+            elif all([extra_stat == tr_stat for extra_stat, tr_stat in zip(extra.stats, text_region.stats)]):
                 if debug > 0:
                     print('split_lines_on_column_gaps - extra equals text_region:')
                     print('\t', text_region.id, text_region.stats)
@@ -358,6 +381,11 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         print('source doc:', text_region.id)
         print(extra)
         raise TypeError(f'Extra is not None but {type(extra)}')
+    if debug > 3:
+        print('\n------------\n')
+        for col in columns:
+            print(f"split_lines_on_column_gaps - number of lines directly under column {col.id}: {len(col.lines)}")
+        print('\n------------\n')
     return columns
 
 
@@ -411,7 +439,7 @@ def split_column_text_regions(column: pdm.PageXMLColumn, update_type: bool = Fal
         column.text_regions.append(tr)
         column.lines = []
     if debug > 0:
-        print('\tCOL STATS:', column.stats)
+        print('split_column_text_regions\tCOL STATS:', column.stats)
     for tr in column.text_regions:
         new_trs = split_text_region_on_vertical_gap(tr, update_type=update_type, debug=debug)
         if debug > 0:
