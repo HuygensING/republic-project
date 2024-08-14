@@ -36,7 +36,6 @@ from republic.helper.model_loader import load_line_break_detector
 from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.helper.utils import get_project_dir
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
-from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_text_annotation_model import make_session_text_version
 
 import republic.parser.logical.printed_resolution_parser as printed_res_parser
@@ -203,28 +202,34 @@ class Indexer:
             os.mkdir(f'{base_dir}/sessions/sessions_json')
         self.rep_es = republic_elasticsearch.initialize_es(host_type=host_type, timeout=60)
 
-    def set_indexes(self, indexing_step: str, indexing_label: str):
-        print(f'Indexer.set_indexes - indexing_step: {indexing_step}')
-        print(f'Indexer.set_indexes - indexing_label: {indexing_label}')
-        if indexing_step in {'resolution_metadata', 'attendance_list_spans'}:
+    def set_indexes(self, indexing_step: str, indexing_label: str, debug: int = 0):
+        if debug > 0:
+            print(f'Indexer.set_indexes - indexing_step: {indexing_step}')
+            print(f'Indexer.set_indexes - indexing_label: {indexing_label}')
+        if indexing_step in {'resolution_metadata', 'attendance_list_spans'} and indexing_label is not None:
             self.rep_es.config['resolutions_index'] = f"{self.rep_es.config['resolutions_index']}_{indexing_label}"
-            print(f"Indexer.set_indexes - setting resolutions_index index "
-                  f"name to {self.rep_es.config['resolutions_index']}")
+            if debug > 0:
+                print(f"Indexer.set_indexes - setting resolutions_index index "
+                      f"name to {self.rep_es.config['resolutions_index']}")
             return None
         elif indexing_step == 'full_resolutions' and indexing_label is None:
             self.rep_es.config['resolutions_index'] = 'full_resolutions'
-            print(f"Indexer.set_indexes - setting resolutions_index index "
-                  f"name to {self.rep_es.config['resolutions_index']}")
+            if debug > 0:
+                print(f"Indexer.set_indexes - setting resolutions_index index "
+                      f"name to {self.rep_es.config['resolutions_index']}")
         if indexing_label is None:
-            print(f'Indexer.set_indexes - indexing_label is None: {indexing_label}')
+            if debug > 0:
+                print(f'Indexer.set_indexes - indexing_label is None: {indexing_label}')
             return None
         for key in self.rep_es.config:
             if key.startswith("session") and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
-                # print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
+                if debug > 0:
+                    print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
             elif key.startswith(indexing_step) and key.endswith("_index"):
                 self.rep_es.config[key] = f"{self.rep_es.config[key]}_{indexing_label}"
-                # print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
+                if debug > 0:
+                    print(f'Indexer.set_indexes - setting {key} index name to {self.rep_es.config[key]}')
 
     def has_sections(self, inv_num: int):
         inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
@@ -532,7 +537,6 @@ class Indexer:
         logger.info(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         opening_searcher, verb_searcher = printed_res_parser.configure_resolution_searchers()
-        has_error = False
         line_break_detector = load_line_break_detector()
         self.rep_es.delete_by_inventory(inv_num, self.rep_es.config['resolutions_index'])
         errors = []
@@ -577,7 +581,6 @@ class Indexer:
                     f"(years {year_start}-{year_end})...")
         print(f"Indexing handwritten PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
-        has_error = False
         errors = []
         for session in self.get_inventory_sessions(inv_num):
             try:
