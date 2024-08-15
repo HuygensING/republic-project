@@ -121,6 +121,14 @@ def write_pages(pages_file: str, pages: List[pdm.PageXMLPage]):
             fh.write(f"{page_string}\n")
 
 
+def make_page_generator(pages_file: str):
+    with gzip.open(pages_file, 'rt') as fh:
+        for line in fh:
+            page_json = json.loads(line)
+            page = json_to_pagexml_page(page_json)
+            yield page
+
+
 def get_last_pages(inv_num: int, indexer: Indexer):
     raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
     preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
@@ -143,11 +151,7 @@ def get_last_pages(inv_num: int, indexer: Indexer):
         logger_string = f"Reading {page_state} pages from file for inventory {inv_num}"
         logger.info(logger_string)
         print(logger_string)
-        with gzip.open(pages_file, 'rt') as fh:
-            for line in fh:
-                page_json = json.loads(line)
-                page = json_to_pagexml_page(page_json)
-                yield page
+        return make_page_generator(pages_file)
     return None
 
 
@@ -163,7 +167,7 @@ def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> Generato
         logger_string = f"Downloading pages from ES index for inventory {inv_num}"
         logger.info(logger_string)
         print(logger_string)
-        pages_file = f"{indexer.base_dir}/pages/page_json/pages-{inv_num}.jsonl.gz"
+        pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
         pages = [page for page in indexer.rep_es.retrieve_inventory_pages(inv_num)]
         with gzip.open(pages_file, 'wt') as fh:
             for page in pages:
