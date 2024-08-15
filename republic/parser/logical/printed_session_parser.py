@@ -347,8 +347,21 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
                     ignorecase: bool = True, debug: int = 0):
     inv_id = inv_metadata['inventory_id']
     pages.sort(key=lambda page: page.id)
-    date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
-    session_date_lines = get_session_date_lines_from_pages(pages)
+    # date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
+    # session_date_lines = get_session_date_lines_from_pages(pages, filter_date_starts=False)
+    if 3760 <= inv_metadata['inventory_num'] <= 3805:
+        date_type = 'printed_early'
+    elif 3806 <= inv_metadata['inventory_num'] <= 3864:
+        date_type = 'printed_late'
+    else:
+        raise ValueError(f"inventory_num {inv_metadata['inventory_num']} is not a printed volume")
+    date_line_structure = [
+        ('week_day_name', date_type),
+        ('den', 'all'),
+        ('month_day_name', 'decimal'),
+        ('month_name', date_type)
+    ]
+    """
     if debug > 2:
         # print(f"printed_session_parser.get_date_mapper - date_token_cat:", date_token_cat)
         print(f"printed_session_parser.get_date_mapper - session_date_lines:", session_date_lines)
@@ -357,8 +370,11 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
     else:
         date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat, inv_id)
     if 'week_day_name' not in [element[0] for element in date_line_structure]:
-        print('WARNING - missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
+        print('WARNING: printed_session_parser.get_date_mapper - '
+              'missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
+        print(f"\tdate_line_structure:", date_line_structure)
         return None
+    """
 
     if debug > 2:
         print(f"printed_session_parser.get_date_mapper - date_line_structure:", date_line_structure)
@@ -497,13 +513,13 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
     start_iterator = make_start_iterator(session_starts)
     next_start = start_iterator()
 
-    date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=0)
+    date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=debug)
 
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
     first_date = current_date.isoformat()
 
     date_strings = get_next_date_strings(current_date, num_dates=366, include_year=False, date_mapper=date_mapper)
-    # print('date_strings:', date_strings.keys())
+
     if next_start is not None and next_start['date'] > current_date.isoformat():
         if debug > 0:
             print('map_session_lines_from_session_starts - next_start date is not initial date:', current_date.isoformat())

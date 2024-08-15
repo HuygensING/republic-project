@@ -91,7 +91,7 @@ class LSTMLineTagger(nn.Module):
                                config['char_vocab_size'],
                                config['line_class_size'],
                                config['bidirectional'])
-        model.load_state_dict(torch.load(config['model_file']), strict=False)
+        model.load_state_dict(torch.load(config['model_file'], weights_only=True), strict=False)
         model.eval()
         return model
 
