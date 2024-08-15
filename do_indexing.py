@@ -80,7 +80,10 @@ def zip_exists(inv_num: int, ocr_type: str, base_dir: str):
 
 
 def get_text_type(inv_num: int) -> str:
-    return 'printed' if 400 <= inv_num <= 456 or 3760 <= inv_num <= 3864 else 'handwritten'
+    if 400 <= inv_num <= 456:
+        return 'handwritten' if inv_num in [401, 429, 430, 432, 433, 436, 437] else 'printed'
+    else:
+        return 'printed' if 3760 <= inv_num <= 3864 else 'handwritten'
 
 
 def get_page_content_type(page: pdm.PageXMLPage) -> str:
@@ -133,6 +136,8 @@ def get_last_pages(inv_num: int, indexer: Indexer):
     elif os.path.exists(raw_pages_file):
         # create preprocessed pages file?
         pages_file = raw_pages_file
+    if pages_file is None:
+        return None
     page_state = 'preprocessed' if 'preprocessed' in pages_file else 'raw'
     if os.path.exists(pages_file):
         logger_string = f"Reading {page_state} pages from file for inventory {inv_num}"
@@ -446,6 +451,7 @@ class Indexer:
         print(f'inventory {inv_num} - number of non-skipped pages: {len(pages)}')
 
         get_session_func = get_printed_sessions if text_type == 'printed' else get_handwritten_sessions
+        print(f"text_type: {text_type}")
         # use_token_searcher = True if text_type == 'printed' else False
         # include_variants not yet implemented in FuzzyTokenSearcher so use FuzzyPhraseSearcher
         use_token_searcher = False
@@ -532,11 +538,21 @@ class Indexer:
             session_text_doc = make_session_text_version(session, resolutions)
             self.rep_es.index_session_with_text(session_text_doc)
 
+    def remove_inventory_docs_from_index(self, index: str, inv_metadata: Dict[str, any]):
+        message = f"deleting inventory {inv_metadata['inventory_id']} from index {index}"
+        logger.info(message)
+        print(message)
+        response = self.rep_es.delete_by_inventory(index, inv_id=inv_metadata['inventory_id'])
+        logger.info(f'ES response: {response}')
+        print(f'ES response: {response}\n')
+
     def do_session_indexing(self, inv_num: int, year_start: int, year_end: int, from_files: bool = False,
                             from_starts: bool = False):
         logger.info(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         inv_metadata = get_inventory_by_num(inv_num)
+        self.remove_inventory_docs_from_index(self.rep_es.config['session_metadata_index'], inv_metadata=inv_metadata)
+        self.remove_inventory_docs_from_index(self.rep_es.config['session_text_region_index'], inv_metadata=inv_metadata)
         text_type = get_text_type(inv_num)
         errors = []
         if from_files is True:
@@ -836,7 +852,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         print(message)
         return None
     print("TASK:", task)
-    indexer.set_indexes(task["indexing_step"], task["index_label"])
+    indexer.set_indexes(task["indexing_step"], task["index_label"], debug=0)
     # print('process_inventory - index:', indexer.rep_es.config['resolutions_index'])
     if task["indexing_step"] == "download":
         indexer.do_downloading(task["inv_num"], task["year_start"], task["year_end"])
@@ -933,6 +949,7 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
     # Get the Git repository commit hash for keeping provenance
     commit_version = get_commit_version()
 
+    print(f'do_indexing.get_tasks - index_label: {index_label}')
     if start in range(1576, 1797):
 
         tasks = []
@@ -951,7 +968,7 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
                 }
                 tasks.append(task)
         print(f'indexing {indexing_step} for years', years)
-    elif start in range(3000, 5000):
+    elif start in range(3000, 5000) or start in range (400, 457):
         inv_nums = [inv_num for inv_num in range(start, end+1)]
         tasks = []
         for inv_num in range(start, end + 1):
@@ -989,9 +1006,10 @@ def main():
     #                     format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging.DEBUG)
 
     for indexing_step in indexing_steps:
-        tasks = get_tasks(start, end, indexing_step, index_label, host_type, base_dir)
         if 'session' in indexing_step or 'resolution' in indexing_step and index_label is None:
             index_label = "staging"
+        tasks = get_tasks(start, end, indexing_step, index_label, host_type, base_dir)
+        print('index_label:', index_label)
         if num_processes > 1:
             with multiprocessing.Pool(processes=num_processes) as pool:
                 # use a chunksize of 1 to ensure inventories are processed more or less in order.
