@@ -183,7 +183,7 @@ class Retriever:
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str,
                     size: int = 100, scroll: str = '2m', show_total: bool = True,
-                    sort: List[str]=None) -> iter:
+                    sort: List[str] = None) -> iter:
         if query is None:
             response = es.search(index=index, scroll=scroll, size=size, sort=sort)
         else:
@@ -324,7 +324,8 @@ class Retriever:
         # pages = self.retrieve_pages_by_query(query)
         return sorted(pages, key=lambda x: x.metadata['page_num'])
 
-    def retrieve_pages_by_type(self, page_type: str, inventory_num: int, size: Union[int, None] = None, **kwargs) -> List[pdm.PageXMLPage]:
+    def retrieve_pages_by_type(self, page_type: str, inventory_num: int,
+                               size: Union[int, None] = None, **kwargs) -> List[pdm.PageXMLPage]:
         query = make_page_type_query(page_type, inventory_num=inventory_num)
         return self.retrieve_pages_by_query(query, size=size, **kwargs)
 
@@ -525,9 +526,10 @@ class Retriever:
         return self.retrieve_resolutions_by_query(query, size=1000)
 
     def scroll_resolutions_by_query(self, query: dict,
-                                    scroll: str = '1m', sort: List[str] = None) -> Generator[rdm.Resolution, None, None]:
+                                    scroll: str = '1m',
+                                    sort: List[str] = None) -> Generator[rdm.Resolution, None, None]:
         for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolutions_index'],
-                                    size=10, scroll=scroll):
+                                    size=10, scroll=scroll, sort=sort):
             yield rdm.json_to_republic_resolution(hit['_source'])
 
     def retrieve_resolutions_by_query(self, query: dict, size: int = 10,
@@ -726,16 +728,3 @@ class Retriever:
             query = {'query': {'match': {'text_id.keyword': para_id}}, 'size': 1000}
             phrase_matches += self.retrieve_phrase_matches_by_query(query)
         return phrase_matches
-
-    def delete_by_query(self, index: str, query: Dict[str, any]):
-        return self.es_anno.delete_by_query(index, query)
-
-    def delete_by_inventory(self, inv: int, index: str):
-        query = {
-            'query': {
-                'match': {'metadata.inventory_num': inv}
-            }
-        }
-        return self.delete_by_query(index, query)
-
-

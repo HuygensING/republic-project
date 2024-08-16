@@ -230,6 +230,28 @@ class Indexer:
             print(f' index{index} exists, deleting')
             print(self.es_anno.indices.delete(index=index))
 
+    def delete_by_query(self, index: str, query: Dict[str, any]):
+        if self.es_anno.indices.exists(index=index) is False:
+            raise ValueError(f"index {index} does not exist")
+        return self.es_anno.delete_by_query(index, query)
+
+    def delete_by_inventory(self, index: str, inv_num: int = None, inv_id: str = None):
+        if inv_id is not None:
+            if isinstance(inv_id, int):
+                raise TypeError("inv_id must be str, not int")
+            match = {'metadata.inventory_id.keyword': inv_id}
+        elif inv_num is not None:
+            if isinstance(inv_num, str):
+                raise TypeError("inv_num must be int, not str")
+            match = {'metadata.inventory_num': inv_num}
+        else:
+            raise ValueError(f"must pass either inv_id or inv_num for index {index}")
+        query = {'match': match}
+        response = self.es_anno.search(index=index, query=query, size=0)
+        print(f"search with delete_by_query query has returned {response['hits']['total']['value']} hits")
+        query = {'query': query}
+        return self.delete_by_query(index, query)
+
     def clone_index(self, original_index: str, new_index: str, delete_original: bool = False,
                     force: bool = False) -> None:
         # 1. make sure the clone index doesn't exist
