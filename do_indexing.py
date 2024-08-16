@@ -288,6 +288,7 @@ class Indexer:
                 print("ZeroDivisionError for scan", scan.id)
 
     def get_inventory_metadata(self, inv_num: int):
+        return get_inventory_by_num(inv_num)
         try:
             return self.rep_es.retrieve_inventory_metadata(inv_num)
         except ValueError:
