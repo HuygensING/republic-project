@@ -236,6 +236,8 @@ class Indexer:
         return self.es_anno.delete_by_query(index, query)
 
     def delete_by_inventory(self, index: str, inv_num: int = None, inv_id: str = None):
+        if self.es_anno.indices.exists(index=index) is False:
+            return None
         if inv_id is not None:
             if isinstance(inv_id, int):
                 raise TypeError("inv_id must be str, not int")

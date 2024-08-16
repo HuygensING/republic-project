@@ -149,12 +149,12 @@ def load_tagger(layer_name: str = None, model_dir: str = None) -> SequenceTagger
     if layer_name is not None:
         tagger_dir = os.path.join(ner_tagger_dir, f'ner_tagger-layer_{layer_name}')
         try:
-            return SequenceTagger.load(os.path.join(tagger_dir, 'final-model.pt'))
+            return SequenceTagger.load(os.path.join(tagger_dir, 'best-model.pt'))
         except Exception as err:
             print('entities.load_tagger - tagger_dir:', tagger_dir)
             raise
     elif model_dir:
-        return SequenceTagger.load(os.path.join(model_dir, 'final-model.pt'))
+        return SequenceTagger.load(os.path.join(model_dir, 'best-model.pt'))
     else:
         raise ValueError("must pass either 'layer_name' or 'model_name'.")
 

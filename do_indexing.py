@@ -261,11 +261,17 @@ class Indexer:
         elif indexing_step == 'full_resolutions':
             if indexing_label is None:
                 self.rep_es.config['resolutions_index'] = 'full_resolutions'
+            elif indexing_label == 'staging':
+                self.rep_es.config['resolutions_index'] = f'full_resolutions_{indexing_label}'
+                # self.rep_es.config['session_metadata_index'] = f'session_metadata_{indexing_label}'
+                # self.rep_es.config['session_text_region_index'] = f'session_text_regions_{indexing_label}'
             else:
                 self.rep_es.config['resolutions_index'] = f'full_resolutions_{indexing_label}'
             if debug > 0:
-                print(f"Indexer.set_indexes - setting resolutions_index index "
-                      f"name to {self.rep_es.config['resolutions_index']}")
+                print(f"Indexer.set_indexes - setting:")
+                print(f"\tresolutions_index index to {self.rep_es.config['resolutions_index']}")
+                print(f"\tsession_metadata_index index to {self.rep_es.config['session_metadata_index']}")
+                print(f"\tsession_text_region_index index to {self.rep_es.config['session_text_region_index']}")
         if indexing_label is None:
             if debug > 0:
                 print(f'Indexer.set_indexes - indexing_label is None: {indexing_label}')
@@ -310,10 +316,6 @@ class Indexer:
 
     def get_inventory_metadata(self, inv_num: int):
         return get_inventory_by_num(inv_num)
-        try:
-            return self.rep_es.retrieve_inventory_metadata(inv_num)
-        except ValueError:
-            return None
 
     def do_page_extracting_from_scan(self, inv_num: int):
         inv_metadata = self.get_inventory_metadata(inv_num)
@@ -624,6 +626,7 @@ class Indexer:
         inv_session_trs = defaultdict(list)
         for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
             if 'session_id' not in tr.metadata:
+                print(f"WARNING do_indexing.get_inventory_sessions - tr.metadata has no 'session_id' key")
                 continue
             inv_session_trs[tr.metadata['session_id']].append(tr)
         for session_meta in inv_session_metas:
@@ -725,7 +728,10 @@ class Indexer:
             print(err)
 
     def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
-        self.rep_es.delete_by_inventory(inv_num=inv_num, index=self.rep_es.config['resolutions_index'])
+        inv_metadata = self.get_inventory_metadata(inv_num)
+        # make sure previous resolutions from inventory are removed
+        self.remove_inventory_docs_from_index(self.rep_es.config['resolutions_index'],
+                                              inv_metadata=inv_metadata)
         if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
             self.do_printed_resolution_indexing(inv_num, year_start, year_end)
         else:
@@ -882,7 +888,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         print(message)
         return None
     print("TASK:", task)
-    indexer.set_indexes(task["indexing_step"], task["index_label"], debug=0)
+    indexer.set_indexes(task["indexing_step"], task["index_label"], debug=1)
     # print('process_inventory - index:', indexer.rep_es.config['resolutions_index'])
     if task["indexing_step"] == "download":
         indexer.do_downloading(task["inv_num"], task["year_start"], task["year_end"])

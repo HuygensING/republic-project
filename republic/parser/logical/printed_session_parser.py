@@ -33,6 +33,8 @@ from republic.parser.logical.generic_logical_parser import copy_line
 
 def initialize_inventory_date(inv_metadata: dict, date_mapper: DateNameMapper, debug: int = 0) -> RepublicDate:
     year, month, day = [int(part) for part in inv_metadata['period_start'].split('-')]
+    if month == 1 and day == 1:
+        day = 2
     if debug > 0:
         print(f'initialize_inventory_date - year, month, day: {year} {month} {day}')
     return RepublicDate(year, month, day, date_mapper=date_mapper)
@@ -184,6 +186,8 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         if 'inventory_id' not in text_region.metadata:
             text_region.metadata['inventory_id'] = inv_metadata['inventory_id']
         if 'session_id' not in text_region.metadata:
+            text_region.metadata['session_id'] = session_metadata['session_id']
+        if text_region.metadata['session_id'] != session_metadata['session_id']:
             text_region.metadata['session_id'] = session_metadata['session_id']
         # We're going from physical to logical structure here, so add a trace to the
         # logical structure elements about where they come from in the physical
@@ -615,7 +619,14 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
                 if debug > 1:
                     print(f"printed_session_parser.map_session_lines_from_session_starts\n"
                           f"\tadding {len(session_lines)} lines to current date {current_date.isoformat()}")
-                session_lines_map[current_date.isoformat()] = session_lines
+                if len(session_lines_map) == 0:
+                    print(f"printed_session_parser.map_session_lines_from_session_starts - "
+                          f"Adding first lines to first date {first_date}")
+                    session_lines_map[first_date] = session_lines
+                else:
+                    print(f"printed_session_parser.map_session_lines_from_session_starts - "
+                          f"next_starts is None, adding lines to current date {current_date.isoformat()}")
+                    session_lines_map[current_date.isoformat()] = session_lines
             session_lines = []
             if debug > 1:
                 print(f"printed_session_parser.map_session_lines_from_session_starts - "
@@ -747,8 +758,8 @@ def get_printed_sessions_from_session_starts(inventory_id: str, pages: List[pdm.
     session_searcher = SessionSearcher(inv_metadata, current_date,
                                        session_phrase_model, window_size=30,
                                        date_mapper=date_mapper, use_token_searcher=False)
-    session_meta, date_meta = session_searcher.parse_session_metadata(None, inv_metadata, [], debug=0)
-    prev_meta = session_meta
+    # session_meta, date_meta = session_searcher.parse_session_metadata(None, inv_metadata, [], debug=0)
+    prev_meta = None
     for si, session_date in enumerate(session_lines_map):
         if debug > 0:
             print('printed_session_parser.get_printed_sesions_from_mapped_lines - session_date:', session_date)
