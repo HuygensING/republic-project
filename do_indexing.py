@@ -595,6 +595,7 @@ class Indexer:
             for session in get_session_gen:
                 session_json = make_session(inv_metadata, session.date_metadata, session.metadata['session_num'],
                                             text_type, session.text_regions)
+                session_json['evidence'] = [match.json() for match in session.evidence]
                 logger.info(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
                 print(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
                 prov_url = self.rep_es.post_provenance(source_ids=session_json['page_ids'], target_ids=[session.id],

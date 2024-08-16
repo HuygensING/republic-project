@@ -624,8 +624,9 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
                           f"Adding first lines to first date {first_date}")
                     session_lines_map[first_date] = session_lines
                 else:
-                    print(f"printed_session_parser.map_session_lines_from_session_starts - "
-                          f"next_starts is None, adding lines to current date {current_date.isoformat()}")
+                    if debug > 1:
+                        print(f"printed_session_parser.map_session_lines_from_session_starts - "
+                              f"next_starts is None, adding lines to current date {current_date.isoformat()}")
                     session_lines_map[current_date.isoformat()] = session_lines
             session_lines = []
             if debug > 1:
