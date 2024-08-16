@@ -91,7 +91,7 @@ class LSTMLineTagger(nn.Module):
                                config['char_vocab_size'],
                                config['line_class_size'],
                                config['bidirectional'])
-        model.load_state_dict(torch.load(config['model_file']), strict=False)
+        model.load_state_dict(torch.load(config['model_file'], weights_only=True), strict=False)
         model.eval()
         return model
 
@@ -188,7 +188,7 @@ class LSTMLineNgramTagger(nn.Module):
                                     config['ngram_vocab_sizes'],
                                     config['line_class_size'],
                                     config['bidirectional'])
-        model.load_state_dict(torch.load(config['model_file']), strict=False)
+        model.load_state_dict(torch.load(config['model_file'], weights_only=True), strict=False)
         model.eval()
         return model
 
@@ -310,9 +310,10 @@ class LSTMLineTaggerGysBERT(nn.Module):
                                       config['char_vocab_size'],
                                       config['line_class_size'],
                                       config['bidirectional'])
-        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print('DEVICE:', device)
         # model.load_state_dict(torch.load(config['model_file'], map_location=device), strict=False)
-        model.load_state_dict(torch.load(config['model_file']), strict=False)
+        model.load_state_dict(torch.load(config['model_file'], weights_only=True), strict=False)
         model.eval()
         return model
 
