@@ -892,8 +892,13 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         indexer.do_page_indexing_pagexml_from_scans(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "scans":
         indexer.do_scan_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
+    elif task["indexing_step"] == "write_raw_pages":
+        indexer.do_raw_page_writing(task["inv_num"], task["year_start"], task["year_end"])
+    elif task["indexing_step"] == "write_preprocessed_pages":
+        indexer.do_preprocessed_page_writing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "write_pages":
-        indexer.do_page_writing(task["inv_num"], task["year_start"], task["year_end"])
+        indexer.do_raw_page_writing(task["inv_num"], task["year_start"], task["year_end"])
+        indexer.do_preprocessed_page_writing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "pages":
         indexer.do_page_writing(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_page_indexing_pagexml_from_file(task["inv_num"], task["year_start"], task["year_end"])
