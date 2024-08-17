@@ -18,6 +18,7 @@ from republic.model.republic_date import RepublicDate, derive_date_from_string
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import get_next_workday
 from republic.model.republic_date import get_next_date_strings
+from republic.model.republic_date import make_republic_date
 from republic.model.republic_date import exception_dates
 from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
@@ -519,10 +520,11 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
 
     date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=debug)
 
+    prev_date = make_republic_date(inv_metadata['period_start']) - datetime.timedelta(days=1)
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
     first_date = current_date.isoformat()
 
-    date_strings = get_next_date_strings(current_date, num_dates=366, include_year=False, date_mapper=date_mapper)
+    date_strings = get_next_date_strings(prev_date, num_dates=366, include_year=False, date_mapper=date_mapper)
 
     if next_start is not None and next_start['date'] > current_date.isoformat():
         if debug > 0:

@@ -360,15 +360,22 @@ class RepublicDate:
         if isinstance(other, RepublicDate) or other.__class__.__name__ == 'RepublicDate':
             return self.date + other.date
         elif isinstance(other, datetime.timedelta):
-            return self.date + other
+            new_date = self.date + other
+            return RepublicDate(new_date.year, new_date.month, new_date.day, date_mapper=self.date_mapper)
         elif isinstance(other, datetime.date):
             return self.date + other
+        else:
+            print('self:', self, type(self), self.__class__.__name__)
+            print('other:', other, type(other), other.__class__.__name__)
+            print('type(self) == type(other):', type(self) == type(other))
+            raise TypeError(f'other must be RepublicDate, datetime.date or datetime.timedelta, not {type(other)}')
 
     def __sub__(self, other: Union[RepublicDate, datetime.date, datetime.timedelta]):
         if isinstance(other, RepublicDate) or other.__class__.__name__ == 'RepublicDate':
             return self.date - other.date
         elif isinstance(other, datetime.timedelta):
-            return self.date - other
+            new_date = self.date - other
+            return RepublicDate(new_date.year, new_date.month, new_date.day, date_mapper=self.date_mapper)
         elif isinstance(other, datetime.date):
             return self.date - other
         else:
