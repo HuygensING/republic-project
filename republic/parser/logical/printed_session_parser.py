@@ -517,12 +517,15 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
 
     start_iterator = make_start_iterator(session_starts)
     next_start = start_iterator()
+    next_start_date = make_republic_date(next_start['date'])
 
     date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=debug)
 
     prev_date = make_republic_date(inv_metadata['period_start']) - datetime.timedelta(days=1)
     current_date = initialize_inventory_date(inv_metadata, date_mapper)
     first_date = current_date.isoformat()
+    if current_date > next_start_date:
+        first_date = next_start['date']
 
     date_strings = get_next_date_strings(prev_date, num_dates=366, include_year=False, date_mapper=date_mapper)
 

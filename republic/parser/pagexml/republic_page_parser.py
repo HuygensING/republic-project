@@ -8,6 +8,7 @@ from pagexml.helper.pagexml_helper import regions_overlap
 
 import republic.helper.pagexml_helper as pagexml_helper
 import republic.parser.pagexml.republic_column_parser as column_parser
+import republic.parser.pagexml.generic_pagexml_parser as page_parser
 from republic.parser.pagexml.republic_column_parser import is_full_text_column
 from republic.parser.pagexml.republic_column_parser import is_text_column
 from republic.parser.pagexml.republic_column_parser import make_derived_column
@@ -959,7 +960,7 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
     para_trs = []
     para_lines = []
     indent_trs = []
-    new_page = copy.deepcopy(page) if copy_page is True else page
+    new_page = page_parser.copy_page(page) if copy_page is True else page
     for col in new_page.columns:
         for tr in col.text_regions:
             if tr.has_type('resolution'):
@@ -1068,6 +1069,7 @@ def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = Fa
         new_coords = pdm.parse_derived_coords(new_extra + new_cols)
     else:
         new_coords = None
-    new_page = pdm.PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
+    new_page = pdm.PageXMLPage(doc_id=page.id, doc_type=copy.deepcopy(page.type),
+                               metadata=copy.deepcopy(page.metadata),
                                coords=new_coords, columns=new_cols, extra=new_extra)
     return new_page

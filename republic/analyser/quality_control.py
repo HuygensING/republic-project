@@ -1,3 +1,4 @@
+from collections import Counter
 from typing import Dict, List
 
 import pagexml.model.physical_document_model as pdm
@@ -75,6 +76,46 @@ def check_pages_to_sessions(session: rdm.Session, session_meta: Dict[str, any],
         raise KeyError(f"session_meta['text_region_ids'] {missing_session_trs} missing in "
                        f"session_tr.ids {session_tr_ids}")
     return None
+
+
+def check_element_types(pages: List[pdm.PageXMLPage]):
+    generic_types = [
+        'structure_doc', 'physical_structure_doc', 'pagexml_doc',
+        'page', 'column', 'text_region', 'line'
+    ]
+    tr_types = [
+        'marginalia', 'date', 'resolution', 'index', 'attendance', 'page-number', 'extra', 'main'
+    ]
+    line_classes = [
+        'para_mid', 'marginalia', 'para_end', 'para_start', 'table', 'noise',
+        'date', 'empty', 'attendance', 'unknown', 'insert_omitted', 'title', 'date_header', 'superscript'
+    ]
+
+    def filter_types(element_types: List[str]):
+        return [et for et in element_types if et not in generic_types]
+
+    page_type_freq = Counter()
+    tr_type_freq = Counter()
+    line_type_freq = Counter()
+    for page in pages:
+        page_type_freq.update(filter_types(page.type))
+        for tr in page.get_all_text_regions():
+            tr_type_freq.update(filter_types(tr.type))
+            for line in tr.lines:
+                if 'line_class' in line.metadata:
+                    line_type_freq.update([line.metadata['line_class']])
+    message = ''
+    if 'index_page' not in page_type_freq and 'resolution_page' not in page_type_freq:
+        message += 'no index or resolution pages\n'
+    if any([trt in tr_type_freq for trt in tr_types]) is False:
+        message += 'no specific text region types\n'
+    if any([lc in line_type_freq for lc in line_classes]) is False:
+        message += 'no specific line classes'
+    if message != '':
+        print(page_type_freq)
+        print(tr_type_freq)
+        print(line_type_freq)
+        raise ValueError(message)
 
 
 def check_session_to_resolutions(session: rdm.Session, resolutions: List[rdm.Resolution]):

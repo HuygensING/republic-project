@@ -393,7 +393,8 @@ def update_page_with_date_info(page: pdm.PageXMLPage, records: List[Dict[str, an
             print('\n')
         col.set_derived_id(metadata['scan_id'])
         cols.append(col)
-    new_page = pdm.PageXMLPage(metadata=copy.deepcopy(page.metadata), coords=copy.deepcopy(page.coords),
+    new_page = pdm.PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
+                               doc_type=copy.deepcopy(page.type), coords=copy.deepcopy(page.coords),
                                columns=cols)
 
     if debug > 1:

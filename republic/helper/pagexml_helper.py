@@ -99,7 +99,7 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
                                        lines=merged_lines)
     else:
         merged_trs = [tr for col in columns for tr in col.text_regions]
-        sorted_trs = sorted(merged_trs, key=lambda  x: x.coords.y)
+        sorted_trs = sorted(merged_trs, key=lambda x: x.coords.y)
         merged_lines = [line for col in columns for line in col.lines]
         sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
         merged_coords = pdm.parse_derived_coords(sorted_trs + sorted_lines)

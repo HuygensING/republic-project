@@ -206,7 +206,9 @@ def copy_doc(doc: PageXMLDoc) -> PageXMLDoc:
 
 
 def copy_scan(scan: PageXMLScan) -> PageXMLScan:
-    new_scan = PageXMLScan(doc_id=scan.id, metadata=copy.deepcopy(scan.metadata),
+    new_scan = PageXMLScan(doc_id=scan.id,
+                           doc_type=copy.deepcopy(scan.type),
+                           metadata=copy.deepcopy(scan.metadata),
                            coords=copy.deepcopy(scan.coords),
                            lines=[copy_line(line) for line in scan.lines],
                            text_regions=[copy_text_region(tr) for tr in scan.text_regions])
@@ -215,7 +217,9 @@ def copy_scan(scan: PageXMLScan) -> PageXMLScan:
 
 
 def copy_page(page: PageXMLPage) -> PageXMLPage:
-    new_page = PageXMLPage(doc_id=page.id, metadata=copy.deepcopy(page.metadata),
+    new_page = PageXMLPage(doc_id=page.id,
+                           doc_type=copy.deepcopy(page.type),
+                           metadata=copy.deepcopy(page.metadata),
                            coords=copy.deepcopy(page.coords),
                            lines=[copy_line(line) for line in page.lines],
                            text_regions=[copy_text_region(tr) for tr in page.text_regions],
@@ -226,7 +230,9 @@ def copy_page(page: PageXMLPage) -> PageXMLPage:
 
 
 def copy_column(col: PageXMLColumn) -> PageXMLColumn:
-    new_col = PageXMLColumn(doc_id=col.id, metadata=copy.deepcopy(col.metadata),
+    new_col = PageXMLColumn(doc_id=col.id,
+                            doc_type=copy.deepcopy(col.type),
+                            metadata=copy.deepcopy(col.metadata),
                             coords=copy.deepcopy(col.coords),
                             lines=[copy_line(line) for line in col.lines],
                             text_regions=[copy_text_region(tr) for tr in col.text_regions])
@@ -235,7 +241,9 @@ def copy_column(col: PageXMLColumn) -> PageXMLColumn:
 
 
 def copy_text_region(tr: PageXMLTextRegion) -> PageXMLTextRegion:
-    new_tr = PageXMLTextRegion(doc_id=tr.id, metadata=copy.deepcopy(tr.metadata),
+    new_tr = PageXMLTextRegion(doc_id=tr.id,
+                               doc_type=copy.deepcopy(tr.type),
+                               metadata=copy.deepcopy(tr.metadata),
                                coords=copy.deepcopy(tr.coords),
                                lines=[copy_line(line) for line in tr.lines],
                                text_regions=[copy_text_region(tr) for tr in tr.text_regions])
@@ -244,7 +252,9 @@ def copy_text_region(tr: PageXMLTextRegion) -> PageXMLTextRegion:
 
 
 def copy_line(line: PageXMLTextLine) -> PageXMLTextLine:
-    new_line = PageXMLTextLine(doc_id=line.id, metadata=copy.deepcopy(line.metadata),
+    new_line = PageXMLTextLine(doc_id=line.id,
+                               doc_type=copy.deepcopy(line.type),
+                               metadata=copy.deepcopy(line.metadata),
                                coords=copy.deepcopy(line.coords), baseline=copy.deepcopy(line.baseline),
                                text=line.text,
                                words=copy.deepcopy(line.words) if line.words else None)
@@ -253,7 +263,9 @@ def copy_line(line: PageXMLTextLine) -> PageXMLTextLine:
 
 
 def copy_word(word: PageXMLWord) -> PageXMLWord:
-    new_word = PageXMLWord(doc_id=word.id, metadata=copy.deepcopy(word.metadata),
+    new_word = PageXMLWord(doc_id=word.id,
+                           doc_type=copy.deepcopy(word.type),
+                           metadata=copy.deepcopy(word.metadata),
                            coords=copy.deepcopy(word.coords), text=word.text)
     new_word.type = copy.deepcopy(word.type)
     return new_word

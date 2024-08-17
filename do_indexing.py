@@ -30,6 +30,7 @@ import republic.extraction.extract_resolution_metadata as extract_res
 import republic.helper.pagexml_helper as pagexml_helper
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
+from republic.analyser.quality_control import check_element_types
 from republic.classification.line_classification import NeuralLineClassifier
 from republic.classification.content_classification import get_header_dates
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
@@ -384,6 +385,7 @@ class Indexer:
 
         raw_pages = [page for page in get_raw_pages(inv_num, self)]
         print(f"number of raw pages: {len(raw_pages)}")
+        check_element_types(raw_pages)
 
         res_pages = filter_pages(raw_pages, 'resolution_page')
         other_pages = [page for page in raw_pages if page not in res_pages]
@@ -399,6 +401,7 @@ class Indexer:
                                                        date_tr_type_map=date_tr_type_map, ignorecase=False,
                                                        debug=0)
 
+        check_element_types(preprocessed_pages)
         date_trs = get_header_dates(preprocessed_pages)
         print(f"inv {inv_num}  number of date text_regions in preprocessed pages: {len(date_trs)}")
 
