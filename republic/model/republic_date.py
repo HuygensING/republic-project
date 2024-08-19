@@ -85,6 +85,8 @@ exception_dates = {
     "1791-12-01": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1792-03-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1792-03-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1792-11-30": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1792-12-01": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1793-03-04": {"mistake": "next day has wrong week day name", "shift_days": 1},
     # OCR problems solved with March 2021 batch
     # "1794-03-24": {"mistake": "OCR problems, skip whole week", "shift_days": 7},

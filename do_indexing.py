@@ -785,8 +785,9 @@ class Indexer:
                     new_resolution.metadata['prov_url'] = [new_resolution.metadata['prov_url']]
                 if prov_url not in new_resolution.metadata['prov_url']:
                     new_resolution.metadata['prov_url'].append(prov_url)
-                logger.info('\tadding resolution metadata for resolution', new_resolution.id)
-                print('\tadding resolution metadata for resolution', new_resolution.id)
+                message = f'\tadding resolution metadata for resolution {new_resolution.id}'
+                logger.info(message)
+                print(message)
                 self.rep_es.index_resolution(new_resolution)
             except Exception as err:
                 errors.append(err)
