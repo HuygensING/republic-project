@@ -14,7 +14,7 @@ from republic.parser.pagexml.republic_column_parser import is_text_column
 from republic.parser.pagexml.republic_column_parser import make_derived_column
 from republic.helper.metadata_helper import make_iiif_region_url
 from republic.config.republic_config import base_config
-from republic.parser.logical.date_parser import line_starts_with_week_day_name
+from republic.parser.logical.date_parser import line_starts_with_weekday_name
 
 
 def derive_pagexml_page_iiif_url(jpg_url: str, coords: pdm.Coords, margin: int = 100) -> str:
@@ -944,7 +944,7 @@ def is_paragraph_line(line: pdm.PageXMLTextLine) -> bool:
     return line.metadata['line_class'].startswith('para_')
 
 
-def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhraseSearcher = None,
+def update_line_types(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseSearcher = None,
                       month_name_searcher: FuzzyPhraseSearcher = None,
                       copy_page: bool = True, debug: int = 0) -> pdm.PageXMLPage:
     """Update line class types when they are in conflict with the type of
@@ -953,7 +953,7 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
     This is particularly for text regions labelled as attendance but with
     lines classified as paragraph lines.
 
-    If a week_day_name_searcher is passed, line classes will be updated to date if they contain
+    If a weekday_name_searcher is passed, line classes will be updated to date if they contain
     a weekday name.
     """
     default_types = {'text_region', 'structure_doc', 'physical_structure_doc', 'pagexml_doc'}
@@ -1023,8 +1023,8 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
                 if indent_tr.has_type('header') and indent_tr.has_type('date'):
                     update_type = 'date_header'
                     for indent_line in indent_tr.lines:
-                        if week_day_name_searcher and line_starts_with_week_day_name(indent_line,
-                                                                                     week_day_name_searcher):
+                        if weekday_name_searcher and line_starts_with_weekday_name(indent_line,
+                                                                                    weekday_name_searcher):
                             if debug > 0:
                                 print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
                                       f"has week day date lines, updating line types to 'date'")
@@ -1042,7 +1042,7 @@ def update_line_types(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhrase
 
 
 def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = False,
-                                   week_day_name_searcher: FuzzyPhraseSearcher = None,
+                                   weekday_name_searcher: FuzzyPhraseSearcher = None,
                                    copy_page: bool = True, debug: int = 0) -> pdm.PageXMLPage:
     """Split the text regions in columns of a page into multiple text regions if they contain
     large vertical gaps.
@@ -1050,11 +1050,11 @@ def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = Fa
     If update_type is set to True, the text region type will also be updated based in the
     line_classes of its lines.
 
-    If a week_day_name_searcher is passed, line classes will be updated to date if they contain
+    If a weekday_name_searcher is passed, line classes will be updated to date if they contain
     a weekday name.
     """
     if update_type is True:
-        page = update_line_types(page, week_day_name_searcher=week_day_name_searcher,
+        page = update_line_types(page, weekday_name_searcher=weekday_name_searcher,
                                  copy_page=copy_page, debug=debug)
     new_extra = [tr for tr in page.extra] if page.extra else []
     if debug > 0:

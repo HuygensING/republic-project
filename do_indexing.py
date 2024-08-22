@@ -142,6 +142,7 @@ def get_raw_pages(inv_num: int, indexer: Indexer):
 
 def get_preprocessed_pages(inv_num: int, indexer: Indexer):
     preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
+    print('preprocessed_pages_file:', preprocessed_pages_file)
     return make_page_generator(inv_num, preprocessed_pages_file, 'preprocessed')
 
 
@@ -315,11 +316,8 @@ class Indexer:
                 logger.error("ZeroDivisionError for scan", scan.id)
                 print("ZeroDivisionError for scan", scan.id)
 
-    def get_inventory_metadata(self, inv_num: int):
-        return get_inventory_by_num(inv_num)
-
     def do_page_extracting_from_scan(self, inv_num: int):
-        inv_metadata = self.get_inventory_metadata(inv_num)
+        inv_metadata = get_inventory_by_num(inv_num)
         page_type_index = get_per_page_type_index(inv_metadata)
         text_page_num_map = map_text_page_nums(inv_metadata)
         page_count = 0
@@ -353,7 +351,7 @@ class Indexer:
         self.do_preprocessed_page_writing(inv_num, year_start, year_end)
 
     def do_raw_page_writing(self, inv_num: int, year_start: int, year_end: int):
-        inv_metadata = self.get_inventory_metadata(inv_num)
+        inv_metadata = get_inventory_by_num(inv_num)
         num_scans = inv_metadata['num_scans']
         message = f"Writing raw pagexml pages for inventory {inv_num} (years {year_start}-{year_end})..."
         logger.info(message)
@@ -373,7 +371,7 @@ class Indexer:
         write_pages(raw_page_file, raw_pages)
 
     def do_preprocessed_page_writing(self, inv_num: int, year_start: int, year_end: int):
-        inv_metadata = self.get_inventory_metadata(inv_num)
+        inv_metadata = get_inventory_by_num(inv_num)
         if get_text_type(inv_num) == 'printed' or inv_metadata['content_type'] != 'resolutions':
             return None
         preprocessed_page_dir = 'data/pages/preprocessed_page_json'
@@ -413,7 +411,7 @@ class Indexer:
                                  page_generator: Generator[pdm.PageXMLPage, None, None]):
         logger.info(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
-        inv_metadata = self.get_inventory_metadata(inv_num)
+        inv_metadata = get_inventory_by_num(inv_num)
         num_scans = inv_metadata['num_scans']
         for pi, page in enumerate(page_generator):
             page_count = pi + 1
@@ -483,16 +481,21 @@ class Indexer:
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
         print(f'inventory {inv_num} - number of non-skipped pages: {len(pages)}')
 
-        get_session_func = get_printed_sessions if text_type == 'printed' else get_handwritten_sessions
-        print(f"text_type: {text_type}")
-        # use_token_searcher = True if text_type == 'printed' else False
         # include_variants not yet implemented in FuzzyTokenSearcher so use FuzzyPhraseSearcher
+        # use_token_searcher = True if text_type == 'printed' else False
         use_token_searcher = False
+        if text_type == 'printed':
+            session_gen = get_printed_sessions(inventory_id=inv_id, pages=pages,
+                                               session_starts=session_starts,
+                                               use_token_searcher=use_token_searcher, debug=0)
+        else:
+            session_gen = get_handwritten_sessions(inv_id, pages=pages, session_starts=session_starts,
+                                                   do_preprocessing=False,
+                                                   num_past_dates=5, num_future_dates=31, debug=0)
+        print(f"text_type: {text_type}")
         prev_session = None
         try:
-            for session in get_session_func(inv_metadata['inventory_id'], pages,
-                                            session_starts=session_starts,
-                                            use_token_searcher=use_token_searcher, debug=1):
+            for session in session_gen:
                 yield session
                 prev_session = session
         except Exception as err:
@@ -732,7 +735,7 @@ class Indexer:
             print(err)
 
     def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
-        inv_metadata = self.get_inventory_metadata(inv_num)
+        inv_metadata = get_inventory_by_num(inv_num)
         # make sure previous resolutions from inventory are removed
         self.remove_inventory_docs_from_index(self.rep_es.config['resolutions_index'],
                                               inv_metadata=inv_metadata)
@@ -885,7 +888,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
     indexer = Indexer(task["host_type"], base_dir=task["base_dir"])
-    inv_metadata = indexer.get_inventory_metadata(task['inv_num'])
+    inv_metadata = get_inventory_by_num(task['inv_num'])
     if inv_metadata is None:
         message = f"Skipping {task['indexing_step']} for inventory {task['inv_num']} " \
                   f"(years {task['year_start']}-{task['year_end']})..."
