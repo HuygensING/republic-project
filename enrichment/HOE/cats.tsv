@@ -1,0 +1,2496 @@
+Nr.	Hoedanigheid	Rood	Categorie GD	Level_2	Cat_1_nieuw	Cat_2_nieuw	Categorie_RS_1	Categorie_RS_2	Comment_JO	Comment_RS	Categorie NG	Patterns	tags																
+814	aalmoessenier		Godsdienst		Religie		Religie				kw_beroep	aalmoes+eni\w*	"""Aalmoesseniers ende Heylige Geestmeesters"""																
+630	aanhanger van het huis van oranje		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_id	\baanha\w*.*huis.*ora\w*	"""Aanhangers van het Huis van Orange"""																
+674	aanlegger		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J [NG hier]		kw_id	\baanleg+er\w*	"""Aanleggeresse"""																
+415	aannemer		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	a[ea]n?nee?me\w*rs?\w*	"""aennemers"";""aannemers"";""Aannemers"""																
+575	aartshertog		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\b[ae]+[ir]t[sz]hert\w*	"""Ertzhertogen"";""Ertshertogen"";""Ertzhertoge"""																
+341	abt		Godsdienst		Religie		Religie				kw_kerk	\bab+[dt]+[yie]*s?\b	"""Abt"";""abt"";""Religieusen der voorsz Abdye"""																
+217	adelborst		Krijgsmacht	Marine	Leger & Milities		Leger & Milities				kw_edelen	\badelbors\w*	"""Adelborst"";""gewesen Adelborst in Brasil"";""Adelborst onder de Compaignie vanden"""																
+204	adjudant		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bad\w*ant\w*	"""Admirante van Arragon"";""Admirante"";""Adjutant"""																
+624	adjunct	adjunt-reviseur	Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bad[ij]+un\w*	"""Adjuncten Reviseurs"";""adjuncten reviseurs"";""Adjunct Reviseur"""																
+33	adjuster		geen hoedanigheid							GD: geen hoedanigheid, Frans ww	kw_ambt	\bad[ij]ust\w*	"""adjusteren"";""adjustement"";""adjusteren."""																
+160	administrateur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\badmi\w*rs?e?n?\b, ^ *\w* *\badmi\w*r[senm]*\b	"""Administratorem"";""Administratores"""																
+180	administrator		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\badmi\w*rs?e?n?\b, ^ *\w* *\badmi\w*r[senm]*\b	"""Administratoren"";""Administrator"";""administratoren"""																
+196	admiraal		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\badmi?r[^t]*\b, \b\w*miraal\w*	"""Lieutenant Admirael"";""Lt. Admirael"";""Vice Admirael"""																
+639	admiraal		Krijgsmacht		Leger & Milities		Leger & Milities			waarom tweemaal?	kw_ambt	\badmi?r[^t]*\b, \b\w*miraal\w*	"""Lieutenant Admirael van Zeelant"";""Lieutenant Admirael van Hollandt ende Westvrieslandt"";""Vice-Admiraal van Holland en Westvriesland"""																
+646	admiraal‚Äõ	admiraal	Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	\badmi?r[^t]*\b, \b\w*miraal\w*	"""admirael l‚Äõheremite"""																
+283	admodiateur		Juridische status		Politiek & Bestuur	Financiën	Politiek & Bestuur?			"GD: ""Verpachting van een domein, een bron van inkomsten door de overheid, bij overeenkomst"""	kw_beroep	\badmodia\w*\b	"""Admodiateur"";""admodiateur"";""admodiateurs"""																
+621	adsignator	assignator	Politiek & bestuur		Politiek & Bestuur	Financiën	Politiek & Bestuur?			"GD: ""Aanwijzen met betr. tot betalingen"", zie Historisch Woordenboek (assigneren)"	kw_beroep	\ba[sd]+sign\w*\b	"""adsignatie"";""Adsignatoren"";""Assignatoren"""																
+5	adstructie		geen hoedanigheid							GD: geen hoedanigheid	kw_ambt	\badstr\w*	"""adstructie"";""Adstructie"";""adstructie van haare"""																
+45	aduis		geen hoedanigheid							GD: geen hoedanigheid	kw_ambt	\ba[d].{0,3}se?n?\b	"""aduis"";""aduys"";""Aduis"""																
+620	adventurier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bad[uv]entu\w*	"""Coopluyden Aduenturiers"";""Aduenturiers"";""Engelsche Coopluyden Aduenturiers"""																
+55	advocaat		Politiek & bestuur, Rechtspraak	Rechtspraak	Justitie		(Juridische) status en Rechtspraak		P&J		kw_ambt	\bad[brvu]o[ck]a\w*, \bad[uv]o\w*	"""Advocaat Fiscaal"";""Advocaat"";""Advocaet"""																
+245	affuitmaker		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_beroep	\baf+uit *ma+kers?	"""Affuijtmaeckers"";""Azynmaaker in de Beverwyck"";""affuytmaker"""																
+71	afgeordende		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\baff?geor\w*	"""affgeordende vanden"";""affgeordene van"";""Affgeordende der Stadt Dansick"""																
+102	afgezant		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\ba.{0,2}ge[sz][oa]\w*, \b[ea]ff?ge[sz]+a\w*	"""affgesante vanden"";""Affgesante vanden"";""affgesante van"""																
+369	afkomstig uit		Geografie		Status & relaties	Geografie	Geografie		S&R		kw_id	\bafkomstig *uit	"""sijne Brabandsche nativiteyt"";""geboortigh van Amsterdam"";""geboortigh van Maastricht"""																
+665	agendaris		Beroep		Financiën		Financiën			bankier die plantagelening verstrekte	kw_id	\bagendaris\w*	"""Agendarissen in de voorsz Colonie"""																
+598	agent		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur		kan ook handel zijn?		kw_ambt, kw_rest	\bagent\w*, \bagen.{0,2}\b, \bage.{0,3}\b	"""Agent"";""agent"";""Agent van"""																
+617	aide		Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	\baide\w*	"""aides"";""Aides"";""Aide de Camp"""																
+365	algerijn		Geografie		Geografie		Geografie				kw_id	\balger\w*ne?n?\b	"""Algerinen"";""Algerynen"";""Algerijn"""																
+361	algierse rover		Geografie		Geografie		Geografie				kw_id, kw_rest	alg.*rov\w*, \broo?[uv]e\w*	"""Algiersche Rovers"";""Algiersche en andere Rovers"";""Algiersche ende andere Rovers"""																
+91	amanuensis		Politiek & bestuur	??	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_beroep	\bam\w*sis\w*, amm?anuensis	"""Amanuensis van den"";""amanuensis vanden"";""Amanuensis vanden"""																
+463	ambachtmeester		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	ambac.*mee\w*	"""Ambachtsmeesters"";""Scheepen van Hulster-Ambagt, in qualiteit als Rentmeester der Domeinen van"""																
+94	ambassadeur		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bamb.s\w*rs?\b, \bambass\w*, \b\w*ba[fs]+adeu\w*, \b\w*sadeur\w*	"""haar Hoogh Mogende Ambassadeur aan het Hof van"";""Ambassadeur"";""haar Hoog Mog. Ambassadeur aan het Hof van"""																
+103	ambtenaar		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bam[bp]t\w*	"""Amptman"";""Amptman van Bommel"";""Drossard van den Ampte van Montfort"""																
+90	ambtman		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_beroep	\bam[bp]t\w*, am[pb]t?man\w*	"""Ampman van Thiel"";""Ampman"""																
+650	amerikaan		Geografie		Geografie		Geografie				kw_id	\bameri[ck]+a+ne?n?\b	"""Americaan"";""als Schipper voerende het Americaansch Schip the Fair American"""																
+470	ammodiateur		Beroep		Financiën		Financiën			verpachter van een domein of van een bron van inkomsten	kw_rest	\bammod\w*	"""ammodiateur"";""ammodiateurs"""																
+16	apostel		geen hoedanigheid		Religie		Religie				kw_ambt	\bapost\w*	"""Apostel"";""Apostelen"";""Heere Nuntius Apostolicus"""																
+467	apotheker		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bapot\w*	"""Apothecaris alhier inden Hage"";""Apotheker"";""Apothecaris"""																
+654	appelant		Politiek & bestuur, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_ambt	\bap+el+an[dten]+	"""Appellant"";""appellant"""																
+655	arabier		Geografie		Geografie		Geografie				kw_id	\ba+ra+bier\w*	"""Arabiers"";""Arabieren"";""Arabiersche Koopluyden"""																
+452	arbeider		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\ba+rbei\w*	"""aerbeyders"";""Arbeiders"";""arbeyders"""																
+67	arbiter		Politiek & bestuur	Rechtspraak	Justitie		(Juridische) status en Rechtspraak		P&J		kw_ambt	\barbi\w*	"""Arbiters"";""arbiters"";""arbitrale"""																
+656	archdiaken		Godsdienst		Religie		Religie				kw_rest	\barchi?d[ie]a\w*	"""Archideacon"""																
+658	archimandrit	archimandriet	Godsdienst		Religie		Religie				kw_rest	\barchi?mandr\w*	"""Archimandrit"""																
+420	architect		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\barchitec\w*	"""Architect"";""Architect der Stadt Amstelredam"";""Architect van"""																
+427	armateur		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_ambt	\barmat\w*	"""Armateurs"";""Armateur"";""Engelschen Armateur"""																
+660	arminiaan		Godsdienst		Religie		Religie				kw_id	\barminia+ne?n?\b	"""Arminianen"""																
+668	arrestant		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bar+est\w*	"""Arrestant"";""arrestant"""																
+649	artilleriemeester		Krijgsmacht		Leger & Milities		Leger & Milities				kw_beroep	\bartil+\w* *meest\w*	"""Artilleryemeester der Stadt Leyden"""																
+671	artillerist		Krijgsmacht		Leger & Milities		Leger & Milities				kw_beroep	\bartil+erist\w*	"""Artilleristen"";""Scheeps artilleristen"""																
+77	assessor		Politiek & bestuur	??	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bassess\w*	"""Assessor"";""assessor"";""Assessoren"""																
+608	assistent		Beroep							hangt van de context af	kw_ambt	\bad?s?siste\w*	"""Assistentbode"";""adsistent Boode"";""Assistentboode"""																
+519	assuradeurs		Beroep		Financiën		Financiën				kw_rest	\bassura\w*	"""Assuradeurs"";""Assuradeurs in Hollandt"";""Assuradeurs tot Amsterdam"""																
+662	assurantiemeester		Beroep		Financiën		Financiën				kw_rest	\bassura\w*	"""Asseurantiemeester der Stadt Amsterdam"""																
+686	attaché		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\bat+ach[e√©]\w*	"""attache"";""attache vanden"""																
+664	attacquant		Krijgsmacht		Leger & Milities		Leger & Milities				kw_id	\battac?quan\w*	"""attaquant"";""attacquant"";""Attacquant"""																
+47	audiencier		Beroep, Rechtspraak		Justitie		(Juridische) status en Rechtspraak		?		kw_beroep	\baudi\w*	"""Audiencier"";""Andiencier"";""heere Audiencier"""																
+106	auditeur		Politiek & bestuur	Rechtspraak	Justitie	Financiën	(Juridische) status en Rechtspraak	Financiën	?		kw_ambt, kw_beroep	\baudite\w*, \baudi\w*	"""Auditeur"";""Auditeur Militair"";""auditeur"""																
+627	auteur		??, Beroep							hangt van de context af	kw_rest	\bauth?eur\w*	"""Autheur"""																
+571	baanderheer		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_ambt	\bbaander *hee\w*	"""Baenderheer van Williby"";""Baenderheer van williby"";""Baenderheere van Williby"""																
+134	bai		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur			Bey' is volgens mij de huidige term	kw_rest	\bbaij?[^lo]{0,3}\b	"""Baijen"";""Baij"";""baijen"""																
+638	baiolo		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bba+[yij]+olo\w*	"""Baiolo"";""Baiolo van Venetien"""																
+585	baion		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bbaij?on\w*	"""Baijonne"";""Baionne"";""Baionne in Vranckryck"""																
+512	bakker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_kerk	\bbac?k+ers?\b	"""Backer"";""Bakkers"";""Bakker"""																
+135	baljuw		Politiek & bestuur	Regionaal, Lokaal	Politiek & Bestuur	Justitie	(Juridische) status en Rechtspraak		P&B / P&J		kw_kerk	bai?ll?[ji]u\w*	"""Bailliu"";""Bailliuw"";""Baillu"""																
+645	bandanesen		Geografie		Geografie		Geografie				kw_id	\bbandane\w*	"""Bandanesen"""																
+25	bandelier		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bbandel\w*	"""bandelier"";""Bandeliers"";""bandeliers"""																
+487	bankier		Beroep		Financiën		Financiën				kw_kerk	\bban[qkc]+[iu]\w*	"""Banquier"";""Kooplieden en Banquiers alhier in den Hage"";""Banquiers"""																
+486	barbier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_kerk	\bbarbier\w*	"""Barbier"""																
+594	baron		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten			waarom tweemaal?	kw_edelen, kw_rest	baroe?n[^nes]*\b, \bbar[oe]+ns?\b	"""Baron"";""Baron van Reischach"";""Heere Baron van Reischach"""																
+634	baron		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	baroe?n[^nes]*\b, \bbar[oe]+ns?\b	"""Baronnie van Breda"";""Heere Baron van Gortz"";""Baron van Charnace"""																
+567	barones		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	baronn?esw*	"""Baronnesse van Wissekercke"";""Baronnesse"";""Baronesse van Wangenheim"""																
+65	bascha		Adel & vorstenhuizen, Politiek & bestuur	Internationaal	Adel & Vorsten		Adel & Vorsten			als we hier ook Politiek & Bestuur doen, dan zou dat ook bij bijv. prins en koning kunnen.	kw_ambt, kw_edelen, kw_rest	\bbas?cha\w*, \bbas[sch]+a\b, \b[pb]as?s?c?h?a\b	"""Bascha"";""Bacha"";""Bassa"""																
+640	baselaar		geen hoedanigheid							is een soort mes	kw_id	\bbaselaar\b	"""Baselaer"""																
+641	bassas	pasja	Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur?			is dit wel een hoedanigheid?	kw_rest	\bbas+as\b	"""Bassas"""																
+642	bataven		Geografie		Geografie		Geografie?				kw_id	\bbata+[fv]e?n?\b	"""Bataven"";""eenige Bataven"";""eenige Officieren der Bataven"""																
+637	batellier	schipper	Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst			"GD: Frans woord voor ""schipper"""	kw_ambt	\bbatel+ier\w*	"""Batelier"";""Bateliers"";""Batelliers"""																
+635	batenburger		geen hoedanigheid				Geografie?			GD: geen hoedanigheid	kw_id	\bbatenb[ou]r\w*ers?	"""Batenborger"""																
+138	beambte		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_pol	\bbeam[bp]t\w*	"""Beampten"";""beampten"";""Beampten en Bedienden"""																
+479	bedelaar		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bbe+dela\w*	"""Bedelaars"";""bedelaers"";""Bedelaers"""																
+428	bediende		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bbedien[^a]\w*	"""bedienden"";""Bedienden"";""Bediendens"""																
+518	bedijker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_id	\bbed[eijy]+c?ker\w*	"""Bedijckers"";""bedijckers, arbeijders, Leveranciers"";""bedijckers"""																
+636	bedrieger		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_beroep	\bbedrieg\w*	"""Bedrieger"""																
+629	beeldhouwer		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bbe+l[td]+hou\w*	"""Mr. Beeldthouwer"";""Beeldhouwer"";""Beelthouwer"""																
+647	beenhouwer		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bbeenhou\w*	"""Beenhouwers binnen de voorschreve Stadt"""																
+444	behanger		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bbehanger\w*	"""Behangers"";""Meester Behanger"";""Behangers alhier in den Hage"""																
+140	bei		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur			is dit niet hetzelfde als 'bai' eerder?	kw_beroep	\bbe[iyj]+\b	"""Bey"";""Bey van Tunis"";""Bey van Tripoli"""																
+677	beleider		Krijgsmacht, Politiek & bestuur		Religie		Religie			wat is dit? Beleider van een religie?	kw_id	\bbel[eijy]+der\w*	"""beleijders"";""Beleyders"";""Belyders"""																
+710	bestelmeester		Beroep		Politiek & Bestuur		Politiek & Bestuur			intendant?	kw_ambt	\bbestelme*s?t?e?r?e?n?s?\b	"""bestelmeester"";""Bestelmeester"";""bestelmre"""																
+679	bestuurder		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bbestu+rder\w*	"""Bestuurders"""																
+264	betaalheren		Juridische status		Financiën		Financiën				kw_beroep	betaals?[hm]\w*\b	"""Betaelsheeren"";""Betaalsheeren"";""Betaelmeester"""																
+670	beurtman		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bbeurtman\b	"""Beurtman"";""Beurtman van Emmerick op Nymegen"";""ordinaris Beurtman op Amsterdam"""																
+667	bevelhebber		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bbe[uv]elheb\w*	"""Schipper of Bevelhebber"";""Officieren en Bevelhebberen"";""Bevelhebberen"""																
+666	bevrachter		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bbevracht\w*	"""bevrachters"";""Bevragters van het selve Schip"";""reeders ende bevrachters"""																
+618	bewaarder	kamerbewaarder	Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\bbewa\w*	"""bewaert"";""Camer bewaerder"";""camer bewaerder"""																
+146	bewindhebber		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_beroep, kw_rest	\bbewin\w* *heb\w*, bewin\w*heb\w*\b, \bbewi\w*hel?b\w*	"""Bewinthebberen"";""Bewindhebberen"";""Bewinthebbers"""																
+672	bezitter		??, Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_id	\bbe[sz]+it+er\w*	"""possesseurs"";""Besitter"";""Bezitter"""																
+18	bidet		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bbidet.?\b	"""Bidets"";""bidets"";""bidetz"""																
+652	biersteker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_kerk	\bbierste\w*	"""bierstekers"";""Biersteecker"""																
+651	biljetschrijver		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bbil\w*etschr\w*	"""Billetschryver"""																
+20	biscayen				Geografie		Geografie			wijzigen in Biscaiers?	kw_beroep	\bbisca\w*	"""Biscayers"";""biscayers"";""Biscaijers"""																
+336	bisschop		Godsdienst		Religie		Religie				kw_kerk	bissch\w*, \bbis?sch\w*, \bbi\wschop\b, \bbis.{0,6}opp?e?\b	"""Bisschop van Munster"";""heere Bisschop van Munster"";""Heere Bisschop van Munster"""																
+659	blikslager		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bblikslag\w*	"""Blickslager"";""Mr. Blickslager"";""meester Blickslager"""																
+395	bloedverwant		Familie status		Status & relaties		Familie				kw_rest	\bbloe[td]+ver\w*	"""naaste Bloedverwanten van"";""Bloetverwanten"";""als Bloedverwant van"""																
+657	bloemist		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bbloemis\w*	"""Bloemist alhier in den Hage"""																
+137	bode		Politiek & bestuur		Dienstverlening		Dienstverlening				kw_beroep	\bboo?d[ie]\w*	"""Boode"";""Bode"";""bode"""																
+455	boekdrukker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bbo.{0,2}kdruc?k\w*	"""bouckdrucker"";""Boeckdrucker"";""Boeckdrucker tot Amsterdam"""																
+459	boekhouder		Beroep		Financiën		Financiën				kw_beroep	boekho\w*, \bbo[ue].{0,6}ders?\b	"""Boeckhouder"";""Boeckhouders"";""Boekhouder"""																
+442	boekverkoper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bb[ueao]+c?k *ver.{0,6}ers?\b	"""Boeckvercooper alhier inden Hage"";""boeckvercooper"";""Boeckvercooper"""																
+461	boer		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_rest	\bboer\w*	"""boeren"";""Boeren"";""Boer"""																
+193	bombardier		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_beroep	\bbombar\w*	"""Bombardier"";""Bombardiers"";""Bombardier onder de Compagnie van den"""																
+60	bondgenoot		Juridische status, Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_pol	\bbon[dt] *ge *n *o\w*, \bbo.{0,6}geno\w*	"""Bondgenoten"";""Bontgenoten"";""Bondtgenoten"""																
+663	bontwerker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bbondwerc?ker\w*	"""Bondwerker alhier in den Hage"""																
+643	boormaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bboorma\w*	"""Boormaker"";""Boormaecker"""																
+653	boosdoener		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_id	\bboosdoen\w*	"""Boosdoenders"";""Booswichten"";""Gaauwdieven, Kneevelaars en Boosdoenders"""																
+409	bootsgezellen		Beroep, Krijgsmacht		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	bootsge\w*, \bboots? *ge\w*	"""Bootsgesellen"";""bootsgesellen"";""Officieren ende Bootsgesellen"""																
+661	bootslui	loods	Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	\b\woots?lui\w*	"""Lootsluijden"";""lootsluijden"";""lootsluyden"""																
+410	bootsman		Beroep, Krijgsmacht		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	\bboots? *man\w*	"""Bootsman"";""Boots"";""Bootsmans"""																
+408	bootsvolk		Beroep, Krijgsmacht		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	\bboot.{0,2}[bv]+olc?k, \bboo[dt]+s[bv]ol\w*	"""Bootsvolck"";""bootsvolck"";""Scheepsvolck"""																
+669	borduurwerker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bbo+rdu+rwerk\w*	"""Borduurwerker"";""Borduurwercker alhier in den Hage"";""Borduurwerker alhier in den Hage"""																
+39	bottelier		geen hoedanigheid		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bbottel\w*	"""Bottelier"";""bottelier"""																
+678	bourgeois		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_ambt	\bbourgeois	"""Bourgeois"";""Bourgeois de Berne"";""bourgeois"""																
+632	bouwman		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	\bbouw[lm][uia]\w*	"""Bouwlieden"";""Bouwman"""																
+495	bouwmeester		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	bouwmeester\w*	"""Bouwmeester"";""Cleef- en Marksche Land-Bouwmeester"";""Stads Bouwmeester"""																
+357	brabander		Geografie		Geografie		Geografie				kw_id	\bbrabander\w*	"""Brabander"";""Brabanders"";""gebooren Brabander"""																
+628	brabandtsche lieden		Politiek & bestuur, Geografie		Geografie		Geografie				kw_id, kw_rest	\bbraban\w* *l[ieu]+de\w*, \blu?ie?den\b	"""Brabandsche Leeden"";""Brabantsche Leeden"""																
+644	bricqueteur		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bbric?quet\w*	"""Bricqueteurs"""																
+228	brigadier		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt, kw_rest	brigadier\w*, \bbr[ei]g\wd\w*, \bbr.{0,2}gadie\w*	"""Brigadier"";""Major de Brigade"";""Brigadiers"""																
+374	broeder		Familie status		Status & relaties		Familie				kw_kerk	\bbroe.{0,1}der\w*	"""sijn Broeder"";""broeder"";""Broeder"""																
+508	broodbakker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst			samen met bakker?	kw_beroep	\bbroodb\w*\b	"""Broodbakkers"";""Broodbakkers en Broodverkoopers"";""Broodbakkers en Broodverkoopers binnen de Heerlykheid Venloon"""																
+507	brouwer		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	brouw\w*\b	"""Brouwers"";""Brouwer"";""brouwer"""																
+633	bruid(egom)		Familie status		Status & relaties		Familie				kw_id	\bbruid\w*	"""Bruidegom of Bruid"";""Bruidegom en Bruid"";""zyde van Bruid en Bruidegom"""																
+44	bruiker		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	\bbruiker\w*	"""Bruijcker"";""pachter off bruijcker"";""Bruikers"""																
+631	buitenlui		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur			tagskolom wijst op minister	kw_new	\bbuitenl\w*	"""Minister der buitenlandsche"";""Minister der buitenlandsche zaaken"";""Heer Minister der buitenlandsche"""																
+156	burgemeester		Politiek & bestuur	lokaal, Lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bb[aou]rger?m\w*, \bb[urg]{2,4}.{0,3}me?e?s?t?e?r\w*, burger?m\w*	"""Burgermeester"";""Burgemeester"";""Burgermeester en Scheepenen"""																
+271	burger		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_ambt, kw_new	\bb[oiu]r(?:ch|g) *g?ers?e?n?\b, \bburge\w\b, \bbur\wer\b, \bb\wrgere?s?s?e?n?\b	"""Burger"";""Burgers"";""borgeren"""																
+681	burgerhorst		geen hoedanigheid							GD: geen hoedanigheid	kw_pol	\bb[uo]rgerh\wrs\w*	"""Borgerhorst"";""Borgerhorst Ter Coelen"""																
+690	burggraaf		Politiek & bestuur		Adel & Vorsten		Adel & Vorsten				kw_new	\bburggra+[fv]+e?\b	"""Burggraeff"";""wylen Frans Burggraaf,"";""Burggraaf van Kirchberg"""																
+771	butler		Beroep		Dienstverlening		Dienstverlening				kw_new	\bbutler\w*	"""Butlers"";""oock aan gemelde Butlers nogh"""																
+235	cadet		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bcade\w*	"""Cadet"";""Cadets"";""Cadet in het Regiment van den"""																
+770	caijmacan	kaymakam	Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\b[kc]a+[ijy]+macan	"""Caijmacan"";""Caimacan"""																
+299	canonicq	kanunnik	Godsdienst		Religie		Religie				kw_kerk, kw_rest	\b[kc]anoni\w*, \b[kc][oa]n+[ou]n+i[kcq]+\w*	"""Deecken en Canunnicquen"";""Kanunnik"";""Canunick"""																
+310	canoniek	kanunnik	Godsdienst		Religie		Religie				kw_kerk	\b[kc]anoni\w*	"""Canonick"";""Canoniers"";""Canonicq"""																
+311	cantor		Godsdienst		Religie		Religie				kw_kerk	\bcantor\w*	"""Cantor"";""Cantorije"";""gewesen Cantor"""																
+315	capellaan		Godsdienst		Religie		Religie				kw_kerk, kw_rest	\bcap+el\w*n, [kc]apell?aan\w*	"""Capellaan"";""Capellaanen"";""Capellaen"""																
+312	capucijnen		Godsdienst		Religie		Religie				kw_rest	\b[kc]apu\w*	"""Capucijn"";""Capucynen"";""Capucinen"""																
+779	carabiner		Krijgsmacht		Leger & Milities		Leger & Milities				kw_kerk	\b[kc]arabin\w*ers?\b	"""Ritmeester in het Regiment Carabiniers van den"";""Ritmeester in het Regiment Carabiniers van"";""Carabiniers"""																
+778	cargadoor		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_kerk	\bcargado+rs?\b	"""Cargadoors te Rotterdam"";""Cargadoors, woonende te Amsterdam"";""Kooplieden, Assuradeurs, Rheeders van Scheepen en Cargadoors, woonagtig binnen deese Landen"""																
+305	carthuser		Godsdienst		Religie		Religie				kw_kerk	\b[kc]ar?thu\w*	"""Carthusers"";""Prior vande Carthusers tot Antwerpen"";""Carthusers tot Vucht"""																
+777	cassier		Beroep		Financiën		Financiën				kw_kerk	\bcas+iers?\b	"""Cassier"";""Cassier en Commis ter Secretary"";""Cassiers"""																
+615	castellaan	kastelein	Beroep		Handel, Nijverheid & Kunst					Kastelein, of mensen uit Castilië? GD: in deze spelling niet gevonden, dus lastig	kw_rest	\bcastella\w*	"""Castellain"";""Castellan"""																
+776	cavallier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_beroep	\b[kc]aval+ier\w*	"""Cavalliers"""																
+768	cellebroeder		Godsdienst		Religie		Religie				kw_kerk	\bcel+e?broe\w*	"""Cellebroers"";""Cellebroeders"";""Cellebroers tot Brussel"""																
+128	ceremoniemeester		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_kerk	\bcer\w*me\w*	"""Ceremoniemeester"";""Heere Ceremoniemeester"";""tweede Ceremoniemeester"""																
+774	chailli		geen hoedanigheid							"wat is dit? GD: komt in samenhang met ""bassa"" = pasja / pasha voor"	kw_kerk	\bchai?l+i	"""Chailli"";""Challi"""																
+773	chasseur		Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	\bchas+eur\w*	"""Chasseurs"""																
+475	chef		Beroep							hangt van de context af	kw_beroep	\bcheff?[st]*\b	"""Generaal en Chef"";""Generaal en Chef Furst van Waldeck"";""Chefs"""																
+154	chercher		Politiek & bestuur		Financiën		Financiën				kw_beroep	\bch?erchers?, \bcher.{0,3}rs?\b	"""Cherchers"";""Chercher"";""Cerchers"""																
+557	chevalier		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_ambt	\bcheva\w*	"""Chevalier"";""Chevalier de Villeneuve"";""Chevallier"""																
+126	chiaux		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bchiau\w*	"""Chiaulx"";""Chiaus"";""Chiaux"""																
+478	chirurgijn		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bchir[uo]\w*, s?chirurg\w*	"""Chirugijn"";""Chiruogyn"""																
+481	chirurgyn		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bchir[uo]\w*, s?chirurg\w*	"""Chirurgyn"";""Chirurgijn"";""Chirurgijns"""																
+304	christen		Godsdienst		Religie		Religie				kw_id	\bchri.ten\w*	"""Christenen"";""Christen Slaven"";""Christen slaven"""																
+153	cipier		Politiek & bestuur		Justitie		(Juridische) status en Rechtspraak		P&J		kw_beroep	\bcipp?ier\w*	"""Cipier"";""cipier"";""Cipiers"""																
+772	cleeffsche raden		Geografie, Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\b[kch]+leef+s+c?h?e *ra\w*	"""Cleeffsche Raden"";""Cleefsche Raden"";""Gedeputeerde vande Cleeffsche Raden"""																
+301	coadiutor	coadjutor	Godsdienst		Religie		Religie				kw_ambt	\bcoad[uij]\w*	"""Coadintor van Coelen"";""Coadiutor van Coelen"";""Coadjuteur"""																
+297	collator		Godsdienst		Religie		Religie				kw_ambt	\bcolla\w*	"""Collator der Beursen"";""Collator"";""Collatores"""																
+124	collecteur		Politiek & bestuur		Financiën		Financiën				kw_ambt	\bcollec\w*	"""Collecteur"";""Collecteurs"";""Commis Collecteur"""																
+791	collega		Beroep		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_ambt	\bcolleg+a\w*	"""Collega"";""Emeritus Collega"""																
+237	colllonel	kolonel	Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities			waarom tweemaal?	kw_ambt, kw_new, kw_rest	\bco\w?l*on+el\w*, \bcol+.{0,2}n\w?l\w*, \bc\wl+on+\w?l\w*, \bc[aeo]l+onel\w*, \bcol+on[^i]*\b, \bcol+o\w{0,3}l\b	"""Coll"";""Lt. Coll"";""Lt. Coll."""																
+239	collonel	kolonel	Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt, kw_new, kw_rest	\bco\w?l*on+el\w*, \bcol+.{0,2}n\w?l\w*, \bc\wl+on+\w?l\w*, \bc[aeo]l+onel\w*, \bcol+on[^i]*\b, \bcol+o\w{0,3}l\b, \bco\w{0,3}n+el\b	"""Collonel"";""Colonnel"";""Lieutenant Collonel"""																
+236	commandant		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	c[ao]mmand\w*	"""Commandeur"";""Commandeurs"";""commandeur"""																
+68	commies		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bcommi?e?s?e?n?s?\b	"""Commis"";""Commis Generaal"";""Commisen"""																
+95	commis	commies	Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bcommi?e?s?e?n?s?\b, commis\b, \bcomm[ui]+ss?\b, \bcomm+[yi]s+e?n?\b, \bcomm?[yji]+s+d?e?n?s?\b, \bcom+is+\b	"""Commisss"";""Commisss."";""Commys"""																
+122	commissaris		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	co[nm]+is?sa\w+, \bcom.{0,5}a? *ri\w*, \bc.{0,2}mmis+ari\w*	"""Commissaris"";""Commissarissen"";""Commissarisen"""																
+536	commissievaarder		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_ambt	\bcom\w*[wv]a[ae]r?de\w*, \bcomm.*vaar\w*	"""Commissievaerders"";""Commissievaerder"";""Commissievaerders deser Landen"""																
+537	commissionaris		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bcommission\w*	"""Commissionaris"";""Commissionarissen"";""Koopman of Commissionaris"""																
+601	commodor		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bcom+odor\w*	"""Commodore"";""Engelsche Commodore"";""Engelschen Commodore"""																
+547	compagnon		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bcompagno\w*	"""Compagnons"";""als eenige nog overgebleeven Compagnon van het Huis van Negotie"";""Compagnons of Bediendens"""																
+265	complice		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_ambt	\bcomplic\w*	"""complicen"";""Complicen"";""syne complicen"""																
+769	comptoirbediende		Beroep		Handel, Nijverheid & Kunst	Politiek & Bestuur	Handel, Nijverheid & Kunst	Politiek & Bestuur			kw_beroep	\bcompt\w* *bedien\w*	"""Comptoirbediende"""																
+551	comte		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_beroep, kw_rest	\bcomte.{0,1}\b, \bcomt\w*	"""Comte"";""Comte de"";""Comte de Wartensleben"""																
+739	comte		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_beroep, kw_rest	\bcomte.{0,1}\b, \bcomt\w*	"""Comte d'Avaux"";""Comte de Tarouca"";""Comte de Starhemberg"""																
+539	concierge		Beroep		Dienstverlening		Dienstverlening				kw_ambt	\bconch?ierg\w*	"""Concierge van ‚Äõs Lants gehuijrde huijsinge"";""Concherge van ‚Äõs Lants gehuijrde huijsinge"";""Conchierge"""																
+602	concilliator		geen hoedanigheid							GD: geen hoedanigheid (~voorstel verzoening)	kw_rest	\bconcil+ia\w*	"""Conciliatoir"";""conciliatoir"""																
+38	concipier		geen hoedanigheid							GD: geen hoedanigheid (~ontwerp)	kw_rest	\bconcip\w*	"""concipieren"";""concipieren."""																
+767	concubine		Familie status, Juridische status		Status & relaties		Familie				kw_id	\bconcubin\w*	"""Concubine"""																
+230	conducteur		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bcondu\w*	"""Conducteur"";""Conducteurs"";""conducteurs"""																
+344	confesseur		Godsdienst		Religie		Religie				kw_kerk	\bconfes\w*	"""Confesseurs"";""Confesseurs van de Galeyen"";""drie en twintigh Confesseurs van de Galeyen"""																
+604	confrateur		Beroep		Status & relaties		(Juridische) status en Rechtspraak		?	"GD: zie ""confrater"" in NWT (~collega)"	kw_ambt	\bconfr\w*	"""Confraters"";""Confrater"";""confraters"""																
+221	connestable		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bcon+\w{0,1}esta\w*	"""heere Connestable van Castille"";""Heere Connestable van Castilien"";""heere Connestable de Castille"""																
+534	conrector		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bconrect\w*	"""Conrector"";""Conrectors"";""conrector"""																
+121	conseiller		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bconseil\w*	"""Conseiller"";""Conseiller d'Etat"";""Conseiller Priv√©"""																
+251	conservator		Juridische status		Politiek & Bestuur	Justitie	(Juridische) status en Rechtspraak		?	"GD: ""rechters conservateurs"", "	kw_rest	\bconser[uv]at\w*	"""Conseruateur van Schotlant"";""Reghters Conservateurs"";""conseruateur van Schotlant"""																
+766	constabel		Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	\bconsta[bp]el\w*	"""Constapels"";""Constapel"";""Constabel"""																
+120	consul		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bcon.{0,2}ul\w*, \bcons\w{0,2}l\b, \bc[ao]n.{0,2}u.{0,2}\b, \bc\wnsul+s?e?n?\b, \bcons.?.?\b, \bco\wsul, \b\wonsul	"""Consul"";""Consul Generaal"";""Consuls"""																
+751	consul		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bcon.{0,2}ul\w*, \bcons\w{0,2}l\b, \bc[ao]n.{0,2}u.{0,2}\b, \bc\wnsul+s?e?n?\b, \bcons.?.?\b, \bco\wsul, \b\wonsul	"""sijne Cons Mt. van Groot Brittannien"""																
+255	contraventeur		Juridische status		Justitie		(Juridische) status en Rechtspraak		?	"GD: oud woord voor ""overtreder"""	kw_ambt	\bcontra[vu]en\w*	"""Contraventeurs"";""Contrauenteurs"";""Contraventeurs vandien"""																
+119	controlleur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	c[ao]nte?re?[lr]?ol+\w*, \bc[ao]ntr\w*le\w*	"""Contrerolleur"";""Contrerolleurs"";""Contrerolleurschap"""																
+43	convoyen en licenten		geen hoedanigheid							GD: geen hoedanigheid	kw_ambt, kw_rest	^ *con[uv]o+[yi].*licen\w* *$, \blicen\w*	"""Conuoyen ende Licenten"";""Conuoyen ende licenten"";""conuoyen ende Licenten"""																
+40	convoyer		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bcon[uv]o[ijy]+ers?n?\b	"""Convoyers"";""Convoijer"";""Convoijers"""																
+118	convoymeester		Politiek & bestuur	lokaal	Financiën	Scheepvaart, Landbouw & Visserij	Financiën	Scheepvaart			kw_ambt	[kc]o[un][uv]o[iyj]+me\w*, \b[kc]o[un][uv]o+[ijy] *m\w*r, \bconv\w*me\w*, \bcon[uv]o+[ijy]+m\w*	"""Convoijmeester"";""Convoymr"";""Convoijmeesters"""																
+234	cornet		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bcornet\w*	"""Cornet"";""Lieutenant of Cornet"";""Cornet vande Compagnie vanden"""																
+227	corporaal		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\b[kc][ao]r?por\w*	"""Corporael"";""Sergeanten, Corporaals en Tambours"";""Sergeanten, Corporaals en Tambours van het Regiment Switzersche Guardes"""																
+117	correspondent		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	c[ao][nr]respond\w*, cor.{0,2}espond\w*	"""Correspondent"";""Correspondenten"";""correspondent"""																
+619	corsair	zeerover	Beroep		Scheepvaart, Landbouw & Visserij	Justitie	Scheepvaart, Landbouw & Visserij			piraat / GD: zeerover	kw_ambt	\bc[ou]rsai\w*	"""Corsairen"";""Corsaire"";""Algiersche Corsairen"""																
+765	courantier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\b[kc]o[eu]rantier\w*	"""Courantiers"";""Courantier"";""Franschen Courantier"""																
+116	courier		Beroep	Internationaal	Dienstverlening		Dienstverlening				kw_ambt	\b[kc]o[eu]r+ier\w*	"""Courier"";""Couriers"";""Courrier"""																
+278	crediteur		Juridische status		Financiën		(Juridische) status en Rechtspraak		?		kw_ambt	\b[kc]rediteu\w*	"""Crediteuren"";""crediteuren"";""Crediteuren van"""																
+240	curassier		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bcurass\w*	"""Curassiers"";""curassiers"";""Curassau"""																
+274	curator		Juridische status		Justitie		(Juridische) status en Rechtspraak		?		kw_ambt	curat\w*r\w*	"""Curateur"";""Curateuren"";""Curateurs"""																
+555	czaar		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_ambt	\b[tc][sz]a+r\w*(?: *maj\w*)?	"""Czaer van Muscovien"";""sa Majest√© Czarienne"";""Czarsko"""																
+550	dauphin		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\bdauph\w*	"""Dauphin"";""Dauphin van Vrankryk"";""Heere Dauphin"""																
+273	debiteur		Juridische status		Financiën		Financiën				kw_ambt	\bdebite\w*	"""Debiteur"";""debiteuren"";""debiteur"""																
+115	deciseur		Politiek & bestuur	??	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bdecise\w*	"""Commissarissen Deciseurs"";""Heeren Commissarissen Deciseurs"";""haar Hoogh Mogende Commissarissen Deciseurs"""																
+326	deeken		Godsdienst		Religie		Religie				kw_rest	deeken	"""Deecken"";""Vaandraager en Deekenen"";""Vice-Deeken"""																
+114	dei		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bde[iy]\b	"""Dey"";""Dey van Algiers"";""Dey en Regeering van Algiers"""																
+246	delinquent		Juridische status, Rechtspraak		Justitie		(Juridische) status en Rechtspraak		P&J		kw_beroep	\bdelin[ckq]\w*	"""delinquanten"";""Delinquant"";""Delinquanten"""																
+238	deserteur		Krijgsmacht		Leger & Milities		Leger & Milities				kw_beroep	\bde[fs]erte\w*	"""Deserteurs"";""Deserteur"";""deserteurs"""																
+430	deurwaarder		Beroep		Justitie		(Juridische) status en Rechtspraak		P&J		kw_beroep	\bdeur *w\w*	"""Deurwaerder"";""Deurwaarder"";""Deurwaerders"""																
+316	diaken		Godsdienst		Religie		Religie				kw_kerk	di?[ae][ck][eo]n\w{0,2}\b	"""Diaconen"";""Diacon"";""diaconen"""																
+616	dienaar		??, Beroep		Dienstverlening		Dienstverlening				kw_beroep, kw_rest	\bb?e?diena\w*, \bdiena\w*	"""dienaer"";""Dienaers"";""dienaers"""																
+424	dienstbode		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bdienstbo\w*	"""dienstboden"";""Dienstboden"""																
+423	dienstmeid		Beroep		Dienstverlening		Dienstverlening				kw_beroep	di.{1,2}nstm[ae]\w*	"""Dienstmeid"";""Dienstmaaght"";""dienstmaecht"""																
+418	dijkgraaf		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	dy?i?j?c?kgra\w*	"""Dijckgraeff"";""Dijckgraeff ende Geswoorens"";""Dyckgraaf"""																
+443	directeur		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_beroep, kw_rest	directe\w*, \bdirect\w{0,3}rs?e?n?\b	"""Directeuren"";""Directeur"";""Directeuren van den Levantschen Handel en Navigatie in de Middelandsche Zee"""																
+764	dispensier		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\bdispensi\w*rs?e?n?	"""dispensier"";""dispensier van"""																
+342	dissident		Godsdienst		Religie		Religie				kw_id	\bdisside\w*	"""Dissidenten in Polen"";""dissidenten in Polen"";""Dissidenten"""																
+113	distributeur		Politiek & bestuur		Financiën		Financiën				kw_ambt	\bdistribu\w*rs?e?n?\b	"""Collecteur en Distributeur van het Generaliteyts kleyn Zeegel binnen de Stad 's Hertogenbosch"";""Collecteur en Distributeur van het Generaliteyts kleyn Zegel, over het Quartier van Oosterwyck, Meyerye van 's Hertogenbosch"";""Collecteur en Distributeur van het gemelde kleyn Zeegel voor het Collegie van het Hof van Vlaanderen"""																
+377	dochter		Familie status		Status & relaties		Familie				kw_id	\bdo[chg]+ter\w*	"""Dochter van"";""dochter van"";""dochter"""																
+462	doctor		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_beroep	\bdoct\w*, do[ck]+t[eo]r\b	"""Doctoren"";""doctoren"";""Doctoris"""																
+468	dokter		Beroep		Dienstverlening		Dienstverlening				kw_beroep	do[ck]+t[eo]r\b	"""Doctor"";""doctor"";""Medicinae Doctor"""																
+387	domesticq		Familie status		Dienstverlening		Dienstverlening				kw_beroep	\bdomesti\w*	"""Domestiequen"";""Domesticq van"";""Domestieq"""																
+324	domheer		Godsdienst		Religie		Religie				kw_kerk	\bdomheer\w*	"""Domheer tot Luijck"";""Domheer t' Utrecht"";""Domheer tot Utrecht"""																
+762	doodslager		Rechtspraak, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_beroep	\bdoo[dt]+s+lager\w*	"""Dootslagers"";""dootslagers"";""Doodtslagers"""																
+554	doorluchtigheid		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	^ *doorl\w*[dt]+ *, ^ *doorl\w* *$	"""Doorlt"";""haare Doorluchtigheydt"";""Doorlt. van Brandenburgh"""																
+482	dorpmeester		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	dorpmeester\w*	"""Dorpmeesters der vrye Heerlijckheyd Rutten"";""Dorpmeesters ende Sesmannen van Houpertingen"";""Dorpmeesters en Sesmannen van Houpertingen"""																
+401	douariere		Familie status		Adel & Vorsten	Status & relaties	Familie		A&V?		kw_beroep	\bdouarie\w*	"""Douariere van Nassau"";""Douariere"";""Douariere van den"""																
+41	douceur		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bdouce\w*	"""douceur van haar Hoogh Mogende"";""eenig douceur"";""douceur van haar Hoog Mogende"""																
+112	dragoman		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_beroep	drag[eo]m\w*	"""Dragoman"";""Dragoman van de Porta"";""Drageman"""																
+223	dragonder		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_beroep	^ *drago[un]d\w*	"""Dragonders"";""dragonders"";""Dragonder"""																
+54	drossaard		Politiek & bestuur, Rechtspraak	lokaal	Politiek & Bestuur	Justitie	Politiek & Bestuur	(Juridische) status en Rechtspraak			kw_beroep	\bdroi?s+a\w*	"""Drossarden"";""Drossaerts"";""drossaerts"""																
+57	droste		Politiek & bestuur, Rechtspraak	lokaal	Politiek & Bestuur	Justitie	Politiek & Bestuur	(Juridische) status en Rechtspraak			kw_beroep	\bdroste?\b, \bdrost\w*	"""Drossaert"";""Drossard"";""Drost"""																
+447	drukker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bdru[ck]+er\w*	"""Drucker"";""drucker"";""druckers"""																
+761	dryver		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_beroep	\bdr[ijy]+ver\w*	"""Dryvers"";""Dryvers der Ossen"";""Dryvers en Verkoopers van Rundbeesten"""																
+347	duinkerker		Geografie		Geografie		Geografie				kw_id	\bduij?n[kc]er\w*ers?\b	"""Duynkerckers"";""Duinkerckers"";""Duijnkerckers"""																
+396	echte lieden		Familie status		Status & relaties		Familie				kw_id, kw_rest, kws_qual	\bechte *l[ui]\w*, \blu?ie?den\b, \be[chg]+ten?\b	"""Echte Lieden"";""echte Lieden"";""Egtelieden"""																
+393	echtgenoot		Familie status		Status & relaties		Familie				kw_id	\bechtgeno\w*	"""Weduwe en Boedelhoudster van meede wylen haaren Man Gabriel Lixraven"";""als getrouwt hebbende"";""als getrouwt sijnde met de"""																
+559	edele		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bedel\w*	"""Edelman"";""Engels Edelman"";""Edelman van het geschut"""																
+191	eerste generaal		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\beerst\w* gen\w*	"""eersten Generael"";""eersten Generael van den Staet"";""eersten Generael vanden Staat"""																
+287	eigenaar		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_id	\beigena\w*	"""eygenaer"";""Eygenaars"";""Eygenaers"""																
+281	eiser		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\beiss?c?h?ers?e?n?\b	"""Eisscher"";""Eijsscher"";""Eijsschers"""																
+588	elector		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\belector\w*	"""Electeur"";""Electeur de Saxe"";""Electeur de Cologne"""																
+346	emigrant		Geografie, Juridische status		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_rest	\bemigrant\w*	"""Saltzburghsche Emigranten"";""Fransche Emigranten"";""Durnberghsche Emigranten"""																
+590	eminentie		Adel & vorstenhuizen		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bem+in+en[tc]i\w*	"""Sijne Eminentie"";""sijn Eminentie"";""sijne Eminentie"""																
+186	engelse generaal		Geografie, Krijgsmacht		Leger & Milities		Leger & Milities			liever uit elkaar halen	kw_rest	\beng\w* *genera\w*	"""Engelsche Generaels"";""Engelsche Generaals"";""Engelschen Generael"""																
+351	engelsen		Geografie		Geografie		Geografie				kw_id	^ *engels\w* *$	"""Engelschen"";""Engelsman"";""Engels"""																
+97	envoyé		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	envo\w*	"""Envoij√©"";""Envoy√©"";""Heere Envoy√©"""																
+30	equipagie	equipagiemeester	Beroep, Politiek & bestuur		Scheepvaart, Landbouw & Visserij	Leger & Milities	Scheepvaart, Landbouw & Visserij	Krijgsmacht			kw_rest	\bequipag\w*	"""Equipagemeester"";""Equipagiemeester"";""Equipagiemr"""																
+64	equipagiemeester	equipagemeester	Beroep, Politiek & bestuur		Scheepvaart, Landbouw & Visserij	Leger & Milities	Scheepvaart, Landbouw & Visserij	Krijgsmacht			kw_rest	\beq\w* *me?e?s?t?e?rs?e?n?\b, \bequipag\w*, eq\w*meester	"""Equippagemre"";""Equippagemre tot Rotterdam"";""equippagemeester vande OostIndische Compaignie"""																
+275	erfgenaam		Juridische status		Status & relaties		Familie				kw_id, kw_rest	\berf+gen\w*, \ber[fv]+g?en\w*, \ber?[fv]+g?ena\w*	"""Erffgenamen van"";""Erffgenamen"";""weduwe ende Erffgenamen van"""																
+760	erfgeseten		Beroep, Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\ber?[fv]+g?e[sz]\w*	"""Erffgeseten tot Gromsmolen"";""Erffgeseten tot Groothuijsen"""																
+34	ertzstift		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bert[sz]sti\w*	"""Ertzstiff"";""Ertzstiffs"";""Ertzstift"""																
+433	essayeur		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt, kw_rest	\b[ae]ssa[iy]\w*, \b[ea]ssa[iy]eu\w*, \b[ae]s+a[yijv]+eu\w*	"""Essayeur Generaal"";""Assaijeur Generael"";""Assayeur generael"""																
+756	evesque		Godsdienst		Religie		Religie				kw_edelen, kw_rest	\bevesq\w*, \ber?[fv]+g?e[sz]\w*	"""Evesque"""																
+66	excellentie		Adel & vorstenhuizen, Politiek & bestuur		Adel & Vorsten		Adel & Vorsten			komt dit alleen voor bij de stadhouders?	kw_edelen, kw_zlast	\bexce\w{0,3}enti\w*, \bexc\w*l+en[tci]+\w*, ^ *\bexc[^s]* *$	"""Syn Extie"";""syn Excie"";""Syn Excie"""																
+435	executeur		Beroep		Justitie		(Juridische) status en Rechtspraak		?		kw_ambt	\bexecut\w*rs?e?n?\b	"""Executeurs"";""Executeuren van den Boedel van wylen"";""Executeur"""																
+277	executeur van de testamenten		Juridische status		Justitie		(Juridische) status en Rechtspraak		?		kw_ambt	ex.*test\w*, \bexecut\w*rs?e?n?\b	"""Executeur van den Testamente van wylen"";""Executeurs van de Testamenten van"";""Executeurs van den Testamente van"""																
+436	expediteur		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bexped\w*	"""Expediteurs te Amsterdam"";""Expediteur"";""Expediteur Generaal der Vivres"""																
+623	expert		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bexper\w*	"""experientie"";""expert"";""Experientie"""																
+437	exploicteur		Beroep				(Juridische) status en Rechtspraak		?	GD: geen hoedanigheid	kw_rest	exploi\w*	"""exploict"";""Exploicteur"";""exploicten"""																
+596	extraordinaris		Politiek & bestuur							komt dit zelfstandig voor?	kw_ambt, kws_qual	\bextraor\w* *[ie][mn].{0,3}[ijy]+\w*, ^ *extr\w* *$, extrao\w*	"""Extracordinaire de"";""Extracordinaris"""																
+123	extraordinaris envoyé		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest, kws_qual	\bextraor\w* *[ie][mn].{0,3}[ijy]+\w*, envo\w*, extrao\w*	"""haar Hoogh Mogende extraordinaris Envoy√© aan het Hof van"";""extraordinaris Envoy√© van"";""haer Hoogh Mogende extraordinaris Envoy√© aen het Hof van"""																
+440	fabriqueur		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bfabri\w*rs?\b	"""Fabriqueurs te Leyden"";""Fabriqueur en Leeverancier te Delft"";""Fabriqueur en Leverancier, woonende te Delft"""																
+247	factoor		Beroep, Juridische status		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst			zaakwaarnemer	kw_ambt, kw_rest	\bfacto\w*, \bfact[oeu]+r\w*	"""factoor"";""facteur"";""factoors"""																
+109	fiscaal		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	^ *\bfisca.{0,2}l\b, \bfisca\w*	"""fiscael"";""Fiscael"";""Officie Fiscaal van Braband"""																
+108	fourier		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bfourier\b	"""Hof-Fourier"";""Fourier"";""Fourier van het Hof"""																
+350	fransen		Geografie		Geografie		Geografie				kw_rest	^ *franc?o?i?sen\w{0,2}\b *$	"""franschen"";""Franschen"";""fransen"""																
+759	fransman		Geografie		Geografie		Geografie				kw_id	\bfran[chs]+man	"""francoisen"";""fransman"";""franchoisen"""																
+282	fundateur		Juridische status		Justitie		(Juridische) status en Rechtspraak		?		kw_rest	\bfundat\w*	"""Fundatrice"";""den Fundateur"";""fundateur"""																
+758	fuselier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	\bfus+el+ier\w*	"""Fuseliers"";""Capitein van een Compagnie Fuseliers"";""Major effectif en Capitein van een Compagnie Fuseliers"""																
+107	gardemeuble		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bgarde *meu\w*	"""guarde meuble vande Generaliteijt"";""garde meuble vande Generaliteijt"";""guardemeuble vande Generaliteijt"""																
+747	gasthuismeester		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bgasthu[ijy]+sm\w*rs?e?n?	"""kerck ende Gasthuijsmeesters"";""gasthuijs=meesters"";""kerck ende gasthuijsmeesters"""																
+58	geallieerde		Krijgsmacht, Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_pol	\bgeall\w*, \bgef?al+ie+rd\w*	"""Geallieerden"";""hooge Geallieerden"";""geallieerden"""																
+746	geaufugeerde		Geografie, Juridische status		Geografie		Geografie				kw_rest	\bgeauf+uge\w*	"""geaufugeerde"";""geaufugeerden Barend Constantyn Doris van Rees"""																
+2	geauthoriseerd		geen hoedanigheid		Politiek & Bestuur		Politiek & Bestuur				kw_pol	\bgeauth\w*	"""by haar Hoogh Mogende geauthoriseert tot de provisioneele administratie van de Nalatenschap van"";""Raden by haar Hoogh Mogende geauthoriseert tot de provisionele administratie van de Nalatenschap van"";""Raeden by haer Hoogh Mogende provisionelijck geauthoriseert tot de administratie van de Nalatenschap van"""																
+24	gebesoigneerde		geen hoedanigheid		Politiek & Bestuur		Politiek & Bestuur				kw_pol	\bgebes\w*	"""gebesoigneerde"";""gebesoigneerde in Engelant"";""gebesoigneerde aldaer"""																
+129	gecommitteerde		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bgecomm\w*den?\b, \bgecom\w*, \bgecom*it+e\w*	"""Gecommitteerden"";""Gecommitteerde"";""heeren Gecommitteerden"""																
+9	geconfedereerde		geen hoedanigheid		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bgeconfed\w*	"""geconfedereerde"";""Geconfedereerde"""																
+10	geconsenteerde		geen hoedanigheid		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bgecon[fs]en\w*	"""geconsenteert"";""geconsenteert &"""																
+288	gedaagde		Rechtspraak, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_ambt	\bgedaa?[chg]+\w*	"""Gedaaghde in het voorschreeve cas"";""Gedaaghde in het"";""Gedaaghde in het voorschreve cas"""																
+130	gedelegeerde		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	gedeleg\w*, \bgedele\w*, \bged*el[ei]g\w*	"""gedelegeerde rechters"";""Gedelegeerde Rechters"";""heeren gedelegeerde rechters"""																
+131	gedeputeerde		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	gedep\w*	"""haar Hoogh Mogende Gedeputeerde by"";""Gedeputeerde"";""Heer Gedeputeerde van de Provincie van Stad en Lande"""																
+290	gedetineerde		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_id	\bgedeti\w*	"""gedetineert"";""Gedetineerde"";""Gedetineerdens"""																
+622	geïnteresseerde		geen hoedanigheid		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_pol	\bge.nteress\w*	"""geinteresseerden"";""Geinteresseerden"";""geinteresseerde Coopluijden"""																
+611	gekwalificeerde		??		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bge[kwqu]+alifi\w*	"""Gequalificeerde van Dingeman Broen en Compagnie,"";""Rafinadeur of desselfs Gequalificeerde"";""als Gequalificeerde van Abraham Hisquia Arias"""																
+296	geloofsgenoten		Godsdienst		Religie		Religie				kw_id	\bgeloofsge\w*	"""Geloofsgenooten, dewelcke om de Religie op de Galeyen in Vranckryck hebben geleeden"";""Geloofsgenooten, welcke om de Religie op de Galeyen in Vranckryck hebben geleeden"";""Geloofsgenooten"""																
+3	gemaal		Familie status		Status & relaties		Familie				kw_rest	\bgema+le?n?\b	"""wylen haaren Gemaal"";""gemelden haaren Gemaal"";""haar Gemaal"""																
+268	gemachtigde		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_ambt	\bgema[gch]+\w*	"""Gemagtigde"";""des Suppliants Gemagtigde"";""als des Suppliants Gemagtigde"""																
+382	gemalin		Familie status		Status & relaties		Familie				kw_id	\bgemaa?lin\w*	"""Gemalinne"";""Gemalinne van"";""Gemalinne van den"""																
+356	gemeentenaar		Geografie		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	?		kw_rest	\bgeme+ntena+r\w*	"""Gemeentenaaren"";""Gemeentenaren"";""Geconstitueerdens van de Gemeentenaaren aldaar"""																
+200	generaal		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	^ *genera\w* *$, ^ *generaal\b	"""Generael"";""Generaal"";""Generaels"""																
+215	generaalmeester		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt, kw_rest	genera[ae]l *meester\w*, \bgeneraalm\w*, ^ *genera\w* *$	"""Generaelmeesters vande Munte"";""Generaelmrs"";""Generaelmrs vande Munte"""																
+19	geoctroyeerd		geen hoedanigheid				(Juridische) status en Rechtspraak		?	GD: geen hoedanigheid	kw_ambt	\bgeoctroy\w*	"""Bewindhebberen van de geoctroyeerde Westindische Compagnie deeser Landen"";""Bewindhebberen van de geoctroyeerde Westindische Compagnie"";""Directeuren van de geoctroyeerde Societeyt van Suriname"""																
+149	gerechtsbode		Politiek & bestuur	Rechtspraak	Justitie		(Juridische) status en Rechtspraak		P&J	waarom tweemaal?	kw_ambt, kw_rest	\bgere\w* *boo?de\w*, \bger[ei]+chtsbo\w*	"""Vorster en Gereghtsboode"";""Vorster en Geregtsbode van Oostelbeers"";""gerechts bode"""																
+755	gerechtsboode		Politiek & bestuur		Justitie		(Juridische) status en Rechtspraak		P&J		kw_ambt, kw_rest	\bgere\w* *boo?de\w*, \bger[ei]+chtsbo\w*	"""Gerichtsbode"";""Gerigtsboode"""																
+334	gereformeerd		Godsdienst		Religie		Religie				kw_id	\bgeref+o\w*	"""zynde van de waare Gereformeerde Religie"";""zynde Lidmaat van de waare Gereformeerde Religie"";""zynde van de waare Christelijcke Gereformeerde Religie"""																
+12	gerequieerde		geen hoedanigheid				(Juridische) status en Rechtspraak		P&J	GD: geen hoedanigheid	kw_rest	\bgereq\w*	"""gerequireerde"";""Gerequireerde"";""gerequireerdens"""																
+1	gesr		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bgesr\b	"""gesr: te Algiers"";""gesr: te Pera van Constantinopolen"";""gesr"""																
+170	gesubdelgeerde	gesubdelegeerd	Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bgesubde\w*	"""Heeren Gesubdelegeerden"";""gesubdelegeerde Raaden tot de Keyserlijcke administratie van het Graafschap Bentheym"";""Gesubdelegeerden"""																
+22	gesurrogeerde		Juridische status		Justitie		(Juridische) status en Rechtspraak		?	GD: plaatsvervanger, ook plaatsvervangende rechtbank	kw_rest	\bgesur+og\w*	"""gesurrogeerde"";""gesurrogeert"""																
+392	getrouwd		Familie status		Status & relaties		Familie				kw_id	\bgetrouw\w*	"""in huwelijck hebbende"";""als in Huwelyk hebbende Elisabeth Marie Madelaine Dandiran,"";""als in Huwelyk hebbende deselve Maria Elisabeth vander Gaagh"""																
+754	getuige		Rechtspraak, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_id	\bgetuige	"""Getuigen"";""Engels getuigen"";""Getuigen in de gemelde Colonie"""																
+269	gevangene		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_id	\bgevangen\w*, \bge[uv]ange\w*	"""gevangen"";""gevangens"";""gevangenen"""																
+267	gevolmachtigde		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_ambt	gevolm\w*	"""Gevolmachtichden te Velde"";""hare Ho:Mo: Gedeputeerden ende Gevolmachtichden"";""hare Ho:Mo: Gedeputeerden ende Gevolmachtichden op 's Lants Vloote"""																
+445	geweermaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bgewee?rma\w*	"""Geweermaker te Maastricht"";""Geweermaacker te Maastricht"";""Geweermaacker te Maastright"""																
+349	gewoond hebbende		Geografie		Geografie		Geografie				kw_id, kw_rest	\bgewo.*hebb\w*, \bgewoond\b, \bgewoon[dt]\w*	"""Procureur van Domingo Contini, voorheen gewoont hebbende op den Eilande van Curacao"";""gewoont hebbende te St. Eustatius"";""voorheen gewoont hebbende op den Eilande van Curacao"""																
+753	gewoond hebbende hebbende		Geografie		Geografie		Geografie				kw_id, kw_rest	\bgewo.*hebb\w*, \bgewoond\b, \bgewoon[dt]\w*	"""gewoond hebbende in de Colonie van Surinamen"";""gewoond hebbende in de Colonie Surinamen"";""voorheen gewoond hebbende op het Eiland Curacao"""																
+141	gezant		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bge[sz][ao]n[dt]\w{0,3}\b	"""Gesanten"";""heeren Gesanten"";""Gesante"""																
+422	gildebroeder		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bgildebr\w*	"""Gildemeester"";""Gildebroeders"";""Overlieden en Gildebroeders van het Vleeschhouwers Gilde binnen Amsterdam"""																
+429	glazenmaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bgla+[sz]e?n?ma\w*	"""Glazemaker"";""Glasemaacker"";""Meester Glasemaacker"""																
+432	goudsmit		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bgou[dt]+sm\w*	"""Goudsmit"";""Goutsmith"";""Goutsmit"""																
+142	gouverneur		Politiek & bestuur	Regionaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\b\wou? *[uv]erneu\w*, \bgou.{0,6}rs?\b, \bgou[uv].{0,6}rs?e?n?\b, \bgou[uv]ern\w*rs?e?n?\b	"""Gouverneur"";""Gouuerneur"";""Gouverneur der Stadt Maestricht"""																
+565	graaf		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\bgraa+[uvf]+e?n?\b, \bgraa?f?f?v?u?e?\b, \bgraaf.?.?\b	"""Heere Grave van Rechteren"";""Heere Grave van Welderen"";""Heere Grave van Wartensleben"""																
+556	gravin		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bgraa?[fuv]in\w*	"""Gravinne"";""Vrouwe Gravinne van Benthem"";""Vrouwe Gravinne"""																
+194	grenadier		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\bgrenad\w*	"""Grenadiers"";""Grenadier"";""Grenadier in het Regiment van den"""																
+155	grietman		Politiek & bestuur	Regionaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bgrietm\w*	"""Grietman"";""Grietman van Stellingwerf Westeynde"";""Grietman over"""																
+147	griffier		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\b.r[ie]ff\w*, \b\w{0,2}iffier, g.{0,3}i[fs]*ier, \bgrif\w*, \bgri.{0,4}r\b, \b\w*riffie\w*, \bg\w+ *f+[itf]er\b	"""Griffier"";""Greffier"";""griffier"""																
+574	groothertog		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bgrootherto\w*	"""Groothertogh"";""Groothertogh van Toscaanen"";""heere Groothertogh"""																
+192	grootmajor		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bgrootmaj\w*	"""Grootmajor"";""Lieutenant Collonel en Grootmajor"";""Grootmajor van Sluys in Vlaanderen"""																
+337	grootmeester		Godsdienst		Religie	Adel & Vorsten	Religie	Adel & Vorsten			kw_ambt	\bgrootmeester	"""Grootmeester van Maltha"";""Grootmeester"";""Grootmeester van Malta"""																
+400	grootmoeder		Familie status		Status & relaties		Familie				kw_id	\bgrootmoe\w*	"""Grootmoeder van"";""sijn Grootmoeder"";""sijne Grootmoeder"""																
+399	grootvader		Familie status		Status & relaties		Familie				kw_id	\bgrootva\w*	"""sijn Grootvader"";""Grootvader"";""des Suppliants Grootvader"""																
+145	grootvorst		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\bgrootvo\w*, \bgroot[fv][uo]rs\w*	"""Grootvorst"";""Grootfurst"";""Grootvorst van Muscovien"""																
+416	grossier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bgros+ier\w*	"""Grossiers"";""Grossiers en Opkoopers van Booter"";""Grossiers en Opkoopers van Booter en andere Waaren"""																
+4	grote heer		??		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bgro\w* *hee\w*	"""Heere der Grondtheerlijckheydt Hees en Leende"";""Heere der Grondtheerlijckheydt van Heeze en Leende"";""Regenten der Grondtheerlijckheydt Asten, Quartier van Peellandt, Meyerye van 's Hertogenbosch"""																
+752	hamburger		Geografie		Geografie		Geografie				kw_id	\bhamburger\w*	"""Hamburgers"";""Hamburger"";""Hamburger Koopman"""																
+425	handelaar		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bhandela\w*	"""particuliere handelaers"";""Ambaghtsluyden en Handelaars"";""Moscovische handelaers"""																
+780	handlangers		Krijgsmacht		Justitie		(Juridische) status en Rechtspraak		P&J	wat is de context?	kw_rest	\bhan[dt]+ *lang\w*	"""handtlangers"";""Handlangers"";""handt= langers"""																
+757	harquebousier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bharqu\w*b[ou]+sier\w*	"""harquebousiers"";""harquebusiers"""																
+783	havenmeester		Beroep		Scheepvaart, Landbouw & Visserij		Scheepvaart, Landbouw & Visserij				kw_id	\bhaven?m\w*rs?e?n?\b	"""havenmeester"";""havenmeester der Stadt s'Hertogenbosch"""																
+224	hellebardier		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\bhel+ebard\w*	"""hellebardiers van"";""hellebardiers"";""Hellebardiers van"""																
+473	herbergier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\b[bh]+erbergier\w*	"""Herbergiers"";""herbergier tot Emmerick"";""herbergiers"""																
+576	hertog		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bherto.{1,3}\b, \bh[ea]rto[chg]\w{0,2}\b, \bher.{0,2}oge?\b, \bhert[oa][chg]\w{0,3}\b	"""heere hertogh"";""Heere Hertogh"";""hertoch"""																
+800	hertog		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bherto.{1,3}\b, \bh[ea]rto[chg]\w{0,2}\b, \bher.{0,2}oge?\b, \bhert[oa][chg]\w{0,3}\b	"""heere hertogh van Savoijen"";""heer hertogh van Savoijen"";""heere hertogh van Marlborough"""																
+794	hertog		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bherto.{1,3}\b, \bh[ea]rto[chg]\w{0,2}\b, \bher.{0,2}oge?\b, \bhert[oa][chg]\w{0,3}\b	"""Hertogh Jan van Braband"";""Hertog Jan van Braband"";""hertoch Philips van Bourgoigne"""																
+586	hertogin		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bherto.{1,3}\b, \bh[ea]rto[chg]\w{0,2}\b, \bhert[oa][chg]\w{0,3}\b, \bh[ae]rto[chg]+in\w{0,4}\b	"""Aartz-Hertoginne"";""Aartz-Hertoginne Gouvernante"";""hertoginne"""																
+529	hoedemaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bhoed\w*ma+kers?	"""Meester Hoedemaker te Heusden"";""Mr. Hoedemaker te Heusden"";""Hoedemaecker alhier in den Hage"""																
+528	hofbediende		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bhof+bedi\w*	"""Hofbediende"";""Hofbedienden"""																
+813	hoffrichter		Rechtspraak		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bhof+r[ei]cht\w*	"""Hoffrichter"";""Hoffrichter en adsessores"";""Hoffrichter van Kniphuijsen"""																
+812	hofjonker		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\bhof+jonc?k\w*	"""Hofjoncker"";""Hofjonker"""																
+414	hofmeester		Beroep		Adel & Vorsten		Adel & Vorsten				kw_beroep, kw_rest	\bhoff?m\w*, \b\w*ff?meester*, \bhof+.{0,2}me\w*re?n?s?	"""hoffmeester"";""Hofmeester"";""Hoffmeester"""																
+811	hoftimmerman		Beroep		Adel & Vorsten		Adel & Vorsten				kw_rest	\bhof+tim\w*	"""hofftimmerman"""																
+810	hoofdconsul		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bhoof[dt]+\wonsul\w*	"""hooftconsul"";""hooftconsul tot Aleppo"";""Hooftconsul in Aleppo"""																
+809	hoofdcrediteur		Beroep, Juridische status		Financiën		Financiën				kw_ambt	\bhoof[td]+[kc]+redi\w*	"""Hoofdcrediteur van den Boedel van"""																
+808	hoofden der gemene drie bonden		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bhoofd.*geme+n\w* *bond\w*	"""Hoofden en Raadsgesanten der gemeene drie Bonden"";""Hoofden der gemeene drie Bonden"";""Hoofden der gemeene drie Bonden in den hoogen Staat der Grisons"""																
+152	hoofdgecommitteerde		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bhoof[dt]gecom\w*	"""hooftgecommitteerdens ende Geswoorens vanden Polder van Namen"";""hooftgecommitteerden"""																
+148	hoofdman		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bhoof[dt]+ *man\w*	"""hooftmannen"";""heeren hooftmannen"";""Hoofdman"""																
+222	hoofdmeester		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bhoof.{0,3}m[re]+\w*	"""hooftmeester"";""hooffmre"";""hooffmre van"""																
+49	hoofdofficier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	hoofdoffi\w*, hoof[td]-?offi\w*	"""hooftofficieren"";""Hoofdofficier"";""Hooft-Officieren van het Regiment van den"""																
+261	hoofdparticipant		Juridische status		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bhoof[td]+par\w*	"""hooftparticipanten"";""Hoofdparticipanten"";""Hooftparticipanten"""																
+807	hooggeleerden		??		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	\bhoo[chg]+gele\w*	"""Erentfesten ende hoochgeleerden"";""Erentfesten, ende hoochgeleerden"";""hoochgeleerde"""																
+150	hooggraaf		Politiek & bestuur		Adel & Vorsten		Adel & Vorsten				kw_rest	\bho+[chg]+ *gra[ae]+[fv]+\w*	"""Hooch Graeffelicke"";""Sijn Hooch Graeffel"";""hoochgraeffl"""																
+549	hoogheid		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	hoog.{0,2}e[iyj]*d, \bhoo[gch]+ei[dt]+\w*	"""zyne Hoogheid"";""sijne Hoogheid"";""sijn Hoogheid"""																
+318	hoogproost		Godsdienst		Religie		Religie				kw_rest	\bhoo.{0,3}pro\w*	"""Hoochproost"";""Hoogproost"";""Hooghproost"""																
+220	hopman		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_beroep	\bhopma\w*	"""hopman"";""Hopman"";""hopmans"""																
+533	horlogemaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bhorl\w*ma+kers?	"""Meester Horlogiemaacker"""																
+492	hospitaalmeester		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bhos\w* *me?e?s?t?e?r\w*	"""hospitaelmeester"";""Hospitael meester vant Leger"";""Hospitaelmeester"""																
+17	houdende advertentie		geen hoedanigheid							GD: geen hoedanigheid	kw_ambt	\bad[uv]ert\w*	"""aduerteren"";""aduerteren."";""Aduerterende"""																
+610	houder	obligatiehouder	??, Beroep		Financiën		(Juridische) status en Rechtspraak		S&R	"GD: komt vooral in betekenis van ""obligatiehouder"" voor"	kw_rest	\bhouder\b, \bhouder\w*	"""Houders"";""particuliere Houders der Obligatien"";""Houders der Obligatien"""																
+806	houtkoper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bhout[kc]o+per\w*	"""houtcooper"";""houtcoopers tot Amsterdam"";""houtcopers"""																
+390	huisluiden		Familie status		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij			boer	kw_id	\bhu[yij]+sl\w*	"""huysluyden"";""huijsluijden"";""Huysluyden"""																
+379	huisman		Familie status		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij			boer	kw_id	\bhuis *man\w*	"""huysman"";""huysmans"";""Huijsman"""																
+391	huisvrouw		Familie status		Status & relaties		Familie				kw_id	\bhu[yij]+s[otvf]r\w*, \b\w*[fv]rouw\w*	"""huysvrou"";""huysvr van"";""huysvr van Mr. Hugo de Groote"""																
+804	ijzerkramer		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\b[tijy]+[sz]erkra\w*	"""Yserkramer"";""Tserkraamer Jacobus van Ryswyck"";""Tzerkraamer"""																
+258	impetrant		Rechtspraak, Juridische status		Justitie		(Juridische) status en Rechtspraak		?		kw_ambt	\bimpetr\w*	"""Impetrant van Mandament van Revisie"";""Impetrant in het voorsz cas"";""Impetrant van Mandament"""																
+578	infant		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_ambt	\binfan\w*	"""Infante"";""Generaal van de Infanterye"";""Infante van Spaignen"""																
+612	ingehuurd		geen hoedanigheid				(Juridische) status en Rechtspraak			GD: geen hoedanigheid	kw_rest	\bingehu\w*	"""ingehuijrt"";""ingehuyrt"""																
+266	ingelanden		geen hoedanigheid		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_id	\bingela\w*	"""Ingelanden"";""ingelanden"";""Ingelanden van den selven Polder"""																
+206	ingenieur		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_beroep	\bing.{1,2}ni\w*, \binge[min]+eur\w*	"""Ingenieur"";""Ingenieurs"";""ingenieur"""																
+353	ingezetene		Geografie		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_id	\binge[sz]ee?ten\w*, \bin+e?ge[scz]+[ae]+te\w*	"""Ingesetenen"";""Ingesetenen deser Landen"";""ingesetenen"""																
+781	ingezetenen		Geografie, Juridische status		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_id	\binge[sz]ee?ten\w*, \bin+e?ge[scz]+[ae]+te\w*, \binge[sz]\w{0,3}enen\b	"""Ingesctenen"";""Ingezerenen"""																
+803	inlander		Geografie		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_rest	\binla+nder\w*	"""Inlander"""																
+132	inspecteur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\binspect\w*	"""Inspecteur"";""Inspecteur Generaal der Zeeweeringen in Vlaanderen en Braband"";""Inspecteur Generaal over de Contrabande"""																
+151	instructeur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\binstruc\w*	"""Commissarissen Instructeurs"";""Commissarissen Instructeurs te Maastricht"";""Commissarissen Instructeurs van wegens haar Hoog Mog. te Maastricht"""																
+181	intendent		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bintend\w*	"""Intendant"";""Intendent"";""intendant"""																
+63	internuntius		Godsdienst, Politiek & bestuur		Religie		Religie				kw_ambt	\binternun\w*	"""Internuntius"";""Internuntius van"";""Internuntius van den Paus"""																
+355	inwoonder		Geografie		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_id	\binwo\w*	"""Inwoonders"";""Inwoonderen"";""inwoonders"""																
+802	italiaan		Geografie		Geografie		Geografie				kw_id	\bitalia+ne?n?\b	"""Italianen"";""Italiaen"";""gealtereerde Italianen"""																
+587	jonker		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_id	\bjonc?ker\w*, \bjon?c?k?h?e?e?r?\b	"""Jonckeren"";""Jonckers"";""Jonckere"""																
+573	jonkheer		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_id	\bjonc?khe\w*, \bjon?c?k?h?e?e?r?\b	"""Joncker"";""Jor. Henrick van Reede van Renswoude"";""Jonckheer"""																
+589	jonkvrouw		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_id	\bjonc?kvr\w*, \bjon\w*ouw\w*, \b\w*[fv]rouw\w*	"""Jonffrou"";""Jonftrouwe"";""Jonffrou van Oraignien"""																
+302	jood		Godsdienst		Religie		Religie				kw_id	\bjo+de?n?s?c?h?e?\b, \bjo+[dt]+i?n?n?e?\b	"""Jood"";""Jooden"";""Joode"""																
+381	juffrouw		Familie status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_id	\bjuf\w*, \b\w*[fv]rouw\w*	"""Jouffrou"";""Jouffr"";""Juffrou"""																
+502	juwelier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bjuwel\w*	"""Juwelier"";""Juwelier te Amsterdam"";""Juwelier alhier in den Hage"""																
+517	kaarsenmaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bkaars\w*ma+kers?	"""Meester Kaarssemaaker alhier in den Hage"";""Kaarsemaker"";""Kaerssemaker"""																
+801	kamenier		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\b[kc]amenier	"""Kamenier"";""Camenier"""																
+605	kameraad		??		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\b[kc]amer?aa?d\w*	"""Cameraaden"";""sijne Cameraden"""																
+799	kameraar		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\b[kc]amera[ae]+r\w*	"""Cameraers"""																
+144	kamerbewaarder		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	[kc]ame[nr] *bew\w*, [kc]amerbe\w*	"""Kamerbewaarders van haar Hoog Mog"";""Camerbewaerder"";""Kamerbewaarders van haar Hoog Mogende"""																
+579	kamerdienaar		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	[kc]am.*diena\w*	"""Kamerdienaar"";""Kamerdienaar van"";""Kaamerdienaar"""																
+139	kamerheer		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\b[kc]amer *he?er\w*	"""Kamerheer van"";""in sijn leeven Keiserlyke Koninglyke Kamerheer"";""Camerheer van"""																
+7	kamerling		geen hoedanigheid		Adel & Vorsten		Adel & Vorsten				kw_rest	\b[kc]amerlin\w*	"""Camerlingh van"";""Camerlinck van"";""Camerlingh"""																
+785	kandidaat		Godsdienst		Religie		Religie				kw_ambt	\b[kc]andidaa[dt]\w*	"""Candidaat"""																
+798	kanonnier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_kerk	\b[kc]a[mn]+on+ier\w*	"""Canonniers"";""Kanonniers"";""Fransche Kanonniers"""																
+104	kanselier		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_beroep, kw_rest	\b[khc]+an[tzs]+e?l\w*, \b[chk]+an[scz]e?l+i?e?r\w*, \b[kc]an[scz]el\w*, \b[kc]an[cs]e?l\w*rs?\b	"""Cancelier"";""Vice Cancelier"";""Canceler"""																
+313	kapelaan		Godsdienst		Religie		Religie				kw_rest	[kc]apell?aan\w*	"""1sCapellaan"";""Kapellaan"""																
+496	kaper		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_beroep, kw_rest	\b[ck]a+pe[rn]s?\b, [ck]aper	"""Capen"";""Caper"";""Capers"""																
+187	kapitein		Beroep, Krijgsmacht	Marine	Landbouw, Scheepvaart & Visserij	Leger & milities	Landbouw, Scheepvaart & Visserij	Krijgsmacht			kw_beroep	[kc]ap[in]\w*, \w*apitein, \b[kc]\wp+i?tein\w*	"""Capiteyn"";""Capn"";""Capitein"""																
+309	kapucyn		Godsdienst		Religie		Religie				kw_rest	\b[kc]apu\w*	"""Capueyn"";""Capueynen"";""Capueyner"""																
+307	kardinaal		Godsdienst		Religie		Religie				kw_kerk	\b[kc]ardin\w*	"""Cardinael"";""Heere Cardinaal"";""Cardinaal"""																
+483	kastelein		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_kerk	\b[kc]astel+[ijye]\w*n\w*	"""Casteleijn"";""Burger en Castelein in het Logement genaamt het Zwynshooft te Venlo"";""Castelein"""																
+797	kastiliaan	castiliiaan	Geografie		Geografie		Geografie				kw_kerk	\b[kc]astil+[ia]+n\w*	"""Castiliaensche slaven"";""Castilianen"""																
+303	katholiek		Godsdienst		Religie		Religie				kw_rest	\b[kc]atholi\w*	"""papisten"";""Papen"";""papen"""																
+796	katholiek romeinen van de kanton	roomskatholieken	Godsdienst		Religie		Religie				kw_rest	\b[kc]atholi\w*	"""Catholique Romains de ce Canton"""																
+795	kavelhouder		Beroep		Status & relaties		(Juridische) status en Rechtspraak		S&R	GD: zie ook discussie op slack	kw_beroep	\b[kc][ae]+[fv]+el+hou\w*	"""Caeffelhouder tot Breda"""																
+581	keizer		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten			waarom tweemaal?	kw_edelen	\bke.zer\b, \bkei[sz].{0,3}\b, \bkei.{0,2}er\b	"""sijne Keyserlijcke Majesteyt"";""den Keyser"";""keijser"""																
+793	keizer		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bke.zer\b, \bkei[sz].{0,3}\b, \bkei.{0,2}er\b	"""haare Majesteit de Keize= =rinne van geheel Rusland"";""haare Majesteit de Keize =rinne van geheel Rusland"";""haare Majesteit de Keize rinne van geheel Rusland"""																
+570	keizerin		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bkeizerin\w*	"""haare Majesteyt de Keyserinne van geheel Rusland"";""haare Majesteit de Keyserinne van geheel Rusland"";""Keyserinne van geheel Ruslandt"""																
+561	keizerlijke en katholieke majesteit		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\w+[ae]i[sz]er\w*.*maj\w*, \bkei.*[ck]ath.*maj\w*, \bkei.*[ck]ath.*, \bkei\w* *en *kath\w* *m\w*, ma[ij]es.{1,2}e.{1,2}t, \b[kc]atholi\w*, \bmai?j\w*, \bma\w*eit\b	"""Keyserlijcke en Catholijcke"";""sijne Keijserlijke en Catholique"";""Keijserlijke en Catholique"""																
+609	keizerlijke generaal	generaal	Krijgsmacht		Leger & Milities		Leger & Milities			liever uit elkaar halen	kw_rest	\bkei\w* *gener\w*	"""Keizerljke Generaals"";""keijserlijcken Generael"""																
+298	kerkdienaar		Godsdienst		Religie		Religie				kw_kerk, kw_rest	\bkerk\w*dien\w*, \bkerc?kdien\w*	"""kerckendienaer"";""kerckendienaren"";""Kerckbedienden van Maastricht"""																
+292	kerkmeester		Beroep		Religie		Religie				kw_kerk	kerkmeester\w*	"""Kerckmeesters"";""Kerckmeesters van St. Jan Steen"";""kerckmeesters"""																
+568	keurvorst		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	keurvorst, \b[chk]+o?e?ur[fv]+\w*, \b[chk]+.{0,4}[nr][fv][uo]r\w*	"""heere Churfurst van Brandenburgh"";""Churvorst van Saxen"";""Heere Churfurst van Brandenburch"""																
+805	kiezer		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bkiezers?\b	"""Kiezer"";""Kiezers"""																
+397	kind		Familie status		Status & relaties		Familie				kw_id	\bkind\w*	"""kinderen van"";""kinderen"";""weduwe ende kinderen van"""																
+474	kleermaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bkle\w*ma+kers?	"""Kleermaker"";""Meester Kleermaaker alhier in den Hage"";""kleermaker"""																
+127	klerk		Politiek & bestuur		Dienstverlening		Dienstverlening				kw_beroep	[kc]lere?[ckq]+\w*	"""Clercq"";""Clercquen"";""Clerck"""																
+792	klopper		Politiek & bestuur		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bklop+ers?\b	"""Kloppers"";""vier Kloppers van het Generaliteyts kleyn Zegel"";""kloppers"""																
+490	knecht		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bkne[gch]+t	"""knechten"";""knecht"";""Ruyteren ende knechten"""																
+488	koetsier		Beroep		Dienstverlening		Dienstverlening			waarom tweemaal?	kw_beroep	\bkoets\w*, \b[kc]oetsie\w*	"""koetspaerden"""																
+782	koetsier		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bkoets\w*, \b[kc]oetsie\w*	"""Coetsiers van"";""Koetsier"";""Coetsiers"""																
+505	kok		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bkok	"""Kok"";""Koks"";""grooten Kok"""																
+580	koning		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten			waarom driemaal?	kw_edelen, kw_rest	\b[ck][ao]nin\w{0,3}\b, \b[kc]\wning, \b[ck]oni\w{0,4}\b, \b[kc][eo][mn]in\w*	"""sijne Majesteyt den Koningh van Groot-Brittannien"";""sijne Majesteyt den Koningh van Pruyssen"";""sijne Majesteyt den Koningh van Vranckryck"""																
+745	koning		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\b[ck][ao]nin\w{0,3}\b, \b[kc]\wning, \b[ck]oni\w{0,4}\b, \b[kc][eo][mn]in\w*	"""Roij d'Espagne"";""Roij de la Grande Bretagne"";""Roij des Romains"""																
+790	koning'		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\b[ck][ao]nin\w{0,3}\b, \b[kc]\wning, \b[ck]oni\w{0,4}\b, \b[kc][eo][mn]in\w*	"""Roijd' Espagne"""																
+509	kooplieden		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	[kc]oopl\w*, \b[kc]o+pl\w*, \b[kc]o+.{0,2}ieden\b	"""Coopluijden"";""Coopluyden"";""Coopluijden tot Amsterdam"""																
+510	koopman		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	[ck]oopm\wn, \bkoop *ma\w*	"""Kooplieden te Amsterdam"";""Koopman te Amsterdam"";""Coopman tot Amsterdam"""																
+511	koopvrouw		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep, kw_id	\bkoopv\w*, \b\w*[fv]rouw\w*	"""Coopvaerdije"";""Coopvaerders"";""Coopvaerdie"""																
+789	koorzanger		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\b[chk]+oor[sz]ang\w*	"""Choorzangers"";""Choorsangers"""																
+513	kopermeester		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bko+perme\w*	"""coopermeesters"";""Coopermeester aldaer"";""Coopermeesters van Stolberch"""																
+293	koster		Beroep		Religie		Religie				kw_kerk	\b[kc]oste\w*	"""Koster"";""Coster"";""Koster en Schoolmeester"""																
+185	krijgsgevangene		Juridische status, Krijgsmacht		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\b[ckh]+r[ijy]+[chg]+s? *geva\w*	"""Crijchsgevangen"";""Fransche Kryghsgevangenen"";""Crijchsgevangenen"""																
+202	krijgsknecht		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\b[kc]r[yij]+[gch]+skn\w*	"""Crijchsknechten"""																
+198	krijgsoverste		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\b[kc]r[yij]+[gch]+so[uv]\w*	"""Gouverneurs ende Crijchsoversten"";""crychsouersten"";""heeren Crychsouersten"""																
+226	krijgsvolk		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\b[kch]+r[yij]+[gkch]*s?vol\w*, \b[kch]+rij[chgs]+e?[vbu]olk\b, \b[ck]r[ijy]+g?c?h?s[bv]ol\w*	"""Crijchsvolck"";""Crychsvolck"";""crychsvolck"""																
+788	kroonprins		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bkroonprins	"""Kroonprins van Pruyssen"";""Kroonprins"";""Collonel Commandant van het Regiment van den Kroonprins"""																
+787	kroonprinses		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\bkroon *prin[sc]+es\w*	"""Kroonprinces"";""Kroonprincesse van Muscovien"""																
+786	kruidenier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\b[kc]ru[ijy]+denier	"""Cruijdenier ende Vettewarier alhier inden Hage"""																
+27	kruiser		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\b[ck]ruiss?er\w*	"""Cruijssers"";""Algiersche Kruyssers"";""particuliere Cruijssers"""																
+784	kunstschilder		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bkunstschil\w*	"""Kunstschilder"""																
+750	kurkensnijder		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bkurc?ken?sn[ijy]+d\w*	"""Kurkesnyders hier te Lande"";""plaetsnyder"";""Kurkesnyders deeser Landen"""																
+749	kwaaddoeners		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_id	\b[kwqu]+aa[dt]+doen\w*	"""Quaadtdoenders"";""Quaaddoenders"""																
+136	landdrost		Politiek & bestuur	Regionaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\blan[dt]+dros\w*	"""Lantdrost"";""Landtdrost"";""Landtdrost van Zallandt"""																
+563	landgraaf		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	lan\w*gra\w*	"""Heere Landtgrave van Hessen-Cassel"";""Lantgraeff van hessen"";""Heere Landtgrave"""																
+412	landheer		Beroep, Juridische status		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\blan[dt]+he\w*, \blan[dt]+s? *hee\w*	"""Landtheer"""																
+289	landloper		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_edelen	\blandt?l\w*	"""Vagabonden en Landloopers"";""Heydens en Landtloopers"";""Vagabonden en Landtloopers"""																
+500	landman		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_edelen	\blan[dt]+man\b	"""Landman"";""Landtman"";""Lantman"""																
+506	landmeter		Beroep		Dienstverlening		Dienstverlening				kw_edelen	^ *lan[dt]+ *mee?t\w*	"""Lantmeter"";""Landtmeter"";""Landmeeter"""																
+748	landrentmeester		Beroep		Financiën		Financiën				kw_rest	\blan[td]+ren.{1,2}me\w*	"""Landrentmeester"";""Landrentmeester van het Overquartier van Gelderland"";""Lantrentmeester"""																
+713	landsheer		Politiek & bestuur		Adel & Vorsten		Adel & Vorsten				kw_rest	\blan[dt]+s? *hee\w*	"""Landtsheer"";""Lantsheer"";""Landts=heer"""																
+712	leenheer		Beroep, Juridische status		Adel & Vorsten		Adel & Vorsten				kw_kerk	\bleenhe\w*	"""Leenheer"""																
+711	leidekker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_id	\bleidek+er\w*	"""gesaamentlijcke Leydeckers Knechts van het Binnenhof"";""Meester Loodgieter, Leydekker en Pompmaaker alhier in den Hage"";""Leydeckers Knechts van het Hof"""																
+476	leraar		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_beroep	\blee?raa?r\w*	"""Leeraer"";""Leeraar"";""Herder en Leeraar"""																
+465	leverancier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep, kw_rest	leverancier\w*, \blee?vera\w*, \ble[uv]+era?n?c?ier\w*	"""Leveranciers"";""Leveranciers alhier in den Hage"";""Leeveranciers alhier in den Hage"""																
+29	licent	ritmeester	??, geen hoedanigheid		Politiek & Bestuur					licentmeester (ontvanger in- en uitvoerrechten) en licentiaat (zal betrekking hebben op iemand met een graad in de Rechten)zijn verschillende dingen	kw_rest	\blicen\w*	"""Licent"";""Licentmeester"";""Licentiaet"""																
+291	lid		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\blid?t?\b	"""lidt"";""Lidt"";""Lid"""																
+709	lidmaat		Godsdienst		Religie		Religie				kw_new	\bli.{0,2}ma\w*	"""Lidtmaat"";""Lidmaat"";""Lidtmaet"""																
+36	lidmeester	echtelieden	Krijgsmacht		Leger & Milities		Leger & Milities			is dit geen tekstherkenningsfout voor ritmeester?	kw_rest	\bli.{0,2}me\w*	"""Litmr"";""Litmeester"";""Litmr."""																
+607	lieden	gijzelaar	??, Familie status		Status & relaties		(Juridische) status en Rechtspraak		S&R	echtelieden en armeluiden zijn iets anders. Splitsen?	kw_rest	\blu?ie?den\b	"""eghte Luyden"";""eghte Lieden"";""arme luyden"""																
+190	lieutenant		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	lieu\w*, \bl[ieu]+ten\w*	"""Lieutenant"";""Lieutenant Generaal"";""Lieutenant Generael"""																
+207	lieutenant-generaal		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt, kw_rest, kws_qual	lieu\w*, \bl[ieu]+ten\w*, lieuten.*gener\w*, \bl[ieu]+ten.*gener\w*, \blie.ten\w* *-?gene\w*, -gener\w*	"""Le. Generael"";""Lientenant Generaal"";""Le: Generaal"""																
+700	loodgieter		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bloo[td]+gie\w*	"""Loodgieter vande Vyver"";""gesamentlyke Knegts van den Lootgieter vande Vyver"";""Lootgieter"""																
+708	lorrendraaijers		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\blor+endr\w*	"""Lorrendrayers"";""Lorrendraiers"";""Lorrendraijers"""																
+364	luikenaar		Geografie		Geografie		Geografie				kw_rest	\bluikena\w*	"""Luyckenaers"";""Luijckenaer"";""Luijckenaers"""																
+209	maarschalk		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bmaa?rsch\w*	"""Maerschalck"";""maerschalck"";""Maarschalk"""																
+707	magister		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap			wat is de context? Kan duiden op academische titel.	kw_rest	\bmagister\w*	"""Magister"""																
+133	magistraat		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bmagistr\w*	"""Magistraat"";""Magistraaten"";""Magistraet"""																
+13	maitre		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bmaitre\w*	"""Maitre"";""Roy Mon Maitre"";""Prince son Maitre"""																
+577	majesteit		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest, kw_zlast	ma[ij]es.{1,2}e.{1,2}t, \bmai?j\w*, \bma\w*eit\b, ^ *majest\w*	"""sijne Majesteyt"";""Sijne Mat"";""zyne Mat"""																
+210	major		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt, kw_rest	\bmajoo?r, \bma[ij]+oo?r\w*, \bmai?j\w*	"""Generaal Major"";""Major"";""Generael Major"""																
+491	makelaar		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bmaa?c?kela\w*	"""Makelaar"";""geswooren Makelaar op het Eiland Curacao"";""Makelaars"""																
+599	man		Familie status		Status & relaties		Familie				kw_rest	\bman\b	"""man"";""Man"";""wylen haaren Man"""																
+203	mareschal		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_edelen	\bmaresch\w*, \bmaa?res?cha\w{0,2}\b	"""Mareschal"";""Marechal"";""Mareschal de Chastillon"""																
+706	marinier		Krijgsmacht		Leger & Milities	Landbouw, Scheepvaart & Visserij	Leger & Milities	Scheepvaart & Visserij			kw_ambt	\bmarini\w*	"""mariniers"";""Soldaten & mariniers"";""Soldaten ende mariniers"""																
+595	markgraaf		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bmarc?kgr\w*, \bmar.{0,2}gra\w*	"""Marckgraue van Brandenburch"";""Marckgraue van Ausbach"";""Marggraue van Brandenburch"""																
+592	markies		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	marc?[kq]u?i.?[sz]\b, \bmar[ckq]+u?i?e?[zs]\b	"""Heere Marquis de Pri√©"";""Heere Marquis"";""Marquis"""																
+705	matelot		Krijgsmacht		Leger & Milities		Leger & Milities				kw_ambt	\bmatelot\w*	"""Matelots"";""matelots"";""Matelots Anglois"""																
+704	mathematicus		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_ambt	\bmathemat\w*	"""Mathematicus"""																
+540	matroos		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bmatroo?[sz]\w*	"""matrosen"";""matroosen"";""Matroosen"""																
+703	medeplichtige		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bme+depli[chg]+t\w*	"""Meedepligtigen"""																
+259	medestander		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bmedestan\w*	"""medestanders"";""syne medestanders"";""borgen ende medestanders"""																
+257	meerderjarige		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bmeerderj\w*	"""meerderjaarige"""																
+603	meester		??		Onderwijs & Wetenschap		Onderwijs & Wetenschap			wat is de context? Kan duiden op academische titel.	kw_rest	\bmeester\b, \bmeester\w*	"""Mr"";""Mr."";""meester"""																
+35	meier		geen hoedanigheid				(Juridische) status en Rechtspraak		?	GD: geen hoedanigheid	kw_rest	\bme[ijy]+ers?e?n?\b	"""Meyer"";""Meyer van Meckenheim"";""Meyer van loeven"""																
+673	mennoniet		Godsdienst		Religie		Religie				kw_rest	\bmen+on+is?e?t\w*	"""Mennonisten"";""Mennoniten"";""mennonisten"""																
+532	metselaar		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bmet[sz]ela\w*, mets+ela\w*	"""Meester Metselaar"";""Meester Metzelaar"";""Metselaar van Wapperom"""																
+201	militair		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bmil?li\w*	"""Militairen"";""Fransche Militairen"";""militairen"""																
+702	mindere generaal		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bmin\w* gen\w*	"""mindere Generaels"";""mindere generaels"";""minder Generaels"""																
+270	minderjarige		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bminderj\w*	"""alsnog minderjaarig"";""minderjaarige"";""Minderjaarigen"""																
+701	mineur		Krijgsmacht		Leger & Milities		Leger & Milities				kw_edelen	\bmineurs?\b	"""Mineurs"";""mineurs"";""Mineur"""																
+105	minister		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bmini\w*r\w*, \bmini?ste\w*, \bm[^a]{0,4}in?sters?\b	"""haar Hoogh Mogende Minister by den Rycksdagh"";""haar Hoogh Mogende Minister aan het Hof van"";""Ministers"""																
+698	minnebroeder		Godsdienst		Religie		Religie				kw_beroep	\bmin\w*broe\w*	"""minnebroeders"";""Minnebroeders"";""minnebroeder tot Turnhout"""																
+697	misdadiger		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bmisda\w*	"""misdadigers"""																
+300	missionaris		Godsdienst		Religie		Religie				kw_kerk	\bmission\w*	"""Missionarissen"";""Missionaris tot Eyndthoven"";""Paters Missionarissen"""																
+521	molenaar		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bmo+len\w*	"""Molenaar"";""Molenaer"";""molenaer"""																
+262	momboir		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	momboir	"""Momboir"";""Raad en Momboir"";""Raad en Momboir van den Hove geordonneert in het Overquartier van Gelderland"""																
+339	monnik		Godsdienst		Religie		Religie				kw_rest	\bm[uo]nn?i?n?c?ke?n?\b	"""Monnick"";""Monnicken"";""Monick"""																
+219	monsterheer		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\bmonsterh\w*	"""Monsterheer generael"";""Monsterheer"";""Monsterheer generael van"""																
+696	moor		Geografie		Geografie		Geografie				kw_id	\bmo+re?n?\b	"""Mooren"";""Moor"";""mooren"""																
+260	moordenaar		Rechtspraak, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_id	\bmoorde\w*	"""Moordenaar"";""Dieven, Moordenaars"";""Moordenaars"""																
+360	moscovier		Geografie		Geografie		Geografie				kw_id	\bm[uo]sco\w*rs?	"""Moscovisch=vaerders"";""moscoviters"";""Moscovischvaerders"""																
+683	muiteling		Beroep, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_beroep	\bmu[ijy]+teling\w*	"""Muitelingen"";""Muitelingen van het Oostindisch Compagnieschip Barbestein"""																
+526	munter		Beroep		Financiën		Financiën				kw_rest	\bmunter\w*	"""valsche Munters"";""muntgesellen & munters"";""Munters"""																
+407	muntmeester		Beroep, Politiek & bestuur		Financiën		Financiën				kw_ambt	\b[nm]unt?me?e?s?t?e?rs?e?n?\b	"""Muntmeester"";""Muntmeesteren deeser Landen"";""Muntmeesters deeser Landen"""																
+451	muntsgezel		Beroep		Financiën		Financiën				kw_rest	munts?ge\w*	"""muntgeselle"""																
+214	musketier		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\bmus[kcq]+eti\w*	"""musquettiers"";""Musquettiers"";""musquetten"""																
+684	muzikant		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bmu[sz]+i[kc]+ante?n?	"""Musikanten"";""53Onder-Officiers, Musicanten, Gefreiten, Gemeenen &c"";""Musicant"""																
+675	nabestaande		Familie status		Status & relaties		Familie				kw_id	\bnaa?s?t?besta\w*	"""naastbestaande Bloedvrienden van diergelyke Delinquanten"";""Naastbestaanden"";""Vrienden en Nabestaanden"""																
+402	neef		Familie status		Status & relaties		Familie				kw_id, kw_rest	\bne+[fv]e?n?\b, \bnee[fv]+e?n?\b	"""sijn Neef"";""Neef"";""sijn Neeff"""																
+685	neutralen		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bneutra+len?\w*	"""Neutralen"";""neutralen"";""Neutrale"""																
+385	nicht		Familie status		Status & relaties		Familie				kw_id	\bnichte?	"""Schout by Nigt"";""Nigte van"";""Oom met sijn behuwd Nichte"""																
+687	noordvaarder		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_beroep	\bno+r[dt]+s?va[ae]r?der\w*	"""Noortvaerders"";""Noortsvaerders"";""Noortvaerders nae Noorwegen"""																
+32	notabele		Politiek & bestuur		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_edelen, kw_rest	\bnotab\w*, \bnotabel\w*	"""Notabelen"";""Notabelen van den selven Lande"";""notabelen"""																
+406	notaris		Beroep, Rechtspraak		Dienstverlening		(Juridische) status en Rechtspraak		Dienstverlening		kw_ambt, kw_rest	\bnotar\w*, \w*taris\b, notari\w*	"""Notarissen"";""Notarisampt"";""notarissen"""																
+338	nuntius		Godsdienst		Religie		Religie				kw_rest	\bnun[ct]ius\w*	"""Nuntius"";""Heere Nuntius"";""Nuncius"""																
+96	officiant		Politiek & bestuur		Politiek & Bestuur	Religie	Politiek & Bestuur	Religie			kw_rest	\boffician\w*	"""Officianten"";""officianten"";""Officiant"""																
+195	officier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\boffici\w*r\w*, of+icier\w*, \bofficie[a-z]{0,3}\b	"""Officieren"";""officieren"";""Officier"""																
+688	onder-ceremoniemeester		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_kerk	\bcer\w*me\w*	"""Onderceremoniemeester"""																
+682	onderconsul		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bonder *consul\w*	"""Onderconsul"";""Onderconsul van"""																
+253	onderdaan		Juridische status		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_rest	\bonderda\w*	"""Onderdanen van den"";""Onderdanen van"";""onderdanen"""																
+74	onderdienst		Politiek & bestuur							GD: geen hoedanigheid	kw_rest	\bonderdien\w*	"""onderdienstich"";""onderdienstel"";""onderdienstlick"""																
+569	onderkoning		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bonderkon\w*	"""Onderkoning"";""Onderkoningh"";""Onderkoning van Sardinie"""																
+458	ondermeester		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	\bonderm\w*	"""Ondermajor"";""ondermeester"";""ondermeester vande Latijnsche Schoole tot Maestricht"""																
+249	onderzaten		Juridische status		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_rest	\bonder[sz]aa?te\w*	"""ondersaten"";""Ondersaten"";""zyne ondersaten"""																
+689	ongerepatrieerde		Krijgsmacht		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	?		kw_rest	\bongerep\w*ieerd\w*	"""ongerepartieerde"";""ongerepartieerden"""																
+80	ontfanger		Politiek & bestuur		Financiën		Financiën				kw_ambt	\bon[rt]?[fv]an\w*, \bont.{0,2}ange\w*, \bontf\w*	"""Ontfanger"";""Ontfanger Generael"";""Ontfanger generael"""																
+84	ontfanger generaal		Politiek & bestuur		Financiën		Financiën				kw_ambt, kw_rest	\bon[rt]?[fv]an\w*, \bont.{0,2}ange\w*, \bontf\w*, \bon\w*r \bgeneraal\b	"""Outfanger"";""Outfr. Generael"";""Ontsr Generael"""																
+398	oom		Familie status		Status & relaties		Familie				kw_rest	\boom\b	"""Oom"";""sijn Oom"";""oom"""																
+354	oostenrycker		Geografie		Geografie		Geografie				kw_id	\boost\w*kers?\b	"""Oostenrykers"";""Oostenrykers en Hollanders"""																
+362	opgezetene		Geografie		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_rest	\bopge[sz]ee?t\w*	"""Opgezeten in der Groede"";""In- en Opgezeetenen"";""Opgezeetenen ten platten Lande"""																
+86	oppasser		Politiek & bestuur		Dienstverlening		Dienstverlening				kw_rest	\boppas\w*	"""Oppasser van het Gestoelte van de Generaliteit in de Nieuwe Kerk alhier"";""Oppasser van het Gestoelte van haar Hoogh Mogende in de nieuwe Kerck alhier in den Hage"";""Oppasser van haar Hoogh Mogende Gestoelte in de nieuwe Kerck alhier"""																
+691	opper-schenkmeester		Beroep		Dienstverlening		Dienstverlening				kw_ambt	\bopper.{0,2}schenkm\w*	"""Opper - Schenckmeester"";""Opper-Schenckmeester"";""Opper-Schenkmeester"""																
+692	opper-tollenaar		Beroep		Financiën		Financiën				kw_rest	\b[ct]h?ol+en\w*	"""Oppertollenaar"""																
+59	opperhoofd		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	opperho\w*	"""Opperhooft"";""opperhooft"";""Opperhooffden"""																
+566	oppervorst		Adel & vorstenhuizen		Politiek & Bestuur		Politiek & Bestuur			waarsch. Hoofdboswachter	kw_edelen	\bop+er[vf][uo]rst\w*	"""Oppervorster"";""Oppervorster der Vryheyd Oudenbosch en Heerlijckheyd"";""Oppervorsters"""																
+101	opzichter		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\bop[sz]ic?h?g?ter\w*	"""Opsiender der Fransche Kercken in Hessenland"";""Opsighter Generaal van 's Lands Zeewercken"";""Opsienders"""																
+98	orateur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\borat\w*	"""Orateur"";""orateur"";""heere Orateur"""																
+693	ossenkoper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bossen?ko\w*	"""Ossencooper"";""Ossekoopers"";""Ossencoopers"""																
+694	ossenweider		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_ambt	\bos+enwei\w*	"""Ossenweyders"";""Ossenweyder tot Mechelen"""																
+720	ostagier	paaimeester	Krijgsmacht, Juridische status		Justitie		(Juridische) status en Rechtspraak		?	"GD: gijzelaar (""hostage""), vaak in de zin van krijgsgevangene"	kw_beroep	\bostagi\w*	"""Ostagiers"";""Ostagier"";""Fransche Ostagiers, Kryghsgevangenen in de Citadelle van Ryssel"""																
+83	oud-burgemeester		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur			samen met burgemeester?	kw_ambt, kw_rest, kws_qual	\bb[aou]rger?m\w*, \bb[urg]{2,4}.{0,3}me?e?s?t?e?r\w*, burger?m\w*, \bou[dt]+	"""Oudburgermeester en Raad der voorschreeve Stad"";""Raad en Oudburgermeester der voorschreeve Stad"";""Oudburgermeester en Raad der Stad Middelburg"""																
+676	oud-raad van civile justitie te suriname		Politiek & bestuur, Geografie		Justitie		(Juridische) status en Rechtspraak		P&J	Suriname'-gedeelte eraf halen?	kw_rest, kws_qual	\boud.{0,3}raad.*civ.*just\w*, \bou[dt]+	"""Oud-Raad in den Hove van civile Justitie in Surinamen"";""Oud-Raad van civile Justitie der Colonie Surinamen"";""Oudraad in den Hove van civile Justitie te Suriname"""																
+62	oud-weesmeester		Beroep		Politiek & Bestuur		Politiek & Bestuur			samen met weesmeester?	kw_beroep, kws_qual	\bweesme\w*, \bou[dt]+	"""Oudweesmeester"";""Oudweesmeester des selven Eylands"";""Oudweesmeester te"""																
+331	ouderling		Godsdienst		Religie		Religie				kw_rest	\bouderl\w*	"""Ouderlingen"";""Ouderlingh"";""Ouderling"""																
+380	ouders		Familie status		Status & relaties		Familie				kw_rest	\bouders?\b	"""haare Ouders"";""sijne Ouders"";""Ouders van"""																
+199	overste		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\bo[uv]erst\w*	"""Oversten"";""Overste"";""Ouersten"""																
+714	paaymeester	paltsgraaf	Politiek & bestuur		Financiën		Financiën				kw_ambt	\bpa+[ijy]+m[re]\w*	"""paijmeesters"";""Paaymeester"";""Luyksche Paymeester der Stad Maastricht"""																
+441	pachter		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_beroep	\bpa[gch]+ter\w*	"""pachters"";""pachter"";""Pachters"""																
+715	pagador		Beroep		Financiën		Financiën				kw_ambt	\bpagador\w*	"""Pagador"";""Pagador Doublet"";""Pagador Generael"""																
+625	page		geen hoedanigheid		Adel & Vorsten		Adel & Vorsten				kw_rest	\bpage\b	"""page"";""Page"""																
+363	palatine		Geografie		Geografie		Geografie				kw_rest	\bpalatin\w*	"""Palatinus"";""Palatin"";""Palatines"""																
+431	palfrenier		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bpalfre\w*	"""Palfreniers"";""Palfrenier"";""Palfreniers van"""																
+593	palsgraaf	paltsgraaf	Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\bpal[zst]+gra+[fv]+e?n?\b, \bpf?al[zfts].{0,2}gra\w*	"""Paltzgraeff"";""Cheurfurst Paltzgraeff"";""Paltzgraven"""																
+591	palzgraaf		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\bpal[zst]+gra+[fv]+e?n?\b, \bpf?al[zfts].{0,2}gra\w*	"""Paltzgraue"";""heere Paltzgraue"";""heeren Paltzgrauen"""																
+695	pandheer		Beroep		Financiën		Financiën				kw_rest	\bpan[dt]+heer	"""pantheeren"";""Pantheer"";""Pantheer van Gulpen"""																
+70	parapheur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bparapheu\w*	"""Parapheur van het Generaliteits klein Zeegel"";""Parapheur van het Generaliteyts kleyn Zegel"";""Parapheur"""																
+722	parnassin		Godsdienst		Religie		Religie				kw_ambt	\bparnas+i[mn]\w*	"""jegenswoordige Parnassims"";""Parnassins van de Portugeesche Joodsche Natie te Amsterdam"";""Parnassins van de Joodsche Natie op den Eylande van Curacao"""																
+89	participant		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bparticip\w*	"""hooft participanten"";""participanten"";""dolerende participanten"""																
+279	particulieren		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bparticuli\w*	"""particulieren"";""sijne particuliere"";""Particulieren"""																
+744	passagier		??, Geografie		Status & relaties		(Juridische) status en Rechtspraak		?		kw_rest	\bpas+agiers?e?n?\b	"""arme Passagiers"";""Passagier"";""Passagiers"""																
+330	pastor		Godsdienst		Religie		Religie				kw_rest	pastoo?r, \bpast\w{0,2}re?n?s?\b	"""Pastoor"";""pastoor"";""Pastor"""																
+329	pater		Godsdienst		Religie		Religie				kw_rest	\bpater\b, \bpat[er]+s?\b	"""Pater"";""pater"";""Paters"""																
+325	patriarch		Godsdienst		Religie		Religie				kw_rest	\bpatriar\w*	"""Patriarch"";""den Patriarch"";""heyligen patriarch"""																
+92	patriot		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bpatrio\w*	"""Brabandsche Patriotten"";""goede patrioten"";""zig noemende Brabandsche Patriotten"""																
+606	patroon		??				(Juridische) status en Rechtspraak		?	"GD: zowel ""kogel"", ""schutter"", design. Term verwijst naar zeer uiteenlopende begrippen!"	kw_rest	\bpatro+ne?n?\b	"""patroon"";""Patroon"";""Patron"""																
+333	paus		Godsdienst		Religie		Religie			waarom komt deze tweemaal voor?	kw_rest	\bp+au.{0,2}\b	"""Paus"";""vanden Paus"";""den Paus"""																
+763	paus		Godsdienst		Religie		Religie				kw_rest	\bp+au.{0,2}\b	"""Pauw van Achtienhoven"";""Paus van Romen"";""Pauw van Achtienhoven,"""																
+327	pausgezinde		Godsdienst		Religie		Religie				kw_rest	\bpausge\w*	"""Pausgesinden"";""pausgesinden"";""Roomschgesinden"""																
+79	penningmeester		Politiek & bestuur	??	Financiën		Financiën				kw_ambt, kw_rest	\bpennin\w*m\w*, \bpenn?ingm\w*	"""Penninghmeester"";""Penninckmre"";""Penninckmeester"""																
+597	pensionaris		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bpension+ar\w*, \bpensio.{0,3}ai?r\w*, \bpensi.{0,5}aris\b, \bpension\w*, \bpen.{0,3}ion+aris, \bpen.i?on+aris\w*	"""Pensionnaris"";""Pensionaris"";""pensionnaris"""																
+367	piemontoische		Geografie		Geografie		Geografie				kw_rest	\bpiemon\w*en?r?s?\b	"""piemontoische Dalluijden"";""Piemontoische Dalluijden"";""piemontoisen"""																
+743	piloot		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_beroep	\bpilo+t\w*	"""Pilooten"";""Pilote"";""Piloten"""																
+225	pionnier		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bpion+i?er\w*	"""Pionniers"";""pionniers"";""Pioniers"""																
+723	piraat		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij			samen met corsair?	kw_rest	\bpira\w*	"""Piraten"";""Piraten van Algier"";""piraten"""																
+99	plaatsvervanger		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bplaatsv\w*	"""Plaatsvervangers"";""Plaatsvervanger"";""Eerste Plaatsvervanger"""																
+453	planter		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bplanter\w*	"""Planters in de Colonie van Surinamen"";""Planters in de Colonie van Suriname"";""Planters in de Colonie van Surinaame"""																
+85	plenipotentiaris		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bple.{0,7}entia\w*, ..?lei?[mn]+i+p[oa]t\w*, \b\w+nipoten\w*	"""haar Hoog Mog. extraordinaris Envoy√© en Plenipotentiaris aan het Hof van"";""haar Hoogh Mogende extraordinaris Envoy√© en Plenipotentiaris aan het Hof van"";""haar Hoog Mog. Minister Plenipotentiaris te Keulen"""																
+413	poincter		Beroep, Politiek & bestuur		Financiën		Financiën				kw_rest	\bpoinct\w*	"""Poincter der Parochie van St. Baafs"";""Poincter der Parochie van St. Baafs, geleegen ten Graafschappe van Middelburgh in Vlaanderen"";""eerste poinct"""																
+272	poorter		Juridische status		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_rest	\bpo+rters?\b	"""Poorter der Stede Amsterdam"";""Poorter der voorschreeve Stad Amsterdam"";""Poorter te Ostende"""																
+419	portier		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bporti?er\w*	"""Portier"";""portier"";""Portier van het Hof"""																
+368	portugezen		Geografie		Geografie		Geografie				kw_id	^ *portu\w* *$	"""Portugesen"";""portugesen"";""Portugees"""																
+11	postillon		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bpostill\w{0,4}	"""Postillon"";""Postillons"";""Postillon in dienst van den"""																
+471	postknecht		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bpostkne\w*	"""Postknegt van den"";""Postkneght van den"";""Postknecht"""																
+531	postmeester		Beroep		Politiek & Bestuur		Politiek & Bestuur				kw_beroep, kw_rest	\bpostmee\w*, \bpost.{0,2}[mn]ees\w*	"""Postmeester"";""Postmeester vander Hoop"";""postmeester"""																
+73	potentaat		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bpotenta\w*	"""potentaten"";""Potentaten"";""uijtheemsche potentaten"""																
+742	pottenbakker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bpot+en?bac?k+er\w*	"""Pottebakkers der Stad Bergen op den Zoom en Vryheid Oosterhout"";""Pottebakkers van Bergen op den Zoom en Oosterhout"";""de Pottebakkers der Stad Bergen op den Zoom en Vryheid Oosterhout"""																
+741	practisyn		Beroep		Dienstverlening		Dienstverlening			context medisch? Dan bij Geneeskunde.	kw_rest	\bpracti[szc]+[ijy]+ns?	"""Practisyns van Michiel vander Meulen,"";""Practisijn tot Ryssel"";""Practisyns"""																
+525	praeceptor		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	\bpr[ae]+cep\w*	"""Praeceptor"";""Praeceptor van St. Anthonis Godshuis binnen Maastricht"";""Praeceptor van Nitsen"""																
+280	predecesseur		Juridische status		Justitie		(Juridische) status en Rechtspraak		?		kw_rest	\bpr[ae]+dec\w*	"""Praedecesseurs"";""predecesseurs"";""Predecesseurs"""																
+332	predikant		Godsdienst		Religie		Religie				kw_kerk	\bpredi[kc][ha][en]\w*, \bpr[ae]+d[lti]\w*	"""Predikant"";""predicant"";""Predicant"""																
+321	prelaat		Godsdienst		Religie		Religie				kw_kerk	\bpree?la\w*	"""prelaet"";""Prelaet"";""prelaten"""																
+6	preliminair		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bprelimin\w*	"""preliminaire"";""preliminair"";""Preliminaire"""																
+81	president		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bpr?[ae]+ *[fs]id\w*, \bg?e?pr[ae]+sid\w*, \b\w*esident	"""Rresident"";""Lesident"";""esident"""																
+82	pretendent		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bpr[ae]+[dt]+end\w*	"""Praetendent"";""Engels pretendenten"";""Praetendenten"""																
+314	prevoost		Godsdienst		Religie		Religie				kw_kerk, kw_rest	\bpr[eo]v.{0,3}st\w*, \bpr.{0,3}voos\w*, \bpr.{0,2}voost\w*, \bpr[eo][uv]o+s\w*	"""Provoost"";""Provoost van de Generaliteyt"";""provoost"""																
+322	priester		Godsdienst		Religie		Religie				kw_kerk	priester\w*	"""Priester"";""Roomsch Priester"";""Roomschen Priester"""																
+562	prince		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen, kw_rest	\bprin[sc]\w{0,3}\b, \bprin.e\b, \bpr.{0,2}nce\b	"""W. Pr. v. Orange"";""Pr van Everdingen"";""Pr: v: Orange"""																
+560	princes		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_edelen	\bprin[sc]\w{0,3}\b, \bprin[sc]+es\w*, \bprin.{0,2}es\w*	"""Princesse"";""princesse"";""haare Koninglyke Hoogheid Mevrouwe de Princesse van Orange en Nassau"""																
+740	principaal		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur			Komt dit ook in niet-politieke context voor?	kw_rest	\bprincipa+l\w*	"""Heeren Staaten van hooggemelde Provincie hunne Principaalen"";""meeste ende principaelste geerffdens der Vrijheijt Waelwijck"";""sijne Principaalen."""																
+552	prins		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten			komt ook voor in andere varianten. Samenvoegen?	kw_edelen	\bprin[sc]\w{0,3}\b	"""heere Prince van Orange"";""Prins"";""prinsen"""																
+306	prior		Godsdienst		Religie		Religie				kw_rest	\bprior\w*	"""Prior"";""prior"";""Prior van het Klooster St. Nicolai te Venlo"""																
+256	prisonnier		Krijgsmacht, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bprison\w*	"""prisonniers"";""Prisonniers"";""prisonniers de guerre"""																
+48	procureur		Rechtspraak		Justitie	Politiek & Bestuur	(Juridische) status en Rechtspraak		P&J / P&B		kw_rest	\bprocure\w*, \bprocu\w*, \bpro.ureu\w*	"""Procureur"";""procureur"";""Procureur voor haar Hoogh Mogende"""																
+538	professor		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	profes\w*, \bprof+es+\w*	"""Professor"";""professor"";""Professoor"""																
+317	proost		Godsdienst		Religie		Religie				kw_rest	\bproost\w*	"""Proost"";""Proost van Meerssen"";""proost"""																
+335	proponent		Godsdienst		Religie		Religie				kw_rest	\bpropo\w*	"""Proponent"";""proponent"";""Proponent te Maastright"""																
+600	proprietair		Krijgsmacht		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bproprie\w*	"""proprietaires"";""Proprietairen der zeeven Compagnien van het eerste Battaillon van het Regiment van"""																
+320	proseliet		Godsdienst		Religie		Religie				kw_rest	\bprosel\w*	"""Proselit"";""Proseliten"";""Luycksche Proselit"""																
+76	protector		Krijgsmacht, Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bprotec\w*	"""Heere Protector"";""Heer protector van Engelandt"";""Heere protector van Engelandt"""																
+343	protestant		Godsdienst		Religie		Religie				kw_rest	\bprotesta\w*	"""haar Hoogh Mogende Minister aan de Protestantsche Cantons in Switzerland"";""haar Hoogh Mogende Minister by de Protestantsche Cantons in Switzerland"";""Protestanten"""																
+733	protho medicus		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bprot\w* *medicu\w*	"""Protho Medicus"";""Prothomedicus van het Overquartier van Gelderlandt"";""Proto Medicus"""																
+188	provediteur		Beroep, Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bprov.{0,2}dit\w*	"""provediteurs"";""Provediteur"";""Provediteurs"""																
+499	provideur		Beroep, Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bprovid\w*	"""provideurs"";""Provideurs"";""Providoor van de gesontheyt"""																
+323	provoost		Godsdienst		Religie		Religie				kw_kerk, kw_rest	\bpr[eo]v.{0,3}st\w*, \bpr.{0,3}voos\w*, \bpr.{0,2}voost\w*, \bpr[eo][uv]o+s\w*	"""prouoost"";""Prouoost"";""Prouoost generael"""																
+100	raad		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	^ *raad\b	"""Raet"";""Raad van Staate"";""Raet vanden"""																
+110	raadpensionaris		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\b\wa+d.{0,3}ensio\w*, \bra[ae]dt? *pens\w*, raad.{0,3}pensio\w*	"""Raedt Pensionaris"";""Raedt Pensionnaris"";""Raedt pensionaris"""																
+87	raadsheer		Politiek & bestuur		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	raad.{0,1}heer, \braad[sz]? *he\w*	"""Raetsheer"";""Raadsheer"";""Raedtsheer"""																
+88	raadsverwant		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\braadsver\w*	"""grooten Raadsverwant"";""Raadsverwant der Stad Venlo"";""Raadsverwanten der Stad Venlo"""																
+308	rabbijn		Godsdienst		Religie		Religie				kw_rest	\brab+i\w*	"""rabbi"";""Rabbi"";""Rabi"""																
+111	rapporteur		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\brapporte\w*	"""Rapporteurs"";""heeren Rapporteurs"";""Rapporteur"""																
+252	rebel		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\brebel\w*	"""Rebellen"";""rebellen"";""rebellen van"""																
+53	rechter		Rechtspraak		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	re[gc]h?ter\w*, \br[ie][gc]h?ter\w*	"""Rechters"";""rechters"";""Rechter"""																
+50	rechtsgeleerde		Rechtspraak		Justitie	Onderwijs & Wetenschap	(Juridische) status en Rechtspraak		O&W		kw_rest	recht.{0,3}gele\w*	"""rechtsgeleerden"";""Rechtsgeleerden"";""Rechtsgeleerde"""																
+229	recruteur		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\brecrut\w*, \brecru\w{0,5}\b	"""recruteringe"";""Recrutgeldt"";""recruteeringe"""																
+231	recruut		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\brecru\w{0,5}\b	"""recreutes"";""recreuten"";""Recrutes"""																
+498	rector		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	\brector	"""Rector"";""Pater Rector"";""Rector van St. Joris Altaar"""																
+42	redelijkheid		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bredel[ijy]+[chk]+\w*	"""redelijck"";""redelijcke"";""redelycke"""																
+484	reeder		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\brh?ee?ders?\b	"""Reeders"";""Rheeders"";""reeders"""																
+72	regent		Politiek & bestuur	Lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_rest	regent\w*	"""Regenten"";""regenten"";""Regeerders"""																
+78	rekenmeester		Politiek & bestuur		Financiën		Financiën				kw_rest	\bree?kenme\w*, \bree?c?ken *mee\w*, \bree?c?kenm\w*re?n?s?\b	"""Rekenmeester"";""Reeckenmeester"";""Rekenmrn"""																
+294	remonstranten		Godsdienst		Religie		Religie				kw_rest	\bremonstr\w*	"""Remonstranten"";""Remonstrant"";""remonstrant"""																
+738	rendant		??, Beroep		Financiën		Financiën				kw_beroep	\brendant\w*	"""Rendant"";""rendant"";""rendanten van reeckeninge"""																
+69	rentheffer		Politiek & bestuur		Financiën		Financiën				kw_rest	\brenthef\w*	"""Renthefferen"";""Rentieren van Brabant"";""renthieren van Brabant"""																
+75	rentmeester		Politiek & bestuur		Financiën		Financiën				kw_rest	\bren.{1,2}me\w*, \bren\w*me?e?s?t?e?r\w*	"""Rentmeester"";""Rentmr"";""rentmr"""																
+93	requirant		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\brequir\w*	"""Requirant van Requeste civile"";""Requirant"";""requirant"""																
+345	resident		Geografie, Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_id, kw_rest	\bresident, ^ *\breside\w*, \bres\w*dent\w*, \bres.{0,2}dent, \bres[i-]d\w*, \br.{0,3}dent\w*, \b\w*esident, \bresi.*ent	"""Resident"";""resident"";""Heere Resident"""																
+501	retorsievaarder		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bretor\w* *vaar\w*	"""gewesen retorsievaerder van Enchuijsen"";""retorsievaerder"";""retorsievaerder van Enchuijsen"""																
+56	reviseur		Politiek & bestuur, Rechtspraak		Justitie	Onderwijs & Wetenschap				ligt aan de context	kw_rest	\breviseu\w*	"""reviseurs"";""Reviseurs"";""reviseurs vande ouersettinge des ouden testaments"""																
+553	ridder		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_ambt, kw_rest	\briddere?n?\b, \bridders?\b	"""Ridder"";""ridder"";""Heere Ridder"""																
+558	rijngraaf		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\brh?[ijy]+ngra\w*	"""Rhyngraaf van Salm"";""Rhyngrave van Salm"";""Rhyngraaf"""																
+218	ritmeester		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\br[ei]tm\w*, \bri.{0,3}me\w*, \b.{0,1}itme\w*re?n?s?\b	"""Ritmeester"";""Ritmr"";""Ritmre"""																
+737	rotmeester		Krijgsmacht		Leger & Milities		Leger & Milities			zelfde als ritmeester?	kw_rest	\brotme\w*rs?e?n?\b	"""Rotmeester"";""Rotmeester op de Huygevoort, Gehugte van Westelbeers, Quartiere van Oosterwyk, Meyerye van 's Hertogenbosch"";""Rotmr"""																
+241	rotsgezel		Krijgsmacht	??	Leger & Milities		Leger & Milities				kw_ambt	\brots[gm]e\w*	"""Rotsgezellen"";""Rotsgesellen"";""rotsgesellen"""																
+485	rover		Beroep		Justitie		(Juridische) status en Rechtspraak				kw_rest	\broo?[uv]e\w*	"""Roovers"";""Algiersche en andere Roovers"";""Roover"""																
+213	ruiter		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_rest	\bru[yi]t\w*	"""Ruyteren"";""Ruijteren"";""ruijters"""																
+358	rus		Geografie		Geografie		Geografie				kw_rest	\brus+e?n?\b	"""Russen"";""haare Rus"";""Conseiller d'Etat Russe"""																
+736	schatheffer		Politiek & bestuur		Financiën		Financiën				kw_ambt	\bschathef\w*	"""Schatheffers"";""Schatheffer"";""schatheffers"""																
+173	schatmeester		Politiek & bestuur	??	Financiën		Financiën				kw_ambt	\bschatme\w*	"""Heere Kroons-Schatmeester"";""Heere Rijcx Schatmeester"";""Rijcx Schatmeester"""																
+125	schepen		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	sche+pen\w*	"""Schepenen"";""Scheepenen"";""Scheepen"""																
+514	schilder		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bschild\w*	"""Meester Schilder en Verwer"";""Schilder"";""schilder"""																
+243	schildknaap		Krijgsmacht	Landmacht	Adel & Vorsten		Adel & Vorsten				kw_rest	\bschild\w*, \bschil[dt]kn\w*	"""Schiltknaep"";""Schiltknaap"""																
+515	schipper		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	schi[bp] *per, \bschipp\w*	"""Schipper"";""schipper"";""Schippers"""																
+504	schoenmaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bschoenma\w*	"""Leeden van het Schoenmakers Gilde"";""Schoenmaker"";""Gilde der Schoenmakers"""																
+735	scholaster		Godsdienst		Religie		Religie				kw_rest	\bscholast\w*	"""Scholaster"";""Scholasters"";""scholasteryen van St. Udenrode"""																
+164	scholtis		Politiek & bestuur		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bscho.{0,2}tis, ^ *scholt\w*	"""Scholtis"";""Scholtus"";""Scholtus der Stad Venlo"""																
+494	schoolmeester		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	\bschoolm\w*	"""Schoolmeester"";""Schoolmeesters"";""Schoolmrs"""																
+383	schoonbroeder		Familie status		Status & relaties		Familie		S&R		kw_id	\bschoonbroe\w*	"""sijn Schoonbroeder"";""Schoonbroeder"";""desselfs Schoonbroeder"""																
+405	schoondochter		Familie status		Status & relaties		Familie		S&R		kw_id	schoondo\w*	"""hoogst desselfs Schoondogter"";""hoogstdeszelfs Schoondogter"""																
+403	schoonmoeder		Familie status		Status & relaties		Familie		S&R		kw_id	\bschoonmoe\w*	"""sijn Schoonmoeder"";""sijne Schoonmoeder"";""der Supplianten Moeder en Schoonmoeder"""																
+378	schoonvader		Familie status		Status & relaties		Familie		S&R		kw_id	schoonva\w*	"""sijn Schoonvader"";""Schoonvader"";""des Suppliants Schoonvader"""																
+388	schoonzoon		Familie status		Status & relaties		Familie		S&R		kw_id	\bschoon[sz]oo\w*	"""sijn Schoonsoon"";""Schoonsoon"";""Schoonsoon van"""																
+734	schot		Geografie		Geografie		Geografie				kw_rest	\bschots?m?a?n?\b	"""Schotsman"";""wijlen Johan Schot"""																
+169	schout		Politiek & bestuur		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	sc?g?h?out, \bsc?g?h?[ao][nu]t\b	"""Schout by Nagt"";""Hoochschout"";""hoochschout"""																
+535	schrijnwerker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bschr\w* *wer[kc]+er\w*	"""Meester Timmerman en Schrynwerker"";""Meester Timmerman en Schrynwerker alhier in den Hage"";""Meester Timmerman en Schrynwercker"""																
+26	schrijver		geen hoedanigheid		Dienstverlening		Dienstverlening				kw_rest	\bschr\w*ver\w*, \bschr[ijy]+[uv]er\w*	"""Schryver"";""schrijver"";""Schrijver"""																
+542	schuitvoerder		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bschuit.{0,2}voer\w*	"""Schuytevoerders"";""Schuytvoerders"";""Schippers en Schuitevoerders"""																
+179	schutter		Krijgsmacht		Leger & Milities		Leger & Milities			niet echt krijgsmacht	kw_ambt	schutt\w*	"""Schutter"";""Lieutenant van de Compagnie Schutters van het Orange Vaandel van den"";""Schutters"""																
+159	secretaris		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\b\w*secr\w{0,3}a\w*, \bsec\w* *ris\b, \w*taris\b, \bsecr\w*s\b, \b\w*etaris\w*, \b\w+[^o]taris\b	"""Secretaris"";""Secretaris van den"";""secretaris"""																
+732	sequester		Beroep, Juridische status		Justitie		(Juridische) status en Rechtspraak		?	GD: vroeger ook: beheerder van een onder toezicht geplaatsten boedel.	kw_rest	\bsequest\w*	"""Sequester"";""Sequesters"";""Sequesters en Redders over den Boedel en Nalaatenschap van"""																
+242	sergeant		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	.ergean\w*, serg.{0,2}n\w*	"""Sergeant"";""Sergeanten"";""sergeant"""																
+143	serviciemeester		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur			kan zo gauw niet vinden wat dit precies was.	kw_ambt	\bservi.{0,4}me?e?s?t?e?rs?\b	"""Serviciemeester"";""out Serviciemeester"";""Outburgemeester ende gewesene Serviciemeester der Stadt Maestricht"""																
+530	sluismeester		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bslu[iyj]+\w*me\w*	"""Sluijsmeesters van Slependamme"";""Sluijsmeesters vande Wateringe van Slependamme"";""Sluijsmeester opt Sas van Gent"""																
+244	soldaat		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	soldaat, \b[cs]olda*te?s?n?\b	"""Soldaten"";""soldaten"";""Soldaat"""																
+51	solliciteur		Rechtspraak		Leger & Milities		Leger & Milities				kw_ambt	\bsol+ici?t\w*	"""Solliciteur"";""Solliciteurs"";""Solliciteur Militair"""																
+366	spanjaard		Geografie		Geografie		Geografie				kw_rest	\bspai?[gnj]+[ae]+[nr][td]\w*	"""Spaignaerden"";""Spaignaerts"";""Spagnaarden"""																
+731	spiegelkoper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bspiegelko\w*	"""Spiegelkooper alhier in den Hage"""																
+178	stadhouder		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	stadt?houd\w*, stadt? *houd\w*, \bstadt?ho\w*	"""Stadhouder van den"";""Stadthouder"";""Stadhouder"""																
+716	stalhouder		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bstalhou\w*, \bstalho\w*	"""Stalhouder"";""Stalhouders"""																
+730	stalknecht		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bstalkne\w*	"""Stalkneghts"";""Stalknechts"""																
+524	stalmeester		Beroep		Dienstverlening		Dienstverlening				kw_beroep, kw_rest	\bsta+lm\w*rs?\b, \bsta+lme\w*	"""Stalmeester"";""Stalmeester vanden"";""Stalmeester van"""																
+729	steenhouwer		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bsteenhou\w*	"""Meester Steenhouwer"";""Steenhouwer in Riga"";""Steenhouwer"""																
+439	stierluiden		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij			waarschijnlijk hetzelfde als stuurlieden. Samenvoegen?	kw_rest	\bstierl\w*	"""Stierluyden"";""Stierluijden"";""stierluyden"""																
+728	stoelmaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bstoelma\w*	"""Stoelmaker"";""Stoelmaaker"";""Meester Stoelmaaker"""																
+167	stokhouder		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bstoc?khou\w*	"""Stockhouder"";""Stockhouderschap"";""Stockhouder van het hooge en laage Zas van Gent"""																
+165	stokmeester		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bstoc?k *me\w*	"""Stockmeester"";""gewesene Stockmeester onder de"";""gewesene Stockmeester van"""																
+457	straatmaker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bstra\w*maa?c?ker\w*	"""vier Straatmaakers van het Hof"";""gesamentlijcke Straatmaakers van het Hof"";""vier Straatmakers van het Hof"""																
+469	student		Beroep		Onderwijs & Wetenschap		Onderwijs & Wetenschap				kw_rest	\bstudee?[rn]\w*	"""Student"";""Studenten"";""student"""																
+466	stuurlieden		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij			waarschijnlijk hetzelfde als stierluiden. Samenvoegen?	kw_rest	\bstuurl\w*	"""Stuurlieden"";""Schippers en Stuurlieden"";""Stuurluyden"""																
+450	stuurman		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bst[iu]\w{0,2}rman\w*	"""Stuurman"";""Schipper en Stuurman"";""Schipper of Stuurman"""																
+254	successeur		Juridische status		Politiek & Bestuur		(Juridische) status en Rechtspraak		?	GD: opvolger, meestal in politieke betekenis	kw_rest	\bsuccesse\w*	"""successeur"";""successeurs"";""Successeur"""																
+454	suiker-rafanideurs	suikerraffinadeur	Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bsui\w*-? *raf\w*	"""Rafinadeur"";""Rafinadeurs"";""Suyker-Rafinadeurs deeser Landen"""																
+727	suikerbakker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bsuiker *bac?k+er	"""Suyckerbacker"""																
+157	superintendant		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bsuperint\w*	"""Superintendent"";""superintendent"";""SuperIntendent"""																
+171	suppliant		Politiek & bestuur		Justitie		(Juridische) status en Rechtspraak				kw_rest	\bs[ou]pp[^o]*, \b\w*p+liant\w*	"""Suppt"";""suppoosten"";""Suppoosten"""																
+172	syndicus		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bsyndic\w*, \bs[ijy]+ndic\w*	"""Syndicus"";""Sijndicus"";""Syndicus van Groeningen"""																
+434	tamboer		Beroep		Leger & Milities		Leger & Milities				kw_rest	\btambo\w*	"""Tambours"";""Tambour"";""tambour"""																
+417	tapper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\btap+er\b	"""tapper"";""Tapper"""																
+46	testateur		Beroep, Rechtspraak		Status & relaties	Justitie	(Juridische) status en Rechtspraak		?		kw_rest	\btestat\w*	"""Testateur"";""Testatrice"";""Testateurs"""																
+161	thesaurier		Politiek & bestuur		Financiën		Financiën				kw_rest	thes\w*, \bthe\w{0,2}aurier, \b[cht]+esaur\w*	"""Thesaurier"";""Thesaurier Generaal"";""Thesaurier Generael"""																
+520	timmerman		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bt.{0,2}m+.{0,2}rma\w*, \btimmer\w*	"""Timmerman"";""Timmerman vander Burgh"";""Meester Timmerman"""																
+726	tolbediende		Beroep		Financiën		Financiën				kw_rest	\b[ct]+h?ol+bed\w*	"""Tolbedienden"";""Tolbediende"";""Tolbediendens"""																
+546	tolk		Beroep		Dienstverlening		Dienstverlening				kw_rest	\btolk.{0,2}	"""Tolk"";""Tolknecht tot Rhijnberck"";""Tolck"""																
+480	tollenaar		Beroep		Financiën		Financiën				kw_rest	\b[ct]h?ol+en\w*	"""Tollenaer"";""Tollenaers"";""Tollenaar"""																
+725	tolschrijver		Beroep		Financiën		Financiën				kw_rest	\b[ct]olsch\w*	"""Tolschrijver tot Rhijnberck"";""Colschrijver tot Rhijnberck"";""Tollenaers off Tolschrijvers"""																
+248	tot slaaf gemaakte		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bslaa?[fv]+[ien]*\b	"""slaven"";""Slaven"";""Slaaf"""																
+168	tresorier		Politiek & bestuur		Financiën		Financiën				kw_ambt, kw_rest	\bth?r?[ie].{0,2}orie\w*, \bth?res\w*, \b\w*resorier\w*	"""Tresorier"";""Tresorier Generael"";""Tresorier generael"""																
+208	trompetter		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	trompet\w*	"""Trompetter"";""Trompetters"";""Trompetters van het Regiment Cavallerye"""																
+31	trouppes		geen hoedanigheid		Leger & Milities		Leger & Milities				kw_rest	\btro[ue]pp?e\w*	"""fransche auxiliaire Trouppes"";""Heer de la ferte, onder de fransche auxiliaire Trouppes"";""Onderofficieren en Gemeenen van de Trouppes van den Staat"""																
+370	turk		Geografie		Geografie		Geografie				kw_rest	\bturc?ke?n?\b, \bturc?k\b	"""Turcken"";""Turck"";""Grooten Turck"""																
+175	turkse chiaulx		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest	\bchiau\w*, \bturc?k\w* chi\w*	"""Turcksen Chians"""																
+28	uitlegger		geen hoedanigheid							ligt aan de context	kw_rest	\buitleg\w*	"""Uitlegger"";""uijtleggers"";""van die Uytleggers toe"""																
+724	usurpateur		Juridische status		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\busurp\w*	"""Usurpateur"""																
+205	vaandrager		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bvaandr\w*	"""Vaendrager"";""vaendrager"";""Vaendragers"""																
+614	vaarder		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bvaarder\w*	"""vaerders"";""Groenlants vaerders"";""Groenlandts vaerders"""																
+394	vader		Familie status		Status & relaties		Familie				kw_rest	\bvader\w*	"""sijn Vader"";""sijn vader"";""des Suppliants Vader"""																
+286	vagabond		Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	vag.{1,2}bo\w*	"""Vagabonden"";""Vagabond"";""vagabonden"""																
+23	valkenier		geen hoedanigheid							 GD: geen hoedanigheid	kw_rest	\bvalc?kenie\w*	"""heere Valckenier"";""here Valkenier"";""Valckenier"""																
+721	vazal		Politiek & bestuur, Juridische status		Politiek & Bestuur	Status & relaties	(Juridische) status en Rechtspraak		?		kw_id	\bva+[sz]+al+e?n?\b	"""Vasallen"";""Vassal"";""Onser Vasallen Officieren"""																
+477	veerlieden		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	\bveerl\w*	"""Veerluyden"";""Veerluijden"""																
+493	veerman		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_ambt	\bveerman\w*	"""Veerman"";""veerman"";""Rysweert gewesen Veerman tot Rhijnberck"""																
+211	veldmaarschalk		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt, kw_rest	\bvel[dt]+ma\w*, veldmaar\w*	"""Veltmaerschalck"";""heere Veltmaerschalck"";""Heere Veltmaerschalck"""																
+212	vendrich	vaandrig	Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities				kw_ambt	\bv[ae]+ndri\w*, \bvendr[ei][chg]+\w*	"""Vendrich vande Compagnie van"";""Vendrich"";""Vendrigh"""																
+548	vendumeester		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_ambt	\bven\w*me\w*	"""Vendumeester"";""vendumeester"";""vendumr"""																
+359	venetiaan		Geografie		Geografie		Geografie				kw_rest	\bvenetia\w*	"""Venetianen"";""Venetiaanen"";""Venetiaen"""																
+545	verhuurder		Beroep		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bverhuur\w*	"""Verhuurder"""																
+543	verkopers		Beroep		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\bverko\w*	"""vercooper"";""vercoopers"";""Berch vercoopers"""																
+216	veroveraar		Krijgsmacht		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bverover\w*	"""veroveraer"";""veroveraers"";""Veroveraer"""																
+775	verwalter		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	\bverwalt\w*rs?e?n?\b	"""Verwalter in Helgoland"";""Verwalter"""																
+52	verweerder		Rechtspraak		Justitie		(Juridische) status en Rechtspraak				kw_rest	\bverweer\w*	"""verweerder"";""Verweerster"";""verweerder in reconventie"""																
+182	viant		Krijgsmacht, Politiek & bestuur		Leger & Milities	Politiek & Bestuur	Leger & Milities	Politiek & Bestuur		samen met vijand?	kw_rest	\bvian[dt]+\b	"""viant"";""Viant"";""den Viant"""																
+340	vicaris		Godsdienst		Religie		Religie				kw_rest	\bvicar\w*	"""Vicaris"";""Vicarius"";""Vicariat"""																
+613	vice		??							GD: geen hoedanigheid	kw_rest, kws_qual	^ *vice *$, vice	"""Vice"";""vice"";""Vice="""																
+233	vice-admiraal		Krijgsmacht	??	Leger & Milities		Leger & Milities				kw_ambt, kw_rest, kws_qual	\badmi?r[^t]*\b, \b\w*miraal\w*, \bvice-? *a[md]+i\w*, vice	"""Viceadmirael"";""Viceadmiraal"";""ViceAdmirael"""																
+174	vice-consul		Politiek & bestuur	Internationaal	Politiek & Bestuur		Politiek & Bestuur				kw_ambt, kw_rest, kws_qual	\bcon.{0,2}ul\w*, \bcons\w{0,2}l\b, \bc[ao]n.{0,2}u.{0,2}\b, \bc\wnsul+s?e?n?\b, \bcons.?.?\b, \bco\wsul, \b\wonsul, vice	"""Viceconsul"";""Viceconsuls"";""Viceconsul te Tanger"""																
+176	vice-kanselier		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_beroep, kw_rest, kws_qual	\b[khc]+an[tzs]+e?l\w*, \b[chk]+an[scz]e?l+i?e?r\w*, \b[kc]an[scz]el\w*, \b[kc]an[cs]e?l\w*rs?\b, vice-? *[kc]an[csz]e?l\w*, vice	"""Vicecancelier"";""ViceCancelier"""																
+177	vice-roy		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_edelen, kw_rest, kws_qual	\broy\b, vice-?ro\w*, vice	"""Viceroy"";""ViceRoy"";""Viceroij"""																
+582	vicomte		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\bvicom\w*, \bvis? *co[nm]t\w*	"""heere Vicomnte"""																
+584	viconte		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\bvis? *co[nm]t\w*	"""Vicomte"";""Heere de Milan Visconti"";""Vicomte de la Herreria"""																
+183	vijand		Krijgsmacht, Politiek & bestuur		Leger & Milities	Politiek & Bestuur	Leger & Milities	Politiek & Bestuur		samen met viant?	kw_rest	\bv[yij]*and\w*	"""Vijanden"";""vijanden"";""Vijanden van desen Staet"""																
+21	viq		geen hoedanigheid							GD: geen hoedanigheid	kw_rest	\bvi[ckq]+\b	"""vic"";""vick"";""Vicq"""																
+162	visier		Politiek & bestuur		Politiek & Bestuur		Politiek & Bestuur				kw_rest	vi[sz]*ier, \bvi[sz]ie?r\w*	"""Grooten Vizir"";""Grooten Vizier"";""grooten Vizier"""																
+426	visser		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	viss\w*er\w*	"""visschers"";""Visschers"";""fransche Visschers"""																
+719	vlaskooper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bvlas[kc]+o+per\w*	"""Vlascopers"";""Vlaskoopers te Rotterdam, Dordrecht en Gouda"""																
+460	vleeschouwers	vleeshouwers	Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bvlees\w*	"""Overlieden van het Vleeschhouwers Gilde te Amsterdam"";""Overlieden van het Vleeschhouwers Gilde der Stad Amsterdam"";""Overlieden van het Vleeshouwers Gilde te Amsterdam"""																
+250	vluchteling		Geografie, Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_rest	\b[fv]luch\w*	"""Vlugtelingen"";""fransche gerefugieerden"";""gerefugieerden"""																
+15	voerende het schip		geen hoedanigheid		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_rest	voer.*schip	"""Schipper gevoert hebbende het Schip den Amstel"";""als Schipper gevoert hebbende het Schip den Amstel"";""als Schipper voerende het Americaansch Schip The George en Patty Washington"""																
+464	voerman		Beroep		Dienstverlening		Dienstverlening				kw_rest	\bvoer[ml][au]\w*	"""Voerman"";""voerman"";""Voerluijden"""																
+411	voetknecht		Beroep, Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	voetkne\w*, \bvoet.{0,2}necht\w*	"""voetknechten"";""Voetknechten"";""Ruijteren ende voetknechten"""																
+456	voleur		Beroep		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bvoleur\w*	"""Voleurs"";""voleurs"""																
+626	volontair		Krijgsmacht		Leger & Milities		Leger & Milities				kw_rest	\bvolon\w*	"""Volontair"";""volontair"";""volontaires"""																
+373	vondeling		Familie status, Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_id	\bvondel\w*	"""Vondelingen"";""Vondelingh"""																
+263	voogd		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_id	vooc?g?h?[td]\w*	"""voocht"";""Vooghden"";""Vooght"""																
+319	voorlezer		Godsdienst		Religie		Religie				kw_rest	\bvoorle\w*	"""voorleser"";""Schoolmeester en Voorleezer"";""Voorleser"""																
+372	voorzaat		Familie status, Juridische status		Status & relaties		Familie				kw_rest	\bvoor[sz]a+t\w*	"""sijn Voorzaat"";""Voorzaten"";""Voorzaat"""																
+328	voorzanger		Godsdienst		Religie		Religie				kw_rest	\bvoor[sz]ang\w*	"""Voorzanger"";""geweesen Voorsanger in de Capelle van den Staat"";""voorsanger vande groote kerck alhier inden Hage"""																
+564	vorst		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_rest	\b[fv][uo]rst\w*	"""Vorst"";""furstelijcke Doorluchticheijt"";""fursten"""																
+285	vreemdeling		Geografie, Juridische status		Justitie		(Juridische) status en Rechtspraak				kw_id	\bvreemdel\w*	"""Vreemdelingen"";""vreemdelingen"";""Vreemdelingh"""																
+8	vriend		??		Justitie		(Juridische) status en Rechtspraak				kw_id	\b[fv]riende?n?\b, \bvr[ieu]+nde?n?\b	"""zyne vrienden"";""Neutrale deser landen vrienden"";""Vrunden"""																
+284	vrijbuiter		Juridische status		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_id	\bvr[ijy]+bu\w*	"""Vrybuyters"";""vrybuyter"";""Vrijbueters"""																
+572	vrijheer		Adel & vorstenhuizen		Politiek & Bestuur	Status & relaties	(Juridische) status en Rechtspraak		P&B?		kw_ambt	\bvr[ijy]+ *he\w*re?n?\b	"""Vryheer van Belderbusch"";""Vryheer van Westdorpe"";""vryheer van hoochsaxen"""																
+163	vroedmeester		Politiek & bestuur	lokaal	Dienstverlening		Dienstverlening			mannelijke variant van vroedvrouw	kw_ambt	\bvroedm\w*	"""Vroedmeester"";""Burger en Inwoonder, als meede Vroedmeester en Chirurgyn binnen Sas van Gend"";""Vroedmeester der Stad en Ambagte van Axel"""																
+371	vrouw		Familie status		Status & relaties		Familie				kw_id	\b\w*[fv]rouw\w*, ^ *vrouwe? *$, \bvrouwe?\b, \bvrou\w*	"""sijne Huysvrouwe"";""Juffrouw"";""Jouffrouwe"""																
+583	vrouwe		Adel & vorstenhuizen		Adel & Vorsten		Adel & Vorsten				kw_id	\b\w*[fv]rouw\w*, ^ *vrouwe? *$, \bvrouwe?\b, \bvrou\w*	"""Madame"";""Dame"";""eerste Dame d'Honneur van"""																
+446	vuurstoker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bvu.{1,2}rst\w*, v\w*stoo?c?k\w*	"""Vuurstoockster in de Kaamers van haar Hoogh Mogende"";""Vuurstoockster in de Kamers van haar Hoogh Mogende"";""Vuurstookster in de Kaamers van haar Hoog Mogende"""																
+438	vuurwerker		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bv[ieu]+rwer[kc]+er\w*	"""Mr. Vuijrwercker"";""Mr. vuijrwercker"";""gewesen vuijrwercker in Brasil"""																
+648	waardin		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_rest	\bwaard[ijy]+n\w*	"""Waardyn van de Munte in Zeeland"";""waerdijn"";""Waerdinne inden Eenhoorn"""																
+276	waarnemende de affaires		Juridische status		Status & relaties		(Juridische) status en Rechtspraak		S&R		kw_ambt	\bwaarne.*affa\w*	"""geauthoriseert tot het waernemen vande affaires van haer Hoogh Mogende aen het Hoff vanden"";""geauthoriseert tot het waernemen vande affaires van haer Ho:Mo: aen het hoff vanden"";""geauthoriseert tot het waernemen vande affaires vanden Staat aen het hoff vanden"""																
+197	waartgelder		Krijgsmacht	Landmacht	Leger & Milities		Leger & Milities			niet echt krijgsmacht	kw_ambt	\bwa+rtgel\w*	"""Waertgelders"";""waertgelders"";""Wartgelders"""																
+14	wachter		??		Dienstverlening		Dienstverlening			GD: zeer divers, persoonsnaam, woordafbreking voor bijv. sluiswachter, etc.	kw_beroep	\bwa[chg]+ter\w*	"""Wachter"";""wachter"";""wachters"""																
+184	wachtmeester		Krijgsmacht, Politiek & bestuur		Leger & Milities		Leger & Milities				kw_beroep	wachtm\w*, \bwa[chg]+t\w*me\w*	"""Generael Wachtmeester"";""Wachtmeester"";""Waghtmeester"""																
+449	wagenlieden		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bwagenl\w*	"""wagenluyden"";""Wagenluyden"";""wagenluyden van Utrecht"""																
+448	wagenmeester		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bwagenm\w*, \bwage\w*me\w*	"""Wagemeester Generael"";""wagenmeester"";""Wagenmeester"""																
+348	waldenser		Geografie		Geografie		Geografie				kw_beroep	\bwalden\w*	"""Waldensers"";""Waldensen"";""Minister Heere van Waldenfels"""																
+189	wapenmaker		Beroep, Krijgsmacht	Landmacht	Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bwap\w*ma+kers?	"""Wapenmaker"";""wapenmaeckers"""																
+37	wedergekeerd		Geografie		Geografie		Geografie				kw_beroep	\bwed\w*gek\w*	"""wedergekeert van"";""wedergekeert van Amsterdam"";""wedergekeert van Rosendael"""																
+376	weduwe		Familie status		Status & relaties		Familie				kw_id	\bwe+du\w*, \bwed[uwe]+\b, \bw.d.we\b	"""Weduwe"";""weduwe van"";""weduwe"""																
+375	wees		Familie status		Status & relaties		Familie				kw_id	\bwee[sz]e?n?\b	"""Weesen"";""Furstelijcke Weesen van wylen"";""weduwe ende Weesen van"""																
+404	weeskind		Familie status		Status & relaties		Familie				kw_id	\bweeski\w*	"""Weeskinderen"";""weeskinderen"";""Weeskindt"""																
+61	weesmeester		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bweesme\w*	"""Weesmeesteren"";""Weesmeesters"";""Weesmeesteren der Colonie van Suriname"""																
+421	weesvader		Beroep		Dienstverlening		Dienstverlening				kw_beroep	\bwees *va\w*	"""Weesvader"""																
+699	wegloper		Beroep, Juridische status		Justitie		(Juridische) status en Rechtspraak		P&J		kw_rest	\bweglo+per\w*	"""Weghloopers"";""Weglopers"""																
+527	werkbaas		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bwerkba\w*	"""werckbasen"";""verscheyden werckbasen"";""Werckbaes"""																
+472	werklieden		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bwerkl\w*	"""Werckluyden"";""werckluijden"";""werckluyden"""																
+523	werkmeester		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bwerkm\w*	"""werckmr"";""werckmrs"";""Werckmr"""																
+166	wethouder		Politiek & bestuur	lokaal	Politiek & Bestuur		Politiek & Bestuur				kw_beroep	\bwethou\w*	"""Wethouderen"";""Wethouders"";""Wethouderen van 's Hertogenbosch"""																
+516	wijnkooper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bw[ijy]+n[kc]o+p\w*	"""wijnkoper"";""Wijncoper"";""Wynkooper"""																
+522	winkelier		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	\bwinkel\w*	"""Winckeliers"";""Koopluyden en Winckeliers"";""Winckeliers, kramers"""																
+489	wisselaar		Beroep		Financiën		Financiën				kw_beroep	\bwissela\w*	"""wisselaers"";""Wisselaers"";""wisselaer"""																
+352	woonachtig		Geografie		Status & relaties	Geografie	(Juridische) status en Rechtspraak	Geografie	S&R		kw_id	woonachtig, \bwoo?n\w*, \bwoon\w*	"""woonende te Amsterdam"";""woonende alhier in den Hage"";""woonende tot Amsterdam"""																
+718	zee-generaal		Krijgsmacht		Landbouw, Scheepvaart & Visserij	Leger & milities	Landbouw, Scheepvaart & Visserij	Krijgsmacht			kws_qual	-gener\w*	"""Zee Generael"";""Zee generael"""																
+541	zeelieden		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_beroep	zeelie\w*	"""Zeelieden"";""Fransche Zeelieden"";""Nederlandsche Zeelieden"""																
+544	zeeman		Beroep		Landbouw, Scheepvaart & Visserij		Landbouw, Scheepvaart & Visserij				kw_beroep	zeeman\w*	"""Zeeman"";""ervaren Zeeman"""																
+232	zeeofficier		Krijgsmacht	Marine	Landbouw, Scheepvaart & Visserij	Leger & milities	Landbouw, Scheepvaart & Visserij	Krijgsmacht			kw_ambt	zee *offi\w*	"""Zee Officieren"";""Zee officieren"";""Zeeofficieren"""																
+503	zeerover		Beroep		Landbouw, Scheepvaart & Visserij	Justitie	Landbouw, Scheepvaart & Visserij	(Juridische) status en Rechtspraak			kw_beroep	\b[sz]ee *[tr]o+[uv]\w*	"""Zeeroouers"";""zeeroouers"";""zee Roouers"""																
+158	zegelbewaarder		Politiek & bestuur	landelijk	Politiek & Bestuur		Politiek & Bestuur				kw_ambt	\b[sz]ee?gelbew\w*	"""Heere Zegelbewaarder"";""Heere Zegelbewaerder"";""Heer Zegelbewaerder"""																
+497	zegelklopper		Beroep		Handel, Nijverheid & Kunst		Handel, Nijverheid & Kunst				kw_beroep	[sz]ee?gelkl\w*	"""Zegelklopper"";""Zegelkloppers"";""drie Zeegelkloppers"""																
+386	zoon		Familie status		Status & relaties		Familie				kw_id	\b[sz]oone?\b, \b[sz]oone?s?\b	"""Soon"";""soon"";""sijn Soon"""																
+384	zuster		Familie status		Status & relaties		Familie				kw_id	\b[sz]uster\w*	"""Suster"";""haar Suster"";""Suster van"""																
+389	zwager		Familie status		Status & relaties		Familie				kw_id	\b[sz]waa?ge\w*	"""Swager"";""sijn Swager"";""swager"""																
+717	zwitsers		Geografie		Geografie		Geografie				kw_rest	\b[sz]+wit[sz]+ers	"""Switsers"";""Switssers"";""Switzers"""																
+295	zynde van de gereformeerde religie		Godsdienst		Religie		Religie				kw_id	zyn.*gere\w*.*rel\w*, \bgeref+o\w*	"""Lidmaat van de Geresormeerde Religie"";""zynde Lidmaat van de waare Christelyke Geresormeerde Religie"";""zynde Lidmaat van de waare Geresormeerde Religie"""																
+680	zynde van de ware christelijke religie		Godsdienst		Religie		Religie				kw_id	waa?re *chri\w* *rel\w*	"""zynde van de waare Christelyke Religie"""																
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+adjunct	adjunt-reviseur		"""Adjuncten Reviseurs"";""adjuncten reviseurs"";""Adjunct Reviseur"""	
+admiraal‚Äõ	admiraal		"""admirael l‚Äõheremite"""	
+adsignator	assignator		"""adsignatie"";""Adsignatoren"";""Assignatoren"""	
+algierse rover			"""Algiersche Rovers"";""Algiersche en andere Rovers"";""Algiersche ende andere Rovers"""	
+archimandrit	archimandriet		"""Archimandrit"""	
+bassas	pasja		"""Bassas"""	
+batellier	schipper		"""Batelier"";""Bateliers"";""Batelliers"""	
+bewaarder	kamerbewaarder		"""bewaert"";""Camer bewaerder"";""camer bewaerder"""	
+bootslui	loods		"""Lootsluijden"";""lootsluijden"";""lootsluyden"""	
+buitenlui		"hier maak ik de expressie anders: ""min.*buitenl"""	"""Minister der buitenlandsche"";""Minister der buitenlandsche zaaken"";""Heer Minister der buitenlandsche"""	
+caijmacan	kaymakam		"""Caijmacan"";""Caimacan"""	
+canonicq	kanunnik		"""Deecken en Canunnicquen"";""Kanunnik"";""Canunick"""	
+canoniek	kanunnik		"""Canonick"";""Canoniers"";""Canonicq"""	
+castellaan	kastelein		"""Castellain"";""Castellan"""	
+cleeffsche raden			"""Cleeffsche Raden"";""Cleefsche Raden"";""Gedeputeerde vande Cleeffsche Raden"""	
+coadiutor	coadjutor		"""Coadintor van Coelen"";""Coadiutor van Coelen"";""Coadjuteur"""	
+colllonel	kolonel		"""Coll"";""Lt. Coll"";""Lt. Coll."""	
+collonel	kolonel		"""Collonel"";""Colonnel"";""Lieutenant Collonel"""	
+commis	commies		"""Commisss"";""Commisss."";""Commys"""	
+corsair	zeerover		"""Corsairen"";""Corsaire"";""Algiersche Corsairen"""	
+engelse generaal			"""Engelsche Generaels"";""Engelsche Generaals"";""Engelschen Generael"""	
+equipagie	equipagiemeester		"""Equipagemeester"";""Equipagiemeester"";""Equipagiemr"""	
+equipagiemeester	equipagemeester		"""Equippagemre"";""Equippagemre tot Rotterdam"";""equippagemeester vande OostIndische Compaignie"""	
+gesubdelgeerde	gesubdelegeerd		"""Heeren Gesubdelegeerden"";""gesubdelegeerde Raaden tot de Keyserlijcke administratie van het Graafschap Bentheym"";""Gesubdelegeerden"""	
+houder	obligatiehouder		"""Houders"";""particuliere Houders der Obligatien"";""Houders der Obligatien"""	
+kastiliaan	castiliiaan		"""Castiliaensche slaven"";""Castilianen"""	
+katholiek romeinen van de kanton	roomskatholieken		"""Catholique Romains de ce Canton"""	
+kavelhouder			"""Caeffelhouder tot Breda"""	
+keizer			"""haare Majesteit de Keize= =rinne van geheel Rusland"";""haare Majesteit de Keize =rinne van geheel Rusland"";""haare Majesteit de Keize rinne van geheel Rusland"""	
+keizerlijke generaal	generaal		"""Keizerljke Generaals"";""keijserlijcken Generael"""	
+lidmeester	ritmeester		"""Litmr"";""Litmeester"";""Litmr."""	
+lieden	echtelieden		"""eghte Luyden"";""eghte Lieden"";""arme luyden"""	
+ostagier	gijzelaar		"""Ostagiers"";""Ostagier"";""Fransche Ostagiers, Kryghsgevangenen in de Citadelle van Ryssel"""	
+paaymeester	paaimeester		"""paijmeesters"";""Paaymeester"";""Luyksche Paymeester der Stad Maastricht"""	
+palsgraaf	paltsgraaf		"""Paltzgraeff"";""Cheurfurst Paltzgraeff"";""Paltzgraven"""	
+palzgraaf	paltsgraaf		"""Paltzgraue"";""heere Paltzgraue"";""heeren Paltzgrauen"""	
+suiker-rafanideurs	suikerraffinadeur		"""Rafinadeur"";""Rafinadeurs"";""Suyker-Rafinadeurs deeser Landen"""	
+suppliant	suppoost		"""Suppt"";""suppoosten"";""Suppoosten"""	
+vaarder		ik voeg denk ik gewoon groenland to aan loc	"""vaerders"";""Groenlants vaerders"";""Groenlandts vaerders"""	
+vendrich	vaandrig		"""Vendrich vande Compagnie van"";""Vendrich"";""Vendrigh"""	
+vleeschouwers	vleeshouwers		"""Overlieden van het Vleeschhouwers Gilde te Amsterdam"";""Overlieden van het Vleeschhouwers Gilde der Stad Amsterdam"";""Overlieden van het Vleeshouwers Gilde te Amsterdam"""	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			tags	
+			"""Adjuncten Reviseurs"";""adjuncten reviseurs"";""Adjunct Reviseur"""	
+			"""admirael l‚Äõheremite"""	
+			"""adsignatie"";""Adsignatoren"";""Assignatoren"""	
+			"""Algiersche Rovers"";""Algiersche en andere Rovers"";""Algiersche ende andere Rovers"""	
+			"""Archimandrit"""	
+			"""Bassas"""	
+			"""Batelier"";""Bateliers"";""Batelliers"""	
+			"""bewaert"";""Camer bewaerder"";""camer bewaerder"""	
+			"""Lootsluijden"";""lootsluijden"";""lootsluyden"""	
+			"""Minister der buitenlandsche"";""Minister der buitenlandsche zaaken"";""Heer Minister der buitenlandsche"""	
+			"""Caijmacan"";""Caimacan"""	
+			"""Deecken en Canunnicquen"";""Kanunnik"";""Canunick"""	
+			"""Canonick"";""Canoniers"";""Canonicq"""	
+			"""Castellain"";""Castellan"""	
+			"""Cleeffsche Raden"";""Cleefsche Raden"";""Gedeputeerde vande Cleeffsche Raden"""	
+			"""Coadintor van Coelen"";""Coadiutor van Coelen"";""Coadjuteur"""	
+			"""Coll"";""Lt. Coll"";""Lt. Coll."""	
+			"""Collonel"";""Colonnel"";""Lieutenant Collonel"""	
+			"""Commisss"";""Commisss."";""Commys"""	
+			"""Corsairen"";""Corsaire"";""Algiersche Corsairen"""	
+			"""Engelsche Generaels"";""Engelsche Generaals"";""Engelschen Generael"""	
+			"""Equipagemeester"";""Equipagiemeester"";""Equipagiemr"""	
+			"""Equippagemre"";""Equippagemre tot Rotterdam"";""equippagemeester vande OostIndische Compaignie"""	
+			"""Heeren Gesubdelegeerden"";""gesubdelegeerde Raaden tot de Keyserlijcke administratie van het Graafschap Bentheym"";""Gesubdelegeerden"""	
+			"""Houders"";""particuliere Houders der Obligatien"";""Houders der Obligatien"""	
+			"""Castiliaensche slaven"";""Castilianen"""	
+			"""Catholique Romains de ce Canton"""	
+			"""Caeffelhouder tot Breda"""	
+			"""haare Majesteit de Keize= =rinne van geheel Rusland"";""haare Majesteit de Keize =rinne van geheel Rusland"";""haare Majesteit de Keize rinne van geheel Rusland"""	
+			"""Keizerljke Generaals"";""keijserlijcken Generael"""	
+			"""Litmr"";""Litmeester"";""Litmr."""	
+			"""eghte Luyden"";""eghte Lieden"";""arme luyden"""	
+			"""Ostagiers"";""Ostagier"";""Fransche Ostagiers, Kryghsgevangenen in de Citadelle van Ryssel"""	
+			"""paijmeesters"";""Paaymeester"";""Luyksche Paymeester der Stad Maastricht"""	
+			"""Paltzgraeff"";""Cheurfurst Paltzgraeff"";""Paltzgraven"""	
+			"""Paltzgraue"";""heere Paltzgraue"";""heeren Paltzgrauen"""	
+			"""Rafinadeur"";""Rafinadeurs"";""Suyker-Rafinadeurs deeser Landen"""	
+			"""Suppt"";""suppoosten"";""Suppoosten"""	
+			"""vaerders"";""Groenlants vaerders"";""Groenlandts vaerders"""	
+			"""Vendrich vande Compagnie van"";""Vendrich"";""Vendrigh"""	
+			"""Overlieden van het Vleeschhouwers Gilde te Amsterdam"";""Overlieden van het Vleeschhouwers Gilde der Stad Amsterdam"";""Overlieden van het Vleeshouwers Gilde te Amsterdam"""	
+			"""Wachter"";""wachter"";""wachters"""	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			tags	
+			"""Adjuncten Reviseurs"";""adjuncten reviseurs"";""Adjunct Reviseur"""	
+			"""admirael l‚Äõheremite"""	
+			"""adsignatie"";""Adsignatoren"";""Assignatoren"""	
+			"""Algiersche Rovers"";""Algiersche en andere Rovers"";""Algiersche ende andere Rovers"""	
+			"""Archimandrit"""	
+			"""Bassas"""	
+			"""Batelier"";""Bateliers"";""Batelliers"""	
+			"""bewaert"";""Camer bewaerder"";""camer bewaerder"""	
+			"""Lootsluijden"";""lootsluijden"";""lootsluyden"""	
+			"""Minister der buitenlandsche"";""Minister der buitenlandsche zaaken"";""Heer Minister der buitenlandsche"""	
+			"""Caijmacan"";""Caimacan"""	
+			"""Deecken en Canunnicquen"";""Kanunnik"";""Canunick"""	
+			"""Canonick"";""Canoniers"";""Canonicq"""	
+			"""Castellain"";""Castellan"""	
+			"""Cleeffsche Raden"";""Cleefsche Raden"";""Gedeputeerde vande Cleeffsche Raden"""	
+			"""Coadintor van Coelen"";""Coadiutor van Coelen"";""Coadjuteur"""	
+			"""Coll"";""Lt. Coll"";""Lt. Coll."""	
+			"""Collonel"";""Colonnel"";""Lieutenant Collonel"""	
+			"""Commisss"";""Commisss."";""Commys"""	
+			"""Corsairen"";""Corsaire"";""Algiersche Corsairen"""	
+			"""Engelsche Generaels"";""Engelsche Generaals"";""Engelschen Generael"""	
+			"""Equipagemeester"";""Equipagiemeester"";""Equipagiemr"""	
+			"""Equippagemre"";""Equippagemre tot Rotterdam"";""equippagemeester vande OostIndische Compaignie"""	
+			"""Heeren Gesubdelegeerden"";""gesubdelegeerde Raaden tot de Keyserlijcke administratie van het Graafschap Bentheym"";""Gesubdelegeerden"""	
+			"""Houders"";""particuliere Houders der Obligatien"";""Houders der Obligatien"""	
+			"""Castiliaensche slaven"";""Castilianen"""	
+			"""Catholique Romains de ce Canton"""	
+			"""Caeffelhouder tot Breda"""	
+			"""haare Majesteit de Keize= =rinne van geheel Rusland"";""haare Majesteit de Keize =rinne van geheel Rusland"";""haare Majesteit de Keize rinne van geheel Rusland"""	
+			"""Keizerljke Generaals"";""keijserlijcken Generael"""	
+			"""Litmr"";""Litmeester"";""Litmr."""	
+			"""eghte Luyden"";""eghte Lieden"";""arme luyden"""	
+			"""Ostagiers"";""Ostagier"";""Fransche Ostagiers, Kryghsgevangenen in de Citadelle van Ryssel"""	
+			"""paijmeesters"";""Paaymeester"";""Luyksche Paymeester der Stad Maastricht"""	
+			"""Paltzgraeff"";""Cheurfurst Paltzgraeff"";""Paltzgraven"""	
+			"""Paltzgraue"";""heere Paltzgraue"";""heeren Paltzgrauen"""	
+			"""Rafinadeur"";""Rafinadeurs"";""Suyker-Rafinadeurs deeser Landen"""	
+			"""Suppt"";""suppoosten"";""Suppoosten"""	
+			"""vaerders"";""Groenlants vaerders"";""Groenlandts vaerders"""	
+			"""Vendrich vande Compagnie van"";""Vendrich"";""Vendrigh"""	
+			"""Overlieden van het Vleeschhouwers Gilde te Amsterdam"";""Overlieden van het Vleeschhouwers Gilde der Stad Amsterdam"";""Overlieden van het Vleeshouwers Gilde te Amsterdam"""	
+			"""Wachter"";""wachter"";""wachters"""	
