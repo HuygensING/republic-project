@@ -1,0 +1,74 @@
+
+MONTH01	januar[ijy]+
+MONTH02	februar[ijy]+
+MONTH03	m[ae]+rt[eijy]*
+MONTH04	april+(is)?
+MONTH05	m[ae][yij]+e?
+MONTH06	jun[ijy]+(us)?
+MONTH07	jul[ijy]+(us)?
+MONTH08	august([ijy]+|us)
+MONTH09	septemb(e?r?|ris)
+MONTH10	octob(e?r?|ris)
+MONTH11	no[uv]emb(e?r?|ris)
+MONTH12	decemb(e?r?|ris)
+
+YEAR==	(van dit|de+[sz]e[rsn]?)( lo+penden?)? ja[ae]r[ens]*|des ?[sz]elve[nr]? ja[ae]r[ens]*
+MONTH==	de+[sz]e[rsn]?( lo+penden?)? ma[ae]n[dt]+
+
+YEAR-1	(de[rsn]? )?(voorle+d[en]+|gepasseerde[nrs]?) ja[ae]r[ens]*
+MONTH-1	(de[rsn]? )?(voorle+d[en]+|(la[ae]tst )?gepasseerde[nrs]?) ma[ae]n[dt]+
+
+PREVIOUS	(l[ae]+t?|jongh?)stle+den?|da[ae]r te *vo+ren
+NEXT	a[ae]nsta[ae]nd[en]*|(eerst|na[ae]st|toe)[ck]omend[en]*
+
+ende	ende?
+ULTIMO	ultimo|(den )?l[ae]+tsten|(v?u[ijy]+t)?e[ijy]+nde
+
+RELATIVE NEXT	da[ae]r ?a[ae]n ?volgende
+RELATIVE PREVIOUS	(da[ae]r )?bevo+rens
+RELATIVE	der[sz]el[vu]er ma[ae]n[dt]+
+
+JULIAN	stij?l[eo] (antiquo|veteri|loci)|ouden? stijl
+GREGORIAN	stij?l[eo] nu?o[uv][oe]|nieuwen? stijl
+
+1	(een|prim[oa]|[ie]ersten?)
+2	twe+(den?)?
+3	dri[ej](den?)?
+3	derden?
+4	vier(d?en?)?
+5	v[ijy]+f+((d|st)en?)?
+6	[sz]es(den?)?
+7	[sz]e+[uv]en(den?)?
+8	a[cg]ht(sten?|en)?
+9	ne+gen(d?en?)?
+11	elf+(den?)?
+12	twa[ae]lf+(den?)?
+13	derth?ien(den?)?
+14	v[ie]erth?ien(den?)?
+15	vyf+th?ien(den?)?
+16	[sz]esth?ien(den?)?
+17	[sz]e+[uv]enth?ien(den?)?
+18	a[cg]ht+h?ien(den?)?
+19	ne+genth?ien(den?)?
+10	th?ien(den?)?
+21	een *(en *)?twinti[cg]h?(sten?)?
+22	twee+ * (e*n *)?twinti[cg]h?(sten?)?
+23	dri[ej] *(en *)?twinti[cg]h?(sten?)?
+24	vier *(en *)?twinti[cg]h?(sten?)?
+25	v[ijy]+f+ *(en *)?twinti[cg]h?(sten?)?
+26	[sz]es+ *(en *)?twinti[cg]h?(sten?)?
+27	[sz]e+[uv]en *(en *)?twinti[cg]h?(sten?)?
+28	a[cg]ht *(en *)?twinti[cg]h?(sten?)?
+29	ne+gen *(en *)?twinti[cg]h?(sten?)?
+20	twinti[cg]h?(sten?)?
+31	een *(en *)?derti[cg]h?(sten?)?
+30	derti[cg]h?(sten?)?
+40	veerti[cg]h?(sten?)?
+50	vyfti[cg]h?(sten?)?
+60	t?[sz]esti[cg]h?(sten?)?
+70	t?[sz]e+venti[cg]h?(sten?)?
+80	t?a[cg]ht(ent)?i[cg]h?(sten?)?
+90	t?negenti[cg]h?(sten?)?
+100	honder[dt]+
+
+
