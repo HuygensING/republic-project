@@ -839,7 +839,7 @@ kw_beroep = {
     '\\bkne[gch]+t': 'knecht',
     '\\bdien\\w*kne[gch]+t': 'knecht',
     '\\bkoets\\w*': 'koetsier',
-    '\\b[kc]oetsie\\w*': 'koetsier ',
+    '\\b[kc]oetsie': 'koetsier',
     '\\bkok': 'kok',
     '[kc]oopl\\w*': 'kooplieden',
     '\\b[kc]o+pl\\w*': 'kooplieden',
