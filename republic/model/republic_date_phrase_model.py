@@ -1,4 +1,4 @@
-week_day_names_handwritten = [
+weekday_names_handwritten = [
     "Lunæ",
     "Martis",
     "Mercurii",
@@ -8,7 +8,7 @@ week_day_names_handwritten = [
     "Dominica"
 ]
 
-week_day_names_printed = [
+weekday_names_printed = [
     "Lunae",
     "Martis",
     "Mercurii",
@@ -377,7 +377,7 @@ month_abbrev_map = {
     'Decb': 'Decemb',
 }
 
-week_day_names = {
+weekday_names = {
     'printed_early': {
         "Luna": 0,
         "Lunae": 0,
@@ -432,7 +432,7 @@ week_day_names = {
 }
 
 date_structure_map = {
-    'week_day_name': week_day_names,
+    'weekday_name': weekday_names,
     'month_day_name': month_day_names,
     'month_name': month_names,
     'den': None,
@@ -448,7 +448,7 @@ date_name_map = [
         'period_end': 1750,
         'month_name': 'printed_early',
         'month_day_name': 'decimal',
-        'week_day_name': 'printed_early'
+        'weekday_name': 'printed_early'
     },
     {
         'text_type': 'printed_late',
@@ -457,7 +457,7 @@ date_name_map = [
         'period_end': 1796,
         'month_name': 'printed_late',
         'month_day_name': 'decimal',
-        'week_day_name': 'printed_late'
+        'weekday_name': 'printed_late'
     }
 ]
 
@@ -469,7 +469,7 @@ date_name_map_old = [
         'period_start': 1705,
         'period_end': 1750,
         'month_name': month_names['printed_early'],
-        'week_day_name': week_day_names['printed_early']
+        'weekday_name': weekday_names['printed_early']
     },
     {
         'text_type': 'printed_late',
@@ -477,7 +477,7 @@ date_name_map_old = [
         'period_start': 1751,
         'period_end': 1796,
         'month_name': month_names['printed_late'],
-        'week_day_name': week_day_names['printed_late']
+        'weekday_name': weekday_names['printed_late']
     },
     {
         'text_type': 'handwritten',
@@ -485,7 +485,7 @@ date_name_map_old = [
         'period_start': 1600,
         'period_end': 1700,
         'month_name': month_names['handwritten'],
-        'week_day_name': week_day_names['handwritten']
+        'weekday_name': weekday_names['handwritten']
     },
     {
         'text_type': 'handwritten',
@@ -493,7 +493,7 @@ date_name_map_old = [
         'period_start': 1587,
         'period_end': 1599,
         'month_name': month_names['handwritten'],
-        'week_day_name': week_day_names['handwritten'],
+        'weekday_name': weekday_names['handwritten'],
         'month_day_name': month_day_names['roman_early']
     },
     {
@@ -502,7 +502,7 @@ date_name_map_old = [
         'period_start': 1600,
         'period_end': 1655,
         'month_name': month_names['handwritten'],
-        'week_day_name': week_day_names['handwritten'],
+        'weekday_name': weekday_names['handwritten'],
         'month_day_name': month_day_names['roman_en']
     },
     {
@@ -511,7 +511,7 @@ date_name_map_old = [
         'period_start': 1656,
         'period_end': 1700,
         'month_name': month_names['handwritten'],
-        'week_day_name': week_day_names['handwritten'],
+        'weekday_name': weekday_names['handwritten'],
         'month_day_name': month_day_names['decimal_en']
     }
 ]
@@ -547,7 +547,7 @@ month_names_late = [
     "December"
 ]
 
-week_day_name_map = {
+weekday_name_map = {
     "Lunae": 1,
     "Martis": 2,
     "Mercurii": 3,

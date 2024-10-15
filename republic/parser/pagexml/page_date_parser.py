@@ -13,23 +13,22 @@ from republic.helper.metadata_helper import get_line_class_dist
 from republic.helper.metadata_helper import KNOWN_TYPES
 from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_date import DateNameMapper
-from republic.parser.logical.date_parser import get_date_token_cat, get_session_date_lines_from_pages, \
-    get_session_date_line_structure
+from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
 from republic.parser.logical.date_parser import get_session_date_line_structure
-from republic.parser.logical.date_parser import make_week_day_name_searcher
+from republic.parser.logical.date_parser import make_weekday_name_searcher
 from republic.parser.pagexml.generic_pagexml_parser import copy_page
 from republic.parser.pagexml.republic_page_parser import split_page_column_text_regions
 
 from republic.classification.content_classification import DateRegionClassifier
-from republic.model.republic_date_phrase_model import week_day_names, month_names
+from republic.model.republic_date_phrase_model import weekday_names, month_names
 
 from republic.classification.content_classification import get_header_dates
 
 
 def load_date_region_classifier():
-    weekday_map = {day_name: week_day_names[dtype][day_name] for dtype in week_day_names for day_name in
-                   week_day_names[dtype]}
+    weekday_map = {day_name: weekday_names[dtype][day_name] for dtype in weekday_names for day_name in
+                   weekday_names[dtype]}
     month_name_map = {month_name: month_names[dtype][month_name] for dtype in month_names for month_name in
                       month_names[dtype]}
     return DateRegionClassifier(month_name_map=month_name_map, weekday_map=weekday_map)
@@ -150,13 +149,13 @@ def debug_print_page_trs(page: pdm.PageXMLPage, prefix: str, debug: int = 0):
                 print(f"\t{line.id} line.metadata['line_class']: {line.metadata['line_class']}")
 
 
-def process_handwritten_page(page: pdm.PageXMLPage, week_day_name_searcher: FuzzyPhraseSearcher = None,
+def process_handwritten_page(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseSearcher = None,
                              debug: int = 0):
     """Split and/or merge columns and overlapping text regions of handwritten
     resolution pages and correct line classes for session dates, attendance
     lists, date headers and paragraphs.
 
-    If a week_day_name_searcher is passed, line classes will be updated to date if they contain
+    If a weekday_name_searcher is passed, line classes will be updated to date if they contain
     a weekday name.
     """
     pagexml_helper.check_parentage(page)
@@ -175,7 +174,7 @@ def process_handwritten_page(page: pdm.PageXMLPage, week_day_name_searcher: Fuzz
     if debug > 0:
         debug_print_page_trs(page, "BEFORE page_date_parser.process_handwritten_page "
                                    "-> split_page_column_text_regions", debug=debug)
-    page = split_page_column_text_regions(page, week_day_name_searcher=week_day_name_searcher,
+    page = split_page_column_text_regions(page, weekday_name_searcher=weekday_name_searcher,
                                           update_type=True, copy_page=False, debug=debug)
     if debug > 0:
         debug_print_page_trs(page, "AFTER page_date_parser.process_handwritten_page "
@@ -449,13 +448,13 @@ def make_inventory_date_name_mapper(inv_id: str, pages: List[pdm.PageXMLPage],
 
 
 def process_handwritten_pages(inv_id: str, pages: List[pdm.PageXMLPage],
-                              filter_date_starts: bool = True, date_tr_type_map: Dict[str, str] = None,
+                              filter_date_starts: bool = False, date_tr_type_map: Dict[str, str] = None,
                               ignorecase: bool = True, debug: int = 0):
     date_mapper = make_inventory_date_name_mapper(inv_id, pages, filter_date_starts=filter_date_starts,
                                                   date_tr_type_map=date_tr_type_map, debug=debug)
     config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
-    new_pages = [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
+    weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
+    new_pages = [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,
                                           debug=0) for page in pages]
     return new_pages
 
@@ -489,7 +488,8 @@ def preprocess_handwritten_pages(inv_id: str, pages: List[pdm.PageXMLPage],
     print(f"inv {inv_num}  step 0: {len(date_trs)}")
     date_tr_type_map = classify_page_date_regions(pages, date_region_classifier)
 
-    pages = process_handwritten_pages(inv_id, pages, date_tr_type_map=date_tr_type_map,
+    pages = process_handwritten_pages(inv_id, pages, filter_date_starts=True,
+                                      date_tr_type_map=date_tr_type_map,
                                       ignorecase=ignorecase, debug=0)
     date_trs[inv_num] = get_header_dates(pages)
     print(f"inv {inv_num}  step 1: {len(date_trs[inv_num])}")
@@ -497,11 +497,12 @@ def preprocess_handwritten_pages(inv_id: str, pages: List[pdm.PageXMLPage],
     date_tr_type_map = classify_page_date_regions(pages, date_region_classifier)
 
     date_mapper = get_inventory_date_mapper(inv_meta, pages,
+                                            filter_date_starts=True,
                                             date_tr_type_map=date_tr_type_map,
                                             ignorecase=ignorecase, debug=0)
 
-    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
-    pages = [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
+    weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
+    pages = [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,
                                       debug=0) for page in pages]
 
     print(f"inv {inv_num}  step 2: {len(date_trs[inv_num])}")
@@ -509,20 +510,22 @@ def preprocess_handwritten_pages(inv_id: str, pages: List[pdm.PageXMLPage],
 
 
 def get_inventory_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
-                              filter_date_starts: bool = True, date_tr_type_map: Dict[str, str] = None,
+                              filter_date_starts: bool = False, date_tr_type_map: Dict[str, str] = None,
                               ignorecase: bool = True, debug: int = 0):
     date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
     session_date_lines = get_session_date_lines_from_pages(pages, filter_date_starts=filter_date_starts,
                                                            date_tr_type_map=date_tr_type_map, debug=debug)
     if len(session_date_lines) == 0:
-        print(f"WARNING - No session date lines found for "
+        print(f"WARNING page_date_parser.get_inventory_date_mapper - No session date lines found for "
               f"inventory {inv_metadata['inventory_num']} with {len(pages)} pages")
         return None
     date_line_structure = get_session_date_line_structure(session_date_lines,
                                                           date_token_cat, inv_metadata['inventory_id'])
+    if debug > 1:
+        print(f"page_date_parser.get_inventory_date_mapper - date_line_structure:\n{date_line_structure}")
     """
-    if 'week_day_name' not in [element[0] for element in date_line_structure]:
-        print('WARNING - missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
+    if 'weekday_name' not in [element[0] for element in date_line_structure]:
+        print('WARNING - missing weekday_name in date_line_structure for inventory', inv_metadata['inventory_num'])
         return None
     """
 

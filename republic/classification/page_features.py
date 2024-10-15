@@ -7,7 +7,7 @@ import torch
 
 # import republic.model.physical_document_model as pdm
 from republic.helper.text_helper import SkipgramSimilarity
-from republic.model.republic_date_phrase_model import week_day_names
+from republic.model.republic_date_phrase_model import weekday_names
 from republic.model.republic_date_phrase_model import month_names_early, month_names_late
 
 
@@ -158,8 +158,8 @@ def get_line_text_features(line: Union[pdm.PageXMLTextLine, Dict[str, any]],
 def get_date_skip_sim() -> Dict[str, SkipgramSimilarity]:
     months = set(month_names_early + month_names_late)
     months.add('Decembris')
-    weekdays = set([week_day_name for name_set in week_day_names for week_day_name in week_day_names[name_set]])
-    # weekdays = set(week_day_names['printed_early'] + week_day_names['printed_late'] + week_day_names['handwritten'])
+    weekdays = set([weekday_name for name_set in weekday_names for weekday_name in weekday_names[name_set]])
+    # weekdays = set(weekday_names['printed_early'] + weekday_names['printed_late'] + weekday_names['handwritten'])
     weekdays.add('Jouis')
     skip_sim = {
         'weekdays': SkipgramSimilarity(ngram_length=3, skip_length=1),

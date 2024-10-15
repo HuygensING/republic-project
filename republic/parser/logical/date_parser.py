@@ -11,7 +11,7 @@ from fuzzy_search import PhraseMatch
 from republic.helper.pagexml_helper import make_baseline_string as mbs
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
-from republic.model.republic_date_phrase_model import week_day_names
+from republic.model.republic_date_phrase_model import weekday_names
 from republic.model.republic_date_phrase_model import month_day_names
 from republic.model.republic_date_phrase_model import month_names
 from republic.model.inventory_mapping import get_inventory_text_type
@@ -69,7 +69,7 @@ def extract_best_date_match(matches: List[PhraseMatch], current_date: RepublicDa
 def make_date_searcher(date_mapper: DateNameMapper, config: Dict[str, any]) -> Dict[str, FuzzyPhraseSearcher]:
     return {
         'month': make_month_name_searcher(date_mapper, config),
-        'week_day': make_week_day_name_searcher(date_mapper, config)
+        'weekday': make_weekday_name_searcher(date_mapper, config)
     }
 
 
@@ -79,19 +79,20 @@ def make_month_name_searcher(date_mapper: DateNameMapper, config: Dict[str, any]
     return month_name_searcher
 
 
-def make_week_day_name_searcher(date_mapper: DateNameMapper, config: Dict[str, any]) -> FuzzyPhraseSearcher:
+def make_weekday_name_searcher(date_mapper: DateNameMapper,
+                               config: Dict[str, any]) -> Union[FuzzyPhraseSearcher, None]:
     phrase_list = []
-    if date_mapper.date_name_map['week_day_name'] is None:
+    if date_mapper.date_name_map['weekday_name'] is None:
         return None
-    for week_day_name in date_mapper.date_name_map['week_day_name']:
+    for weekday_name in date_mapper.date_name_map['weekday_name']:
         phrase = {
-            'phrase': week_day_name,
+            'phrase': weekday_name,
             'max_start_offset': 3
         }
         phrase_list.append(phrase)
-    week_day_name_searcher = FuzzyPhraseSearcher(phrase_list=phrase_list,
-                                                 config=config)
-    return week_day_name_searcher
+    weekday_name_searcher = FuzzyPhraseSearcher(phrase_list=phrase_list,
+                                                config=config)
+    return weekday_name_searcher
 
 
 def get_date_lines(date_trs):
@@ -108,35 +109,35 @@ def line_is_year(line: pdm.PageXMLTextLine) -> bool:
         return False
 
 
-def line_starts_with_week_day_name(line: pdm.PageXMLTextLine,
-                                   week_day_name_searcher: FuzzyPhraseSearcher = None,
-                                   ignorecase: bool = False, debug: int = 0):
+def line_starts_with_weekday_name(line: pdm.PageXMLTextLine,
+                                  weekday_name_searcher: FuzzyPhraseSearcher = None,
+                                  ignorecase: bool = False, debug: int = 0):
     if line.text is None:
         return False
     # print('ignorecase:', ignorecase)
     line_text = line.text.lower() if ignorecase else line.text
     # print('line_text:', line_text)
-    for set_version in week_day_names:
+    for set_version in weekday_names:
         if debug > 2:
-            print('line_starts_with_week_day_name - set_version:', set_version)
-            print('line_starts_with_week_day_name - week_day_names:', week_day_names[set_version])
-            print('line_starts_with_week_day_name - line_text:', line_text)
-        for week_day_name in week_day_names[set_version]:
-            week_day_name = week_day_name.lower() if ignorecase else week_day_name
+            print('line_starts_with_weekday_name - set_version:', set_version)
+            print('line_starts_with_weekday_name - weekday_names:', weekday_names[set_version])
+            print('line_starts_with_weekday_name - line_text:', line_text)
+        for weekday_name in weekday_names[set_version]:
+            weekday_name = weekday_name.lower() if ignorecase else weekday_name
             # print('ignorecase:', ignorecase)
             if debug > 2:
-                print(f'line_starts_with_week_day_name - line_text.startswith("{week_day_name}"):',
-                      line_text.startswith(week_day_name))
-            if line_text.startswith(week_day_name):
+                print(f'line_starts_with_weekday_name - line_text.startswith("{weekday_name}"):',
+                      line_text.startswith(weekday_name))
+            if line_text.startswith(weekday_name):
                 return True
         if debug > 2:
             print('\n')
-    if week_day_name_searcher is not None:
-        matches = week_day_name_searcher.find_matches(line.text)
+    if weekday_name_searcher is not None:
+        matches = weekday_name_searcher.find_matches(line.text)
         if debug > 2:
-            print('line_starts_with_week_day_name - fuzzy matching with week day names')
+            print('line_starts_with_weekday_name - fuzzy matching with week day names')
             for match in matches:
-                print('line_starts_with_week_day_name - week_day_name match:', match)
+                print('line_starts_with_weekday_name - weekday_name match:', match)
         if len(matches) > 0:
             return True
     return False
@@ -192,7 +193,7 @@ def line_has_day_month(line: pdm.PageXMLTextLine,
 def get_session_date_lines_from_pages(pages: List[pdm.PageXMLPage],
                                       filter_date_starts: bool = True, date_tr_type_map: Dict[str, str] = None,
                                       month_name_searcher: FuzzyPhraseSearcher = None,
-                                      week_day_name_searcher: FuzzyPhraseSearcher = None,
+                                      weekday_name_searcher: FuzzyPhraseSearcher = None,
                                       ignorecase: bool = False, debug: int = 0):
     date_trs = get_date_trs(pages)
     if debug > 0:
@@ -213,20 +214,20 @@ def get_session_date_lines_from_pages(pages: List[pdm.PageXMLPage],
         for date_line in date_lines:
             print(f'\tdate_line: {mbs(date_line)}\t{date_line.text}')
     return filter_session_date_lines(date_lines, month_name_searcher=month_name_searcher,
-                                     week_day_name_searcher=week_day_name_searcher,
+                                     weekday_name_searcher=weekday_name_searcher,
                                      ignorecase=ignorecase, debug=debug)
 
 
 def filter_session_date_lines(date_lines: List[pdm.PageXMLTextLine],
                               month_name_searcher: FuzzyPhraseSearcher = None,
-                              week_day_name_searcher: FuzzyPhraseSearcher = None,
-                              week_day_required: bool = True,
+                              weekday_name_searcher: FuzzyPhraseSearcher = None,
+                              weekday_required: bool = True,
                               ignorecase: bool = False, debug: int = 0):
     """Filter on lines that start with the name of a week day."""
     session_date_lines = []
     for line in date_lines:
-        if week_day_required and line_starts_with_week_day_name(line, week_day_name_searcher=week_day_name_searcher,
-                                                                ignorecase=ignorecase, debug=debug):
+        if weekday_required and line_starts_with_weekday_name(line, weekday_name_searcher=weekday_name_searcher,
+                                                              ignorecase=ignorecase, debug=debug):
             session_date_lines.append(line)
         elif line_has_day_month(line, month_name_searcher=month_name_searcher, ignorecase=ignorecase, debug=debug):
             session_date_lines.append(line)
@@ -237,13 +238,13 @@ def filter_session_date_lines(date_lines: List[pdm.PageXMLTextLine],
 
 def is_date_text_region(text_region: pdm.PageXMLTextRegion,
                         month_name_searcher: FuzzyPhraseSearcher = None,
-                        week_day_name_searcher: FuzzyPhraseSearcher = None,
+                        weekday_name_searcher: FuzzyPhraseSearcher = None,
                         weekday_required: bool = True,
                         ignorecase: bool = False,
                         debug: int = 0) -> bool:
     first_line = text_region.lines[0]
-    if weekday_required and line_starts_with_week_day_name(first_line, week_day_name_searcher=week_day_name_searcher,
-                                                           ignorecase=ignorecase, debug=debug):
+    if weekday_required and line_starts_with_weekday_name(first_line, weekday_name_searcher=weekday_name_searcher,
+                                                          ignorecase=ignorecase, debug=debug):
         return True
     elif weekday_required is False and line_has_day_month(first_line,
                                                           month_name_searcher=month_name_searcher,
@@ -255,14 +256,14 @@ def is_date_text_region(text_region: pdm.PageXMLTextRegion,
 
 def filter_session_date_trs(date_trs: List[pdm.PageXMLTextRegion],
                             month_name_searcher: FuzzyPhraseSearcher = None,
-                            week_day_name_searcher: FuzzyPhraseSearcher = None,
+                            weekday_name_searcher: FuzzyPhraseSearcher = None,
                             weekday_required: bool = True,
                             ignorecase: bool = False, debug: int = 0):
     """Filter on trs that start with the name of a week day."""
     session_date_trs = []
     for date_tr in date_trs:
         if is_date_text_region(date_tr, month_name_searcher=month_name_searcher,
-                               week_day_name_searcher=week_day_name_searcher,
+                               weekday_name_searcher=weekday_name_searcher,
                                weekday_required=weekday_required, ignorecase=ignorecase):
             session_date_trs.append(date_tr)
     if debug > 0:
@@ -299,7 +300,7 @@ def get_pos_cat_freq(pos_tokens: Dict[int, List[str]], date_token_cat: Dict[str,
             if token in date_token_cat or token.lower() in date_token_cat:
                 match_token = token if token in date_token_cat else token.lower()
                 for name_set, set_version in date_token_cat[match_token]:
-                    if name_set in {'month_name', 'week_day_name'}:
+                    if name_set in {'month_name', 'weekday_name'}:
                         if set_version != text_type:
                             continue
                     # print(pos, token, name_set, set_version)
@@ -323,7 +324,7 @@ def get_session_date_line_structure(session_date_lines: List[pdm.PageXMLTextLine
 
     Example:
     [
-        ('week_day_name', 'roman_early'),
+        ('weekday_name', 'roman_early'),
         ('den', 'all'),
         ('month_day_name', 'decimal_en'),
         ('month_name', 'handwritten'),
@@ -363,7 +364,7 @@ def get_date_token_cat(inv_num: int = None, inv_id: str = None, ignorecase: bool
     date_token_map = {
         'month_name': month_names,
         'month_day_name': month_day_names,
-        'week_day_name': week_day_names,
+        'weekday_name': weekday_names,
         'year': [str(year) for year in range(inv_metadata['year_start'], inv_metadata['year_end']+1)]
     }
 

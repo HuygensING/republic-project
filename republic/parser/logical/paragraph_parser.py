@@ -1,6 +1,5 @@
 from __future__ import annotations
 import copy
-import time
 from collections import defaultdict
 from typing import Dict, Generator, List, Tuple, Union
 
@@ -10,7 +9,6 @@ import pagexml.helper.pagexml_helper as pagexml_helper
 import pagexml.analysis.layout_stats as layout_helper
 from pagexml.analysis.text_stats import WordBreakDetector
 
-import republic.helper.paragraph_helper as para_helper
 import republic.model.republic_document_model as rdm
 
 
@@ -205,7 +203,6 @@ def get_relative_position(curr_line: pdm.PageXMLTextLine, para_lines: ParagraphL
 
 
 def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
-    start = time.time()
     if len(lines) == 0:
         return []
     column_lines = defaultdict(list)
@@ -215,10 +212,6 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
     for column_id in column_lines:
         column_grouped_lines = pagexml_helper.horizontal_group_lines(column_lines[column_id])
         grouped_lines.extend(column_grouped_lines)
-    if lines[0].baseline:
-        lefts = [line.baseline.left for line in lines]
-    else:
-        lefts = [line.coords.left for line in lines]
     if len(lines) <= 1:
         return lines
     paras = []
@@ -273,8 +266,6 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     print('\tSPLIT: different column, appending para_lines')
                 para_lines.end_type = 'para_mid'
                 paras.append(para_lines)
-                step = time.time()
-                prev_step = step
                 yield para_lines
                 para_lines = ParagraphLines([curr_line])
                 para_lines.start_type = 'para_mid'
@@ -314,8 +305,6 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     para_lines.add_lines(curr_line)
                     continue
                 elif abs(rel_pos['left_indent']) < para_lines.avg_char_width * 3:
-                    # print('left_indent:', rel_pos['left_indent'], abs(rel_pos['left_indent']), para_lines.avg_char_width)
-                    # print(para_lines.json)
                     if rel_pos['right_indent'] > para_lines.avg_char_width * 3:
                         # line and para are left-aligned but line is right-indented
                         if debug > 0:
@@ -354,7 +343,8 @@ def split_paragraphs(lines: List[pdm.PageXMLTextLine], debug: int = 0):
                     # print('PARA_LINES WIDTHS:', para_lines.widths)
                     # print('AVG PARA_LINES WIDTH:', para_lines.widths.mean())
                     # print('\t', rel_pos['left_indent'] > para_lines.widths.mean())
-                    if rel_pos['left_indent'] / para_lines.widths.mean() > 0.8 and len(curr_group) > 1 and curr_line == curr_group[-1]:
+                    if rel_pos['left_indent'] / para_lines.widths.mean() > 0.8 and \
+                            len(curr_group) > 1 and curr_line == curr_group[-1]:
                         para_lines.noise_lines.add(curr_line)
                         if debug > 0:
                             print('\tSKIP: curr line is right-aligned with para, and is noise')

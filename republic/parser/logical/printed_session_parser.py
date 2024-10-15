@@ -10,7 +10,7 @@ from fuzzy_search.match.phrase_match import PhraseMatch
 # from pagexml.model.physical_document_model import PageXMLPage, PageXMLTextLine, PageXMLTextRegion
 # from pagexml.model.physical_document_model import parse_derived_coords
 
-import republic.model.republic_document_model as  rdm
+import republic.model.republic_document_model as rdm
 from republic.analyser.quality_control import check_session
 from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_phrase_model import session_phrase_model
@@ -26,9 +26,6 @@ from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
 from republic.helper.pagexml_helper import sort_lines_in_reading_order
 from republic.helper.metadata_helper import doc_id_to_iiif_url
-from republic.parser.logical.date_parser import get_date_token_cat
-from republic.parser.logical.date_parser import get_session_date_line_structure
-from republic.parser.logical.date_parser import get_session_date_lines_from_pages
 from republic.parser.logical.generic_logical_parser import copy_line
 
 
@@ -69,7 +66,8 @@ def stream_handwritten_page_lines(page: pdm.PageXMLPage,
             yield line
 
 
-def stream_resolution_page_lines(inventory_id: str, pages: List[pdm.PageXMLPage]) -> Generator[pdm.PageXMLTextLine, None, None]:
+def stream_resolution_page_lines(inventory_id: str,
+                                 pages: List[pdm.PageXMLPage]) -> Generator[pdm.PageXMLTextLine, None, None]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
@@ -169,7 +167,6 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         metadata = column_metadata[text_region_id]
         source_page_id = metadata['page_id']
         source_page = page_index[source_page_id]
-        parent = text_region_lines[text_region_id][0].parent
         # print('FIRST PARENT:')
         # print(json.dumps(parent.metadata, indent=4))
         coords = pdm.parse_derived_coords(text_region_lines[text_region_id])
@@ -197,12 +194,11 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         # print('START TEXTREGION:')
         # print(json.dumps(text_region.metadata, indent=4))
         # print('FIRST LINE:')
-        first_line = text_region_lines[text_region_id][0]
         # print(json.dumps(first_line.metadata, indent=4))
         # while "resolution_page" not in parent.type and parent.parent:
         #     parent = parent.parent
-            # print('NEXT PARENT:')
-            # print(json.dumps(parent.metadata, indent=4))
+        # print('NEXT PARENT:')
+        # print(json.dumps(parent.metadata, indent=4))
         if source_page:
             if "textrepo_version" in source_page.metadata:
                 scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
@@ -340,7 +336,7 @@ def get_printed_date_elements(inv_metadata: Dict[str, any]) -> List[Tuple[str, s
     for name_map in default_date_name_map:
         if name_map['period_start'] <= inv_metadata['year_start'] and \
                 inv_metadata['year_end'] <= name_map['period_end']:
-            date_elements.append(('week_day_name', name_map['week_day_name']))
+            date_elements.append(('weekday_name', name_map['weekday_name']))
             date_elements.append(('den', True))
             date_elements.append(('month_day_name', name_map['month_day_name']))
             date_elements.append(('month_name', name_map['month_name']))
@@ -361,7 +357,7 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
     else:
         raise ValueError(f"inventory_num {inv_metadata['inventory_num']} is not a printed volume")
     date_line_structure = [
-        ('week_day_name', date_type),
+        ('weekday_name', date_type),
         ('den', 'all'),
         ('month_day_name', 'decimal'),
         ('month_name', date_type)
@@ -374,9 +370,9 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
         date_line_structure = get_printed_date_elements(inv_metadata)
     else:
         date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat, inv_id)
-    if 'week_day_name' not in [element[0] for element in date_line_structure]:
+    if 'weekday_name' not in [element[0] for element in date_line_structure]:
         print('WARNING: printed_session_parser.get_date_mapper - '
-              'missing week_day_name in date_line_structure for inventory', inv_metadata['inventory_num'])
+              'missing weekday_name in date_line_structure for inventory', inv_metadata['inventory_num'])
         print(f"\tdate_line_structure:", date_line_structure)
         return None
     """
@@ -387,11 +383,12 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
 
 
 def sort_inventory_pages(inv_id: str, pages: List[pdm.PageXMLPage], debug: int = 0) -> List[pdm.PageXMLPage]:
-    sorted_pages = sorted(pages, key=lambda page: page.metadata['page_num'])
+    sorted_pages = sorted(pages, key=lambda p: p.metadata['page_num'])
     for page in sorted_pages:
         if 'inventory-id' not in page.metadata:
             if debug > 2:
-                print(f'printed_session_parser.sort_inventory_pages - page {page.id} metadata missing inventory {inv_id}')
+                print(f'printed_session_parser.sort_inventory_pages - page {page.id} metadata '
+                      f'missing inventory {inv_id}')
             page.metadata['inventory_id'] = inv_id
     sort_swaps = {
         'NL-HaNA_1.01.02_3845': [
@@ -531,11 +528,13 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
 
     if next_start is not None and next_start['date'] > current_date.isoformat():
         if debug > 0:
-            print('map_session_lines_from_session_starts - next_start date is not initial date:', current_date.isoformat())
+            print('map_session_lines_from_session_starts - next_start date '
+                  'is not initial date:', current_date.isoformat())
         current_date = date_strings[next_start['date_string']]
     elif next_start is None:
         if debug > 0:
-            print('map_session_lines_from_session_starts - next_start date is not initial date:', current_date.isoformat())
+            print('map_session_lines_from_session_starts - next_start date '
+                  'is not initial date:', current_date.isoformat())
         while current_date.is_rest_day() and (next_start is None or current_date.isoformat() < next_start['date']):
             if debug > 0:
                 print('map_session_lines_from_session_starts - REST DAY:', current_date.isoformat())

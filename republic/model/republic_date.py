@@ -8,7 +8,7 @@ from dateutil.easter import easter
 from dateutil.parser import parse
 from typing import Dict, List, Tuple, Union
 
-from republic.model.republic_date_phrase_model import week_day_names, month_names
+from republic.model.republic_date_phrase_model import weekday_names, month_names
 from republic.model.republic_date_phrase_model import holiday_phrases
 from republic.model.republic_date_phrase_model import date_name_map as default_date_name_map
 from republic.model.republic_date_phrase_model import date_structure_map
@@ -85,6 +85,8 @@ exception_dates = {
     "1791-12-01": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1792-03-15": {"mistake": "next Saturday is a work day", "shift_days": 1},
     "1792-03-16": {"mistake": "next Sunday is a work day", "shift_days": 1},
+    "1792-11-30": {"mistake": "next Saturday is a work day", "shift_days": 1},
+    "1792-12-01": {"mistake": "next Sunday is a work day", "shift_days": 1},
     "1793-03-04": {"mistake": "next day has wrong week day name", "shift_days": 1},
     # OCR problems solved with March 2021 batch
     # "1794-03-24": {"mistake": "OCR problems, skip whole week", "shift_days": 7},
@@ -155,7 +157,7 @@ def make_date_name_map(date_elements: List[Tuple[str, str]], debug: int = 0):
     if debug > 1:
         print(f'republic_date.make_date_name_map - received date_elements: {date_elements}')
     date_structure = {
-        'week_day_name': None,
+        'weekday_name': None,
         'month_day_name': None,
         'month_name': None,
         'include_year': False,
@@ -177,14 +179,14 @@ class DateNameMapper:
     def __init__(self, inv_metadata: Dict[str, any], date_elements: List[Tuple[str, str]], debug: int = 0):
         """
         Creates an object that can map date objects and date strings to dates used to announce
-        a new session in the resolutions. Dates are announced as <week_day> <month_day> <month_name>
+        a new session in the resolutions. Dates are announced as <weekday> <month_day> <month_name>
         or a variation of that, with each element constrained to a list of accepted values.
 
         The values are specific in republic.model.republic_date_phrase_model.
 
         Example:
         [
-            ('week_day_name', 'roman_early'),
+            ('weekday_name', 'roman_early'),
             ('den', 'all'),
             ('month_day_name', 'decimal_en'),
             ('month_name', 'handwritten'),
@@ -206,22 +208,22 @@ class DateNameMapper:
         self.include_den = self.date_name_map['include_den']
         if self.include_year:
             self.date_element_order
-        self.index_week_day = {}
+        self.index_weekday = {}
         self.index_month = {}
         self.index_month_day = {}
-        if 'week_day_name' in self.date_name_map and self.date_name_map['week_day_name'] is not None:
+        if 'weekday_name' in self.date_name_map and self.date_name_map['weekday_name'] is not None:
             # print(f'republic_date.DateNameMapper.__init__ - self.date_name_map: {self.date_name_map}')
-            self._set_week_day_name_map()
+            self._set_weekday_name_map()
         if 'month_name' in self.date_name_map and self.date_name_map['month_name'] is not None:
             self._set_month_name_map()
         if 'month_day_name' in self.date_name_map and self.date_name_map['month_day_name'] is not None:
             self._set_month_day_name_map()
 
-    def _set_week_day_name_map(self):
-        self.index_week_day = defaultdict(set)
-        for week_day_name in self.date_name_map['week_day_name']:
-            week_day_index = self.date_name_map['week_day_name'][week_day_name]
-            self.index_week_day[week_day_index].add(week_day_name)
+    def _set_weekday_name_map(self):
+        self.index_weekday = defaultdict(set)
+        for weekday_name in self.date_name_map['weekday_name']:
+            weekday_index = self.date_name_map['weekday_name'][weekday_name]
+            self.index_weekday[weekday_index].add(weekday_name)
         return None
 
     def _set_month_name_map(self):
@@ -254,11 +256,12 @@ class DateNameMapper:
         except TypeError:
             print(f'Error generating date object for year: {year}\tmonth: {month}\tday: {day}')
             raise
-        week_day = date.weekday()
+        weekday = date.weekday()
+        weekday_index = self.index_weekday[weekday] if weekday in self.index_weekday else []
         names = {
             'month_name': self.index_month[month],
             'month_day_name': [],
-            'week_day_name': self.index_week_day[week_day],
+            'weekday_name': weekday_index,
             'den': ['den'],
             'year': [year for year in range(self.inv_metadata['year_start'], self.inv_metadata['year_end']+1)]
         }
@@ -282,11 +285,10 @@ class DateNameMapper:
         else:
             suffix = 'sten' if day in {1, 8} or day >= 20 else 'den'
             names['month_day_names'] = [f'{day}{suffix}']
-        week_day_names = self.index_week_day[week_day]
         if debug > 0:
             print('generate_day_string - 3. month_names:', names['month_name'])
             print('generate_day_string - 4. month_day_names', names['month_day_name'])
-            print('generate_day_string - 5. week_day_names:', names['week_day_name'])
+            print('generate_day_string - 5. weekday_names:', names['weekday_name'])
         day_strings = []
         for name_set, set_version in self.date_element_order:
             # print(name_set, set_version)
@@ -307,7 +309,7 @@ class RepublicDate:
 
     def __init__(self, year: int = None, month: int = None, day: int = None,
                  date_string: str = None,
-                 date_mapper: DateNameMapper = None):
+                 date_mapper: DateNameMapper = None, debug: int = 0):
         """A Republic date extends the regular datetime.date object with names
         for weekday and month, a date string as used in the session openings,
         and methods for checking whether the current date is a work day, a rest
@@ -336,19 +338,20 @@ class RepublicDate:
         self.year = date.year
         self.month = date.month
         self.day = date.day
-        for week_day_name in week_day_names['modern_nl']:
-            if week_day_names['modern_nl'][week_day_name] == self.date.weekday():
-                self.day_name = week_day_name
+        for weekday_name in weekday_names['modern_nl']:
+            if weekday_names['modern_nl'][weekday_name] == self.date.weekday():
+                self.day_name = weekday_name
         for month_name in month_names['modern_nl']:
             if month_names['modern_nl'][month_name] == self.month:
                 self.month_name = month_name
         self.date_string = None
         self.date_year_string = None
         if date_mapper:
-            # print(f'RepublicDate - generate_day_string for date {date.isoformat()}')
+            if debug > 0:
+                print(f'RepublicDate - generate_day_string for date {date.isoformat()}')
             self.date_string = date_mapper.generate_day_string(date.year, date.month, date.day, include_year=False)
             if self.date_string is None:
-                print(f'RepublicDate - date_string is Noe for date {date.isoformat()}')
+                print(f'RepublicDate - date_string is None for date {date.isoformat()}')
             self.date_year_string = date_mapper.generate_day_string(date.year, date.month, date.day,
                                                                     include_year=True)
 

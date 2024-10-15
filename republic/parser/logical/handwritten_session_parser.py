@@ -18,15 +18,17 @@ from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
 from republic.model.republic_date import get_next_date_strings
-from republic.parser.pagexml.page_date_parser import process_handwritten_page, process_handwritten_pages, \
-    get_inventory_date_mapper
+from republic.parser.pagexml.page_date_parser import process_handwritten_page, process_handwritten_pages
+from republic.parser.pagexml.page_date_parser import get_inventory_date_mapper
+from republic.parser.pagexml.page_date_parser import classify_page_date_regions
+from republic.parser.pagexml.page_date_parser import load_date_region_classifier
 from republic.parser.logical.generic_session_parser import make_session_date_metadata
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.generic_session_parser import make_session_metadata
 from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_line_structure
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
-from republic.parser.logical.date_parser import make_week_day_name_searcher
+from republic.parser.logical.date_parser import make_weekday_name_searcher
 from republic.parser.logical.date_parser import extract_best_date_match
 
 
@@ -505,8 +507,10 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
         date_searcher = FuzzyTokenSearcher(phrase_model=date_strings, config=config)
     if debug > 0:
-        print('find_session_dates - initial date_strings:', date_strings.keys())
-    print(date_searcher.phrase_model.token_in_phrase)
+        print('handwritten_session_parser.find_session_dates - initial date_strings:', date_strings.keys())
+    if debug > 1:
+        print(f"handwritten_session_parser.find_session_dates - date_searcher.phrase_model.token_in_phrase:",
+              date_searcher.phrase_model.token_in_phrase)
     if debug > 0:
         print(f"{pages[0].metadata['inventory_num']}\tstart_date: {inv_start_date}\tnumber of pages: {len(pages)}")
 
@@ -666,26 +670,37 @@ def process_handwritten_page_dates(inv_metadata: Dict[str, any], pages: List[pdm
 
     date_mapper = DateNameMapper(inv_metadata, date_line_structure)
     config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
-    return [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
+    weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
+    return [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,
                                      debug=0) for page in processed_pages]
 
 
 def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
                              session_starts: List[Dict[str, any]] = None,
+                             do_preprocessing: bool = False,
                              num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
-    print('get_sessions - num pages:', len(pages))
+    print('handwritten_session_parser.get_handwritten_sessions - num pages:', len(pages))
     inv_metadata = get_inventory_by_id(inv_id)
     period_start = inv_metadata['period_start']
     pages.sort(key=lambda page: page.id)
-    pages = process_handwritten_pages(inv_id, pages, ignorecase)
-    # pages = process_handwritten_pages(inv_metadata, pages[start_index:end_index], ignorecase)
-    date_mapper = get_inventory_date_mapper(inv_metadata, pages, ignorecase=ignorecase, debug=debug)
-    config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-    week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
-    pages = [process_handwritten_page(page, week_day_name_searcher=week_day_name_searcher,
-                                      debug=0) for page in pages]
-
+    if do_preprocessing is True:
+        if debug > 1:
+            print('handwritten_session_parser.get_handwritten_sessions - getting date_mapper with preprocessing')
+        pages = process_handwritten_pages(inv_id, pages, ignorecase)
+        # pages = process_handwritten_pages(inv_metadata, pages[start_index:end_index], ignorecase)
+        date_mapper = get_inventory_date_mapper(inv_metadata, pages, ignorecase=ignorecase, debug=debug)
+        config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+        weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
+        pages = [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,
+                                          debug=0) for page in pages]
+    else:
+        if debug > 1:
+            print('handwritten_session_parser.get_handwritten_sessions - getting date_mapper without preprocessing')
+        date_region_classifier = load_date_region_classifier()
+        date_tr_type_map = classify_page_date_regions(pages, date_region_classifier)
+        date_mapper = get_inventory_date_mapper(inv_metadata, pages, filter_date_starts=True,
+                                                date_tr_type_map=date_tr_type_map, ignorecase=ignorecase,
+                                                debug=debug)
     # year_start_date = RepublicDate(date_string=inv_metadata['period_start'], date_mapper=date_mapper)
     # date_strings = get_next_date_strings(year_start_date, date_mapper, num_dates=7)
 
@@ -697,6 +712,7 @@ def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
     session_finder = find_session_dates(pages, inv_start_date, date_mapper, ignorecase=ignorecase,
                                         num_past_dates=num_past_dates, num_future_dates=num_future_dates,
                                         debug=debug)
+
     for session_date_metadata, session_trs in session_finder:
         # print('-------------')
         session_num += 1
