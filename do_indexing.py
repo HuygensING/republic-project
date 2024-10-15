@@ -228,6 +228,7 @@ def update_page_metadata(page: pdm.PageXMLPage,
         for page_type in page_types:
             page.add_type(page_type)
         page.metadata['type'] = [ptype for ptype in page.type]
+        page.metadata['skip'] = False
     predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
     for tr in page.get_all_text_regions():
         for line in tr.lines:
@@ -478,6 +479,10 @@ class Indexer:
         pages = [page for page in get_pages(inv_num, self, page_type='resolution_page')]
         pages.sort(key=lambda page: page.metadata['page_num'])
         print(f'inventory {inv_num} - number of pages: {len(pages)}')
+        page_type_index = get_per_page_type_index(inv_metadata)
+        text_page_num_map = map_text_page_nums(inv_metadata)
+        for page in pages:
+            update_page_metadata(page, text_page_num_map, page_type_index)
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
         print(f'inventory {inv_num} - number of non-skipped pages: {len(pages)}')
 
