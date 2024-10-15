@@ -227,6 +227,7 @@ def update_page_metadata(page: pdm.PageXMLPage,
         for page_type in page_types:
             page.add_type(page_type)
         page.metadata['type'] = [ptype for ptype in page.type]
+        page.metadata['skip'] = False
     predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
     for tr in page.get_all_text_regions():
         for line in tr.lines:
