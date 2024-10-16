@@ -1,5 +1,4 @@
 import re
-from itertools import pairwise
 from typing import Dict, List, Union
 
 import pagexml.model.physical_document_model as pdm
@@ -8,6 +7,15 @@ import pandas as pd
 from fuzzy_search import FuzzyPhraseSearcher
 
 from republic.model.republic_date_phrase_model import month_abbrev_map
+
+
+def pairwise(iterable):
+    # pairwise('ABCDEFG') → AB BC CD DE EF FG
+    iterator = iter(iterable)
+    a = next(iterator, None)
+    for b in iterator:
+        yield a, b
+        a = b
 
 
 def get_page_content_type(page: pdm.PageXMLPage) -> str:
