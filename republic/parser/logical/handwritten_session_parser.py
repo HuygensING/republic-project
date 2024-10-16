@@ -14,6 +14,8 @@ from republic.classification.page_features import get_line_base_dist
 from republic.helper.text_helper import is_duplicate
 from republic.helper.metadata_helper import coords_to_iiif_url
 from republic.helper.metadata_helper import doc_id_to_iiif_url
+from republic.helper.pagexml_helper import print_line_class_dist
+from republic.helper.pagexml_helper import get_content_type
 from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_date import DateNameMapper
 from republic.model.republic_date import RepublicDate
@@ -72,7 +74,7 @@ def get_predicted_line_classes(page: pdm.PageXMLPage, debug: int = 0):
 def line_introduces_insertion(line: pdm.PageXMLTextLine) -> bool:
     if re.match(r"Extract [Uu](y|ij|i)t het Register", line.text):
         return True
-    if re.match(r"geinsereer[dt]", line.text):
+    if re.search(r"geinsereer[dt]", line.text):
         return True
     else:
         return False
@@ -95,6 +97,10 @@ def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False):
                     near_extract_intro = True
                     line.metadata['line_class'] = f"{line.metadata['line_class']}_extract_intro"
                     line.metadata['line_classifier'] = 'handwritten_session_parser'
+                    if debug > 0:
+                        print(f"handwritten_session_parser.sort_lines_by_class - "
+                              f"line introduces insertion: {line.text}")
+                        print(f"\tline_class: {line.metadata['line_class']}")
                 if 'marginalia' in tr.type:
                     class_lines['marginalia'].append(line)
                     line.metadata['line_class'] = 'marginalia'
@@ -153,6 +159,8 @@ def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False):
                         line.metadata['line_classifier'] = 'nlc_classifier'
                         class_lines[pred_class].append(line)
                 else:
+                    if debug > 1:
+                        print(f"line {line.id} not in predicted_line_class, setting class to 'unknown'")
                     line.metadata['line_class'] = 'unknown'
                     line.metadata['line_classifier'] = 'nlc_classifier'
                     class_lines['unknown'].append(line)
@@ -304,25 +312,25 @@ def split_above_below_overlap_groups(para_line_group: List[pdm.PageXMLTextLine],
     para_bottom = para_line_group[-1].coords.bottom
     date_top = date_line_group[0].coords.top
     date_bottom = date_line_group[-1].coords.bottom
-    if debug > 0:
-        print('split_para_lines_on_date_gaps - para_top:', para_top)
-        print('split_para_lines_on_date_gaps - para_bottom:', para_bottom)
-        print('split_para_lines_on_date_gaps - date_top:', date_top)
-        print('split_para_lines_on_date_gaps - date_bottom:', date_bottom)
+    if debug > 1:
+        print('handwritten_session_parser.split_above_below_overlap_groups - para_top:', para_top)
+        print('handwritten_session_parser.split_above_below_overlap_groups - para_bottom:', para_bottom)
+        print('handwritten_session_parser.split_above_below_overlap_groups - date_top:', date_top)
+        print('handwritten_session_parser.split_above_below_overlap_groups - date_bottom:', date_bottom)
         for line in date_line_group:
             print(f"\tdate line: {line.coords.top: >4}-{line.coords.bottom: <4}\t{line.text}")
     for line in para_line_group:
         if line.coords.bottom < date_top:
             if debug > 1:
-                print('adding to above group, line', line.text)
+                print('    adding to above group, line', line.text)
             above_group.append(line)
         elif line.coords.top > date_bottom:
             if debug > 1:
-                print('adding to below group, line', line.text)
+                print('    adding to below group, line', line.text)
             below_group.append(line)
         else:
             if debug > 1:
-                print('adding to overlap group, line', line.text)
+                print('    adding to overlap group, line', line.text)
             overlap_group.append(line)
     # print(len(above_group), len(overlap_group), len(below_group), len(para_line_group))
     assert sum([len(above_group), len(overlap_group), len(below_group)]) == len(para_line_group)
@@ -343,7 +351,7 @@ def split_para_lines_on_date_gaps(line_groups: Dict[str, List[List[pdm.PageXMLTe
             if para_top < date_top and para_bottom > date_bottom:
                 overlapping_date_group.append(date_line_group)
         if len(overlapping_date_group) == 0:
-            if debug > 0:
+            if debug > 1:
                 print('split_para_lines_on_date_gaps - no overlapping date text_region:')
                 for line in para_line_group:
                     print('\t', line.text)
@@ -505,7 +513,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     else:
         config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-        date_searcher = FuzzyTokenSearcher(phrase_model=date_strings, config=config)
+        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     if debug > 0:
         print('handwritten_session_parser.find_session_dates - initial date_strings:', date_strings.keys())
     if debug > 1:
@@ -543,6 +551,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                                                               debug=debug)
         if debug > 0:
             print(f'page: {page.id}\tnear_extract_intro: {near_extract_intro}\n')
+            print("class_lines:", [(lc, len(class_lines[lc])) for lc in class_lines])
         if 'para' in class_lines:
             for li, line in enumerate(class_lines['para']):
                 if line.metadata['line_class'].endswith('_extract_intro'):
@@ -576,7 +585,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         pagexml_helper.check_page_parentage(page)
         for main_tr in main_trs:
             if debug > 0:
-                print('\nfind_session_dates - main_tr:', main_tr.coords.box)
+                print('\nfind_session_dates - main_tr:', main_tr.coords.box, get_content_type(main_tr))
                 if current_date:
                     print('find_session_dates - current_date:', current_date.isoformat())
                 else:
@@ -593,14 +602,19 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     for marg_tr in has_marginalia[main_tr]:
                         session_trs[current_date.isoformat()].append(marg_tr)
                 continue
+            if debug > 2:
+                print(f"  iterating over lines of main_tr {main_tr.id}")
             for line in main_tr.lines:
                 if line.text is None:
                     continue
-                if debug > 0:
+                if debug > 2:
                     print(f"\t{line.metadata['line_class']: <12}    {line.text}")
                 line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text}, debug=0)
-                # for match in line_matches:
-                #     print(match)
+                if debug > 0 and main_tr.has_type('date'):
+                    print(f"handwritten_session_parser.find_session_dates - date line: {line.text}")
+                    print(f"    number of date matches: {len(line_matches)}")
+                    for match in line_matches:
+                        print(f"\tmatch: {match}")
                 filtered_matches = [match for match in line_matches if match.offset < 50]
                 filtered_matches = [match for match in filtered_matches if
                                     abs(len(match.string) - len(line.text)) < 50]
@@ -683,6 +697,9 @@ def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
     inv_metadata = get_inventory_by_id(inv_id)
     period_start = inv_metadata['period_start']
     pages.sort(key=lambda page: page.id)
+    if debug > 1:
+        print(f"handwritten_session_parser.get_handwritten_sessions - start:")
+        print_line_class_dist(pages)
     if do_preprocessing is True:
         if debug > 1:
             print('handwritten_session_parser.get_handwritten_sessions - getting date_mapper with preprocessing')
@@ -693,11 +710,14 @@ def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
         weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
         pages = [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,
                                           debug=0) for page in pages]
-    else:
         if debug > 1:
-            print('handwritten_session_parser.get_handwritten_sessions - getting date_mapper without preprocessing')
+            print(f"handwritten_session_parser.get_handwritten_sessions - after preprocessing:")
+            print_line_class_dist(pages)
+    else:
         date_region_classifier = load_date_region_classifier()
         date_tr_type_map = classify_page_date_regions(pages, date_region_classifier)
+        if debug > 0:
+            print('handwritten_session_parser.get_handwritten_sessions - getting date_mapper without preprocessing')
         date_mapper = get_inventory_date_mapper(inv_metadata, pages, filter_date_starts=True,
                                                 date_tr_type_map=date_tr_type_map, ignorecase=ignorecase,
                                                 debug=debug)

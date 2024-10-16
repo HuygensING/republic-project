@@ -1,4 +1,4 @@
-from typing import Dict, Generator, List, Set
+from typing import Dict, Generator, List, Set, Union
 from collections import Counter
 from itertools import combinations
 import string
@@ -27,9 +27,33 @@ def make_baseline_string(line: pdm.PageXMLTextLine):
     return f"{b.left: >4}-{b.right: <4}\t{b.top: >4}-{b.bottom: <4}"
 
 
-def make_coords_string(line: pdm.PageXMLTextLine):
-    c = line.coords
+def make_coords_string(coords: Union[pdm.Coords, pdm.PageXMLDoc]):
+    """Create a Coords string representation from a Coords object"""
+    if isinstance(coords, pdm.Coords):
+        c = coords
+    elif hasattr(coords, "coords") and isinstance(coords.coords, pdm.Coords):
+        c = coords.coords
+    else:
+        raise TypeError("invalid coords object, must be Coords or PageXMLDoc")
     return f"{c.left: >4}-{c.right: <4}\t{c.top: >4}-{c.bottom: <4}"
+
+
+def make_coords_from_coords_string(coords_string: str):
+    """"Create a Coords object from a Coords string"""
+    x, y, w, h = [int(p) for p in coords_string.split('-')]
+    return pdm.Coords([(x, y), (x+w, y), (x+w, y+h), (x, y+h)])
+
+
+def make_coords_from_doc_id(doc_id: str):
+    """"Create a Coords object from a doc id."""
+    parts = doc_id.split('-')
+    if all([p.isdigit() for p in parts[-4:]]):
+        x, y, w, h = [int(p) for p in parts[-4:]]
+        return pdm.Coords([(x, y), (x+w, y), (x+w, y+h), (x, y+h)])
+    else:
+        print(f"pagexml_helper.make_coords_from_doc_id\n\tdoc_id: {doc_id}")
+        print(f"\tparts: {parts}\n\tparts[-4:]: {parts[-4:]}")
+        raise ValueError(f"cannot make coords from doc_id, invalid doc_id '{doc_id}'.")
 
 
 def get_median_normal_line_score(scores, default):
@@ -148,7 +172,7 @@ def get_overlapping_text_regions(text_regions: List[pdm.PageXMLTextRegion],
     merge_with = defaultdict(set)
     in_overlapping = set()
     for tr1, tr2 in combinations(text_regions, 2):
-        if regions_overlap(tr1, tr2, threshold=overlap_threshold) is False:
+        if regions_overlap(tr1, tr2, threshold=overlap_threshold, debug=debug) is False:
             continue
         merge_with[tr1].add(tr2)
         merge_with[tr2].add(tr1)
@@ -484,3 +508,96 @@ def check_page_parentage(page: pdm.PageXMLPage):
                 if line.parent != tr:
                     raise ValueError(f"no parent set for line {line.id} in page {page.id}")
     return None
+
+
+def set_parentage_metadata(doc: pdm.PageXMLDoc):
+    """Set the hierarchy of parent element identifiers in the metadata
+    for a REPBULIC PageXML document."""
+    if isinstance(doc, pdm.PageXMLScan):
+        for tr in doc.text_regions:
+            tr.metadata['scan_id'] = doc.id
+            set_parentage_metadata(tr)
+        return None
+    if isinstance(doc, pdm.PageXMLPage):
+        for col in doc.columns:
+            col.metadata['scan_id'] = doc.metadata['scan_id']
+            col.metadata['page_id'] = doc.id
+            set_parentage_metadata(col)
+        for tr in doc.extra:
+            tr.metadata['scan_id'] = doc.metadata['scan_id']
+            tr.metadata['page_id'] = doc.id
+            set_parentage_metadata(tr)
+    if isinstance(doc, pdm.PageXMLColumn):
+        for tr in doc.text_regions:
+            tr.metadata['scan_id'] = doc.metadata['scan_id']
+            tr.metadata['page_id'] = doc.metadata['page_id']
+            tr.metadata['column_id'] = doc.id
+        return None
+    if isinstance(doc, pdm.PageXMLTextRegion):
+        for tr in doc.text_regions:
+            tr.metadata['scan_id'] = doc.metadata['scan_id']
+            tr.metadata['page_id'] = doc.metadata['page_id']
+            tr.metadata['text_region_id'] = doc.id
+        for line in doc.lines:
+            line.metadata['scan_id'] = doc.metadata['scan_id']
+            line.metadata['page_id'] = doc.id
+            line.metadata['text_region_id'] = doc.id
+        return None
+
+
+def check_parentage_metadata(doc: pdm.PageXMLDoc):
+    """Check if a REPBULIC PageXML document has the hierarchy of parent element
+    identifiers in their metadata."""
+    if isinstance(doc, pdm.PageXMLScan):
+        for tr in doc.text_regions:
+            check_parentage_metadata(tr)
+        return None
+    if 'scan_id' not in doc.metadata:
+        raise KeyError(f"no 'scan_id' in metadata of {doc.id}")
+    if isinstance(doc, pdm.PageXMLPage):
+        for col in doc.columns:
+            check_parentage_metadata(col)
+        for tr in doc.text_regions:
+            check_parentage_metadata(tr)
+        return None
+    if 'page_id' not in doc.metadata:
+        raise KeyError(f"no 'page_id' in metadata of {doc.id}")
+    if isinstance(doc, pdm.PageXMLTextRegion):
+        for tr in doc.text_regions:
+            check_parentage_metadata(tr)
+        for line in doc.lines:
+            check_parentage_metadata(line)
+        return None
+    if isinstance(doc, pdm.PageXMLTextLine):
+        if 'text_region_id' not in doc.metadata:
+            raise KeyError(f"no 'text_region_id' in metadata of {doc.id}")
+
+
+def get_line_classes(pages):
+    lines = [line for page in pages for line in page.get_lines()]
+    return [line.metadata['line_class'] if 'line_class' in line.metadata else None for line in lines]
+
+
+def get_line_class_dist(pages):
+    line_classes = get_line_classes(pages)
+    return Counter(line_classes)
+
+
+def print_line_class_dist(pages):
+    line_class_dist = get_line_class_dist(pages)
+    print("pagexml_helper.print_line_class_dist:")
+    for lc in line_class_dist:
+        print(f"  {lc: <16}  {line_class_dist[lc]: >8}")
+
+
+def is_standard_type(element_type: str):
+    standard_types = {'pagexml_doc', 'structure_doc', 'physical_structure_doc', 'text_region'}
+    if element_type in standard_types:
+        return True
+    if element_type.startswith('pagexml'):
+        return True
+    return False
+
+
+def get_content_type(ele: pdm.PageXMLDoc):
+    return [e_type for e_type in ele.type if not is_standard_type(e_type)]

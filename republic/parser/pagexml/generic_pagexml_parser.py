@@ -257,7 +257,7 @@ def copy_line(line: PageXMLTextLine) -> PageXMLTextLine:
                                metadata=copy.deepcopy(line.metadata),
                                coords=copy.deepcopy(line.coords), baseline=copy.deepcopy(line.baseline),
                                text=line.text,
-                               words=copy.deepcopy(line.words) if line.words else None)
+                               words=[copy_word(word) for word in line.words] if line.words else None)
     new_line.type = copy.deepcopy(line.type)
     return new_line
 
@@ -265,7 +265,7 @@ def copy_line(line: PageXMLTextLine) -> PageXMLTextLine:
 def copy_word(word: PageXMLWord) -> PageXMLWord:
     new_word = PageXMLWord(doc_id=word.id,
                            doc_type=copy.deepcopy(word.type),
-                           metadata=copy.deepcopy(word.metadata),
+                           metadata=copy.deepcopy(word.metadata), conf=word.conf,
                            coords=copy.deepcopy(word.coords), text=word.text)
     new_word.type = copy.deepcopy(word.type)
     return new_word

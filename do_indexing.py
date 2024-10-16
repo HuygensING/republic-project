@@ -205,11 +205,13 @@ def get_session_starts(inv_id: str):
 def update_page_metadata(page: pdm.PageXMLPage,
                          text_page_num_map: Dict[int, Dict[str, Union[int, str]]],
                          page_type_index: Dict[int, Union[str, List[str]]],
-                         nlc_gysbert: NeuralLineClassifier = None):
+                         nlc_gysbert: NeuralLineClassifier = None, debug: int = 0):
     if page.metadata['page_num'] in text_page_num_map:
         page_num = page.metadata['page_num']
         page.metadata['text_page_num'] = text_page_num_map[page_num]['text_page_num']
         page.metadata['skip'] = text_page_num_map[page_num]['skip']
+        if debug > 0:
+            print(f"do_indexing.update_page_metadata - adding text_page_num_map skip {page.metadata['skip']}")
         if text_page_num_map[page_num]['problem'] is not None:
             page.metadata['problem'] = text_page_num_map[page_num]['problem']
     if page_type_index is None:
@@ -219,6 +221,8 @@ def update_page_metadata(page: pdm.PageXMLPage,
         page.add_type("empty_page")
         page.metadata['type'] = [ptype for ptype in page.type]
         page.metadata['skip'] = True
+        if debug > 0:
+            print(f"do_indexing.update_page_metadata - adding missing page_type_index skip {page.metadata['skip']}")
         # print("page without page_num:", page.id)
         # print("\tpage stats:", page.stats)
     else:
@@ -228,12 +232,17 @@ def update_page_metadata(page: pdm.PageXMLPage,
         for page_type in page_types:
             page.add_type(page_type)
         page.metadata['type'] = [ptype for ptype in page.type]
+        page.metadata['skip'] = False
+        if debug > 0:
+            print(f"do_indexing.update_page_metadata - adding existing page_type_index skip {page.metadata['skip']}")
     predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
     for tr in page.get_all_text_regions():
         for line in tr.lines:
             line.metadata['text_region_id'] = tr.id
             if line.id in predicted_line_class:
                 line.metadata['line_class'] = predicted_line_class[line.id]
+            elif 'line_class' in line.metadata:
+                continue
             else:
                 line.metadata['line_class'] = 'unknown'
 
@@ -478,6 +487,10 @@ class Indexer:
         pages = [page for page in get_pages(inv_num, self, page_type='resolution_page')]
         pages.sort(key=lambda page: page.metadata['page_num'])
         print(f'inventory {inv_num} - number of pages: {len(pages)}')
+        page_type_index = get_per_page_type_index(inv_metadata)
+        text_page_num_map = map_text_page_nums(inv_metadata)
+        for page in pages:
+            update_page_metadata(page, text_page_num_map, page_type_index)
         pages = [page for page in pages if "skip" not in page.metadata or page.metadata["skip"] is False]
         print(f'inventory {inv_num} - number of non-skipped pages: {len(pages)}')
 

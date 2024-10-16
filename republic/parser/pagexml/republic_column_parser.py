@@ -635,6 +635,8 @@ def split_text_region_on_vertical_gap(text_region: pdm.PageXMLTextRegion,
     for noise_line, link_line in noise_line_links:
         if link_line is None:
             new_tr = make_new_tr([noise_line], text_region)
+            for known_type in meta_helper.KNOWN_TYPES:
+                new_tr.remove_type(known_type)
             new_tr.add_type('noise')
             new_trs.append(new_tr)
         else:
