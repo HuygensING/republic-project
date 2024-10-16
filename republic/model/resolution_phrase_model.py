@@ -502,7 +502,7 @@ proposition_opening_phrases = [
         'variants': [
             'Opde Requeste vande',
         ],
-        'label': ['proposition:opening', 'propositin_type:requeste'],
+        'label': ['proposition:opening', 'propositie_type:rekest'],
         'start_year': 1580, 'end_year': 1704,
         'max_start_offset': 5
     },
@@ -511,11 +511,13 @@ proposition_opening_phrases = [
         'variants': [
             'Synde ter Vergaderinge gelesen'
         ],
-        'label': ['proposition:opening', 'propositin_type:onbekend'],
+        'label': ['proposition:opening', 'propositie_type:onbekend'],
         'followed_by': [
             'Memoriael',
             'Remonstrantie',
             'Requeste',
+            'Rapport',
+            'Memorie',
         ],
         'start_year': 1580, 'end_year': 1704,
         'max_start_offset': 5
@@ -525,7 +527,7 @@ proposition_opening_phrases = [
         'variants': [
             'Synde gelesen de requeste van'
         ],
-        'label': ['proposition:opening', 'propositin_type:requeste'],
+        'label': ['proposition:opening', 'propositie_type:rekest'],
         'start_year': 1580, 'end_year': 1704,
         'max_start_offset': 5
     },
@@ -534,7 +536,7 @@ proposition_opening_phrases = [
         'variants': [
             "Is gehoort t'rapport van"
         ],
-        'label': ['proposition:opening', 'propositin_type:rapport'],
+        'label': ['proposition:opening', 'propositie_type:rapport'],
         'start_year': 1580, 'end_year': 1704,
         'max_start_offset': 5
     },
