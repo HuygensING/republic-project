@@ -724,7 +724,7 @@ class Indexer:
             try:
                 # print('session_meta["id"]:', session_meta['id'])
                 print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
-                for resolution in hand_res_parser.get_session_resolutions(session, opening_searcher, debug=1):
+                for resolution in hand_res_parser.get_session_resolutions(session, opening_searcher, debug=0):
                     source_ids = [session.id] + [tr.id for tr in session.text_regions]
                     prov_url = self.rep_es.post_provenance(source_ids=source_ids,
                                                            target_ids=[resolution.id],

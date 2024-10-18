@@ -512,7 +512,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         config = {'ngram_size': 2, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
         date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     else:
-        config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+        config = {'ngram_size': 2, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
         date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     if debug > 0:
         print('handwritten_session_parser.find_session_dates - initial date_strings:', date_strings.keys())
