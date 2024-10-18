@@ -649,7 +649,11 @@ class Indexer:
             if 'session_id' not in tr.metadata:
                 print(f"WARNING do_indexing.get_inventory_sessions - tr.metadata has no 'session_id' key")
                 continue
-            inv_session_trs[tr.metadata['session_id']].append(tr)
+            if isinstance(tr.metadata['session_id'], list):
+                for session_id in tr.metadata['session_id']:
+                    inv_session_trs[session_id].append(tr)
+            else:
+                inv_session_trs[tr.metadata['session_id']].append(tr)
         for session_meta in inv_session_metas:
             try:
                 session_id = session_meta['id']
