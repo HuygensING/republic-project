@@ -44,6 +44,7 @@ import republic.parser.logical.printed_resolution_parser as printed_res_parser
 import republic.parser.logical.handwritten_resolution_parser as hand_res_parser
 import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from republic.parser.logical.generic_session_parser import make_session
+from republic.parser.logical.generic_session_parser import make_session_from_meta_and_trs
 from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
 from republic.parser.logical.handwritten_resolution_parser import make_opening_searcher
 from republic.parser.logical.printed_session_parser import get_printed_sessions
@@ -663,8 +664,9 @@ class Indexer:
                             line.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
                     self.rep_es.index_bulk_docs('session_text_regions', [tr.json for tr in session_trs])
                     inv_session_trs[session_id] = session_trs
-                session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
-                                      text_regions=inv_session_trs[session_meta['id']])
+                session = make_session_from_meta_and_trs(session_meta, inv_session_trs[session_meta['id']])
+                # session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
+                #                       text_regions=inv_session_trs[session_meta['id']])
                 yield session
             except (TypeError, KeyError) as err:
                 logger.error(f"Error generation session {session_meta['id']} from metadata and text regions")
@@ -909,6 +911,11 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         print(message)
         return None
     print("TASK:", task)
+    if inv_metadata['content_type'] == 'index':
+        # inventories that only contain indexes can be skip for
+        # parsing sessions, resolutions and attendance lists
+        if any([level in task['indexing_step'] for level in ['resolution', 'session', 'attendance']]):
+            return None
     indexer.set_indexes(task["indexing_step"], task["index_label"], debug=1)
     # print('process_inventory - index:', indexer.rep_es.config['resolutions_index'])
     if task["indexing_step"] == "download":

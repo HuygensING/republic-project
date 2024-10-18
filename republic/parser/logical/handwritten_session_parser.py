@@ -755,7 +755,8 @@ def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
             session_tr.metadata['session_id'] = session['id']
             session_tr.metadata['iiif_url'] = doc_id_to_iiif_url(session_tr.id)
         # del session_date_metadata['evidence']
-        session = rdm.Session(metadata=session_metadata, date_metadata=session_date_metadata,
+        session = rdm.Session(doc_id=session['id'], metadata=session_metadata,
+                              date_metadata=session_date_metadata,
                               text_regions=session_trs,
                               evidence=evidence,
                               date_mapper=date_mapper)
