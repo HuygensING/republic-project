@@ -137,6 +137,9 @@ def make_session(inv_metadata: Dict[str, any], session_date: Dict[str, any],
 
 def make_session_from_meta_and_trs(session_meta: Dict[str, any],
                                    session_trs: List[pdm.PageXMLTextRegion]) -> rdm.Session:
+    if isinstance(session_meta['evidence'], list) is False:
+        session_meta['evidence'] = [session_meta['evidence']]
+    session_meta['evidence'] = [PhraseMatch.from_json(match) for match in session_meta['evidence']]
     return rdm.Session(doc_id=session_meta['id'], metadata=session_meta['metadata'],
                        date_metadata=session_meta['date'], evidence=session_meta['evidence'],
                        text_regions=session_trs)

@@ -190,6 +190,8 @@ class ResolutionElementDoc(RepublicDoc):
         self.text_region_ids: Set[str] = set()
         self.evidence: List[PhraseMatch] = []
         if evidence:
+            if isinstance(evidence, list) is False:
+                evidence = [evidence]
             for match in evidence:
                 if not isinstance(match, PhraseMatch):
                     print(match)
@@ -284,7 +286,10 @@ class Session(ResolutionElementDoc):
             self.add_type(doc_type)
         self.date = self.session_date
         if not doc_id:
-            self.id = f"session-{self.session_date.as_date_string()}-{self.session_type}-num-1"
+            if 'id' in metadata:
+                self.id = metadata['id']
+            else:
+                self.id = f"session-{self.session_date.as_date_string()}-{self.session_type}-num-1"
         self.president: Union[str, None] = None
         self.attendance: List[str] = []
         self.scan_versions: Union[None, List[dict]] = scan_versions

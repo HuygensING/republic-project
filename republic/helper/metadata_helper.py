@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from collections import Counter
-from typing import Dict, List, Union, Set
+from typing import Dict, List, Union, Set, Tuple
 
 import numpy as np
 import pagexml.model.physical_document_model as pdm
@@ -90,9 +90,16 @@ def make_iiif_region_url(jpg_url: str,
 
 
 def coords_to_iiif_url(scan_id: str,
-                       coords: Union[List[int], Dict[str, int], pdm.Coords] = None, margin=100):
+                       coords: Union[List[int], Dict[str, int], pdm.Coords] = None, margin=100,
+                       size: Union[str, Tuple[int, int]] = 'full'):
     base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
     inv_num = scan_id_to_inv_num(scan_id)
+    if isinstance(size, str):
+        size_string = size
+    else:
+        width = size[0] if isinstance(size[0], int) else ''
+        height = size[1] if isinstance(size[1], int) else ''
+        size_string= f"{width},{height}"
     if isinstance(coords, pdm.Coords):
         coords = [coords.x, coords.y, coords.w, coords.h]
     elif isinstance(coords, dict):
@@ -101,12 +108,12 @@ def coords_to_iiif_url(scan_id: str,
         x = coords[0] - margin if coords[0] > margin else 0
         y = coords[1] - margin if coords[1] > margin else 0
         coords_string = f"{x},{y},{coords[2]+2*margin},{coords[3]+2*margin}"
-        return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/full/0/default.jpg"
+        return f"{base_url}{inv_num}/{scan_id}.jpg/{coords_string}/{size_string}/0/default.jpg"
     else:
-        return f"{base_url}{inv_num}/{scan_id}.jpg/full/full/0/default.jpg"
+        return f"{base_url}{inv_num}/{scan_id}.jpg/full/{size_string}/0/default.jpg"
 
 
-def doc_id_to_iiif_url(doc_id: str, margin: int = 100):
+def doc_id_to_iiif_url(doc_id: str, margin: int = 100, size: Union[str, Tuple[int, int]] = 'full'):
     coord_types = {'column', 'text_region', 'line'}
     coords = None
     page_num = None

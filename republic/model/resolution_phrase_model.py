@@ -671,6 +671,35 @@ proposition_opening_phrases = [
         'max_start_offset': 5
     },
     {
+        'phrase': 'Gelesen de geconcipieerde Antwoirde',
+        'label': ['proposition:opening', 'proposition_type:onbekend'],
+        'start_year': 1580, 'end_year': 1630,
+        'max_start_offset': 5
+    },
+    {
+        'phrase': 'Is binnen gestaen die ',
+        'variants': [
+            'Syn binnen gestaen de '
+        ],
+        'label': ['proposition:opening', 'proposition_type:voordracht'],
+        'start_year': 1576, 'end_year': 1630,
+        'max_start_offset': 5
+    },
+    {
+        'phrase': 'Die van Gelderlant Verclaren',
+        'variants': [
+            'Die van Hollant Verclaren',
+            'Die van Vlaenderen Verclaren',
+            'Die van Utrecht Verclaren',
+            'Die van Brabant Verclaren',
+            'Die van Vrieslant Verclaren',
+            'Die van Zeelant Verclaren',
+        ],
+        'label': ['proposition:opening', 'proposition_type:voordracht'],
+        'start_year': 1576, 'end_year': 1630,
+        'max_start_offset': 5
+    },
+    {
         'phrase': 'Rapporteert',
         'label': ['proposition:opening', 'proposition_type:rapport'],
         'start_year': 1580, 'end_year': 1630,
