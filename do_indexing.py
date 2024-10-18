@@ -655,14 +655,18 @@ class Indexer:
                 session_id = session_meta['id']
                 if session_id not in inv_session_trs:
                     print(f're-indexing text regions for session {session_id}')
-                    session_trs_json = self.rep_es.retrieve_session_trs_by_metadata(session_meta)
-                    session_trs = [pagexml_helper.json_to_pagexml_text_region(tr_json) for tr_json in session_trs_json]
+                    session_trs = self.rep_es.retrieve_session_trs_by_metadata(session_meta)
                     for tr in session_trs:
                         tr.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
-                        tr.metadata['session_id'] = session_id
+                        if tr.metadata['session_id'] != session_id:
+                            if isinstance(tr.metadata['session_id'], str):
+                                tr.metadata['session_id'] = [tr.metadata['session_id']]
+                            tr.metadata['session_id'].append(session_id)
                         for line in tr.lines:
                             line.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
-                    self.rep_es.index_bulk_docs('session_text_regions', [tr.json for tr in session_trs])
+                    session_trs_json = [tr.json for tr in session_trs]
+                    self.rep_es.index_bulk_docs(self.rep_es.config['session_text_region_index'],
+                                                session_trs_json)
                     inv_session_trs[session_id] = session_trs
                 session = make_session_from_meta_and_trs(session_meta, inv_session_trs[session_meta['id']])
                 # session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
