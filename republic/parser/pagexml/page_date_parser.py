@@ -7,6 +7,7 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from pagexml.model import physical_document_model as pdm
 from pagexml.helper.pagexml_helper import regions_overlap
 
+import republic.helper.pagexml_helper
 import republic.parser.pagexml.republic_column_parser as column_parser
 import republic.helper.pagexml_helper as pagexml_helper
 from republic.helper.metadata_helper import get_tr_known_types
@@ -65,87 +66,15 @@ def classify_page_date_regions(pages: List[pdm.PageXMLPage],
 
 def process_handwritten_columns(columns: List[pdm.PageXMLColumn], page: pdm.PageXMLPage):
     """Process all columns of a page and merge columns that are horizontally overlapping."""
-    merge_sets = column_parser.find_overlapping_columns(columns)
-    # print(merge_sets)
-    merge_cols = {col for merge_set in merge_sets for col in merge_set}
-    non_overlapping_cols = [col for col in columns if col not in merge_cols]
-    for merge_set in merge_sets:
-        # print("MERGING OVERLAPPING COLUMNS:", [col.id for col in merge_set])
-        merged_col = pagexml_helper.merge_columns(merge_set, "temp_id", merge_set[0].metadata)
-        merged_col.set_derived_id(page.id)
-        merged_col.set_parent(page)
-        non_overlapping_cols.append(merged_col)
-    return non_overlapping_cols
+    non_overlapping_columns = republic.helper.pagexml_helper.merge_overlapping_columns(columns, page)
+    for col in non_overlapping_columns:
+        col.text_regions = pagexml_helper.merge_overlapping_text_regions(col.text_regions, col)
+    return non_overlapping_columns
 
 
 def process_handwritten_text_regions(text_regions: List[pdm.PageXMLTextRegion], column: pdm.PageXMLColumn,
                                      debug: int = 0):
-    """Process all text regions of a columns and merge regions that are overlapping."""
-    if debug > 3:
-        print(f'page_date_parser.process_handwritten_text_regions - start with {len(text_regions)} trs')
-    non_overlapping_trs = []
-    for tr in text_regions:
-        pagexml_helper.check_parentage(tr)
-    merge_sets = pagexml_helper.get_overlapping_text_regions(text_regions, overlap_threshold=0.5, debug=debug)
-    assert sum(len(ms) for ms in merge_sets) == len(text_regions), "merge_sets contain more text regions than given"
-    if debug > 3:
-        for merge_set in merge_sets:
-            print('page_date_parser.process_handwritten_text_regions - merge_set size:', len(merge_set))
-            for tr in merge_set:
-                print(f"\tset includes tr {tr.id}")
-    for merge_set in merge_sets:
-        if len(merge_set) == 1:
-            tr = merge_set.pop()
-            if debug > 3:
-                print(f'page_date_parser.process_handwritten_text_regions - '
-                      f'adding tr at index {len(non_overlapping_trs)}:', tr.id)
-            pagexml_helper.check_parentage(tr)
-            non_overlapping_trs.append(tr)
-            continue
-        # print("MERGING OVERLAPPING TEXTREGION:", [tr.id for tr in merge_set])
-        lines = [line for tr in merge_set for line in tr.lines]
-        if len(lines) == 0:
-            if debug > 3:
-                print('page_date_parser.process_handwritten_text_regions - '
-                      'no lines for merge_set of text regions with ids:',
-                      [tr.id for tr in text_regions])
-            coords = pdm.parse_derived_coords(list(merge_set))
-        else:
-            coords = pdm.parse_derived_coords(lines)
-        # Copy metadata from first tr
-        # add fields from other trs if the first one doesn't have them
-        # (avoids losing information like session_date)
-        metadatas = [tr.metadata for tr in merge_set]
-        metadata = copy.deepcopy(metadatas.pop())
-        for extra_metadata in metadatas:
-            for field in extra_metadata:
-                if field not in metadata:
-                    metadata[field] = extra_metadata[field]
-        if debug > 2:
-            print('page_date_parser.process_handwritten_text_regions - merged_tr.metadata:', metadata.keys())
-        merged_tr = pdm.PageXMLTextRegion(doc_id="temp_id", metadata=metadata,
-                                          coords=coords, lines=lines)
-        # print(merged_tr)
-        merged_tr.set_derived_id(column.metadata['scan_id'])
-        merged_tr.set_parent(column)
-        merged_tr.set_as_parent(lines)
-        pagexml_helper.check_parentage(merged_tr)
-        if debug > 3:
-            print(f'page_date_parser.process_handwritten_text_regions - '
-                  f'adding merged tr at index {len(non_overlapping_trs)}:',
-                  merged_tr.id)
-            for line in merged_tr.lines:
-                print('\t', line.id, line.parent.id)
-        non_overlapping_trs.append(merged_tr)
-    if debug > 3:
-        print(f'page_date_parser.process_handwritten_text_regions - end with {len(non_overlapping_trs)} trs')
-    for ti, tr in enumerate(non_overlapping_trs):
-        try:
-            pagexml_helper.check_parentage(tr)
-        except ValueError:
-            print(f"text_region idx {ti}\ttr.id: {tr.id}")
-            raise
-    return non_overlapping_trs
+    return pagexml_helper.merge_overlapping_text_regions(text_regions, column, debug=debug)
 
 
 def debug_print_page_trs(page: pdm.PageXMLPage, prefix: str, debug: int = 0):

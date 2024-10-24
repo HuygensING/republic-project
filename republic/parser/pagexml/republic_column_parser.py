@@ -10,29 +10,7 @@ import pagexml.helper.pagexml_helper as pagexml_helper
 
 # import republic.model.physical_document_model as pdm
 import republic.helper.metadata_helper as meta_helper
-from republic.helper.pagexml_helper import merge_columns
-
-
-def within_column(line, column_range, overlap_threshold: float = 0.5):
-    start = max([line.coords.left, column_range["start"]])
-    end = min([line.coords.right, column_range["end"]])
-    overlap = end - start if end > start else 0
-    return overlap / line.coords.width > overlap_threshold
-
-
-def find_overlapping_columns(columns: List[pdm.PageXMLColumn]):
-    columns.sort()
-    merge_sets = []
-    for ci, curr_col in enumerate(columns[:-1]):
-        next_col = columns[ci+1]
-        if pdm.is_horizontally_overlapping(curr_col, next_col):
-            for merge_set in merge_sets:
-                if curr_col in merge_set:
-                    merge_set.append(next_col)
-                    break
-            else:
-                merge_sets.append([curr_col, next_col])
-    return merge_sets
+from republic.helper.pagexml_helper import merge_columns, within_column, find_overlapping_columns
 
 
 #################################################

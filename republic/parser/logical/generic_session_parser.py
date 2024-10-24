@@ -1,4 +1,5 @@
-from typing import Dict, List
+import copy
+from typing import Dict, List, Union
 
 import pagexml.model.physical_document_model as pdm
 from fuzzy_search import PhraseMatch
@@ -29,8 +30,10 @@ def get_page_from_parentage(doc: pdm.PageXMLDoc):
     return parent
 
 
-def make_session_date_metadata(current_date: RepublicDate, fuzzy_date_match: PhraseMatch,
-                               date_line: pdm.PageXMLTextLine) -> Dict[str, any]:
+def make_session_date_metadata(current_date: RepublicDate,
+                               date_line: Union[pdm.PageXMLTextLine, List[pdm.PageXMLTextLine]],
+                               fuzzy_date_match: PhraseMatch = None,
+                               start_record: Dict[str, any] = None) -> Dict[str, any]:
     session_date = {
         'session_date': current_date.isoformat(),
         'session_year': current_date.year,
@@ -53,22 +56,33 @@ def make_session_date_metadata(current_date: RepublicDate, fuzzy_date_match: Phr
     if fuzzy_date_match is not None:
         session_date['evidence'] = fuzzy_date_match.json()
         session_date['date_phrase_string'] = fuzzy_date_match.phrase.phrase_string
-        session_date['date_match_string'] = fuzzy_date_match.string,
+        session_date['date_match_string'] = fuzzy_date_match.string
+    elif start_record is not None:
+        session_date['evidence'] = copy.deepcopy(start_record)
+        session_date['evidence']['type'] = 'manual_annotation'
+        session_date['date_phrase_string'] = None
+        session_date['date_match_string'] = None
+    else:
+        session_date['evidence'] = None
+        session_date['date_phrase_string'] = None
+        session_date['date_match_string'] = None
     if date_line is not None:
-        session_date['page_id'] = date_line.metadata['page_id']
-        session_date['scan_id'] = date_line.metadata['scan_id']
-        if 'inventory_num' in date_line.metadata:
+        date_lines = date_line if isinstance(date_line, list) else [date_line]
+        session_date['page_id'] = sorted(set([dl.metadata['page_id'] for dl in date_lines]))
+        session_date['scan_id'] = sorted(set([dl.metadata['scan_id'] for dl in date_lines]))
+        first_line = date_lines[0]
+        if 'inventory_num' in first_line.metadata:
             session_date['inventory_num'] = date_line.metadata['inventory_num']
             session_date['inventory_id'] = date_line.metadata['inventory_id']
-        elif date_line.parent is not None:
+        elif first_line.parent is not None:
             # date_tr = date_line.parent
             # print('date_tr:', date_tr)
             # date_col = date_tr.parent
             # print('date_col:', date_col)
             # date_page = date_col.parent
-            date_page = get_page_from_parentage(date_line)
+            date_page = get_page_from_parentage(first_line)
             if date_page is None:
-                ValueError(f'no parent set in hierarchy above line {date_line.id}')
+                ValueError(f'no parent set in hierarchy above line {first_line.id}')
             # print(date_page)
             # print(date_line.id, date_tr.id, date_col, date_col.parent.id)
             # print('inventory_num' in date_tr.metadata)
@@ -77,10 +91,10 @@ def make_session_date_metadata(current_date: RepublicDate, fuzzy_date_match: Phr
             session_date['inventory_num'] = date_page.metadata['inventory_num']
             session_date['inventory_id'] = date_page.metadata['inventory_id']
         else:
-            raise KeyError(f'no inventory_num in line metadata and no parent for line {date_line.id}')
-        session_date['text_region_id'] = date_line.metadata['text_region_id']
-        session_date['line_id'] = date_line.id
-        session_date['iiif_url'] = doc_id_to_iiif_url(date_line.id, margin=100)
+            raise KeyError(f'no inventory_num in line metadata and no parent for line {first_line.id}')
+        session_date['text_region_id'] = first_line.metadata['text_region_id']
+        session_date['line_id'] = first_line.id
+        session_date['iiif_url'] = doc_id_to_iiif_url(first_line.id, margin=100)
     return session_date
 
 

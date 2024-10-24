@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
+from fuzzy_search import PhraseMatch
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from fuzzy_search.search.token_searcher import FuzzyTokenSearcher
 
@@ -24,6 +25,7 @@ from republic.parser.pagexml.page_date_parser import process_handwritten_page, p
 from republic.parser.pagexml.page_date_parser import get_inventory_date_mapper
 from republic.parser.pagexml.page_date_parser import classify_page_date_regions
 from republic.parser.pagexml.page_date_parser import load_date_region_classifier
+from republic.parser.pagexml.page_date_parser import find_date_region_record_lines
 from republic.parser.logical.generic_session_parser import make_session_date_metadata
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.generic_session_parser import make_session_metadata
@@ -80,14 +82,29 @@ def line_introduces_insertion(line: pdm.PageXMLTextLine) -> bool:
         return False
 
 
-def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False):
+def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False,
+                        date_start_lines: List[pdm.PageXMLTextLine] = None):
     class_lines = defaultdict(list)
     predicted_line_class = get_predicted_line_classes(page)
+    if date_start_lines is None:
+        date_start_lines = []
+    # check that date_start_lines are in page
+    page_lines = page.get_lines()
+    for line in date_start_lines:
+        if line not in page_lines:
+            print(f"handwritten_session_parser.sort_lines_by_class - missing date_start_line")
+            print(f"    page {page.id} has no line {line.id}")
+            raise ValueError(f"date_start_line {line.id} not in page {page.id}")
     for col in sorted(page.columns, key=lambda c: c.coords.left):
         for tr in sorted(col.text_regions, key=lambda t: t.coords.top):
             if debug > 1:
                 print('sort_lines_by_class - tr.type:', tr.type)
             for line in tr.lines:
+                if line in date_start_lines:
+                    line.metadata['line_class'] = 'date'
+                    line.metadata['line_classifier'] = 'manual'
+                    class_lines['date'].append(line)
+                    continue
                 if debug > 1:
                     print(f"sort_lines_by_class - line_class line.text: "
                           f"{line.metadata['line_class']: <12}\t{line.text}")
@@ -256,8 +273,9 @@ def link_para_marginalia(class_trs, debug: int = 0):
         for marg_tr in class_trs['marginalia']:
             # print('ITERATING OVER MARG:', marg_tr.id)
             if pdm.is_vertically_overlapping(para_tr, marg_tr, threshold=0.5):
-                if debug > 0:
-                    print(f'marginalia link from para {para_tr.id} to marg {marg_tr.id}')
+                if debug > 1:
+                    print(f'handwritten_session_parser.link_para_marginalia - marginalia link '
+                          f'from para {para_tr.id} to marg {marg_tr.id}')
                 has_marginalia[para_tr].append(marg_tr)
     for para_tr in has_marginalia:
         if 'text_region_links' not in para_tr.metadata:
@@ -501,34 +519,191 @@ def split_lines_on_vertical_gaps(lines: List[pdm.PageXMLTextLine],
     return line_groups
 
 
+def update_date_strings(page: pdm.PageXMLPage, current_date: RepublicDate, date_mapper: DateNameMapper,
+                        num_past_dates: int, num_future_dates: int, date_jumps,
+                        date_metadata: Dict[str, any],
+                        debug: int = 0):
+    """Update the date strings that are expected for the next session by shifting the current date,
+    based on a fuzzy date match or a manual start date record. """
+    if debug > 2:
+        print(f'\tADDING main_tr to {current_date.date.isoformat()}')
+    if debug > 0:
+        evidence = date_metadata['evidence']
+        if evidence['type'] == 'PhraseMatch':
+            date_string = date_metadata['date_match_string']
+        else:
+            date_string = evidence['date']
+        print(f"handwritten_session_parser.update_date_strings - found date via {evidence['type']}:",
+              current_date, date_string, page.id)
+    jump_days = calculate_date_jump(page.metadata['inventory_num'], current_date, date_jumps)
+    delta = datetime.timedelta(days=-num_past_dates + jump_days)
+    start_day = current_date.date + delta
+    start_day = RepublicDate(start_day.year, start_day.month, start_day.day, date_mapper=date_mapper)
+    if debug > 0:
+        print(f"    jump: {jump_days}\tdelta: {delta}\tstart_day: {start_day}")
+    if debug > 1:
+        print(f'    current_date: {current_date.date.isoformat()}\tstart_day: {start_day.date.isoformat()}')
+    date_strings = get_next_date_strings(start_day, date_mapper,
+                                         num_dates=num_past_dates + num_future_dates + 1,
+                                         include_year=False)
+    return date_strings, jump_days
+
+
+def check_extract(class_lines: Dict[str, List[pdm.PageXMLTextLine]], near_extract_intro: bool,
+                  num_lines_since_extract_intro: int):
+    # check if a previous page started an inserted extract
+    # with a distractor date
+    if 'para' in class_lines:
+        for li, line in enumerate(class_lines['para']):
+            if line.metadata['line_class'].endswith('_extract_intro'):
+                line.metadata['line_class'] = line.metadata['line_class'].replace('_extract_intro', '')
+                num_lines_since_extract_intro = 0
+            if near_extract_intro:
+                num_lines_since_extract_intro += 1
+            if num_lines_since_extract_intro > 10:
+                near_extract_intro = False
+                num_lines_since_extract_intro = 0
+    return near_extract_intro, num_lines_since_extract_intro
+
+
+def get_date_searcher(pages: List[pdm.PageXMLPage], inv_start_date: RepublicDate,
+                      date_strings: Dict[str, RepublicDate], config: Dict[str, any],
+                      debug: int = 0):
+    if 3096 <= pages[0].metadata['inventory_num'] <= 3350:
+        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
+    else:
+        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
+    if debug > 0:
+        print('handwritten_session_parser.get_date_searcher - initial date_strings:', date_strings.keys())
+    if debug > 1:
+        print(f"handwritten_session_parser.get_date_searcher - date_searcher.phrase_model.token_in_phrase:",
+              date_searcher.phrase_model.token_in_phrase)
+    if debug > 0:
+        print(f"{pages[0].metadata['inventory_num']}\tstart_date: {inv_start_date}\tnumber of pages: {len(pages)}")
+    return date_searcher
+
+
+def map_date_starts(page: pdm.PageXMLPage, session_starts: List[Dict[str, any]]):
+    date_start_lines = []
+    date_start_map = {}
+    if session_starts is not None:
+        page_records = [record for record in session_starts if page.metadata['page_num'] == record['page_num']]
+        print(f"{page.id}\t{len(page_records)}")
+        for record in page_records:
+            record_lines = find_date_region_record_lines(page, record)
+            date_start_lines.extend(record_lines)
+            for line in record_lines:
+                date_start_map[line] = record
+    return date_start_map, date_start_lines
+
+
+def prepare_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine]], page: pdm.PageXMLPage,
+                         debug: int = 0):
+    pagexml_helper.check_page_parentage(page)
+    class_trs = make_classified_text_regions(class_lines, page, debug=debug)
+    pagexml_helper.check_page_parentage(page)
+    has_attendance = link_date_attendance(class_trs)
+    pagexml_helper.check_page_parentage(page)
+    has_marginalia = link_para_marginalia(class_trs, debug=debug)
+    pagexml_helper.check_page_parentage(page)
+    unlinked_att_trs, unlinked_marg_trs = link_classified_text_regions(class_trs, debug=debug)
+    pagexml_helper.check_page_parentage(page)
+    if debug > 0:
+        if len(unlinked_att_trs) > 0:
+            print('handwritten_session_parser.get_date_searcher - unlinked_att_trs:', len(unlinked_att_trs), page.id)
+        if len(unlinked_marg_trs) > 0:
+            print('handwritten_session_parser.get_date_searcher - unlinked_marg_trs:', len(unlinked_marg_trs), page.id)
+    main_trs = sorted(class_trs['date'] + class_trs['para'], key=lambda tr: tr.coords.top)
+    return main_trs, has_marginalia, has_attendance
+
+
+def fuzzy_search_date(line: pdm.PageXMLTextLine, main_tr: pdm.PageXMLTextRegion,
+                      date_searcher: FuzzyPhraseSearcher,
+                      current_date: RepublicDate, inv_start_date: RepublicDate, jump_days: int,
+                      date_strings: Dict[str, RepublicDate], debug: int = 0):
+    line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text}, debug=0)
+    if debug > 0 and main_tr.has_type('date'):
+        print(f"handwritten_session_parser.fuzzy_search_date - date line: {line.text}")
+        print(f"    number of date matches: {len(line_matches)}")
+        for match in line_matches:
+            print(f"\tmatch: {match}")
+    filtered_matches = [match for match in line_matches if match.offset < 50]
+    filtered_matches = [match for match in filtered_matches if
+                        abs(len(match.string) - len(line.text)) < 50]
+    best_match = extract_best_date_match(filtered_matches, current_date if current_date else inv_start_date,
+                                         jump_days, date_strings)
+    return best_match
+
+
+def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr: pdm.PageXMLTextRegion,
+                      date_searcher: FuzzyPhraseSearcher, date_start_map: Dict[pdm.PageXMLTextLine, dict],
+                      date_mapper: DateNameMapper,
+                      current_date: RepublicDate, inv_start_date: RepublicDate, jump_days: int,
+                      date_strings: Dict[str, RepublicDate], debug: int = 0):
+    """Check if the current line is the start of a session, and if so, update the date
+    and generate date metadata with the line as evidence."""
+    update_date = None
+    date_metadata = None
+    if line.text is None:
+        return update_date, date_metadata
+    if current_date is None:
+        current_date = inv_start_date
+    if debug > 2:
+        print(f"handwritten_session_parser.check_date_update - line {line.id}")
+        print(f"\t{line.metadata['line_class']: <12}    {line.text}")
+    if line in date_start_map:
+        print(f"line in date_start_map: {line.id}\t{line.text}")
+        record = date_start_map[line]
+        update_date = RepublicDate(record['year'], record['month_num'], record['day_num'],
+                                   date_mapper=date_mapper)
+        date_metadata = make_session_date_metadata(current_date, line, start_record=record)
+        best_match = None
+    else:
+        best_match = fuzzy_search_date(line, main_tr, date_searcher, current_date, inv_start_date,
+                                       jump_days, date_strings, debug=debug)
+    if best_match:
+        current_date_string = current_date.date.isoformat() if current_date else None
+        update_date = date_strings[best_match.phrase.phrase_string]
+        if debug > 1:
+            print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
+                  best_match.levenshtein_similarity)
+        # print('\n--------------------------------\n')
+        if debug > 0:
+            print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
+                  best_match.levenshtein_similarity)
+        print(f'\tdate: {update_date.isoformat()}  {best_match.phrase.phrase_string}\tline: {line.id}\tpage: {page.id}')
+        # print('\n--------------------------------\n')
+        if debug > 2:
+            print(f'UPDATING CURRENT DATE from {current_date_string} to '
+                  f'{date_strings[best_match.phrase.phrase_string].date.isoformat()}')
+        date_metadata = make_session_date_metadata(current_date, line, fuzzy_date_match=best_match)
+    return update_date, date_metadata
+
+
 def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                        ignorecase: bool = True, near_extract_intro: bool = False,
-                       num_past_dates: int = 5, num_future_dates: int = 31, debug: int = 0):
+                       num_past_dates: int = 5, num_future_dates: int = 31,
+                       session_starts: List[Dict[str, any]] = None, debug: int = 0):
     date_strings = get_next_date_strings(inv_start_date, date_mapper, num_dates=num_future_dates, include_year=False)
     # for dt in date_strings:
     #     print(dt, date_strings[dt])
     date_jumps = copy.deepcopy(DATE_JUMPS)
-    if 3096 <= pages[0].metadata['inventory_num'] <= 3350:
-        config = {'ngram_size': 2, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
-    else:
-        config = {'ngram_size': 2, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
-        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
-    if debug > 0:
-        print('handwritten_session_parser.find_session_dates - initial date_strings:', date_strings.keys())
-    if debug > 1:
-        print(f"handwritten_session_parser.find_session_dates - date_searcher.phrase_model.token_in_phrase:",
-              date_searcher.phrase_model.token_in_phrase)
-    if debug > 0:
-        print(f"{pages[0].metadata['inventory_num']}\tstart_date: {inv_start_date}\tnumber of pages: {len(pages)}")
+    config = {'ngram_size': 2, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
+    date_searcher = get_date_searcher(pages, inv_start_date, date_strings, config=config, debug=debug)
 
     session_dates = defaultdict(list)
     session_trs = defaultdict(list)
-    current_date = None
+    # current_date = None
+    # Assumption 2024-10-22: current_date always starts on start date
+    # according to the inventory metadata. Any paragraph text regions
+    # before the first found date that is not the same as the start
+    # date, belong to the start date.
+    current_date = inv_start_date
     jump_days = 0
     num_lines_since_extract_intro = 0
     for pi, page in enumerate(pages):
         page = copy.deepcopy(page)
+        tr_assigned_to_date = {}
         if page.stats['words'] == 0:
             continue
         try:
@@ -547,40 +722,22 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         # print('find_session_dates - page:', page.id)
         if 'inventory_id' not in page.metadata:
             page.metadata['inventory_id'] = f"{page.metadata['series_name']}_{page.metadata['inventory_num']}"
+
+        date_start_map, date_start_lines = map_date_starts(page, session_starts=session_starts)
         class_lines, near_extract_intro = sort_lines_by_class(page, near_extract_intro=near_extract_intro,
+                                                              date_start_lines=date_start_lines,
                                                               debug=debug)
         if debug > 0:
-            print(f'page: {page.id}\tnear_extract_intro: {near_extract_intro}\n')
-            print("class_lines:", [(lc, len(class_lines[lc])) for lc in class_lines])
-        if 'para' in class_lines:
-            for li, line in enumerate(class_lines['para']):
-                if line.metadata['line_class'].endswith('_extract_intro'):
-                    line.metadata['line_class'] = line.metadata['line_class'].replace('_extract_intro', '')
-                    num_lines_since_extract_intro = 0
-                if near_extract_intro:
-                    num_lines_since_extract_intro += 1
-                if num_lines_since_extract_intro > 10:
-                    near_extract_intro = False
-                    num_lines_since_extract_intro = 0
+            print(f'  page: {page.id}\tnear_extract_intro: {near_extract_intro}\n')
+            print("  class_lines:", [(lc, len(class_lines[lc])) for lc in class_lines])
+        near_extract_intro, num_lines_since_extract_intro = check_extract(class_lines,
+                                                                          near_extract_intro,
+                                                                          num_lines_since_extract_intro)
         pagexml_helper.check_page_parentage(page)
         if debug > 0:
             print(f'\tAFTER - near_extract_intro: {near_extract_intro}')
             print(f'\tAFTER - num_lines_since_extract_intro: {num_lines_since_extract_intro}\n')
-        pagexml_helper.check_page_parentage(page)
-        class_trs = make_classified_text_regions(class_lines, page, debug=debug)
-        pagexml_helper.check_page_parentage(page)
-        has_attendance = link_date_attendance(class_trs)
-        pagexml_helper.check_page_parentage(page)
-        has_marginalia = link_para_marginalia(class_trs, debug=debug)
-        pagexml_helper.check_page_parentage(page)
-        unlinked_att_trs, unlinked_marg_trs = link_classified_text_regions(class_trs, debug=debug)
-        pagexml_helper.check_page_parentage(page)
-        if debug > 0:
-            if len(unlinked_att_trs) > 0:
-                print('find_session_dates - unlinked_att_trs:', len(unlinked_att_trs), page.id)
-            if len(unlinked_marg_trs) > 0:
-                print('find_session_dates - unlinked_marg_trs:', len(unlinked_marg_trs), page.id)
-        main_trs = sorted(class_trs['date'] + class_trs['para'], key=lambda tr: tr.coords.top)
+        main_trs, has_marginalia, has_attendance = prepare_text_regions(class_lines, page, debug=debug)
 
         pagexml_helper.check_page_parentage(page)
         for main_tr in main_trs:
@@ -590,12 +747,12 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     print('find_session_dates - current_date:', current_date.isoformat())
                 else:
                     print('find_session_dates - no current_date')
-            if current_date and main_tr.metadata['text_region_class'] == 'para':
+            if main_tr.metadata['text_region_class'] == 'para':
                 if debug > 0:
                     print('find_session_dates - adding para to session with date', current_date.isoformat())
                 session_trs[current_date.isoformat()].append(main_tr)
-                for line in main_tr.lines:
-                    if debug > 0:
+                if debug > 0:
+                    for line in main_tr.lines:
                         print(f"\tPARA_LINE: {line.coords.top: >4}-{line.coords.bottom: <4} "
                               f"{line.metadata['line_class']: <12}    {line.text}")
                 if main_tr in has_marginalia:
@@ -605,64 +762,45 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
             if debug > 2:
                 print(f"  iterating over lines of main_tr {main_tr.id}")
             for line in main_tr.lines:
-                if line.text is None:
-                    continue
-                if debug > 2:
-                    print(f"\t{line.metadata['line_class']: <12}    {line.text}")
-                line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text}, debug=0)
-                if debug > 0 and main_tr.has_type('date'):
-                    print(f"handwritten_session_parser.find_session_dates - date line: {line.text}")
-                    print(f"    number of date matches: {len(line_matches)}")
-                    for match in line_matches:
-                        print(f"\tmatch: {match}")
-                filtered_matches = [match for match in line_matches if match.offset < 50]
-                filtered_matches = [match for match in filtered_matches if
-                                    abs(len(match.string) - len(line.text)) < 50]
-                best_match = extract_best_date_match(filtered_matches, current_date if current_date else inv_start_date,
-                                                     jump_days, date_strings)
-                if best_match:
-                    current_date_string = current_date.date.isoformat() if current_date else None
-                    current_date = date_strings[best_match.phrase.phrase_string]
-                    if debug > 1:
-                        print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
-                              best_match.levenshtein_similarity)
-                    # print('\n--------------------------------\n')
-                    if debug > 0:
-                        print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
-                              best_match.levenshtein_similarity)
-                    print(f'\tdate: {current_date.isoformat()}\tpage: {page.id}')
-                    # print('\n--------------------------------\n')
-                    if debug > 2:
-                        print(f'UPDATING CURRENT DATE from {current_date_string} to '
-                              f'{date_strings[best_match.phrase.phrase_string].date.isoformat()}')
-                    date_metadata = make_session_date_metadata(current_date, best_match, line)
+                update_date, date_metadata = check_date_update(page, line, main_tr, date_searcher,
+                                                               date_start_map, date_mapper,
+                                                               current_date, inv_start_date,
+                                                               jump_days, date_strings, debug=debug)
+                if update_date is not None:
+                    if update_date.isoformat() != current_date.isoformat():
+                        # if update_date is different, we need metadata for the new date
+                        # if update_date is the same as current_date, it is an extra session
+                        # on the same day, so don't update the date_metadata
+                        current_date = update_date
+                        date_strings, jump_days = update_date_strings(page, current_date, date_mapper, num_past_dates,
+                                                                      num_future_dates, date_jumps, date_metadata,
+                                                                      debug=debug)
+                        date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
+                    else:
+                        if debug > 0:
+                            print(f"  session start found on same date as current date")
                     session_dates[current_date.isoformat()].append(date_metadata)
+                if current_date.isoformat() not in session_dates:
+                    # no date text region was found that precedes the resolution text regions
+                    # so add date_metadata without session date evidence, using the first
+                    # line of the first main_tr for the page, scan and inventory metadata
+                    if current_date.isoformat() in session_trs and len(session_trs[current_date.isoformat()]) > 0:
+                        first_line = session_trs[current_date.isoformat()][0].lines[0]
+                    else:
+                        first_line = main_tr.lines[0]
+                    no_evidence_metadata = make_session_date_metadata(current_date, first_line)
+                    session_dates[current_date.isoformat()].append(no_evidence_metadata)
+                if main_tr not in session_trs[current_date.isoformat()]:
                     session_trs[current_date.isoformat()].append(main_tr)
-                    if debug > 2:
-                        print(f'\tADDING main_tr to {current_date.date.isoformat()}')
-                    if debug > 0:
-                        print('find_session_dates - found date:', current_date, best_match.string, page.id)
-                    jump_days = calculate_date_jump(page.metadata['inventory_num'], current_date, date_jumps)
-                    delta = datetime.timedelta(days=-num_past_dates + jump_days)
-                    start_day = current_date.date + delta
-                    start_day = RepublicDate(start_day.year, start_day.month, start_day.day, date_mapper=date_mapper)
-                    if debug > 0:
-                        print(f"jump: {jump_days}\tdelta: {delta}\tstart_day: {start_day}")
-                    if debug > 1:
-                        print(f'current_date: {current_date.date.isoformat()}\tstart_day: {start_day.date.isoformat()}')
-                    date_strings = get_next_date_strings(start_day, date_mapper,
-                                                         num_dates=num_past_dates + num_future_dates + 1,
-                                                         include_year=False)
-                    # for date_string in date_strings:
-                    #     print(f'DATE STRING {date_string}\t{date_strings[date_string]}')
-                    # print('date_strings:', date_strings.keys())
-                    date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
             if current_date and main_tr in has_attendance:
                 for att_tr in has_attendance[main_tr]:
-                    session_trs[current_date.isoformat()].append(att_tr)
+                    if att_tr not in session_trs[current_date.isoformat()]:
+                        session_trs[current_date.isoformat()].append(att_tr)
         prev_dates = [session_date for session_date in session_trs if session_date != current_date.isoformat()]
         if debug > 0:
-            print(f'\nprev_dates:', prev_dates)
+            print(f'\ncurrent_date: {current_date.isoformat()}\tprev_dates:', prev_dates)
+            for ses_date in session_dates:
+                print(f"  date in session_dates dict: {ses_date}")
         for prev_date in prev_dates:
             session_date_metadata = session_dates[prev_date].pop(0)
             yield session_date_metadata, session_trs[prev_date]
@@ -731,6 +869,7 @@ def get_handwritten_sessions(inv_id: str, pages, ignorecase: bool = True,
     session_num = 0
     session_finder = find_session_dates(pages, inv_start_date, date_mapper, ignorecase=ignorecase,
                                         num_past_dates=num_past_dates, num_future_dates=num_future_dates,
+                                        session_starts=session_starts,
                                         debug=debug)
 
     for session_date_metadata, session_trs in session_finder:

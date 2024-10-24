@@ -252,9 +252,12 @@ def combine_stats(text_regions: List[pdm.PageXMLTextRegion]) -> Dict[str, int]:
 
 
 def get_column_text_regions(scan_doc: pdm.PageXMLScan, max_col_width: int, config: Dict[str, any],
+                            skip_empty_regions: bool = True,
                             debug: int = 0) -> List[Union[pdm.PageXMLTextRegion, pdm.PageXMLColumn]]:
     trs = []
     for ti, tr in enumerate(scan_doc.text_regions):
+        if skip_empty_regions is True and tr.stats['lines'] == 0:
+            continue
         if tr.parent is None:
             print('MISSING PARENT:', tr.id)
         if tr.coords.width <= max_col_width and is_even_side(tr, scan_doc) or is_odd_side(tr, scan_doc):
@@ -419,8 +422,8 @@ def assign_trs_to_odd_even_pages(scan_doc: pdm.PageXMLScan, page_even: pdm.PageX
                         print(f"assign_trs_to_odd_even_pages - PAGE {side} STATS AFTER ADDING DERIVED TR:", page.stats)
                     if debug > 0:
                         print(f'\tSPLIT SUB TR {side}:', sub_tr.id)
-                        print('\t', sub_tr.type)
-                        print('\t', sub_tr.stats)
+                        print('\ttype:', sub_tr.type)
+                        print('\tstats:', sub_tr.stats)
                 # undecided.append(text_region)
         elif text_region.lines:
             if debug > 0:

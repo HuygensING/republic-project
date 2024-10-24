@@ -1283,10 +1283,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
-                "page_type": "resolution_page",
                 "start": 5,
-                "end": 1434
+                "end": 9,
+                "page_type": "index_page"
+            },
+            {
+                "start": 15,
+                "end": 1435,
+                "page_type": "resolution_page"
             }
+        ],
+        "title_page_nums": [
+            5,
+            13,
+            15
         ]
     },
     {
@@ -1316,10 +1326,26 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
-                "page_type": "resolution_page",
-                "start": 7,
-                "end": 1452
+                "start": 12,
+                "end": 12,
+                "page_type": "index_page"
+            },
+            {
+                "start": 15,
+                "end": 765,
+                "page_type": "resolution_page"
+            },
+            {
+                "start": 769,
+                "end": 1452,
+                "page_type": "resolution_page"
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            15,
+            769
         ]
     },
     {

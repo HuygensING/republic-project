@@ -538,7 +538,7 @@ class SessionSearcher(EventSearcher):
             if date_match:
                 print(f"SessionSearcher.parse_session_metadata - date_match.text_id: {date_match.text_id}")
             print(f"SessionSearcher.parse_session_metadata - date_line: {date_line}")
-        session_date_json = make_session_date_metadata(current_date, date_match, date_line)
+        session_date_json = make_session_date_metadata(current_date, date_line, fuzzy_date_match=date_match)
         if debug > 1:
             print(f"SessionSearcher.parse_session_metadata - session_date_json")
             print(json.dumps(session_date_json, indent=4))
