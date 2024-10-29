@@ -1,4 +1,5 @@
 inv_num	text_region_id	line_ids	scan_num	page_num	year	month_num	day_num	second_session	check	date_type	unrecognized_type	session_day_num	scan_id	scan_viewer_url	date
+3108		NL-HaNA_1.01.02_3108_0004-line-3884-888-1201-160	4	7	1582	1	29	0		start			NL-HaNA_1.01.02_3108_04.0	https://www.nationaalarchief.nl/onderzoeken/archief/1.01.02/invnr/3108/file/NL-HaNA_1.01.02_3108_04.0	1582-01-29
 3108	NL-HaNA_1.01.02_3108_0004-text_region-3843-3076-328-167		4	7	1582	1	30	0		start			NL-HaNA_1.01.02_3108_04.0	https://www.nationaalarchief.nl/onderzoeken/archief/1.01.02/invnr/3108/file/NL-HaNA_1.01.02_3108_04.0	1582-01-30
 3108	NL-HaNA_1.01.02_3108_0005-text_region-963-1168-1578-366		5	8	1582	1	31	0		start			NL-HaNA_1.01.02_3108_05.0	https://www.nationaalarchief.nl/onderzoeken/archief/1.01.02/invnr/3108/file/NL-HaNA_1.01.02_3108_05.0	1582-01-31
 3108	NL-HaNA_1.01.02_3108_0005-text_region-3547-2082-1615-554		5	9	1582	2	2	0		start			NL-HaNA_1.01.02_3108_05.0	https://www.nationaalarchief.nl/onderzoeken/archief/1.01.02/invnr/3108/file/NL-HaNA_1.01.02_3108_05.0	1582-02-02
