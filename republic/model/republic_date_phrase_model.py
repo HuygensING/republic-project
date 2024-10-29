@@ -406,9 +406,11 @@ weekday_names = {
         "Mercury": 2,
         "Jovis": 3,
         "Veneris": 4,
+        "Sabati": 5,
         "Sabbathi": 5,
         "Saterdach": 5,
         "Dominica": 6,
+        "Doica": 6,
         "Sondach": 6
     },
     'modern_nl': {

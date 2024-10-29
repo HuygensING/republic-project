@@ -1,7 +1,7 @@
 import copy
 import re
 from collections import Counter
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
 import numpy as np
 import pagexml.analysis.layout_stats as page_layout
@@ -10,7 +10,7 @@ import pagexml.helper.pagexml_helper as pagexml_helper
 
 # import republic.model.physical_document_model as pdm
 import republic.helper.metadata_helper as meta_helper
-from republic.helper.pagexml_helper import merge_columns, within_column, find_overlapping_columns
+from republic.helper.pagexml_helper import merge_columns, within_column, find_overlapping_columns, make_new_tr
 
 
 #################################################
@@ -366,55 +366,6 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             print(f"split_lines_on_column_gaps - number of lines directly under column {col.id}: {len(col.lines)}")
         print('\n------------\n')
     return columns
-
-
-def make_new_tr(tr_lines: List[pdm.PageXMLTextLine], original_tr: pdm.PageXMLTextRegion,
-                update_type: bool = False, debug: int = 0) -> pdm.PageXMLTextRegion:
-    """Generate a new PageXMLTextRegion instance for a give set of lines. Update its type based on
-    the line_classes of the lines."""
-    tr_coords = pdm.parse_derived_coords(tr_lines)
-    tr_lines.sort()
-    new_tr = pdm.PageXMLTextRegion(metadata=copy.deepcopy(original_tr.metadata),
-                                   coords=tr_coords, lines=tr_lines)
-    new_tr.type = {t for t in original_tr.type}
-    if update_type:
-        new_tr.type = update_text_region_type(new_tr, debug=debug)
-    new_tr.set_derived_id(original_tr.metadata['scan_id'])
-    return new_tr
-
-
-def get_main_line_types(lines: List[pdm.PageXMLTextLine]) -> List[str]:
-    line_types = [line.metadata['line_class'] for line in lines if 'line_class' in line.metadata and line.metadata['line_class']
-                  not in {'empty', 'noise'}]
-    return [lt[:4] if lt.startswith('para_') else lt for lt in line_types]
-
-
-def update_text_region_type(text_region: pdm.PageXMLTextRegion, debug: int = 0) -> Set[str]:
-    """Determine the type of text region based on the line_classes of its lines."""
-    tr_type = {'text_region', 'structure_doc', 'physical_structure_doc', 'main', 'pagexml_doc'}
-    line_types = get_main_line_types(text_region.lines)
-    type_freq = Counter(line_types)
-    if len(line_types) == 0:
-        main_type = 'empty'
-    elif len(type_freq) == 1:
-        main_type = list(type_freq.keys())[0]
-    else:
-        main_type, freq = type_freq.most_common(1)[0]
-        if main_type in {'para', 'date', 'attendance', 'marginalia'} and freq / sum(type_freq.values()) > 0.5:
-            main_type = main_type
-        elif main_type != 'date' and 'date' in type_freq and type_freq['date'] == type_freq[main_type]:
-            main_type = 'date'
-        elif main_type == 'date':
-            main_type = 'date'
-        else:
-            main_type = 'mix'
-    if main_type == 'para':
-        main_type = 'resolution'
-    tr_type.add(main_type)
-    if debug > 0:
-        print(f"republic_column_parser.update_text_region_type - main_type: {main_type}")
-        print(f"republic_column_parser.update_text_region_type - type_freq: {type_freq}")
-    return tr_type
 
 
 def split_text_region_by_line_type(tr: pdm.PageXMLTextRegion) -> List[pdm.PageXMLTextRegion]:

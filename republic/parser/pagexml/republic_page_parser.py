@@ -6,6 +6,7 @@ import pagexml.model.physical_document_model as pdm
 from fuzzy_search import FuzzyPhraseSearcher
 from pagexml.helper.pagexml_helper import regions_overlap
 
+import republic.helper.pagexml_helper
 import republic.helper.pagexml_helper as pagexml_helper
 import republic.parser.pagexml.republic_column_parser as column_parser
 import republic.parser.pagexml.generic_pagexml_parser as page_parser
@@ -969,7 +970,7 @@ def update_line_types(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseS
             if tr.has_type('resolution'):
                 para_trs.append(tr)
                 para_lines.extend([line for line in tr.lines if is_paragraph_line(line)])
-                line_types = column_parser.get_main_line_types(tr.lines)
+                line_types = republic.helper.pagexml_helper.get_main_line_types(tr.lines)
                 type_freq = Counter(line_types)
                 if 'attendance' in type_freq:
                     para_lefts = [line.coords.left for line in tr.lines
@@ -988,7 +989,7 @@ def update_line_types(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseS
         return new_page
     for indent_tr in indent_trs:
         if indent_tr.has_type('attendance') or indent_tr.has_type('header'):
-            line_types = column_parser.get_main_line_types(indent_tr.lines)
+            line_types = republic.helper.pagexml_helper.get_main_line_types(indent_tr.lines)
             if len(line_types) == 0:
                 if debug > 0:
                     print(f"republic_page_parser.update_line_types - attendance tr {indent_tr.id} "

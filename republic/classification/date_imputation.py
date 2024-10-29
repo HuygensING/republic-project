@@ -1,10 +1,13 @@
 import io
+import json
 from typing import Dict, List
 
 import numpy as np
 import pandas as pd
 import requests
 from pandas.errors import ParserError
+
+from republic.model.inventory_mapping import get_inventory_by_num
 
 
 def download_inv_sheet(inv_map: Dict[str, any]):
@@ -54,7 +57,11 @@ def get_second_session(record: Dict[str, any]):
 
 def get_day_num(missing_value: any):
     if isinstance(missing_value, str):
-        return int(missing_value.split('/')[0].split('-')[0])
+        try:
+            return int(missing_value.split('/')[0].split('-')[0])
+        except ValueError:
+            print(f"date_imputation.get_day_num - invalid day_num: {missing_value}")
+            raise
     return int(missing_value)
 
 
@@ -65,17 +72,27 @@ def get_month_num(record: Dict[str, any]):
         return record['month_num']
 
 
-def complete_record(record: Dict[str, any]):
+def complete_record(record: Dict[str, any], inv_meta: Dict[str, any]):
     if 'unrecognized_type' not in record:
         record['unrecognized_type'] = np.nan
     if 'session_day_num' not in record:
         record['session_day_num'] = np.nan
     if 'page_num' not in record or pd.isna(record['page_num']):
         offset = 2 if record['unrecognized_type'].endswith('verso') else 1
+        page_num = record['scan_num'] * 2 - offset
+        if abs(page_num - record['page_num']) != 0:
+            print('date_imputation.complete_record - inconsistency in data')
+            print(json.dumps(record, indent=4))
+            raise
         record['page_num'] = record['scan_num'] * 2 - offset
 
     if pd.isna(record['session_day_num']) == False:
-        record['day_num'] = get_day_num(record['session_day_num'])
+        try:
+            record['day_num'] = get_day_num(record['session_day_num'])
+        except ValueError:
+            print('date_imputation.complete_record - error parsing session_day_num:')
+            print(json.dumps(record, indent=4))
+            raise
     else:
         int(record['day_num'])
 
@@ -88,7 +105,16 @@ def complete_record(record: Dict[str, any]):
         print('NO MONTH_NUM:', record)
 
     record['month_num'] = get_month_num(record)
-    record['year'] = int(record['year'])
+    try:
+        record['year'] = int(record['year'])
+    except ValueError:
+        print('date_imputation.complete_record - error casting year to int:')
+        print(json.dumps(record, indent=4))
+        raise
+    if record['year'] < inv_meta['year_start'] or record['year'] > inv_meta['year_end']:
+        print('date_imputation.complete_record - invalid year:')
+        print(json.dumps(record, indent=4))
+        raise ValueError(f"Invalid year {record['year']}")
     if pd.isna(record['page_num']):
         print('NO PAGE_NUM:', record)
     record['page_num'] = int(record['page_num'])
@@ -101,6 +127,24 @@ def get_dates_missing_merge(inv_df: pd.DataFrame):
     inv_df = inv_df[inv_df.date_type != 'no_date']
     inv_df['unrecognized_type'] = np.nan
     inv_df['session_day_num'] = np.nan
+
+    records = inv_df.to_dict('records')
+    has_inconsistencies = False
+    for record in records:
+        if isinstance(record['unrecognized_start_verso'], str):
+            if record['page_num'] % 2 == 1:
+                print('date_imputation.complete_record - inconsistent missing date information:')
+                print(f"    unrecognized_start_verso: {record['unrecognized_start_verso']}")
+                print(f"    page_num: {record['page_num']}")
+                has_inconsistencies = True
+        if isinstance(record['unrecognized_start_recto'], str):
+            if record['page_num'] % 2 == 0:
+                print('date_imputation.complete_record - inconsistent missing date information:')
+                print(f"    unrecognized_start_recto: {record['unrecognized_start_recto']}")
+                print(f"    page_num: {record['page_num']}")
+                has_inconsistencies = True
+    if has_inconsistencies is True:
+        raise ValueError("inconsistent missing date information")
 
     missing_cols = [col for col in inv_df.columns if 'unrecognized' in col]
 
@@ -149,6 +193,7 @@ def missing_to_long(missing_df: pd.DataFrame):
 def get_records(dates_df, missing_long):
     complete_data = []
 
+    inv_meta = {inv_num: get_inventory_by_num(inv_num) for inv_num in dates_df.inv_num.unique()}
     select_cols = [
         'inv_num', 'text_region_id', 'scan_num', 'page_num', 'year', 'month_num', 'day_num', 'second_session',
         'check', 'date_type', 'unrecognized_type', 'session_day_num'
@@ -156,7 +201,7 @@ def get_records(dates_df, missing_long):
 
     print('\nCompleting records with no missing col\n')
     for record in dates_df[select_cols].to_dict('records'):
-        complete_record(record)
+        complete_record(record, inv_meta[record['inv_num']])
         complete_data.append(record)
 
     missing_data = []
@@ -164,7 +209,7 @@ def get_records(dates_df, missing_long):
     missing_records = missing_long[select_cols].to_dict('records')
     for record in sorted(missing_records, key=lambda r: (r['scan_num'], r['session_day_num'])):
         # print('BEFORE:', record)
-        complete_record(record)
+        complete_record(record, inv_meta[record['inv_num']])
         record['text_region_id'] = None
         missing_data.append(record)
 
