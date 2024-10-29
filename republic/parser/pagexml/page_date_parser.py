@@ -1,7 +1,7 @@
 import copy
 import json
 from collections import defaultdict, Counter
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from pagexml.model import physical_document_model as pdm
@@ -167,23 +167,35 @@ def compare_stats(stats1: Dict[str, int], stats2: Dict[str, int], fields: List[s
             raise ValueError()
 
 
-def make_empty_line_tr(record: Dict[str, any], page: pdm.PageXMLPage) -> pdm.PageXMLTextRegion:
-    missing_coords = pagexml_helper.make_coords_from_doc_id(record['text_region_id'])
-    first_tr = page.get_all_text_regions()[0]
+def make_empty_tr(text_region_id: Union[str, List[str]], page: pdm.PageXMLPage):
+    if isinstance(text_region_id, list):
+        trs = [make_empty_tr(tr_id, page) for tr_id in text_region_id]
+        combined_coords = pdm.parse_derived_coords(trs)
+        return pdm.PageXMLTextRegion(metadata=copy.deepcopy(trs[0].metadata), coords=combined_coords)
+    else:
+        first_tr = page.get_all_text_regions()[0]
+        missing_coords = pagexml_helper.make_coords_from_doc_id(text_region_id)
+        record_tr = pdm.PageXMLTextRegion(coords=missing_coords, metadata=copy.deepcopy(first_tr.metadata))
+        record_tr.set_derived_id(page.metadata['scan_id'])
+        return record_tr
+
+
+def make_empty_line_tr(text_region_id: Union[str, List[str]], page: pdm.PageXMLPage,
+                       empty_line_class: str = 'date') -> pdm.PageXMLTextRegion:
+    empty_tr = make_empty_tr(text_region_id, page)
+    missing_coords = pagexml_helper.make_coords_from_doc_id(text_region_id)
     baseline_points = [
         (missing_coords.x, missing_coords.y + int(missing_coords.h / 2)),
         (missing_coords.x + missing_coords.w, missing_coords.y + int(missing_coords.h / 2))
     ]
     baseline = pdm.Baseline(baseline_points)
-    record_tr = pdm.PageXMLTextRegion(coords=missing_coords, metadata=copy.deepcopy(first_tr.metadata))
     empty_line = pdm.PageXMLTextLine(coords=copy.deepcopy(missing_coords), baseline=baseline, text='')
-    record_tr.set_derived_id(page.metadata['scan_id'])
     empty_line.set_derived_id(page.metadata['scan_id'])
     empty_line.add_type('inserted_empty')
-    empty_line.metadata['line_class'] = 'date'
-    record_tr.lines.append(empty_line)
-    record_tr.set_as_parent(record_tr.lines)
-    return record_tr
+    empty_line.metadata['line_class'] = empty_line_class
+    empty_tr.lines.append(empty_line)
+    empty_tr.set_as_parent(empty_tr.lines)
+    return empty_tr
 
 
 def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
@@ -216,8 +228,7 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
             # scenario 2: the text region is not literally the same as any region in the page
             # action: create a dummy region based on the coordinates in the ID and select
             # lines contained by the region
-            tr_coords = pagexml_helper.make_coords_from_doc_id(record['text_region_id'])
-            record_tr = pdm.PageXMLTextRegion(coords=tr_coords)
+            record_tr = make_empty_tr(record['text_region_id'], page)
             if debug > 0:
                 print(f"\trecord_tr.coords.box: {record_tr.coords.box}")
             for page_tr in page.get_all_text_regions():
@@ -228,7 +239,7 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
                         record_lines.append(line)
             if len(record_lines) == 0:
                 if record['text_region_id'] in REGION_EXCEPTIONS:
-                    empty_line_tr = make_empty_line_tr(record, page)
+                    empty_line_tr = make_empty_line_tr(record['text_region_id'], page)
                     record_lines.append(empty_line_tr.lines[0])
                     return record_lines
                 raise ValueError(f"no overlapping lines found for text region id {record['text_region_id']}")

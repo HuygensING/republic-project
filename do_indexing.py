@@ -214,7 +214,7 @@ def parse_session_starts_row(start_row: Dict[str, any]):
         'inv_num'
     ]
     if ',' in start_row['text_region_id']:
-        start_row['text_region_id'] = [line_id.strip() for line_id in start_row['text_region_id'].split(',')]
+        start_row['text_region_id'] = [tr_id.strip() for tr_id in start_row['text_region_id'].split(',')]
         # print('    multi-TR:', start_row['text_region_id'])
     elif 'NL-HaNA_' not in start_row['text_region_id']:
         start_row['text_region_id'] = None
