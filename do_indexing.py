@@ -123,10 +123,11 @@ def write_pages(pages_file: str, pages: List[pdm.PageXMLPage]):
             fh.write(f"{page_string}\n")
 
 
-def make_page_generator(inv_num: int, pages_file: str, page_state: str):
+def make_page_generator(inv_num: int, pages_file: str, page_state: str = None):
     if os.path.exists(pages_file) is False:
         return None
-    logger_string = f"Reading {page_state} pages from file for inventory {inv_num}"
+    page_string = "pages" if page_state is None else f"{page_state} pages"
+    logger_string = f"Reading {page_string} from file for inventory {inv_num}"
     logger.info(logger_string)
     print(logger_string)
     with gzip.open(pages_file, 'rt') as fh:
@@ -191,15 +192,72 @@ def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> Generato
     return None
 
 
+def read_session_start_csv(session_start_file: str):
+    with open(session_start_file, 'rt') as fh:
+        headers = next(fh).strip('\n').split('\t')
+        # print('headers:', headers)
+        for line in fh:
+            cells = line.strip('\n').split('\t')
+            row = {header: cells[hi] for hi, header in enumerate(headers)}
+            yield row
+    return None
+
+
+def parse_session_starts_row(start_row: Dict[str, any]):
+    num_fields = [
+        'scan_num',
+        'page_num',
+        'year',
+        'month_num',
+        'day_num',
+        'second_session',
+        'inv_num'
+    ]
+    if ',' in start_row['text_region_id']:
+        start_row['text_region_id'] = [line_id.strip() for line_id in start_row['text_region_id'].split(',')]
+        # print('    multi-TR:', start_row['text_region_id'])
+    elif 'NL-HaNA_' not in start_row['text_region_id']:
+        start_row['text_region_id'] = None
+    if ',' in start_row['line_ids']:
+        start_row['line_ids'] = [line_id.strip() for line_id in start_row['line_ids'].split(',')]
+        # print('    multi-LINE:', start_row['line_ids'])
+    elif 'NL-HaNA_' not in start_row['line_ids']:
+        start_row['line_ids'] = []
+    else:
+        start_row['line_ids'] = [start_row['line_ids']]
+    for num_field in num_fields:
+        start_row[num_field] = int(float(start_row[num_field]))
+    if start_row['text_region_id'] is None and start_row['line_ids'] == []:
+        print('NO START:', start_row)
+        return None
+    if start_row['text_region_id'] is not None and start_row['line_ids'] != []:
+        # print('both', start_row)
+        pass
+    start_row['date'] = datetime.date(start_row['year'], start_row['month_num'], start_row['day_num']).isoformat()
+    return start_row
+
+
 def get_session_starts(inv_id: str):
     project_dir = get_project_dir()
     print(f"do_indexing.get_session_starts - project_dir: {project_dir}")
-    session_starts_file = os.path.join(project_dir, f"ground_truth/sessions/session_starts-{inv_id}.json")
-    print(f"do_indexing.get_session_starts - session_starts_file: {session_starts_file}")
-    if os.path.exists(session_starts_file):
-        with open(session_starts_file, 'rt') as fh:
+    starts_json_file = os.path.join(project_dir, f"ground_truth/sessions/starts/session_starts-{inv_id}.json")
+    starts_csv_file = os.path.join(project_dir, f"ground_truth/sessions/starts/session_starts-{inv_id}.csv")
+    if os.path.exists(starts_json_file):
+        print(f"do_indexing.get_session_starts - session_starts_file: {starts_json_file}")
+        with open(starts_json_file, 'rt') as fh:
             return json.load(fh)
+    if os.path.exists(starts_csv_file):
+        print(f"do_indexing.get_session_starts - session_starts_file: {starts_csv_file}")
+        session_starts = []
+        for start_row in read_session_start_csv(starts_csv_file):
+            start_record = parse_session_starts_row(start_row)
+            if start_record is not None and start_record['date_type'] == 'start':
+                session_starts.append(start_record)
+        return session_starts
     else:
+        print('do_indexing.get_session_starts - no starts in JSON or CSV:')
+        print(f"   {starts_json_file}")
+        print(f"   {starts_csv_file}")
         return None
 
 
