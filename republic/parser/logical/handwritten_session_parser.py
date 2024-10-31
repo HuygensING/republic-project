@@ -30,7 +30,8 @@ from republic.parser.logical.generic_session_parser import make_session_date_met
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.generic_session_parser import make_session_metadata
 from republic.parser.logical.date_parser import get_date_token_cat
-from republic.parser.logical.date_parser import get_session_date_line_structure
+# from republic.parser.logical.date_parser import get_session_date_line_structure
+from republic.parser.logical.date_parser import get_session_date_line_structures
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
 from republic.parser.logical.date_parser import make_weekday_name_searcher
 from republic.parser.logical.date_parser import extract_best_date_match
@@ -41,6 +42,7 @@ DATE_JUMPS = {
     ("4562", "1617-08-09"): [365],
     ("4562", "1632-12-22"): [-250],
     ("4562", "1632-05-04"): [0, 365],
+    ("4566", "1632-05-04"): [0, 365],
     ("4610", "1701-02-16"): [-10],
 }
 
@@ -583,14 +585,14 @@ def get_date_searcher(pages: List[pdm.PageXMLPage], inv_start_date: RepublicDate
     return date_searcher
 
 
-def map_date_starts(page: pdm.PageXMLPage, session_starts: List[Dict[str, any]]):
+def map_date_starts(page: pdm.PageXMLPage, session_starts: List[Dict[str, any]], debug: int = 0):
     date_start_lines = []
     date_start_map = {}
     if session_starts is not None:
         page_records = [record for record in session_starts if page.metadata['page_num'] == record['page_num']]
         print(f"{page.id}\t{len(page_records)}")
         for record in page_records:
-            record_lines = find_date_region_record_lines(page, record)
+            record_lines = find_date_region_record_lines(page, record, debug=debug)
             date_start_lines.extend(record_lines)
             for line in record_lines:
                 date_start_map[line] = record
@@ -619,6 +621,7 @@ def prepare_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine]], page
 
 def fuzzy_search_date(line: pdm.PageXMLTextLine, main_tr: pdm.PageXMLTextRegion,
                       date_searcher: FuzzyPhraseSearcher,
+                      date_name_mapper: DateNameMapper,
                       current_date: RepublicDate, inv_start_date: RepublicDate, jump_days: int,
                       date_strings: Dict[str, RepublicDate], debug: int = 0):
     line_matches = date_searcher.find_matches({'id': line.id, 'text': line.text}, debug=0)
@@ -630,7 +633,7 @@ def fuzzy_search_date(line: pdm.PageXMLTextLine, main_tr: pdm.PageXMLTextRegion,
     filtered_matches = [match for match in line_matches if match.offset < 50]
     filtered_matches = [match for match in filtered_matches if
                         abs(len(match.string) - len(line.text)) < 50]
-    best_match = extract_best_date_match(filtered_matches, current_date if current_date else inv_start_date,
+    best_match = extract_best_date_match(date_name_mapper, filtered_matches, current_date if current_date else inv_start_date,
                                          jump_days, date_strings)
     return best_match
 
@@ -639,7 +642,8 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
                       date_searcher: FuzzyPhraseSearcher, date_start_map: Dict[pdm.PageXMLTextLine, dict],
                       date_mapper: DateNameMapper,
                       current_date: RepublicDate, inv_start_date: RepublicDate, jump_days: int,
-                      date_strings: Dict[str, RepublicDate], debug: int = 0):
+                      date_strings: Dict[str, RepublicDate],
+                      suspicious_jump: int = None, debug: int = 0):
     """Check if the current line is the start of a session, and if so, update the date
     and generate date metadata with the line as evidence."""
     update_date = None
@@ -659,7 +663,8 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
         date_metadata = make_session_date_metadata(current_date, line, start_record=record)
         best_match = None
     else:
-        best_match = fuzzy_search_date(line, main_tr, date_searcher, current_date, inv_start_date,
+        best_match = fuzzy_search_date(line, main_tr, date_searcher, date_mapper,
+                                       current_date, inv_start_date,
                                        jump_days, date_strings, debug=debug)
     if best_match:
         current_date_string = current_date.date.isoformat() if current_date else None
@@ -671,7 +676,7 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
         if debug > 0:
             print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
                   best_match.levenshtein_similarity)
-        print(f'\tdate: {update_date.isoformat()}  {best_match.phrase.phrase_string}\tline: {line.id}\tpage: {page.id}')
+        print(f'\tdate: {update_date.isoformat()}  {best_match.phrase.phrase_string}\t{best_match.string}\tline: {line.id}\tpage: {page.id}')
         # print('\n--------------------------------\n')
         if debug > 2:
             print(f'UPDATING CURRENT DATE from {current_date_string} to '
@@ -723,7 +728,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
         if 'inventory_id' not in page.metadata:
             page.metadata['inventory_id'] = f"{page.metadata['series_name']}_{page.metadata['inventory_num']}"
 
-        date_start_map, date_start_lines = map_date_starts(page, session_starts=session_starts)
+        date_start_map, date_start_lines = map_date_starts(page, session_starts=session_starts, debug=debug)
         class_lines, near_extract_intro = sort_lines_by_class(page, near_extract_intro=near_extract_intro,
                                                               date_start_lines=date_start_lines,
                                                               debug=debug)
@@ -771,10 +776,20 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                         # if update_date is different, we need metadata for the new date
                         # if update_date is the same as current_date, it is an extra session
                         # on the same day, so don't update the date_metadata
+                        print(f"update_date - current_date: {update_date - current_date}")
+                        delta = update_date - current_date
                         current_date = update_date
-                        date_strings, jump_days = update_date_strings(page, current_date, date_mapper, num_past_dates,
-                                                                      num_future_dates, date_jumps, date_metadata,
-                                                                      debug=debug)
+                        if delta.days > 2:
+                            suspicious_jump = delta.days
+                            date_strings, jump_days = update_date_strings(page, current_date, date_mapper,
+                                                                          num_past_dates + delta.days,
+                                                                          num_future_dates, date_jumps, date_metadata,
+                                                                          debug=debug)
+                        else:
+                            date_strings, jump_days = update_date_strings(page, current_date, date_mapper,
+                                                                          num_past_dates,
+                                                                          num_future_dates, date_jumps, date_metadata,
+                                                                          debug=debug)
                         date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
                     else:
                         if debug > 0:
@@ -817,10 +832,12 @@ def process_handwritten_page_dates(inv_metadata: Dict[str, any], pages: List[pdm
     date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
 
     session_date_lines = get_session_date_lines_from_pages(processed_pages, debug=0)
-    date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat,
-                                                          inv_metadata['inventory_id'])
+    # date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat,
+    #                                                       inv_metadata['inventory_id'])
+    date_line_structures = get_session_date_line_structures(session_date_lines, date_token_cat,
+                                                            inv_metadata['inventory_id'])
 
-    date_mapper = DateNameMapper(inv_metadata, date_line_structure)
+    date_mapper = DateNameMapper(inv_metadata, date_line_structures)
     config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
     weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
     return [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,

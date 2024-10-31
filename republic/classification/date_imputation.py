@@ -29,6 +29,7 @@ def download_inv_sheet(inv_map: Dict[str, any]):
         raise
     inv_df.inv_num = inv_map['inv_num']
     inv_df = inv_df[inv_df.date_type != 'no_date']
+    inv_df = inv_df[inv_df.scan_num.isna() == False]
     return inv_df.rename(columns={'id': 'text_region_id'})
 
 

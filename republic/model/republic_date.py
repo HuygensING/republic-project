@@ -153,30 +153,45 @@ exception_dates = {
 }
 
 
-def make_date_name_map(date_elements: List[Tuple[str, str]], debug: int = 0):
+def make_date_name_map(date_elements_list: List[List[Tuple[str, str]]], debug: int = 0):
+    """Map all date elements from a list of date structure elements to dictionary
+    that maps date element tokens to their numerical representation.
+
+    That is, month names are mapped to month numbers, weekday names are mapped to
+    weekday numbers, and month day names are mapped to month day numbers."""
     if debug > 1:
-        print(f'republic_date.make_date_name_map - received date_elements: {date_elements}')
+        print(f'republic_date.make_date_name_map - received date_elements_list: ')
+        for date_elements in date_elements_list:
+            print(f'\tdate_elements: {date_elements}')
     date_structure = {
-        'weekday_name': None,
-        'month_day_name': None,
-        'month_name': None,
+        'weekday_name': {},
+        'month_day_name': {},
+        'month_name': {},
         'include_year': False,
         'include_den': False
     }
-    for date_element in date_elements:
-        name_set, set_version = date_element
-        if date_structure_map[name_set] and set_version in date_structure_map[name_set]:
-            date_structure[name_set] = date_structure_map[name_set][set_version]
-        elif name_set == 'den':
-            date_structure['include_den'] = True
-        elif name_set == 'year':
-            date_structure['include_year'] = True
+    for date_elements in date_elements_list:
+        for date_element in date_elements:
+            name_set, set_version = date_element
+            if name_set == 'den':
+                date_structure['include_den'] = True
+            elif name_set == 'year':
+                date_structure['include_year'] = True
+            elif date_structure_map[name_set] and set_version in date_structure_map[name_set]:
+                # date_structure[name_set] = date_structure_map[name_set][set_version]
+                for element in date_structure_map[name_set][set_version]:
+                    date_structure[name_set][element] = date_structure_map[name_set][set_version][element]
+                # date_structure[name_set].extend(date_structure_map[name_set][set_version])
+    for date_element in {'weekday_name', 'month_day_name', 'month_name'}:
+        if len(date_structure[date_element]) == 0:
+            date_structure[date_element] = None
     return date_structure
 
 
 class DateNameMapper:
 
-    def __init__(self, inv_metadata: Dict[str, any], date_elements: List[Tuple[str, str]], debug: int = 0):
+    def __init__(self, inv_metadata: Dict[str, any], date_elements_list: List[List[Tuple[str, str]]],
+                 debug: int = 0):
         """
         Creates an object that can map date objects and date strings to dates used to announce
         a new session in the resolutions. Dates are announced as <weekday> <month_day> <month_name>
@@ -193,21 +208,21 @@ class DateNameMapper:
         ]
 
         :param inv_metadata:
-        :param date_elements:
+        :param date_elements_list:
         """
         self.inv_metadata = inv_metadata
-        self.date_element_order = date_elements
+        self.date_element_list = date_elements_list
         if debug > 3:
-            print('DateNameMapper - date_elements:', date_elements)
-        self.date_name_map = make_date_name_map(date_elements)
+            print('DateNameMapper - date_elements:', date_elements_list)
+        self.date_name_map = make_date_name_map(date_elements_list)
         if self.date_name_map is None:
             print(f"republic_date.DateNameMapper")
         if debug > 3:
             print('DateNameMapper - self.date_name_map:', self.date_name_map)
         self.include_year = self.date_name_map['include_year']
         self.include_den = self.date_name_map['include_den']
-        if self.include_year:
-            self.date_element_order
+        # if self.include_year:
+        #     self.date_element_list
         self.index_weekday = {}
         self.index_month = {}
         self.index_month_day = {}
@@ -289,20 +304,23 @@ class DateNameMapper:
             print('generate_day_string - 3. month_names:', names['month_name'])
             print('generate_day_string - 4. month_day_names', names['month_day_name'])
             print('generate_day_string - 5. weekday_names:', names['weekday_name'])
-        day_strings = []
-        for name_set, set_version in self.date_element_order:
-            # print(name_set, set_version)
-            if debug > 1:
-                print(f'{debug_prefix} - 6. name_set:', name_set)
-            if len(day_strings) == 0:
-                day_strings = [name for name in names[name_set]]
-                if debug > 2:
-                    print(f'{debug_prefix} - 7. day_strings:', day_strings)
-            else:
-                day_strings = [f"{day_string} {name}" for day_string in day_strings for name in names[name_set]]
-                if debug > 2:
-                    print(f'{debug_prefix} - 7. day_strings:', day_strings)
-        return day_strings
+        day_strings_list = []
+        for date_element_order in self.date_element_list:
+            day_strings = []
+            for name_set, set_version in date_element_order:
+                # print(name_set, set_version)
+                if debug > 1:
+                    print(f'{debug_prefix} - 6. name_set:', name_set)
+                if len(day_strings) == 0:
+                    day_strings = [name for name in names[name_set]]
+                    if debug > 2:
+                        print(f'{debug_prefix} - 7. day_strings:', day_strings)
+                else:
+                    day_strings = [f"{day_string} {name}" for day_string in day_strings for name in names[name_set]]
+                    if debug > 2:
+                        print(f'{debug_prefix} - 7. day_strings:', day_strings)
+            day_strings_list.extend(day_strings)
+        return day_strings_list
 
 
 class RepublicDate:

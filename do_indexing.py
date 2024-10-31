@@ -226,6 +226,8 @@ def parse_session_starts_row(start_row: Dict[str, any]):
     else:
         start_row['line_ids'] = [start_row['line_ids']]
     for num_field in num_fields:
+        if num_field == 'second_session' and num_field not in start_row:
+            continue
         start_row[num_field] = int(float(start_row[num_field]))
     if start_row['text_region_id'] is None and start_row['line_ids'] == []:
         print('NO START:', start_row)
@@ -259,6 +261,19 @@ def get_session_starts(inv_id: str):
         print(f"   {starts_json_file}")
         print(f"   {starts_csv_file}")
         return None
+
+
+def check_line_metadata(pages: List[pdm.PageXMLPage]):
+    """ensure lines have information on inventory number and id in their metadata."""
+    for page in pages:
+        for line in page.get_lines():
+            if 'inventory_num' not in line.metadata:
+                line.metadata['inventory_num'] = page.metadata['inventory_num']
+            if 'inventory_id' not in line.metadata:
+                line.metadata['inventory_id'] = page.metadata['inventory_id']
+            if 'scan_id' not in line.metadata:
+                print(line.metadata)
+                raise ValueError(f"no scan_id in line.metadata for line {line.id}")
 
 
 def update_page_metadata(page: pdm.PageXMLPage,
@@ -545,6 +560,7 @@ class Indexer:
 
         pages = [page for page in get_pages(inv_num, self, page_type='resolution_page')]
         pages.sort(key=lambda page: page.metadata['page_num'])
+        check_line_metadata(pages)
         print(f'inventory {inv_num} - number of pages: {len(pages)}')
         page_type_index = get_per_page_type_index(inv_metadata)
         text_page_num_map = map_text_page_nums(inv_metadata)
@@ -563,7 +579,7 @@ class Indexer:
         else:
             session_gen = get_handwritten_sessions(inv_id, pages=pages, session_starts=session_starts,
                                                    do_preprocessing=False,
-                                                   num_past_dates=5, num_future_dates=31, debug=0)
+                                                   num_past_dates=5, num_future_dates=61, debug=1)
         print(f"text_type: {text_type}")
         prev_session = None
         try:

@@ -14,11 +14,12 @@ from republic.helper.metadata_helper import get_tr_known_types
 from republic.helper.metadata_helper import get_majority_line_class
 from republic.helper.metadata_helper import get_line_class_dist
 from republic.helper.metadata_helper import KNOWN_TYPES
+from republic.helper.pagexml_helper import make_empty_tr, make_empty_line
 from republic.model.inventory_mapping import get_inventory_by_id
 from republic.model.republic_date import DateNameMapper
 from republic.parser.logical.date_parser import get_date_token_cat
 from republic.parser.logical.date_parser import get_session_date_lines_from_pages
-from republic.parser.logical.date_parser import get_session_date_line_structure
+from republic.parser.logical.date_parser import get_session_date_line_structures
 from republic.parser.logical.date_parser import make_weekday_name_searcher
 from republic.parser.pagexml.generic_pagexml_parser import copy_page
 from republic.parser.pagexml.republic_page_parser import split_page_column_text_regions
@@ -167,29 +168,11 @@ def compare_stats(stats1: Dict[str, int], stats2: Dict[str, int], fields: List[s
             raise ValueError()
 
 
-def make_empty_tr(text_region_id: Union[str, List[str]], page: pdm.PageXMLPage):
-    if isinstance(text_region_id, list):
-        trs = [make_empty_tr(tr_id, page) for tr_id in text_region_id]
-        combined_coords = pdm.parse_derived_coords(trs)
-        return pdm.PageXMLTextRegion(metadata=copy.deepcopy(trs[0].metadata), coords=combined_coords)
-    else:
-        first_tr = page.get_all_text_regions()[0]
-        missing_coords = pagexml_helper.make_coords_from_doc_id(text_region_id)
-        record_tr = pdm.PageXMLTextRegion(coords=missing_coords, metadata=copy.deepcopy(first_tr.metadata))
-        record_tr.set_derived_id(page.metadata['scan_id'])
-        return record_tr
-
-
 def make_empty_line_tr(text_region_id: Union[str, List[str]], page: pdm.PageXMLPage,
                        empty_line_class: str = 'date') -> pdm.PageXMLTextRegion:
+    """Make a text region with an empty line that stands in for a session start date line."""
     empty_tr = make_empty_tr(text_region_id, page)
-    missing_coords = pagexml_helper.make_coords_from_doc_id(text_region_id)
-    baseline_points = [
-        (missing_coords.x, missing_coords.y + int(missing_coords.h / 2)),
-        (missing_coords.x + missing_coords.w, missing_coords.y + int(missing_coords.h / 2))
-    ]
-    baseline = pdm.Baseline(baseline_points)
-    empty_line = pdm.PageXMLTextLine(coords=copy.deepcopy(missing_coords), baseline=baseline, text='')
+    empty_line = make_empty_line(text_region_id)
     empty_line.set_derived_id(page.metadata['scan_id'])
     empty_line.add_type('inserted_empty')
     empty_line.metadata['line_class'] = empty_line_class
@@ -242,6 +225,8 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
                     empty_line_tr = make_empty_line_tr(record['text_region_id'], page)
                     record_lines.append(empty_line_tr.lines[0])
                     return record_lines
+                for tr in page.get_all_text_regions():
+                    print(f" page {page.id} has tr {tr.id} with {len(tr.lines)} lines")
                 raise ValueError(f"no overlapping lines found for text region id {record['text_region_id']}")
             if debug > 1:
                 print(f"page_date_parser.find_date_region_record_lines - "
@@ -561,16 +546,16 @@ def make_inventory_date_name_mapper(inv_id: str, pages: List[pdm.PageXMLPage],
     date_token_cat = get_date_token_cat(inv_num=inv_meta['inventory_num'], ignorecase=True)
     session_date_lines = get_session_date_lines_from_pages(pages, filter_date_starts=filter_date_starts,
                                                            date_tr_type_map=date_tr_type_map, debug=debug)
-    date_line_structure = get_session_date_line_structure(session_date_lines, date_token_cat,
-                                                          inv_meta['inventory_id'], debug=debug)
+    date_line_structures = get_session_date_line_structures(session_date_lines, date_token_cat,
+                                                            inv_meta['inventory_id'], debug=debug)
     if debug > 0:
-        print("page_date_parser.make_inventory_date_name_mapper - date_line_structure:")
-        print(date_line_structure)
+        print("page_date_parser.make_inventory_date_name_mapper - date_line_structures:")
+        print(date_line_structures)
     try:
-        date_mapper = DateNameMapper(inv_meta, date_line_structure)
+        date_mapper = DateNameMapper(inv_meta, date_line_structures)
     except Exception:
         print(f"Error creating DateNameMapper for inventory {inv_meta['inventory_num']}")
-        print(f"with date_line_structure:", date_line_structure)
+        print(f"with date_line_structure:", date_line_structures)
         print(f"with session_date_lines:", [line.text for line in session_date_lines])
         raise
     return date_mapper
@@ -648,14 +633,14 @@ def get_inventory_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.Page
         print(f"WARNING page_date_parser.get_inventory_date_mapper - No session date lines found for "
               f"inventory {inv_metadata['inventory_num']} with {len(pages)} pages")
         return None
-    date_line_structure = get_session_date_line_structure(session_date_lines,
-                                                          date_token_cat, inv_metadata['inventory_id'])
+    date_line_structures = get_session_date_line_structures(session_date_lines,
+                                                            date_token_cat, inv_metadata['inventory_id'])
     if debug > 1:
-        print(f"page_date_parser.get_inventory_date_mapper - date_line_structure:\n{date_line_structure}")
+        print(f"page_date_parser.get_inventory_date_mapper - date_line_structures:\n{date_line_structures}")
     """
     if 'weekday_name' not in [element[0] for element in date_line_structure]:
         print('WARNING - missing weekday_name in date_line_structure for inventory', inv_metadata['inventory_num'])
         return None
     """
 
-    return DateNameMapper(inv_metadata, date_line_structure)
+    return DateNameMapper(inv_metadata, date_line_structures)

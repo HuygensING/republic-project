@@ -767,3 +767,28 @@ def get_main_line_types(lines: List[pdm.PageXMLTextLine]) -> List[str]:
     line_types = [line.metadata['line_class'] for line in lines if 'line_class' in line.metadata and line.metadata['line_class']
                   not in {'empty', 'noise'}]
     return [lt[:4] if lt.startswith('para_') else lt for lt in line_types]
+
+
+def make_empty_tr(text_region_id: Union[str, List[str]], page: pdm.PageXMLPage):
+    if isinstance(text_region_id, list):
+        trs = [make_empty_tr(tr_id, page) for tr_id in text_region_id]
+        combined_coords = pdm.parse_derived_coords(trs)
+        return pdm.PageXMLTextRegion(metadata=copy.deepcopy(trs[0].metadata), coords=combined_coords)
+    else:
+        first_tr = page.get_all_text_regions()[0]
+        missing_coords = make_coords_from_doc_id(text_region_id)
+        empty_tr = pdm.PageXMLTextRegion(coords=missing_coords, metadata=copy.deepcopy(first_tr.metadata))
+        empty_tr.set_derived_id(page.metadata['scan_id'])
+        return empty_tr
+
+
+def make_empty_line(line_id: str) -> pdm.PageXMLTextLine:
+    missing_coords = make_coords_from_doc_id(line_id)
+    baseline_points = [
+        (missing_coords.x, missing_coords.y + int(missing_coords.h / 2)),
+        (missing_coords.x + missing_coords.w, missing_coords.y + int(missing_coords.h / 2))
+    ]
+    baseline = pdm.Baseline(baseline_points)
+    empty_line = pdm.PageXMLTextLine(doc_id=line_id, coords=copy.deepcopy(missing_coords),
+                                     baseline=baseline, text='')
+    return empty_line
