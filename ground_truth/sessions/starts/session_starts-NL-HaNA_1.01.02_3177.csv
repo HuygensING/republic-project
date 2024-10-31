@@ -1,0 +1,4 @@
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type	page_id
+3177		NL-HaNA_1.01.02_3177_0234-line-4059-3036-1282-207	NL-HaNA_1.01.02_3177_0234	234	467	1618	5	21	start	NL-HaNA_1.01.02_3177_0234-page-467
+3177		NL-HaNA_1.01.02_3177_0253-line-1394-1872-1132-194	NL-HaNA_1.01.02_3177_0253	253	504	1618	5	21	start	NL-HaNA_1.01.02_3177_0253-page-504
+3177		NL-HaNA_1.01.02_3177_0259-line-4054-1659-1297-179	NL-HaNA_1.01.02_3177_0259	259	517	1618	5	21	start	NL-HaNA_1.01.02_3177_0259-page-517
