@@ -1,3 +1,3 @@
-inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type
-3274		NL-HaNA_1.01.02_3274_0527-line-1063-3492-1169-166	NL-HaNA_1.01.02_3274_0527	527	1052	1666	5	21	start
-3274		NL-HaNA_1.01.02_3274_0800-line-3685-2319-1173-214	NL-HaNA_1.01.02_3274_0800	800	1599	1666	5	21	start
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type	date
+3274		NL-HaNA_1.01.02_3274_0527-line-1063-3492-1169-166	NL-HaNA_1.01.02_3274_0527	527	1052	1666	5	21	start	1666-05-21
+3274		NL-HaNA_1.01.02_3274_0800-line-3685-2319-1173-214	NL-HaNA_1.01.02_3274_0800	800	1599	1666	5	21	start	1666-05-21

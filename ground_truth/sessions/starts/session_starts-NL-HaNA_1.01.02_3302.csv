@@ -1,2 +1,2 @@
-inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type
-3302		NL-HaNA_1.01.02_3302_0084-line-1165-3054-1251-269	NL-HaNA_1.01.02_3302_0084	84	166	1680	5	21	start
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type	date
+3302		NL-HaNA_1.01.02_3302_0084-line-1165-3054-1251-269	NL-HaNA_1.01.02_3302_0084	84	166	1680	5	21	start	1680-05-21

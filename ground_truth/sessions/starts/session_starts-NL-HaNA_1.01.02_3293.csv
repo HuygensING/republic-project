@@ -1,2 +1,2 @@
-inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type
-3293		NL-HaNA_1.01.02_3293_0510-line-3171-2622-1028-192	NL-HaNA_1.01.02_3293_0510	510	1019	1676	5	21	no_start
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type	date
+3293		NL-HaNA_1.01.02_3293_0510-line-3171-2622-1028-192	NL-HaNA_1.01.02_3293_0510	510	1019	1676	5	21	no_start	1676-05-21

@@ -1,4 +1,4 @@
-inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type
-3258		NL-HaNA_1.01.02_3258_0168-line-3231-1086-1549-217	NL-HaNA_1.01.02_3258_0168	168	335	1652	5	21	start
-3258		NL-HaNA_1.01.02_3258_0171-line-3334-338-1336-213	NL-HaNA_1.01.02_3258_0171	171	341	1652	5	21	start
-3258		NL-HaNA_1.01.02_3258_0173-line-3390-1500-1165-229	NL-HaNA_1.01.02_3258_0173	173	345	1652	5	21	start
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type	date
+3258		NL-HaNA_1.01.02_3258_0168-line-3231-1086-1549-217	NL-HaNA_1.01.02_3258_0168	168	335	1652	5	21	start	1652-05-21
+3258		NL-HaNA_1.01.02_3258_0171-line-3334-338-1336-213	NL-HaNA_1.01.02_3258_0171	171	341	1652	5	21	start	1652-05-21
+3258		NL-HaNA_1.01.02_3258_0173-line-3390-1500-1165-229	NL-HaNA_1.01.02_3258_0173	173	345	1652	5	21	start	1652-05-21

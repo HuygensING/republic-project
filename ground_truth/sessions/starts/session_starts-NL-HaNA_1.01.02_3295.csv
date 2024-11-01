@@ -1,2 +1,2 @@
-inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type
-3295		NL-HaNA_1.01.02_3295_0097-line-3460-2551-1387-282	NL-HaNA_1.01.02_3295_0097	97	193	1677	1	20	no_start
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type	date
+3295		NL-HaNA_1.01.02_3295_0097-line-3460-2551-1387-282	NL-HaNA_1.01.02_3295_0097	97	193	1677	1	20	no_start	1677-01-20
