@@ -50,6 +50,7 @@ FNR<NR {
 
 END {
     for(r in matches) {
+		print "Variants of", r, length(matches[r]) >"/dev/stderr"
 		delete seen
         printf r
         for (m in matches[r]) {

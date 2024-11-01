@@ -1,0 +1,14 @@
+
+
+\<off?(te?)?\>	of
+(.*f)f$	\1
+tot de Ra[ae]?c?k	tot de Zak
+[sz]a[ae]?c?ke?\>	zaak
+[sz]a[ae]?c?ken	zaken
+\<([uv]?u[iy]j?|w)tt?e?\>	uit
+(.+e)u(e.+)	\1v\2
+\<aff(.*)	af\1
+
+ve?r?[sz]o[eu]c?ke?n	verzoeken
+ve?r?[sz]o[eu]c?k(t?)	verzoek\1
+

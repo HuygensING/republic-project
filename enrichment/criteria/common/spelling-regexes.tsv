@@ -1,0 +1,91 @@
+[`‘‛’]	'	Apostrofs
+ ' s 	 's 	Komt veel voor
+ ' t 	 't 	Komt veel voor
+ s *' 	 's 	-- ,, --
+ t *' 	 't 	-- ,, --
+ *[-—] *	-	Meestal zijn de spaties onterecht
+[=„] 		Regelafbreking
+-	 	Streepjes door spaties vervangen
+Wost	West	Harmoniseren Oost en West
+\b[Oo]ost-	Oost	-- ,, --
+\b[Ww]est-	West	-- ,, --
+\b[Oo]ostI	Oosti	-- ,, --
+\b[Ww]estI	Westi	-- ,, --
+Oost In ?di	Oostindi	-- ,, --
+West In ?di	Westindi	-- ,, --
+[Ww]est ?[Ii]n ?[dt]e?\b[:.]?	Westindische	-- ,, --
+[Oo]ost ?[Ii]n ?[dt]e?\b[:.]?	Oostindische	-- ,, --
+\bvand[e']	van de	Samentrekkingen
+\binde\b	in de	-- ,, --
+\bint\b	in het	-- ,, --
+d'hee	de hee	-- ,, --
+\bdhee	de hee	-- ,, --
+\bd'	de 	-- ,, --
+\btottet	tot het	-- ,, --
+\btotte	tot de	-- ,, --
+\bop[dt]e\b	op de	-- ,, --
+\bop(t'*| 't)\b	op het	-- ,, --
+\bvan([']?t| 't)\b	van het	-- ,, --
+[&]	en	Vormen van ‘en’
+\bende\b	en	-- ,, --
+[SZsfz]a[ae]?[ce]?ke?n?\b	zaken	Alle zoektermen zijn met ‘zaken’
+dezaken	de zaken	-- ,, --
+\b[Cc]ompe?[.]?\b	Compagnie	Compagnie
+Comp[nr]?i?e	Compagnie	-- ,, --
+Compaignie	Compagnie	-- ,, --
+ische Com[a-z]*	ische Compagnie	-- ,, --
+[Oo]+st[.: ]*[Ii]n ?d[e:.]* C.mpe[a-z]*\b	Oostindische Compagnie	-- ,, --
+[Ww]est[.: ]*[Ii]n ?d[e:.]* C.mpe[a-z]*\b	Westindische Compagnie	-- ,, --
+[Oo]+st[.: ]*[Ii]n ?d[e:.]* 	Oostindische	-- ,, --
+[Ww]est[.: ]*[Ii]n ?d[e:.]* 	Westindische	-- ,, --
+[Hh]o(ogh?)?[:.]? *[Mm]og?([:.]|\b)	Hoog Mogende	Ho:Mo: Gedepden
+Gedept?(dt?en?)?[.]?\b	Gedeputeerden	-- ,, --
+\b[Gg]edepen?\b[.]?	Gedeputeerden	-- ,, --
+\b[Gg]naal\b	Generaal	-- ,, --
+[@/#=„.?!"¬]		Vreemde leestekens weg
+\b(meerge|voor)noemde\b	meergenoemde	Tussenwoordjes
+\bvoor[nsztdr.]+(chre[vy]e)?\b[.:]?	voorschreve	-- ,, --
+\b(meer|op)?gem(:|el[dt]e)\b	meergemelde	-- ,, --
+\bgeme\b[.]?	meergemelde	-- ,, --
+\brespectie?[uv]e\b	respectieve	-- ,, --
+[Mm][il]+[tr]ai?re	militaire	Overige herkenningsfouten
+milita[treni]+e	militaire	-- ,, --
+Bondge[ncvr][oc]+[d tr]	Bondgenoot	-- ,, --
+s[ce][hbdn]a[pb]\b	schap	-- ,, --
+\b[a-z]*[Hh]ertogenb[a-z]*\b	Hertogenbosch	-- ,, --
+\b[Bb][ou]rger?mee	Burgermee	-- ,, --
+\b[Tt]r[ie][pclijkt]{1,4}e	Triple	-- ,, --
+\bT...?le [Aa]	Triple A	-- ,, --
+Vla[ae]nde[a-z]*	Vlaenderen	-- ,, --
+[Pp]ortuga[ae]?l	Portugal	-- ,, --
+Spagni?e	Spaigne	-- ,, --
+[Pp]ro[uv]in[cs]	Provinc	-- ,, --
+\b[Mm]e[jgy]e[nr][iy]?e	Meyerye	-- ,, --
+Maijerie|Meijcrie	Meyerye	-- ,, --
+Overmaa?.e	Overmaze	-- ,, --
+\bFinan(re)?\b	Financien	-- ,, --
+[Bb]ra[sz]yl	Brasil	-- ,, --
+ij	y	Spellingsharmonisatie
+I[Jj]	Y	-- ,, --
+ck	k	-- ,, --
+gh	g	-- ,, --
+gt	cht	-- ,, --
+u(y|ij)	ui	-- ,, --
+ae	aa	-- ,, --
+dt	t	-- ,, --
+d\b	t	-- ,, --
+\b[Rr]a+de van	Raat van	-- ,, --
+houe van	Hove van	-- ,, --
+Hoffs\b	Hof	-- ,, --
+\b[Hh]off\b	Hof	-- ,, --
+\b[CKck]ro+ne?\b	Kroon	-- ,, --
+cxe\b	ksche	-- ,, --
+cx\b	ks	-- ,, --
+er?mrs?n\b	ermren	-- ,, --
+Ouer	Over	-- ,, --
+^ +| +$		Zwevende spaties
+tot de zaken tot de zaken	tot de zaken	?!?
+zaken van de zaken	zaken	?!?
+\bsalen?\b	zaken	?!?
+militairesalen	militaire zaken	?!?
+\bde Raecken\b	de zaken	?!?

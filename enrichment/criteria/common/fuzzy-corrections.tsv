@@ -1,0 +1,198 @@
+
+# Nota bene: dit volgt op de eerdere spellingsregexes; houd er dus rekening mee dat ae, ij etc. niet meer voorkomen.
+
+Kessel
+Culemborg	Cuilenburg	Culenburch
+Neurenburg
+Luxemburch
+
+Militaire
+Extraordinaris	Extraords:	extrs:
+
+Luneburg	Luneub	Lunenburch
+Lunenburchse	Lunenburchse
+buitenlandsche	buyenlandtsehe	buijtenlandtsche	buijtenlandtsche	buijtenlandsche	buijtenlantsche	buytenlandtsche
+binnenlandsche
+Cassel	Kassel
+Casse
+Classis	Classe
+
+Ambassadeur	Ambr	Ambassadr
+Ambassade
+sijnde	zijnde	synde
+
+# organisaties
+
+Admiraliteyt	Admiraliteijt	admrlt	Admiraliteijt	Admiralt	Admirt	Admt	Admirlt	Admit	Admrlt	admirlt
+Admiraliteyten	Admiraliteijten
+Ambacht	Ambaght	Ambagt
+Ambachte	Ambaghte	Ambagte
+Ambachten	Ambaghten	Ambaghten
+Baronnye	Baronnie
+Battaille
+Battaillon
+Battaillons
+Bondgenootschap
+Collegie
+Collegien
+Compagnie
+Comptoir	Comptoire
+Comptoiren
+Dom Kapittel	Domcapittel
+Domeinen	Domainen	Domeynen
+Eedgenootschap
+Etats Généraux	Etats Generaux	Estats Generaux
+Financien	Finantien
+Financie	Finantie
+Financiele	Finantiele
+Gemeente	Gemeinte
+Generaal	Gnaal	Generael	Generale
+Generaals	Gnaals
+Generaliteyt	Generaliteit	generlte:	Generalt	generalt
+Generaliteyts	Generaliteits	Grlts	Generalts	generlts	Erlts	generalts	Generlts	genrlts	Gnalts
+Genootschap
+Gouvernement
+Guarnisoen	Garnisoen
+Guarnisoens	Garnisoens
+Généraux	Generaux	Gnaulx	Gnaux
+Kamer	Camer	Camere
+Kamergericht	Camergericht
+Kapittel	Capittel
+Kapittels	Capittels
+Kerkenraat	Kerkenraadt	Kerkenraad	Kerkeraadt
+Kerkmeester	kerkmr
+Kerkmeesters	kerkmrs
+Kroon	Croon	Krone	Crone
+Krygsraad	Krygsraadt	Crychsraat	Crychsraadt	Crygsraat	Krygs raat
+Magistraat
+Meyerye	Meyerie	Mejery
+Mypartye	Mipartie	Mypartie	Myparthie
+Parlement
+Provinciale	Provintiale	Provinciaale	Provintiaale
+Provincie	Provintie
+Provincien	Provintien
+Raden	Raaden
+Regeering	Regeringhe	Regeringe	Regering
+Regiment 
+Regimenten	Regiments
+Reglement
+Reglementen
+Rekenkamer	Rekenkamer	Reekencamer	Reken Kamer
+Representanten
+Ryksdag	Ryxdag
+Societeyt	Societeit
+Standen
+State	Staate
+Staten	Staaten
+Steden	Steeden
+Stenden
+Synode
+Verenigde	Vereenichde	Verenichde
+Vergadering	Vergaderinge
+Vorstendom	Furstendom	furstendomb
+Vorstendoms	Furstendoms	furstendombs
+Weeshuis
+Weesmeesteren
+
+# personen
+
+Bailliuw	Bailliu
+Burgermeester	Burgermr	Borgermr	Burgemr
+Burgermeesteren	Burgermren	Borgermren	Burgemren
+Burgermeesters	Burgermrs	Borgermrs	Burgemrs
+Burgers
+Gecommitteerde	Gecomde
+Gecommitteerden	Gecomden
+Gedelegeerde
+Gedelegeerden
+Gedeputeerde
+Gedeputeerden	Gedepden	Gedepn
+Geeligeerde
+Geeligeerden
+Generaalmeesters	Gnaalmrs	Gnaalmeesters
+Gereformeerde
+Gereformeerden
+Gouverneur
+Hoog Mogende	Hoogh Mogende	Ho:Mo:	Hooch Mo:	Hoochmo:
+Hoogheyt	Hoogheydt	Hoogheid	Hougeit	Hoogeit
+Hoogheyts	Hoogheydts	Hoogheids
+Keizer	Keyser
+Keurvorst	Churfurst	Churvorst	Ceurvorst	Churf:	Cheurfurst
+Keurvorstelijke	Churfurstelyke	Churvorstelyke	Ceurvorstelyke	Cheurfurstelyke
+Keurvorsten	Churfursten	Churvorsten	Ceurvorsten	Cheurfursten
+Keyserlyke	Keizerlijke
+Koning	Coning	Conink
+Koning van	Co: van
+Koninginne
+Koninklyke	Coninglyke
+Koninklyke Majesteyt	Co:Mat	Co: Mat	Co: Mate
+Majesteyt	Majesteit
+Majesteyten	Majesteiten
+Majesteyts	Majesteits
+Muntmeester	Muntmr
+Muntmeestere	Muntmre
+Muntmeesteren	Muntmren	Muntmrn
+Muntmeesters	Muntmrs
+Regeerders	Regierders
+Schepenen
+Syndicus
+Syne Koninklyke Majesteyt	S Co:Mat	S Co: Mat	S Co: Mate
+
+# geografish
+
+Amsterdam	Amstelredam	Amstelodamum	Amsterd
+Brabant	Braband
+Cameryk	Camerik	Kamerik	Kameryk
+Curacao
+Denemarken	Deenemarken
+Dokkum	Doccum	Doccom	Docoum	doccum	doccom
+Eiland	Eyland
+Eilands	Eylands
+Engelant
+Enkhuizen	Enkhuisen	Enchuysen
+Gelderlant	Gelre	Gueldre
+Groningen	Groeningen
+Hertogenbosch
+Hollant
+Keulen	Ceulen
+Kortrijk	Cortryk	Cortryke	Kortryk
+Leeuwarden	Leeuwaarden
+Maastricht	Maastrigt	maastricht
+Middelburg	Middelbourg	Middelburch	Middelborch	Midderborch
+Nederland	Nederlant
+Nederlanden
+Noorderquartier	Noorderkwartier	Noorder-Quartier	Noorderqr	Noorderqre
+Oosterquartier	Oosterkwartier	Ooster-Quartier	Oosterqr	Oosterqre
+Oostvrieslant	Oostfriesland	Oost-Friesland	Oost-Vriesland
+Ottomanische	Ottomaansche
+Overmaze	Overmaaze	over Maze
+Overquartier	Overkwartier	Over-Quartier	Overqr	Overqre	Overquarquartier
+Overyssel
+Peelland	Peelant
+Portugal	Portugaal
+Rotterdam
+Schuilenburg
+Spaigne	Spanje	Espaigne
+Spaignen	Spanjen	Espaignen
+Suriname	Zurinaame	Zurinamen
+Sweeden	Zweden
+Utrecht	uytrecht
+Vlaanderen
+Vrankryk	Frankrijk
+Vriesland	Friesland	Vryesland
+Westvrieslant	Westfriesland	West-Friesland	West-Vriesland
+Zeelant	Zelande	Seellant
+Zuiderquartier	Zuiderkwartier	Zuider-Quartier	Zuiderqr	Zuiderqre
+op de Maze	sur la Meuse
+’s Gravenhage	s'Grauenhage
+’s Hertogenbosch	s’Hertogenbosch
+
+# overig
+
+Vreedehandelinge	Vreedehandeling
+Oostindische	Oost Indische	Oost-Indische	oostind:	oostint:	oostinde:
+Westindische	West Indische	West-Indische	westind:	westint:	westinde:
+Faculteyt	Faculteit
+Gereformeerde	Hervormde
+
+

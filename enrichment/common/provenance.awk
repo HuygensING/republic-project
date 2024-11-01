@@ -15,44 +15,42 @@
 #
 #   write(source, criterium, evaluation, conclusion)
 #
-#       primitive function for writing a log entry
+#       Primitive function for writing a log entry.
 #
 #   replace(pat, repl, conclusion)
 #   replace1(pat, repl, conclusion)
 #
-#       perform a (g)sub operation and log on a match
+#       Perform a (repeated) gensub operation on $0 and log on a match. Returns 
+#       number of replacements made.
 #
 #   start_edit(); ...; commit_edit(criterium);
 #
-#       write a log entry if $0 has changed. commit_edit() implies a new 
+#       Write a log entry if $0 has changed. commit_edit() implies a new 
 #       start_edit().
 
 @namespace "provenance"
 
 function write(source, criterium, evaluation, conclusion) {
-    print FILENAME, FNR, source, criterium, evaluation, conclusion >PROVENANCE
-}
+    print FILENAME, FNR, source, criterium, evaluation, conclusion >PROVENANCE }
 
-function replace1(pat, repl, conclusion,    src) {
-    if (match(source, pat)) {
-        write($0, pat, substr(source, RSTART, RLENGTH), "regex: "conclusion)
-        sub(pat, repl)
+function replace(pat, repl, conclusion,    count,    matched) {
+    if (!count) count = "g"
+    if (!conclusion) conclusion = "regex-replacement"
+    if (match($0, pat)) {
+        matched = substr($0, RSTART, RLENGTH)
+        if (matched!=repl) write($0, pat, matched, conclusion": "repl)
+        $0 = awk::gensub(pat, repl, count)
         return 1
-    }
-    return 0
-}
+    } return 0 }
 
-function replace(pat, repl, conclusion) {
-    while (replace1(pat, repl, conclusion)) { }
-}
+function replace1(pat, repl, conclusion,    nr) {
+    return replace(pat, repl, conclusion, 1) }
 
 function start_edit() {
-    before_src = $0
-}
+    before_src = $0 }
 
 function commit_edit(criterium) {
     if (before_src != $0)
         write(before_src, criterium, $0, "(edited as shown)")
-    before_src = $0
-}
+    before_src = $0 }
 

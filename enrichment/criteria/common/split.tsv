@@ -1,0 +1,99 @@
+
+# proclitisch van- of tot-
+
+(van|tot)([A-Z].*)	\1 \2
+(van|tot)(de[nrs]?)([A-Z].*)	\1 \2 \3
+(.*)van(de[rn])	\1 van \2
+
+# voorzetsel + lidwoord
+
+(op|a[ae]n|tot|van|u[yi]j?t|b[yj]|[ij]n|nae)(de[nrs]?)	\1 \2
+
+(tot|uijt|uyt|met|dat)tet	\1 het
+(tot|uijt|uyt|met|dat)ter	\1 der
+v?u(y|ij?)tet	uit het
+
+(op|tot|uyt|uijt)te([nrs]?)	\1 de\2
+v?u(y|ij?)te([nrs])	u\2t de\2
+
+# enclitisch -van
+
+Hofvan	Hof van
+Raetvan	Raet van
+Raadvan	Raad van
+hoffvan	hoff van
+raadvan	raad van
+Meyeryevan	Meyerye van
+Coninckvan	Coninck van
+heervan	heer van
+Volkvan	Volk van
+heerevan	heere van
+Provincievan	Provincie van
+Quartiervan	Quartier van
+Hoffvan	Hoff van
+Coninghvan	Coningh van
+raetvan	raet van
+poldervan	polder van
+Statenvan	Staten van
+Raedtvan	Raedt van
+Weduwevan	Weduwe van
+Koninghvan	Koningh van
+Heerenvan	Heeren van
+Camervan	Camer van
+Bisschopvan	Bisschop van
+Ambassadeurvan	Ambassadeur van
+Vorstvan	Vorst van
+Landevan	Lande van
+Heerevan	Heere van
+hertoghvan	hertogh van
+Prinsvan	Prins van
+Hovevan	Hove van
+Hovenvan	Hoven van
+Gravevan	Grave van
+Grauevan	Graue van
+Envoijévan	Envoijé van
+provintievan	provintie van
+hertochvan	hertoch van
+heerenvan	heeren van
+borgervan	borger van
+Quartierevan	Quartiere van
+Procureurvan	Procureur van
+Koningvan	Koning van
+Abtvan	Abt van
+Radevan	Rade van
+Heervan	Heer van
+Graafvan	Graaf van
+Conincxvan	Conincx van
+Baronvan	Baron van
+vrijheijtvan	vrijheijt van
+ridderschapvan	ridderschap van
+raedtvan	raedt van
+ministersvan	ministers van
+abtvan	abt van
+Stadthoudervan	Stadthouder van
+Secretarisvan	Secretaris van
+Schoutvan	Schout van
+Riddervan	Ridder van
+Quartiersvan	Quartiers van
+Princevan	Prince van
+Pachtervan	Pachter van
+Meijerijevan	Meijerije van
+Lantvan	Lant van
+Gouverneurvan	Gouverneur van
+Generaalvan	Generaal van
+Dorplvan	Dorpl van
+Costervan	Coster van
+Coningvan	Coning van
+Coninginnevan	Coninginne van
+Churfurstvan	Churfurst van
+Burchvan	Burch van
+Baronnyevan	Baronnye van
+Baronnievan	Baronnie van
+
+# overige scheidingen
+
+(Adm[a-z]+)tot	\1 tot
+(Gede[a-z]+)tot	\t tot
+enandere	en andere
+definantie	de finantie
+
