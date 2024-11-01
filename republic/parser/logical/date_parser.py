@@ -57,19 +57,20 @@ def extract_best_date_match(date_mapper: DateNameMapper, matches: List[PhraseMat
     filtered_matches = []
     for match in sorted_matches:
         length_diff = max_length - len(match.variant.phrase_string)
-        has_weekday_name = match_has_weekday_name(match, date_mapper)
-        if has_weekday_name is False and length_diff > 4:
-            continue
+        if date_mapper.date_name_map['weekday_name'] is not None:
+            has_weekday_name = match_has_weekday_name(match, date_mapper)
+            if has_weekday_name is False and length_diff > 4:
+                continue
         filtered_matches.append(match)
     sorted_matches = filtered_matches
-    sorted_deltas = [date_strings[match.variant.phrase_string] - current_date for match in sorted_matches]
-    sorted_deltas = [delta.days for delta in sorted_deltas]
-    min_delta = min(sorted_deltas)
-    sorted_lengths = [len(variant) for variant in sorted_variants]
-    sorted_length_diffs = [max_length - length for length in sorted_lengths]
-    has_weekdays = [match_has_weekday_name(match, date_mapper) for match in sorted_matches]
-    sorted_dates = [date_strings[match.variant.phrase_string] for match in sorted_matches]
-    sorted_sims = [f"{match.levenshtein_similarity: >.2f}" for match in sorted_matches]
+    # sorted_deltas = [date_strings[match.variant.phrase_string] - current_date for match in sorted_matches]
+    # sorted_deltas = [delta.days for delta in sorted_deltas]
+    # min_delta = min(sorted_deltas)
+    # sorted_lengths = [len(variant) for variant in sorted_variants]
+    # sorted_length_diffs = [max_length - length for length in sorted_lengths]
+    # has_weekdays = [match_has_weekday_name(match, date_mapper) for match in sorted_matches]
+    # sorted_dates = [date_strings[match.variant.phrase_string] for match in sorted_matches]
+    # sorted_sims = [f"{match.levenshtein_similarity: >.2f}" for match in sorted_matches]
     # print(f"date_parser.extract_best_date_match - sorted_variants: {sorted_variants}")
     # print(f"date_parser.extract_best_date_match - sorted_deltas: {sorted_deltas}")
     # print(f"date_parser.extract_best_date_match - has_weekdays: {has_weekdays}")

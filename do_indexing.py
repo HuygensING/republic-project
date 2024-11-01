@@ -134,6 +134,7 @@ def make_page_generator(inv_num: int, pages_file: str, page_state: str = None):
         for line in fh:
             page_json = json.loads(line)
             page = json_to_pagexml_page(page_json)
+            check_line_metadata([page])
             yield page
 
 
@@ -579,7 +580,7 @@ class Indexer:
         else:
             session_gen = get_handwritten_sessions(inv_id, pages=pages, session_starts=session_starts,
                                                    do_preprocessing=False,
-                                                   num_past_dates=5, num_future_dates=61, debug=1)
+                                                   num_past_dates=5, num_future_dates=61, debug=0)
         print(f"text_type: {text_type}")
         prev_session = None
         try:
