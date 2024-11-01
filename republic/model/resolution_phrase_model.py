@@ -501,6 +501,7 @@ proposition_opening_phrases = [
         'phrase': 'Opde Requeste van',
         'variants': [
             'Opde Requeste vande',
+            'Opte reqte van'
         ],
         'label': ['proposition:opening', 'propositie_type:rekest'],
         'start_year': 1576, 'end_year': 1704,
@@ -598,7 +599,7 @@ proposition_opening_phrases = [
         'max_start_offset': 5
     },
     {
-        'phrase': "Opt‛ versouck vande",
+        'phrase': "Opt versouck vande",
         'variants': [
             'Het versouck van'
         ],
@@ -647,7 +648,20 @@ proposition_opening_phrases = [
         'max_start_offset': 5
     },
     {
-        'phrase': 'Item',
+        'phrase': 'Item eenen brieff',
+        'variants': [
+            'Item eenen anderen brieff',
+            'Item noch eenen anderen brieff',
+            'Item brieuen',
+            'Item andere brieuen'
+        ],
+        'label': ['proposition:opening', 'proposition_type:brief'],
+        'start_year': 1576, 'end_year': 1630,
+        'max_start_offset': 1
+    },
+    {
+        'phrase': 'Item dat',
+        'variants': [],
         'label': ['proposition:opening', 'proposition_type:onbekend'],
         'start_year': 1576, 'end_year': 1630,
         'max_start_offset': 1
@@ -730,6 +744,130 @@ proposition_opening_phrases = [
             'proponeert dat'
         ],
         'max_start_offset': 5
+    },
+    {
+        'phrase': 'La lre de',
+        'variants': [
+            'Sur la lre',
+            'Sur les lres',
+            'Les lres de',
+            'Accorde lre ',
+            'Envoye lres ',
+            'Receu lre ',
+            'Receu lres',
+            'Resolu de respondre aux lres de',
+            'Sont arrestees les lres ',
+            'Touchant les lres',
+            'Touchant la lre'
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:brief', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Accorde de requerir ',
+        'variants': [
+            'On requiert de ',
+            'Ordonne sur la Reqte des',
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:rekest', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Sur la Reqte.',
+        'variants': [
+            'Sur la Requeste',
+            'Sur la reqte',
+            'La Reqte. de',
+            'La reqte de',
+            'La reqte. de',
+            'La reqte. des',
+            'La reqte. van'
+            'Quand a la Reqte.',
+            'Touchant la reqte. de ',
+            'Messieurs ont sur la reqte.',
+            'Messieurs a la reqte. des',
+            'Messieurs ont appoincte sur la reqte. de',
+
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:rekest', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Sur la Remonstrance',
+        'variants': [
+            'La Remonstrance de',
+            'Quant a la Remonstrance'
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:remonstrantie', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Ordonne a',
+        'variants': [
+            'Les Estatz Generaulx ordonnent',
+            'Les Estatz ont ordonne'
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:ordonnantie', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Sur la proposition',
+        'variants': [
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:voordracht', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Resolu que',
+        'variants': [
+            'Resolu de',
+            'Resolu d‛escrire',
+            'Resolu d‛envoyer',
+            'Resolu d‛escripre',
+            'Resolu par',
+            'Resolu sur',
+            "Resolu d'accorder",
+            'Resolu descripre',
+            'Resolution sur',
+            'Resolu descrire',
+            'Resolution des',
+            'Resolu pour',
+            "Resolu d'accepter",
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:resolution', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
+    },
+    {
+        'phrase': 'Sur le memoire',
+        'variants': [
+            'Quant a la memoire',
+        ],
+        'label': [
+            'proposition:opening', 'proposition_type:memo', 'lang:frans'
+        ],
+        'start_year': 1576, 'end_year': 1581,
+        'max_start_offset': 3
     },
     {
         'phrase': 'Pntes die voors',
