@@ -1,0 +1,4 @@
+inv_num	text_region_id	line_ids	scan_id	scan_num	page_num	year	month_num	day_num	date_type
+3128		NL-HaNA_1.01.02_3128_0020-line-3923-601-1229-287	NL-HaNA_1.01.02_3128_0020	20	39	1592	1	2	start
+3128		NL-HaNA_1.01.02_3128_0020-line-3953-1095-1271-259	NL-HaNA_1.01.02_3128_0020	20	39	1592	1	6	start
+3128		NL-HaNA_1.01.02_3128_0020-line-4303-2496-836-313	NL-HaNA_1.01.02_3128_0020	20	39	1592	1	7	start

@@ -229,9 +229,13 @@ def parse_session_starts_row(start_row: Dict[str, any]):
     for num_field in num_fields:
         if num_field == 'second_session' and num_field not in start_row:
             continue
+        if start_row[num_field] == '':
+            print(start_row)
+            print(f"do_indexing.parse_session_starts_row - num_field {num_field} is empty")
+            start_row[num_field] = None
         start_row[num_field] = int(float(start_row[num_field]))
     if start_row['text_region_id'] is None and start_row['line_ids'] == []:
-        print('NO START:', start_row)
+        # print('NO START:', start_row)
         return None
     if start_row['text_region_id'] is not None and start_row['line_ids'] != []:
         # print('both', start_row)
@@ -240,21 +244,44 @@ def parse_session_starts_row(start_row: Dict[str, any]):
     return start_row
 
 
-def get_session_starts(inv_id: str):
+def get_session_starts(inv_id: str, starts_only: bool = True, debug: int = 0):
     project_dir = get_project_dir()
-    print(f"do_indexing.get_session_starts - project_dir: {project_dir}")
+    if debug > 1:
+        print(f"do_indexing.get_session_starts - project_dir: {project_dir}")
     starts_json_file = os.path.join(project_dir, f"ground_truth/sessions/starts/session_starts-{inv_id}.json")
     starts_csv_file = os.path.join(project_dir, f"ground_truth/sessions/starts/session_starts-{inv_id}.csv")
     if os.path.exists(starts_json_file):
-        print(f"do_indexing.get_session_starts - session_starts_file: {starts_json_file}")
+        if debug > 0:
+            print(f"do_indexing.get_session_starts - session_starts_file: {starts_json_file}")
         with open(starts_json_file, 'rt') as fh:
             return json.load(fh)
     if os.path.exists(starts_csv_file):
-        print(f"do_indexing.get_session_starts - session_starts_file: {starts_csv_file}")
+        if debug > 0:
+            print(f"do_indexing.get_session_starts - session_starts_file: {starts_csv_file}")
         session_starts = []
+        count = 0
         for start_row in read_session_start_csv(starts_csv_file):
+            count += 1
+            if start_row['page_num'] == '':
+                scan_id, coord_string = start_row['line_ids'].split('-line-')
+                x = int(coord_string[:4])
+                if x < 2000:
+                    offset = 2
+                elif x > 3000:
+                    offset = 1
+                else:
+                    print(f"do_indexing.get_session_starts - unexpected x-coordnites for line id: {x}")
+                    print(f"    start_row: {start_row}")
+                    offset = 1
+                scan_num = int(scan_id[-4:])
+                start_row['page_num'] = scan_num * 2 - offset
+                # print(start_row, page_num)
             start_record = parse_session_starts_row(start_row)
-            if start_record is not None and start_record['date_type'] == 'start':
+            if start_record is None:
+                continue
+            if starts_only is False:
+                session_starts.append(start_record)
+            elif start_record is not None and start_record['date_type'] == 'start':
                 session_starts.append(start_record)
         return session_starts
     else:
@@ -578,9 +605,21 @@ class Indexer:
                                                session_starts=session_starts,
                                                use_token_searcher=use_token_searcher, debug=0)
         else:
+            num_future_dates = 31
+            num_past_dates = 5
+            if inv_metadata['year_start'] < 1630:
+                num_future_dates = 61
+                num_past_dates = 10
+            if inv_metadata['year_end'] - inv_metadata['year_start'] > 3:
+                num_future_dates = 101
+                num_past_dates = 15
+            elif 1 < inv_metadata['year_end'] - inv_metadata['year_start'] <= 3:
+                num_future_dates = 61
+                num_past_dates = 10
             session_gen = get_handwritten_sessions(inv_id, pages=pages, session_starts=session_starts,
                                                    do_preprocessing=False,
-                                                   num_past_dates=5, num_future_dates=61, debug=0)
+                                                   num_past_dates=num_past_dates,
+                                                   num_future_dates=num_future_dates, debug=0)
         print(f"text_type: {text_type}")
         prev_session = None
         try:
@@ -588,7 +627,10 @@ class Indexer:
                 yield session
                 prev_session = session
         except Exception as err:
-            logger_string = f'last successful session: {prev_session.id}'
+            if prev_session is not None:
+                logger_string = f'last successful session: {prev_session.id}'
+            else:
+                logger_string = f'last successful session: {prev_session}'
             logger.info(logger_string)
             logger.info(prev_session.stats)
             logger.info(err)
