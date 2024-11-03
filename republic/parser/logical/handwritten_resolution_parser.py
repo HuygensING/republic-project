@@ -276,8 +276,9 @@ def get_session_resolutions(session: rdm.Session,
                 prep_resolution(resolution, marg_trs, debug=debug)
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
-            print(f'get_session_resolutions - session.metadata.resolution_type: {session.metadata["resolution_type"]}')
-            print(f'get_session_resolutions - metadata.resolution_type: {metadata["resolution_type"]}')
+            if debug > 0:
+                print(f'get_session_resolutions - session.metadata.resolution_type: {session.metadata["resolution_type"]}')
+                print(f'get_session_resolutions - metadata.resolution_type: {metadata["resolution_type"]}')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
                                         evidence=opening_matches
                                         )
