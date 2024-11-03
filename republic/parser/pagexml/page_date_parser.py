@@ -98,9 +98,13 @@ def process_handwritten_page(page: pdm.PageXMLPage, weekday_name_searcher: Fuzzy
     a weekday name.
     """
     pagexml_helper.check_parentage(page)
+    # print('BEFORE:', page.id, page.stats['lines'])
     page = copy_page(page)
     page.columns = process_handwritten_columns(page.columns, page)
     pagexml_helper.check_parentage(page)
+    # print('AFTER:', page.id, page.stats['lines'])
+    if page.stats['lines'] == 0:
+        return page
 
     if debug > 0:
         debug_print_page_trs(page, "AFTER page_date_parser.process_handwritten_page "

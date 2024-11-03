@@ -575,7 +575,7 @@ def get_date_searcher(pages: List[pdm.PageXMLPage], inv_start_date: RepublicDate
         date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
     else:
         date_searcher = FuzzyPhraseSearcher(phrase_model=date_strings, config=config)
-    if debug > 0:
+    if debug > 1:
         print('handwritten_session_parser.get_date_searcher - initial date_strings:', date_strings.keys())
     if debug > 1:
         print(f"handwritten_session_parser.get_date_searcher - date_searcher.phrase_model.token_in_phrase:",
@@ -685,6 +685,20 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
     return update_date, date_metadata
 
 
+def add_date_start_with_no_evidence(current_date: RepublicDate, main_tr: pdm.PageXMLTextRegion,
+                                    session_trs: Dict[str, List[pdm.PageXMLTextRegion]],
+                                    session_dates: Dict[str, List[Dict[str, any]]]):
+    # no date text region was found that precedes the resolution text regions
+    # so add date_metadata without session date evidence, using the first
+    # line of the first main_tr for the page, scan and inventory metadata
+    if current_date.isoformat() in session_trs and len(session_trs[current_date.isoformat()]) > 0:
+        first_line = session_trs[current_date.isoformat()][0].lines[0]
+    else:
+        first_line = main_tr.lines[0]
+    no_evidence_metadata = make_session_date_metadata(current_date, first_line)
+    return no_evidence_metadata
+
+
 def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                        ignorecase: bool = True, near_extract_intro: bool = False,
                        num_past_dates: int = 5, num_future_dates: int = 31,
@@ -756,13 +770,19 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                 if debug > 0:
                     print('find_session_dates - adding para to session with date', current_date.isoformat())
                 session_trs[current_date.isoformat()].append(main_tr)
-                if debug > 0:
+                if debug > 1:
                     for line in main_tr.lines:
                         print(f"\tPARA_LINE: {line.coords.top: >4}-{line.coords.bottom: <4} "
                               f"{line.metadata['line_class']: <12}    {line.text}")
                 if main_tr in has_marginalia:
                     for marg_tr in has_marginalia[main_tr]:
                         session_trs[current_date.isoformat()].append(marg_tr)
+                if current_date.isoformat() not in session_dates or len(session_dates[current_date.isoformat()]) == 0:
+                    no_evidence_metadata = add_date_start_with_no_evidence(current_date, main_tr,
+                                                                           session_trs, session_dates)
+                    if debug > 0:
+                        print('find_session_dates - adding no_evidence_metadata for date', current_date.isoformat())
+                    session_dates[current_date.isoformat()].append(no_evidence_metadata)
                 continue
             if debug > 2:
                 print(f"  iterating over lines of main_tr {main_tr.id}")
@@ -796,14 +816,8 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                             print(f"  session start found on same date as current date")
                     session_dates[current_date.isoformat()].append(date_metadata)
                 if current_date.isoformat() not in session_dates:
-                    # no date text region was found that precedes the resolution text regions
-                    # so add date_metadata without session date evidence, using the first
-                    # line of the first main_tr for the page, scan and inventory metadata
-                    if current_date.isoformat() in session_trs and len(session_trs[current_date.isoformat()]) > 0:
-                        first_line = session_trs[current_date.isoformat()][0].lines[0]
-                    else:
-                        first_line = main_tr.lines[0]
-                    no_evidence_metadata = make_session_date_metadata(current_date, first_line)
+                    no_evidence_metadata = add_date_start_with_no_evidence(current_date, main_tr,
+                                                                           session_trs, session_dates)
                     session_dates[current_date.isoformat()].append(no_evidence_metadata)
                 if main_tr not in session_trs[current_date.isoformat()]:
                     session_trs[current_date.isoformat()].append(main_tr)

@@ -1063,8 +1063,14 @@ def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = Fa
     new_extra = [tr for tr in page.extra] if page.extra else []
     if debug > 0:
         print(f"split_page_column_text_regions.split_page_column_text_regions - new_extra: {new_extra}")
-    new_cols = [column_parser.split_column_text_regions(col, update_type=update_type, debug=debug)
-                for col in page.columns]
+    try:
+        text_cols = [col for col in page.columns if col.stats['words'] > 0]
+        new_cols = [column_parser.split_column_text_regions(col, update_type=update_type, debug=debug)
+                    for col in text_cols]
+    except IndexError:
+        print(f'split_page_column_text_regions.split_page_column_text_regions - error '
+              f'splitting columns for page {page.id}')
+        raise
     if debug > 0:
         print(f"split_page_column_text_regions.split_page_column_text_regions - new_cols: {new_cols}")
     if page.coords:
