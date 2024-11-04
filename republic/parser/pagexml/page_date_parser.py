@@ -100,7 +100,13 @@ def process_handwritten_page(page: pdm.PageXMLPage, weekday_name_searcher: Fuzzy
     pagexml_helper.check_parentage(page)
     # print('BEFORE:', page.id, page.stats['lines'])
     page = copy_page(page)
-    page.columns = process_handwritten_columns(page.columns, page)
+    if page.stats['words'] == 0 or page.stats['lines'] == 0:
+        return page
+    try:
+        page.columns = process_handwritten_columns(page.columns, page)
+    except BaseException:
+        print(f"page_date_parser.process_handwritten_page - error processing columns for page {page.id}")
+        raise
     pagexml_helper.check_parentage(page)
     # print('AFTER:', page.id, page.stats['lines'])
     if page.stats['lines'] == 0:
