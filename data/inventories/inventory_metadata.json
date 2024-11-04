@@ -21143,7 +21143,7 @@
     {
         "inventory_num": 4673,
         "num_scans": 80,
-        "inventory_label": "4673 1733 secreet index (swapped with 4673, was 4673 1733 secreet)",
+        "inventory_label": "4673 1733 secreet index (swapped with 4674, was 4673 1733 secreet)",
         "inventory_uuid": "822c4b3f-f723-4d39-aa13-158a10035a24",
         "year": 1733,
         "resolution_type": "secreet",
@@ -21155,7 +21155,7 @@
         "num_pages": null,
         "year_start": 1733,
         "year_end": 1733,
-        "notes": "The scans at the National Archives for 4673 and 4747 are swapped. According to the metadata, 4673 contains resolutions and 4674 contains indexes, but the scans are the inverse. The NA has been alerted and will update, but in the meantime, the inventory numbers in this metadata file are swapped to ease processing.",
+        "notes": "The scans at the National Archives for 4673 and 4674 are swapped. According to the metadata, 4673 contains resolutions and 4674 contains indexes, but the scans are the inverse. The NA has been alerted and will update, but in the meantime, the inventory numbers in this metadata file are swapped to ease processing.",
         "page_num_interventions": null,
         "inventory_index": null,
         "inventory_doc_type": null,
@@ -21187,7 +21187,7 @@
         "num_pages": null,
         "year_start": 1733,
         "year_end": 1733,
-        "notes": "The scans at the National Archives for 4673 and 4747 are swapped. According to the metadata, 4673 contains resolutions and 4674 contains indexes, but the scans are the inverse. The NA has been alerted and will update, but in the meantime, the inventory numbers in this metadata file are swapped to ease processing.",
+        "notes": "The scans at the National Archives for 4673 and 4674 are swapped. According to the metadata, 4673 contains resolutions and 4674 contains indexes, but the scans are the inverse. The NA has been alerted and will update, but in the meantime, the inventory numbers in this metadata file are swapped to ease processing.",
         "page_num_interventions": null,
         "inventory_index": null,
         "inventory_doc_type": null,
@@ -24889,11 +24889,11 @@
     {
         "inventory_num": 4780,
         "num_scans": 93,
-        "inventory_label": "4780 1787 secreet",
+        "inventory_label": "4780 1787 secreet index (swapped with 4781, was 4780 1787 secreet)",
         "inventory_uuid": "8b5caccd-ffef-4b90-958d-56a5b6bfc959",
         "year": 1787,
         "resolution_type": "secreet",
-        "content_type": "resolutions",
+        "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
         "period_start": "1787-01-01",
         "period_end": "1787-12-31",
@@ -24901,7 +24901,7 @@
         "num_pages": null,
         "year_start": 1787,
         "year_end": 1787,
-        "notes": null,
+        "notes": "The scans at the National Archives for 4780 and 4781 are swapped. According to the metadata, 4780 contains resolutions and 4781 contains indexes, but the scans are the inverse. The NA has been alerted and will update, but in the meantime, the inventory numbers in this metadata file are swapped to ease processing.",
         "page_num_interventions": null,
         "inventory_index": null,
         "inventory_doc_type": null,
@@ -24921,11 +24921,11 @@
     {
         "inventory_num": 4781,
         "num_scans": 291,
-        "inventory_label": "4781 1786 secreet index",
+        "inventory_label": "4781 1787 secreet (swapped with 4780, was 4781 1787 secreet index)",
         "inventory_uuid": "6ffbb563-1aa0-47bb-9fdd-ed619ba0e16a",
         "year": 1786,
         "resolution_type": "secreet",
-        "content_type": "index",
+        "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02",
         "period_start": "1786-01-01",
         "period_end": "1786-12-31",
@@ -24933,7 +24933,19 @@
         "num_pages": null,
         "year_start": 1786,
         "year_end": 1786,
-        "notes": null,
+        "notes": "The scans at the National Archives for 4780 and 4781 are swapped. According to the metadata, 4780 contains resolutions and 4781 contains indexes, but the scans are the inverse. The NA has been alerted and will update, but in the meantime, the inventory numbers in this metadata file are swapped to ease processing.",
+        "sections": [
+            {
+                "page_type": "index_page",
+                "start": 7,
+                "end": 44
+            },
+            {
+                "page_type": "resolution_page",
+                "start": 45,
+                "end": 531
+            }
+        ],
         "page_num_interventions": null,
         "inventory_index": null,
         "inventory_doc_type": null,
@@ -25669,7 +25681,7 @@
         "inventory_uuid": "e6ae11b4-fc0e-49b6-b8ff-ecb86964b672",
         "year": 1651,
         "resolution_type": "speciaal",
-        "content_type": "resolutions",
+        "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
         "num_pages": null,
@@ -25718,7 +25730,14 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4813"
+        "inventory_id": "NL-HaNA_1.01.02_4813",
+        "sections": [
+            {
+                "start": 1,
+                "end": 2031,
+                "page_type": "resolution_page"
+            }
+        ]
     },
     {
         "inventory_num": 4815,
@@ -25745,6 +25764,13 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
+        "sections": [
+            {
+                "start": 3,
+                "end": 99,
+                "page_type": "index_page"
+            }
+        ],
         "inventory_id": "NL-HaNA_1.01.02_4815"
     },
     {
@@ -25754,7 +25780,7 @@
         "inventory_uuid": "bd4f01fc-0ebf-4623-a37c-118c692dcdff",
         "year": 1716,
         "resolution_type": "speciaal",
-        "content_type": "resolutions",
+        "content_type": "letters",
         "series_name": "NL-HaNA_1.01.02",
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
         "num_pages": null,
@@ -25769,6 +25795,13 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
+        "sections": [
+            {
+                "start": 5,
+                "end": 344,
+                "page_type": "letter_page"
+            }
+        ],
         "inventory_id": "NL-HaNA_1.01.02_4816"
     },
     {
@@ -25797,8 +25830,13 @@
         "sections": [
             {
                 "start": 3,
-                "end": 229,
+                "end": 20,
                 "page_type": "index_page"
+            },
+            {
+                "start": 25,
+                "end": 224,
+                "page_type": "resolution_page"
             }
         ]
     },
@@ -25809,7 +25847,7 @@
         "inventory_uuid": "175f1ef3-d4ac-4d21-a8b9-b66921a900bf",
         "year": 1597,
         "resolution_type": "speciaal",
-        "content_type": "resolutions",
+        "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
         "num_pages": null,
@@ -25839,7 +25877,7 @@
         "inventory_label": "4820 1630-1639 indices resoluties Staten-Generaal zeezaken",
         "inventory_uuid": "e5cdda74-cca9-4751-b32c-ff6340d36aef",
         "resolution_type": "speciaal",
-        "content_type": "resolutions",
+        "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
         "year": [
             1630,
@@ -26294,6 +26332,13 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
+        "sections": [
+            {
+                "start": 1,
+                "end": 533,
+                "page_type": "resolution_page"
+            }
+        ],
         "inventory_id": "NL-HaNA_1.01.02_4833"
     },
     {
@@ -26348,6 +26393,13 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
+        "sections": [
+            {
+                "start": 5,
+                "end": 1422,
+                "page_type": "resolution_page"
+            }
+        ],
         "inventory_id": "NL-HaNA_1.01.02_4839"
     },
     {
@@ -26489,7 +26541,14 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4844"
+        "inventory_id": "NL-HaNA_1.01.02_4844",
+        "sections": [
+            {
+                "start": 1,
+                "end": 1133,
+                "page_type": "resolution_page"
+            }
+        ]
     },
     {
         "inventory_num": 4845,
@@ -26672,7 +26731,14 @@
         "created": "2022-01-24T09:24:00",
         "updated": null,
         "index_timestamp": null,
-        "inventory_id": "NL-HaNA_1.01.02_4850"
+        "inventory_id": "NL-HaNA_1.01.02_4850",
+        "sections": [
+            {
+                "start": 1,
+                "end": 1021,
+                "page_type": "resolution_page"
+            }
+        ]
     },
     {
         "inventory_num": 4851,
@@ -26957,7 +27023,7 @@
         "inventory_label": "4861 Indices op de resoluties betreffende Oost-Friesland, 1626 januari - 1633, 1634 - 1646 mei 30, 1646 mei 31 - 1661 december 31",
         "inventory_uuid": "c799a55d-fc5c-445f-b0c9-640eb5d0e734",
         "resolution_type": "speciaal",
-        "content_type": "resolutions",
+        "content_type": "index",
         "series_name": "NL-HaNA_1.01.02",
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
         "num_pages": null,
