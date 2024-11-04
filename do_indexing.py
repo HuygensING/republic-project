@@ -294,6 +294,11 @@ def get_session_starts(inv_id: str, starts_only: bool = True, debug: int = 0):
 def check_line_metadata(pages: List[pdm.PageXMLPage]):
     """ensure lines have information on inventory number and id in their metadata."""
     for page in pages:
+        if 'series_name' not in page.metadata:
+            print(page.metadata)
+            raise ValueError(f'No series_name in page.metadata for page {page.id}')
+        if 'inventory_id' not in page.metadata:
+            page.metadata['inventory_id'] = f"{page.metadata['series_name']}_{page.metadata['inventory_num']}"
         for line in page.get_lines():
             if 'inventory_num' not in line.metadata:
                 line.metadata['inventory_num'] = page.metadata['inventory_num']
@@ -582,7 +587,7 @@ class Indexer:
             if session_starts is None:
                 logger.warning(f"WARNING - No sessions starts for inventory {inv_num}")
                 print(f"WARNING - No sessions starts for inventory {inv_num}")
-                return None
+                # return None
         else:
             session_starts = None
 
