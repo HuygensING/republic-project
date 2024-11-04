@@ -231,6 +231,7 @@ def prep_resolution(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
     resolution.metadata['lang'] = list({para.metadata['lang'] for para in resolution.paragraphs})
     resolution.set_proposition_type()
     resolution.metadata["page_ids"] = get_paragraph_page_ids(resolution.paragraphs)
+    resolution.metadata['inventory_id'] = resolution.paragraphs[0].metadata['inventory_id']
     # resolution.linked_text_regions = get_line_grouped_text_regions(resolution, debug=debug)
     link_marginalia(resolution, marg_trs, debug=debug)
     for linked_tr in resolution.linked_text_regions:

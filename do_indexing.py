@@ -851,16 +851,21 @@ class Indexer:
             try:
                 # print('session_meta["id"]:', session_meta['id'])
                 print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
-                for resolution in hand_res_parser.get_session_resolutions(session, opening_searcher, debug=0):
-                    source_ids = [session.id] + [tr.id for tr in session.text_regions]
-                    prov_url = self.rep_es.post_provenance(source_ids=source_ids,
-                                                           target_ids=[resolution.id],
-                                                           source_index='session_metadata', target_index='resolutions',
-                                                           ignore_prov_errors=True)
+                resolutions = [res for res in hand_res_parser.get_session_resolutions(session,
+                                                                                      opening_searcher, debug=0)]
+                source_ids = [session.id] + [tr.id for tr in session.text_regions]
+                target_ids = [res.id for res in resolutions]
+                prov_url = self.rep_es.post_provenance(source_ids=source_ids,
+                                                       target_ids=target_ids,
+                                                       source_index='session_metadata', target_index='resolutions',
+                                                       ignore_prov_errors=True)
+                for resolution in resolutions:
                     resolution.metadata['prov_url'] = prov_url
-                    self.rep_es.index_resolution(resolution)
                     print('indexing handwritten resolution', resolution.id)
-                    # self.rep_es.es_anno.index(index=res_index, id=res.id, document=res.json)
+                    # self.rep_es.index_resolution(resolution)
+                resolutions_json = [res.json for res in resolutions]
+                print('using resolution index', self.rep_es.config['resolutions_index'])
+                self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], resolutions_json)
             except Exception as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
                 logging.error('Error parsing resolutions for inv_num', inv_num)
@@ -1029,6 +1034,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     setup_logger(logger, log_file, formatter, level=logging.DEBUG)
     indexer = Indexer(task["host_type"], base_dir=task["base_dir"])
     inv_metadata = get_inventory_by_num(task['inv_num'])
+    text_type = get_text_type(task['inv_num'])
     if inv_metadata is None:
         message = f"Skipping {task['indexing_step']} for inventory {task['inv_num']} " \
                   f"(years {task['year_start']}-{task['year_end']})..."
@@ -1088,7 +1094,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["indexing_step"] == "full_resolutions":
         # indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
-        indexer.do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
+        if text_type == 'printed':
+            indexer.do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "phrase_matches":
         indexer.do_resolution_phrase_match_indexing(task["inv_num"], task["year_start"], task["year_end"])

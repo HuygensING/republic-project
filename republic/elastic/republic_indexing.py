@@ -254,6 +254,12 @@ class Indexer:
         query = {'query': query}
         return self.delete_by_query(index, query)
 
+    def block_index(self, index: str):
+        print(self.es_anno.indices.put_settings(index=index, body={"index.blocks.write": True}))
+
+    def unblock_index(self, index: str):
+        print(self.es_anno.indices.put_settings(index=index, body={"index.blocks.write": False}))
+
     def clone_index(self, original_index: str, new_index: str, delete_original: bool = False,
                     force: bool = False) -> None:
         # 1. make sure the clone index doesn't exist
