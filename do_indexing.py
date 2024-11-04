@@ -7,6 +7,7 @@ import logging
 import logging.config
 import multiprocessing
 import os
+import re
 from collections import defaultdict
 from collections import Counter
 from typing import Dict, Generator, List, Union
@@ -91,7 +92,7 @@ def get_text_type(inv_num: int) -> str:
 def get_page_content_type(page: pdm.PageXMLPage) -> str:
     # default_types = ['structure_doc', 'physical_structure_doc', 'text_region', 'pagexml_doc', 'page']
     content_types = ['resolution_page', 'index_page', 'respect_page']
-    page_content_types = [pt for pt in page.metadata['type'] if pt in content_types]
+    page_content_types = [pt for pt in page.type if pt in content_types]
     if len(page_content_types) > 1:
         raise TypeError(f"page {page.id} has multiple content types: {page_content_types}")
     elif len(page_content_types) == 0:
@@ -140,6 +141,7 @@ def make_page_generator(inv_num: int, pages_file: str, page_state: str = None):
 
 def get_raw_pages(inv_num: int, indexer: Indexer):
     raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
+    print('raw_pages_file:', raw_pages_file)
     return make_page_generator(inv_num, raw_pages_file, 'raw')
 
 
@@ -1127,7 +1129,10 @@ def parse_args():
             if opt == '-n':
                 num_processes = int(arg)
             if opt == '-s':
-                start = int(arg)
+                if re.match(r"\d+,\d+", arg):
+                    start = [int(ele) for ele in arg.split(',')]
+                else:
+                    start = int(arg)
             if opt == '-e':
                 end = int(arg)
             if opt == '-i':
@@ -1136,6 +1141,8 @@ def parse_args():
                 index_label = arg
             if opt == '-b':
                 base_dir = arg
+        if start is not None and end is None:
+            end = start
         print(start, end, indexing_step, num_processes)
         if not start or not end or not indexing_step or not num_processes:
             print('usage: do_indexing.py -s <start_year> -e <end_year> -i <indexing_step> '
@@ -1156,49 +1163,33 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
     commit_version = get_commit_version()
 
     print(f'do_indexing.get_tasks - index_label: {index_label}')
-    if start in range(1576, 1797):
-
-        tasks = []
-        years = [year for year in range(start, end+1)]
-        for year in years:
-            for inv_map in get_inventories_by_year(year):
-                task: Dict[str, any] = {
-                    'year_start': inv_map['year_start'],
-                    'year_end': inv_map['year_end'],
-                    'indexing_step': indexing_step,
-                    'index_label': index_label,
-                    'host_type': host_type,
-                    'base_dir': base_dir,
-                    'commit': commit_version,
-                    'inv_num': inv_map['inventory_num']
-                }
-                tasks.append(task)
-        print(f'indexing {indexing_step} for years', years)
-    elif start in range(3000, 5000) or start in range(400, 457):
-        inv_nums = [inv_num for inv_num in range(start, end+1)]
-        tasks = []
-        for inv_num in range(start, end + 1):
-            task = {
-                "inv_num": inv_num,
-                "indexing_step": indexing_step,
-                'index_label': index_label,
-                'host_type': host_type,
-                'base_dir': base_dir,
-                "commit": commit_version
-            }
-            tasks.append(task)
-
-        for task in tasks:
-            inv_map = get_inventory_by_num(task["inv_num"])
-            if inv_map is None:
-                print('No inventory metadata for inventory number', task['inv_num'])
-                continue
-            task["year_start"] = inv_map["year_start"]
-            task["year_end"] = inv_map["year_end"]
-        tasks = [task for task in tasks if 'year_start' in task and task['year_start'] is not None]
-        print(f'indexing {indexing_step} for inventories', inv_nums)
+    print(f'start: {start}\tend: {end}')
+    inv_nums = []
+    if isinstance(start, list):
+        inv_nums = start
     else:
-        raise ValueError("Unknown start number, expecting 1576-1796 or 3760-3864")
+        inv_nums = [inv for inv in range(start, end+1)]
+    tasks = []
+    for inv_num in inv_nums:
+        task = {
+            "inv_num": inv_num,
+            "indexing_step": indexing_step,
+            'index_label': index_label,
+            'host_type': host_type,
+            'base_dir': base_dir,
+            "commit": commit_version
+        }
+        tasks.append(task)
+
+    for task in tasks:
+        inv_map = get_inventory_by_num(task["inv_num"])
+        if inv_map is None:
+            print('No inventory metadata for inventory number', task['inv_num'])
+            continue
+        task["year_start"] = inv_map["year_start"]
+        task["year_end"] = inv_map["year_end"]
+    tasks = [task for task in tasks if 'year_start' in task and task['year_start'] is not None]
+    print(f'indexing {indexing_step} for inventories', inv_nums)
     return tasks
 
 
