@@ -61,10 +61,19 @@ class ParaReader:
                 yield para
 
 
-def read_paragraphs(para_file: str):
+def read_paragraphs(para_file: str, as_json: bool = False, has_header: bool = True,
+                    headers: List[str] = None):
     with gzip.open(para_file, 'rt') as fh:
+        if has_header is True:
+            headers = next(fh).strip('\n').split('\t')
+        if as_json is True and headers is None:
+            raise ValueError(f"cannot return JSON without headers")
         for line in fh:
-            yield line.strip('\n').split('\t')
+            cols = line.strip('\n').split('\t')
+            if as_json is True:
+                yield {header: cols[hi] for hi, header in enumerate(headers)}
+            else:
+                yield cols
     return None
 
 
