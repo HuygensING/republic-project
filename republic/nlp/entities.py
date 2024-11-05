@@ -172,7 +172,7 @@ def get_best_tagger_dirs(project_dir: str):
     return tagger
 
 
-def tag_resolution(res_text: str, res_id: str, model: SequenceTagger, as_annotations: bool = True):
+def tag_resolution(res_text: str, doc_id: str, model: SequenceTagger, as_annotations: bool = True):
     text = res_text
     sentence = Sentence(res_text)
     model.predict(sentence)
@@ -181,7 +181,7 @@ def tag_resolution(res_text: str, res_id: str, model: SequenceTagger, as_annotat
     for tagged_position in tagged_positions:
         start, end = tagged_position
         tag_type = tagged_positions[tagged_position]
-        anno = Annotation(tag_type, text[start:end], start, res_id)
+        anno = Annotation(tag_type, text[start:end], start, doc_id)
         annotations.append(anno)
         if as_annotations is False:
             text = text[:start] + f'<{tag_type}>' + text[start:end] + f'</{tag_type}>' + text[end:]

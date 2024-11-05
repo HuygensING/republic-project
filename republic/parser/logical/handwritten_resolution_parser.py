@@ -1,13 +1,15 @@
 import copy
 from collections import defaultdict
-from typing import Dict, Generator, List, Tuple
+from typing import Dict, Generator, List, Tuple, Callable
 
+import fuzzy_search
 import pagexml.model.physical_document_model as pdm
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from pagexml.helper.pagexml_helper import make_text_region_text
 
 import republic.model.republic_document_model as rdm
 from republic.helper.metadata_helper import doc_id_to_iiif_url
+from republic.helper.metadata_helper import get_majority_line_class
 from republic.helper.text_helper import determine_language
 from republic.model.resolution_phrase_model import proposition_opening_phrases
 from republic.parser.logical.printed_resolution_parser import get_base_metadata
@@ -241,11 +243,20 @@ def prep_resolution(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
             resolution.add_label(marginalium_text, 'marginalia', provenance={'label_source': linked_tr.id})
 
 
+def initialise_resolution(session: rdm.Session, generate_id: Callable,
+                          doc_type: str,
+                          opening_matches: List[fuzzy_search.PhraseMatch] = None):
+    metadata = get_base_metadata(session, generate_id(), doc_type=doc_type)
+    resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
+                                evidence=opening_matches if opening_matches is not None else [])
+    resolution.add_type(doc_type)
+    return resolution
+
+
 def get_session_resolutions(session: rdm.Session,
                             opening_searcher: FuzzyPhraseSearcher,
                             debug: int = 0) -> Generator[rdm.Resolution, None, None]:
     resolution = None
-    resolution_number = 0
     attendance_list = None
     session_offset = 0
     generate_id = running_id_generator(session.id, '-resolution-')
@@ -254,49 +265,65 @@ def get_session_resolutions(session: rdm.Session,
         print(f"\nget_session_resolutions - session {session.id}")
         print(f"get_session_resolutions - number of marg_trs: {len(marg_trs)}")
     for paragraph in make_session_paragraphs(session, debug=debug):
+        tr_types = [get_majority_line_class(tr.lines) for tr in paragraph.text_regions]
+        # print(f"\ntr_types: {tr_types}")
+        if 'attendance' in tr_types:
+            paragraph.add_type('attendance')
+            if attendance_list is None:
+                metadata = get_base_metadata(session, session.id + '-attendance_list', 'attendance_list')
+                attendance_list = rdm.AttendanceList(doc_id=metadata['id'], metadata=metadata)
+            attendance_list.add_paragraph(paragraph)
+            session_offset += len(paragraph.text)
+            continue
+        if 'resolution' in tr_types:
+            paragraph.add_type('resolution')
+        else:
+            paragraph.add_type(tr_types)
+        # print(f"   paragraph has type: {paragraph.type}")
         paragraph.metadata['lang'] = determine_language(paragraph.text)
-        if debug > 0:
+        if debug > 1:
             print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id}, debug=0)
         for match in opening_matches:
             if match.phrase.max_start_offset < match.offset:
-                print('MATCH SHOULD NOT BE OPENING:', match)
-        for match in opening_matches:
+                print('handwritten_resolution_parser.get_session_resolutions - offset beyond max_start_offset')
+                print(f"    MATCH SHOULD NOT BE OPENING: {match}")
             match.text_id = paragraph.id
             if debug > 0:
                 print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
+        if attendance_list:
+            # If there is a previous attendance list, finish it, yield and reset to None
+            attendance_list.metadata["page_ids"] = get_paragraph_page_ids(attendance_list.paragraphs)
+            yield attendance_list
+            attendance_list = None
         if len(opening_matches) > 0 and opening_matches[0].has_label('reviewed'):
             paragraph.add_type('reviewed')
-        elif len(opening_matches) > 0:
-            if attendance_list:
-                attendance_list.metadata["page_ids"] = get_paragraph_page_ids(attendance_list.paragraphs)
-                yield attendance_list
-                attendance_list = None
-            resolution_number += 1
+            resolution = initialise_resolution(session, generate_id, doc_type='review',
+                                               opening_matches=opening_matches)
+            yield resolution
+            resolution = None
+            session_offset += len(paragraph.text)
+            continue
+        if len(opening_matches) > 0:
             if resolution:
                 prep_resolution(resolution, marg_trs, debug=debug)
                 yield resolution
-            metadata = get_base_metadata(session, generate_id(), 'resolution')
-            if debug > 0:
-                print(f'get_session_resolutions - session.metadata.resolution_type: {session.metadata["resolution_type"]}')
-                print(f'get_session_resolutions - metadata.resolution_type: {metadata["resolution_type"]}')
-            resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
-                                        evidence=opening_matches
-                                        )
-            # print('\tCreating new resolution with number:', resolution_number, resolution.id)
-        if resolution:
+            resolution = initialise_resolution(session, generate_id, doc_type='resolution',
+                                               opening_matches=opening_matches)
+        elif paragraph.has_type('resolution') and resolution is None:
+            resolution = initialise_resolution(session, generate_id, doc_type='resolution',
+                                               opening_matches=opening_matches)
+        if debug > 0:
+            print(f'get_session_resolutions - session.metadata.resolution_type: {session.metadata["resolution_type"]}')
+            print(f'get_session_resolutions - metadata.resolution_type: {resolution.metadata["resolution_type"]}')
+        if resolution is not None:
             resolution.add_paragraph(paragraph, matches=opening_matches)
             # resolution.evidence += opening_matches
-        elif attendance_list:
-            attendance_list.add_paragraph(paragraph, matches=[])
-        else:
-            metadata = get_base_metadata(session, session.id + '-attendance_list',
-                                         'attendance_list')
-            attendance_list = rdm.AttendanceList(doc_id=metadata['id'], metadata=metadata)
-            # print('\tCreating new attedance list with number:', 1, attendance_list.id)
-            attendance_list.add_paragraph(paragraph, matches=[])
         # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
         session_offset += len(paragraph.text)
+    if attendance_list:
+        attendance_list.metadata["page_ids"] = get_paragraph_page_ids(attendance_list.paragraphs)
+        yield attendance_list
     if resolution:
         prep_resolution(resolution, marg_trs, debug=debug)
         yield resolution

@@ -537,7 +537,14 @@ def update_date_strings(page: pdm.PageXMLPage, current_date: RepublicDate, date_
             date_string = evidence['date']
         print(f"handwritten_session_parser.update_date_strings - found date via {evidence['type']}:",
               current_date, date_string, page.id)
-    jump_days = calculate_date_jump(page.metadata['inventory_num'], current_date, date_jumps)
+    try:
+        jump_days = calculate_date_jump(page.metadata['inventory_num'], current_date, date_jumps)
+    except IndexError:
+        print(f"ERROR calculating date_jumps:")
+        print(f"  page: {page.id}")
+        print(f"  current_date: {current_date.isoformat()}")
+        print(f"  date_jumps: {date_jumps}")
+        raise
     delta = datetime.timedelta(days=-num_past_dates + jump_days)
     start_day = current_date.date + delta
     start_day = RepublicDate(start_day.year, start_day.month, start_day.day, date_mapper=date_mapper)
