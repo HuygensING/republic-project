@@ -656,11 +656,21 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
         print(f"handwritten_session_parser.check_date_update - line {line.id}")
         print(f"\t{line.metadata['line_class']: <12}    {line.text}")
     if line in date_start_map:
-        print(f"line in date_start_map: {line.id}\t{line.text}")
+        # if the line appears in the date_start_map, it means we know that it is
+        # either a date start line, or a distractor (a date header or something
+        # that looks like a start date but is not).
+        # If it is a start date, update the date, else, ignore the line and don't
+        # do a fuzzy match.
         record = date_start_map[line]
-        update_date = RepublicDate(record['year'], record['month_num'], record['day_num'],
-                                   date_mapper=date_mapper)
-        date_metadata = make_session_date_metadata(current_date, line, start_record=record)
+        print(f"line in date_start_map: {line.id}\t{line.text}\t{record['date_type']}")
+        if record['date_type'] == 'start':
+            update_date = RepublicDate(record['year'], record['month_num'], record['day_num'],
+                                       date_mapper=date_mapper)
+            date_metadata = make_session_date_metadata(current_date, line, start_record=record)
+        else:
+            # IMPORTANT!
+            # if date_type is not date, the line is not a start date and should be ignored
+            pass
         best_match = None
     else:
         best_match = fuzzy_search_date(line, main_tr, date_searcher, date_mapper,
@@ -767,9 +777,10 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                 else:
                     print('find_session_dates - no current_date')
             if main_tr.metadata['text_region_class'] == 'para':
-                if debug > 0:
-                    print('find_session_dates - adding para to session with date', current_date.isoformat())
                 session_trs[current_date.isoformat()].append(main_tr)
+                num_trs = len(session_trs[current_date.isoformat()])
+                if debug > -1:
+                    print(f'find_session_dates - adding tr {num_trs} to session with date {current_date.isoformat()}')
                 if debug > 1:
                     for line in main_tr.lines:
                         print(f"\tPARA_LINE: {line.coords.top: >4}-{line.coords.bottom: <4} "
