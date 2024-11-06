@@ -237,7 +237,7 @@ def get_base_metadata(source_doc: rdm.RepublicDoc, doc_id: str, doc_type: str) -
         'id': doc_id,
         'page_ids': []
     }
-    if doc_type in ["resolution", "attendance_list"]:
+    if doc_type in ["resolution", "review", "attendance_list"]:
         metadata['session_date'] = source_doc.metadata['session_date']
         metadata['session_id'] = source_doc.id
         metadata['session_num'] = source_doc.metadata['session_num']

@@ -332,7 +332,7 @@ def get_line_class_dist(lines: List[pdm.PageXMLTextLine]) -> Counter:
     return Counter(lcs)
 
 
-def get_majority_line_class(lines: List[pdm.PageXMLTextLine]) -> Union[str, None]:
+def get_majority_line_class(lines: List[pdm.PageXMLTextLine], debug: int = 0) -> Union[str, None]:
     """Return the most frequent line class for a list of lines. When there are
     multiple most frequent line classes, pick the first in order of known types.
 
@@ -342,6 +342,9 @@ def get_majority_line_class(lines: List[pdm.PageXMLTextLine]) -> Union[str, None
     lc_freq = get_line_class_dist(lines)
     max_freq = max(lc_freq.values())
     max_classes = [lc for lc in lc_freq if lc_freq[lc] == max_freq]
+    if debug > 0:
+        print(f"metadata_helper.get_majority_line_class - lc_freq: {lc_freq}")
+        print(f"    max_classes: {max_classes}")
     for known_type in KNOWN_TYPES:
         if known_type in max_classes:
             return known_type
