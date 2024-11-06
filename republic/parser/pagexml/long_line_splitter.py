@@ -2,8 +2,12 @@ import copy
 import re
 from typing import List, Tuple, Union
 
+import numpy as np
 import pagexml.model.physical_document_model as pdm
 from pagexml.analysis.layout_stats import sort_coords_above_below_baseline
+from pagexml.analysis.layout_stats import compute_baseline_distances
+
+from republic.helper.pagexml_helper import horizontal_group_lines
 
 
 def width_in_range(doc: pdm.PageXMLDoc, min_width: int = None, max_width: int = None) -> bool:
@@ -88,11 +92,9 @@ class ColumnLines:
 class MergedLineContext:
 
     def __init__(self,
-                 curr_line: pdm.PageXMLTextLine,
-                 prev_left_line: pdm.PageXMLTextLine,
-                 prev_right_line: pdm.PageXMLTextLine,
-                 next_left_line: pdm.PageXMLTextLine,
-                 next_right_line: pdm.PageXMLTextLine,
+                 curr_line_group: List[pdm.PageXMLTextLine],
+                 prev_line_group: List[pdm.PageXMLTextLine],
+                 next_line_group: List[pdm.PageXMLTextLine],
                  text_left_boundary: int, text_right_boundary: int,
                  column_sep_width: int,
                  default_line_num_chars: int,
@@ -103,16 +105,12 @@ class MergedLineContext:
         boundary is the left side of the left-most column, the right boundary is
         the right side of the right-most column.
 
-        :param curr_line: the current merged line that is the focus for splitting
-        :type: PageXMLTextLine
-        :param prev_left_line: the previous line in the left-side column
-        :type: PageXMLTextLine
-        :param prev_right_line: the previous line in the right-side column
-        :type: PageXMLTextLine
-        :param next_left_line: the next line in the left-side column
-        :type: PageXMLTextLine
-        :param next_right_line: the next line in the right-side column
-        :type: PageXMLTextLine
+        :param curr_line_group: the current merged line that is the focus for splitting
+        :type: List[PageXMLTextLine]
+        :param prev_line_group: the previous line in the right-side column
+        :type: List[PageXMLTextLine]
+        :param next_line_group: the next line in the left-side column
+        :type: List[PageXMLTextLine]
         :param text_left_boundary: the x-coordinate of the left-most side of the
         two text columns
         :type text_left_boundary: int
@@ -129,11 +127,9 @@ class MergedLineContext:
         :param default_line_num_chars: the default number of characters of a text
         line.
         """
-        self.curr = {'line': curr_line}
-        self.prev_left = {'line': prev_left_line}
-        self.prev_right = {'line': prev_right_line}
-        self.next_left = {'line': next_left_line}
-        self.next_right = {'line': next_right_line}
+        self.curr_group = {'line': curr_line_group}
+        self.prev_group = {'line': prev_line_group}
+        self.next_group = {'line': next_line_group}
         self.text_left_boundary = text_left_boundary
         self.text_right_boundary = text_right_boundary
         self.column_sep_width = column_sep_width
@@ -144,12 +140,74 @@ class MergedLineContext:
             self.default_line_width = (text_right_boundary - text_left_boundary - column_sep_width) / 2
         else:
             self.default_line_width = default_line_width
-        self.curr['words'] = get_words(self.curr['line'])
-        self.curr['split_indexes'] = get_split_indexes(self.curr['words'], self.min_offset, self.max_offset)
-        if prev_left_line is None:
-            self.prev_left['split_indexes'] = []
-        else:
-            self.prev_left['split_indexes'] = [self.prev_left['words'][-1]]
+        self.curr_group['words'] = [word for line in self.curr_group['line'] for word in get_words(line)]
+        self.curr_group['split_indexes'] = get_split_indexes(self.curr_group['words'], self.min_offset, self.max_offset)
+        self.prev_group['words'] = [word for line in self.prev_group['line'] for word in get_words(line)]
+        self.prev_group['split_indexes'] = []
+        self.next_group['words'] = [word for line in self.next_group['line'] for word in get_words(line)]
+        self.next_group['split_indexes'] = []
+
+
+def make_page_line_context_windows(page: pdm.PageXMLPage):
+    content_lines = [line for col in page.columns for line in col.get_lines() if line.text is not None]
+    print(page.id, len(content_lines))
+    line_groups = horizontal_group_lines(content_lines)
+    line_infos = []
+    for li, line_group in enumerate(line_groups):
+        dist_to_prev = None if li == 0 else compute_baseline_distances(line_group, line_groups[li-1])
+        dist_to_next = None if li == len(line_groups) - 1 else compute_baseline_distances(line_group, line_groups[li+1])
+        line_info = {
+            'line_group_idx': li,
+            'min_left': line_group[0].coords.left,
+            'max_right': line_group[-1].coords.right,
+            'max_line_width': max([line.coords.width for line in line_group]),
+            'dist_to_prev': dist_to_prev if dist_to_prev is None else np.median(dist_to_prev),
+            'dist_to_next': dist_to_next if dist_to_next is None else np.median(dist_to_next),
+        }
+        line_info['full_width'] = line_info['max_right'] - line_info['min_left']
+        line_infos.append(line_info)
+    assert len(line_infos) == len(line_groups)
+    for li, line_info in enumerate(line_infos):
+        context_infos = [line_info]
+        if line_info['dist_to_prev'] is not None:
+            max_dist_to_prev = 400
+            sum_dist = line_info['dist_to_prev']
+            for pi in range(0, li):
+                prev_info = line_infos[pi]
+                if sum_dist > max_dist_to_prev:
+                    break
+                context_infos.append(prev_info)
+                if prev_info['dist_to_prev'] is not None:
+                    sum_dist = sum_dist + prev_info['dist_to_prev']
+        if line_info['dist_to_next'] is not None:
+            max_dist_to_next = 400
+            sum_dist = line_info['dist_to_next']
+            for ni in range(li+1, len(line_infos)):
+                next_info = line_infos[ni]
+                if sum_dist > max_dist_to_next:
+                    break
+                context_infos.append(next_info)
+                if next_info['dist_to_next'] is not None:
+                    sum_dist = sum_dist + next_info['dist_to_next']
+        full_width_context = [ci for ci in context_infos if ci['full_width'] > 1700]
+        if len(full_width_context) == 0:
+            full_width_context = context_infos
+        context_lefts = np.array([ci['min_left'] for ci in full_width_context])
+        context_rights = np.array([ci['max_right'] for ci in full_width_context])
+        line_info['text_left_boundary'] = int(context_lefts.mean())
+        line_info['text_right_boundary'] = int(context_rights.mean())
+    merged_context_windows = []
+    for li, line_group in enumerate(line_groups):
+        print(f"long_line_splitter.make_page_line_context_windows - line_group")
+        line_info = line_infos[li]
+        print(line_info)
+        prev_group = None if li == 0 else line_groups[li-1]
+        next_group = None if li == len(line_groups) - 1 else line_groups[li+1]
+        merged_context_window = MergedLineContext(line_group, prev_group, next_group,
+                                                  text_left_boundary=line_info['text_left_boundary'],
+                                                  text_right_boundary=line_info['text_right_boundary'])
+        merged_context_windows.append(merged_context_window)
+    return merged_context_windows
 
 
 class LineSplitter:

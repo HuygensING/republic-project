@@ -246,7 +246,7 @@ def parse_session_starts_row(start_row: Dict[str, any]):
     return start_row
 
 
-def get_session_starts(inv_id: str, starts_only: bool = True, debug: int = 0):
+def get_session_starts(inv_id: str, starts_only: bool = False, debug: int = 0):
     project_dir = get_project_dir()
     if debug > 1:
         print(f"do_indexing.get_session_starts - project_dir: {project_dir}")
@@ -871,7 +871,7 @@ class Indexer:
                     print('indexing handwritten resolution', resolution.id)
                     # self.rep_es.index_resolution(resolution)
                 resolutions_json = [res.json for res in resolutions]
-                print('using resolution index', self.rep_es.config['resolutions_index'])
+                # print('using resolution index', self.rep_es.config['resolutions_index'])
                 self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], resolutions_json)
             except Exception as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)

@@ -37,7 +37,7 @@ proposition_opening_phrases = [
             'propositie_type:missive'
         ],
         'proposition_type': 'missive',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -51,7 +51,7 @@ proposition_opening_phrases = [
             'heeft ter Vergaderinge voorgedragen',
         ],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -66,7 +66,7 @@ proposition_opening_phrases = [
             'heeft aan haar Hoog Mog. gecommuniceert',
         ],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -76,7 +76,7 @@ proposition_opening_phrases = [
             'propositie_type:voordracht'
         ],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -86,7 +86,7 @@ proposition_opening_phrases = [
             'reference_type:resolutie'
         ],
         'reference_type': 'resolutie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -96,7 +96,7 @@ proposition_opening_phrases = [
             'propositie_type:onbekend'
         ],
         'proposition_type': 'onbekend',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -114,7 +114,7 @@ proposition_opening_phrases = [
             'heeft ter Vergaderinge gecommuniceert',
         ],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -124,7 +124,7 @@ proposition_opening_phrases = [
             'propositie_type:paspoort'
         ],
         'proposition_type': 'paspoort',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -134,7 +134,7 @@ proposition_opening_phrases = [
             'propositie_type:missive'
         ],
         'proposition_type': 'missive',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -148,7 +148,7 @@ proposition_opening_phrases = [
             'hebben ter Vergaderinge voorgedragen en laaten leesen der selver Resolutie'
         ],
         'proposition_type': 'resolutie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -158,7 +158,7 @@ proposition_opening_phrases = [
             'propositie_type:onbekend'
         ],
         'proposition_type': 'onbekend',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 500
     },
     {
@@ -176,7 +176,7 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen een Remonstrantie van',
         ],
         'proposition_type': 'requeste',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -191,7 +191,7 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen een Remonstrantie van'
         ],
         'proposition_type': 'memorie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -206,7 +206,7 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen een Remonstrantie van'
         ],
         'proposition_type': 'advies',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -221,7 +221,7 @@ proposition_opening_phrases = [
             'IS ter Vergaderinge gelesen een Advies van'
         ],
         'proposition_type': 'remonstrantie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -234,7 +234,7 @@ proposition_opening_phrases = [
             'propositie_type:rapport'
         ],
         'proposition_type': 'rapport',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -247,7 +247,7 @@ proposition_opening_phrases = [
             'propositie_type:rekest'
         ],
         'proposition_type': 'requeste',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -261,7 +261,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
         'proposition_type': 'declaratie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -275,7 +275,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Reekening van ',
         ],
         'proposition_type': 'instructie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -289,7 +289,7 @@ proposition_opening_phrases = [
             'ZYnde ter Vergaderinge getoont en geëxhibeert de Instructie van ',
         ],
         'proposition_type': "rekening",
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -299,7 +299,7 @@ proposition_opening_phrases = [
             'propositie_type:paspoort'
         ],
         'proposition_type': 'paspoort',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -309,7 +309,7 @@ proposition_opening_phrases = [
             'propositie_type:memorie'
         ],
         'proposition_type': 'memorie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -319,7 +319,7 @@ proposition_opening_phrases = [
             'propositie_type:voordracht'
         ],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -329,7 +329,7 @@ proposition_opening_phrases = [
             'propositie_type:onbekend'
         ],
         'proposition_type': 'onbekend',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -339,84 +339,84 @@ proposition_opening_phrases = [
             'propositie_type:differente'
         ],
         'proposition_type': 'differente',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'BY resumptie gedelibereert zynde op de Missive ',
         'label': ['proposition_opening', 'propositie_type:missive'],
         'proposition_type': 'missive',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'BY resumptie gedelibereert zynde op de Requeste ',
         'label': ['proposition_opening', 'propositie_type:rekest'],
         'proposition_type': 'requeste',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'BY resumptie gedelibereert zynde op de rapport ',
         'label': ['proposition_opening', 'propositie_type:rapport'],
         'proposition_type': 'rapport',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'BY resumptie gedelibereert zynde op het geproponeerde ',
         'label': ['proposition_opening', 'propositie_type:voordracht'],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'BY Resumptie gedelibereert zynde',
         'label': ['proposition_opening', 'propositie_type:onbekend'],
         'proposition_type': 'onbekend',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'De requeste van ',
         'label': ['proposition_opening', 'propositie_type:rekest'],
         'proposition_type': 'requeste',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 2
     },
     {
         'phrase': 'DE Conclusie van versoek van',
         'label': ['proposition_opening', 'propositie_type:conclusie'],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Antwoord van',
         'label': ['proposition_opening', 'propositie_type:conclusie'],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van versoek om',
         'label': ['proposition_opening', 'propositie_type:conclusie'],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Duplicq van',
         'label': ['proposition_opening', 'propositie_type:conclusie'],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'OP de Conclusie van Replicq op',
         'label': ['proposition_opening', 'propositie_type:conclusie'],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -426,35 +426,35 @@ proposition_opening_phrases = [
             'DE Conclusie van eisen'
         ],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'DE Conclusie van Eisch op de Requeste',
         'label': ['proposition_opening', 'propositie_type:conclusie'],
         'proposition_type': 'conclusie',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde uit naam van sijn Hoogheid ter Vergaderinge gedaan',
         'label': ['proposition_opening', 'propositie_type:voordracht'],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'OP het gerepresenteerde ter Vergaderinge gedaan',
         'label': ['proposition_opening', 'propositie_type:voordracht'],
         'proposition_type': 'voordracht',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
         'phrase': 'OP het gerapporteerde van',
         'label': ['proposition_opening', 'propositie_type:rapport'],
         'proposition_type': 'rapport',
-        'start_year': 1703, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 10
     },
     {
@@ -465,7 +465,7 @@ proposition_opening_phrases = [
             'DE Resolutien gisteren ge-',
         ],
         'label': 'reviewed',
-        'start_year': 1705, 'end_year': 1796,
+        'start_year': 1637, 'end_year': 1796,
         'max_start_offset': 4
     },
     {

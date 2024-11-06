@@ -209,7 +209,8 @@ class ResolutionElementDoc(RepublicDoc):
         self.paragraphs.append(paragraph)
         self.text_region_ids = self.text_region_ids.union([text_region.id
                                                            for text_region in paragraph.text_regions])
-        self.evidence += matches
+        if matches is not None:
+            self.evidence += matches
 
     @property
     def stats(self) -> Dict[str, int]:

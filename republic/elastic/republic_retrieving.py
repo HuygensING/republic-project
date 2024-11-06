@@ -387,7 +387,16 @@ class Retriever:
         for tr in self.retrieve_inventory_session_text_regions(inv_num):
             if 'session_id' not in tr.metadata:
                 continue
-            inv_session_trs[tr.metadata['session_id']].append(tr)
+            if isinstance(tr.metadata['session_id'], str):
+                inv_session_trs[tr.metadata['session_id']].append(tr)
+            elif isinstance(tr.metadata['session_id'], list):
+                for session_id in tr.metadata['session_id']:
+                    inv_session_trs[session_id].append(tr)
+            else:
+                print(f"republic_retrieving.retrieve_inventory_sessions - unexpected type in metadata['session_id']:")
+                print(f"    tr {tr.id} has session_id {tr.metadata['session_id']}")
+                raise TypeError(f"metadata field 'session_id' should be str or list, "
+                                f"not {type(tr.metadata['session_id'])}")
         for session_meta in inv_session_metas:
             yield make_session_from_meta_and_trs(session_meta, inv_session_trs[session_meta['id']])
 
