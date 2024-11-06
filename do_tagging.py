@@ -24,14 +24,15 @@ def tag_paragraph_formulas(task):
 
 def tag_paragraph_entities(task):
     inv_num = task['para_file'].split('-')[-1][:4]
+    assert 3 <= len(inv_num) <= 4 and inv_num.isdigit(), f"unexpected para_file name: {task['para_file']}"
     entities_file = os.path.join(task['entities_dir'],
                                  f"entity_annotations-layer_{task['layer_name']}-inv_{inv_num}.pcl")
     annotations = []
     count = 0
-    for year, para_id, para_type, text in read_paragraphs(task['para_file']):
-        if para_type in {'marginalia'}:
+    for para_json in read_paragraphs(task['para_file'], as_json=True, has_header=True):
+        if 'para_type' in para_json and para_json['para_type'] in {'marginalia'}:
             continue
-        annos = tag_resolution(text, para_id, task['model'])
+        annos = tag_resolution(para_json['text'], para_json['para_id'], task['model'])
         annotations.extend(annos)
         count += 1
         if count % 100 == 0:
@@ -50,10 +51,10 @@ def parse_args():
     argv = sys.argv[1:]
     # Define the getopt parameters
     try:
-        opts, args = getopt.getopt(argv, 'l',
-                                   ['layers='])
+        opts, args = getopt.getopt(argv, 'l:', ['layers='])
         layers = None
         for opt, arg in opts:
+            print(f"opt: {opt}\targ: {arg}")
             if opt in {'-l', '--layers'}:
                 layers = arg
                 if ':' in layers:
@@ -92,8 +93,9 @@ def main():
         with multiprocessing.Pool(processes=num_processes) as pool:
             pool.map(tag_paragraph_formulas, tasks)
     else:
-        entities_dir = 'data/entities/annotations'
-        para_dir = 'data/paragraphs/loghi'
+        entities_dir = 'data/entities/annotations-Nov-2024'
+        para_dir = 'data/paragraphs/entities-Nov-2024'
+        # para_dir = 'data/paragraphs/test'
         para_files = read_para_files(para_dir)
         print('num para files:', len(para_files))
         for layer_name in layers:
