@@ -716,7 +716,7 @@ class Indexer:
         message = f"deleting inventory {inv_metadata['inventory_id']} from index {index}"
         logger.info(message)
         print(message)
-        response = self.rep_es.delete_by_inventory(index, inv_id=inv_metadata['inventory_id'])
+        response = self.rep_es.delete_by_inventory(index, inv_num=inv_metadata['inventory_num'])
         logger.info(f'ES response: {response}')
         print(f'ES response: {response}\n')
 
@@ -810,7 +810,7 @@ class Indexer:
         print(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         opening_searcher, verb_searcher = printed_res_parser.configure_resolution_searchers()
         line_break_detector = load_line_break_detector()
-        self.rep_es.delete_by_inventory(inv_num=inv_num, index=self.rep_es.config['resolutions_index'])
+        print(f"\n\n-------------\n{self.rep_es.config['resolutions_index']}\n\n-------------\n")
         errors = []
         for session in self.get_inventory_sessions(inv_num):
             logger.info(f"indexing resolutions for session {session.id}")
@@ -889,8 +889,7 @@ class Indexer:
     def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         inv_metadata = get_inventory_by_num(inv_num)
         # make sure previous resolutions from inventory are removed
-        self.remove_inventory_docs_from_index(self.rep_es.config['resolutions_index'],
-                                              inv_metadata=inv_metadata)
+        self.rep_es.delete_by_inventory(inv_num=inv_num, index=self.rep_es.config['resolutions_index'])
         if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
             self.do_printed_resolution_indexing(inv_num, year_start, year_end)
         else:
