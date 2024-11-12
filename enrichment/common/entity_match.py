@@ -33,6 +33,7 @@ class EntityLabel(JSONSerialisable):
     category: str
     labels: set[str] = field(default_factory=set)
     comment: str = field(default=None)
+    links: [dict] = field(default_factory=list)
 
 @dataclass
 class EntityProvenance(JSONSerialisable):

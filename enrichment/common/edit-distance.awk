@@ -264,7 +264,7 @@ function search(segments, seps, found, matched,
     for (i in matches) for (kw in matches[i]) for (d in matches[i][kw]) {
         found[++m] = lemmas[kw]
         j = +matches[i][kw][d]
-        w = segments[i] j
+        w = segments[i]
         for (n=1+i;n<=j;n++) w = w seps[n-1] segments[n]
         matched[m] = w
         if (REPORT) replacements[lemmas[kw]][kw][w]++

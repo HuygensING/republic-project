@@ -19,7 +19,7 @@ NR==FNR { # read the date variants
 }
 
 BEGIN { # read session dates
-    while (0 < getline <"session_dates.tsv") {
+    while (1 == getline <"../ner-output/session_dates.tsv") {
         sessiondates[$1] = $2
     }
 }
@@ -31,8 +31,9 @@ FNR==1 {
 
 
 {
+	in_RES = +$9
     resolution = sdate = $3 # resolution_id
-    gsub(/-resolution-.*/, "", sdate)
+    gsub(/-resolution-.*/, "", sdate) # |-> session_id
     if (sdate in sessiondates) sdate = sessiondates[sdate]
     else print "No date known for session "sdate >"/dev/stderr"
     if (match(sdate, /([0-9]+)-0?([0-9]+)-0?([0-9]+)/, m)) {
@@ -274,7 +275,7 @@ FNR==1 {
     gsub(/^\t/, "", resolved)
     if (list ~ / ?RANGE/) sub(resolved, /\t/, "--")
     # Print results
-    print source, $0, resolved ? resolved : ""
+    if (in_RES) print source, $0, resolved ? resolved : ""
 }
 
 function month_length(year, month_nr) {

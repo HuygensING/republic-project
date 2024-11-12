@@ -1,6 +1,15 @@
 #!/usr/bin/env -S gawk -f
 
+# USAGE: gawk -f improve-ner-output.awk ner-output.tsv > enriched-output.tsv
+#
+# OPTIONS
+#
+#   FIELDNR=5       Field number of the field to operate on
+#   NOFUZZY=1       Disable the fuzzy matching list
+#
+
 BEGIN { FS=OFS="\t" }
+BEGIN { FIELDNR=5 }
 
 @include "provenance"
 @include "edit-distance"
@@ -34,7 +43,7 @@ BEGINFILE { PROVENANCE = FILENAME
 FNR==1 { print $0, "improved_tag_text"; next }
 
 {
-    store0 = $0; $0 = $5 # tag_text
+    store0 = $0; $0 = $FIELDNR # tag_text
     IGNORECASE=1
     for (p in splits) provenance::replace(p, splits[p], "split words")
     IGNORECASE=0
@@ -42,7 +51,11 @@ FNR==1 { print $0, "improved_tag_text"; next }
     for (p in simpl) provenance::replace(p, simpl[p], "simplify")
     for (p in spellings) provenance::replace(p, spellings[p], "harmonise spelling")
     gsub(/  +/, " ", $0)
-    split($0, segments, /[^A-Za-z:-]+/, seps)
-    print store0, fuzzy::replace_matches(segments, seps)
+    if (NOFUZZY) {
+        print store0, $0
+    } else {
+        split($0, segments, /[^A-Za-z:-]+/, seps)
+        print store0, fuzzy::replace_matches(segments, seps)
+    }
 }
 

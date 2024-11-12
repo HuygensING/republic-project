@@ -26,8 +26,8 @@
 
 BEGIN { FS=OFS="\t"
     PROCINFO["sorted_in"] = "@val_num_desc"
-	MIN_FOUND = 2
-	TRESHOLD = 0.85
+    MIN_FOUND = 2
+    TRESHOLD = 0.85
 }
 
 # reading the regexes
@@ -50,22 +50,22 @@ FNR<NR {
 
 END {
     for(r in matches) {
-		print "Variants of", r, length(matches[r]) >"/dev/stderr"
-		delete seen
+        print "Variants of", r, length(matches[r]) >"/dev/stderr"
+        delete seen
         printf r
         for (m in matches[r]) {
             if (matches[r][m] < MIN_FOUND) continue
-			# filter out close variants
-			p=1; for (s in seen) {
-				if (levenshtein(s,m)>TRESHOLD) {
-					p=0; continue
-				}
-			}
-			# print remaining variants
-			if (p) {
-				seen[m] = length(seen)
-				printf OFS m
-			}
+            # filter out close variants
+            p=1; for (s in seen) {
+                if (levenshtein(s,m)>TRESHOLD) {
+                    p=0; continue
+                }
+            }
+            # print remaining variants
+            if (p) {
+                seen[m] = length(seen)
+                printf OFS m
+            }
         }
         printf "\n"
     }
