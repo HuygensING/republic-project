@@ -12,7 +12,7 @@ NR==FNR {
     ref[$4][$6] = +$7 # [paragraph_id][offset] = end
     next }
 
-FNR==1 { print $0, "in_reference" }
+FNR==1 { print $0, "in_reference"; next }
 
 $4 in ref {
     for (start in ref[$4]) {
@@ -21,5 +21,5 @@ $4 in ref {
     }
 }
 
-{ print $0, 0 }
+# { print $0, 0 } # Do not print unincluded dates! The rest of the pipeline depends on line numbers
 
