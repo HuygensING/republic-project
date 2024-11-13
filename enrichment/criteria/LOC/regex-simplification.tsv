@@ -1,0 +1,94 @@
+ ' s	 's	Komt veel voor
+ ' t	 't	Komt veel voor
+ s *'	 's	-- ,, --
+ t *'	 't	-- ,, --
+s' 	's 	idem
+ ' 		zwevende apostrof verwijderen
+ *[-—] *	-	Meestal zijn de spaties onterecht
+[=„] 	 	Regelafbreking
+\bvand[e']	van de	Samentrekkingen
+\binde\b	in de	-- ,, --
+\bint\b	in het	-- ,, --
+\bd'	de 	-- ,, --
+\btottet	tot het	-- ,, --
+\btotte	tot de	-- ,, --
+\bop[dt]e\b	op de	-- ,, --
+\bvan[']?t\b	van het	-- ,, --
+[&]	en	Vormen van ‘en’
+\bende\b	en	-- ,, --
+inden ha.*	den hage	
+ij	y	Spellingsharmonisatie
+ck	k	-- ,, --
+gh	g	-- ,, --
+gt	cht	-- ,, --
+u(y|ij)	uy	-- ,, --
+([bgdzthklmnxprst]*)ui([bgdzthklmnxprst]*)	\1uy\2	Pruissen -> Pruyzen
+ae	aa	-- ,, --
+oist	oost	
+^ +| +$		Zwevende spaties
+[@/#=„?!"¬]	 	Vreemde leestekens weg
+(\w*),+(\w*)	\1\2	Commas ten midden van letters
+(?<!\bst)\.		Punt behalve in St. constructie
+(\w)\1\1	\1\1	Drie herhaalde tekens naar 2 (Sitfff = Stiff)
+\b(\w*?)land?te?\b	\1land	
+lants	lands	
+\b(\w*?)stad?t?\b	\1stad	
+braban(dt|d|t)	brabant	
+inden ha(\w*?)	den ha\1	inden hage -> den hage
+([aeio])u([aeio])	\1v\2	Ouemaze -> Overmaze
+\b([a-z]*)h[ea]r ?togenb[a-z]*\b	\1hertogenbosch	
+\b'?[a-z]+hertogenbosch\b	's hertogenbosch	
+\b(?<!\')([st]) (\w*)\b	'\1 \2	apostrof toevoegen aan t of s voor woord zonder apo (s Hertogen, t noorderquartier)
+'(ts|s|t)(\w*)	'\1 \2	'shertogenrade -> 's hertogenrade
+(?<!s)'hertogenbosch	's hertogenbosch	
+(?<!')s(herto*?)	's \1	shertogenrade -> 's hertogenrade
+\b[0-9]+(\w*)\b	\1	Alle woorden met nummers
+\b(\w*)[0-9]+(\w*)\b	\1\2	
+\b(\w*)[0-9]+\b	\1	
+vlaenderen?	vlaenderen	
+po+rtuga[ae]?le?	portugael	
+spai?gni?e[sn]?	spaigne	
+pro[uv]in[cst]	provinc	
+hollan[dt]t?e?	holland	
+[fv]rankr?yke?	frankryk	
+duitz?slante?	duitslant	
+de+n+emark(en)?	denemarken	
+furstendom	vorstendom	
+groe?ningen?e?	groningen	
+[zs]wollen?	zwolle	
+[zs]we+dene?	zweden	
+[ck]opp?enhagen?e?	copenhagen	
+poo?lene?	polene	Polen
+[kc]eulen	keulen	
+frankf[uo]rt	frankfort	
+leeuwaarden	leeuwarden	
+[zs]eelande?	zeeland	
+a?arnhem	arnhem	
+holsteine?	holsteyn	
+par[yi]j?s	parys	
+lond[oe]n	londen	
+maa?stricht	maastricht	
+pl.tt?en? l.nde?n?	plattelanden	
+aart[zs].*stift	aarts-stift	
+-van 	 van 	
+ van-	 van 	
+van's	van 's	
+v[iy].*nden?	vyanden	
+dom capittel	dom-capittel	
+hoofd quartier	hoofd-quartier	
+inhenegouwen	in henegouwen	
+en-lunenburg	en lunenburg	
+in-vlaanderen	in vlaanderen	
+is hertogenbosch	's hertogenbosch	
+oost-of	oost of	
+pensylvaniadelaware	pensylvania delaware	
+tripoliwaar	tripoli waar	
+st. agatha-wesende	st. agatha wesende	
+waalhoudende	waal houdende	
+bar baryen	barbaryen	
+bar riere	barriere	
+cleeffmark	cleeff mark	
+porto belloaf	porto bello af	
+deschanssen	de schanssen	
+\benvan\b	en van	
+[‘’‛`']+	'	
