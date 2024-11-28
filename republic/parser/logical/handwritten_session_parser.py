@@ -26,6 +26,7 @@ from republic.parser.pagexml.page_date_parser import get_inventory_date_mapper
 from republic.parser.pagexml.page_date_parser import classify_page_date_regions
 from republic.parser.pagexml.page_date_parser import load_date_region_classifier
 from republic.parser.pagexml.page_date_parser import find_date_region_record_lines
+from republic.parser.pagexml.generic_pagexml_parser import copy_page
 from republic.parser.logical.generic_session_parser import make_session_date_metadata
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.generic_session_parser import make_session_metadata
@@ -597,6 +598,7 @@ def map_date_starts(page: pdm.PageXMLPage, session_starts: List[Dict[str, any]],
     date_start_map = {}
     if session_starts is not None:
         page_records = [record for record in session_starts if page.metadata['page_num'] == record['page_num']]
+        # page_start_records = [record for record in page_records if record['date_type'] == 'start']
         if debug > 0:
             print(f"handwritten_session_parser.map_date_starts - page {page.id}\tnumber of start records: {len(page_records)}")
         for record in page_records:
@@ -740,7 +742,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
     jump_days = 0
     num_lines_since_extract_intro = 0
     for pi, page in enumerate(pages):
-        page = copy.deepcopy(page)
+        page = copy_page(page)
         tr_assigned_to_date = {}
         if page.stats['words'] == 0:
             continue
@@ -835,9 +837,8 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     else:
                         if debug > 0:
                             print(f"  session start found on same date as current date")
-                    print(f"\nADDING date_metadata for current date {current_date.isoformat()}")
-                    print(f"{date_metadata}")
-                    print(f"\tdate_metadata date: {date_metadata['session_date']}")
+                    # print(f"\nADDING date_metadata for current date {current_date.isoformat()}")
+                    # print(f"\tdate_metadata date: {date_metadata['session_date']}")
                     session_dates[current_date.isoformat()].append(date_metadata)
                 if current_date.isoformat() not in session_dates:
                     no_evidence_metadata = add_date_start_with_no_evidence(current_date, main_tr,

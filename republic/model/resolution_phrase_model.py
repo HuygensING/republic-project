@@ -816,7 +816,7 @@ proposition_opening_phrases = [
             'La reqte de',
             'La reqte. de',
             'La reqte. des',
-            'La reqte. van'
+            'La reqte. van',
             'Quand a la Reqte.',
             'Touchant la reqte. de ',
             'Messieurs ont sur la reqte.',
