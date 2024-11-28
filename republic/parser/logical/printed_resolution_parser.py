@@ -339,11 +339,11 @@ class SessionParagraphGenerator(ParagraphGenerator):
                 elif tr.metadata["text_page_num"] is not None:
                     text_page_num_map[tr.id] = tr.metadata["text_page_num"]
                 page_num_map[tr.id] = tr.metadata["page_num"]
-            if 1705 <= session.date.date.year < 1711:
+            if session.date.date.year < 1711:
                 paragraphs = self.get_paragraphs_with_indent(session, prev_line=prev_line,
                                                              text_page_num_map=text_page_num_map,
                                                              page_num_map=page_num_map)
-            elif session.date.date.year < 1705 or session.date.date.year >= 1711:
+            elif session.date.date.year >= 1711:
                 paragraphs = self.get_paragraphs_with_vertical_space(session, prev_line=prev_line,
                                                                      text_page_num_map=text_page_num_map,
                                                                      page_num_map=page_num_map,

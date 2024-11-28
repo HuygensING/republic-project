@@ -151,14 +151,15 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         if 'inventory_id' not in line.metadata:
             line.metadata['inventory_id'] = inv_metadata['inventory_id']
         if "column_id" not in line.metadata:
-            print(line.id, line.parent.id, line.parent.type)
-            print(line.parent.parent.id)
+            print(f"printed_session_parser.generate_session_doc - column_id not in line.metadata")
+            print(f"    line: {line.id}, parent: {line.parent.id}, parent_type: {line.parent.type}")
+            print(f"        line.parent.parent.id: {line.parent.parent.id}")
         text_region_id = line.metadata['column_id']
         text_region_lines[text_region_id].append(copy_line(line))
         # text_region_lines[text_region_id].append(line)
     for text_region_id in text_region_lines:
         if text_region_id not in column_metadata:
-            print(f'printed_session_parser.generate_session_doc - text_region_id {text_region_id}'
+            print(f'printed_session_parser.generate_session_doc - text_region_id {text_region_id} '
                   f'not in column_metadata')
             for line in text_region_lines[text_region_id]:
                 if line.metadata['column_id'] == text_region_id:
@@ -350,7 +351,9 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
     pages.sort(key=lambda page: page.id)
     # date_token_cat = get_date_token_cat(inv_num=inv_metadata['inventory_num'], ignorecase=ignorecase)
     # session_date_lines = get_session_date_lines_from_pages(pages, filter_date_starts=False)
-    if 3760 <= inv_metadata['inventory_num'] <= 3805:
+    if 400 <= inv_metadata['inventory_num'] <= 456:
+        date_type = 'printed_early'
+    elif 3760 <= inv_metadata['inventory_num'] <= 3805:
         date_type = 'printed_early'
     elif 3806 <= inv_metadata['inventory_num'] <= 3864:
         date_type = 'printed_late'
@@ -379,7 +382,7 @@ def get_date_mapper(inv_metadata: Dict[str, any], pages: List[pdm.PageXMLPage],
 
     if debug > 2:
         print(f"printed_session_parser.get_date_mapper - date_line_structure:", date_line_structure)
-    return DateNameMapper(inv_metadata, date_line_structure)
+    return DateNameMapper(inv_metadata, [date_line_structure])
 
 
 def sort_inventory_pages(inv_id: str, pages: List[pdm.PageXMLPage], debug: int = 0) -> List[pdm.PageXMLPage]:

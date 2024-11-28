@@ -597,7 +597,8 @@ def map_date_starts(page: pdm.PageXMLPage, session_starts: List[Dict[str, any]],
     date_start_map = {}
     if session_starts is not None:
         page_records = [record for record in session_starts if page.metadata['page_num'] == record['page_num']]
-        print(f"{page.id}\t{len(page_records)}")
+        if debug > 0:
+            print(f"handwritten_session_parser.map_date_starts - page {page.id}\tnumber of start records: {len(page_records)}")
         for record in page_records:
             record_lines = find_date_region_record_lines(page, record, debug=debug)
             date_start_lines.extend(record_lines)
@@ -673,7 +674,7 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
         if record['date_type'] == 'start':
             update_date = RepublicDate(record['year'], record['month_num'], record['day_num'],
                                        date_mapper=date_mapper)
-            date_metadata = make_session_date_metadata(current_date, line, start_record=record)
+            date_metadata = make_session_date_metadata(update_date, line, start_record=record)
         else:
             # IMPORTANT!
             # if date_type is not date, the line is not a start date and should be ignored
@@ -693,12 +694,13 @@ def check_date_update(page: pdm.PageXMLPage, line: pdm.PageXMLTextLine, main_tr:
         if debug > 0:
             print('\tbest_match', best_match.phrase.phrase_string, '\t', best_match.string, '\t',
                   best_match.levenshtein_similarity)
-        print(f'\tdate: {update_date.isoformat()}  {best_match.phrase.phrase_string}\t{best_match.string}\tline: {line.id}\tpage: {page.id}')
+        print(f'\tdate: {update_date.isoformat()}  phrase: {best_match.phrase.phrase_string}\t'
+              f'string: {best_match.string}\tline: {line.id}\tpage: {page.id}')
         # print('\n--------------------------------\n')
         if debug > 2:
             print(f'UPDATING CURRENT DATE from {current_date_string} to '
                   f'{date_strings[best_match.phrase.phrase_string].date.isoformat()}')
-        date_metadata = make_session_date_metadata(current_date, line, fuzzy_date_match=best_match)
+        date_metadata = make_session_date_metadata(update_date, line, fuzzy_date_match=best_match)
     return update_date, date_metadata
 
 
@@ -786,7 +788,7 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
             if main_tr.metadata['text_region_class'] == 'para':
                 session_trs[current_date.isoformat()].append(main_tr)
                 num_trs = len(session_trs[current_date.isoformat()])
-                if debug > -1:
+                if debug > 0:
                     print(f'find_session_dates - adding tr {num_trs} to session with date {current_date.isoformat()}')
                 if debug > 1:
                     for line in main_tr.lines:
@@ -814,7 +816,8 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                         # if update_date is different, we need metadata for the new date
                         # if update_date is the same as current_date, it is an extra session
                         # on the same day, so don't update the date_metadata
-                        print(f"update_date - current_date: {update_date - current_date}")
+                        print(f"update_date - current_date: {update_date - current_date}"
+                              f"\told date: {current_date.isoformat()} at line {line.id}")
                         delta = update_date - current_date
                         current_date = update_date
                         if delta.days > 2:
@@ -832,6 +835,9 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                     else:
                         if debug > 0:
                             print(f"  session start found on same date as current date")
+                    print(f"\nADDING date_metadata for current date {current_date.isoformat()}")
+                    print(f"{date_metadata}")
+                    print(f"\tdate_metadata date: {date_metadata['session_date']}")
                     session_dates[current_date.isoformat()].append(date_metadata)
                 if current_date.isoformat() not in session_dates:
                     no_evidence_metadata = add_date_start_with_no_evidence(current_date, main_tr,
@@ -850,6 +856,10 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                 print(f"  date in session_dates dict: {ses_date}")
         for prev_date in prev_dates:
             session_date_metadata = session_dates[prev_date].pop(0)
+            if debug > 0:
+                print(f"handwritten_session_parser.find_session_dates - yielding session:")
+                print(f"    prev_date: {prev_date}")
+                print(f"    date in date_metadata: {session_date_metadata['session_date']}")
             yield session_date_metadata, session_trs[prev_date]
             del session_trs[prev_date]
             del session_dates[prev_date]

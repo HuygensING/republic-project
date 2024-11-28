@@ -183,11 +183,11 @@ class Retriever:
 
     def scroll_hits(self, es: Elasticsearch, query: dict, index: str,
                     size: int = 100, scroll: str = '2m', show_total: bool = True,
-                    sort: List[str] = None) -> iter:
+                    sort: List[str] = None, _source: List[str] = None) -> iter:
         if query is None:
-            response = es.search(index=index, scroll=scroll, size=size, sort=sort)
+            response = es.search(index=index, scroll=scroll, size=size, sort=sort, _source=_source)
         else:
-            response = es.search(index=index, scroll=scroll, size=size, query=query, sort=sort)
+            response = es.search(index=index, scroll=scroll, size=size, query=query, sort=sort, _source=_source)
         self.scroll_id = response['_scroll_id']
         scroll_size = response['hits']['total']
         if type(scroll_size) == dict:
@@ -534,11 +534,11 @@ class Retriever:
         query = make_bool_query(query_fields)
         return self.retrieve_resolutions_by_query(query, size=1000)
 
-    def scroll_resolutions_by_query(self, query: dict,
-                                    scroll: str = '1m',
-                                    sort: List[str] = None) -> Generator[rdm.Resolution, None, None]:
+    def scroll_resolutions_by_query(self, query: dict, scroll: str = '1m', size: int = 10,
+                                    sort: List[str] = None,
+                                    _source: List[str] = None) -> Generator[rdm.Resolution, None, None]:
         for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolutions_index'],
-                                    size=10, scroll=scroll, sort=sort):
+                                    size=size, scroll=scroll, sort=sort, _source=_source):
             yield rdm.json_to_republic_resolution(hit['_source'])
 
     def retrieve_resolutions_by_query(self, query: dict, size: int = 10,
@@ -558,12 +558,14 @@ class Retriever:
                 resolutions.append(res)
             return resolutions
 
-    def scroll_inventory_resolutions(self, inventory_num: int) -> Generator[rdm.Resolution, None, None]:
+    def scroll_inventory_resolutions(self, inventory_num: int,
+                                     size: int = 10, _source: List[str] = None) -> Generator[rdm.Resolution, None, None]:
         query = make_bool_query([
             {'match': {'metadata.inventory_num': inventory_num}},
             {'match': {'metadata.type': 'resolution'}}
         ])
-        for resolution in self.scroll_resolutions_by_query(query, scroll='20m', sort=['id.keyword']):
+        for resolution in self.scroll_resolutions_by_query(query, scroll='20m', size=size,
+                                                           sort=['id.keyword'], _source=_source):
             yield resolution
 
     def retrieve_attendance_list_by_id(self, att_id: str) -> rdm.AttendanceList:

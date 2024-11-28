@@ -2,8 +2,8 @@ import re
 import datetime
 from typing import List, Union, Dict
 from republic.model.republic_phrase_model import resolution_phrases, participant_list_phrases
-from republic.model.republic_phrase_model import week_day_names, week_day_name_map
-from republic.model.republic_phrase_model import month_names_early, month_names_late, month_map_late, month_map_early
+from republic.model.republic_date_phrase_model import weekday_names, weekday_name_map
+from republic.model.republic_date_phrase_model import month_names_early, month_names_late, month_map_late, month_map_early
 from republic.model.republic_hocr_model import HOCRPage, HOCRColumn, HOCRParagraph, HOCRLine, HOCRWord
 
 

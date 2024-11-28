@@ -14,6 +14,7 @@ from republic.parser.pagexml.republic_column_parser import is_full_text_column
 from republic.parser.pagexml.republic_column_parser import is_text_column
 from republic.parser.pagexml.republic_column_parser import make_derived_column
 from republic.helper.metadata_helper import make_iiif_region_url
+from republic.helper.pagexml_helper import check_element_ids
 from republic.config.republic_config import base_config
 from republic.parser.logical.date_parser import line_starts_with_weekday_name
 
@@ -67,6 +68,7 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
             for col in cols:
                 col.set_parent(page_doc)
                 col.set_derived_id(page_doc.id)
+                pagexml_helper.check_parentage(col)
             if debug > 0:
                 print(f'\tAFTER SPLITTING REGION IS {len(cols)} COLUMNS')
         else:
@@ -74,8 +76,16 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
                 print(f'\tREGULAR TEXT REGION {text_region.id}, NOT SPLITTING')
             text_regions.append(text_region)
         # text_regions += [text_region] if text_region.lines else text_region.text_regions
+    for tr in text_regions:
+        if tr.id is None:
+            print(tr)
+            raise ValueError(f"text_region with id None after splitting on column gaps")
     text_regions.sort(key=lambda x: x.coords.top)
     text_regions = split_merged_regions(text_regions)
+    for tr in text_regions:
+        if tr.id is None:
+            print(tr)
+            raise ValueError(f"text_region with id None after splitting merged regions")
     # remove the text_regions as direct descendants of page
     page_doc.text_regions = []
     for text_region in text_regions:
@@ -83,7 +93,10 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         tr_width = text_region.coords.width
         if tr_width == 0:
             tr_width = 1
-        text_region.set_as_parent(text_region.lines)
+        if isinstance(text_region, pdm.PageXMLColumn):
+            text_region.set_as_parent(text_region.lines)
+        else:
+            text_region.set_as_parent(text_region.lines)
         if text_region.lines and text_region.coords.width > max_column_width:
             # Wide text_regions are part of the header
             if debug > 0:
@@ -92,6 +105,8 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
             text_region.add_type('extra')
         if text_region.has_type('extra'):
             extra_text_regions += [text_region]
+            if '-text_region-' not in text_region.id:
+                print(f"republic_page_parser.split_column_regions - extra text_region is wrong type: {text_region.id}")
             continue
         # check if this text region overlaps with an existing column
         overlapping_column = None
@@ -106,16 +121,31 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
                 break
         # if there is an overlapping column, add this text region
         if overlapping_column:
-            overlapping_column.text_regions += [text_region]
+            pagexml_helper.check_parentage(text_region)
+            if isinstance(text_region, pdm.PageXMLColumn):
+                for tr in text_region.text_regions:
+                    overlapping_column.add_child(tr)
+            else:
+                overlapping_column.add_child(text_region)
             overlapping_column.coords = pdm.parse_derived_coords(overlapping_column.text_regions)
+            overlapping_column.set_derived_id(page_doc.id)
+            overlapping_column.set_as_parent(overlapping_column.text_regions)
+            pagexml_helper.check_parentage(overlapping_column)
+            check_element_ids(overlapping_column, after_step=f'adding text region to overlapping column')
         # if no, create a new column for this text region
         else:
             if text_region.coords.width > 0 and text_region.coords.height > 0:
                 coords = pdm.parse_derived_coords([text_region])
             else:
                 coords = pdm.Coords([point for point in text_region.coords.points])
-            column = pdm.PageXMLColumn(coords=coords, metadata=column_metadata,
-                                       text_regions=[text_region])
+            if isinstance(text_region, pdm.PageXMLColumn):
+                column = text_region
+            else:
+                column = pdm.PageXMLColumn(coords=coords, metadata=column_metadata,
+                                           text_regions=[text_region])
+                column.set_derived_id(text_region.metadata['scan_id'])
+                pagexml_helper.check_parentage(column)
+            check_element_ids(column, after_step=f'creating column for text regions')
             columns += [column]
     for column in columns:
         if not column.coords:
@@ -130,15 +160,14 @@ def split_column_regions(page_doc: pdm.PageXMLPage, config: Dict[str, any] = bas
         pagexml_helper.set_line_alignment(column)
         pagexml_helper.copy_reading_order(page_doc, column)
         column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], column.coords)
-    if extra_text_regions:
-        extra_coords = pdm.parse_derived_coords(extra_text_regions)
-        extra = pdm.PageXMLTextRegion(metadata=extra_metadata, coords=extra_coords, text_regions=extra_text_regions)
-        extra.main_type = 'extra'
-        extra.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page_doc.metadata['jpg_url'], extra.coords)
-        extra.set_derived_id(extra.metadata['scan_id'])
+    for column in columns:
+        for tr in column.text_regions:
+            pagexml_helper.check_parentage(tr)
+        pagexml_helper.check_parentage(column)
     new_page = pdm.PageXMLPage(doc_id=page_doc.id, doc_type=page_doc.type, coords=page_doc.coords,
                                metadata=page_doc.metadata, columns=columns, extra=extra_text_regions,
                                reading_order=page_doc.reading_order)
+    check_element_ids(new_page, after_step='sorting trs in columns and extra')
     new_page.set_parent(page_doc.parent)
     return new_page
 

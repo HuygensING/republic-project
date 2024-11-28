@@ -35,7 +35,16 @@ class RepublicDoc(pdm.LogicalStructureDoc):
         for text_region in self.text_regions:
             scan_id = text_region.metadata['scan_id']
             # Example scan_id: NL-HaNA_1.01.02_3783_0051
-            inventory_num = int(scan_id.replace('NL-HaNA_1.01.02_', '').split('_')[0])
+            if 'inventory_num' in text_region.metadata:
+                inventory_num = text_region.metadata['inventory_num']
+            elif 'NL-HaNA_1.01.02_' in scan_id:
+                inventory_num = int(scan_id.replace('NL-HaNA_1.01.02_', '').split('_')[0])
+            elif 'NL-HaNA_1.10.94_' in scan_id:
+                inventory_num = int(scan_id.replace('NL-HaNA_1.10.94_', '').split('_')[0])
+            else:
+                print(f"text_region.id: {text_region.id}")
+                print(f"text_region.metadata: {text_region.metadata}")
+                raise ValueError(f"No inventory_num info in metadata")
             urls = make_scan_urls(inventory_num=inventory_num, scan_id=scan_id)
             text_region.metadata['iiif_url'] = make_iiif_region_url(urls['jpg_url'], text_region.coords.box,
                                                                     add_margin=100)

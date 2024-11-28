@@ -128,7 +128,17 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
         sorted_trs = sorted(merged_trs, key=lambda x: x.coords.y)
         merged_lines = [line for col in columns for line in col.lines]
         sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
-        merged_coords = pdm.parse_derived_coords(sorted_trs + sorted_lines)
+        try:
+            merged_coords = pdm.parse_derived_coords(sorted_trs + sorted_lines)
+        except IndexError:
+            print(f"pagexml_helper.merge_column - Error deriving coords from trs and lines:")
+            print(f"    number of trs: {len(sorted_trs)}")
+            print(f"    number of lines: {len(sorted_lines)}")
+            for tr in sorted_trs:
+                print(f"\ttr {tr.id}\tnumber of points: {len(tr.coords.points)}")
+            for line in sorted_lines:
+                print(f"\tline {line.id}\tnumber of points: {len(line.coords.points)}")
+            raise
         merged_col = pdm.PageXMLColumn(doc_id=doc_id,
                                        metadata=metadata, coords=merged_coords,
                                        text_regions=sorted_trs, lines=sorted_lines)
@@ -573,7 +583,9 @@ def check_parentage(doc: pdm.PageXMLDoc):
             if line.parent is None:
                 raise ValueError(f"no parent set for line {line.id} in text_region {doc.id}")
             if line.parent != doc:
-                print('line parent:', line.parent.id)
+                print('line.parent.id:', line.parent.id)
+                print('line.parent:', line.parent)
+                print('doc (tr):', doc)
                 raise ValueError(f"wrong parent set for line {line.id} in text_region {doc.id}")
 
 
@@ -588,6 +600,28 @@ def check_page_parentage(page: pdm.PageXMLPage):
                 if line.parent != tr:
                     raise ValueError(f"no parent set for line {line.id} in page {page.id}")
     return None
+
+
+def check_element_ids(doc: pdm.PageXMLDoc, after_step: str = None):
+    if hasattr(doc, 'extra'):
+        for tr in doc.extra:
+            if '-text_region-' not in tr.id:
+                print(f"republic_pagexml_parser.check_element_ids - ID error after {after_step}")
+                raise ValueError(f"invalid text_region id '{tr.id}' in doc {doc.id}")
+    if hasattr(doc, 'columns'):
+        for col in doc.columns:
+            if 'column-' not in col.id:
+                print(f"republic_docxml_parser.check_element_ids - ID error after {after_step}")
+                raise ValueError(f"invalid column id '{col.id}' in doc {doc.id}")
+            for tr in col.text_regions:
+                if '-text_region-' not in tr.id:
+                    print(f"republic_docxml_parser.check_element_ids - ID error after {after_step}")
+                    raise ValueError(f"invalid text_region id '{tr.id}' in doc {doc.id}")
+    if hasattr(doc, 'text_regions'):
+        for tr in doc.text_regions:
+            if '-text_region-' not in tr.id:
+                print(f"republic_docxml_parser.check_element_ids - ID error after {after_step}")
+                raise ValueError(f"invalid text_region id '{tr.id}' in doc {doc.id}")
 
 
 def set_parentage_metadata(doc: pdm.PageXMLDoc):

@@ -44,7 +44,7 @@ def match_has_weekday_name(match: PhraseMatch, date_mapper: DateNameMapper) -> b
 
 def extract_best_date_match(date_mapper: DateNameMapper, matches: List[PhraseMatch],
                             current_date: RepublicDate, jump_days: int,
-                            date_strings: Dict[str, RepublicDate]) -> Union[None, PhraseMatch]:
+                            date_strings: Dict[str, RepublicDate], debug: int = 0) -> Union[None, PhraseMatch]:
     if len(matches) == 0:
         return None
     expected_date = current_date + datetime.timedelta(days=jump_days)
@@ -85,13 +85,15 @@ def extract_best_date_match(date_mapper: DateNameMapper, matches: List[PhraseMat
     if len(best_matches) > 1:
         best_delta = datetime.timedelta(days=36500)
         best_date, best_match = None, None
-        print("date_parser.extract_best_date_match - multiple best matches")
-        print(f"    jump_days: {jump_days}")
-        print(f"    expected_date: {expected_date}")
+        if debug > 0:
+            print("date_parser.extract_best_date_match - multiple best matches")
+            print(f"    jump_days: {jump_days}")
+            print(f"    expected_date: {expected_date}")
         for match in best_matches:
             match_date = date_strings[match.variant.phrase_string]
             time_delta = match_date - expected_date
-            print(f"    match: {match.variant.phrase_string} {match.string} time_delta: {time_delta}")
+            if debug > 0:
+                print(f"    match: {match.variant.phrase_string} {match.string} time_delta: {time_delta}")
             if time_delta < datetime.timedelta(days=0):
                 continue
             if time_delta < best_delta:

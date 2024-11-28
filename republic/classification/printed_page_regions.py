@@ -236,25 +236,43 @@ def classify_page_margins(page, title_page_nums: List[int] = None, remove_empty_
 
 
 def is_title_line(line: pdm.PageXMLTextLine, page: pdm.PageXMLPage,
-                  title_page_nums: List[int] = None) -> bool:
+                  title_page_nums: List[int] = None, debug: int = 0) -> bool:
     if title_page_nums is None:
-        # print('NO TITLE PAGE NUMS')
+        if debug > 0:
+            print('printed_page_regions.is_title_line - False - no title page nums given')
         return False
     if page.metadata['page_num'] not in title_page_nums:
+        if debug > 0:
+            print('printed_page_regions.is_title_line - False - page is no title page')
         # print('NO TITLE PAGE ')
         return False
     if line.baseline.bottom < 1500:
+        if debug > 0:
+            print('printed_page_regions.is_title_line - True - line.baseline.bottom < 1500')
         # print('HIGH TITLE', line.text)
         return True
     if line.baseline.top > 1800:
+        if debug > 0:
+            print('printed_page_regions.is_title_line - False - line.baseline.top > 1800')
         # print('LOW NON TITLE', line.text)
         return False
     main_text_left = min([col.coords.left for col in page.columns])
     main_text_right = max([col.coords.right for col in page.columns])
     left_indent = line.baseline.left - main_text_left
     right_indent = main_text_right - line.baseline.right
+    if min([left_indent, right_indent]) > 200:
+        if debug > 0:
+            print('printed_page_regions.is_title_line - True - minimum of left_indent and right_indent > 200')
+        return True
     indent_ratio = min([left_indent, right_indent]) / max([left_indent, right_indent])
+    if debug > 0:
+        print('printed_page_regions.is_title_line')
+        print(f"\tmain_text_left: {main_text_left}\tmain_text_right: {main_text_right}")
+        print(f"\tleft_indent: {left_indent}\tright_indent: {right_indent}")
+        print(f"\tindent_ratio: {indent_ratio}")
     if indent_ratio < 0.9:
+        if debug > 0:
+            print('printed_page_regions.is_title_line - False - True - indent_ratio > 0.9')
         # print('NON TITLE:', line.baseline.bottom, line.text)
         return False
     return True

@@ -275,6 +275,7 @@ def get_session_resolutions(session: rdm.Session,
             if attendance_list is None:
                 metadata = get_base_metadata(session, session.id + '-attendance_list', 'attendance_list')
                 attendance_list = rdm.AttendanceList(doc_id=metadata['id'], metadata=metadata)
+            print(f"adding paragraph {paragraph.id} to attendance_list {attendance_list.id}")
             attendance_list.add_paragraph(paragraph)
             res_para_count += 1
             session_offset += len(paragraph.text)
@@ -304,6 +305,7 @@ def get_session_resolutions(session: rdm.Session,
             paragraph.add_type('reviewed')
             resolution = initialise_resolution(session, generate_id, doc_type='review',
                                                opening_matches=opening_matches)
+            print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
             resolution.add_paragraph(paragraph, matches=opening_matches)
             res_para_count += 1
             prep_resolution(resolution, marg_trs, debug=debug)
@@ -324,6 +326,7 @@ def get_session_resolutions(session: rdm.Session,
             print(f'handwritten_resolution_parser.get_session_resolutions - session.metadata.resolution_type: {session.metadata["resolution_type"]}')
             print(f'handwritten_resolution_parser.get_session_resolutions - metadata.resolution_type: {resolution.metadata["resolution_type"]}')
         if resolution is not None:
+            print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
             resolution.add_paragraph(paragraph, matches=opening_matches)
             res_para_count += 1
             # resolution.evidence += opening_matches
