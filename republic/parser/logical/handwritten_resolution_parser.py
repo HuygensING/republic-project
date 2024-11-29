@@ -323,8 +323,10 @@ def get_session_resolutions(session: rdm.Session,
             resolution = initialise_resolution(session, generate_id, doc_type='resolution',
                                                opening_matches=opening_matches)
         if debug > 0:
-            print(f'handwritten_resolution_parser.get_session_resolutions - session.metadata.resolution_type: {session.metadata["resolution_type"]}')
-            print(f'handwritten_resolution_parser.get_session_resolutions - metadata.resolution_type: {resolution.metadata["resolution_type"]}')
+            print(f'handwritten_resolution_parser.get_session_resolutions - '
+                  f'session.metadata.resolution_type: {session.metadata["resolution_type"]}')
+            print(f'handwritten_resolution_parser.get_session_resolutions - '
+                  f'metadata.resolution_type: {resolution.metadata["resolution_type"]}')
         if resolution is not None:
             print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
             resolution.add_paragraph(paragraph, matches=opening_matches)
