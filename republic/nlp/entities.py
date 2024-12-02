@@ -1,8 +1,11 @@
 import glob
+import gzip
 import os
+import pickle
 import re
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, Generator, List, Tuple, Union
 
 from flair.data import Sentence
 from flair.models import SequenceTagger
@@ -150,7 +153,7 @@ def load_tagger(layer_name: str = None, model_dir: str = None) -> SequenceTagger
         tagger_dir = os.path.join(ner_tagger_dir, f'ner_tagger-layer_{layer_name}')
         try:
             return SequenceTagger.load(os.path.join(tagger_dir, 'best-model.pt'))
-        except Exception as err:
+        except Exception:
             print('entities.load_tagger - tagger_dir:', tagger_dir)
             raise
     elif model_dir:
@@ -236,7 +239,6 @@ def get_test_tokens_tags(test_file: str, separator: str, num_splits: int = 1, de
 def get_tag_positions(tokens_tags: List[Tuple[str, str]], debug: int = 0):
     text = ''
     tag_position = {}
-    in_tag = False
     start_pos, end_pos, tag_type = None, None, None
     prev_tag_type = None
     if debug > 1:
@@ -248,7 +250,8 @@ def get_tag_positions(tokens_tags: List[Tuple[str, str]], debug: int = 0):
             if start_pos is not None and prev_tag_type is not None:
                 end_pos = len(text)
                 if debug > 1:
-                    print('entities.get_tag_positions - curr != prev - adding tag_position:', (start_pos, end_pos), prev_tag_type)
+                    print('entities.get_tag_positions - curr != prev - adding tag_position:',
+                          (start_pos, end_pos), prev_tag_type)
                 tag_position[(start_pos, end_pos)] = prev_tag_type
                 added = True
             start_pos = len(text) if tag_type is not None else 0
@@ -286,7 +289,8 @@ def get_tag_positions(tokens_tags: List[Tuple[str, str]], debug: int = 0):
 def read_test_file(test_file, separator: str = ' ', num_splits: int = 1, debug: int = 0):
     docs = get_test_tokens_tags(test_file, separator, num_splits=num_splits, debug=debug)
     if debug > 0:
-        print(f"entities.read_test_file - read {len(docs)}, of which {len([doc for doc in docs if len(doc) > 0])} non-empty.")
+        print(f"entities.read_test_file - read {len(docs)}, of "
+              f"which {len([doc for doc in docs if len(doc) > 0])} non-empty.")
     for doc_tokens_tags in docs:
         tokens = [token for token, *tags in doc_tokens_tags]
         text = ' '.join(tokens)
@@ -341,3 +345,122 @@ def tag_text(text, model):
 def highlight_tagged_text(tagged_text):
     tagged_position = get_tagged_positions(tagged_text)
     return highlight_tagged_text_positions(tagged_text.text, tagged_position)
+
+
+###############################
+# Aggregating Entity Mentions #
+###############################
+
+def read_res_file(res_file: str) -> Generator[Dict[str, str], None, None]:
+    """Read resolution paragraphs from file."""
+    with gzip.open(res_file, 'rt') as fh:
+        headers = next(fh).strip('\n').split('\t')
+        for line in fh:
+            row = line.strip('\n').split('\t')
+            yield {header: row[hi] for hi, header in enumerate(headers)}
+    return None
+
+
+def read_inv_paras(res_file: str) -> Dict[str, Dict[str, any]]:
+    """Read resolution paragraphs from file and return them in a dictionary with
+    their paragraph id as the key."""
+    para = {}
+    for par in read_res_file(res_file):
+        para[par['para_id']] = par
+    return para
+
+
+def get_anno_files(annotation_dir: str) -> Dict[str, List[Dict[str, Union[str, int]]]]:
+    """Read pickled annotation mentions from files."""
+    fnames = glob.glob(os.path.join(annotation_dir, '*.pcl'))
+    anno_files = []
+    for fname in fnames:
+        layer_part, inv = fname[:-4].split('_')[2:]
+        layer = layer_part[:-4]
+        anno_file = {'file': fname, 'layer': layer, 'inv': inv}
+        anno_files.append(anno_file)
+    layer_anno_files = defaultdict(list)
+    for anno_file in anno_files:
+        layer_anno_files[anno_file['layer']].append(anno_file)
+    return layer_anno_files
+
+
+def read_para_res_map(para_dir: str) -> Dict[str, str]:
+    """Read all resolution paragraphs from file and make a mapping of paragraph ids
+    to resolution ids."""
+    para_res_map = {}
+    res_files = glob.glob(os.path.join(para_dir, '*'))
+
+    for res_file in res_files:
+        for para in read_res_file(res_file):
+            if para['para_id'] in para_res_map:
+                print(para)
+                raise ValueError(
+                    f"overlapping paragraph identifiers for res {para_res_map[para['para_id']]} "
+                    f"and {para['resolution_id']}: {para['para_id']}")
+            para_res_map[para['para_id']] = para['resolution_id']
+    return para_res_map
+
+
+def read_res_file_map(para_dir: str) -> Dict[str, str]:
+    res_files = glob.glob(os.path.join(para_dir, '*'))
+    return {rf.split('-Loghi-')[-1].replace('.tsv.gz', ''): rf for rf in res_files}
+
+
+def read_annotions(annotation_file: Dict[str, str]) -> List[Annotation]:
+    """Read pickled entity annotations from file. Each annotation is an
+    Annotation instance."""
+    with open(annotation_file['file'], 'rb') as fh:
+        annotations = pickle.load(fh)
+    annotations = [anno for anno in annotations if anno.tag_type == annotation_file['layer']]
+    return annotations
+
+
+def read_layer_annotations(layer_anno_files: List[Dict[str, Union[int, str]]],
+                           res_file_map: Dict[str, str]):
+    """Read all the annotations from pickle files per annotation layer.
+    An anno_file dictionary has the following structure:
+        {'file': fname, 'layer': layer, 'inv': inv}
+    """
+    for anno_file in sorted(layer_anno_files, key=lambda x: x['inv']):
+        if 3197 <= int(anno_file['inv']) <= 3243:
+            # skip doubles from first series
+            continue
+
+        annos = read_annotions(anno_file)
+        print(f"inventory: {anno_file['inv']}\tlayer: {anno_file['layer']}\tnumber of annotations: {len(annos)}")
+        para = read_inv_paras(res_file_map[anno_file['inv']])
+        for anno in annos:
+            para_text = para[anno.doc_id]['text']
+            if para_text[anno.offset:anno.end] != anno.text:
+                print(f'\tpara.text"{para_text[anno.offset:anno.end]}"')
+                print(f'\tanno.text"{anno.text}"')
+                raise ValueError(f"text at offset {anno.offset} in para does not aling with anno.text")
+            yield anno_file['inv'], anno
+    return None
+
+
+def write_layer_annotations(layer: str, layer_anno_files: Dict[str, List[Dict[str, Union[int, str]]]],
+                            para_res_map: Dict[str, str], res_file_map: Dict[str, str],
+                            output_basedir: str, anno_version: str):
+    print(layer, len(layer_anno_files[layer]))
+    aggregations_dir = os.path.join(output_basedir, 'annotations-unaggregated')
+    if os.path.exists(aggregations_dir) is False:
+        os.mkdir(aggregations_dir)
+    annotation_out_file = os.path.join(aggregations_dir, f'{anno_version}-layer_{layer}.tsv.gz')
+    headers = ['layer', 'inv', 'resolution_id', 'paragraph_id', 'tag_text', 'offset', 'end', 'tag_length']
+    header_string = '\t'.join(headers)
+    with gzip.open(annotation_out_file, 'wt') as fh_out:
+        fh_out.write(f"{header_string}\n")
+        for inv, anno in read_layer_annotations(layer_anno_files[layer], res_file_map):
+            if anno.doc_id not in para_res_map:
+                print(f"anno.doc_id not in para_res_map for anno {anno}")
+
+            res_id = para_res_map[anno.doc_id]
+            row = [
+                layer, inv, res_id,
+                anno.doc_id, anno.text, anno.offset, anno.end, anno.end - anno.offset
+            ]
+            row_string = '\t'.join([str(value) for value in row])
+            fh_out.write(f"{row_string}\n")
+    return None
