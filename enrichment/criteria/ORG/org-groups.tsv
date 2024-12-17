@@ -4,6 +4,7 @@ Conseil de Estat	Conseil de Etat	rvs
 Conseil de Etat		rvs
 
 Comptoir		comptoir
+Comptoiren		comptoir
 Fonds		comptoir
 
 Munte	Munt	munt
@@ -13,6 +14,7 @@ Generaal		generaliteit
 Generaux	Généraux	generaliteit
 Généraux		generaliteit
 Hoog Mogende		generaliteit
+Griffie van		generaliteit
 
 Rekenkamer		rekenkamer
 Reekenkamer		rekenkamer
@@ -28,8 +30,10 @@ Trouppe		militair
 Corps		militair
 Krychsraad		militair
 Krychsraat	Krychsraad	militair
+Krygsraat	Krychsraad	militair
 Militie		militair
 Cavallerye		militair
+Ruiterye		militair
 Infanterye		militair
 Leger		militair
 Armée	Leger	militair
@@ -40,6 +44,7 @@ Guarde		militair
 Provincie		regio
 Staten van		regio
 Staten des		regio
+Staten Slants		regio
 Landschap		regio
 Ridderschap en Steden		regio
 Gedeputeerde		regio
@@ -64,6 +69,7 @@ Regeerders		plaats
 Regenten		plaats
 Indivisen		plaats
 Indivise		plaats
+der Stat 		plaats
 
 Synode		kerk
 Synodus	Synode	kerk
@@ -99,6 +105,7 @@ Hof tot	Hof	vorst
 Hof te	Hof	vorst
 sche Hof	Hof	vorst
 se Hof	Hof	vorst
+Turxe Hof	Hof	vorst
 Majesteyt		vorst
 Koning		vorst
 Keizer		vorst
@@ -111,6 +118,7 @@ Dey		vorst
 Bey		vorst
 Kroon		vorst
 Croonen	Kroon	vorst
+Cour de		vorst
 
 Stenden		land
 Kanton		land

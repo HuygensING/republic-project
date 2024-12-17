@@ -2,28 +2,45 @@ Labels	Remarks	Name	Keywords	etc.
 
 Republiek - Bestuur - Rechtspraak - Regionaal		Raad en Leenhof van Brabant	Raat van Brabant	Raden van Brabant	Conseil de Brabant	Raade en Leenhove van Brabant	Raat en Leenhove van Brabant	Rade en Leenhove van Brabant	Leenhove van Brabant
 Republiek - Bestuur - Rechtspraak - Regionaal		Raad van Brabant te Brussel	Raat van Brabant tot Brussel
-Republiek - Bestuur - Rechtspraak - Regionaal		Raad van Vlaanderen	Raat van Vlaanderen	Raden van Vlaanderen	Raden geordonneert over Vlaanderen	Raade en Leenhove van Vlaanderen
+Republiek - Bestuur - Rechtspraak - Regionaal		Raad van Vlaanderen	Raat van Vlaanderen	Raden van Vlaanderen	Raden geordonneert over Vlaanderen	Raade en Leenhove van Vlaanderen	Hof van Vlaanderen	Hove van Vlaanderen
 
 Republiek - Bestuur - Rechtspraak - Regionaal		Hof van Holland	Hove van Hollant	Cour de Hollant
-Republiek - Bestuur - Rechtspraak - Regionaal - Zuidelijke Nederlanden		Hof van Vlaanderen	Hove van Vlaanderen
 Republiek - Bestuur - Rechtspraak - Regionaal		Hof van Gelderland	Hove van Gelderlant	Raden des Vorstendoms Gelderlant	Raat van Gelderlant	Raden van Gelderlant
 Republiek - Bestuur - Rechtspraak - Regionaal		Hof van Venlo	Hove van Venlo	Gerechte der State Venlo	Hove van het Overquartier van Gelderlant	Gerechte van Venlo	Hove te Venlo	geordonneert in het Overquartier van Gelderlant
 Republiek - Bestuur - Rechtspraak - Regionaal		Hof van Roermond	Hove van Roermonde	Hove tot Roermonde	Hove te Ruremonde
+Republiek - Rechtspraak - Regionaal		Hof van Justitie te Venlo	Justitie te Venlo	Justitie tot Venlo	Cour de Justice de Venlo
+Republiek - Rechtspraak - Regionaal		Hoven van Justitie in Holland	Hoven van Justitie in Hollant	Hoven van Justitie alhier in den Hage
 
 Republiek - Rechtspraak - Regionaal		Hoge Raad van Holland	Hoogen Raat in Hollant	Hoogen Raat	Hoogen Rade
-Republiek - Rechtspraak - Regionaal		Hoog Brabants Gerecht	Hoogen Brabandschen Gerechte der Stat Maastricht	hoogen Brabandschen Gerechte
+Republiek - Rechtspraak - Regionaal		Hoog Brabants Gerecht te Maastricht	Hoogen Brabandschen Gerechte der Stat Maastricht	hoogen Brabandschen Gerechte	Brabantschen Gerechte tot Maastricht	Brabandschen Gerechte tot Maastricht
+Republiek - Rechtspraak - Regionaal		Hoog Luiks Gerecht te Maastricht	hoogen Luikschen Gerechte	Luikschen Gerechte tot Maastricht
+Republiek - Rechtspraak - Lokaal		Grafelijk Gerecht van de Vroenhof	Graaffelyken Gerechte van den Vroenhove	Gerechte van den Vroenhove
+
+Europa - Bestuur - Regionaal - Zuidelijke Nederlanden		Keizerlijke Raad te Luik	Keyserlyken Raat te Luik	Keyserlyken Raat tot Luik	Conseil Imperial a Liege	Conseil Imperial de Liege
+Europa - Bestuur - Regionaal - Zuidelijke Nederlanden		Geheime Raad te Luik	Secreten Raat van Luik	Conseil Privé te Luik	secreten Raat van den Prince van Luik
+
+Europa - Bestuur - Rechtspraak - Regionaal		Hofgerecht van Oostfriesland	Hoffgerichte van Oostvrieslant	hofgerichte van Oostvrieslant	Oostfriessche hoffgericht	Graaffelike Oostfriessche hoffgericht
+
+Zuidelijke Nederlanden - Europa - Bestuur - Rechtspraak - Regionaal		Hof van Brussel	Hove tot Brussel	Hove te Brussel	Hove van Brussel	Cour de Bruxelles
 Rechtspraak - Landelijk - Bestuur - Europa - Zuidelijke Nederlanden		Grote Raad van Mechelen	Grooten Raat van Mechelen	Grooten Raat tot Mechelen
 
-Zuidelijke Nederlanden - Europa - Bestuur - Rechtspraak - Regionaal		Hof van Brussel	Hove tot Brussel	Hove te Brussel	Hove van Brussel
-
-Bestuur - Republiek - Wereld - Plaatselijk		Raad van Curaçau	Raat des Eilands Curacao	Raden des Eilands Curacao	Raat van Curacao
+Bestuur - Republiek - Wereld - Plaatselijk		Raad van Curaçao	Raat des Eilands Curacao	Raden des Eilands Curacao	Raat van Curacao
 Bestuur - Republiek - Wereld - Plaatselijk		Raad van St Eustacius	Raden des Eilands St Eustatius	Raaden van St. Eustatius
+
+Bestuur - Wereld - Republiek - Koloniaal - Bataafse tijd		Raad der Koloniën van de Staat in West-Indië	Raat der Colonien van den Staat in de Westindien	Raat der Colonien	Raat der Colonien in de Westindien	Raat der Colonien van den Staat
+Rechtspraak - Wereld - Republiek - Koloniaal - Bataafse tijd		Hoven van Civiele Justitie in West-Indië	Hove van civile Justitie	Hove van civile justitie tot Suriname	civile Justitie
+Rechtspraak - Wereld - Republiek - Koloniaal - Bataafse tijd		Hoven van Criminele Justitie in West-Indië	Policie en crimineele Justitie	Crimineele Justitie	Hove van Policie
+Rechtspraak - Wereld - Republiek - Koloniaal		Hof van Justitie in Demerary	Hove van Justitie in Rio Demerary	Hove van Justitie van Rio Demerary
+Rechtspraak - Wereld - Republiek - Koloniaal		Raad van Justitie in Brazilië	Raat van Justitie in Brasil
+Rechtspraak - Wereld - Republiek - Koloniaal		Raad van Justitie te Batavia	Raat van Justitie tot Batavia	Raat van justitie des Casteels Batavia	Justitie des Kasteels Batavia	Justitie des Kasteels van Batavia
+Rechtspraak - Wereld - Republiek - Koloniaal		Raad van Justitie van Essequibo	Raat van Justitie van Essequebo	Raat van Justitie te Rio Essequebo	Raat van Justitie te Essequebogg
 
 Bestuur - Republiek - Wereld - Regionaal		Raad van Suriname	Raden van Suriname	Raden van de Colonie van Suriname
 Rechtspraak - Republiek - Wereld - Regionaal		Burgerlijk hof te Suriname	civile Justitie in Surinamen	civile Justitie der Colonie Suriname	civile Justitie der Colonie	civile Justitie van de Colonie van Suriname
 Rechtspraak - Republiek - Wereld - Regionaal		Strafhof te Suriname	crimineele Justitie der Colonie Suriname	crimineele Justitie der Colonie van Suriname	crimineele Justitie te Suriname	crimineele Justitie van Suriname
 
-#	wat is deze?	Hof van Justitie	Hof van Justitie	Hoven van Justitie	Hove van Justitie
+Bestuur - Republiek - Landelijk		Staat der Verenigde Nederlanden	Staat der Verenigde Nederlanden	Staat van de Verenigde Nederlanden	Staat der Verenigde Provincien	Staat der Geunieerde Provincien
+
 		ongeldig	Raden van State
 
 
