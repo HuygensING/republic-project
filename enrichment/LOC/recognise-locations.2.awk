@@ -1,6 +1,10 @@
 
 @include "recognise-locations-base"
 
+# In this second step, we try and simplify location references by removing 
+# irrelevant words. On the resulting string, again, a direct match is 
+# attempted.
+
 BEGIN {
     PROVENANCE = "provenance.step2.tsv"
     REPORT = "matchreport.step2.tsv"

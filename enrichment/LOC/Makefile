@@ -12,7 +12,7 @@ LOC-entities.json : loc-entities-full.tsv
 loc-entities-full.tsv : loc-entities.tsv loc-ids.tsv recognised-locations.tsv add_categories.awk
 	gawk -f add_categories.awk loc-ids.tsv recognised-locations.tsv loc-entities.tsv > loc-entities-full.tsv
 
-recognised-locations.tsv : annotations-layer_LOC.tsv loc-variants.tsv recognise-locations.*.awk
+recognised-locations.tsv : annotations-layer_LOC.tsv loc-variants.tsv recognise-locations.*.awk ${LOC_DATA}loc-fuzzy-variants.tsv
 	pv -l annotations-layer_LOC.tsv |\
 		gawk -f recognise-locations.1.awk |\
 		gawk -f recognise-locations.2.awk |\

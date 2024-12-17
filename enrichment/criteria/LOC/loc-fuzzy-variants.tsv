@@ -124,7 +124,6 @@ L0002663	postel
 L0002702	regensburch
 L0002702	regensburg
 L0002706	renswoude
-L0002739	rochelle
 L0002747	rosendaal
 L0002756	rotterd
 L0002756	rotterdam
@@ -228,7 +227,6 @@ L0006505	maseyk
 L0006508	copenhagen
 L0006513	malaga
 L0006513	mallaga
-L0006514	brunswyk en lunenburg
 L0006519	scheveninge
 L0006520	leyden
 L0006536	weenen
@@ -300,7 +298,6 @@ L0007166	steenwyk
 L0007170	geertruydenberch
 L0007170	geertruydenberg
 L0007182	maassluys
-L0007188	oostindien
 L0007192	st. oedenrode
 L0007192	st. udenrode
 L0007214	petersburg
@@ -319,11 +316,6 @@ L0007323	frankryk
 L0007323	vrankr
 L0007331	marocco
 L0007350	cassel
-L0007354	's bosch
-L0007354	's herto genbosch
-L0007354	's hertogenbosch
-L0007354	den bosch
-L0007354	s'hertogenbosch
 L0007376	oostenryk
 L0007386	land van waas
 L0007403	polene
@@ -353,8 +345,6 @@ L0007511	groot britannien
 L0007511	groot britt
 L0007511	groot brittannien
 L0007511	groot-brittannien
-L0007527	indien
-L0007527	indiën
 L0007529	delffzyl
 L0007529	delfzyl
 L0007533	noortzee
@@ -367,8 +357,6 @@ L0007590	luydik
 L0007594	osnabrugge
 L0007608	coblentz
 L0007614	den briel
-L0007617	duytschland
-L0007617	duytsland
 L0007621	catalonien
 L0007627	italien
 L0007651	roermonde
@@ -381,7 +369,6 @@ L0007686	staats vlaanderen
 L0007690	den oudenbosch
 L0007692	heydelberch
 L0007692	heydelberg
-L0007704	's hertogenrade
 L0007706	drie landen van overmaaze
 L0007706	drie landen van overmaze
 L0007706	drye landen van overmaze
@@ -392,42 +379,24 @@ L0007727	sas van gend
 L0007727	sas van gent
 L0007727	zas van gendt
 L0007727	zas van gent
-L0007732; L0007863	pera van constantinopolene
-L0007748	dansich
-L0007748	dansik
-L0007748	dantsig
-L0007748	dantsik
-L0007748	dantswyk
-L0007748	dantzich
-L0007748	dantzig
-L0007748	dantzik
-L0007748	danzik
 L0007763	landschap drenthe
 L0007763	landtschap drenthe
+L0007766	hulster ambacht
 L0007766	hulster-ambacht
 L0007766	hulsterambacht
+L0007766	lande van hulster-ambacht
+L0007766	lande van hulsterambacht
 L0007770	rusland
-L0007790	bentheim
-L0007790	benthem
-L0007790	bentheym
 L0007815	neder-saxischen kreytz
 L0007815	nedersaxischen kreitz
 L0007815	nedersaxischen kreytz
-L0007824	rhynberk
-L0007824	rynberk
 L0007862	fort st. maria
-L0007863	constantinopolene
-L0007866	koningsbergen
 L0007889	middelandsche zee
 L0007889	middelandtsche zee
 L0007896	lotharingen
 L0007896	lottharingen
-L0007902	lieroort
 L0007913	bantam
 L0007944	st. eustatius
-L0007949	batavia
-L0007950	moeurs
-L0007965	mogador
 L0007969	provincie van stad en lande
 L0007969	stad en landen
 L0007969	stad en ommelanden
@@ -436,11 +405,7 @@ L0007987	francfort
 L0007987	frankfort
 L0007987	franksort
 L0007988	douvres
-L0008003	cleeff
 L0008014	essequebo
-L0008016	hulster ambacht
-L0008016	lande van hulster-ambacht
-L0008016	lande van hulsterambacht
 L0008053	bergen op den zoom
 L0008053	bergen op zoom
 L0008053	bergen opden zoom
@@ -453,38 +418,71 @@ L0008059	den haage
 L0008059	den hage
 L0008059	s'gravenhage
 L0008059	sgravenhage
-L0008093	escuriaal
-L0008094	neusen
-L0008106	daalhem
 L0008117; L0007994	opper-en neder-rhynsche kreitzen
 L0008117; L0007994; L0008343	opper-rhynsche neder-rhynsche en westphaalsche kreitzen
 L0008117; L0007994; L0008343	opperrhynsche nederrhynsche en westphaalsche kreytz
 L0008117; L0007994; L0008343	opperrhynschen nederrhynschen en westphaalschen kreytz
 L0008126	courland
-L0008129	schenkenschans
-L0008129	sgravenweert
-L0008139	duytsche ryk
-L0008166	ryssel
-L0008177	gulich
-L0008186	smirna
 L0008227	oostzee
-L0008230	doornik
 L0008285	nederland
 L0008308	oostenryksche nederlanden
 L0008308	oostenryksche neederlanden
 L0008308	oostenryxe nederlanden
 L0008308	spaansche nederlanden
-L0008321	st. ubes
-L0008326	brunswyk
 L0008327	vereenichde nederlanden
 L0008327	vereenigde nederlanden
 L0008335	dorpen van redemptie
 L0008349	peeland
 L0008349	peelland
-L0008389	elseneur
-L0008389	helseneur
 L0008390	republicq van venetien
-L0008391	st. sebastiaan
-L0008394	meyerye van 's hertogenbosch
-L0008394	stad en meyerye van 's bosch
-L0008394	stad en meyerye van 's hertogenbosch
+L0009027	rochelle
+L0012300	rhynberk
+L0012300	rynberk
+L0012324	neusen
+L0012329	smirna
+L0012334	st. sebastiaan
+L0012336	doornik
+L0012345	meyerye van 's hertogenbosch
+L0012345	stad en meyerye van 's bosch
+L0012345	stad en meyerye van 's hertogenbosch
+L0012351	pera van constantinopolene
+L0012359	cleeff
+L0012376	schenkenschans
+L0012376	sgravenweert
+L0012380	's hertogenrade
+L0012395	bentheim
+L0012395	benthem
+L0012395	bentheym
+L0012399	moeurs
+L0012403	st. ubes
+L0012405	duytsche ryk
+L0012405	duytschland
+L0012405	duytsland
+L0012407	elseneur
+L0012407	helseneur
+L0012411	batavia
+L0012427	koningsbergen
+L0012439	mogador
+L0012440	escuriaal
+L0012465	ryssel
+L0012499	oostindien
+L0012538	's bosch
+L0012538	's herto genbosch
+L0012538	's hertogenbosch
+L0012538	den bosch
+L0012538	s'hertogenbosch
+L0012547	lieroort
+L0012559	gulich
+L0012561	brunswyk en lunenburg
+L0012562	brunswyk
+L0012569	daalhem
+L0012574	constantinopolene
+L0012575	dansich
+L0012575	dansik
+L0012575	dantsig
+L0012575	dantsik
+L0012575	dantswyk
+L0012575	dantzich
+L0012575	dantzig
+L0012575	dantzik
+L0012575	danzik

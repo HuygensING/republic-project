@@ -1,6 +1,11 @@
 
 # USAGE: gawk -f recognise-locations.awk LOC-annotations.tsv
 
+# In this first step, we do the following:
+#   - recognise category keywords
+#   - try direct matches with location keywords
+#   - on unresolved references, simplify the string and try a direct match again
+
 @include "recognise-locations-base"
 
 BEGIN {

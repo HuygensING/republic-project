@@ -1,6 +1,8 @@
 
 @include "recognise-locations-base"
 
+# In the third step, we try and resolve nested locations and location lists.
+
 BEGIN {
     PROVENANCE = "provenance.step3.tsv"
     REPORT = "matchreport.step3.tsv"
