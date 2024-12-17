@@ -5,9 +5,24 @@ import pagexml.model.physical_document_model as pdm
 from fuzzy_search import PhraseMatch
 
 import republic.model.republic_document_model as rdm
-from republic.analyser.quality_control import check_session
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.model.republic_date import RepublicDate
+
+
+TEXT_TYPE_MAP = {
+    'handwritten': 'handgeschreven',
+    'printed': 'gedrukt'
+}
+
+
+def map_text_type(text_type: str):
+    if text_type in TEXT_TYPE_MAP:
+        return TEXT_TYPE_MAP[text_type]
+    elif text_type in TEXT_TYPE_MAP.values():
+        return text_type
+    else:
+        accepted_values = [tt for item in TEXT_TYPE_MAP.items() for tt in item]
+        raise ValueError(f"invalid text_type '{text_type}', must be one of {accepted_values}")
 
 
 def get_page_from_parentage(doc: pdm.PageXMLDoc):
@@ -118,7 +133,7 @@ def make_session_metadata(inv_metadata: Dict[str, any], session_date: Dict[str, 
         'president': None,
         'has_session_date_element': False,
         'lines_include_rest_day': includes_rest_day,
-        'text_type': text_type,
+        'text_type': map_text_type(text_type),
         'evidence': []
     }
     return session_metadata

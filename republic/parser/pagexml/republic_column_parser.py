@@ -10,7 +10,9 @@ import pagexml.helper.pagexml_helper as pagexml_helper
 
 # import republic.model.physical_document_model as pdm
 import republic.helper.metadata_helper as meta_helper
+import republic.helper.pagexml_helper as pagexml_helper
 from republic.helper.pagexml_helper import merge_columns, within_column, find_overlapping_columns, make_new_tr
+from republic.helper.pagexml_helper import check_element_ids
 
 
 #################################################
@@ -165,11 +167,11 @@ def determine_column_type(column: pdm.PageXMLColumn) -> str:
     elif is_noise_column(column):
         return 'noise_column'
     else:
-        print('Bounding box:', column.coords.box)
-        print('Stats:', column.stats)
+        print('republic_column_parser.determine_column_type -\n\tBounding box:', column.coords.box)
+        print('\tStats:', column.stats)
         num_chars = 0
         for line in column.get_lines():
-            print(line.coords.box, line.text)
+            print('\t', line.coords.box, line.text)
             num_chars += len(line.text)
         print('num_chars:', num_chars)
         raise TypeError('unknown column type')
@@ -189,12 +191,15 @@ def add_line_to_column(line: pdm.PageXMLTextLine, column: pdm.PageXMLColumn) -> 
         if pdm.is_horizontally_overlapping(line, tr, threshold=0.1) and \
                 pdm.is_vertically_overlapping(line, tr, threshold=0.1):
             tr.lines.append(line)
+            tr.set_as_parent(tr.lines)
             tr.lines.sort()
             return None
     new_tr = pdm.PageXMLTextRegion(metadata=copy.deepcopy(column.metadata),
                                    coords=pdm.parse_derived_coords([line]),
                                    lines=[line])
+    new_tr.set_derived_id(column.metadata['scan_id'])
     column.text_regions.append(new_tr)
+    column.set_as_parent([new_tr])
     column.text_regions.sort()
 
 
@@ -244,15 +249,20 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
         coords = pdm.parse_derived_coords(lines)
         tr = pdm.PageXMLTextRegion(doc_type=copy.deepcopy(text_region.type),
                                    metadata=copy.deepcopy(text_region.metadata),
-                                   coords=coords, lines=lines)
+                                   coords=copy.deepcopy(coords), lines=lines)
+        tr.set_derived_id(text_region.metadata['scan_id'])
+        tr.set_as_parent(lines)
         column = pdm.PageXMLColumn(doc_type=copy.deepcopy(text_region.type),
                                    metadata=copy.deepcopy(text_region.metadata),
-                                   coords=coords, text_regions=[tr])
+                                   coords=copy.deepcopy(coords), text_regions=[tr])
         if text_region.parent and text_region.parent.id:
             column.set_derived_id(text_region.parent.id)
             column.set_parent(text_region.parent)
         else:
             column.set_derived_id(text_region.id)
+        column.set_as_parent(column.text_regions)
+        pagexml_helper.check_parentage(column)
+        check_element_ids(column, after_step='creating column after split lines on gap')
         columns.append(column)
     # column range may have expanded with lines partially overlapping initial range
     # check which extra lines should be added to columns
@@ -269,6 +279,8 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
             merged_col.set_parent(text_region.parent)
         else:
             merged_col.set_derived_id(text_region.id)
+        pagexml_helper.check_parentage(merged_col)
+        check_element_ids(merged_col, after_step='merging overlapping columns')
         non_overlapping_cols.append(merged_col)
     columns = non_overlapping_cols
     if debug > 0:
@@ -292,6 +304,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                     # print('\t\tBEST', best_column)
         if best_column is not None and pdm.is_horizontally_overlapping(line, best_column):
             add_line_to_column(line, best_column)
+            pagexml_helper.check_parentage(best_column)
             append_count += 1
             best_column.coords = pdm.parse_derived_coords(best_column.text_regions)
             if text_region.parent:
@@ -326,6 +339,7 @@ def split_lines_on_column_gaps(text_region: pdm.PageXMLTextRegion,
                 extra.set_parent(text_region.parent)
             else:
                 extra.set_derived_id(text_region.metadata['scan_id'])
+            pagexml_helper.check_parentage(extra)
             # for line in extra.lines:
             #     print(f"RETURNING EXTRA LINE: {line.coords.left}-{line.coords.right}\t{line.coords.y}\t{line.text}")
             config = copy.deepcopy(config)

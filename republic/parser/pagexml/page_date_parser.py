@@ -198,6 +198,7 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
     if record['text_region_id'] is not None:
         if debug > 0:
             print(f"page_date_parser.find_date_region_record_lines - text_region_id is not None")
+            print(f"\t{record['text_region_id']}")
         page_tr_ids = [tr.id for tr in page.get_all_text_regions()]
         if record['text_region_id'] in page_tr_ids:
             if debug > 0:
@@ -223,16 +224,21 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
             # lines contained by the region
             record_tr = make_empty_tr(record['text_region_id'], page)
             if debug > 0:
-                print(f"\trecord_tr.coords.box: {record_tr.coords.box}")
+                print(f"\tmade empty tr - record_tr.coords.box: {record_tr.coords.box}")
             for page_tr in page.get_all_text_regions():
                 for line in page_tr.lines:
                     if debug > 0:
                         print(f"\t{line.coords.box}\t{regions_overlap(record_tr, line, threshold=0.5)}\t{line.text}")
                     if regions_overlap(record_tr, line, threshold=0.5) and line not in record_lines:
                         record_lines.append(line)
+            if debug > 0:
+                print(f'    number of matching lines found: {len(record_lines)}')
+                if len(record_lines) == 0:
+                    print(f"\tNO matching line found")
             if len(record_lines) == 0:
                 if record['text_region_id'] in REGION_EXCEPTIONS:
                     empty_line_tr = make_empty_line_tr(record['text_region_id'], page)
+                    page.add_child(empty_line_tr)
                     record_lines.append(empty_line_tr.lines[0])
                     return record_lines
                 for tr in page.get_all_text_regions():

@@ -6,6 +6,10 @@ import multiprocessing
 from republic.helper.utils import get_project_dir
 from republic.nlp.entities import tag_resolution
 from republic.nlp.entities import load_tagger
+from republic.nlp.entities import read_res_file_map
+from republic.nlp.entities import read_para_res_map
+from republic.nlp.entities import write_layer_annotations
+from republic.nlp.entities import get_anno_files
 from republic.nlp.read import read_paragraphs
 from republic.nlp.tag_formulas import tag_inventory_formulas
 
@@ -41,6 +45,20 @@ def tag_paragraph_entities(task):
     print(f"{task['layer_name']}\tinv: {inv_num}\tresolutions: {count: >8}\tannotations: {len(annotations): >8}")
     with open(entities_file, 'wb') as fh:
         pickle.dump(annotations, fh)
+
+
+def aggregate_entity_output(entity_dir: str, para_dir: str):
+    anno_version = 'Nov-2024'
+    anno_subdir = f'annotations-{anno_version}'
+    annotation_dir = os.path.join(entity_dir, anno_subdir)
+    para_res_map = read_para_res_map(para_dir)
+    res_file_map = read_res_file_map(para_dir)
+    layer_anno_files = get_anno_files(annotation_dir)
+
+    aggregations_dir = os.path.join(entity_dir, f'aggregations-{anno_version}')
+    for layer in layer_anno_files:
+        write_layer_annotations(layer, layer_anno_files, para_res_map, res_file_map,
+                                aggregations_dir, anno_subdir)
 
 
 def print_usage():
@@ -108,6 +126,7 @@ def main():
                     'entities_dir': entities_dir
                 }
                 tag_paragraph_entities(task)
+        aggregate_entity_output(entity_dir=entities_dir, para_dir=para_dir)
 
 
 if __name__ == "__main__":

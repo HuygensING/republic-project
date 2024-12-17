@@ -5,6 +5,7 @@ import pagexml.model.physical_document_model as pdm
 import pagexml.analysis.layout_stats as layout_helper
 
 import republic.parser.republic_file_parser as file_parser
+from republic.helper.pagexml_helper import check_element_ids
 from republic.parser.pagexml.republic_page_parser import split_scan_pages
 from republic.parser.pagexml.republic_page_parser import derive_pagexml_page_iiif_url
 from republic.parser.pagexml.republic_page_parser import split_column_regions
@@ -213,6 +214,7 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
         print('split_pagexml_scan - trs per page\n')
         for page in pages:
             print(page.id, page.type)
+            check_element_ids(page, after_step='split_scan_pages')
             for tr in page.columns + page.extra + page.text_regions:
                 print(f"{tr.coords.x: >4}-{tr.coords.y: <4}\t{tr.coords.w}\t{tr.type}")
         print('\n')
@@ -220,6 +222,8 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
         if debug > 0:
             print('split_pagexml_scan - Splitting page columns into narrower sub columns')
         pages = [split_column_regions(page_doc, debug=debug) for page_doc in pages]
+        for page in pages:
+            check_element_ids(page, after_step='split_column_regions')
         if debug > 0:
             print('republic_pagexml_parser.split_pagexml_scans - page IDs after split_column_regions:',
                   [page.id for page in pages])
@@ -237,15 +241,16 @@ def split_pagexml_scan(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any
                 else:
                     # turn the text region into a column
                     column = pdm.PageXMLColumn(metadata=text_region.metadata, coords=text_region.coords,
-                                               text_regions=text_region.text_regions,
-                                               lines=text_region.lines)
+                                               text_regions=text_region.text_regions)
                     column.set_derived_id(scan_doc.id)
                     column.metadata['iiif_url'] = derive_pagexml_page_iiif_url(page.metadata['jpg_url'],
                                                                                column.coords)
                     if debug > 1:
                         print('split_pagexml_scan - adding tr as column:', text_region.id)
-                    page.add_child(column)
+                    if column.stats['words'] > 0:
+                        page.add_child(column)
             page.text_regions = []
+            check_element_ids(page, after_step='moving trs to columns and extra')
     for page in pages:
         for text_region in page.columns + page.extra:
             text_region.set_derived_id(scan_doc.id)

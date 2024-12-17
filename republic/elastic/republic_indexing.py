@@ -23,8 +23,10 @@ def add_timestamp(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
         doc["index_timestamp"] = get_iso_utc_timestamp()
-    else:
+    elif isinstance(doc, dict):
         doc['metadata']['index_timestamp'] = get_iso_utc_timestamp()
+    else:
+        raise TypeError(f"doc must be a StructureDoc or a dict, not {type(doc)}")
 
 
 def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
@@ -35,8 +37,10 @@ def add_commit(doc: Union[Dict[str, any], pdm.StructureDoc]) -> None:
     elif "metadata" not in doc and "inventory_uuid" in doc:
         # datetime.datetime.now().isoformat()
         doc["code_commit"] = get_commit_url()
-    else:
+    elif isinstance(doc, dict):
         doc['metadata']['code_commit'] = get_commit_url()
+    else:
+        raise TypeError(f"doc must be a StructureDoc or a dict, not {type(doc)}")
 
 
 def check_resolution(resolution: rdm.Resolution):
@@ -46,7 +50,7 @@ def check_resolution(resolution: rdm.Resolution):
 
 
 def get_pagexml_page_type(page: Union[pdm.PageXMLPage, Dict[str, any]],
-                          page_type_index: Dict[str, str]) -> str:
+                          page_type_index: Dict[int, Union[str, List[str]]]) -> str:
     page_num = page.metadata['page_num'] if isinstance(page, pdm.PageXMLPage) else page['metadata']['page_num']
     if page_num not in page_type_index:
         return "empty_page"
@@ -70,7 +74,6 @@ class Indexer:
         add_timestamp(doc_body)
         add_commit(doc_body)
         retry_num = 0
-        error = None
         while retry_num < max_retries:
             try:
                 if self.config["es_api_version"][0] <= 7 and self.config["es_api_version"][1] < 15:
@@ -233,7 +236,10 @@ class Indexer:
     def delete_by_query(self, index: str, query: Dict[str, any]):
         if self.es_anno.indices.exists(index=index) is False:
             raise ValueError(f"index {index} does not exist")
-        return self.es_anno.delete_by_query(index, query)
+        response = self.es_anno.delete_by_query(index, query)
+        # response = self.rep_es.delete_by_inventory(index, inv_num=inv_metadata['inventory_num'])
+        print(f'ES response: {response}\n')
+        return response
 
     def delete_by_inventory(self, index: str, inv_num: int = None, inv_id: str = None):
         if self.es_anno.indices.exists(index=index) is False:
