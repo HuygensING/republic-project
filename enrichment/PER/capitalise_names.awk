@@ -6,7 +6,7 @@ match($0, /"name" *: *"/) {
     $0 = substr($0, 1, RSTART+RLENGTH-1)
     for (i in m) {
         n = m[i]; u = substr(n,1,1)
-        if (i == 1 || n !~ /^(van|de.?|tot|la)$/)
+        if (i == 1 || n !~ /^(van|de.?|du|tot|l[ae])$/)
             u = toupper(u)
         $0 = $0 (i==1?"":" ") u substr(n,2)
     }
