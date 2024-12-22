@@ -17,7 +17,7 @@ BEGIN {
 # the header line
 FNR == 1 {
     if (NF>8) print
-    else print $0, "match", "categories"
+    else print $0, "match", "categories", "orig_tag_text"
     next }
 
 function match_keywords_fuzzily() {

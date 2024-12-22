@@ -58,3 +58,32 @@ function commit_edit(criterium) {
         write(before_src, criterium, $field, "(edited as shown)")
     before_src = $field }
 
+BEGIN {
+    "date -u -Iseconds" | getline timestamp
+    sub(/+00:00/, "Z", timestamp)
+    "git rev-parse HEAD" | getline commit_id
+    commit_url = "https://github.com/HuygensING/republic-project/commit/" commit_id
+    # decision log format
+    prov_fmt = "{'source':'%s','criterium':'%s','outcome':'%s','conclusion':'%s'}"
+    gsub(/'/, "\"", prov_fmt)
+}
+
+function append_decision(cur, src, crit, outc, concl) {
+    return (cur?cur",\n":"") sprintf(prov_fmt, src, crit, outc, concl) }
+
+function make_record(in_file_nr, out_file_nr, entity_id, decisions) {
+    return "{" \
+        fld("source", "["qt(in_file_nr)"]")                                                       ","\
+        fld("source_rel", "["qt("primary")"]")                                                    ","\
+        fld("target", "["qt(out_file_nr)(entity_id?","qt("urn:republic:entity:"entity_id):"")"]") ","\
+        fld("target_rel", "["qt("primary")(entity_id?","qt("primary"):"")"]")                     ","\
+        fld("where", qt("https://annotation.republic-caf.diginfra.org/"))                         ","\
+        fld("when", qt(timestamp)) "," fld("how", qt(commit_url))                                 ","\
+        fld("why", qt("REPUBLIC Entity Enrichment"))                                              ","\
+        qt("why_provenance_schema")": {" fld("format", qt("decision_log"))                        ","\
+            qt("decisions")": [" decisions "] } }" }
+
+function fld(n, s) { return qt(n)": "s }
+function qt(s) { gsub(/"/, "\\\"", s); return "\""s"\"" }
+
+

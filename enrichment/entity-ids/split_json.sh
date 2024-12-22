@@ -24,6 +24,11 @@ echo "Writing entities to $entities..."
     jq >"$entities"
 echo "Writing annotations to $annotations..."
 <"$combined" jq 'del(.[].comment)' | jq -r '.[].entity |= .name' |\
-    gawk -itsv 'NR==FNR{id[$1]=$2;next}match($0,/(.*"entity": ")([^"]+)(".*)/,m){$0=m[1] id[m[2]] m[3]}1' "$idlist" - \
+    gawk -itsv '
+        NR==FNR { id[$1]=$2; next }
+        match($0, /(.*"entity": ")([^"]+)(".*)/, m) { $0=m[1] id[m[2]] m[3] }
+        match($0, /(.*)"TARGET_ANNOT"(.*)/, m) { $0 = m[1] "\"file:'"$annotations"'#" ++rnr "\"" m[2] }
+        match($0, /(.*)"TARGET_ENT:(.*)"(.*)/, m) { $0 = m[1] "\"urn:republic:entity:"id[m[2]]"\"" m[3] }
+    1' "$idlist" - \
     >"$annotations"
 

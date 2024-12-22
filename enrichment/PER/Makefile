@@ -11,4 +11,3 @@ annotations_matched_simple.json : personen.ipynb
 	pipenv run jupyter nbconvert --clear-output --ClearMetadataPreprocessor.enabled=True --inplace personen.ipynb
 	touch annotations_matched_simple.json
 
-

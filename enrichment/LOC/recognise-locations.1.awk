@@ -25,10 +25,13 @@ BEGIN {
 }
 
 {
-    $5 = tolower($5)
     # assign categories to $10
     match_keywords_fuzzily()
     for (i in fuzz_results) if (fuzz_results[i] != "NOMATCH") $10 = ($10?$10"|":"") fuzz_results[i]
+    # store unmodified tag_text
+    $11 = $5
+    # first simplification: decapitalise
+    $5 = tolower($5)
 }
 
 no_direct_match("immediate") {

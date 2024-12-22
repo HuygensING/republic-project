@@ -1,17 +1,14 @@
 #!/usr/bin/env -S gawk -f
 
+@include "provenance"
+
 BEGIN { FS="\t"; OFS=" "; print "["
 	PROCINFO["sorted_in"] = "@ind_num_asc" }
 END { print "]" }
 
 FILENAME ~ /provenance/ {
-	prov[$2][length(prov[$2])+1] = \
-	 	"{ " field("source", $3) \
-	 	", " field("criterium", $4) \
-	 	", " field("outcome", $5) \
-	 	", " field("conclusion", $6) " }"
-	next
-}
+	prov[$2] = provenance::append_decision(prov[$2], $3, $4, $5, $6)
+	next }
 
 FNR == 1 { next } # ignore header on last file
 
@@ -27,17 +24,14 @@ FNR == 1 { next } # ignore header on last file
 		print ", "field("inv", $2)
 		print ", "field("resolution_id", $3)
 		print ", "field("paragraph_id", $4)
-		print ", "field("tag_text", $5)
+		print ", "field("tag_text", $11)
 		print ", "field("offset", $6)
 		print ", "field("end", $7)
 		print ", "field("tag_length", $8)
 		print "}, " field("entity", m[i])
-		print ", \"provenance\": ["
-		for (j in prov[FNR]) {
-			if (j>1) print ","
-			print prov[FNR][j]
-		}
-		print "] }"
+		print ", \"provenance\": "
+        print provenance::make_record("annotations-layer_LOC.tsv#"(FNR-1), "LOC-entities.json#"(++outnr), m[i], prov[FNR])
+		print "}"
 	}
 }
 
