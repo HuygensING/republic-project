@@ -1,0 +1,10 @@
+
+# make sure python 3.11 is installed
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.11
+sudo apt install python3.11-distutils
+
+
+pip install pipenv --user
+
