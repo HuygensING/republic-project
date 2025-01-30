@@ -4,7 +4,7 @@ import unittest
 from pagexml.parser import json_to_pagexml_page, read_pagexml_file
 
 import republic.parser.pagexml.republic_page_parser as page_parser
-from republic.parser.logical.handwritten_session_parser import make_week_day_name_searcher
+from republic.parser.logical.handwritten_session_parser import make_weekday_name_searcher
 from republic.parser.pagexml.page_date_parser import make_inventory_date_name_mapper
 
 
@@ -21,10 +21,11 @@ class TestPageParser(unittest.TestCase):
     def test_update_line_types(self):
         page_json = json.loads(read_pagexml_file(self.page_files['page1']))
         page = json_to_pagexml_page(page_json)
-        date_mapper = make_inventory_date_name_mapper(4561, [page], debug=2)
+        inv_id = "NL-HaNA_1.01.02_4561"
+        date_mapper = make_inventory_date_name_mapper(inv_id, [page], debug=2)
         config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': True, 'levenshtein_threshold': 0.8}
         if 'week_day_name' in date_mapper.date_name_map and date_mapper.date_name_map['week_day_name'] is not None:
-            week_day_name_searcher = make_week_day_name_searcher(date_mapper, config)
+            week_day_name_searcher = make_weekday_name_searcher(date_mapper, config)
         else:
             week_day_name_searcher = None
         new_page = page_parser.update_line_types(page, week_day_name_searcher)

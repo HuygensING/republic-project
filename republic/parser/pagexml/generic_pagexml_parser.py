@@ -7,7 +7,8 @@ import re
 import xmltodict
 from pagexml.parser import parse_coords, parse_baseline
 
-from pagexml.model.physical_document_model import Coords, parse_derived_coords
+from pagexml.model.coords import parse_derived_coords
+from pagexml.model.physical_document_model import Coords
 from pagexml.model.physical_document_model import PageXMLDoc, PageXMLScan, PageXMLPage, PageXMLColumn
 from pagexml.model.physical_document_model import PageXMLTextLine, PageXMLTextRegion, PageXMLWord
 

@@ -7,6 +7,7 @@ from itertools import combinations
 
 import numpy as np
 import pagexml.model.physical_document_model as pdm
+import pagexml.model.basic_document_model as bdm
 from pagexml.helper.pagexml_helper import regions_overlap
 # import republic.model.physical_document_model as pdm
 from pagexml.model import physical_document_model as pdm
@@ -17,7 +18,7 @@ def box_to_coords(x: int, y: int, w: int, h: int):
     return pdm.Coords(coords)
 
 
-def coords_overlap(item1: pdm.PhysicalStructureDoc, item2: pdm.PhysicalStructureDoc) -> int:
+def coords_overlap(item1: bdm.PhysicalStructureDoc, item2: bdm.PhysicalStructureDoc) -> int:
     left = max([item1.coords.left, item2.coords.left])
     right = min([item1.coords.right, item2.coords.right])
     # overlap must be positive, else there is no overlap

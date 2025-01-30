@@ -28,7 +28,7 @@ from republic.helper.utils import get_commit_version
 import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
-import republic.helper.pagexml_helper as pagexml_helper
+from republic.helper.utils import make_index_urls
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
 from republic.analyser.quality_control import check_element_types
@@ -84,9 +84,9 @@ def zip_exists(inv_num: int, ocr_type: str, base_dir: str):
 
 def get_text_type(inv_num: int) -> str:
     if 400 <= inv_num <= 456:
-        return 'handwritten' if inv_num in [401, 429, 430, 432, 433, 436, 437] else 'printed'
+        return 'handgeschreven' if inv_num in [401, 429, 430, 432, 433, 436, 437] else 'gedrukt'
     else:
-        return 'printed' if 3760 <= inv_num <= 3864 else 'handwritten'
+        return 'gedrukt' if 3760 <= inv_num <= 3864 else 'handgeschreven'
 
 
 def get_page_content_type(page: pdm.PageXMLPage) -> str:
@@ -347,6 +347,8 @@ def update_page_metadata(page: pdm.PageXMLPage,
     predicted_line_class = nlc_gysbert.classify_page_lines(page) if nlc_gysbert else {}
     for tr in page.get_all_text_regions():
         for line in tr.lines:
+            if line.text is not None and line.text.startswith('Alsoo'):
+                line.metadata['line_class'] = 'para_start'
             line.metadata['text_region_id'] = tr.id
             if line.id in predicted_line_class:
                 line.metadata['line_class'] = predicted_line_class[line.id]
@@ -490,7 +492,7 @@ class Indexer:
 
     def do_preprocessed_page_writing(self, inv_num: int, year_start: int, year_end: int):
         inv_metadata = get_inventory_by_num(inv_num)
-        if get_text_type(inv_num) == 'printed' or inv_metadata['content_type'] != 'resolutions':
+        if get_text_type(inv_num) in {'printed', 'gedrukt'} or inv_metadata['content_type'] != 'resolutions':
             return None
         preprocessed_page_dir = 'data/pages/preprocessed_page_json'
         if os.path.exists(preprocessed_page_dir) is False:
@@ -605,9 +607,9 @@ class Indexer:
         print(f'inventory {inv_num} - number of non-skipped pages: {len(pages)}')
 
         # include_variants not yet implemented in FuzzyTokenSearcher so use FuzzyPhraseSearcher
-        # use_token_searcher = True if text_type == 'printed' else False
+        # use_token_searcher = True if text_type in {'printed', 'gedrukt'} else False
         use_token_searcher = False
-        if text_type == 'printed':
+        if text_type in {'printed', 'gedrukt'}:
             session_gen = get_printed_sessions(inventory_id=inv_id, pages=pages,
                                                session_starts=session_starts,
                                                use_token_searcher=use_token_searcher, debug=0)
@@ -860,12 +862,19 @@ class Indexer:
                 print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
                 resolutions = [res for res in hand_res_parser.get_session_resolutions(session,
                                                                                       opening_searcher, debug=0)]
-                source_ids = [session.id] + [tr.id for tr in session.text_regions]
+                session_tr_urls = make_index_urls(es_config=self.rep_es.es_anno_config,
+                                                  doc_ids=[tr.id for tr in session.text_regions],
+                                                  index='session_text_regions')
+                source_ids = [session.id]
                 target_ids = [res.id for res in resolutions]
+                why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
                 prov_url = self.rep_es.post_provenance(source_ids=source_ids,
                                                        target_ids=target_ids,
-                                                       source_index='session_metadata', target_index='resolutions',
-                                                       ignore_prov_errors=True)
+                                                       source_index='session_metadata',
+                                                       target_index='resolutions',
+                                                       source_external_urls=session_tr_urls,
+                                                       ignore_prov_errors=True,
+                                                       why=why)
                 for resolution in resolutions:
                     resolution.metadata['prov_url'] = prov_url
                     print('indexing handwritten resolution', resolution.id)
@@ -1100,7 +1109,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["indexing_step"] == "full_resolutions":
         # indexer.rep_es.config['resolutions_index'] = 'full_resolutions'
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
-        if text_type == 'printed':
+        if text_type == 'printed' or text_type == 'gedrukt':
             indexer.do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "phrase_matches":

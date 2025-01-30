@@ -231,6 +231,8 @@ def link_marginalia(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
 
 def prep_resolution(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRegion], debug: int = 0):
     resolution.metadata['lang'] = list({para.metadata['lang'] for para in resolution.paragraphs})
+    if debug > 0:
+        print(f"handwritten_resolution_parser.prep_resolution - calling set_proposition_type for res {resolution.id}")
     resolution.set_proposition_type()
     resolution.metadata["page_ids"] = get_paragraph_page_ids(resolution.paragraphs)
     resolution.metadata['inventory_id'] = resolution.paragraphs[0].metadata['inventory_id']
@@ -253,12 +255,41 @@ def initialise_resolution(session: rdm.Session, generate_id: Callable,
     return resolution
 
 
+def has_followed_by(matches: List[fuzzy_search.PhraseMatch]) -> bool:
+    for match in matches:
+        if 'followed_by' in match.phrase.properties:
+            return True
+    return False
+
+
+def resolve_followed_by(followed_by_searcher: FuzzyPhraseSearcher,
+                        matches: List[fuzzy_search.PhraseMatch], doc: dict[str, any]) -> List[fuzzy_search.PhraseMatch]:
+    resolved_matches = [match for match in matches]
+    for match in matches:
+        if 'followed_by' in match.phrase.properties:
+            following_matches = followed_by_searcher.find_matches(doc)
+            print(f"following_matches", following_matches)
+            resolved_matches.extend(following_matches)
+    return resolved_matches
+
+
+def make_followed_by_searcher(opening_searcher: FuzzyPhraseSearcher) -> FuzzyPhraseSearcher:
+    following_phrases = []
+    phrases = opening_searcher.phrase_model.phrase_index.values()
+    for phrase in phrases:
+        if 'followed_by' in phrase.properties:
+            following_phrases.extend(phrase.properties['followed_by'])
+    followed_by_searcher = FuzzyPhraseSearcher(phrase_list=following_phrases, config=opening_searcher.config)
+    return followed_by_searcher
+
+
 def get_session_resolutions(session: rdm.Session,
                             opening_searcher: FuzzyPhraseSearcher,
                             debug: int = 0) -> Generator[rdm.Resolution, None, None]:
     resolution = None
     attendance_list = None
     session_offset = 0
+    followed_by_searcher = make_followed_by_searcher(opening_searcher)
     generate_id = running_id_generator(session.id, '-resolution-')
     marg_trs = [tr for tr in session.text_regions if tr.has_type('marginalia')]
     if debug > 0:
@@ -275,7 +306,8 @@ def get_session_resolutions(session: rdm.Session,
             if attendance_list is None:
                 metadata = get_base_metadata(session, session.id + '-attendance_list', 'attendance_list')
                 attendance_list = rdm.AttendanceList(doc_id=metadata['id'], metadata=metadata)
-            print(f"adding paragraph {paragraph.id} to attendance_list {attendance_list.id}")
+            if debug > 1:
+                print(f"adding paragraph {paragraph.id} to attendance_list {attendance_list.id}")
             attendance_list.add_paragraph(paragraph)
             res_para_count += 1
             session_offset += len(paragraph.text)
@@ -286,15 +318,18 @@ def get_session_resolutions(session: rdm.Session,
             paragraph.add_type(tr_types)
         # print(f"   paragraph has type: {paragraph.type}")
         paragraph.metadata['lang'] = determine_language(paragraph.text)
-        if debug > 1:
+        if debug > -1:
             print('handwritten_resolution_parser.get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
-        opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id}, debug=0)
+        doc = {'text': paragraph.text, 'id': paragraph.id}
+        opening_matches = opening_searcher.find_matches(doc, debug=0)
+        if has_followed_by(opening_matches):
+            opening_matches = resolve_followed_by(followed_by_searcher, opening_matches, doc)
         for match in opening_matches:
             if match.phrase.max_start_offset < match.offset:
                 print('handwritten_resolution_parser.get_session_resolutions - offset beyond max_start_offset')
                 print(f"    MATCH SHOULD NOT BE OPENING: {match}")
             match.text_id = paragraph.id
-            if debug > 0:
+            if debug >= 0:
                 print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if attendance_list:
             # If there is a previous attendance list, finish it, yield and reset to None
@@ -305,7 +340,8 @@ def get_session_resolutions(session: rdm.Session,
             paragraph.add_type('reviewed')
             resolution = initialise_resolution(session, generate_id, doc_type='review',
                                                opening_matches=opening_matches)
-            print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
+            if debug > 0:
+                print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
             resolution.add_paragraph(paragraph, matches=opening_matches)
             res_para_count += 1
             prep_resolution(resolution, marg_trs, debug=debug)
@@ -328,7 +364,8 @@ def get_session_resolutions(session: rdm.Session,
             print(f'handwritten_resolution_parser.get_session_resolutions - '
                   f'metadata.resolution_type: {resolution.metadata["resolution_type"]}')
         if resolution is not None:
-            print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
+            if debug > 0:
+                print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
             resolution.add_paragraph(paragraph, matches=opening_matches)
             res_para_count += 1
             # resolution.evidence += opening_matches

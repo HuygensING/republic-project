@@ -9,7 +9,7 @@ class TestMakeDateNameMap(TestCase):
 
     def setUp(self) -> None:
         self.date_line_elements = [
-            ('week_day_name', 'handwritten'),
+            ('weekday_name', 'handwritten'),
             ('den', 'all'),
             ('month_day_name', 'decimal_en'),
             ('month_name', 'handwritten'),
@@ -41,7 +41,7 @@ class TestDateNameMapInit(TestCase):
         invs_meta = read_inventory_metadata()
         self.inv_meta = {inv['inventory_num']: inv for inv in invs_meta}
         self.date_line_elements = [
-            ('week_day_name', 'handwritten'),
+            ('weekday_name', 'handwritten'),
             ('den', 'all'),
             ('month_day_name', 'decimal_en'),
             ('month_name', 'handwritten'),
@@ -55,11 +55,11 @@ class TestDateNameMapInit(TestCase):
         date_strings = self.date_mapper.generate_day_string(1608, 12, 8)
         self.assertIn('Lunae den 8en December', date_strings)
 
-    def test_mapper_sets_week_day_names(self):
-        self.assertEqual(True, 'Martis' in self.date_mapper.index_week_day[1])
+    def test_mapper_sets_weekday_names(self):
+        self.assertEqual(True, 'Martis' in self.date_mapper.index_weekday[1])
 
-    def test_mapper_sets_multiple_week_day_names_per_index(self):
-        self.assertEqual(True, len(self.date_mapper.index_week_day) > 1)
+    def test_mapper_sets_multiple_weekday_names_per_index(self):
+        self.assertEqual(True, len(self.date_mapper.index_weekday) > 1)
 
     def test_mapper_sets_month_names(self):
         self.assertEqual(True, 'April' in self.date_mapper.index_month[4])
@@ -89,7 +89,7 @@ class TestDateNameMapYear(TestCase):
         invs_meta = read_inventory_metadata()
         self.inv_meta = {inv['inventory_num']: inv for inv in invs_meta}
         self.date_line_elements = [
-            ('week_day_name', 'handwritten'),
+            ('weekday_name', 'handwritten'),
             ('den', 'all'),
             ('month_day_name', 'roman_en'),
             ('month_name', 'handwritten'),

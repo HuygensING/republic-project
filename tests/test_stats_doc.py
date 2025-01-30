@@ -111,5 +111,3 @@ class TestStatsDocInit(TestCase):
         merged_docs = merge_stats_docs_list(stats_docs)
         total_lines = sum([psd.lines for sd in stats_docs for psd in sd.page_stats_docs])
         self.assertEqual(total_lines, merged_docs[0].page_stats_docs[0].lines)
-
-

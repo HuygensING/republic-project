@@ -514,13 +514,13 @@ proposition_opening_phrases = [
         'variants': [
             'Synde ter Vergaderinge gelesen'
         ],
-        'label': ['proposition:opening', 'propositie_type:onbekend'],
+        'label': ['proposition:opening', 'propositie_type:afhankelijk'],
         'followed_by': [
-            {'phrase': 'Memoriael', 'label': ['proposition:opening', 'propositie_type:memorie']},
-            {'phrase': 'Remonstrantie', 'label': ['proposition:opening', 'propositie_type:remonstrantie']},
-            {'phrase': 'Requeste', 'label': ['proposition:opening', 'propositie_type:rekest']},
-            {'phrase': 'Rapport', 'label': ['proposition:opening', 'propositie_type:rapport']},
-            {'phrase': 'Memorie', 'label': ['proposition:opening', 'propositie_type:memorie']},
+            {'phrase': 'Memoriael', 'label': ['proposition:following', 'propositie_type:memorie']},
+            {'phrase': 'Remonstrantie', 'label': ['proposition:following', 'propositie_type:remonstrantie']},
+            {'phrase': 'Requeste', 'label': ['proposition:following', 'propositie_type:rekest']},
+            {'phrase': 'Rapport', 'label': ['proposition:following', 'propositie_type:rapport']},
+            {'phrase': 'Memorie', 'label': ['proposition:following', 'propositie_type:memorie']},
         ],
         'start_year': 1576, 'end_year': 1704,
         'max_start_offset': 5
@@ -590,22 +590,22 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'Is gelesen het Translaet',
-        'label': ['proposition:opening', 'propositie_type:artikel'],
+        'label': ['proposition:opening', 'propositie_type:afhankelijk'],
         'start_year': 1576, 'end_year': 1704,
         'followed_by': [
-            {'phrase': 'artijckel', 'label': ['proposition:opening', 'propositie_type:X']}
+            {'phrase': 'artijckel', 'label': ['proposition:following', 'propositie_type:artikel']}
         ],
         'max_start_offset': 5
     },
     {
         'phrase': 'Is gearresteert ',
-        'label': ['proposition:opening', 'propositie_type:onbekend'],
+        'label': ['proposition:opening', 'propositie_type:afhankelijk'],
         'start_year': 1576, 'end_year': 1704,
         'followed_by': [
-            {'phrase': "d'Instructie", 'label': ['proposition:opening', 'propositie_type:instructie']},
-            {'phrase': "d'Acte", 'label': ['proposition:opening', 'propositie_type:acte']},
-            {'phrase': "de Resolutie", 'label': ['proposition:opening', 'propositie_type:resolutie']},
-            {'phrase': "den Eedt", 'label': ['proposition:opening', 'propositie_type:voordracht']},
+            {'phrase': "d'Instructie", 'label': ['proposition:following', 'propositie_type:instructie']},
+            {'phrase': "d'Acte", 'label': ['proposition:following', 'propositie_type:acte']},
+            {'phrase': "de Resolutie", 'label': ['proposition:following', 'propositie_type:resolutie']},
+            {'phrase': "den Eedt", 'label': ['proposition:following', 'propositie_type:voordracht']},
         ],
         'max_start_offset': 5
     },
@@ -672,7 +672,14 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'Is gelesen de',
-        'label': ['proposition:opening', 'propositie_type:onbekend'],
+        'label': ['proposition:opening', 'propositie_type:afhankelijk'],
+        'followed_by': [
+            {'phrase': 'Memoriael', 'label': ['proposition:following', 'propositie_type:memorie']},
+            {'phrase': 'Remonstrantie', 'label': ['proposition:following', 'propositie_type:remonstrantie']},
+            {'phrase': 'Requeste', 'label': ['proposition:following', 'propositie_type:rekest']},
+            {'phrase': 'Rapport', 'label': ['proposition:following', 'propositie_type:rapport']},
+            {'phrase': 'Memorie', 'label': ['proposition:following', 'propositie_type:memorie']},
+        ],
         'start_year': 1576, 'end_year': 1630,
         'max_start_offset': 5
     },
@@ -690,6 +697,13 @@ proposition_opening_phrases = [
     },
     {
         'phrase': 'Item dat',
+        'variants': [],
+        'label': ['proposition:opening', 'propositie_type:onbekend'],
+        'start_year': 1576, 'end_year': 1630,
+        'max_start_offset': 1
+    },
+    {
+        'phrase': 'Is geaccordeert datmen',
         'variants': [],
         'label': ['proposition:opening', 'propositie_type:onbekend'],
         'start_year': 1576, 'end_year': 1630,
@@ -763,14 +777,14 @@ proposition_opening_phrases = [
             'DHeer',
             'Den Agent'
         ],
-        'label': ['proposition:opening', 'propositie_type:onbekend'],
+        'label': ['proposition:opening', 'propositie_type:afhankelijk'],
         'start_year': 1576, 'end_year': 1630,
         'followed_by': [
-            {'phrase': 'verclaert dat', 'label': ['proposition:opening', 'propositie_type:voordracht']},
-            {'phrase': 'rapporteert dat', 'label': ['proposition:opening', 'propositie_type:rapport']},
-            {'phrase': 'versouckt dat', 'label': ['proposition:opening', 'propositie_type:voordracht']},
-            {'phrase': 'communiceert dat', 'label': ['proposition:opening', 'propositie_type:voordracht']},
-            {'phrase': 'proponeert dat', 'label': ['proposition:opening', 'propositie_type:voordracht']},
+            {'phrase': 'verclaert dat', 'label': ['proposition:following', 'propositie_type:voordracht']},
+            {'phrase': 'rapporteert dat', 'label': ['proposition:following', 'propositie_type:rapport']},
+            {'phrase': 'versouckt dat', 'label': ['proposition:following', 'propositie_type:voordracht']},
+            {'phrase': 'communiceert dat', 'label': ['proposition:following', 'propositie_type:voordracht']},
+            {'phrase': 'proponeert dat', 'label': ['proposition:following', 'propositie_type:voordracht']},
         ],
         'max_start_offset': 5
     },

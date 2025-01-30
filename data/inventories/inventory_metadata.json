@@ -66,6 +66,9 @@
                 "page_type": "resolution_page"
             }
         ],
+        "title_page_nums": [
+            7
+        ],
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe"
     },
     {
@@ -98,6 +101,9 @@
                 "end": 1479,
                 "page_type": "resolution_page"
             }
+        ],
+        "title_page_nums": [
+            7
         ],
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe"
     },
@@ -132,6 +138,9 @@
                 "page_type": "resolution_page"
             }
         ],
+        "title_page_nums": [
+            7
+        ],
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe"
     },
     {
@@ -164,6 +173,9 @@
                 "end": 434,
                 "page_type": "resolution_page"
             }
+        ],
+        "title_page_nums": [
+            7
         ],
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe"
     },
@@ -198,6 +210,9 @@
                 "start": 7,
                 "end": 550
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -231,6 +246,9 @@
                 "start": 7,
                 "end": 524
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -264,6 +282,9 @@
                 "start": 7,
                 "end": 480
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -297,6 +318,9 @@
                 "start": 7,
                 "end": 461
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -330,6 +354,9 @@
                 "start": 7,
                 "end": 374
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -363,6 +390,9 @@
                 "start": 7,
                 "end": 438
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -396,6 +426,9 @@
                 "start": 3,
                 "end": 452
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -429,6 +462,9 @@
                 "start": 0,
                 "end": 723
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -459,9 +495,12 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 0,
+                "start": 7,
                 "end": 456
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -495,6 +534,9 @@
                 "start": 7,
                 "end": 485
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -528,6 +570,9 @@
                 "start": 7,
                 "end": 801
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -561,6 +606,9 @@
                 "start": 7,
                 "end": 472
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -594,6 +642,9 @@
                 "start": 7,
                 "end": 524
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -627,6 +678,9 @@
                 "start": 7,
                 "end": 520
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -660,6 +714,9 @@
                 "start": 7,
                 "end": 746
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -693,6 +750,9 @@
                 "start": 7,
                 "end": 635
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -726,6 +786,9 @@
                 "start": 7,
                 "end": 570
             }
+        ],
+        "title_page_nums": [
+            7
         ]
     },
     {
@@ -756,9 +819,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 9,
                 "end": 598
             }
+        ],
+        "title_page_nums": [
+            7,
+            9
         ]
     },
     {
@@ -789,9 +856,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 9,
                 "end": 800
             }
+        ],
+        "title_page_nums": [
+            7,
+            9
         ]
     },
     {
@@ -822,9 +893,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 9,
                 "end": 1006
             }
+        ],
+        "title_page_nums": [
+            7,
+            9
         ]
     },
     {
@@ -855,9 +930,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 0,
+                "start": 11,
                 "end": 902
             }
+        ],
+        "title_page_nums": [
+            7,
+            11
         ]
     },
     {
@@ -888,9 +967,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 5,
+                "start": 7,
                 "end": 850
             }
+        ],
+        "title_page_nums": [
+            5,
+            7
         ]
     },
     {
@@ -921,9 +1004,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 0,
+                "start": 7,
                 "end": 862
             }
+        ],
+        "title_page_nums": [
+            7,
+            9
         ]
     },
     {
@@ -953,10 +1040,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 11
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 13,
                 "end": 904
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            13
         ]
     },
     {
@@ -986,10 +1083,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 10
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 11,
                 "end": 862
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            11
         ]
     },
     {
@@ -1019,10 +1126,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 11
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 13,
                 "end": 895
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            13
         ]
     },
     {
@@ -1052,10 +1169,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 11
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 13,
                 "end": 799
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            13
         ]
     },
     {
@@ -1085,10 +1212,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 11
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 13,
                 "end": 740
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            13
         ]
     },
     {
@@ -1118,10 +1255,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 11
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 15,
                 "end": 749
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            15
         ]
     },
     {
@@ -1151,10 +1298,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 12
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 15,
                 "end": 778
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            15
         ]
     },
     {
@@ -1184,10 +1341,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 12
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 13,
                 "end": 675
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            13
         ]
     },
     {
@@ -1217,10 +1384,20 @@
         "code_commit": "https://github.com/HuygensING/republic-project/commit/a459ee28a34da7add0e161b183ea27a7e3b236fe",
         "sections": [
             {
+                "page_type": "index_page",
+                "start": 9,
+                "end": 12
+            },
+            {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 13,
                 "end": 755
             }
+        ],
+        "title_page_nums": [
+            7,
+            9,
+            13
         ]
     },
     {
@@ -1251,9 +1428,13 @@
         "sections": [
             {
                 "page_type": "resolution_page",
-                "start": 7,
+                "start": 9,
                 "end": 1196
             }
+        ],
+        "title_page_nums": [
+            7,
+            9
         ]
     },
     {
@@ -26746,7 +26927,7 @@
         "inventory_label": "4851 Register van resoluties betreffende de onderhandelingen over de \"Tr\u00c3\u00a8ves\" of het Twaalfjarig Bestand, met bijlagen, 1608 februari 4 - 1609 april 11",
         "inventory_uuid": "9251b4f8-7dda-41e1-89cd-091ad0034982",
         "resolution_type": "speciaal",
-        "content_type": "register",
+        "content_type": "resolutions",
         "series_name": "NL-HaNA_1.01.02",
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
         "num_pages": null,

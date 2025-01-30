@@ -28,6 +28,17 @@ def get_iso_utc_timestamp() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
 
 
+def make_index_urls(es_config, doc_ids: List[str], index: str, es_url: str = None):
+    if es_url is None:
+        if 'elastic_config' not in es_config:
+            print(f'url in config: {"url" in es_config}')
+            print(es_config['url'])
+        es_url = es_config['elastic_config']['url']
+    if isinstance(doc_ids, str):
+        doc_ids = [doc_ids]
+    return [f'{es_url}{index}/_doc/{doc_id}' for doc_id in doc_ids]
+
+
 def make_provenance_data(es_config, source_ids: List[str], target_ids: List[str],
                          source_index: str, target_index: str, source_es_url: str = None,
                          source_external_urls: List[str] = None, why: str = None) -> Dict[str, any]:

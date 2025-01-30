@@ -5,6 +5,7 @@ from collections import Counter
 from typing import Dict, List, Set, Union
 
 import pagexml.model.physical_document_model as pdm
+import pagexml.model.logical_document_model as ldm
 import republic.helper.pagexml_helper as pagexml
 from fuzzy_search.phrase.phrase import Phrase
 from fuzzy_search.match.phrase_match import PhraseMatch
@@ -13,7 +14,7 @@ from republic.model.republic_date import RepublicDate
 from republic.helper.metadata_helper import make_scan_urls, make_iiif_region_url
 
 
-class RepublicDoc(pdm.LogicalStructureDoc):
+class RepublicDoc(ldm.LogicalStructureDoc):
 
     def __init__(self, doc_id: str = None, doc_type: str = None, metadata: Union[None, Dict] = None,
                  lines: List[pdm.PageXMLTextLine] = None,
@@ -346,36 +347,50 @@ class Session(ResolutionElementDoc):
 
 
 def get_proposition_type_from_evidence(evidence: List[PhraseMatch]) -> Union[None, str]:
-    proposition_type = None
-    for phrase_match in evidence:
-        if has_proposition_type_label(phrase_match):
-            return get_proposition_type_from_label(phrase_match)
-    return proposition_type
+    prop_types_matches = [match for match in evidence if has_proposition_type_label(match)]
+    prop_types = [get_proposition_type_from_label(match) for match in prop_types_matches]
+    if 'afhankelijk' in prop_types:
+        if len(prop_types) > 1:
+            return prop_types[1]
+        else:
+            return 'onbekend'
+    elif len(prop_types) >= 1:
+        return prop_types[0]
+    else:
+        return 'onbekend'
 
 
 def get_proposition_type_from_label(phrase_match: PhraseMatch) -> str:
     if not phrase_match.label:
         raise ValueError('phrase_match has no label')
     if isinstance(phrase_match.label, str):
-        if not phrase_match.label.startswith('proposition_type:'):
-            raise ValueError('phrase_match has no proposition_type label')
-        return phrase_match.label.replace('proposition_type:', '')
+        labels = [phrase_match.label]
     else:
-        for label in phrase_match.label:
-            if label.startswith('proposition_type:'):
-                return label.replace('proposition_type:', '')
-    raise ValueError('phrase_match has no proposition_type label')
+        labels = phrase_match.label
+    proposition_type = None
+    for label in labels:
+        print('label:', label)
+        if label.startswith('proposition_type:'):
+            proposition_type = label.replace('proposition_type:', '')
+        elif label.startswith('propositie_type:'):
+            proposition_type = label.replace('propositie_type:', '')
+    if proposition_type is None:
+        raise ValueError('phrase_match has no proposition_type label')
+    return proposition_type
 
 
 def has_proposition_type_label(phrase_match: PhraseMatch) -> bool:
     if not phrase_match.label:
         return False
     if isinstance(phrase_match.label, str):
-        return phrase_match.label.startswith('proposition_type:')
+        labels = [phrase_match.label]
     else:
-        for label in phrase_match.label:
-            if label.startswith('proposition_type:'):
-                return True
+        labels = phrase_match.label
+    for label in labels:
+        if label.startswith('proposition_type:'):
+            return True
+        elif label.startswith('propositie_type:'):
+            return True
     return False
 
 
@@ -509,13 +524,17 @@ class Resolution(ResolutionElementDoc):
             self.labels.append(label)
 
     def set_proposition_type(self):
+        # print(f"\nrepublic_document_model.Resolution.set_proposition_type for resolution {self.id}")
         if self.evidence:
             if self.metadata['proposition_type']:
+                # print(f"\tresolution {self.id} has metadata['proposition_type']: {self.metadata['proposition_type']}")
                 self.proposition_type = self.metadata['proposition_type']
             else:
                 self.proposition_type = get_proposition_type_from_evidence(self.evidence)
+                # print(f"\tresolution {self.id} has evidence: {self.proposition_type}")
                 self.metadata['proposition_type'] = self.proposition_type
         if 'proposition_type' not in self.metadata or self.metadata['proposition_type'] is None:
+            # print(f"\tresolution {self.id} has no evidence: setting onbekend")
             self.metadata['proposition_type'] = 'onbekend'
 
     @property

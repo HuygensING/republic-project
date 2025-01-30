@@ -3,6 +3,7 @@ from collections import Counter
 from typing import Dict, List, Tuple, Union
 
 import pagexml.model.physical_document_model as pdm
+import pagexml.model.basic_document_model as bdm
 from fuzzy_search import FuzzyPhraseSearcher
 from pagexml.helper.pagexml_helper import regions_overlap
 
@@ -188,7 +189,7 @@ def get_page_split_widths(scan: pdm.PageXMLScan, debug: int = 0) -> Tuple[int, i
     return int(even_end), int(odd_end)
 
 
-def is_even_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None, debug: int = 0) -> bool:
+def is_even_side(item: bdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None, debug: int = 0) -> bool:
     even_end, odd_end = get_page_split_widths(scan)
     if item.coords.right < even_end:
         return True
@@ -207,7 +208,7 @@ def is_even_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None, d
     return item.coords.left < even_end - 100 and item.coords.right < even_end
 
 
-def is_odd_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) -> bool:
+def is_odd_side(item: bdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) -> bool:
     even_end, odd_end = get_page_split_widths(scan)
     if item.coords.right < even_end:
         return False
@@ -222,7 +223,7 @@ def is_odd_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) ->
     return item.coords.left > even_end - 300 and item.coords.right > even_end
 
 
-def is_extra_side(item: pdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) -> bool:
+def is_extra_side(item: bdm.PhysicalStructureDoc, scan: pdm.PageXMLScan = None) -> bool:
     even_end, odd_end = get_page_split_widths(scan)
     return item.coords.right > odd_end and item.coords.left > odd_end - 200
 
