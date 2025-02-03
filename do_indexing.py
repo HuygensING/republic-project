@@ -1179,6 +1179,9 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
         inv_nums = [inv for inv in range(start, end+1)]
     tasks = []
     for inv_num in inv_nums:
+        inv_map = get_inventory_by_num(inv_num)
+        if 'session' in indexing_step and inv_map['content_type'] != 'resolutions':
+            continue
         task = {
             "inv_num": inv_num,
             "indexing_step": indexing_step,

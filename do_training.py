@@ -269,7 +269,7 @@ def main():
         data_dir = get_data_dir(layers, gt_base_dir)
         print('layers to train:', layers)
         train_layers(layers, data_dir, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
-        # train_best_layers(layers, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
+        train_best_layers(BEST_MODELS, data_dir, train_size=train_size, mini_batch_size=mini_batch_size, max_epochs=max_epochs)
     elif train_type == 'lm':
         do_train_lm()
     else:
