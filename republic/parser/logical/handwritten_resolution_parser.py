@@ -255,6 +255,12 @@ def initialise_resolution(session: rdm.Session, generate_id: Callable,
     return resolution
 
 
+def needs_followed_by_lookup(matches: List[fuzzy_search.PhraseMatch]) -> bool:
+    if rdm.get_proposition_type_from_evidence(matches) not in {'onbekend', 'afhankelijk'}:
+        return False
+    return has_followed_by(matches)
+
+
 def has_followed_by(matches: List[fuzzy_search.PhraseMatch]) -> bool:
     for match in matches:
         if 'followed_by' in match.phrase.properties:
@@ -268,7 +274,7 @@ def resolve_followed_by(followed_by_searcher: FuzzyPhraseSearcher,
     for match in matches:
         if 'followed_by' in match.phrase.properties:
             following_matches = followed_by_searcher.find_matches(doc)
-            print(f"following_matches", following_matches)
+            print(f"following_matches:", following_matches)
             resolved_matches.extend(following_matches)
     return resolved_matches
 
@@ -318,19 +324,19 @@ def get_session_resolutions(session: rdm.Session,
             paragraph.add_type(tr_types)
         # print(f"   paragraph has type: {paragraph.type}")
         paragraph.metadata['lang'] = determine_language(paragraph.text)
-        if debug > -1:
+        if debug > 0:
             print('handwritten_resolution_parser.get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         doc = {'text': paragraph.text, 'id': paragraph.id}
         opening_matches = opening_searcher.find_matches(doc, debug=0)
-        if has_followed_by(opening_matches):
-            opening_matches = resolve_followed_by(followed_by_searcher, opening_matches, doc)
         for match in opening_matches:
             if match.phrase.max_start_offset < match.offset:
                 print('handwritten_resolution_parser.get_session_resolutions - offset beyond max_start_offset')
                 print(f"    MATCH SHOULD NOT BE OPENING: {match}")
-            match.text_id = paragraph.id
-            if debug >= 0:
-                print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
+                match.text_id = paragraph.id
+                if debug >= 0:
+                    print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
+        if needs_followed_by_lookup(opening_matches):
+            opening_matches = resolve_followed_by(followed_by_searcher, opening_matches, doc)
         if attendance_list:
             # If there is a previous attendance list, finish it, yield and reset to None
             attendance_list.metadata["page_ids"] = get_paragraph_page_ids(attendance_list.paragraphs)

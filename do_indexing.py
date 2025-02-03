@@ -1180,6 +1180,10 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
     tasks = []
     for inv_num in inv_nums:
         if inv_num == 3203:
+            # 3203 doesn't exist anymore
+            continue
+        inv_map = get_inventory_by_num(inv_num)
+        if 'session' in indexing_step and inv_map['content_type'] != 'resolutions':
             continue
         task = {
             "inv_num": inv_num,

@@ -349,6 +349,11 @@ class Session(ResolutionElementDoc):
 def get_proposition_type_from_evidence(evidence: List[PhraseMatch]) -> Union[None, str]:
     prop_types_matches = [match for match in evidence if has_proposition_type_label(match)]
     prop_types = [get_proposition_type_from_label(match) for match in prop_types_matches]
+    # If there is a specific type, return it
+    for prop_type in prop_types:
+        if prop_type not in ['afhankelijk', 'onbekend']:
+            return prop_type
+    # If there is no specific type, but a dependent opening phrase, return unknown
     if 'afhankelijk' in prop_types:
         if len(prop_types) > 1:
             return prop_types[1]
@@ -369,7 +374,7 @@ def get_proposition_type_from_label(phrase_match: PhraseMatch) -> str:
         labels = phrase_match.label
     proposition_type = None
     for label in labels:
-        print('label:', label)
+        # print('label:', label)
         if label.startswith('proposition_type:'):
             proposition_type = label.replace('proposition_type:', '')
         elif label.startswith('propositie_type:'):
