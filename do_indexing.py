@@ -1179,6 +1179,8 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
         inv_nums = [inv for inv in range(start, end+1)]
     tasks = []
     for inv_num in inv_nums:
+        if inv_num == 3203:
+            continue
         task = {
             "inv_num": inv_num,
             "indexing_step": indexing_step,
