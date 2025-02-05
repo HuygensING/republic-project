@@ -181,41 +181,42 @@ class Retriever:
         docs = self.es_anno.mget(index=index, docs=doc_ids)
         return docs
 
-    def scroll_hits(self, es: Elasticsearch, query: dict, index: str,
+    @staticmethod
+    def scroll_hits(es: Elasticsearch, query: dict, index: str,
                     size: int = 100, scroll: str = '2m', show_total: bool = True,
                     sort: List[str] = None, _source: List[str] = None) -> iter:
         if query is None:
             response = es.search(index=index, scroll=scroll, size=size, sort=sort, _source=_source)
         else:
             response = es.search(index=index, scroll=scroll, size=size, query=query, sort=sort, _source=_source)
-        self.scroll_id = response['_scroll_id']
+        scroll_id = response['_scroll_id']
         scroll_size = response['hits']['total']
         if type(scroll_size) == dict:
             scroll_size = scroll_size['value']
         if show_total:
             print(f"total hits: {scroll_size: >8}\thits per scroll: {len(response['hits']['hits'])}")
         if scroll_size == 0:
-            self.scroll_id = None
+            scroll_id = None
             return None
         # Start scrolling
         while scroll_size > 0:
             for hit in response['hits']['hits']:
                 yield hit
             try:
-                response = es.scroll(scroll_id=self.scroll_id, scroll=scroll)
+                response = es.scroll(scroll_id=scroll_id, scroll=scroll)
             except ElasticsearchException:
                 print("retrieval failed for query:")
                 print(query)
                 print("last successful hit:", response["hits"]["hits"][0]["_id"])
                 raise
             # Update the scroll ID
-            self.scroll_id = response['_scroll_id']
+            scroll_id = response['_scroll_id']
             # Get the number of results that we returned in the last scroll
             scroll_size = len(response['hits']['hits'])
             # Do something with the obtained page
         # remove scroll context
         try:
-            self.es_anno.clear_scroll(scroll_id=self.scroll_id)
+            es.clear_scroll(scroll_id=scroll_id)
         except elasticsearch.ElasticsearchException:
             print('WARNING: no scroll id found when clearing scroll at end of scroll with query:')
             print(query)

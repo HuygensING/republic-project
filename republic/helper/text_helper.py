@@ -77,7 +77,7 @@ class ResolutionSentences:
             for doc in reader:
                 doc_id = doc[id_field] if id_field in doc else None
                 metadata = {field: doc[field] for field in doc if field not in {'text', id_field}}
-                doc = self.doc_tokenize.tokenize(doc['text'], doc_id)
+                doc = self.doc_tokenize.tokenize_doc(doc['text'], doc_id)
                 doc.metadata = metadata
                 yield doc
         else:

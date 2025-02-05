@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 import elasticsearch
 from ..model.republic_attendancelist_models import TextWithMetadata
+from republic.elastic.republic_retrieving import Retriever
 
 
 es_api_version = elasticsearch.__version__
@@ -23,9 +24,12 @@ def query_es(es: Elasticsearch, index, query, size=10, sort=None, aggs=None):
             body["sort"] = sort
         if aggs:
             body["sort"] = aggs
-        return es.search(index=index, body=body)
+        hits = [hit for hit in Retriever.scroll_hits(es, query, index=index, size=10)]
+        # return es.search(index=index, body=body)
     else:
-        return es.search(index=index, query=query, size=size, sort=sort, aggs=aggs)
+        hits = [hit for hit in Retriever.scroll_hits(es, query, index=index, size=10)]
+        # return es.search(index=index, query=query, size=size, sort=sort, aggs=aggs)
+    return hits
 
 
 def get_presentielijsten(es: Elasticsearch, year: int, index: str):
@@ -38,10 +42,12 @@ def get_presentielijsten(es: Elasticsearch, year: int, index: str):
     }
     size = 5000
     sort = ["_id"]
-    results = query_es(es, index, query, size=size, sort=sort)
+    # results = query_es(es, index, query, size=size, sort=sort)
+    hits = query_es(es, index, query, size=size, sort=sort)
 
     presentielijsten = {}
-    for hit in results['hits']['hits']:
+    # for hit in results['hits']['hits']:
+    for hit in hits:
         ob = hit['_source']
         mt = TextWithMetadata(ob)
         presentielijsten[mt.id] = mt
@@ -62,10 +68,13 @@ def get_nihil_actum(es: Elasticsearch, index='republic_paragraphs'):
     }
     size = 5000
     sort = ["metadata.meeting_date"]
-    na_results = query_es(es, index, query, size=size, sort=sort)
+    # na_results = query_es(es, index, query, size=size, sort=sort)
+    hits = query_es(es, index, query, size=size, sort=sort)
     nihil_actum = {}
-    for ob in na_results["hits"]["hits"]:
-        if ob['_source']['metadata']['paragraph_id']:
+    # for ob in na_results["hits"]["hits"]:
+    for hit in hits:
+        ob = hit['_source']
+        if ob['metadata']['paragraph_id']:
             mt = TextWithMetadata(ob)
             nihil_actum[mt.id] = mt
     return nihil_actum

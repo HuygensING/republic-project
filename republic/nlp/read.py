@@ -135,7 +135,8 @@ def get_period_files(res_dir: str, periods: List[Tuple[int, int]] = None,
         inv_num = int(res_file.split('-')[-1].replace('.tsv.gz', ''))
         if inv_num not in inv_period:
             continue
-        if inv_num in range(3244, 3286):
+        if inv_num in range(3197, 3243):
+        # if inv_num in range(3244, 3286):
             # print('skipping double from second series', inv_num)
             continue
         period = inv_period[inv_num]
