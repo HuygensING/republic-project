@@ -21,7 +21,7 @@ install_packages:
 	python3.11 -m pip install "cython<3.0.0" wheel
 	python3.11 -m pip install "pyyaml==5.4.1" --no-build-isolation
 	python3.11 -m pip install pipenv --target /data/vllmstorage/pip/.local --cache-dir /data/vllmstorage/pip/.cache
-	python3.11 -m pip install elasticsearch==7.15.0 pagexml-tools requests nltk bs4 numpy==1.26 pandas flair==0.12.1 --target /data/vllmstorage/pip/.local --cache-dir /data/vllmstorage/pip/.cache
+	python3.11 -m pip install elasticsearch==7.15.0 pagexml-tools requests nltk bs4 numpy==1.26 pandas huggingface_hub==0.16.4 torch==2.1.0 transformers==4.31.0 accelerate==0.21.0 flair==0.12.2 --target /data/vllmstorage/pip/.local --cache-dir /data/vllmstorage/pip/.cache
 	python3.11 -m pip install numpy==1.26 --target /data/vllmstorage/pip/.local --cache-dir /data/vllmstorage/pip/.cache
 
 
