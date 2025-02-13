@@ -29,3 +29,14 @@ install_packages:
 setup_env:
 	pipenv --python 3.11
 
+
+make_dirs:
+	mkdir data/paragraphs
+	mkdir data/paragraphs/entities-Feb-2025
+	mkdir data/entities
+	mkdir data/entities/annotations-Feb-2025
+	mkdir data/embeddings/fasttext
+	mkdir resources
+	mkdir resources/ner_taggers
+
+
