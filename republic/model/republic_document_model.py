@@ -355,10 +355,12 @@ def get_proposition_type_from_evidence(evidence: List[PhraseMatch]) -> Union[Non
             return prop_type
     # If there is no specific type, but a dependent opening phrase, return unknown
     if 'afhankelijk' in prop_types:
-        if len(prop_types) > 1:
-            return prop_types[1]
-        else:
+        if all(prop_type == 'afhankelijk' for prop_type in prop_types):
             return 'onbekend'
+        else:
+            for prop_type in prop_types:
+                if prop_type != 'afhankelijk':
+                    return prop_type
     elif len(prop_types) >= 1:
         return prop_types[0]
     else:

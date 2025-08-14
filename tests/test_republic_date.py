@@ -16,11 +16,11 @@ class TestMakeDateNameMap(TestCase):
         ]
 
     def test_make_date_name_map_returns_dict(self):
-        date_name_map = republic_date.make_date_name_map(self.date_line_elements)
+        date_name_map = republic_date.make_date_name_map([self.date_line_elements])
         self.assertEqual(dict, type(date_name_map))
 
     def test_make_date_name_map_returns_dict_per_element(self):
-        date_name_map = republic_date.make_date_name_map(self.date_line_elements)
+        date_name_map = republic_date.make_date_name_map([self.date_line_elements])
         for ei, element in enumerate(date_name_map):
             with self.subTest(ei):
                 if element in {'include_year', 'include_den'}:
@@ -31,7 +31,7 @@ class TestMakeDateNameMap(TestCase):
     def test_make_date_name_map_can_include_year(self):
         date_line_elements = [(key, val) for key, val in self.date_line_elements]
         date_line_elements.append(('year', 'all'))
-        date_name_map = republic_date.make_date_name_map(date_line_elements)
+        date_name_map = republic_date.make_date_name_map([date_line_elements])
         self.assertEqual(True, date_name_map['include_year'])
 
 
@@ -47,11 +47,11 @@ class TestDateNameMapInit(TestCase):
             ('month_name', 'handwritten'),
         ]
         self.date_mapper = republic_date.DateNameMapper(inv_metadata=self.inv_meta[3168],
-                                                        date_elements=self.date_line_elements)
+                                                        date_elements_list=[self.date_line_elements])
 
     def test_date_name_map_uses_default(self):
         self.date_mapper = republic_date.DateNameMapper(inv_metadata=self.inv_meta[3168],
-                                                        date_elements=self.date_line_elements)
+                                                        date_elements_list=[self.date_line_elements])
         date_strings = self.date_mapper.generate_day_string(1608, 12, 8)
         self.assertIn('Lunae den 8en December', date_strings)
 
@@ -96,7 +96,7 @@ class TestDateNameMapYear(TestCase):
             ('year', 'all')
         ]
         self.date_mapper = republic_date.DateNameMapper(inv_metadata=self.inv_meta[3168],
-                                                        date_elements=self.date_line_elements)
+                                                        date_elements_list=[self.date_line_elements])
 
     def test_mapper_can_generate_day_strings_with_year(self):
         year, month, day = 1612, 4, 19

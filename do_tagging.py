@@ -48,7 +48,7 @@ def tag_paragraph_entities(task):
 
 
 def aggregate_entity_output(entity_dir: str, para_dir: str):
-    anno_version = 'Nov-2024'
+    anno_version = 'Feb-2025'
     anno_subdir = f'annotations-{anno_version}'
     annotation_dir = os.path.join(entity_dir, anno_subdir)
     para_res_map = read_para_res_map(para_dir)
@@ -111,8 +111,8 @@ def main():
         with multiprocessing.Pool(processes=num_processes) as pool:
             pool.map(tag_paragraph_formulas, tasks)
     else:
-        entities_dir = 'data/entities/annotations-Nov-2024'
-        para_dir = 'data/paragraphs/entities-Nov-2024'
+        entities_dir = 'data/entities/annotations-Feb-2025'
+        para_dir = 'data/paragraphs/entities-Feb-2025'
         # para_dir = 'data/paragraphs/test'
         para_files = read_para_files(para_dir)
         print('num para files:', len(para_files))
