@@ -27254,5 +27254,80 @@
                 "page_type": "index_page"
             }
         ]
+    },
+    {
+        "inventory_num": 10,
+        "num_scans": 266,
+        "inventory_label": "71B10 Secrete resolutien Beginnend metter 4 Augusto 1576 en Eyndende den 18 Mey 1577",
+        "inventory_uuid": null,
+        "resolution_type": "ordinaris",
+        "content_type": "resolutions",
+        "series_name": "KB_series",
+        "series_uuid": null,
+        "num_pages": 531,
+        "year_start": 1576,
+        "year_end": 1577,
+        "period_start": "1576-08-04",
+        "period_end": "1577-05-18",
+        "notes": null,
+        "page_num_interventions": null,
+        "inventory_index": null,
+        "inventory_doc_type": null,
+        "created": "2025-09-08T12:43:00",
+        "updated": "2025-09-08T12:43:00",
+        "index_timestamp": null,
+        "inventory_id": "KB_series_71B10",
+        "sections": [
+            {
+                "start": 15,
+                "end": 78,
+                "page_type": "index_page"
+            },
+            {
+                "start": 83,
+                "end": 89,
+                "page_type": "non_sg_resolution_page"
+            },
+            {
+                "start": 93,
+                "end": 515,
+                "page_type": "resolution_page"
+            }
+        ]
+    },
+    {
+        "inventory_num": 12,
+        "num_scans": 352,
+        "inventory_label": "71B12 Resolutien Beginnend metter 20 April 1578 totten Jaere 1579",
+        "inventory_uuid": null,
+        "resolution_type": "ordinaris",
+        "content_type": "resolutions",
+        "series_name": "KB_series",
+        "series_uuid": null,
+        "num_pages": 531,
+        "year_start": 1578,
+        "year_end": 1578,
+        "period_start": "1578-04-20",
+        "period_end": "1578-12-31",
+        "notes": null,
+        "page_num_interventions": null,
+        "inventory_index": null,
+        "inventory_doc_type": null,
+        "created": "2025-09-13T10:23:00",
+        "updated": "2025-09-13T10:23:00",
+        "index_timestamp": null,
+        "inventory_id": "KB_series_71B12",
+        "sections": [
+            {
+                "start": 9,
+                "end": 78,
+                "page_type": "index_page"
+            },
+            {
+                "start": 85,
+                "end": 688,
+                "page_type": "resolution_page"
+            }
+        ]
     }
 ]

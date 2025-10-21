@@ -32,7 +32,7 @@ def make_scan_urls(inventory_metadata: dict = None, inventory_num: int = None,
         scan_num = int(scan_id.split('_')[-1])
     if page_num:
         scan_num = int(page_num / 2) + 1
-    if not scan_num:
+    if scan_num is None:
         raise ValueError('Must use page_num or scan_num')
     scan_num_string = format_scan_number(scan_num)
     viewer_baseurl = f"{image_host_url}/framed3.html"
@@ -234,8 +234,10 @@ def index_intervention_page_nums(inv_metadata):
 def map_text_page_nums(inv_metadata: dict) -> Dict[int, Dict[str, Union[int, str]]]:
     text_page_num_map = {}
     if "sections" not in inv_metadata:
+        print(f"no sections for inventory {inv_metadata['inventory_num']}")
         return text_page_num_map
     res_sections = [section for section in inv_metadata["sections"] if section["page_type"] == "resolution_page"]
+    # print(f"res_sections: {res_sections}")
     intervene = index_intervention_page_nums(inv_metadata)
     for section in res_sections:
         if "text_page_num" not in section:

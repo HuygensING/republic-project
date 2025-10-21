@@ -27,7 +27,12 @@ def parse_republic_pagexml_file(pagexml_file: str) -> pdm.PageXMLScan:
 
 def set_scan_type(scan: pdm.PageXMLDoc, inv_metadata: Dict[str, any] = None) -> None:
     inv_num = scan.metadata["inventory_num"]
-    if 62 <= inv_num <= 456:
+    if 10 <= inv_num <= 12:
+        scan.metadata["resolution_type"] = "secreet"
+        scan.metadata["text_type"] = "handwritten"
+        scan.metadata["normal_odd_end"] = 5500
+        scan.metadata["normal_even_end"] = 2800
+    elif 62 <= inv_num <= 456:
         scan.metadata["resolution_type"] = "ordinaris"
         scan.metadata["text_type"] = "handwritten"
         scan.metadata["normal_odd_end"] = 5500
@@ -115,11 +120,11 @@ def get_scan_pagexml(pagexml_file: str,
 
 def set_line_heights(scan: pdm.PageXMLScan, debug: int = 0):
     if debug > 0:
-        print('set_line_heights - scan.id:', scan.id)
+        print('republic_pagexml_parser.set_line_heights - scan.id:', scan.id)
     for line in scan.get_lines():
         line_height_stats = layout_helper.get_line_height_stats(line, debug=debug)
         if debug > 0:
-            print('set_line_heights - line_height_stats:', line_height_stats)
+            print('republic_pagexml_parser.set_line_heights - line_height_stats:', line_height_stats)
         if line_height_stats is None:
             return None
         if line.xheight is None:

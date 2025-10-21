@@ -620,6 +620,10 @@ def split_scan_pages(scan_doc: pdm.PageXMLScan, page_type_index: Dict[int, any] 
         scan_doc.metadata['scan_width'] = scan_doc.coords.width
     page_even = initialize_pagexml_page(scan_doc, 'even', page_type_index)
     page_odd = initialize_pagexml_page(scan_doc, 'odd', page_type_index)
+    if debug > 0:
+        print(f"republic_page_parser.split_scan_pages - scan_doc: {scan_doc.id}")
+        print(f"republic_page_parser.split_scan_pages - page_even: {page_even.id}")
+        print(f"republic_page_parser.split_scan_pages - page_odd: {page_odd.id}")
     if not scan_doc.text_regions:
         return [page_even, page_odd]
     config = copy.deepcopy(base_config)

@@ -28,9 +28,13 @@ from republic.helper.utils import get_commit_version
 import republic.download.republic_data_downloader as downloader
 import republic.elastic.republic_elasticsearch as republic_elasticsearch
 import republic.extraction.extract_resolution_metadata as extract_res
-from republic.helper.utils import make_index_urls
+from republic.model.inventory_mapping import read_inventory_metadata
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
+import republic.parser.logical.printed_resolution_parser as printed_res_parser
+import republic.parser.logical.handwritten_resolution_parser as hand_res_parser
+import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
+
 from republic.analyser.quality_control import check_element_types
 from republic.classification.line_classification import NeuralLineClassifier
 from republic.classification.content_classification import get_header_dates
@@ -38,22 +42,22 @@ from republic.helper.metadata_helper import get_per_page_type_index, map_text_pa
 from republic.helper.model_loader import load_line_break_detector
 from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.helper.utils import get_project_dir
+from republic.helper.utils import make_index_urls
 from republic.helper.provenance_helper import generate_scan_provenance_record
 from republic.helper.provenance_helper import generate_es_provenance_record
+from republic.helper.provenance_helper import make_provenance_data
+from republic.helper.provenance_helper import generate_es_provenance_urls_rels
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 
-import republic.parser.logical.printed_resolution_parser as printed_res_parser
-import republic.parser.logical.handwritten_resolution_parser as hand_res_parser
-import republic.parser.pagexml.republic_pagexml_parser as pagexml_parser
 from republic.parser.logical.generic_session_parser import make_session
 from republic.parser.logical.generic_session_parser import make_session_from_meta_and_trs
 from republic.parser.logical.handwritten_session_parser import get_handwritten_sessions
 from republic.parser.logical.handwritten_resolution_parser import make_opening_searcher
 from republic.parser.logical.printed_session_parser import get_printed_sessions
-from republic.parser.pagexml.page_date_parser import process_handwritten_pages
 from republic.parser.pagexml.page_date_parser import classify_page_date_regions
 from republic.parser.pagexml.page_date_parser import load_date_region_classifier
+from republic.parser.pagexml.page_date_parser import process_handwritten_pages
 
 # logging.config.dictConfig({
 #     'version': 1,
@@ -437,7 +441,7 @@ class Indexer:
             try:
                 logger.info('do_scan_indexing_pagexml - indexing scan', scan.id)
                 print('do_scan_indexing_pagexml - indexing scan', scan.id)
-                record = generate_scan_provenance_record(pagexml_file, self.rep_es.prov_es_url, scan.id)
+                record = generate_scan_provenance_record(scan, self.rep_es.prov_es_url, scan.id)
                 self.rep_es.index_scan(scan)
             except ZeroDivisionError:
                 logger.error("ZeroDivisionError for scan", scan.id)
@@ -549,8 +553,13 @@ class Indexer:
             message = f"indexing page {page_count} (scan {page.metadata['scan_num']} of {num_scans}) with id {page.id}"
             logger.info(message)
             print(message)
-            prov_url = self.rep_es.post_provenance([page.metadata['scan_id']], [page.id], 'scans', 'pages')
+
+            prov_record = make_provenance_data(self.rep_es.es_anno_config, [page.metadata['scan_id']], [page.id],
+                                               source_index='scans', target_index='pages')
+            prov_url = self.rep_es.post_provenance_record(prov_record)
             page.metadata['provenance_url'] = prov_url
+            # print(f"{pi} {page.id} prov_url: {prov_url}")
+            # print(f"{json.dumps(prov_record, indent=4)}")
             self.rep_es.index_page(page)
 
     def do_page_indexing_pagexml_from_file(self, inv_num: int, year_start: int, year_end: int):
@@ -1098,6 +1107,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
     elif task["indexing_step"] == "pages":
         indexer.do_page_writing(task["inv_num"], task["year_start"], task["year_end"])
         indexer.do_page_indexing_pagexml_from_file(task["inv_num"], task["year_start"], task["year_end"])
+    elif task["indexing_step"] == "pages_indexing_from_files":
+        indexer.do_page_indexing_pagexml_from_file(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "page_types":
         indexer.do_page_type_indexing_pagexml(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "session_files":
@@ -1187,36 +1198,45 @@ def get_tasks(start, end, indexing_step, index_label: str, host_type: str, base_
 
     print(f'do_indexing.get_tasks - index_label: {index_label}')
     print(f'start: {start}\tend: {end}')
+    invs_metadata = read_inventory_metadata()
+    inv_meta_map = {inv['inventory_num']: inv for inv in invs_metadata}
     inv_nums = []
     if isinstance(start, list):
         inv_nums = start
     else:
-        inv_nums = [inv for inv in range(start, end+1)]
+        inv_nums = [inv for inv in range(start, end+1) if inv in inv_meta_map]
     tasks = []
     for inv_num in inv_nums:
         if inv_num == 3203:
             # 3203 doesn't exist anymore
             continue
-        inv_map = get_inventory_by_num(inv_num)
+        # inv_map = get_inventory_by_num(inv_num)
+        inv_map = inv_meta_map[inv_num]
         if 'session' in indexing_step and inv_map['content_type'] != 'resolutions':
             continue
-        task = {
-            "inv_num": inv_num,
-            "indexing_step": indexing_step,
-            'index_label': index_label,
-            'host_type': host_type,
-            'base_dir': base_dir,
-            "commit": commit_version
-        }
+        task = {"inv_num": inv_num,
+                "indexing_step": indexing_step,
+                'index_label': index_label,
+                'host_type': host_type,
+                'base_dir': base_dir,
+                "commit": commit_version,
+                "year_start": inv_map["year_start"],
+                "year_end": inv_map["year_end"]}
         tasks.append(task)
 
+    """
     for task in tasks:
-        inv_map = get_inventory_by_num(task["inv_num"])
+        # inv_map = get_inventory_by_num(task["inv_num"])
+        if task['inv_num'] not in inv_meta_map:
+            print('No inventory metadata for inventory number', task['inv_num'])
+            continue
+        inv_map = inv_meta_map[task['inv_num']]
         if inv_map is None:
             print('No inventory metadata for inventory number', task['inv_num'])
             continue
         task["year_start"] = inv_map["year_start"]
         task["year_end"] = inv_map["year_end"]
+    """
     tasks = [task for task in tasks if 'year_start' in task and task['year_start'] is not None]
     print(f'indexing {indexing_step} for inventories', inv_nums)
     return tasks

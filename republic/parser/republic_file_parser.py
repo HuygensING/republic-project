@@ -1,7 +1,10 @@
-import os
 import glob
+import os
+import re
+from typing import Dict, List, Tuple, Union
+
 import xmltodict
-from typing import Union, List, Tuple
+
 from republic.model.inventory_mapping import get_inventory_by_num, read_inventory_metadata
 from republic.helper.metadata_helper import format_scan_number, make_scan_urls
 from republic.parser.hocr.generic_hocr_parser import make_hocr_doc
@@ -11,6 +14,7 @@ from republic.parser.hocr.republic_index_page_parser import count_page_ref_lines
 # column split filename format: NL-HaNA_1.01.02_3780_0016.jpg-0-251-98--0.40.hocr
 # filename hOCR format: NL-HaNA_1.01.02_3780_0016.jpg.hocr
 # filename PageXML format: NL-HaNA_1.01.02_3780_0016.jpg.page.xml
+# filename KB PageXML format: 046_71B10_038v_039r.xml
 
 OCR_FILE_TYPES = ['.hocr', '.page.xml']
 ocr_type_file_extensions = {
@@ -35,14 +39,28 @@ def get_ocr_type(filename: str) -> str:
 def get_republic_scan_metadata(scan_file: str) -> dict:
     _scan_dir, scan_fname = os.path.split(scan_file)
     try:
-        _, inv_num, scan_num = [int(part) for part in scan_fname.split('.')[2].split('_')]
+        if scan_fname.startswith('NL-HaNA'):
+            _, inv_num, scan_num = [int(part) for part in scan_fname.split('.')[2].split('_')]
+            inv_info = get_inventory_by_num(inv_num)
+            scan_id = f'{inv_info["series_name"]}_{inv_num}_{scan_num:0>4.0f}'
+            inventory_id = f'{inv_info["series_name"]}_{inv_num}_{scan_num:0>4.0f}'
+        elif m := re.match(r"(\d+)_(\d+B)(\d+)_(\w+)\.xml", scan_fname):
+            scan_num = int(m.group(1))
+            series_label = m.group(2)
+            inv_num = int(m.group(3))
+            label = m.group(4)
+            inv_info = get_inventory_by_num(inv_num)
+            scan_id = f"{inv_info['series_name']}_{series_label}{inv_num}_{scan_num:0>3.0f}"
+            inventory_id = f"{inv_info['series_name']}_{series_label}{inv_num}"
+        else:
+            raise ValueError(f"invalid PageXML file name: {scan_file}, not following NA or KB filename format.")
     except ValueError:
         print(scan_fname)
         print(scan_fname.split('.'))
         raise
-    inv_info = get_inventory_by_num(inv_num)
     ocr_type = get_ocr_type(scan_fname)
-    inv_period = get_inventory_period(scan_fname)
+    inv_period = get_inventory_period(fname=scan_fname, inventory_info=inv_info)
+    # print(f"inv_info: {inv_info}\tscan_num: {scan_num}")
     urls = make_scan_urls(inv_info, scan_num=scan_num)
     return {
         'series_name': inv_info['series_name'],
@@ -50,13 +68,14 @@ def get_republic_scan_metadata(scan_file: str) -> dict:
         'inventory_uuid': inv_info['inventory_uuid'],
         'inventory_num': inv_num,
         'inventory_year': inv_info['year'] if 'year' in inv_info else None,
+        'inventory_id': inventory_id,
         'inventory_period_start': inv_period[0],
         'inventory_period_end': inv_period[1],
         'scan_file': scan_fname,
         'scan_num': scan_num,
         'ocr_type': ocr_type,
         'type': 'scan',
-        'id': f'{inv_info["series_name"]}_{inv_num}_{format_scan_number(scan_num)}',
+        'id': scan_id,
         'viewer_url': urls['viewer_url'],
         'jpg_url': urls['jpg_url'],
         'iiif_url': urls['iiif_url']
@@ -125,15 +144,20 @@ def get_inventory_num(fname: str) -> int:
     return int(fname_parts[2].split("_")[1])
 
 
-def get_inventory_period(fname: str) -> Union[Tuple[Union[int, None], Union[int, None]]]:
+def get_inventory_period(fname: str = None,
+                         inventory_info: Dict[str, any] = None) -> Union[Tuple[Union[int, None], Union[int, None]]]:
+    """Derive information about the period covered by the inventory."""
+    if inventory_info is None and fname is None:
+        return None, None
+    elif inventory_info is not None and 'period_start' in inventory_info and 'period_end' in inventory_info:
+        return inventory_info['period_start'], inventory_info['period_end']
     inventory_num = get_inventory_num(fname)
     inventory_metadata = read_inventory_metadata()
     for inventory_map in inventory_metadata:
         if inventory_num == inventory_map["inventory_num"]:
             if "period_start" not in inventory_map:
+                print(f"inventory_num: {inventory_num}, inventory_map: {inventory_map}")
                 return None, None
-            if "period_start" not in inventory_map:
-                print(inventory_num, inventory_map)
             return inventory_map["period_start"], inventory_map["period_end"]
     else:
         return None, None
