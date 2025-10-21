@@ -1,10 +1,10 @@
-from typing import List
+from typing import Dict, List
 import requests
 
 import elasticsearch
 from elasticsearch import Elasticsearch
 
-from republic.helper.utils import make_provenance_data
+from republic.helper.provenance_helper import make_provenance_data
 # import retrieval and indexing functions so they cna be imported from a single module
 from republic.config.republic_config import get_base_config
 from republic.elastic.republic_retrieving import Retriever
@@ -50,16 +50,17 @@ class RepublicElasticsearch(Retriever, Indexer):
         super().__init__(es_anno, es_text, config)
         self.es_text_config = text_repo_es_config()
         self.es_anno_config = set_elasticsearch_config(host_type)
+        self.prov_es_url = self.es_anno_config['elastic_config']['url']
 
-    def post_provenance(self, source_ids: List[str], target_ids: List[str], source_index: str,
-                        target_index: str, source_es_url: str = None,
-                        source_external_urls: List[str] = None, why: str = None,
-                        ignore_prov_errors: bool = False):
-        data = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids,
-                                    target_ids=target_ids, source_index=source_index,
-                                    target_index=target_index, source_es_url=source_es_url,
-                                    source_external_urls=source_external_urls, why=why)
-        response = requests.post(settings.prov_host_url, data=data,
+    @staticmethod
+    def post_provenance_record(record: Dict[str, any], ignore_prov_errors: bool = False):
+        """Post the provenance record to the provenance server and return the provenance URL.
+
+        :param record: a provenance record dictionary
+        :param ignore_prov_errors: boolean flag to ignore HTTP errors
+        :return: the provenance URL if POSTing succeeded otherwise None
+        """
+        response = requests.post(settings.prov_host_url, data=record,
                                  headers={'Authorization': f'Basic: {settings.prov_api_key}'})
         if response.status_code == 201:
             return f"{settings.prov_host_url}/{response.headers['Location'][1:]}"
@@ -67,6 +68,16 @@ class RepublicElasticsearch(Retriever, Indexer):
             if not ignore_prov_errors:
                 print('PROVENANCE SERVER ERROR', response.status_code, response.reason)
             return None
+
+    def post_provenance(self, source_ids: List[str], target_ids: List[str], source_index: str,
+                        target_index: str, source_es_url: str = None,
+                        source_external_urls: List[str] = None, why: str = None,
+                        ignore_prov_errors: bool = False):
+        record = make_provenance_data(es_config=self.es_anno_config, source_ids=source_ids,
+                                      target_ids=target_ids, source_index=source_index,
+                                      target_index=target_index, source_es_url=source_es_url,
+                                      source_external_urls=source_external_urls, why=why)
+        self.post_provenance_record(record, ignore_prov_errors=ignore_prov_errors)
 
 
 def initialize_es(host_type: str = "external", timeout: int = 10,

@@ -244,9 +244,11 @@ class Retriever:
         response = self.es_anno.get(index=self.config['scans_index'], id=scan_id)
         return parser.json_to_pagexml_scan(response['_source'])
 
-    def retrieve_scans_by_query(self, query: dict, sort: List[str] = None) -> List[pdm.PageXMLScan]:
-        for hit in self.scroll_hits(self.es_anno, query, self.config['scans_index'],
-                                    size=2, scroll='5m', sort=sort):
+    def retrieve_scans_by_query(self, query: dict, size: int = None, sort: List[str] = None) -> List[pdm.PageXMLScan]:
+        for hi, hit in enumerate(self.scroll_hits(self.es_anno, query, self.config['scans_index'],
+                                                  size=2, scroll='5m', sort=sort)):
+            if size is not None and hi == size:
+                break
             yield parser.json_to_pagexml_scan(hit['_source'])
         # response = self.es_anno.search(index=self.config['scans_index'], body=query)
         # return parse_hits_as_scans(response)
@@ -418,10 +420,10 @@ class Retriever:
         else:
             return [rdm.json_to_republic_session(hit['_source']) for hit in response['hits']['hits']]
 
-    def retrieve_session_metadata_by_query(self, query: Dict[str, any]):
+    def retrieve_session_metadata_by_query(self, query: Dict[str, any], size: int = 10):
         docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query,
                                                            index=self.config['session_metadata_index'],
-                                                           size=10, sort=['id.keyword'])]
+                                                           size=size, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: doc['id'])
         return docs
 

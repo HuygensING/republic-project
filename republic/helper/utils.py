@@ -1,7 +1,7 @@
 import datetime
 import os
 import subprocess
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from fuzzy_search.tokenization.string import score_levenshtein_similarity_ratio
 
@@ -37,41 +37,6 @@ def make_index_urls(es_config, doc_ids: List[str], index: str, es_url: str = Non
     if isinstance(doc_ids, str):
         doc_ids = [doc_ids]
     return [f'{es_url}{index}/_doc/{doc_id}' for doc_id in doc_ids]
-
-
-def make_provenance_data(es_config, source_ids: List[str], target_ids: List[str],
-                         source_index: str, target_index: str, source_es_url: str = None,
-                         source_external_urls: List[str] = None, why: str = None) -> Dict[str, any]:
-    if source_es_url is None:
-        source_es_url = es_config['elastic_config']['url']
-    target_es_url = es_config['elastic_config']['url']
-    if isinstance(source_ids, str):
-        source_ids = [source_ids]
-    if isinstance(target_ids, str):
-        target_ids = [target_ids]
-    if source_index == 'Loghi':
-        source_urls = [source_id for source_id in source_ids]
-    else:
-        source_urls = [f'{source_es_url}{source_index}/_doc/{source_id}' for source_id in source_ids]
-    if source_external_urls is not None:
-        source_urls += source_external_urls
-    target_urls = [f'{target_es_url}{target_index}/_doc/{target_id}' for target_id in target_ids]
-    source_rels = ['primary'] * len(source_urls)
-    target_rels = ['primary'] * len(target_urls)
-    commit_url = get_commit_url()
-    if why is None:
-        why = f'REPUBLIC CAF Pipeline deriving {target_index} from {source_index}'
-    return {
-        'who': 'orcid:0000-0002-0301-2029',
-        'where': 'https://annotation.republic-caf.diginfra.org/',
-        'when': get_iso_utc_timestamp(),
-        'how': commit_url,
-        'why': why,
-        'source': source_urls,
-        'source_rel': source_rels,
-        'target': target_urls,
-        'target_rel': target_rels
-    }
 
 
 def get_name_for_disambiguation(proposed, base_config, es=None, debug=False):

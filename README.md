@@ -5,6 +5,8 @@
 - [Usage](#usage)
 - [Using code in jupyter notebooks](#running-republic-code-from-jupyter-notebooks)
 
+- The resolutions are available via the [Goetgevonden](https://app.goetgevonden.nl/) search application. See https://goetgevonden.nl/en/ for more information on the project.
+
 
 ### The REPUBLIC project
 

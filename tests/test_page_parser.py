@@ -22,6 +22,8 @@ class TestPageParser(unittest.TestCase):
         page_json = json.loads(read_pagexml_file(self.page_files['page1']))
         page = json_to_pagexml_page(page_json)
         inv_id = "NL-HaNA_1.01.02_4561"
+        for line in page.get_lines():
+            line.metadata['inventory_num'] = 4561
         date_mapper = make_inventory_date_name_mapper(inv_id, [page], debug=2)
         config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': True, 'levenshtein_threshold': 0.8}
         if 'week_day_name' in date_mapper.date_name_map and date_mapper.date_name_map['week_day_name'] is not None:

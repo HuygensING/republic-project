@@ -116,7 +116,9 @@ def make_resolution_phrase_model_searcher() -> FuzzyPhraseSearcher:
     phrases = []
     for set_name in rpm.resolution_phrase_sets:
         # print('adding phrases from set', set_name)
-        phrases += rpm.resolution_phrase_sets[set_name]
+        set_phrases = rpm.resolution_phrase_sets[set_name]
+        printed_phrases = [phrase for phrase in set_phrases if phrase['end_year'] > 1702]
+        phrases += printed_phrases
     # phrases = rpm.proposition_opening_phrases
     # for phrase in phrases:
     #     if 'max_offset' in phrase:

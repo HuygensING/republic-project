@@ -17373,7 +17373,7 @@
         "year": 1615,
         "resolution_type": "secreet",
         "content_type": "resolutions",
-        "period_start": "1615-12-31",
+        "period_start": "1615-12-01",
         "period_end": "1634-12-31",
         "series_name": "NL-HaNA_1.01.02",
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
@@ -17503,8 +17503,35 @@
             },
             {
                 "start": 17,
+                "end": 154,
+                "page_type": "resolution_page"
+            },
+            {
+                "start": 159,
+                "end": 175,
+                "page_type": "index_page"
+            },
+            {
+                "start": 179,
                 "end": 1074,
                 "page_type": "resolution_page"
+            },
+            {
+                "start": 579,
+                "end": 606,
+                "page_type": "index_page"
+            },
+            {
+                "start": 613,
+                "end": 1063,
+                "page_type": "resolution_page"
+            },
+            {
+                "start": 1067,
+                "end": 1074,
+                "page_type": "resolution_page",
+                "period_start": "1653-11-25",
+                "period_end": "1653-12-07"
             }
         ],
         "header_type": "date",
@@ -26137,9 +26164,9 @@
         "series_uuid": "6e8998f6-cc66-43b9-92ae-85423ed66958",
         "num_pages": null,
         "year_start": 1679,
-        "year_end": 1679,
+        "year_end": 1683,
         "period_start": "1679-01-06",
-        "period_end": "1679-12-28",
+        "period_end": "1683-12-28",
         "notes": null,
         "page_num_interventions": null,
         "inventory_index": null,

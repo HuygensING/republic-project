@@ -38,6 +38,8 @@ from republic.helper.metadata_helper import get_per_page_type_index, map_text_pa
 from republic.helper.model_loader import load_line_break_detector
 from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.helper.utils import get_project_dir
+from republic.helper.provenance_helper import generate_scan_provenance_record
+from republic.helper.provenance_helper import generate_es_provenance_record
 from republic.model.inventory_mapping import get_inventories_by_year, get_inventory_by_num
 from republic.model.republic_text_annotation_model import make_session_text_version
 
@@ -418,6 +420,10 @@ class Indexer:
         for resolution in printed_res_parser.get_session_resolutions(session, opening_searcher, verb_searcher):
             self.rep_es.index_resolution(resolution)
 
+    #########
+    # SCANS #
+    #########
+
     def do_downloading(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Downloading pagexml zip file for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Downloading pagexml zip file for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -431,10 +437,15 @@ class Indexer:
             try:
                 logger.info('do_scan_indexing_pagexml - indexing scan', scan.id)
                 print('do_scan_indexing_pagexml - indexing scan', scan.id)
+                record = generate_scan_provenance_record(pagexml_file, self.rep_es.prov_es_url, scan.id)
                 self.rep_es.index_scan(scan)
             except ZeroDivisionError:
                 logger.error("ZeroDivisionError for scan", scan.id)
                 print("ZeroDivisionError for scan", scan.id)
+
+    #########
+    # PAGES #
+    #########
 
     def do_page_extracting_from_scan(self, inv_num: int):
         inv_metadata = get_inventory_by_num(inv_num)
@@ -576,6 +587,10 @@ class Indexer:
         logger.info(logger_string)
         print(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
         get_pages(inv_num, self)
+
+    ############
+    # SESSIONS #
+    ############
 
     def get_sessions_from_pages(self, inv_num: int, year_start: int, year_end: int, from_starts: bool = False):
         logger_string = f"Getting PageXML sessions from pages for inventory {inv_num} " \
