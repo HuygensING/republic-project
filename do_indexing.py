@@ -881,7 +881,12 @@ class Indexer:
                     # self.rep_es.index_resolution(resolution)
                 resolutions_json = [res.json for res in resolutions]
                 # print('using resolution index', self.rep_es.config['resolutions_index'])
-                self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], resolutions_json)
+                n = 2
+                for i in range(0, len(resolutions_json), n):
+                        res_list = resolutions_json[i:i + n]
+                        if len(res_list) == 0:
+                            break
+                        self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], res_list)
             except Exception as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
                 logging.error('Error parsing resolutions for inv_num', inv_num)
