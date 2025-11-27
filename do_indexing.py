@@ -768,9 +768,10 @@ class Indexer:
                 session_json['evidence'] = [match.json() for match in session.evidence]
                 logger.info(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
                 print(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
-                prov_url = self.rep_es.post_provenance(source_ids=session_json['page_ids'], target_ids=[session.id],
-                                                       source_index='pages', target_index='session_metadata',
-                                                       ignore_prov_errors=True)
+                prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
+                                                   target_ids=session.id,
+                                                   source_index='pages', target_index='sessions')
+                prov_url = self.rep_es.post_provenance_record(prov_record)
                 print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
