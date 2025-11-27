@@ -39,4 +39,14 @@ make_dirs:
 	mkdir resources
 	mkdir resources/ner_taggers
 
+index_sessions: index_sessions_handwritten index_sessions_printed
+
+index_sessions_handwritten:
+	python3.11 do_indexing.py -s 3096 -e 3350 -i "sessions_indexing_from_files" -n 1
+	python3.11 do_indexing.py -s 4540 -e 4862 -i "sessions_indexing_from_files" -n 1
+	python3.11 do_indexing.py -s 10 -e 12 -i "sessions_indexing_from_files" -n 1
+
+index_sessions_printed:
+	python3.11 do_indexing.py -s 400 -e 460 -i "sessions_indexing_from_files" -n 1
+	python3.11 do_indexing.py -s 3760 -e 3864 -i "sessions_indexing_from_files" -n 1
 
