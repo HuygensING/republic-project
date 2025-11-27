@@ -63,7 +63,7 @@ from republic.parser.pagexml.page_date_parser import process_handwritten_pages
 #     'version': 1,
 #     'disable_existing_loggers': True,
 # })
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("do_indexing")
 
 
 def setup_logger(my_logger: logging.Logger, log_file: str, formatter: logging.Formatter,
@@ -178,7 +178,7 @@ def get_last_pages(inv_num: int, indexer: Indexer):
         return None
 
 
-def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> Generator[pdm.PageXMLPage, None, None]:
+def get_pages(inv_num: int, indexer: Indexer, page_type: str = None, from_file_only: bool = False) -> Generator[pdm.PageXMLPage, None, None]:
     if os.path.exists(f"{indexer.base_dir}/pages") is False:
         os.mkdir(f"{indexer.base_dir}/pages")
     page_generator = get_last_pages(inv_num, indexer)
@@ -186,7 +186,7 @@ def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> Generato
         for page in page_generator:
             if page_type is None or page.has_type(page_type):
                 yield page
-    else:
+    elif from_file_only is False:
         logger_string = f"Downloading pages from ES index for inventory {inv_num}"
         logger.info(logger_string)
         print(logger_string)
@@ -198,6 +198,8 @@ def get_pages(inv_num: int, indexer: Indexer, page_type: str = None) -> Generato
                 fh.write(f"{page_string}\n")
                 if page_type is not None and page.has_type(page_type):
                     yield page
+    else:
+        print(f"Skipping get_pages for inventory {inv_num} because there is no page file")
     return None
 
 
@@ -548,22 +550,38 @@ class Indexer:
         print(f"Indexing pagexml pages for inventory {inv_num} (years {year_start}-{year_end})...")
         inv_metadata = get_inventory_by_num(inv_num)
         num_scans = inv_metadata['num_scans']
+        prov_errors = 0
+        es_errors = 0
         for pi, page in enumerate(page_generator):
             page_count = pi + 1
             message = f"indexing page {page_count} (scan {page.metadata['scan_num']} of {num_scans}) with id {page.id}"
             logger.info(message)
             print(message)
 
-            prov_record = make_provenance_data(self.rep_es.es_anno_config, [page.metadata['scan_id']], [page.id],
-                                               source_index='scans', target_index='pages')
-            prov_url = self.rep_es.post_provenance_record(prov_record)
+            try:
+                prov_record = make_provenance_data(self.rep_es.es_anno_config, [page.metadata['scan_id']], [page.id],
+                                                   source_index='scans', target_index='pages')
+                prov_url = self.rep_es.post_provenance_record(prov_record)
+            except BaseException as err:
+                prov_errors += 1
+                logging.error(f"Error posting provenance for page {page.id} - {err}")
+                continue
             page.metadata['provenance_url'] = prov_url
             # print(f"{pi} {page.id} prov_url: {prov_url}")
             # print(f"{json.dumps(prov_record, indent=4)}")
-            self.rep_es.index_page(page)
+            try:
+                self.rep_es.index_page(page)
+            except BaseException as err:
+                es_errors += 1
+                logger.error(f"Error indexing page {page.id} - {err}")
+                continue
+        logger.info(f"finished indexing pages of inventory {inv_num} with {es_errors} ES errors and {prov_errors} prov errors.")
+        print(f"finished indexing pages of inventory {inv_num} with {es_errors} ES errors and {prov_errors} prov errors.")
 
     def do_page_indexing_pagexml_from_file(self, inv_num: int, year_start: int, year_end: int):
-        page_generator = get_pages(inv_num, self)
+        page_generator = get_pages(inv_num, self, from_file_only=True)
+        if page_generator is None:
+            return None
         self.do_page_indexing_pagexml(inv_num, year_start, year_end, page_generator)
 
     def do_page_indexing_pagexml_from_scans(self, inv_num: int, year_start: int, year_end: int):
@@ -1154,6 +1172,8 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     else:
         raise ValueError(f'Unknown task type {task["indexing_step"]}')
+    logger.info(f"Finished indexing {task['indexing_step']} for inventory {task['inv_num']}, "
+          f"years {task['year_start']}-{task['year_end']}")
     print(f"Finished indexing {task['indexing_step']} for inventory {task['inv_num']}, "
           f"years {task['year_start']}-{task['year_end']}")
 
