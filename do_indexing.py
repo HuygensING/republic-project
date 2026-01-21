@@ -22,6 +22,7 @@ from elasticsearch.exceptions import ElasticsearchException
 # from elasticsearch.exceptions import TransportError
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 # import pagexml.parser as pagexml_parser
+from pagexml.parser import json_to_pagexml_page
 
 from republic.helper.utils import get_commit_version
 
@@ -40,7 +41,7 @@ from republic.classification.line_classification import NeuralLineClassifier
 from republic.classification.content_classification import get_header_dates
 from republic.helper.metadata_helper import get_per_page_type_index, map_text_page_nums
 from republic.helper.model_loader import load_line_break_detector
-from republic.helper.pagexml_helper import json_to_pagexml_page
+# from republic.helper.pagexml_helper import json_to_pagexml_page
 from republic.helper.utils import get_project_dir
 from republic.helper.utils import make_index_urls
 from republic.helper.provenance_helper import generate_scan_provenance_record
@@ -151,13 +152,19 @@ def get_raw_pages(inv_num: int, indexer: Indexer):
     return make_page_generator(inv_num, raw_pages_file, 'raw')
 
 
-def get_preprocessed_pages(inv_num: int, indexer: Indexer):
-    preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
+def get_preprocessed_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool = True):
+    preprocessed_dir = f"{indexer.base_dir}/pages/preprocessed_page_json"
+    preprocessed_pages_file = os.path.join(preprocessed_dir, f"preprocessed_pages-{inv_num}.jsonl.gz")
+    if use_line_class_update is True:
+        preprocessed_dir = f"{indexer.base_dir}/pages/line_class_preprocessed_page_json"
+        line_class_update_file = os.path.join(preprocessed_dir, f"preprocessed_pages-{inv_num}.jsonl.gz")
+        if os.path.exists(line_class_update_file) is False:
+            preprocessed_pages_file = line_class_update_file
     print('preprocessed_pages_file:', preprocessed_pages_file)
     return make_page_generator(inv_num, preprocessed_pages_file, 'preprocessed')
 
 
-def get_last_pages(inv_num: int, indexer: Indexer):
+def get_last_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool = True):
     raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
     preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
     if os.path.exists(preprocessed_pages_file):
@@ -166,11 +173,11 @@ def get_last_pages(inv_num: int, indexer: Indexer):
             prep_stat = os.stat(preprocessed_pages_file)
             raw_stat = os.stat(raw_pages_file)
             if prep_stat.st_mtime > raw_stat.st_mtime:
-                return get_preprocessed_pages(inv_num, indexer)
+                return get_preprocessed_pages(inv_num, indexer, use_line_class_update=use_line_class_update)
             else:
                 return get_raw_pages(inv_num, indexer)
         else:
-            return get_preprocessed_pages(inv_num, indexer)
+            return get_preprocessed_pages(inv_num, indexer, use_line_class_update=use_line_class_update)
     elif os.path.exists(raw_pages_file):
         # create preprocessed pages file?
         return get_raw_pages(inv_num, indexer)
@@ -178,10 +185,11 @@ def get_last_pages(inv_num: int, indexer: Indexer):
         return None
 
 
-def get_pages(inv_num: int, indexer: Indexer, page_type: str = None, from_file_only: bool = False) -> Generator[pdm.PageXMLPage, None, None]:
+def get_pages(inv_num: int, indexer: Indexer, page_type: str = None, from_file_only: bool = False,
+              use_line_class_update: bool = True) -> Generator[pdm.PageXMLPage, None, None]:
     if os.path.exists(f"{indexer.base_dir}/pages") is False:
         os.mkdir(f"{indexer.base_dir}/pages")
-    page_generator = get_last_pages(inv_num, indexer)
+    page_generator = get_last_pages(inv_num, indexer, use_line_class_update=use_line_class_update)
     if page_generator is not None:
         for page in page_generator:
             if page_type is None or page.has_type(page_type):
@@ -773,6 +781,8 @@ class Indexer:
                                               inv_metadata=inv_metadata)
         self.remove_inventory_docs_from_index(self.rep_es.config['session_text_region_index'],
                                               inv_metadata=inv_metadata)
+        meta_index = self.rep_es.config['session_metadata_index']
+        tr_index = self.rep_es.config['session_text_region_index']
         text_type = get_text_type(inv_num)
         errors = []
         if from_files is True:
@@ -785,19 +795,20 @@ class Indexer:
                                             text_type, session.text_regions)
                 session_json['evidence'] = [match.json() for match in session.evidence]
                 logger.info(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
-                print(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
+                print(f'\nindexing {text_type} session {session.id} with date {session.date.isoformat()}')
                 prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
                                                    target_ids=session.id,
-                                                   source_index='pages', target_index='sessions')
+                                                   source_index='pages', target_index='session_metadata')
                 prov_url = self.rep_es.post_provenance_record(prov_record)
                 print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
-                    prov_url = self.rep_es.post_provenance(source_ids=[tr.metadata['page_id']], target_ids=[tr.id],
-                                                           source_index='pages', target_index='session_text_region',
-                                                           ignore_prov_errors=True)
+                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
+                                                       target_ids=tr.id,
+                                                       source_index='pages', target_index='session_text_regions')
+                    prov_url = self.rep_es.post_provenance_record(prov_record)
                     tr.metadata['prov_url'] = prov_url
                 self.rep_es.index_session_text_regions(session.text_regions)
         except Exception as err:

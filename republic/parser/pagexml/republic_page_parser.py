@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple, Union
 import pagexml.model.physical_document_model as pdm
 import pagexml.model.basic_document_model as bdm
 from fuzzy_search import FuzzyPhraseSearcher
-from pagexml.helper.pagexml_helper import regions_overlap
+from pagexml.helper.pagexml_helper import regions_overlap, make_text_region_text
 
 import republic.helper.pagexml_helper
 import republic.helper.pagexml_helper as pagexml_helper
@@ -1035,7 +1035,7 @@ def update_line_types(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseS
             if 'date' in type_freq:
                 for line in indent_tr.lines:
                     if line.metadata['line_class'] == 'date' and len(line.text) > 40:
-                        print('CUT LINE:', len(line.text), line.text)
+                        print(f'CUT LINE ({line.id}):', len(line.text), line.text)
             if 'attendance' in type_freq and 'para' not in type_freq and indent_tr.has_type('attendance'):
                 if debug > 0:
                     print(f"republic_page_parser.update_line_types - attendance tr {indent_tr.id} "
@@ -1062,7 +1062,7 @@ def update_line_types(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseS
                     update_type = 'date_header'
                     for indent_line in indent_tr.lines:
                         if weekday_name_searcher and line_starts_with_weekday_name(indent_line,
-                                                                                    weekday_name_searcher):
+                                                                                   weekday_name_searcher):
                             if debug > 0:
                                 print(f"republic_page_parser.update_line_types - header date tr {indent_tr.id} "
                                       f"has week day date lines, updating line types to 'date'")
@@ -1077,6 +1077,43 @@ def update_line_types(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseS
                     for indent_line in indent_tr.lines:
                         indent_line.metadata['line_class'] = update_type
     return new_page
+
+
+def get_line_tr_page(pages: List[pdm.PageXMLPage]):
+    for page in pages:
+        for tr in page.get_inner_text_regions():
+            for li, line in enumerate(tr.lines):
+                yield li, line, tr, page
+
+
+def update_opening_line_classes(pages: List[pdm.PageXMLPage], opening_searcher: FuzzyPhraseSearcher):
+    """Add para_start classes to lines that match a opening formula."""
+    change_count = 0
+    page_count = 0
+    prev_page = None
+    print(f"updating opening line classes for {len(pages)} pages")
+    for li, line, tr, page in get_line_tr_page(pages):
+        if line.text is None:
+            continue
+        if 'line_class' not in line.metadata:
+            print(f'no line_class for page {page.id}')
+        if 'line_class' in line.metadata and line.metadata['line_class'] in {'para_start', 'date', 'marginalia'}:
+            continue
+        text_lines = [text_line for text_line in tr.lines[li:] if text_line.text is not None]
+        text, line_ranges = make_text_region_text(text_lines[:2], word_break_chars='-„=')
+        opening_matches = opening_searcher.find_matches({'text': text, 'text_id': line.id})
+        if len(opening_matches) > 0:
+            change_count += 1
+            line.metadata['line_class'] = 'para_start'
+            # MK 2025-08-21: should not skip followed phrases, as this is just to determine
+            # paragraph starts. The extra check for followed phrases is only for determining
+            # resolution starts.
+        if page.id != prev_page:
+            page_count += 1
+            if page_count % 100 == 0:
+                print(f"{page_count} of {len(pages)} pages processed, change count: {change_count}")
+        prev_page = page.id
+    return change_count
 
 
 def split_page_column_text_regions(page: pdm.PageXMLPage, update_type: bool = False,

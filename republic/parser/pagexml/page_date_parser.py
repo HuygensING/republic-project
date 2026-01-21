@@ -3,9 +3,10 @@ import json
 from collections import defaultdict, Counter
 from typing import Dict, List, Union
 
+import numpy as np
 from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from pagexml.model import physical_document_model as pdm
-from pagexml.helper.pagexml_helper import regions_overlap
+from pagexml.helper.pagexml_helper import regions_overlap, copy_line
 
 import republic.helper.pagexml_helper
 import republic.parser.pagexml.republic_column_parser as column_parser
@@ -22,6 +23,7 @@ from republic.parser.logical.date_parser import get_session_date_lines_from_page
 from republic.parser.logical.date_parser import get_session_date_line_structures
 from republic.parser.logical.date_parser import make_weekday_name_searcher
 from republic.parser.pagexml.generic_pagexml_parser import copy_page
+from republic.parser.pagexml.long_line_splitter import make_split_lines, make_split_baseline
 from republic.parser.pagexml.republic_page_parser import split_page_column_text_regions
 
 from republic.classification.content_classification import DateRegionClassifier
@@ -35,31 +37,219 @@ REGION_EXCEPTIONS = {
 }
 
 
-def load_date_region_classifier():
+def load_date_region_classifier(config: Dict[str, any] = None):
     weekday_map = {day_name: weekday_names[dtype][day_name] for dtype in weekday_names for day_name in
                    weekday_names[dtype]}
     month_name_map = {month_name: month_names[dtype][month_name] for dtype in month_names for month_name in
                       month_names[dtype]}
-    return DateRegionClassifier(month_name_map=month_name_map, weekday_map=weekday_map)
+    return DateRegionClassifier(month_name_map=month_name_map, weekday_map=weekday_map, config=config)
+
+
+def doc_to_record(doc: pdm.PageXMLDoc):
+    if isinstance(doc, pdm.PageXMLTextLine):
+        text = doc.text
+    elif isinstance(doc, pdm.PageXMLTextRegion):
+        text = ' '.join([line.text for line in sorted(doc.lines) if line.text is not None])
+    elif isinstance(doc, pdm.PageXMLRegion):
+        trs = doc.get_textual_regions()
+        text = ' '.join([' '.join([line.text for line in tr.lines]) for tr in trs])
+    else:
+        raise ValueError(f"doc_to_record - doc is not a PageXMLTextLine, PageXMLTextRegion or PageXMLRegion: {doc}")
+    return {
+        'text': text,
+        'bottom': doc.coords.bottom,
+        'top': doc.coords.top,
+        'num_lines': doc.stats['lines'],
+        'num_words': doc.stats['words'],
+    }
+
+
+def split_merged_marginalia_and_para_lines(page: pdm.PageXMLPage, debug: int = 0):
+    """Split merged marginalia and paragraph lines into two separate lines.
+
+    Some lines are left aligned with marginalia lines and right aligned with full paragraph lines.
+    This is a sign that the text recognition accidentally merged the two lines. This function splits
+    the lines, trying to find the most likely split point.
+    Args:
+        page (pdm.PageXMLPage): PageXMLPage object containing the lines.
+
+    Returns:
+        page (pdm.PageXMLPage): PageXMLPage object containing the lines with merged lines split.
+    """
+    new_page = copy_page(page)
+    lines = new_page.get_lines()
+    class_lines = defaultdict(list)
+    for line in lines:
+        if 'line_class' not in line.metadata:
+            line.metadata['line_class'] = 'unknown'
+        class_lines[line.metadata['line_class']].append(line)
+    para_lines = [line for lc in {'para_start', 'para_mid'} for line in class_lines[lc]]
+    if len(para_lines) == 0:
+        return new_page
+    median_left = np.median([np.round(line.coords.left / 100, 0) * 100 for line in para_lines])
+    median_width = np.median([np.round(line.coords.width / 100, 0) * 100 for line in para_lines])
+    long_lines = [line for line in para_lines if line.coords.width > median_width + 300]
+    merged_lines = [line for line in long_lines if line.coords.left < median_left - 300]
+    if debug > 0:
+        print(f"page_date_parser.split_merged_marginalia_and_para_lines - median_left: {median_left}")
+        print(f"page_date_parser.split_merged_marginalia_and_para_lines - median_width: {median_width}")
+        print(f"page_date_parser.split_merged_marginalia_and_para_lines - long_lines: {len(long_lines)}")
+        print(f"page_date_parser.split_merged_marginalia_and_para_lines - merged_lines: {len(merged_lines)}")
+        for line in merged_lines:
+            print(f"\tmerged: {line.id} {line.coords.left: >4} {line.coords.right: <4}"
+                  f"\t{line.metadata['line_class']}\t{line.text}")
+    for tr in new_page.regions:
+        tr_lines = []
+        for line in tr.lines:
+            if line not in merged_lines:
+                tr_lines.append(line)
+                continue
+            avg_char_width = line.coords.width / len(line.text)
+            left_shift = median_left - line.coords.left
+            left_shift_num_chars = left_shift / avg_char_width
+            words = line.text.split(' ')
+            left_shift_words = []
+            if debug > 0:
+                print(f"page_date_parser.split_merged_marginalia_and_para_lines - line: {line.id}")
+                print(f"\tavg_char_width: {avg_char_width}\tleft_shift: {left_shift}"
+                      f"\tleft_shift_num_chars: {left_shift_num_chars}")
+            for word in words:
+                left_string = ' '.join(left_shift_words)
+                left_string_extend = ' '.join(left_shift_words + [word])
+                if len(left_string_extend) >= left_shift_num_chars:
+                    if len(left_string_extend) - left_shift_num_chars < left_shift_num_chars -len(left_string):
+                        left_shift_words.append(word)
+                        left_string = ' '.join(left_shift_words)
+                    if debug > 0:
+                        print(f"\tleft_string ({len(left_string)}): {left_string}")
+                    break
+                left_shift_words.append(word)
+            left_string = ' '.join(left_shift_words)
+            right_string = ' '.join(words[len(left_shift_words):])
+            left_line_left = line.coords.left
+            left_line_right = left_line_left + int(left_shift)
+            right_line_left = left_line_right + int(avg_char_width)
+            right_line_right = line.coords.right
+            try:
+                left_line, right_line = make_split_lines(line, left_line_left, left_line_right,
+                                                         right_line_left, right_line_right,
+                                                         left_string, right_string)
+            except BaseException:
+                print(f"page_date_parser.split_merged_marginalia_and_para_lines - error making split lines for "
+                      f"page {page.id}, line {line.id}")
+                print(f"\tline.text: {line.text}")
+                print(f"\tline.coords.left: {line.coords.left}\tline.coords.right: {line.coords.right}")
+                print(f"\tline.baseline.points: {line.baseline.points}")
+                print(f"\tleft_string: {left_string}\tright_string: {right_string}")
+                print(f"\tleft_line_left: {left_line_left}\tleft_line_right: {left_line_right}"
+                      f"\tright_line_left: {right_line_left}\tright_line_right: {right_line_right}")
+                raise
+            left_line.metadata['line_class'] = 'marginalia'
+            if debug > 0:
+                print(f"page_date_parser.split_merged_marginalia_and_para_lines - left_line: {left_line.id}")
+                print(f"\t{left_line.coords.left: >4} {left_line.coords.right: <4}"
+                      f"\t{left_line.metadata['line_class']}\t{left_line.text}")
+                print(f"page_date_parser.split_merged_marginalia_and_para_lines - right_line: {right_line.id}")
+                print(f"\t{right_line.coords.left: >4} {right_line.coords.right: <4}"
+                      f"\t{right_line.metadata['line_class']}\t{right_line.text}")
+            if left_line is None and right_line is None:
+                tr_lines.append(line)
+            else:
+                tr_lines.extend([line for line in [left_line, right_line] if line is not None])
+        if len(tr_lines) > len(tr.lines):
+            tr.lines = tr_lines
+            tr.set_as_parent(tr_lines)
+    return new_page
+
+
+def reclassify_lines(lines: List[pdm.PageXMLTextLine], page: pdm.PageXMLPage,
+                     date_region_classifier: DateRegionClassifier, debug: int = 0):
+    """Reclassify lines in a page based on the date regions in the page."""
+    reclassified_lines = []
+    for line in lines:
+        record = doc_to_record(line)
+        record['page_num'] = page.metadata['page_num']
+        if line.text is None:
+            continue
+        line = copy_line(line)
+        if date_region_classifier.has_weekday(line.text):
+            weekday_offset, weekday_name = date_region_classifier.get_weekday(line.text)
+            if debug > 0:
+                print(f"line has weekday name (class: {line.metadata['line_class']}, offset: {weekday_offset}, "
+                      f"name: {weekday_name}):\n\t{line.text}")
+            if weekday_offset < 2:
+                if date_region_classifier.has_month(line.text):
+                    if debug > 0:
+                        print(f"page_date_parser.reclassify_lines - updating line {line.id} with "
+                              f"class {line.metadata['line_class']} to 'date' because it has weekday {weekday_name} "
+                              f"at offset {weekday_offset} text:\n\t{line.text}\n")
+                    line.metadata['line_class'] = 'date'
+                    reclassified_lines.extend([line])
+                    continue
+            date_text = line.text[weekday_offset:]
+            after_text = line.text[weekday_offset + len(weekday_name):]
+            att_text = line.text[:weekday_offset]
+            has_month = date_region_classifier.has_month(after_text)
+            has_year = date_region_classifier.has_year(after_text)
+            has_month_day = date_region_classifier.has_month_day(after_text) or date_region_classifier.has_roman_numeral(after_text)
+            if has_month and (has_year or has_month_day) and weekday_offset > 6:
+                if date_region_classifier.has_month(date_text):
+                    char_width = line.coords.width / len(line.text)
+                    left_line_left = line.coords.left
+                    left_line_right = left_line_left + int(char_width * len(att_text))
+                    right_line_left = left_line_right + int(char_width)
+                    right_line_right = line.coords.right
+                    try:
+                        att_line, date_line = make_split_lines(line, left_line_left, left_line_right,
+                                                              right_line_left, right_line_right, att_text, date_text,
+                                                               debug=debug)
+                        att_line.metadata = line.metadata.copy()
+                        date_line.metadata = line.metadata.copy()
+                    except BaseException:
+                        print(f"page_date_parser.reclassify_lines - error making split lines for line {line.id}")
+                        print(f"\tline.text: {line.text}")
+                        print(f"\tline.coords.left: {line.coords.left}\tline.coords.right: {line.coords.right}")
+                        print(f"\tline.baseline.points: {line.baseline.points}")
+                        print(f"\tatt_text: {att_text}\tdate_text: {date_text}")
+                        print(f"\tleft_line_left: {left_line_left}\tleft_line_right: {left_line_right}"
+                              f"\tright_line_left: {right_line_left}\tright_line_right: {right_line_right}")
+                        bll = make_split_baseline(line, left_line_right=left_line_right, debug=1)
+                        blr = make_split_baseline(line, right_line_left=right_line_left, debug=1)
+                        print(f"\tleft_line_baseline: {bll}\tright_line_baseline: {blr}")
+                        raise
+                    if debug > 0:
+                        print(f"page_date_parser.reclassify_lines - making split lines for line {line.id}")
+                        print([att_line, date_line])
+                    if debug > 1:
+                        print(f"\tline.text: {line.text}")
+                        print(f"\tline.coords.left: {line.coords.left}\tline.coords.right: {line.coords.right}")
+                        print(f"\tline.baseline.points: {line.baseline.points}")
+                        print(f"\tatt_text: {att_text}\tdate_text: {date_text}")
+                        print(f"\tleft_line_left: {left_line_left}\tleft_line_right: {left_line_right}"
+                              f"\tright_line_left: {right_line_left}\tright_line_right: {right_line_right}")
+                    att_line.metadata['line_class'] = 'attendance'
+                    date_line.metadata['line_class'] = 'date'
+                    reclassified_lines.extend([att_line, date_line])
+                    continue
+                else:
+                    print(f"page_date_parser.reclassify_lines - weekday {weekday_name} at offset {weekday_offset} "
+                          f"line {line.id} with class {line.metadata['line_class']} text:\n\t{line.text}\n")
+        if line.text.startswith('President') or line.text.startswith('Present') or line.text.startswith('Praeside'):
+            line.metadata['line_class'] = 'attendance'
+        reclassified_lines.append(line)
+    return reclassified_lines
 
 
 def classify_page_date_regions(pages: List[pdm.PageXMLPage],
                                date_region_classifier: DateRegionClassifier) -> Dict[str, str]:
     date_tr_type_map = {}
     for page in pages:
-        for tr in page.get_all_text_regions():
+        for tr in page.get_textual_regions():
             if tr.has_type('date') is False:
                 continue
-            text = ' '.join([line.text for line in sorted(tr.lines) if line.text is not None])
-            record = {
-                'text': text,
-                'bottom': tr.coords.bottom,
-                'top': tr.coords.top,
-                'page_num': page.metadata['page_num'],
-                'num_lines': tr.stats['lines'],
-                'num_words': tr.stats['words'],
-                'left_indent': tr.coords.left - page.coords.left
-            }
+            record = doc_to_record(tr)
+            record['page_num'] = page.metadata['page_num']
+            record['left_indent'] = tr.coords.left - page.coords.left
             date_type = date_region_classifier.classify_date_text(record, debug=0)
             date_tr_type_map[tr.id] = date_type
     return date_tr_type_map
@@ -88,8 +278,8 @@ def debug_print_page_trs(page: pdm.PageXMLPage, prefix: str, debug: int = 0):
                 print(f"\t{line.id} line_class: {line.metadata['line_class']}")
 
 
-def process_handwritten_page(page: pdm.PageXMLPage, weekday_name_searcher: FuzzyPhraseSearcher = None,
-                             debug: int = 0):
+def process_handwritten_page(page: pdm.PageXMLPage, date_region_classifier: DateRegionClassifier = None,
+                             weekday_name_searcher: FuzzyPhraseSearcher = None, debug: int = 0):
     """Split and/or merge columns and overlapping text regions of handwritten
     resolution pages and correct line classes for session dates, attendance
     lists, date headers and paragraphs.
@@ -100,8 +290,18 @@ def process_handwritten_page(page: pdm.PageXMLPage, weekday_name_searcher: Fuzzy
     pagexml_helper.check_parentage(page)
     # print('BEFORE:', page.id, page.stats['lines'])
     page = copy_page(page)
+    pagexml_helper.check_parentage(page)
     if page.stats['words'] == 0 or page.stats['lines'] == 0:
         return page
+    page = split_merged_marginalia_and_para_lines(page, debug=debug)
+    pagexml_helper.check_parentage(page)
+
+    if date_region_classifier is not None:
+        for tr in page.regions:
+            tr.lines = reclassify_lines(tr.lines, page, date_region_classifier, debug=debug)
+            pdm.set_parentage(tr)
+    pagexml_helper.check_parentage(page)
+
     try:
         page.columns = process_handwritten_columns(page.columns, page)
     except BaseException:
@@ -579,13 +779,16 @@ def make_inventory_date_name_mapper(inv_id: str, pages: List[pdm.PageXMLPage],
 
 def process_handwritten_pages(inv_id: str, pages: List[pdm.PageXMLPage],
                               filter_date_starts: bool = False, date_tr_type_map: Dict[str, str] = None,
-                              ignorecase: bool = True, debug: int = 0):
+                              do_reclassify_lines: bool = False, ignorecase: bool = True, debug: int = 0):
     date_mapper = make_inventory_date_name_mapper(inv_id, pages, filter_date_starts=filter_date_starts,
                                                   date_tr_type_map=date_tr_type_map, debug=debug)
     config = {'ngram_size': 3, 'skip_size': 1, 'ignorecase': ignorecase, 'levenshtein_threshold': 0.8}
     weekday_name_searcher = make_weekday_name_searcher(date_mapper, config)
-    new_pages = [process_handwritten_page(page, weekday_name_searcher=weekday_name_searcher,
-                                          debug=0) for page in pages]
+
+    date_region_classifier = load_date_region_classifier(config=config) if do_reclassify_lines is True else None
+    print(f"date_region_classifier: {date_region_classifier}")
+    new_pages = [process_handwritten_page(page, date_region_classifier=date_region_classifier,
+                                          weekday_name_searcher=weekday_name_searcher, debug=debug) for page in pages]
     return new_pages
 
 

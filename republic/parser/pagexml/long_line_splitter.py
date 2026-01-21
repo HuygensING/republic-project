@@ -270,6 +270,130 @@ def extract_left_right_splits_from_regex_match(line: pdm.PageXMLTextLine, match:
     return left_text, right_text
 
 
+def make_split_lines(line: pdm.PageXMLTextLine, left_line_left: int, left_line_right: int,
+                     right_line_left: int, right_line_right: int,
+                     left_line_text: str, right_line_text: str, debug: int = 0):
+    left_baseline = make_split_baseline(line, left_line_right=left_line_right)
+    right_baseline = make_split_baseline(line, right_line_left=right_line_left)
+    left_coords = make_split_coords(line, left_line_right=left_line_right, debug=debug)
+    right_coords = make_split_coords(line, right_line_left=right_line_left, debug=debug)
+    if debug > 0:
+        print("long_line_splitter.make_split_lines - ")
+        print(f"    line.left: {line.coords.left}\tline.right: {line.coords.right}")
+        print(f"    line.baseline: {line.baseline.points}")
+        print(f"    line.coords: {line.coords.points}")
+        print(f"    left_line_left: {left_line_left}\tleft_line_right: {left_line_right}")
+        print(f"    right_line_left: {right_line_left}\tright_line_right: {right_line_right}")
+        print(f"    left_baseline: {left_baseline.points}")
+        print(f"    right_baseline: {right_baseline.points}")
+        print(f"    left_coords: {left_coords.points}")
+        print(f"    right_coords: {right_coords.points}")
+    if left_baseline is None or left_coords is None:
+        return None, line
+    elif right_baseline is None or right_coords is None:
+        return line, None
+    left_line = pdm.PageXMLTextLine(metadata=copy.deepcopy(line.metadata), coords=left_coords,
+                                    baseline=left_baseline, text=left_line_text)
+    right_line = pdm.PageXMLTextLine(metadata=copy.deepcopy(line.metadata), coords=right_coords,
+                                     baseline=right_baseline, text=right_line_text)
+    left_line.set_derived_id(line.metadata['scan_id'])
+    right_line.set_derived_id(line.metadata['scan_id'])
+    return left_line, right_line
+
+
+def make_split_baseline(line: pdm.PageXMLTextLine, left_line_right: int = None,
+                        right_line_left: int = None, debug: int = 0) -> Union[pdm.Baseline, None]:
+    """Make baselines for the left and right parts of the merged line."""
+    if right_line_left is not None:
+        points = [point for point in line.baseline.points if point[0] >= right_line_left]
+        if debug > 0:
+            print(f"right_line_left: {right_line_left}\tpoints: {points}")
+        if len(points) == 0:
+            return None
+        if min([point[0] for point in points]) > right_line_left:
+            # add a left_most point with the same height as the first selected point in the baseline
+            right_line_left_point = (right_line_left, points[0][1])
+            points = [right_line_left_point] + points
+        return pdm.Baseline(points)
+    elif left_line_right is not None:
+        points = [point for point in line.baseline.points if point[0] <= left_line_right]
+        if debug > 0:
+            print(f"left_line_right: {left_line_right}\tpoints: {points}")
+        if len(points) == 0:
+            return None
+        if max([point[0] for point in points]) < left_line_right:
+            # add a right_most point with the same height as the last selected point in the baseline
+            left_line_right_point = (left_line_right, points[0][1])
+            points.append(left_line_right_point)
+        return pdm.Baseline(points)
+    else:
+        raise ValueError("one of 'left' and 'right' must be an integer")
+
+
+def make_split_coords(line: pdm.PageXMLTextLine, left_line_right: int = None,
+                      right_line_left: int = None, debug: int = 0) -> Union[pdm.Coords, None]:
+    """Make bounding box coordinates for the left and right parts of the merged line."""
+    sort_coords_above_below_baseline(line)
+    above_points, below_points = sort_coords_above_below_baseline(line)
+    if len(above_points) == 0 or len(below_points) == 0:
+        # For some reason the bounding box is not covering the baseline.
+        # Hack: create a bounding box that is 40 pixels above and below the baseline.
+        above_points = [(p[0], p[1] - 40) for p in line.baseline.points]
+        below_points = [(p[0], p[1] + 40) for p in line.baseline.points]
+    if right_line_left is not None:
+        above_right_line_points = [point for point in above_points if point[0] >= right_line_left]
+        below_right_line_points = [point for point in below_points if point[0] >= right_line_left]
+        if debug > 0:
+            print(f"right_line_left: {right_line_left}\tabove_right_line_points: {above_right_line_points}")
+            print(f"\tbelow_right_line_points: {below_right_line_points}")
+        if len(above_right_line_points) == 0 or len(below_right_line_points) == 0:
+            return None
+        elif len(above_right_line_points) == 0:
+            above_right_line_points = [
+                (right_line_left, above_points[0][1]),
+                (line.coords.right, above_points[0][1])
+            ]
+        elif len(below_right_line_points) == 0:
+            below_right_line_points = [
+                (right_line_left, below_points[0][1]),
+                (line.coords.right, below_points[0][1])
+            ]
+        if min([point[0] for point in above_right_line_points]) > right_line_left:
+            # add a left_most point with the same height as the first selected point in the coords
+            above_right_line_points = [(right_line_left, above_points[0][1])] + above_right_line_points
+        if min([point[0] for point in below_right_line_points]) > right_line_left:
+            # add a left_most point with the same height as the first selected point in the coords
+            below_right_line_points += [(right_line_left, below_points[0][1])]
+        return pdm.Coords(above_right_line_points + below_right_line_points)
+    elif left_line_right is not None:
+        above_left_line_points = [point for point in above_points if point[0] <= left_line_right]
+        below_left_line_points = [point for point in below_points if point[0] <= left_line_right]
+        if debug > 0:
+            print(f"left_line_right: {left_line_right}\tabove_left_line_points: {above_left_line_points}")
+            print(f"\tbelow_left_line_points: {below_left_line_points}")
+        if len(above_left_line_points) == 0 and len(below_left_line_points) == 0:
+            return None
+        elif len(above_left_line_points) == 0:
+            above_left_line_points = [
+                (left_line_right, above_points[0][1]),
+                (line.coords.left, above_points[0][1])
+            ]
+        elif len(below_left_line_points) == 0:
+            below_left_line_points = [
+                (left_line_right, below_points[0][1]),
+                (line.coords.left, below_points[0][1])
+            ]
+        if max([point[0] for point in above_left_line_points]) < left_line_right:
+            # add a left_most point with the same height as the first selected point in the coords
+            above_left_line_points += [(left_line_right, above_points[0][1])]
+        if max([point[0] for point in below_left_line_points]) < left_line_right:
+            # add a left_most point with the same height as the first selected point in the coords
+            below_left_line_points = [(left_line_right, below_points[0][1])] + below_left_line_points
+        return pdm.Coords(above_left_line_points + below_left_line_points)
+    else:
+        raise ValueError("one of 'left' and 'right' must be an integer")
+
+
 class LineSplitter:
 
     def __init__(self, min_merged_width: int,
@@ -344,91 +468,11 @@ class LineSplitter:
             raise ValueError(f"invalid left/right position value")
         return left_line_left, left_line_right, right_line_left, right_line_right
 
-    @staticmethod
-    def make_split_baseline(line: pdm.PageXMLTextLine, left_line_right: int = None,
-                            right_line_left: int = None) -> Union[pdm.Baseline, None]:
-        """Make baselines for the left and right parts of the merged line."""
-        if right_line_left is not None:
-            points = [point for point in line.baseline.points if point[0] >= right_line_left]
-            if len(points) == 0:
-                return None
-            if min([point[0] for point in points]) > right_line_left:
-                # add a left_most point with the same height as the first selected point in the baseline
-                right_line_left_point = (right_line_left, points[0][1])
-                return pdm.Baseline([right_line_left_point] + points)
-        elif left_line_right is not None:
-            points = [point for point in line.baseline.points if point[0] <= left_line_right]
-            if len(points) == 0:
-                return None
-            if max([point[0] for point in points]) < left_line_right:
-                # add a right_most point with the same height as the last selected point in the baseline
-                left_line_right_point = (left_line_right, points[0][1])
-                return pdm.Baseline(points + [left_line_right_point])
-        else:
-            raise ValueError("one of 'left' and 'right' must be an integer")
-
-    @staticmethod
-    def make_split_coords(line: pdm.PageXMLTextLine, left_line_right: int = None,
-                          right_line_left: int = None) -> Union[pdm.Coords, None]:
-        """Make bounding box coordinates for the left and right parts of the merged line."""
-        sort_coords_above_below_baseline(line)
-        above_points, below_points = sort_coords_above_below_baseline(line)
-        if right_line_left is not None:
-            above_right_line_points = [point for point in above_points if point[0] >= right_line_left]
-            below_right_line_points = [point for point in below_points if point[0] >= right_line_left]
-            if len(above_right_line_points) == 0 or len(below_right_line_points) == 0:
-                return None
-            if min([point[0] for point in above_right_line_points]) > right_line_left:
-                # add a left_most point with the same height as the first selected point in the coords
-                above_right_line_points = [(right_line_left, above_points[0][1])] + above_right_line_points
-            if min([point[0] for point in below_right_line_points]) > right_line_left:
-                # add a left_most point with the same height as the first selected point in the coords
-                below_right_line_points = below_right_line_points + [(right_line_left, below_points[0][1])]
-            return pdm.Coords(above_right_line_points + below_right_line_points)
-        elif left_line_right is not None:
-            above_left_line_points = [point for point in above_points if point[0] <= left_line_right]
-            below_left_line_points = [point for point in below_points if point[0] <= left_line_right]
-            if len(above_left_line_points) == 0 or len(below_left_line_points) == 0:
-                return None
-            if max([point[0] for point in above_left_line_points]) < left_line_right:
-                # add a left_most point with the same height as the first selected point in the coords
-                above_left_line_points = above_left_line_points + [(left_line_right, above_points[0][1])]
-            if max([point[0] for point in below_left_line_points]) < left_line_right:
-                # add a left_most point with the same height as the first selected point in the coords
-                below_left_line_points = [(left_line_right, below_points[0][1])] + below_left_line_points
-            return pdm.Coords(above_left_line_points + below_left_line_points)
-        else:
-            raise ValueError("one of 'left' and 'right' must be an integer")
-
     def make_split_lines(self, line: pdm.PageXMLTextLine, line_info: LineInfo,
                          left_line_text: str, right_line_text: str, debug: int = 0):
         left_line_left, left_line_right, right_line_left, right_line_right = self.get_left_right_ends(line, line_info)
-        left_baseline = self.make_split_baseline(line, left_line_right=left_line_right)
-        right_baseline = self.make_split_baseline(line, right_line_left=right_line_left)
-        left_coords = self.make_split_coords(line, left_line_right=left_line_right)
-        right_coords = self.make_split_coords(line, right_line_left=right_line_left)
-        if left_baseline is None or left_coords is None:
-            return None, line
-        elif right_baseline is None or right_coords is None:
-            return line, None
-        if debug > 0:
-            print("long_line_splitter.make_split_lines - ")
-            print(f"    line.left: {line.coords.left}\tline.right: {line.coords.right}")
-            print(f"    line.baseline: {line.baseline.points}")
-            print(f"    line.coords: {line.coords.points}")
-            print(f"    left_line_left: {left_line_left}\tleft_line_right: {left_line_right}")
-            print(f"    right_line_left: {right_line_left}\tright_line_right: {right_line_right}")
-            print(f"    left_baseline: {left_baseline.points}")
-            print(f"    right_baseline: {right_baseline.points}")
-            print(f"    left_coords: {left_coords.points}")
-            print(f"    right_coords: {right_coords.points}")
-        left_line = pdm.PageXMLTextLine(metadata=copy.deepcopy(line.metadata), coords=left_coords,
-                                        baseline=left_baseline, text=left_line_text)
-        right_line = pdm.PageXMLTextLine(metadata=copy.deepcopy(line.metadata), coords=right_coords,
-                                         baseline=right_baseline, text=right_line_text)
-        left_line.set_derived_id(line.metadata['scan_id'])
-        right_line.set_derived_id(line.metadata['scan_id'])
-        return left_line, right_line
+        return make_split_lines(line, left_line_left, left_line_right, right_line_left, right_line_right,
+                                left_line_text, right_line_text, debug=debug)
 
     def split_merged_hyphenated_line(self, line: pdm.PageXMLTextLine, line_info: LineInfo,
                                      debug: int = 0) -> Tuple[pdm.PageXMLTextLine, Union[pdm.PageXMLTextLine, None]]:

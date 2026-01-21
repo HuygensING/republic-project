@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 
 import pagexml.model.physical_document_model as pdm
 import pandas as pd
@@ -38,12 +38,17 @@ def get_header_dates(pages: List[pdm.PageXMLPage]) -> List[pdm.PageXMLTextRegion
 
 class DateRegionClassifier:
 
-    def __init__(self, weekday_map: Dict[str, int], month_name_map: Dict[str, int]):
+    def __init__(self, weekday_map: Dict[str, int], month_name_map: Dict[str, int], config: Dict = None):
         self.weekday_map = weekday_map
         self.month_name_map = month_name_map
-        self.search_config = {
-            'levenshtein_threshold': 0.75
-        }
+        if config is not None:
+            self.search_config = config
+        else:
+            self.search_config = {
+                'ngram_size': 3,
+                'skip_size': 1,
+                'levenshtein_threshold': 0.75
+            }
         month_name_model = [{'phrase': month_name} for month_name in month_name_map]
         weekday_model = [{'phrase': weekday} for weekday in weekday_map]
         self.month_searcher = FuzzyPhraseSearcher(phrase_model=month_name_model,
@@ -57,7 +62,7 @@ class DateRegionClassifier:
         session dates (accepting numerals to end in 'e' or 'en'. """
         if pd.isna(text_string) or text_string is None:
             return False
-        return re.search(r'\b[xvi]+j?e?n?\b', text_string) is not None
+        return re.search(r'\b[xvi]+j?(e|en)?\b', text_string) is not None
 
     @staticmethod
     def has_year(text_string: str) -> bool:
@@ -80,24 +85,25 @@ class DateRegionClassifier:
     def has_weekday(self, text_string: str) -> bool:
         return self.get_weekday(text_string) is not None
 
-    def get_weekday(self, text_string: str):
+    def get_weekday(self, text_string: str) -> Tuple[Union[int, None], Union[str, None]]:
         if pd.isna(text_string) or text_string is None:
-            return None
+            return None, None
         for weekday in self.weekday_map:
             if m := re.search(r"\b(" + weekday + r")\b", text_string, re.IGNORECASE):
-                return m.group(1)
+                return text_string.index(m.group(1)), m.group(1)
         matches = self.weekday_searcher.find_matches(text_string)
         if len(matches) == 0:
             return None
         if len(matches) == 1:
-            return matches[0].phrase.phrase_string
-        best_match = sorted(matches, key=lambda match: match.levenshtein_similarity)[0]
-        return best_match.phrase.phrase_string
+            best_match = matches[0]
+        else:
+            best_match = sorted(matches, key=lambda match: match.levenshtein_similarity)[0]
+        return best_match.offset, best_match.phrase.phrase_string
 
     def has_month(self, text_string: str):
-        return self.get_month(text_string) is None
+        return self.get_month(text_string) is not None
 
-    def get_month(self, text_string: str, map_month: bool = False):
+    def get_month(self, text_string: str, map_month: bool = False, debug: int = 0):
         if pd.isna(text_string) or text_string is None:
             return None
         for month_name in self.month_name_map:
@@ -111,7 +117,9 @@ class DateRegionClassifier:
             abbrev_string = m.group(1)
             if abbrev_string in month_abbrev_map:
                 return month_abbrev_map[abbrev_string]
-        matches = self.month_searcher.find_matches(text_string)
+        matches = self.month_searcher.find_matches(text_string, debug=debug)
+        if debug > 0:
+            print(f"number of month matches: {len(matches)}")
         if len(matches) == 0:
             return None
         if len(matches) == 1:
@@ -137,6 +145,7 @@ class DateRegionClassifier:
                 return True
             if re.search(f"{month}" r"\W+\b([123]?[0-9])\b", text_string):
                 return True
+        return False
 
     def has_month_day(self, text_string: str) -> bool:
         if pd.isna(text_string) or text_string is None:

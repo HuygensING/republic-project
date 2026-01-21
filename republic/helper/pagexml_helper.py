@@ -121,33 +121,33 @@ def merge_columns(columns: List[pdm.PageXMLColumn],
         merged_lines = list(set(merged_lines))
         sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
         merged_coords = pdm.parse_derived_coords(sorted_lines)
+        merged_tr = pdm.PageXMLTextRegion(doc_id=doc_id, metadata=metadata, coords=merged_coords, lines=merged_lines)
+        merged_tr.set_derived_id(metadata['scan_id'])
         merged_col = pdm.PageXMLColumn(doc_id=doc_id,
                                        metadata=metadata, coords=merged_coords,
-                                       lines=merged_lines)
+                                       text_regions=[merged_tr])
     else:
         merged_trs = [tr for col in columns for tr in col.text_regions]
         sorted_trs = sorted(merged_trs, key=lambda x: x.coords.y)
-        merged_lines = [line for col in columns for line in col.lines]
-        sorted_lines = sorted(merged_lines, key=lambda x: x.baseline.y)
         try:
-            merged_coords = pdm.parse_derived_coords(sorted_trs + sorted_lines)
+            merged_coords = pdm.parse_derived_coords(sorted_trs)
         except IndexError:
             print(f"pagexml_helper.merge_column - Error deriving coords from trs and lines:")
             print(f"    number of trs: {len(sorted_trs)}")
-            print(f"    number of lines: {len(sorted_lines)}")
             for tr in sorted_trs:
                 print(f"\ttr {tr.id}\tnumber of points: {len(tr.coords.points)}")
-            for line in sorted_lines:
-                print(f"\tline {line.id}\tnumber of points: {len(line.coords.points)}")
             raise
+
         merged_col = pdm.PageXMLColumn(doc_id=doc_id,
                                        metadata=metadata, coords=merged_coords,
-                                       text_regions=sorted_trs, lines=sorted_lines)
+                                       text_regions=sorted_trs)
 
+    merged_col.set_derived_id(metadata['scan_id'])
     for col in columns:
         for col_type in col.types:
             if col_type not in merged_col.type:
                 merged_col.add_type(col_type)
+    merged_col.set_as_parent(merged_col.regions)
     return merged_col
 
 

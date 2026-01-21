@@ -93,8 +93,12 @@ def parse_facets(facets: str) -> Dict[str, any]:
     if facets == '':
         return {}
     facet_dict = {}
-    m = re.match(r"{(.*?)}", facets)
-    facets_string = m.group(1)
+    try:
+        m = re.match(r"{(.*?)}", facets)
+        facets_string = m.group(1)
+    except AttributeError:
+        print(f"facets: {facets}")
+        raise
     for m in re.finditer(r"((\w+)=\[(.*?)])", facets_string):
         facet_key = m.group(2)
         facet_value = m.group(3)

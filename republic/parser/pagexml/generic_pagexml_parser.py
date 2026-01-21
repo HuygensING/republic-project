@@ -11,6 +11,8 @@ from pagexml.model.coords import parse_derived_coords
 from pagexml.model.physical_document_model import Coords
 from pagexml.model.physical_document_model import PageXMLDoc, PageXMLScan, PageXMLPage, PageXMLColumn
 from pagexml.model.physical_document_model import PageXMLTextLine, PageXMLTextRegion, PageXMLWord
+from pagexml.helper.pagexml_helper import copy_page, copy_doc, copy_column, copy_scan, copy_word, copy_line
+from pagexml.helper.pagexml_helper import copy_region, copy_text_region, copy_table_region
 
 
 def parse_line_words(textline: dict) -> List[PageXMLWord]:
@@ -185,91 +187,6 @@ def parse_pagexml_file(pagexml_file: str, pagexml_data: Union[str, None] = None)
     scan_doc = parse_pagexml_json(scan_json)
     scan_doc.metadata['filename'] = pagexml_file
     return scan_doc
-
-
-def copy_doc(doc: PageXMLDoc) -> PageXMLDoc:
-    if isinstance(doc, PageXMLScan):
-        return copy_scan(doc)
-    if isinstance(doc, PageXMLPage):
-        return copy_page(doc)
-    if isinstance(doc, PageXMLColumn):
-        return copy_column(doc)
-    if isinstance(doc, PageXMLTextRegion):
-        return copy_text_region(doc)
-    if isinstance(doc, PageXMLTextLine):
-        return copy_line(doc)
-    if isinstance(doc, PageXMLWord):
-        return copy_word(doc)
-    if isinstance(doc, PageXMLDoc):
-        return copy.deepcopy(doc)
-    else:
-        raise TypeError(f"doc must be an instance of PageXMLDoc and its sub-classes, not {type(doc)}")
-
-
-def copy_scan(scan: PageXMLScan) -> PageXMLScan:
-    new_scan = PageXMLScan(doc_id=scan.id,
-                           doc_type=copy.deepcopy(scan.type),
-                           metadata=copy.deepcopy(scan.metadata),
-                           coords=copy.deepcopy(scan.coords),
-                           lines=[copy_line(line) for line in scan.lines],
-                           text_regions=[copy_text_region(tr) for tr in scan.text_regions])
-    new_scan.type = copy.deepcopy(scan.type)
-    return new_scan
-
-
-def copy_page(page: PageXMLPage) -> PageXMLPage:
-    new_page = PageXMLPage(doc_id=page.id,
-                           doc_type=copy.deepcopy(page.type),
-                           metadata=copy.deepcopy(page.metadata),
-                           coords=copy.deepcopy(page.coords),
-                           lines=[copy_line(line) for line in page.lines],
-                           text_regions=[copy_text_region(tr) for tr in page.text_regions],
-                           extra=[copy_text_region(tr) for tr in page.extra],
-                           columns=[copy_column(col) for col in page.columns])
-    new_page.type = copy.deepcopy(page.type)
-    return new_page
-
-
-def copy_column(col: PageXMLColumn) -> PageXMLColumn:
-    new_col = PageXMLColumn(doc_id=col.id,
-                            doc_type=copy.deepcopy(col.type),
-                            metadata=copy.deepcopy(col.metadata),
-                            coords=copy.deepcopy(col.coords),
-                            lines=[copy_line(line) for line in col.lines],
-                            text_regions=[copy_text_region(tr) for tr in col.text_regions])
-    new_col.type = copy.deepcopy(col.type)
-    return new_col
-
-
-def copy_text_region(tr: PageXMLTextRegion) -> PageXMLTextRegion:
-    new_tr = PageXMLTextRegion(doc_id=tr.id,
-                               doc_type=copy.deepcopy(tr.type),
-                               metadata=copy.deepcopy(tr.metadata),
-                               coords=copy.deepcopy(tr.coords),
-                               lines=[copy_line(line) for line in tr.lines],
-                               text_regions=[copy_text_region(tr) for tr in tr.text_regions])
-    new_tr.type = copy.deepcopy(tr.type)
-    return new_tr
-
-
-def copy_line(line: PageXMLTextLine) -> PageXMLTextLine:
-    new_line = PageXMLTextLine(doc_id=line.id,
-                               doc_type=copy.deepcopy(line.type),
-                               metadata=copy.deepcopy(line.metadata),
-                               coords=copy.deepcopy(line.coords), baseline=copy.deepcopy(line.baseline),
-                               text=line.text,
-                               words=[copy_word(word) for word in line.words] if line.words else None)
-    new_line.type = copy.deepcopy(line.type)
-    return new_line
-
-
-def copy_word(word: PageXMLWord) -> PageXMLWord:
-    new_word = PageXMLWord(doc_id=word.id,
-                           doc_type=copy.deepcopy(word.type),
-                           metadata=copy.deepcopy(word.metadata), conf=word.conf,
-                           coords=copy.deepcopy(word.coords), text=word.text)
-    new_word.type = copy.deepcopy(word.type)
-    return new_word
 
 
 def parse_pagexml_json(scan_json: dict) -> PageXMLScan:
