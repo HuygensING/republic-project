@@ -271,7 +271,7 @@ def process_handwritten_text_regions(text_regions: List[pdm.PageXMLTextRegion], 
 def debug_print_page_trs(page: pdm.PageXMLPage, prefix: str, debug: int = 0):
     print(f"\n{prefix}")
     print(page.stats)
-    for tr in page.get_all_text_regions():
+    for tr in page.get_textual_regions():
         print(f"\n{tr.id} {get_tr_known_types(tr)}\thas session_date: {'session_date' in tr.metadata}")
         if debug > 0:
             for line in tr.lines:
@@ -399,13 +399,13 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
         if debug > 0:
             print(f"page_date_parser.find_date_region_record_lines - text_region_id is not None")
             print(f"\t{record['text_region_id']}")
-        page_tr_ids = [tr.id for tr in page.get_all_text_regions()]
+        page_tr_ids = [tr.id for tr in page.get_textual_regions()]
         if record['text_region_id'] in page_tr_ids:
             if debug > 0:
                 print(f"page_date_parser.find_date_region_record_lines - text_region_id is in page_tr_ids")
             # scenario 1: the text region is literally the same region
             # action: copy all lines as the date region lines
-            for tr in page.get_all_text_regions():
+            for tr in page.get_textual_regions():
                 if tr.id == record['text_region_id']:
                     record_lines.extend([line for line in tr.lines if line not in record_lines])
                     if debug > 1:
@@ -422,10 +422,15 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
             # scenario 2: the text region is not literally the same as any region in the page
             # action: create a dummy region based on the coordinates in the ID and select
             # lines contained by the region
-            record_tr = make_empty_tr(record['text_region_id'], page)
+            try:
+                record_tr = make_empty_tr(record['text_region_id'], page)
+            except BaseException:
+                print(f"page_date_parser.find_date_region_record_lines - error creating empty tr for "
+                      f"text region id {record['text_region_id']} on page {page.id}:\n\trecord: {record}")
+                raise
             if debug > 0:
                 print(f"\tmade empty tr - record_tr.coords.box: {record_tr.coords.box}")
-            for page_tr in page.get_all_text_regions():
+            for page_tr in page.get_textual_regions():
                 for line in page_tr.lines:
                     if debug > 0:
                         print(f"\t{line.coords.box}\t{regions_overlap(record_tr, line, threshold=0.5)}\t{line.text}")
@@ -441,7 +446,7 @@ def find_date_region_record_lines(page: pdm.PageXMLPage, record: Dict[str, any],
                     page.add_child(empty_line_tr)
                     record_lines.append(empty_line_tr.lines[0])
                     return record_lines
-                for tr in page.get_all_text_regions():
+                for tr in page.get_textual_regions():
                     print(f" page {page.id} has tr {tr.id} with {len(tr.lines)} lines")
                 raise ValueError(f"no overlapping lines found for text region id {record['text_region_id']}")
             if debug > 1:
@@ -536,7 +541,7 @@ def sort_date_trs_and_lines(page: pdm.PageXMLPage, records: List[Dict[str, any]]
             raise ValueError(f"record_lines cannot have duplicates")
     record_line_set = set([line for record in records for line in record['lines']])
     # step 2: remove date lines from current text regions
-    for tr in dummy_page.get_all_text_regions():
+    for tr in dummy_page.get_textual_regions():
         tr_lines = [line for line in tr.lines]
         for line in tr_lines:
             if line in record_line_set:
@@ -673,7 +678,7 @@ def update_page_with_date_info(page: pdm.PageXMLPage, records: List[Dict[str, an
     # update text regions to type date and main if they are a session start
     # update text regions to type date_header and header if they are a session start
     page = copy_page(page)
-    for tr in page.get_all_text_regions():
+    for tr in page.get_textual_regions():
         has_empty = False
         for line in tr.lines:
             if line.text is None: # or line.metadata['line_class'] != 'empty':
@@ -730,7 +735,7 @@ def update_page_with_date_info(page: pdm.PageXMLPage, records: List[Dict[str, an
     if debug > 1:
         print("AFTER page_date_parser.process_handwritten_page")
         print(new_page.stats)
-    for tr in new_page.get_all_text_regions():
+    for tr in new_page.get_textual_regions():
         if 'session_date' in tr.metadata and tr.has_type('date') is False:
             del tr.metadata['session_start']
             del tr.metadata['session_date']
@@ -794,7 +799,7 @@ def process_handwritten_pages(inv_id: str, pages: List[pdm.PageXMLPage],
 
 def add_page_ids_to_trs(pages: List[pdm.PageXMLPage]):
     for page in pages:
-        for tr in page.get_all_text_regions():
+        for tr in page.get_textual_regions():
             if 'page_id' not in tr.metadata:
                 tr.metadata['page_id'] = page.id
     return None

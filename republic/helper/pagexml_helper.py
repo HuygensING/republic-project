@@ -79,10 +79,7 @@ def get_median_normal_line_score(scores, default):
 def set_line_alignment(column: pdm.PageXMLColumn):
     if column.stats['lines'] == 0:
         return None
-    if len(column.lines) == 0:
-        lines = [line for text_region in column.text_regions for line in text_region.lines]
-    else:
-        lines = column.lines
+    lines = column.get_lines()
     if len(lines) == 0:
         return None
     lefts = [line.coords.left for line in lines]
@@ -498,7 +495,7 @@ def json_to_pagexml_column(json_doc: dict) -> pdm.PageXMLColumn:
     reading_order = json_doc['reading_order'] if 'reading_order' in json_doc else {}
 
     column = pdm.PageXMLColumn(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
-                               coords=pdm.Coords(json_doc['coords']), text_regions=text_regions, lines=lines,
+                               coords=pdm.Coords(json_doc['coords']), text_regions=text_regions,
                                reading_order=reading_order)
     pdm.set_parentage(column)
     # print("IN COLUMN", column.id, column.stats)
@@ -522,7 +519,7 @@ def json_to_pagexml_page(json_doc: dict) -> pdm.PageXMLPage:
     coords = pdm.Coords(json_doc['coords']) if 'coords' in json_doc else None
     page = pdm.PageXMLPage(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
                            coords=coords, extra=extra, columns=columns,
-                           text_regions=text_regions, lines=lines,
+                           text_regions=text_regions,
                            reading_order=reading_order)
     pdm.set_parentage(page)
     return page
@@ -534,7 +531,7 @@ def json_to_pagexml_scan(json_doc: dict) -> pdm.PageXMLScan:
 
     scan = pdm.PageXMLScan(doc_id=json_doc['id'], doc_type=json_doc['type'], metadata=json_doc['metadata'],
                            coords=pdm.Coords(json_doc['coords']), pages=pages, columns=columns,
-                           text_regions=text_regions, lines=lines, reading_order=reading_order)
+                           text_regions=text_regions, reading_order=reading_order)
     pdm.set_parentage(scan)
     return scan
 
@@ -810,7 +807,7 @@ def make_empty_tr(text_region_id: Union[str, List[str]], page: pdm.PageXMLPage):
         combined_coords = pdm.parse_derived_coords(trs)
         return pdm.PageXMLTextRegion(metadata=copy.deepcopy(trs[0].metadata), coords=combined_coords)
     else:
-        first_tr = page.get_all_text_regions()[0]
+        first_tr = page.regions[0]
         missing_coords = make_coords_from_doc_id(text_region_id)
         empty_tr = pdm.PageXMLTextRegion(coords=missing_coords, metadata=copy.deepcopy(first_tr.metadata))
         empty_tr.set_derived_id(page.metadata['scan_id'])
