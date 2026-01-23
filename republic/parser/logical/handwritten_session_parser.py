@@ -85,7 +85,7 @@ def line_introduces_insertion(line: pdm.PageXMLTextLine) -> bool:
         return False
 
 
-def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False,
+def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intro: bool = False,
                         date_start_lines: List[pdm.PageXMLTextLine] = None):
     class_lines = defaultdict(list)
     predicted_line_class = get_predicted_line_classes(page)
@@ -186,6 +186,12 @@ def sort_lines_by_class(page, debug: int = 0, near_extract_intro: bool = False,
                     class_lines['unknown'].append(line)
                 if near_extract_intro and line.metadata['line_class'] == 'date':
                     line.metadata['line_class'] = 'extract_date'
+    num_page_lines = len(page_lines)
+    num_class_lines = sum([len(lines) for lines in class_lines.values()])
+    if abs(num_page_lines - num_class_lines) >= 3:
+        print(f"num lines in page: {num_page_lines}")
+        print(f"num lines in class_lines: {num_class_lines}")
+        raise ValueError(f"num lines in page {page.id} ({num_page_lines}) != num lines in class_lines ({num_class_lines})")
     return class_lines, near_extract_intro
 
 
@@ -497,7 +503,11 @@ def split_lines_on_vertical_gaps(lines: List[pdm.PageXMLTextLine],
             print(f"\t{line.coords.top: >4}-{line.coords.bottom: <4}    {line.text}")
     for curr_line in lines[1:]:
         prev_line = line_group[-1]
-        base_dist = get_line_base_dist(prev_line, curr_line)
+        try:
+            base_dist = get_line_base_dist(prev_line, curr_line)
+        except BaseException:
+            print(f'ERROR getting base_dist for line pair: {prev_line.id} {curr_line.id}')
+            raise
         if debug > 2:
             print('split_lines_on_vertical_gaps - curr_line:')
             print(f"\t{curr_line.coords.top: >4}-{curr_line.coords.bottom: <4}    {curr_line.text}")

@@ -255,6 +255,32 @@ def classify_page_date_regions(pages: List[pdm.PageXMLPage],
     return date_tr_type_map
 
 
+def merge_extra_regions_with_columns(page: pdm.PageXMLPage):
+    if len(page.columns) > 0:
+        metadata = page.columns[0].metadata.copy()
+    elif len(page.regions) > 0:
+        metadata = page.regions[0].metadata.copy()
+    else:
+        return None
+    if len(page.extra) > 0:
+        extra_trs = [tr for tr in page.extra]
+        for tr in extra_trs:
+            assigned = False
+            for col in page.columns:
+                if pdm.is_horizontally_overlapping(tr, col) and pdm.is_vertically_overlapping(tr, col):
+                    col.text_regions = pagexml_helper.merge_overlapping_text_regions(col.text_regions + [tr], col)
+                    assigned = True
+                    break
+            if not assigned:
+                coords = pdm.parse_derived_coords([tr])
+                col = pdm.PageXMLColumn(metadata=metadata, coords=coords, text_regions=[tr])
+                col.set_as_parent(col.text_regions)
+                col.set_derived_id(page.metadata['scan_id'])
+                page.columns.append(col)
+            page.extra.remove(tr)
+    return page
+
+
 def process_handwritten_columns(columns: List[pdm.PageXMLColumn], page: pdm.PageXMLPage):
     """Process all columns of a page and merge columns that are horizontally overlapping."""
     non_overlapping_columns = republic.helper.pagexml_helper.merge_overlapping_columns(columns, page)
@@ -293,6 +319,7 @@ def process_handwritten_page(page: pdm.PageXMLPage, date_region_classifier: Date
     pagexml_helper.check_parentage(page)
     if page.stats['words'] == 0 or page.stats['lines'] == 0:
         return page
+    page = merge_extra_regions_with_columns(page)
     page = split_merged_marginalia_and_para_lines(page, debug=debug)
     pagexml_helper.check_parentage(page)
 

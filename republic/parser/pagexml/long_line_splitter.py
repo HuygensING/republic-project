@@ -338,8 +338,8 @@ def make_split_coords(line: pdm.PageXMLTextLine, left_line_right: int = None,
     if len(above_points) == 0 or len(below_points) == 0:
         # For some reason the bounding box is not covering the baseline.
         # Hack: create a bounding box that is 40 pixels above and below the baseline.
-        above_points = [(p[0], p[1] - 40) for p in line.baseline.points]
-        below_points = [(p[0], p[1] + 40) for p in line.baseline.points]
+        above_points = [[p[0], p[1] - 40] for p in line.baseline.points]
+        below_points = [[p[0], p[1] + 20] for p in line.baseline.points]
     if right_line_left is not None:
         above_right_line_points = [point for point in above_points if point[0] >= right_line_left]
         below_right_line_points = [point for point in below_points if point[0] >= right_line_left]
@@ -350,20 +350,20 @@ def make_split_coords(line: pdm.PageXMLTextLine, left_line_right: int = None,
             return None
         elif len(above_right_line_points) == 0:
             above_right_line_points = [
-                (right_line_left, above_points[0][1]),
-                (line.coords.right, above_points[0][1])
+                [right_line_left, above_points[0][1]],
+                [line.coords.right, above_points[0][1]]
             ]
         elif len(below_right_line_points) == 0:
             below_right_line_points = [
-                (right_line_left, below_points[0][1]),
-                (line.coords.right, below_points[0][1])
+                [right_line_left, below_points[0][1]],
+                [line.coords.right, below_points[0][1]]
             ]
         if min([point[0] for point in above_right_line_points]) > right_line_left:
             # add a left_most point with the same height as the first selected point in the coords
-            above_right_line_points = [(right_line_left, above_points[0][1])] + above_right_line_points
+            above_right_line_points = [[right_line_left, above_points[0][1]]] + above_right_line_points
         if min([point[0] for point in below_right_line_points]) > right_line_left:
             # add a left_most point with the same height as the first selected point in the coords
-            below_right_line_points += [(right_line_left, below_points[0][1])]
+            below_right_line_points += [[right_line_left, below_points[0][1]]]
         return pdm.Coords(above_right_line_points + below_right_line_points)
     elif left_line_right is not None:
         above_left_line_points = [point for point in above_points if point[0] <= left_line_right]
@@ -375,20 +375,20 @@ def make_split_coords(line: pdm.PageXMLTextLine, left_line_right: int = None,
             return None
         elif len(above_left_line_points) == 0:
             above_left_line_points = [
-                (left_line_right, above_points[0][1]),
-                (line.coords.left, above_points[0][1])
+                [left_line_right, above_points[0][1]],
+                [line.coords.left, above_points[0][1]]
             ]
         elif len(below_left_line_points) == 0:
             below_left_line_points = [
-                (left_line_right, below_points[0][1]),
-                (line.coords.left, below_points[0][1])
+                [left_line_right, below_points[0][1]],
+                [line.coords.left, below_points[0][1]]
             ]
         if max([point[0] for point in above_left_line_points]) < left_line_right:
             # add a left_most point with the same height as the first selected point in the coords
-            above_left_line_points += [(left_line_right, above_points[0][1])]
+            above_left_line_points += [[left_line_right, above_points[0][1]]]
         if max([point[0] for point in below_left_line_points]) < left_line_right:
             # add a left_most point with the same height as the first selected point in the coords
-            below_left_line_points = [(left_line_right, below_points[0][1])] + below_left_line_points
+            below_left_line_points = [[left_line_right, below_points[0][1]]] + below_left_line_points
         return pdm.Coords(above_left_line_points + below_left_line_points)
     else:
         raise ValueError("one of 'left' and 'right' must be an integer")
