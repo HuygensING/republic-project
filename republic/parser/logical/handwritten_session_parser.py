@@ -101,21 +101,31 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
             print(f"handwritten_session_parser.sort_lines_by_class - missing date_start_line")
             print(f"    page {page.id} has no line {line.id}")
             raise ValueError(f"date_start_line {line.id} not in page {page.id}")
+    line_num = 0
+    num_assigned = 0
     for col in sorted(page.columns, key=lambda c: c.coords.left):
         for tr in sorted(col.text_regions, key=lambda t: t.coords.top):
             if debug > 1:
                 print('sort_lines_by_class - tr.type:', tr.type)
+            if len(tr.text_regions) > 0:
+                tr.lines.extend([line for inner_tr in tr.text_regions for line in inner_tr.lines])
+                tr.set_as_parent(tr.lines)
+                tr.text_regions = []
             for line in tr.lines:
+                line_num += 1
+                if line.text is None:
+                    line.metadata['line_class'] = 'empty'
+                    num_assigned += 1
+                    continue
                 if line in date_start_lines:
                     line.metadata['line_class'] = 'date'
                     line.metadata['line_classifier'] = 'manual'
                     class_lines['date'].append(line)
+                    num_assigned += 1
                     continue
                 if debug > 1:
                     print(f"sort_lines_by_class - line_class line.text: "
                           f"{line.metadata['line_class']: <12}\t{line.text}")
-                if line.text is None:
-                    continue
                 if line_introduces_insertion(line):
                     near_extract_intro = True
                     line.metadata['line_class'] = f"{line.metadata['line_class']}_extract_intro"
@@ -126,8 +136,10 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                         print(f"\tline_class: {line.metadata['line_class']}")
                 if 'marginalia' in tr.type:
                     class_lines['marginalia'].append(line)
+                    num_assigned += 1
                     line.metadata['line_class'] = 'marginalia'
                     line.metadata['line_classifier'] = 'loghi'
+                    continue
                 elif line.id in predicted_line_class:
                     if debug > 1:
                         print('sort_lines_by_class - line.id in predicted_line_class', line.id)
@@ -136,18 +148,23 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                         if near_extract_intro is True:
                             line.metadata['line_class'] = 'extract_date'
                             line.metadata['line_classifier'] = 'handwritten_session_parser'
+                            class_lines['para'].append(line)
+                            num_assigned += 1
+                            continue
                         else:
                             line.metadata['line_class'] = 'date'
                             line.metadata['line_classifier'] = 'loghi'
                             if tr.stats['words'] >= 4:
                                 # print('DISAGREEMENT', line.text)
                                 class_lines['date'].append(line)
+                                num_assigned += 1
                                 continue
                             elif tr.coords.bottom < 500:
                                 if debug > 1:
                                     print('DISAGREEMENT DATE HEADER')
                                     print(f'\tpage.top: {page.coords.top}\ttr.bottom: {tr.coords.bottom}')
                                 class_lines['date_header'].append(line)
+                                num_assigned += 1
                                 continue
                     if 'attendance' in tr.type and pred_class != 'attendance':
                         line.metadata['line_class'] = 'attendance'
@@ -157,6 +174,7 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                                 print('DISAGREEMENT ATTENDANCE')
                                 print(f'\tpage.left: {page.coords.left}\ttr.left: {tr.coords.left}')
                             class_lines['attendance'].append(line)
+                            num_assigned += 1
                             continue
                     if 'resolution' in tr.type and pred_class == 'attendance':
                         line.metadata['line_class'] = 'para_mid'
@@ -166,6 +184,7 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                                 print('DISAGREEMENT ATTENDANCE')
                                 print(f'\tpage.left: {page.coords.left}\ttr.left: {tr.coords.left}')
                             class_lines['para'].append(line)
+                            num_assigned += 1
                             continue
                     # elif 'date' not in tr.type and pred_class == 'date':
                         # print('DISAGREEMENT', line.text)
@@ -175,25 +194,40 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                             print('PARA INDENT')
                             print(f'\tpage.left: {page.coords.left}\ttr.left: {tr.coords.left}')
                         class_lines['para'].append(line)
+                        num_assigned += 1
                         line.metadata['line_class'] = pred_class
                         line.metadata['line_classifier'] = 'nlc_classifier'
                     else:
                         line.metadata['line_class'] = pred_class
                         line.metadata['line_classifier'] = 'nlc_classifier'
                         class_lines[pred_class].append(line)
+                        num_assigned += 1
                 else:
                     if debug > 1:
                         print(f"line {line.id} not in predicted_line_class, setting class to 'unknown'")
                     line.metadata['line_class'] = 'unknown'
                     line.metadata['line_classifier'] = 'nlc_classifier'
                     class_lines['unknown'].append(line)
+                    num_assigned += 1
                 if near_extract_intro and line.metadata['line_class'] == 'date':
                     line.metadata['line_class'] = 'extract_date'
+                if line_num != num_assigned:
+                    raise ValueError(f"line_num ({line_num}) != num_assigned ({num_assigned}) for line {line.id}")
     num_page_lines = len([line for line in page_lines if line.text is not None])
     num_class_lines = sum([len(lines) for lines in class_lines.values()])
+    page_line_ids = {line.id for line in page_lines if line.text is not None}
+    assigned_line_ids = {line.id for lines in class_lines.values() for line in lines}
+    page_only = page_line_ids - assigned_line_ids
+    assigned_only = assigned_line_ids - page_line_ids
     if abs(num_page_lines - num_class_lines) >= 3:
         print(f"num lines in page: {num_page_lines}")
         print(f"num lines in class_lines: {num_class_lines}")
+        print(f"page_only: {page_only}")
+        print(f"assigned_only: {assigned_only}")
+        for line_id in assigned_only:
+            for lc in class_lines:
+                if line_id in [line.id for line in class_lines[lc]]:
+                    print(f"\t{lc}: {line_id}")
         raise ValueError(f"num lines in page {page.id} ({num_page_lines}) != num lines in class_lines ({num_class_lines})")
     return class_lines, near_extract_intro
 
