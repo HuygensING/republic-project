@@ -87,6 +87,9 @@ def line_introduces_insertion(line: pdm.PageXMLTextLine) -> bool:
 
 def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intro: bool = False,
                         date_start_lines: List[pdm.PageXMLTextLine] = None):
+    if debug > 1:
+        print(f"\nhandwritten_session_parser.sort_lines_by_class - page {page.id}")
+        print(f"\tpage.stats: {page.stats}")
     class_lines = defaultdict(list)
     predicted_line_class = get_predicted_line_classes(page)
     if date_start_lines is None:
@@ -186,7 +189,7 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                     class_lines['unknown'].append(line)
                 if near_extract_intro and line.metadata['line_class'] == 'date':
                     line.metadata['line_class'] = 'extract_date'
-    num_page_lines = len(page_lines)
+    num_page_lines = len([line for line in page_lines if line.text is not None])
     num_class_lines = sum([len(lines) for lines in class_lines.values()])
     if abs(num_page_lines - num_class_lines) >= 3:
         print(f"num lines in page: {num_page_lines}")

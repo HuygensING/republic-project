@@ -152,19 +152,24 @@ def get_raw_pages(inv_num: int, indexer: Indexer):
     return make_page_generator(inv_num, raw_pages_file, 'raw')
 
 
-def get_preprocessed_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool = True):
+def get_preprocessed_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool = True, debug: int = 0):
     preprocessed_dir = f"{indexer.base_dir}/pages/preprocessed_page_json"
     preprocessed_pages_file = os.path.join(preprocessed_dir, f"preprocessed_pages-{inv_num}.jsonl.gz")
+    if debug > 0:
+        print(f"\nuse_line_class_update: {use_line_class_update}")
     if use_line_class_update is True:
         preprocessed_dir = f"{indexer.base_dir}/pages/line_class_preprocessed_page_json"
         line_class_update_file = os.path.join(preprocessed_dir, f"preprocessed_pages-{inv_num}.jsonl.gz")
-        if os.path.exists(line_class_update_file) is False:
+        if debug > 0:
+            print(f"preprocessed_dir: {preprocessed_dir}\texsists: {os.path.exists(preprocessed_dir)}")
+            print(f"line_class_update_file: {line_class_update_file}\texsists: {os.path.exists(line_class_update_file)}")
+        if os.path.exists(line_class_update_file):
             preprocessed_pages_file = line_class_update_file
     print('preprocessed_pages_file:', preprocessed_pages_file)
     return make_page_generator(inv_num, preprocessed_pages_file, 'preprocessed')
 
 
-def get_last_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool = True):
+def get_last_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool = True, debug: int = 0):
     raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
     preprocessed_pages_file = f"{indexer.base_dir}/pages/preprocessed_page_json/preprocessed_pages-{inv_num}.jsonl.gz"
     if os.path.exists(preprocessed_pages_file):
@@ -173,7 +178,7 @@ def get_last_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool =
             prep_stat = os.stat(preprocessed_pages_file)
             raw_stat = os.stat(raw_pages_file)
             if prep_stat.st_mtime > raw_stat.st_mtime:
-                return get_preprocessed_pages(inv_num, indexer, use_line_class_update=use_line_class_update)
+                return get_preprocessed_pages(inv_num, indexer, use_line_class_update=use_line_class_update, debug=debug)
             else:
                 return get_raw_pages(inv_num, indexer)
         else:
@@ -186,10 +191,10 @@ def get_last_pages(inv_num: int, indexer: Indexer, use_line_class_update: bool =
 
 
 def get_pages(inv_num: int, indexer: Indexer, page_type: str = None, from_file_only: bool = False,
-              use_line_class_update: bool = True) -> Generator[pdm.PageXMLPage, None, None]:
+              use_line_class_update: bool = True, debug: int = 0) -> Generator[pdm.PageXMLPage, None, None]:
     if os.path.exists(f"{indexer.base_dir}/pages") is False:
         os.mkdir(f"{indexer.base_dir}/pages")
-    page_generator = get_last_pages(inv_num, indexer, use_line_class_update=use_line_class_update)
+    page_generator = get_last_pages(inv_num, indexer, use_line_class_update=use_line_class_update, debug=debug)
     if page_generator is not None:
         for page in page_generator:
             if page_type is None or page.has_type(page_type):
@@ -776,6 +781,9 @@ class Indexer:
                             from_starts: bool = False):
         logger.info(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
         print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
+        session_json_dir = f'data/sessions/sessions_json/{inv_num}/'
+        if not os.path.exists(session_json_dir):
+            os.mkdir(session_json_dir)
         inv_metadata = get_inventory_by_num(inv_num)
         self.remove_inventory_docs_from_index(self.rep_es.config['session_metadata_index'],
                                               inv_metadata=inv_metadata)
@@ -803,6 +811,9 @@ class Indexer:
                 print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
+                session_json_file = os.path.join(session_json_dir, f'{session.id}.json.gz')
+                with gzip.open(session_json_file, 'wt') as fh:
+                    json.dump(session.json, fh)
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
                     prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
@@ -819,8 +830,9 @@ class Indexer:
             print('ERROR PARSING SESSIONS FOR INV_NUM', inv_num)
             # raise
         error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
-        logger.info(f"finished indexing sessions of inventory {inv_num} with {error_label}")
-        print(f"finished indexing sessions of inventory {inv_num} with {error_label}")
+        message = f"finished indexing sessions of inventory {inv_num} with {error_label}"
+        logger.info(message)
+        print(message)
 
     def get_inventory_sessions(self, inv_num: int) -> Generator[rdm.Session, None, None]:
         inv_session_metas = self.rep_es.retrieve_inventory_session_metadata(inv_num)
