@@ -204,6 +204,27 @@ def train(trainer, layer_name: str, train_size: float = 1.0, learning_rate: floa
 # Evaluation code #
 ###################
 
+def read_pred_tag_file(test_tagged_file: str):
+    """Read the tag prediction file for a model, which has two columns:
+
+    1. token
+    2. predicted label
+    """
+    with open(test_tagged_file, 'rt') as fh:
+        sent_idx = 0
+        token_idx = 0
+        for li, line in enumerate(fh):
+            parts = line.strip().split(' ')
+            if len(parts) == 2:
+                token_idx += 1
+                yield [sent_idx, token_idx] + parts
+            else:
+                yield None, None, parts[0], None
+                sent_idx += 1
+                token_idx = 0
+    return None
+
+
 def read_test_tag_file(test_tagged_file: str):
     """Read the tagged test file for a model, which has three columns:
 

@@ -156,9 +156,11 @@ class Indexer:
                        doc_id=session_tr.id,
                        doc_body=session_tr.json)
 
-    def index_session_text_regions(self, session_trs: List[pdm.PageXMLTextRegion]):
+    def index_session_text_regions(self, session_trs: List[pdm.PageXMLTextRegion], batch_size: int = 10):
         trs_json = [tr.json for tr in session_trs]
-        self.index_bulk_docs(self.config['session_text_region_index'], trs_json)
+        for idx in range(0, len(trs_json), batch_size):
+            self.index_bulk_docs(self.config['session_text_region_index'], trs_json[idx:idx+batch_size])
+        # self.index_bulk_docs(self.config['session_text_region_index'], trs_json)
         # self.index_doc(index=self.config['session_text_region_index'],
         #                doc_id=session_tr.id,
         #                doc_body=session_tr.json)
