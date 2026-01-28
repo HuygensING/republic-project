@@ -197,6 +197,9 @@ def sort_lines_by_class(page: pdm.PageXMLPage, debug: int = 0, near_extract_intr
                         num_assigned += 1
                         line.metadata['line_class'] = pred_class
                         line.metadata['line_classifier'] = 'nlc_classifier'
+                    elif pred_class in {'table', 'title', 'insert_omitted'}:
+                        class_lines['para'].append(line)
+                        num_assigned += 1
                     else:
                         line.metadata['line_class'] = pred_class
                         line.metadata['line_classifier'] = 'nlc_classifier'
@@ -282,17 +285,29 @@ def merge_line_class_trs(class_trs, line_class: str, page: pdm.PageXMLPage, dist
 
 def link_date_attendance(class_trs):
     has_attendance = defaultdict(list)
+    assigned = set()
     if 'date' in class_trs and 'attendance' in class_trs:
         for date_tr in class_trs['date']:
             for att_tr in class_trs['attendance']:
                 if pdm.is_vertically_overlapping(date_tr, att_tr, threshold=0.01):
                     has_attendance[date_tr].append(att_tr)
+                    assigned.add(att_tr)
                 elif date_tr.coords.top > att_tr.coords.bottom:
                     if abs(date_tr.coords.top - att_tr.coords.bottom) < 400:
                         has_attendance[date_tr].append(att_tr)
+                        assigned.add(att_tr)
                 elif date_tr.coords.bottom < att_tr.coords.top:
                     if abs(date_tr.coords.bottom - att_tr.coords.top) < 400:
                         has_attendance[date_tr].append(att_tr)
+                        assigned.add(att_tr)
+    for att_tr in class_trs['attendance']:
+        if att_tr in assigned:
+            continue
+        for para_tr in class_trs['para']:
+            if pdm.is_vertically_overlapping(att_tr, para_tr, threshold=0.01):
+                has_attendance[para_tr].append(att_tr)
+                assigned.add(att_tr)
+                break
     for date_tr in has_attendance:
         if 'text_region_links' not in date_tr.metadata:
             date_tr.metadata['text_region_links'] = []
@@ -456,6 +471,8 @@ def make_classified_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine
     line_groups: Dict[str, List[List[pdm.PageXMLTextLine]]] = defaultdict(list)
     for line_class in class_lines:
         line_groups[line_class] = split_lines_on_vertical_gaps(class_lines[line_class], debug=debug)
+    # num_grouped_lines = sum([len(group) for line_class in line_groups for group in line_groups[line_class]])
+    # print(f"handwritten_session_parser.make_classified_text_regions - page {page.id}\tnumber of grouped lines: {num_grouped_lines}")
     pagexml_helper.check_page_parentage(page)
     for line_class in line_groups:
         if debug > 2:
@@ -659,7 +676,13 @@ def map_date_starts(page: pdm.PageXMLPage, session_starts: List[Dict[str, any]],
 def prepare_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine]], page: pdm.PageXMLPage,
                          debug: int = 0):
     pagexml_helper.check_page_parentage(page)
+    num_class_lines = sum([len(lines) for lines in class_lines.values()])
+    # print(f"handwritten_session_parser.prepare_text_regions - page {page.id}\tnumber of class lines: {num_class_lines}")
     class_trs = make_classified_text_regions(class_lines, page, debug=debug)
+    num_class_trs_lines = sum([len(tr.lines) for tr_type in class_trs for tr in class_trs[tr_type]])
+    # print(f"handwritten_session_parser.prepare_text_regions - page {page.id}\tnumber of class_trs lines: {num_class_trs_lines}")
+    if num_class_lines - num_class_trs_lines > 0:
+        print(f"WARNING: number of class lines ({num_class_lines}) is different from number of class_trs lines ({num_class_trs_lines})")
     pagexml_helper.check_page_parentage(page)
     has_attendance = link_date_attendance(class_trs)
     pagexml_helper.check_page_parentage(page)
@@ -667,7 +690,7 @@ def prepare_text_regions(class_lines: Dict[str, List[pdm.PageXMLTextLine]], page
     pagexml_helper.check_page_parentage(page)
     unlinked_att_trs, unlinked_marg_trs = link_classified_text_regions(class_trs, debug=debug)
     pagexml_helper.check_page_parentage(page)
-    if debug > 0:
+    if debug > -1:
         if len(unlinked_att_trs) > 0:
             print('handwritten_session_parser.get_date_searcher - unlinked_att_trs:', len(unlinked_att_trs), page.id)
         if len(unlinked_marg_trs) > 0:
@@ -826,6 +849,19 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
             print(f'\tAFTER - num_lines_since_extract_intro: {num_lines_since_extract_intro}\n')
         main_trs, has_marginalia, has_attendance = prepare_text_regions(class_lines, page, debug=debug)
 
+        if debug > 1:
+            print("\n\n")
+            for tr in main_trs:
+                print(f"    page: {page.id}\tmain_tr: {tr.id}")
+                if tr in has_attendance:
+                    for att_tr in has_attendance[tr]:
+                        print(f"    page: {page.id}\t    attendance_tr: {att_tr.id}")
+                if tr in has_marginalia:
+                    for att_tr in has_marginalia[tr]:
+                        print(f"    page: {page.id}\t    marginalia_tr: {att_tr.id}")
+
+            print("\n\n")
+
         pagexml_helper.check_page_parentage(page)
         for main_tr in main_trs:
             if debug > 0:
@@ -845,6 +881,9 @@ def find_session_dates(pages, inv_start_date, date_mapper: DateNameMapper,
                               f"{line.metadata['line_class']: <12}    {line.text}")
                 if main_tr in has_marginalia:
                     for marg_tr in has_marginalia[main_tr]:
+                        session_trs[current_date.isoformat()].append(marg_tr)
+                if main_tr in has_attendance:
+                    for marg_tr in has_attendance[main_tr]:
                         session_trs[current_date.isoformat()].append(marg_tr)
                 if current_date.isoformat() not in session_dates or len(session_dates[current_date.isoformat()]) == 0:
                     no_evidence_metadata = add_date_start_with_no_evidence(current_date, main_tr,

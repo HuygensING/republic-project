@@ -92,8 +92,16 @@ def make_iiif_region_url(jpg_url: str,
 def coords_to_iiif_url(scan_id: str,
                        coords: Union[List[int], Dict[str, int], pdm.Coords] = None, margin=100,
                        size: Union[str, Tuple[int, int]] = 'full'):
-    base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
-    inv_num = scan_id_to_inv_num(scan_id)
+    try:
+        if 'NL-HaNA_1.01.02' in scan_id:
+            base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
+            inv_num = scan_id_to_inv_num(scan_id)
+        elif 'KB_series' in scan_id:
+            base_url = f"{image_host_url}/iiif/KB_series/"
+            inv_num = scan_id.split('_')[2]
+    except BaseException:
+        print(f"coords_to_iiif_url: invalid scan id: {scan_id}")
+        raise
     if isinstance(size, str):
         size_string = size
     else:

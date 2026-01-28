@@ -808,6 +808,7 @@ class Indexer:
                                                    target_ids=session.id,
                                                    source_index='pages', target_index='session_metadata')
                 prov_url = self.rep_es.post_provenance_record(prov_record)
+                logger.info(f'\tsession {session.id} has {len(session.text_regions)} text regions')
                 print(f'\tsession has {len(session.text_regions)} text regions')
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
