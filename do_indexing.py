@@ -959,6 +959,7 @@ class Indexer:
                 for resolution in resolutions:
                     resolution.metadata['prov_url'] = prov_url
                     print('indexing handwritten resolution', resolution.id)
+                    logger.info(f"indexing handwritten resolution {resolution.id}")
                     # self.rep_es.index_resolution(resolution)
                 resolutions_json = [res.json for res in resolutions]
                 # print('using resolution index', self.rep_es.config['resolutions_index'])
