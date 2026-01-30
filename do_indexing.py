@@ -893,6 +893,10 @@ class Indexer:
                 for resolution in printed_res_parser.get_session_resolutions(session, opening_searcher,
                                                                              verb_searcher,
                                                                              line_break_detector=line_break_detector):
+                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
+                                                       target_ids=session.id,
+                                                       source_index=[], target_index='session_metadata')
+                    prov_url = self.rep_es.post_provenance_record(prov_record)
                     try:
                         prov_url = self.rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
                                                                source_index='session_lines', target_index='resolutions',
@@ -925,23 +929,33 @@ class Indexer:
         errors = []
         for session in self.get_inventory_sessions(inv_num):
             try:
-                # print('session_meta["id"]:', session_meta['id'])
                 print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
+                source_doc_index_map = [
+                    {
+                        'index': 'session_metadata',
+                        'doc_ids': [session.id],
+                        'rel': 'primary'
+                    },
+                    {
+                        'index': 'session_text_regions',
+                        'doc_ids': [tr.id for tr in session.text_regions],
+                        'rel': 'primary'
+                    }
+                ]
                 resolutions = [res for res in hand_res_parser.get_session_resolutions(session,
                                                                                       opening_searcher, debug=0)]
-                session_tr_urls = make_index_urls(es_config=self.rep_es.es_anno_config,
-                                                  doc_ids=[tr.id for tr in session.text_regions],
-                                                  index='session_text_regions')
-                source_ids = [session.id]
-                target_ids = [res.id for res in resolutions]
+                target_doc_index_map = [
+                    {
+                        'index': 'resolutions',
+                        'doc_ids': [res.id for res in resolutions],
+                        'rel': 'primary'
+                    }
+                ]
                 why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
-                prov_url = self.rep_es.post_provenance(source_ids=source_ids,
-                                                       target_ids=target_ids,
-                                                       source_index='session_metadata',
-                                                       target_index='resolutions',
-                                                       source_external_urls=session_tr_urls,
-                                                       ignore_prov_errors=True,
-                                                       why=why)
+                prov_record = generate_es_provenance_record(es_url='https://annotation.republic-caf.diginfra.org/',
+                                                            source_doc_index_map=source_doc_index_map,
+                                                            target_doc_index_map=target_doc_index_map, why=why)
+                prov_url = self.rep_es.post_provenance_record(prov_record)
                 for resolution in resolutions:
                     resolution.metadata['prov_url'] = prov_url
                     print('indexing handwritten resolution', resolution.id)
