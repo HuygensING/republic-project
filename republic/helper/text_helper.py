@@ -124,6 +124,7 @@ class ResolutionSentences:
 
 def calculate_word_freq(res_sents: ResolutionSentences) -> Counter:
     word_freq = Counter()
+    num_sents = 0
     for si, sent in enumerate(res_sents):
         try:
             if len(sent) == 0:
@@ -138,6 +139,8 @@ def calculate_word_freq(res_sents: ResolutionSentences) -> Counter:
         except IndexError:
             print('Error in sent:', sent)
             raise
+        num_sents += 1
+    print(num_sents, 'sentences parsed', len(word_freq), 'term types', sum(word_freq.values()), 'term tokens')
     return word_freq
 
 
@@ -705,7 +708,8 @@ def read_resolution_paragraphs(res_files, pre_tokenise_func: Callable = None, pr
     if pre_tokenise_func and not pre_tokenise_field:
         pre_tokenise_field = 'text'
     for res_file in res_files:
-        opener = gzip.open if res_file.endswith('.gz') else open
+        filename = os.path.basename(res_file)
+        opener = gzip.open if filename.endswith('.gz') else open
         if debug > 0:
             print('parsing file', res_file)
         with opener(res_file, 'rt') as fh:

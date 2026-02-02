@@ -969,16 +969,16 @@ class Indexer:
                         if len(res_list) == 0:
                             break
                         self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], res_list)
-            except Exception as err:
+            except BaseException as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
                 logging.error('Error parsing resolutions for inv_num', inv_num)
                 logging.error(err)
                 print(err)
                 errors.append(err)
-                raise
+                # raise
         error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
-        logger.info(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
-        print(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
+        logger.info(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
+        print(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
         for err in errors:
             print(err)
 
