@@ -893,7 +893,7 @@ class Indexer:
                 for resolution in printed_res_parser.get_session_resolutions(session, opening_searcher,
                                                                              verb_searcher,
                                                                              line_break_detector=line_break_detector):
-                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
+                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session.json['page_ids'],
                                                        target_ids=session.id,
                                                        source_index=[], target_index='session_metadata')
                     prov_url = self.rep_es.post_provenance_record(prov_record)
@@ -926,6 +926,7 @@ class Indexer:
                     f"(years {year_start}-{year_end})...")
         print(f"Indexing handwritten PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
         opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
+        es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
         errors = []
         for session in self.get_inventory_sessions(inv_num):
             try:
@@ -952,7 +953,7 @@ class Indexer:
                     }
                 ]
                 why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
-                prov_record = generate_es_provenance_record(es_url='https://annotation.republic-caf.diginfra.org/',
+                prov_record = generate_es_provenance_record(es_url=es_url,
                                                             source_doc_index_map=source_doc_index_map,
                                                             target_doc_index_map=target_doc_index_map, why=why)
                 prov_url = self.rep_es.post_provenance_record(prov_record)
