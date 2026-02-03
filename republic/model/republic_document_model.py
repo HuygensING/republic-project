@@ -42,6 +42,8 @@ class RepublicDoc(ldm.LogicalStructureDoc):
                 inventory_num = int(scan_id.replace('NL-HaNA_1.01.02_', '').split('_')[0])
             elif 'NL-HaNA_1.10.94_' in scan_id:
                 inventory_num = int(scan_id.replace('NL-HaNA_1.10.94_', '').split('_')[0])
+            elif 'KB_series_' in scan_id:
+                inventory_num = int(scan_id.replace('KB_series_71B', '').split('_')[0])
             else:
                 print(f"text_region.id: {text_region.id}")
                 print(f"text_region.metadata: {text_region.metadata}")
