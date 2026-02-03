@@ -96,6 +96,9 @@ def coords_to_iiif_url(scan_id: str,
         if 'NL-HaNA_1.01.02' in scan_id:
             base_url = f"{image_host_url}/iiif/NL-HaNA_1.01.02/"
             inv_num = scan_id_to_inv_num(scan_id)
+        if 'NL-HaNA_1.10.94' in scan_id:
+            base_url = f"{image_host_url}/iiif/NL-HaNA_1.10.94/"
+            inv_num = scan_id_to_inv_num(scan_id)
         elif 'KB_series' in scan_id:
             base_url = f"{image_host_url}/iiif/KB_series/"
             inv_num = scan_id.split('_')[2]
