@@ -54,7 +54,7 @@ def check_lines_have_boundary_signals(lines: List[pdm.PageXMLTextLine], curr_ind
         if debug > 1:
             print('\tno para line:', True)
         return True
-    if curr_line.text is None:
+    if curr_line.text is None or curr_line.text == '':
         if debug > 1:
             print('\tno text:', True)
         return True
