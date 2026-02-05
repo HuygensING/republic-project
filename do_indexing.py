@@ -10,8 +10,7 @@ import os
 import re
 from collections import defaultdict
 from collections import Counter
-from typing import Dict, Generator, List, Union
-
+from typing import Dict, Generator, List, Union, Tuple
 
 import sys
 
@@ -377,6 +376,31 @@ def update_page_metadata(page: pdm.PageXMLPage,
                 continue
             else:
                 line.metadata['line_class'] = 'unknown'
+
+
+def make_resolution_source_target_map(session: rdm.Session,
+                                      resolutions: List[rdm.Resolution]) -> Tuple[List[Dict[str, str]], List[Dict[str, str]]]:
+    source_map = [
+        {
+            'index': 'session_metadata',
+            'doc_ids': [session.id],
+            'rel': 'primary'
+        },
+        {
+            'index': 'session_text_regions',
+            'doc_ids': [tr.id for tr in session.text_regions],
+            'rel': 'primary'
+        }
+    ]
+
+    target_map = [
+        {
+            'index': 'resolutions',
+            'doc_ids': [res.id for res in resolutions],
+            'rel': 'primary'
+        }
+    ]
+    return source_map, target_map
 
 
 class Indexer:
@@ -881,6 +905,7 @@ class Indexer:
         line_break_detector = load_line_break_detector()
         print(f"\n\n-------------\n{self.rep_es.config['resolutions_index']}\n\n-------------\n")
         errors = []
+        es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
         for session in self.get_inventory_sessions(inv_num):
             logger.info(f"indexing resolutions for session {session.id}")
             print(f"indexing resolutions for session {session.id}")
@@ -889,11 +914,19 @@ class Indexer:
                 logger.info("DELETING SESSION WITH ID", session.id)
                 print("DELETING SESSION WITH ID", session.id)
                 continue
+            resolution_generator = printed_res_parser.get_session_resolutions(session, opening_searcher,
+                                                                              verb_searcher,
+                                                                              line_break_detector=line_break_detector)
             try:
-                for resolution in printed_res_parser.get_session_resolutions(session, opening_searcher,
-                                                                             verb_searcher,
-                                                                             line_break_detector=line_break_detector):
-                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session.json['page_ids'],
+                resolutions = list(resolution_generator)
+                source_doc_index_map, target_doc_index_map = make_resolution_source_target_map(session, resolutions)
+                why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
+                prov_record = generate_es_provenance_record(es_url=es_url,
+                                                            source_doc_index_map=source_doc_index_map,
+                                                            target_doc_index_map=target_doc_index_map, why=why)
+                prov_url = self.rep_es.post_provenance_record(prov_record)
+                for resolution in resolutions:
+                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session.id,
                                                        target_ids=session.id,
                                                        source_index=[], target_index='session_metadata')
                     prov_url = self.rep_es.post_provenance_record(prov_record)
@@ -931,27 +964,9 @@ class Indexer:
         for session in self.get_inventory_sessions(inv_num):
             try:
                 print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
-                source_doc_index_map = [
-                    {
-                        'index': 'session_metadata',
-                        'doc_ids': [session.id],
-                        'rel': 'primary'
-                    },
-                    {
-                        'index': 'session_text_regions',
-                        'doc_ids': [tr.id for tr in session.text_regions],
-                        'rel': 'primary'
-                    }
-                ]
                 resolutions = [res for res in hand_res_parser.get_session_resolutions(session,
                                                                                       opening_searcher, debug=0)]
-                target_doc_index_map = [
-                    {
-                        'index': 'resolutions',
-                        'doc_ids': [res.id for res in resolutions],
-                        'rel': 'primary'
-                    }
-                ]
+                source_doc_index_map, target_doc_index_map = make_resolution_source_target_map(session, resolutions)
                 why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
                 prov_record = generate_es_provenance_record(es_url=es_url,
                                                             source_doc_index_map=source_doc_index_map,
@@ -987,10 +1002,61 @@ class Indexer:
         inv_metadata = get_inventory_by_num(inv_num)
         # make sure previous resolutions from inventory are removed
         self.rep_es.delete_by_inventory(inv_num=inv_num, index=self.rep_es.config['resolutions_index'])
+
+        es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
+        errors = []
         if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
-            self.do_printed_resolution_indexing(inv_num, year_start, year_end)
+            opening_searcher, verb_searcher = printed_res_parser.configure_resolution_searchers()
+            line_break_detector = load_line_break_detector()
         else:
-            self.do_handwritten_resolution_indexing(inv_num, year_start, year_end)
+            opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
+            verb_searcher, line_break_detector = None, None
+
+        for session in self.get_inventory_sessions(inv_num):
+            # Create the resolution generator (depending on printed or handwritten)
+            if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
+                resolution_generator = printed_res_parser.get_session_resolutions(session, opening_searcher,
+                                                                                  verb_searcher,
+                                                                                  line_break_detector=line_break_detector)
+                # self.do_printed_resolution_indexing(inv_num, year_start, year_end)
+            else:
+                resolution_generator = hand_res_parser.get_session_resolutions(session, opening_searcher, debug=0)
+                # self.do_handwritten_resolution_indexing(inv_num, year_start, year_end)
+
+            try:
+                print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
+                resolutions = list(resolution_generator)
+                source_doc_index_map, target_doc_index_map = make_resolution_source_target_map(session, resolutions)
+                why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
+                prov_record = generate_es_provenance_record(es_url=es_url,
+                                                            source_doc_index_map=source_doc_index_map,
+                                                            target_doc_index_map=target_doc_index_map, why=why)
+                prov_url = self.rep_es.post_provenance_record(prov_record)
+                for resolution in resolutions:
+                    resolution.metadata['prov_url'] = prov_url
+                    print('indexing handwritten resolution', resolution.id)
+                    logger.info(f"indexing handwritten resolution {resolution.id}")
+                    # self.rep_es.index_resolution(resolution)
+                resolutions_json = [res.json for res in resolutions]
+                # print('using resolution index', self.rep_es.config['resolutions_index'])
+                n = 2
+                for i in range(0, len(resolutions_json), n):
+                    res_list = resolutions_json[i:i + n]
+                    if len(res_list) == 0:
+                        break
+                    self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], res_list)
+            except BaseException as err:
+                print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
+                logging.error('Error parsing resolutions for inv_num', inv_num)
+                logging.error(err)
+                print(err)
+                errors.append(err)
+                # raise
+        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
+        logger.info(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
+        print(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
+        for err in errors:
+            print(err)
 
     def do_resolution_phrase_match_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolution phrase matches for inventory "
@@ -1125,7 +1191,7 @@ class Indexer:
                 logger.error(err)
                 logger.error(f'Error - issue with attendance lists for year {year}')
                 print(f'Error - issue with attendance lists for year {year}')
-                raise
+                # raise
         error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
         logger.info(f"finished indexing attendance lists of inventory {inv_num} with {error_label}")
         print(f"finished indexing attendance lists of inventory {inv_num} with {error_label}")
