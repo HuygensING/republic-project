@@ -173,7 +173,7 @@ def get_line_grouped_text_regions(republic_doc: rdm.RepublicDoc, debug: int = 0)
     res_trs = []
     if isinstance(republic_doc, rdm.Resolution):
         res_trs = [tr for para in republic_doc.paragraphs for tr in para.text_regions]
-        if debug > 0:
+        if debug > 1:
             print(f"get_line_grouped_text_regions - {republic_doc.main_type} {republic_doc.id}")
             print(f"get_line_grouped_text_regions - number of text_regions: {len(res_trs)}")
     else:
@@ -192,7 +192,7 @@ def get_line_grouped_text_regions(republic_doc: rdm.RepublicDoc, debug: int = 0)
             for field in ['column_id', 'page_id', 'scan_id']:
                 if field in line.metadata:
                     metadata[parent_id][field] = line.metadata[field]
-        if debug > 0:
+        if debug > 1:
             print(f"get_line_grouped_text_regions - {republic_doc.main_type} {republic_doc.id}")
             print(f"get_line_grouped_text_regions - number of tr_grouped_lines: {len(tr_grouped_lines)}")
         for group_id in tr_grouped_lines:
@@ -205,7 +205,7 @@ def get_line_grouped_text_regions(republic_doc: rdm.RepublicDoc, debug: int = 0)
 
 
 def link_marginalia(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRegion], debug: int = 0):
-    if debug > 0:
+    if debug > 1:
         print(f"link_marginalia - resolution {resolution.id}")
     res_trs = get_line_grouped_text_regions(resolution)
     parent_field_order = ['column_id', 'page_id']
@@ -220,10 +220,10 @@ def link_marginalia(resolution: rdm.Resolution, marg_trs: List[pdm.PageXMLTextRe
                         same_parent = True
             if same_parent is False:
                 continue
-            if debug > 0:
+            if debug > 1:
                 print(f"link_marginalia - checking overlap between resolution tr {res_tr.id} and marg_tr {marg_tr.id}")
             if pdm.is_vertically_overlapping(res_tr, marg_tr, threshold=0.5):
-                if debug > 0:
+                if debug > 1:
                     print(f"\tregions overlap vertically, linking marginalia")
                 resolution.linked_text_regions.append(marg_tr)
     return None
@@ -274,7 +274,7 @@ def resolve_followed_by(followed_by_searcher: FuzzyPhraseSearcher,
     for match in matches:
         if 'followed_by' in match.phrase.properties:
             following_matches = followed_by_searcher.find_matches(doc)
-            print(f"following_matches:", following_matches)
+            # print(f"following_matches:", following_matches)
             resolved_matches.extend(following_matches)
     return resolved_matches
 
@@ -299,6 +299,7 @@ def get_session_resolutions(session: rdm.Session,
     generate_id = running_id_generator(session.id, '-resolution-')
     marg_trs = [tr for tr in session.text_regions if tr.has_type('marginalia')]
     if debug > 0:
+        print("\n---------------------\n")
         print(f"\nhandwritten_resolution_parser.get_session_resolutions - session {session.id}")
         print(f"handwritten_resolution_parser.get_session_resolutions - number of marg_trs: {len(marg_trs)}")
     ses_para_count = 0
@@ -317,6 +318,19 @@ def get_session_resolutions(session: rdm.Session,
             attendance_list.add_paragraph(paragraph)
             res_para_count += 1
             session_offset += len(paragraph.text)
+            if debug > 0:
+                print(f'\nhandwritten_resolution_parser.get_session_resolutions - '
+                      f'paragraph (attendance): {paragraph.text[:500]}\n')
+            continue
+        if attendance_list is not None and paragraph.text.startswith('Pres'):
+            attendance_list.add_paragraph(paragraph)
+            res_para_count += 1
+            session_offset += len(paragraph.text)
+            if debug > 0:
+                print(f'\nhandwritten_resolution_parser.get_session_resolutions - '
+                      f'paragraph (attendance): {paragraph.text[:500]}\n')
+            if debug > 1:
+                print(f"adding paragraph {paragraph.id} to attendance_list {attendance_list.id}")
             continue
         if 'resolution' in tr_types:
             paragraph.add_type('resolution')
@@ -325,7 +339,9 @@ def get_session_resolutions(session: rdm.Session,
         # print(f"   paragraph has type: {paragraph.type}")
         paragraph.metadata['lang'] = determine_language(paragraph.text)
         if debug > 0:
-            print('handwritten_resolution_parser.get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
+            print(f'\nhandwritten_resolution_parser.get_session_resolutions - '
+                  f'paragraph (resolution): {paragraph.text[:500]}\n')
+            print(f"\t{[tr.id for tr in paragraph.text_regions]}\n")
         doc = {'text': paragraph.text, 'id': paragraph.id}
         opening_matches = opening_searcher.find_matches(doc, debug=0)
         for match in opening_matches:
@@ -340,17 +356,29 @@ def get_session_resolutions(session: rdm.Session,
         if attendance_list:
             # If there is a previous attendance list, finish it, yield and reset to None
             attendance_list.metadata["page_ids"] = get_paragraph_page_ids(attendance_list.paragraphs)
+            if debug > 0:
+                print(f"handwritten_resolution_parser.get_session_resolutions - "
+                      f"yielding attendance_list: {attendance_list.id}")
+                for para in attendance_list.paragraphs:
+                    print(f"\tattendance para: {para.id} text: {para.text}")
             yield attendance_list
             attendance_list = None
         if len(opening_matches) > 0 and opening_matches[0].has_label('reviewed'):
+            if resolution is None:
+                resolution = initialise_resolution(session, generate_id, doc_type='review',
+                                                   opening_matches=opening_matches)
             paragraph.add_type('reviewed')
-            resolution = initialise_resolution(session, generate_id, doc_type='review',
-                                               opening_matches=opening_matches)
             if debug > 0:
-                print(f"adding paragraph {paragraph.id} to resolution {resolution.id}")
+                print(f"handwritten_resolution_parser.get_session_resolutions - "
+                      f"initialising review resolution: {resolution.id}")
+            if debug > 0:
+                print(f"adding paragraph {paragraph.id} to review resolution {resolution.id}")
             resolution.add_paragraph(paragraph, matches=opening_matches)
             res_para_count += 1
             prep_resolution(resolution, marg_trs, debug=debug)
+            if debug > 0:
+                print(f"handwritten_resolution_parser.get_session_resolutions - "
+                      f"yielding review resolution: {resolution.id}")
             yield resolution
             resolution = None
             session_offset += len(paragraph.text)
@@ -358,12 +386,21 @@ def get_session_resolutions(session: rdm.Session,
         if len(opening_matches) > 0:
             if resolution:
                 prep_resolution(resolution, marg_trs, debug=debug)
+                if debug > 0:
+                    print(f"handwritten_resolution_parser.get_session_resolutions - "
+                          f"yielding resolution: {resolution.id}")
                 yield resolution
             resolution = initialise_resolution(session, generate_id, doc_type='resolution',
                                                opening_matches=opening_matches)
+            if debug > 0:
+                print(f"handwritten_resolution_parser.get_session_resolutions - "
+                      f"initialising opening resolution: {resolution.id}")
         elif paragraph.has_type('resolution') and resolution is None:
             resolution = initialise_resolution(session, generate_id, doc_type='resolution',
                                                opening_matches=opening_matches)
+            if debug > 0:
+                print(f"handwritten_resolution_parser.get_session_resolutions - "
+                      f"initialising None resolution: {resolution.id}")
         if debug > 0:
             print(f'handwritten_resolution_parser.get_session_resolutions - '
                   f'session.metadata.resolution_type: {session.metadata["resolution_type"]}')
@@ -379,9 +416,15 @@ def get_session_resolutions(session: rdm.Session,
         session_offset += len(paragraph.text)
     if attendance_list:
         attendance_list.metadata["page_ids"] = get_paragraph_page_ids(attendance_list.paragraphs)
+        if debug > 0:
+            print(f"handwritten_resolution_parser.get_session_resolutions - "
+                  f"yielding attendance_list: {attendance_list.id}")
         yield attendance_list
     if resolution:
         prep_resolution(resolution, marg_trs, debug=debug)
+        if debug > 0:
+            print(f"handwritten_resolution_parser.get_session_resolutions - "
+                  f"yielding resolution: {resolution.id}")
         yield resolution
     if ses_para_count != res_para_count:
         print(f"handwritten_resolution_parser.get_session_resolutions: \n\t"

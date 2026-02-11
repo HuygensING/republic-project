@@ -480,10 +480,11 @@ class Retriever:
                 sessions.append(session)
         return sessions
 
-    def retrieve_inventory_session_metadata(self, inv_num):
+    def retrieve_inventory_session_metadata(self, inv_num, show_total: bool = True):
         query = make_inventory_query(inv_num)
         docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query,
                                                            index=self.config['session_metadata_index'],
+                                                           show_total=show_total,
                                                            size=10, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: int(doc['id'].split('-')[-1]))
         return docs

@@ -1015,11 +1015,13 @@ class Indexer:
         for session in self.get_inventory_sessions(inv_num):
             # Create the resolution generator (depending on printed or handwritten)
             if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
+                print(f"loading printed session parser")
                 resolution_generator = printed_res_parser.get_session_resolutions(session, opening_searcher,
                                                                                   verb_searcher,
                                                                                   line_break_detector=line_break_detector)
                 # self.do_printed_resolution_indexing(inv_num, year_start, year_end)
             else:
+                print(f"loading handwritten session parser")
                 resolution_generator = hand_res_parser.get_session_resolutions(session, opening_searcher, debug=0)
                 # self.do_handwritten_resolution_indexing(inv_num, year_start, year_end)
 
