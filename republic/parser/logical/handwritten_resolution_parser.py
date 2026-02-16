@@ -1,5 +1,6 @@
 import copy
 from collections import defaultdict
+from collections import Counter
 from typing import Dict, Generator, List, Tuple, Callable
 
 import fuzzy_search
@@ -86,21 +87,67 @@ def check_lines_have_boundary_signals(lines: List[pdm.PageXMLTextLine], curr_ind
     return True
 
 
+def update_attendance_to_table(session: rdm.Session):
+    for tr in session.text_regions:
+        page_num = int(tr.metadata['page_id'].split('-page-')[-1])
+        if page_num % 2 == 1:
+            margin_left = 2800
+        else:
+            margin_left = 300
+        if tr.has_type('attendance'):
+            if tr.coords.left - margin_left > 400:
+                # print(f"updating tr: {tr.id} margin_left: {margin_left} tr.coords.left: {tr.coords.left}")
+                tr.add_type('table')
+                tr.remove_type('attendance')
+                if 'text_region_class' in tr.metadata:
+                    tr.metadata['text_region_class'] = 'para'
+                for line in tr.lines:
+                    line.metadata['line_class'] = 'table'
+            else:
+                tr.metadata['text_region_class'] = 'attendance'
+        elif 'attendance' in [line.metadata['line_class'] for line in tr.lines]:
+            att_lines = [line for line in tr.lines if line.metadata['line_class'] == 'attendance']
+            for line in att_lines:
+                if line.coords.left - margin_left > 400:
+                    line.metadata['text_region_class'] = 'para'
+
+
+
 def get_session_paragraph_line_groups(session_trs: List[pdm.PageXMLTextRegion],
                                       debug: int = 0):
+    attendance_trs = [tr for tr in session_trs if tr.has_type('attendance')]
+    # print(f"number of attendance trs: {len(attendance_trs)}  lines: {[len(tr.lines) for tr in attendance_trs]}")
     paras = []
     para = []
     prev_line = None
-    para_trs = [tr for tr in session_trs if tr.has_type('para')]
+    para_trs = [tr for tr in session_trs if tr.has_type('para') or tr.has_type('table')]
+    date_trs = [tr for tr in session_trs if tr.has_type('date')]
+    assigned_trs = set([tr for tr in attendance_trs + date_trs + para_trs])
+    other_trs = [tr for tr in session_trs if tr not in assigned_trs]
+    para_trs.extend(other_trs)
+    # print(f"number of other trs: {len(other_trs)}")
     for tr in para_trs:
         for line in tr.lines:
             line.metadata['text_region_id'] = tr.id
-    attendance_trs = [tr for tr in session_trs if tr.has_type('attendance')]
-    date_trs = [tr for tr in session_trs if tr.has_type('date')]
+
     para_lines = [line for tr in para_trs for line in tr.lines]
-    for si, session_tr in enumerate(attendance_trs):
-        paras.append((session_tr.metadata['text_region_class'], session_tr.lines))
+    # print(f"number of para_lines: {len(para_lines)}")
+    # print(f"number of lines per class: {Counter([line.metadata['line_class'] for line in para_lines])}")
+    att_lines = [line for tr in attendance_trs for line in tr.lines]
+    for tr in para_trs:
+        for line in tr.lines:
+            if line.metadata['line_class'] == 'attendance':
+                att_lines.append(line)
+    # Update 2026-02-16: make sure the is only one attendance paragraph, so there is only
+    # one attendance list per session.
+    paras.append(('attendance', att_lines))
+    # for si, session_tr in enumerate(attendance_trs):
+    #     if session_tr.metadata['text_region_class'] != 'attendance':
+    #         print(f"unexpected text_region_class for attendance tr {session_tr.id}: {session_tr.metadata['text_region_class']}")
+    #     paras.append((session_tr.metadata['text_region_class'], session_tr.lines))
     for li, line in enumerate(para_lines):
+        if line.metadata['line_class'] == 'attendance':
+            continue
         if line.metadata['line_class'] == 'para_start':
             if check_lines_have_boundary_signals(para_lines, li-1, prev_line, debug=debug):
                 if len(para) > 0:
@@ -123,6 +170,8 @@ def get_session_paragraph_line_groups(session_trs: List[pdm.PageXMLTextRegion],
         prev_line = line
     if len(para) > 0:
         paras.append(('para', para))
+    # for para_type, para_lines in paras:
+    #     print(f"get_session_paragraph_line_groups para type: {para_type} num lines: {len(para_lines)}")
     return paras
 
 
@@ -152,6 +201,7 @@ def make_session_paragraphs(session: rdm.Session, debug: int = 0):
         paragraph.metadata["start_offset"] = doc_text_offset
         paragraph.metadata["para_type"] = para_type
         paragraph.add_type(para_type)
+        # print(f"adding para with type {para_type} and num lines: {len(para_lines)}")
         paragraph.text_regions = get_line_grouped_text_regions(paragraph, debug=debug)
         for tr in paragraph.text_regions:
             tr.metadata['iiif_url'] = doc_id_to_iiif_url(tr.id)
@@ -295,6 +345,8 @@ def get_session_resolutions(session: rdm.Session,
     resolution = None
     attendance_list = None
     session_offset = 0
+    update_attendance_to_table(session)
+    # print('updating attendance to table')
     followed_by_searcher = make_followed_by_searcher(opening_searcher)
     generate_id = running_id_generator(session.id, '-resolution-')
     marg_trs = [tr for tr in session.text_regions if tr.has_type('marginalia')]
@@ -341,7 +393,7 @@ def get_session_resolutions(session: rdm.Session,
         if debug > 0:
             print(f'\nhandwritten_resolution_parser.get_session_resolutions - '
                   f'paragraph (resolution): {paragraph.text[:500]}\n')
-            print(f"\t{[tr.id for tr in paragraph.text_regions]}\n")
+            # print(f"\t{[tr.id for tr in paragraph.text_regions]}\n")
         doc = {'text': paragraph.text, 'id': paragraph.id}
         opening_matches = opening_searcher.find_matches(doc, debug=0)
         for match in opening_matches:
@@ -401,6 +453,11 @@ def get_session_resolutions(session: rdm.Session,
             if debug > 0:
                 print(f"handwritten_resolution_parser.get_session_resolutions - "
                       f"initialising None resolution: {resolution.id}")
+        elif resolution is None:
+            resolution = initialise_resolution(session, generate_id, doc_type='resolution',)
+            print(f"handwritten_resolution_parser.get_session_resolutions - "
+                  f"new resolution of unknown type: {resolution.id}")
+            raise ValueError(f"Unknown resolution type: {resolution.id}")
         if debug > 0:
             print(f'handwritten_resolution_parser.get_session_resolutions - '
                   f'session.metadata.resolution_type: {session.metadata["resolution_type"]}')

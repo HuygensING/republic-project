@@ -361,7 +361,7 @@ def get_majority_line_class(lines: List[pdm.PageXMLTextLine], debug: int = 0) ->
     for known_type in KNOWN_TYPES:
         if known_type in max_classes:
             return known_type
-    if 'title' in max_classes or 'insert_omitted' in max_classes:
+    if 'title' in max_classes or 'insert_omitted' in max_classes or 'table' in max_classes:
         return 'resolution'
     if 'unknown' in max_classes:
         # if the majority class is unknown, assume the text region is an

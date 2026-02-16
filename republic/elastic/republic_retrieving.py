@@ -540,10 +540,14 @@ class Retriever:
 
     def scroll_resolutions_by_query(self, query: dict, scroll: str = '1m', size: int = 10,
                                     sort: List[str] = None,
-                                    _source: List[str] = None) -> Generator[rdm.Resolution, None, None]:
+                                    _source: List[str] = None) -> Generator[Union[rdm.AttendanceList, rdm.Resolution], None, None]:
         for hit in self.scroll_hits(self.es_anno, query, index=self.config['resolutions_index'],
                                     size=size, scroll=scroll, sort=sort, _source=_source):
-            yield rdm.json_to_republic_resolution(hit['_source'])
+            doc = hit['_source']
+            if 'attendance_list' in doc:
+                yield rdm.json_to_republic_attendance_list(doc)
+            else:
+                yield rdm.json_to_republic_resolution(doc)
 
     def retrieve_resolutions_by_query(self, query: dict, size: int = 10,
                                       aggs: Dict[str, any] = None) -> List[rdm.Resolution]:
