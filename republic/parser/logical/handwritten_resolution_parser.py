@@ -140,7 +140,8 @@ def get_session_paragraph_line_groups(session_trs: List[pdm.PageXMLTextRegion],
                 att_lines.append(line)
     # Update 2026-02-16: make sure the is only one attendance paragraph, so there is only
     # one attendance list per session.
-    paras.append(('attendance', att_lines))
+    if len(att_lines) > 0:
+        paras.append(('attendance', att_lines))
     # for si, session_tr in enumerate(attendance_trs):
     #     if session_tr.metadata['text_region_class'] != 'attendance':
     #         print(f"unexpected text_region_class for attendance tr {session_tr.id}: {session_tr.metadata['text_region_class']}")
@@ -357,6 +358,8 @@ def get_session_resolutions(session: rdm.Session,
     ses_para_count = 0
     res_para_count = 0
     for paragraph in make_session_paragraphs(session, debug=debug):
+        if paragraph.stats['lines'] == 0:
+            continue
         ses_para_count += 1
         tr_types = [get_majority_line_class(tr.lines, debug=0) for tr in paragraph.text_regions]
         # print(f"\ntr_types: {tr_types}")
@@ -457,6 +460,9 @@ def get_session_resolutions(session: rdm.Session,
             resolution = initialise_resolution(session, generate_id, doc_type='resolution',)
             print(f"handwritten_resolution_parser.get_session_resolutions - "
                   f"new resolution of unknown type: {resolution.id}")
+            print(f"paragraph {paragraph.id}\tstats: {paragraph.stats}\ttext: {paragraph.text}")
+            for tr in paragraph.text_regions:
+                print(f"\t{tr.id} {tr.type}")
             raise ValueError(f"Unknown resolution type: {resolution.id}")
         if debug > 0:
             print(f'handwritten_resolution_parser.get_session_resolutions - '
