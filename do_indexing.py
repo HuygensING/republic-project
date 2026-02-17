@@ -602,7 +602,7 @@ class Indexer:
                 prov_url = self.rep_es.post_provenance_record(prov_record)
             except BaseException as err:
                 prov_errors += 1
-                logging.error(f"Error posting provenance for page {page.id} - {err}")
+                logger.error(f"Error posting provenance for page {page.id} - {err}")
                 continue
             page.metadata['provenance_url'] = prov_url
             # print(f"{pi} {page.id} prov_url: {prov_url}")
@@ -952,8 +952,8 @@ class Indexer:
                     self.rep_es.index_resolution(resolution)
             except (TypeError, KeyError) as err:
                 errors.append(err)
-                logging.error('Error parsing resolutions for inv_num', inv_num)
-                logging.error(err)
+                logger.error('Error parsing resolutions for inv_num', inv_num)
+                logger.error(err)
                 # pass
                 raise
         error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
@@ -995,8 +995,8 @@ class Indexer:
                         self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], res_list)
             except BaseException as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
-                logging.error('Error parsing resolutions for inv_num', inv_num)
-                logging.error(err)
+                logger.error('Error parsing resolutions for inv_num', inv_num)
+                logger.error(err)
                 print(err)
                 errors.append(err)
                 # raise
@@ -1063,8 +1063,8 @@ class Indexer:
                 """
             except BaseException as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
-                logging.error('Error parsing resolutions for inv_num', inv_num)
-                logging.error(err)
+                logger.error('Error parsing resolutions for inv_num', inv_num)
+                logger.error(err)
                 print(err)
                 errors.append(err)
                 # raise
@@ -1283,7 +1283,7 @@ def process_inventory(task: Dict[str, Union[str, int]]):
         indexer.do_resolution_indexing(task["inv_num"], task["year_start"], task["year_end"])
         if text_type == 'printed' or text_type == 'gedrukt':
             indexer.do_resolution_metadata_indexing(task["inv_num"], task["year_start"], task["year_end"])
-        indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
+        #indexer.do_inventory_attendance_list_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "phrase_matches":
         indexer.do_resolution_phrase_match_indexing(task["inv_num"], task["year_start"], task["year_end"])
     elif task["indexing_step"] == "resolution_metadata":
