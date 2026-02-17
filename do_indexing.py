@@ -10,6 +10,7 @@ import os
 import re
 from collections import defaultdict
 from collections import Counter
+from pathlib import Path
 from typing import Dict, Generator, List, Union, Tuple
 
 import sys
@@ -862,41 +863,48 @@ class Indexer:
     def get_inventory_sessions(self, inv_num: int) -> Generator[rdm.Session, None, None]:
         inv_session_metas = self.rep_es.retrieve_inventory_session_metadata(inv_num)
         inv_session_trs = defaultdict(list)
-        for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
-            if 'session_id' not in tr.metadata:
-                print(f"WARNING do_indexing.get_inventory_sessions - tr.metadata has no 'session_id' key")
-                continue
-            if isinstance(tr.metadata['session_id'], list):
-                for session_id in tr.metadata['session_id']:
-                    inv_session_trs[session_id].append(tr)
-            else:
-                inv_session_trs[tr.metadata['session_id']].append(tr)
-        for session_meta in inv_session_metas:
-            try:
-                session_id = session_meta['id']
-                if session_id not in inv_session_trs:
-                    print(f're-indexing text regions for session {session_id}')
-                    session_trs = self.rep_es.retrieve_session_trs_by_metadata(session_meta)
-                    for tr in session_trs:
-                        tr.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
-                        if tr.metadata['session_id'] != session_id:
-                            if isinstance(tr.metadata['session_id'], str):
-                                tr.metadata['session_id'] = [tr.metadata['session_id']]
-                            tr.metadata['session_id'].append(session_id)
-                        for line in tr.lines:
-                            line.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
-                    session_trs_json = [tr.json for tr in session_trs]
-                    self.rep_es.index_bulk_docs(self.rep_es.config['session_text_region_index'],
-                                                session_trs_json)
-                    inv_session_trs[session_id] = session_trs
-                session = make_session_from_meta_and_trs(session_meta, inv_session_trs[session_meta['id']])
-                # session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
-                #                       text_regions=inv_session_trs[session_meta['id']])
-                yield session
-            except (TypeError, KeyError) as err:
-                logger.error(f"Error generation session {session_meta['id']} from metadata and text regions")
-                logger.error(err)
-                raise
+        if os.path.exists(f'data/sessions/sessions_json/{inv_num}/'):
+            session_files = Path(f'data/sessions/sessions_json/{inv_num}/').glob('*.json.gz')
+            for session_file in session_files:
+                with gzip.open(session_file, 'rt') as fh:
+                    session = rdm.json_to_republic_session(json.load(fh))
+                    yield session
+        else:
+            for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
+                if 'session_id' not in tr.metadata:
+                    print(f"WARNING do_indexing.get_inventory_sessions - tr.metadata has no 'session_id' key")
+                    continue
+                if isinstance(tr.metadata['session_id'], list):
+                    for session_id in tr.metadata['session_id']:
+                        inv_session_trs[session_id].append(tr)
+                else:
+                    inv_session_trs[tr.metadata['session_id']].append(tr)
+            for session_meta in inv_session_metas:
+                try:
+                    session_id = session_meta['id']
+                    if session_id not in inv_session_trs:
+                        print(f're-indexing text regions for session {session_id}')
+                        session_trs = self.rep_es.retrieve_session_trs_by_metadata(session_meta)
+                        for tr in session_trs:
+                            tr.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
+                            if tr.metadata['session_id'] != session_id:
+                                if isinstance(tr.metadata['session_id'], str):
+                                    tr.metadata['session_id'] = [tr.metadata['session_id']]
+                                tr.metadata['session_id'].append(session_id)
+                            for line in tr.lines:
+                                line.metadata['inventory_num'] = session_meta['metadata']['inventory_num']
+                        session_trs_json = [tr.json for tr in session_trs]
+                        self.rep_es.index_bulk_docs(self.rep_es.config['session_text_region_index'],
+                                                    session_trs_json)
+                        inv_session_trs[session_id] = session_trs
+                    session = make_session_from_meta_and_trs(session_meta, inv_session_trs[session_meta['id']])
+                    # session = rdm.Session(doc_id=session_meta['id'], session_data=session_meta,
+                    #                       text_regions=inv_session_trs[session_meta['id']])
+                    yield session
+                except (TypeError, KeyError) as err:
+                    logger.error(f"Error generation session {session_meta['id']} from metadata and text regions")
+                    logger.error(err)
+                    raise
 
     def do_printed_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -1002,6 +1010,7 @@ class Indexer:
         inv_metadata = get_inventory_by_num(inv_num)
         # make sure previous resolutions from inventory are removed
         self.rep_es.delete_by_inventory(inv_num=inv_num, index=self.rep_es.config['resolutions_index'])
+        resolution_json_dir = 'data/resolutions/resolution_json'
 
         es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
         errors = []
@@ -1040,6 +1049,10 @@ class Indexer:
                     logger.info(f"indexing handwritten resolution {resolution.id}")
                     # self.rep_es.index_resolution(resolution)
                 resolutions_json = [res.json for res in resolutions]
+                resolution_json_file = os.path.join(resolution_json_dir, f'{session.id}.json.gz')
+                with gzip.open(resolution_json_file, 'wt') as fh:
+                    json.dump(resolutions_json, fh)
+                """
                 # print('using resolution index', self.rep_es.config['resolutions_index'])
                 n = 2
                 for i in range(0, len(resolutions_json), n):
@@ -1047,6 +1060,7 @@ class Indexer:
                     if len(res_list) == 0:
                         break
                     self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], res_list)
+                """
             except BaseException as err:
                 print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
                 logging.error('Error parsing resolutions for inv_num', inv_num)
