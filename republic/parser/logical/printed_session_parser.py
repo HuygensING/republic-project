@@ -24,7 +24,7 @@ from republic.model.republic_date_phrase_model import date_name_map as default_d
 from republic.model.republic_session import SessionSearcher, calculate_work_day_shift
 from republic.model.republic_session import session_opening_element_order
 from republic.model.republic_document_model import Session
-from republic.helper.pagexml_helper import sort_lines_in_reading_order
+from republic.helper.pagexml_helper import sort_lines_in_reading_order, regions_overlap
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.parser.logical.generic_logical_parser import copy_line
 
@@ -38,32 +38,82 @@ def initialize_inventory_date(inv_metadata: dict, date_mapper: DateNameMapper, d
     return RepublicDate(year, month, day, date_mapper=date_mapper)
 
 
+def create_extra_column(page: pdm.PageXMLPage, extra_trs: List[pdm.PageXMLTextRegion]):
+    metadata = copy.deepcopy(extra_trs[0].metadata)
+    metadata['parent_id'] = page.id
+    coords = pdm.parse_derived_coords(extra_trs)
+    column = pdm.PageXMLColumn(metadata=metadata, coords=coords, 
+                                text_regions=extra_trs)
+    column.set_derived_id(metadata['scan_id'])
+    column.set_as_parent(column.text_regions)
+    page.columns.append(column)
+    page.set_as_parent(page.columns)
+
+
 def stream_handwritten_page_lines(page: pdm.PageXMLPage,
                                   include_marginalia: bool = False) -> Generator[pdm.PageXMLTextLine, None, None]:
     if include_marginalia:
         trs = [tr for column in page.columns for tr in column.text_regions]
     else:
         trs = [tr for column in page.columns for tr in column.text_regions if not page.has_type('marginalia')]
+    extra_trs = []
     for tr in page.extra:
+        if tr.stats['lines'] == 0:
+            continue
         # make sure the session date is part of the column because the
         # session parser needs it
         if tr.has_type('date'):
+            added = False
             for column in page.columns:
                 if pdm.is_horizontally_overlapping(tr, column) and tr not in column.text_regions:
                     # print("adding extra tr to column")
                     column.text_regions.append(tr)
                     trs.append(tr)
+                    added = True
                     for line in tr.lines:
                         line.metadata["column_id"] = column.id
+            if added:
+                continue
             # if not add_column:
             #     print("TR:", tr.id)
             #     for col in page.columns:
             #         print("\tCOL:", col.id)
+        if any(tr.has_type(margin_type) for margin_type in ['page-number', 'catch-word', 'signature-mark', 'separator']):
+            continue
+        extra_trs.append(tr)
+    if sum([tr.stats['words'] for tr in extra_trs]) > 20:
+        trs.extend(extra_trs)
     for tr in sorted(trs):
         for line in tr.lines:
             line.metadata['text_region_id'] = tr.id
             line.metadata['inventory_id'] = page.metadata['inventory_id']
             yield line
+
+
+def is_margin_region(tr: pdm.PageXMLTextRegion):
+    margin_types = ['page-number', 'catch-word', 'signature-mark', 'separator', 'marginalia']
+    return any(tr.has_type(margin_type) for margin_type in margin_types)
+
+
+def process_extra_regions(page: pdm.PageXMLPage):
+    extra_trs = [tr for tr in page.extra if not is_margin_region(tr) and tr.stats['words'] > 0]
+    if len(extra_trs) == 0:
+        return None
+    if len(page.columns) == 0:
+        create_extra_column(page, extra_trs)
+    else:
+        missing_trs = []
+        for tr in extra_trs:
+            for col in page.columns:
+                if regions_overlap(tr, col):
+                    col.text_regions.append(tr)
+                    col.set_as_parent([tr])
+                    break
+            else:
+                missing_trs.append(tr)
+        if len(missing_trs) > 0:
+            create_extra_column(page, missing_trs)
+    page.extra = [tr for tr in page.extra if tr not in extra_trs]
 
 
 def stream_resolution_page_lines(inventory_id: str,
@@ -73,6 +123,11 @@ def stream_resolution_page_lines(inventory_id: str,
     Assumption: lines are returned in reading order."""
     sorted_pages = sort_inventory_pages(inventory_id, pages)
     for page in sorted_pages:
+        extra_lines_before = len([line for tr in page.extra for line in tr.lines])
+        process_extra_regions(page)
+        extra_lines_after = len([line for tr in page.extra for line in tr.lines])
+        if extra_lines_after != extra_lines_before:
+            print(f"EXTRA CHANGE - {page.id} - before: {extra_lines_before}\tafter: {extra_lines_after}")
         if "text_type" in page.metadata and page.metadata["text_type"] == "handwritten":
             for line in stream_handwritten_page_lines(page):
                 line.metadata['inventory_id'] = page.metadata['inventory_id']
@@ -80,6 +135,8 @@ def stream_resolution_page_lines(inventory_id: str,
         elif not page.columns:
             continue
         else:
+            # for tr in page.get_textual_regions():
+            #     print(f"printed_session_parser.stream_resolution_page_lines - tr.id: {tr.id}")
             for line in sort_lines_in_reading_order(page):
                 line.metadata['inventory_id'] = page.metadata['inventory_id']
                 yield line
@@ -329,6 +386,8 @@ def get_columns_metadata(sorted_pages: List[pdm.PageXMLPage]) -> Dict[str, dict]
                 column_metadata['textrepo_version'] = page.metadata['textrepo_version']
             else:
                 column_metadata['textrepo_version'] = None
+            for line in column.get_lines():
+                line.metadata['column_id'] = column.id
     return column_metadata
 
 
@@ -806,6 +865,7 @@ def get_printed_sessions_from_pages(inventory_id: str, pages: List[pdm.PageXMLPa
     sorted_pages = sort_inventory_pages(inventory_id, pages)
     page_index = {page.id: page for page in sorted_pages}
     column_metadata = get_columns_metadata(sorted_pages)
+    print(f"printed_session_parser.get_printed_sessions_from_pages - number of columns in column_metadata: {len(column_metadata)}")
     date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=debug)
     if debug > 2:
         print('printed_session_parser.get_printed_sessions - date_mapper:', date_mapper)

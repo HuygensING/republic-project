@@ -316,7 +316,8 @@ def sort_regions_in_reading_order(doc: pdm.PageXMLDoc) -> List[pdm.PageXMLTextRe
     doc_text_regions: List[pdm.PageXMLTextRegion] = []
     if doc.reading_order and hasattr(doc, 'text_regions') and doc.text_regions:
         text_region_ids = [region for _index, region in sorted(doc.reading_order.items(), key=lambda x: x[0])]
-        return [tr for tr in sorted(doc.text_regions, key=lambda x: text_region_ids.index(x.id))]
+        if all(tr.id in text_region_ids for tr in doc.text_regions):
+            return [tr for tr in sorted(doc.text_regions, key=lambda x: text_region_ids.index(x.id))]
     if hasattr(doc, 'columns') and sorted(doc.columns):
         doc_text_regions = doc.columns
     elif hasattr(doc, 'text_regions') and doc.text_regions:

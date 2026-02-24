@@ -760,40 +760,6 @@ class Indexer:
                 session = json.load(fh)
                 yield rdm.json_to_republic_session(session)
 
-    def do_session_lines_indexing(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
-        print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
-        inv_metadata = self.rep_es.retrieve_inventory_metadata(inv_num)
-        if "period_start" not in inv_metadata:
-            return None
-        for session in self.get_sessions_from_files(inv_num, year_start, year_end):
-            source_ids = session.metadata['page_ids']
-            try:
-                prov_url = self.rep_es.post_provenance(source_ids=source_ids, target_ids=[session.id],
-                                                       source_index='pages', target_index='session_lines')
-                session.metadata['prov_url'] = prov_url
-                logger.info('indexing session from files', session.id)
-                print('indexing session from files', session.id)
-                self.rep_es.index_session_with_lines(session)
-            except ElasticsearchException as error:
-                logger.info(session.id)
-                logger.info(session.stats)
-                logger.info(error)
-                print(f"Error indexing session_with_lines {session.id}")
-                continue
-
-    def do_session_text_indexing(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
-        print(f"Indexing PageXML sessions for inventory {inv_num} (years {year_start}-{year_end})...")
-        for mi, session in enumerate(self.rep_es.retrieve_inventory_sessions_with_lines(inv_num)):
-            logger.info('indexing session text for session', session.id)
-            print('indexing session text for session', session.id)
-            resolutions = self.rep_es.retrieve_resolutions_by_session_id(session.id)
-            # for res in resolutions:
-            #     print(res.id, res.metadata['type'])
-            session_text_doc = make_session_text_version(session, resolutions)
-            self.rep_es.index_session_with_text(session_text_doc)
-
     def remove_inventory_docs_from_index(self, index: str, inv_metadata: Dict[str, any]):
         message = f"deleting inventory {inv_metadata['inventory_id']} from index {index}"
         logger.info(message)
@@ -1010,7 +976,9 @@ class Indexer:
         inv_metadata = get_inventory_by_num(inv_num)
         # make sure previous resolutions from inventory are removed
         self.rep_es.delete_by_inventory(inv_num=inv_num, index=self.rep_es.config['resolutions_index'])
-        resolution_json_dir = 'data/resolutions/resolution_json'
+        resolution_json_dir = f'data/resolutions/resolutions_json/{inv_num}'
+        if not os.path.exists(resolution_json_dir):
+            os.mkdir(resolution_json_dir)
 
         es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
         errors = []

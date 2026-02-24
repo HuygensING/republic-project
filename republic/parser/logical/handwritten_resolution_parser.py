@@ -457,13 +457,15 @@ def get_session_resolutions(session: rdm.Session,
                 print(f"handwritten_resolution_parser.get_session_resolutions - "
                       f"initialising None resolution: {resolution.id}")
         elif resolution is None:
-            resolution = initialise_resolution(session, generate_id, doc_type='resolution',)
+            resolution = initialise_resolution(session, generate_id, doc_type='resolution')
             print(f"handwritten_resolution_parser.get_session_resolutions - "
                   f"new resolution of unknown type: {resolution.id}")
             print(f"paragraph {paragraph.id}\tstats: {paragraph.stats}\ttext: {paragraph.text}")
             for tr in paragraph.text_regions:
-                print(f"\t{tr.id} {tr.type}")
-            raise ValueError(f"Unknown resolution type: {resolution.id}")
+                print(f"    {tr.id} {tr.type}")
+                for line in tr.lines:
+                    print(f"\t{line.id}  {line.metadata['line_class']}  {line.text}")
+            # raise ValueError(f"Unknown resolution type: {resolution.id}")
         if debug > 0:
             print(f'handwritten_resolution_parser.get_session_resolutions - '
                   f'session.metadata.resolution_type: {session.metadata["resolution_type"]}')
