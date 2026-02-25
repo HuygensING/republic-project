@@ -46,6 +46,9 @@ def create_extra_column(page: pdm.PageXMLPage, extra_trs: List[pdm.PageXMLTextRe
                                 text_regions=extra_trs)
     column.set_derived_id(metadata['scan_id'])
     column.set_as_parent(column.text_regions)
+    for tr in column.text_regions:
+        for line in tr.lines:
+            line.metadata['column_id'] = column.id
     page.columns.append(column)
     page.set_as_parent(page.columns)
 
@@ -108,6 +111,8 @@ def process_extra_regions(page: pdm.PageXMLPage):
                 if regions_overlap(tr, col):
                     col.text_regions.append(tr)
                     col.set_as_parent([tr])
+                    for line in tr.lines:
+                        line.metadata['column_id'] = col.id
                     break
             else:
                 missing_trs.append(tr)
@@ -116,22 +121,25 @@ def process_extra_regions(page: pdm.PageXMLPage):
     page.extra = [tr for tr in page.extra if tr not in extra_trs]
 
 
-def stream_resolution_page_lines(inventory_id: str,
-                                 pages: List[pdm.PageXMLPage]) -> Generator[pdm.PageXMLTextLine, None, None]:
+def stream_resolution_page_lines(inventory_id: str, pages: List[pdm.PageXMLPage], 
+                                 debug: int = 0) -> Generator[pdm.PageXMLTextLine, None, None]:
     """Iterate over list of pages and return a generator that yields individuals lines.
     Iterator iterates over columns and textregions.
     Assumption: lines are returned in reading order."""
     sorted_pages = sort_inventory_pages(inventory_id, pages)
     for page in sorted_pages:
+        page_lines = page.stats['lines']
+        yield_lines = 0
         extra_lines_before = len([line for tr in page.extra for line in tr.lines])
         process_extra_regions(page)
         extra_lines_after = len([line for tr in page.extra for line in tr.lines])
-        if extra_lines_after != extra_lines_before:
+        if debug > 0 and extra_lines_after != extra_lines_before:
             print(f"EXTRA CHANGE - {page.id} - before: {extra_lines_before}\tafter: {extra_lines_after}")
         if "text_type" in page.metadata and page.metadata["text_type"] == "handwritten":
             for line in stream_handwritten_page_lines(page):
                 line.metadata['inventory_id'] = page.metadata['inventory_id']
                 yield line
+                yield_lines += 1
         elif not page.columns:
             continue
         else:
@@ -140,6 +148,8 @@ def stream_resolution_page_lines(inventory_id: str,
             for line in sort_lines_in_reading_order(page):
                 line.metadata['inventory_id'] = page.metadata['inventory_id']
                 yield line
+                yield_lines += 1
+        # print(f"page {page.id} has {page_lines} lines, {yield_lines} yielded")
 
 
 def score_session_opening_elements(session_opening_elements: Dict[str, int], num_elements_threshold: int) -> float:
@@ -195,6 +205,8 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         print(f"WARNING - session {session_metadata['session_id']} has no evidence")
     # print('\ngenerate_session_doc - evidence:', [match.phrase.phrase_string for match in evidence])
     # print('\n')
+    if debug > 0:
+        print(f"GENERATING SESSION FOR DATE {session_metadata['session_id']} with {len(session_lines)} lines")
     date_line_id = session_date_metadata['line_id']
     del session_metadata['evidence']
     text_region_lines = defaultdict(list)
@@ -278,6 +290,11 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         scan_version[scan_id]['scan_id'] = scan_id
     # print('\ngenerate_session_doc - metadata:', session_metadata)
     # print('\n')
+    num_tr_lines = len([line for tr in text_regions for line in tr.lines])
+    if num_tr_lines != len(session_lines):
+        raise ValueError(f"number of text region lines {num_tr_lines} differs from "
+                         f"number of session lines {len(session_lines)} for "
+                         f"session {session_metadata['session_id']}")
     session = Session(doc_id=session_metadata['session_id'], metadata=session_metadata,
                       date_metadata=session_date_metadata,
                       text_regions=text_regions, evidence=evidence, scan_versions=list(scan_version.values()),
@@ -625,7 +642,16 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
     exception_multi = 0
     accept_double = set()
 
+    page_lines = defaultdict(list)
+    prev_page_id = None
     for li, line in enumerate(stream_resolution_page_lines(inv_id, sorted_pages)):
+        if line.metadata['page_id'] != prev_page_id:
+            if prev_page_id is not None:
+                if debug > 0:
+                    print(f"\tRECEIVED {prev_page_id} lines: {len(page_lines[prev_page_id])}")
+                page_lines[prev_page_id] = []
+        page_lines[line.metadata['page_id']].append(line.id)
+        prev_page_id = line.metadata['page_id']
         if debug > 2 and (li+1) % 1000 == 0:
             print(f"line {li+1} - {line.id}: {line.text}")
         stream_line_count += 1
@@ -778,6 +804,10 @@ def map_session_lines_from_session_starts(inventory_id: str, pages: List[pdm.Pag
         raise ValueError(f"number of mapped sessions {num_mapped} is not equal to "
                          f"the number of session starts {len(session_starts)}")
 
+    for ses_date in session_lines_map:
+        lines = [line for line in session_lines_map[ses_date] if line.metadata['page_id'] == 'NL-HaNA_1.01.02_3819_0497-page-993']
+        if debug > 0:
+            print(f"date: {ses_date} - lines {len(session_lines_map[ses_date])}, lines on target page {len(lines)}")
     return session_lines_map
 
 
