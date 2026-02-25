@@ -1,5 +1,5 @@
 import ast
-import orjson
+import orjson as json
 import os
 
 import pandas as pd
@@ -64,8 +64,8 @@ found_delegates = make_previously_matched()
 
 
 def read_ekwz():
-    with open(JUNK_JSON, 'r') as rj:
-        ekwz = json.load(fp=rj)
+    with open(JUNK_JSON, 'rb') as rj:
+        ekwz = json.loads(fp=rj.read())
     return ekwz
 
 

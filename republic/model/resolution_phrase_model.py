@@ -1,4 +1,4 @@
-import orjson as json
+import json
 
 
 def read_republic_term_dict(dict_file: str = None):

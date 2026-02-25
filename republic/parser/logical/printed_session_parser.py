@@ -226,7 +226,7 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         source_page_id = metadata['page_id']
         source_page = page_index[source_page_id]
         # print('FIRST PARENT:')
-        # print(json.dumps(parent.metadata, indent=4))
+        # print(json.dumps(parent.metadata, option=json.OPT_INDENT_2))
         coords = pdm.parse_derived_coords(text_region_lines[text_region_id])
         text_region = pdm.PageXMLTextRegion(doc_id=text_region_id, metadata=metadata,
                                             coords=coords, lines=text_region_lines[text_region_id])
@@ -250,20 +250,20 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
         # structure, especially the printed page number needed for linking to locators
         # in the index pages.
         # print('START TEXTREGION:')
-        # print(json.dumps(text_region.metadata, indent=4))
+        # print(json.dumps(text_region.metadata, option=json.OPT_INDENT_2))
         # print('FIRST LINE:')
-        # print(json.dumps(first_line.metadata, indent=4))
+        # print(json.dumps(first_line.metadata, option=json.OPT_INDENT_2))
         # while "resolution_page" not in parent.type and parent.parent:
         #     parent = parent.parent
         # print('NEXT PARENT:')
-        # print(json.dumps(parent.metadata, indent=4))
+        # print(json.dumps(parent.metadata, option=json.OPT_INDENT_2))
         if source_page:
             if "textrepo_version" in source_page.metadata:
                 scan_version[source_page.metadata['scan_id']] = source_page.metadata['textrepo_version']
             text_region.metadata['page_id'] = source_page.id
             if 'page_num' not in source_page.metadata:
                 print('MISSING PAGE_NUM')
-                print(json.dumps(source_page.metadata, indent=4))
+                print(json.dumps(source_page.metadata, option=json.OPT_INDENT_2))
             text_region.metadata['page_num'] = source_page.metadata['page_num']
             if "text_page_num" not in source_page.metadata:
                 pass

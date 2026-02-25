@@ -1,5 +1,5 @@
 import gzip
-import orjson
+import orjson as json
 import os
 import pickle
 import random
@@ -126,16 +126,16 @@ def save_neural_line_classifier(model_dir: str,
     model_file = os.path.join(model_dir, 'line_classifier.model.pt')
     torch.save(model.state_dict(), model_file)
     config_file = os.path.join(model_dir, 'line_classifier.config.json')
-    with open(config_file, 'wt') as fh:
+    with open(config_file, 'wb') as fh:
         model_config = model.config
         model_config['model_file'] = 'line_classifier.model.pt'
-        json.dump(model_config, fh)
+        json.dumps(model_config, fh)
     char_to_ix_file = os.path.join(model_dir, 'line_classifier.char_to_ix.json')
-    with open(char_to_ix_file, 'wt') as fh:
-        json.dump(char_to_ix, fh)
+    with open(char_to_ix_file, 'wb') as fh:
+        json.dumps(char_to_ix, fh)
     class_to_ix_file = os.path.join(model_dir, 'line_classifier.class_to_ix.json')
-    with open(class_to_ix_file, 'wt') as fh:
-        json.dump(class_to_ix, fh)
+    with open(class_to_ix_file, 'wb') as fh:
+        json.dumps(class_to_ix, fh)
 
 
 def load_neural_line_classifier(model_dir: str) -> Tuple[Union[line_tagger.LSTMLineTagger,

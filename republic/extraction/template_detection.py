@@ -2,7 +2,6 @@
 
 import os
 import re
-import orjson as json
 import ast
 from string import Template
 

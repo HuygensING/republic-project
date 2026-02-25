@@ -534,7 +534,7 @@ def check_date_region_record_ids(record: Dict[str, any]):
         error = ValueError(f"'text_region_id' and 'line_ids' cannot both be empty")
     if error:
         print(f"page_date_parser.check_record_ids - invalid record:")
-        print(json.dumps(record, indent=4))
+        print(json.dumps(record, option=json.OPT_INDENT_2))
         raise error
 
 

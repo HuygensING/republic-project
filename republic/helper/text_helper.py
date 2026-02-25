@@ -732,14 +732,14 @@ def read_resolution_paragraphs(res_files, pre_tokenise_func: Callable = None, pr
 def write_rewrite_dictionary_json(rewrite_dict: Dict[str, str], dict_file: str):
     """Write a word replacement dictionary to a JSON file."""
     with open(dict_file, 'wt') as fh:
-        json.dump(rewrite_dict, fh, indent=4)
+        json.dumps(rewrite_dict, fh, option=json.OPT_INDENT_2)
     return None
 
 
 def read_rewrite_dictionary_json(dict_file: str) -> Dict[str, str]:
     """Read a JSON-formatted word replacement dictionary."""
     with open(dict_file, 'rt') as fh:
-        rewrite_dict = json.load(fh)
+        rewrite_dict = json.loads(fh.read())
     return rewrite_dict
 
 
@@ -807,7 +807,7 @@ class TermDictionary:
                     term_dict[main_cat] = {}
                     for sub_cat in self.cat_has[main_cat]:
                         term_dict[main_cat][sub_cat] = list(self.cat_terms[sub_cat])
-            json.dump(term_dict, fh, indent=4)
+            json.dump(term_dict, fh, option=json.OPT_INDENT_2)
 
     def set_term_dict(self, term_dict: Dict[str, any], silent: bool = False) -> None:
         self.term_cats = defaultdict(set)
@@ -975,13 +975,13 @@ class TermDictionary:
 
 
 def read_republic_term_dictionary(dict_file: str) -> Dict[str, any]:
-    with open(dict_file, 'rt') as fh:
-        return json.load(fh)
+    with open(dict_file, 'rb') as fh:
+        return json.loads(fh.read())
 
 
 def write_republic_term_dictionary(term_dict, dict_file: str) -> None:
-    with open(dict_file, 'wt') as fh:
-        return json.dump(term_dict, fh)
+    with open(dict_file, 'wb') as fh:
+        return fh.write(json.dumps(term_dict))
 
 
 def vector_length(skipgram_freq):

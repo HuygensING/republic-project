@@ -211,7 +211,7 @@ class ResolutionElementDoc(RepublicDoc):
             self.evidence = evidence
 
     def __repr__(self):
-        return f"ResolutionElementDoc({json.dumps(self.json, indent=4)}"
+        return f"ResolutionElementDoc({json.dumps(self.json, option=json.OPT_INDENT_2)}"
 
     def get_text_regions_from_paragraphs(self):
         return [text_region for paragraph in self.paragraphs for text_region in paragraph.text_regions]
@@ -309,7 +309,7 @@ class Session(ResolutionElementDoc):
         self.resolutions = []
 
     def __repr__(self):
-        return f"Session({json.dumps(self.json, indent=4)}"
+        return f"Session({json.dumps(self.json, option=json.OPT_INDENT_2)}"
 
     def add_page_text_region_metadata(self, page_text_region_metadata: Dict[str, dict]) -> None:
         for ci, text_region in enumerate(self.text_regions):
@@ -459,7 +459,7 @@ class AttendanceList(ResolutionElementDoc):
         self.attendance_spans: List[dict] = attendance_spans if attendance_spans is not None else []
 
     def __repr__(self):
-        return f"AttendanceList({json.dumps(self.json, indent=4)}"
+        return f"AttendanceList({json.dumps(self.json, option=json.OPT_INDENT_2)}"
 
     @property
     def json(self) -> dict:
@@ -516,7 +516,7 @@ class Resolution(ResolutionElementDoc):
             self.session_date = RepublicDate(date_string=self.metadata["session_date"])
 
     def __repr__(self):
-        return f"Resolution({json.dumps(self.json, indent=4)}"
+        return f"Resolution({json.dumps(self.json, option=json.OPT_INDENT_2)}"
 
     def add_label(self, label_string: str, label_type: str, provenance: dict = None):
         for label in self.labels:
@@ -648,7 +648,7 @@ def json_to_republic_session(session_json: dict) -> Session:
 def check_special_column_for_bleed_through(column: dict, word_freq_counter: Counter) -> None:
     if column['metadata']['median_normal_length'] >= 15:
         return None
-    # print(json.dumps(column['metadata'], indent=4))
+    # print(json.dumps(column['metadata'], option=json.OPT_INDENT_2))
     for tr in column['textregions']:
         for line in tr['lines']:
             if not word_freq_counter:

@@ -14,15 +14,15 @@ def get_metadata_filepath() -> str:
 def read_inventory_metadata(metadata_file: str = None) -> List[Dict[str, any]]:
     if metadata_file is None:
         metadata_file = get_metadata_filepath()
-    with open(metadata_file, 'rt') as fh:
-        return json.load(fh)
+    with open(metadata_file, 'rb') as fh:
+        return json.loads(fh.read())
 
 
 def write_inventory_metadata(metadata: dict, metadata_file: str = None):
     if metadata_file is None:
         metadata_file = get_metadata_filepath()
-    with open(metadata_file, 'wt') as fh:
-        json.dump(metadata, fh, indent=4)
+    with open(metadata_file, 'wb') as fh:
+        json.dumps(metadata, fh, option=json.OPT_INDENT_2)
 
 
 def get_inventory_by_num(inventory_num: int) -> dict:

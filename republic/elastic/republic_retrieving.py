@@ -720,9 +720,9 @@ class Retriever:
                 resolution_end = inv_metadata['num_pages'] - 1
             return resolution_start, resolution_end
         except KeyError:
-            import orjson
+            import orjson as json
             print(f'invalid type_page_num_offsets format for inv_num {inv_num}:')
-            print(orjson.dumps(inv_metadata, indent=4))
+            print(json.dumps(inv_metadata, option=json.OPT_INDENT_2))
         except IndexError:
             return None
 

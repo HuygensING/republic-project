@@ -36,7 +36,7 @@ def write_rewrite_dict(rewrite_dict: Dict[str, str], dict_name: str = None, dict
             raise KeyError(f'unknown dictionary name {dict_name}')
         dict_file = os.path.join(project_dir, REWRITE_FILES[dict_name])
     with open(dict_file, 'wt') as fh:
-        json.dump(rewrite_dict, fh, indent=4)
+        fh.write(json.dumps(rewrite_dict, option=json.OPT_INDENT_2))
     return None
 
 
@@ -47,7 +47,7 @@ def read_rewrite_dict(dict_name: str = None, dict_file: str = None) -> Dict[str,
             raise KeyError(f'unknown dictionary name {dict_name}')
         dict_file = os.path.join(project_dir, REWRITE_FILES[dict_name])
     with open(dict_file, 'rt') as fh:
-        rewrite_dict = json.load(fh)
+        rewrite_dict = json.loads(fh.read())
     return rewrite_dict
 
 

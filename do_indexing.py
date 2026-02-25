@@ -125,7 +125,7 @@ def filter_pages(pages: List[pdm.PageXMLPage], page_type: str):
 
 
 def write_pages(pages_file: str, pages: List[pdm.PageXMLPage]):
-    with gzip.open(pages_file, 'wt') as fh:
+    with gzip.open(pages_file, 'wb') as fh:
         for page in pages:
             page_string = json.dumps(page.json)
             fh.write(f"{page_string}\n")
@@ -138,7 +138,7 @@ def make_page_generator(inv_num: int, pages_file: str, page_state: str = None):
     logger_string = f"Reading {page_string} from file for inventory {inv_num}"
     logger.info(logger_string)
     print(logger_string)
-    with gzip.open(pages_file, 'rt') as fh:
+    with gzip.open(pages_file, 'rb') as fh:
         for line in fh:
             page_json = json.loads(line)
             page = json_to_pagexml_page(page_json)
@@ -276,8 +276,8 @@ def get_session_starts(inv_id: str, starts_only: bool = False, debug: int = 0):
     if os.path.exists(starts_json_file):
         if debug > 0:
             print(f"do_indexing.get_session_starts - session_starts_file: {starts_json_file}")
-        with open(starts_json_file, 'rt') as fh:
-            return json.load(fh)
+        with open(starts_json_file, 'rb') as fh:
+            return json.loads(fh.read())
     if os.path.exists(starts_csv_file):
         if debug > 0:
             print(f"do_indexing.get_session_starts - session_starts_file: {starts_csv_file}")
@@ -606,7 +606,7 @@ class Indexer:
                 continue
             page.metadata['provenance_url'] = prov_url
             # print(f"{pi} {page.id} prov_url: {prov_url}")
-            # print(f"{json.dumps(prov_record, indent=4)}")
+            # print(f"{json.dumps(prov_record, option=json.OPT_INDENT_2)}")
             try:
                 self.rep_es.index_page(page)
             except BaseException as err:
@@ -745,8 +745,8 @@ class Indexer:
             logger.info(logger_string)
             print('\tdate string:', date_string)
             json_file = os.path.join(session_inv_dir, f"session-{session.date.isoformat()}.json.gz")
-            with gzip.open(json_file, 'wt') as fh:
-                json.dump(session.json, fh)
+            with gzip.open(json_file, 'wb') as fh:
+                fh.write(json.dumps(session.json))
 
     def get_sessions_from_files(self, inv_num: int, year_start: int, year_end: int):
         logger.info(f"Getting PageXML sessions from pages for inventory {inv_num} (years {year_start}-{year_end})...")
@@ -756,8 +756,8 @@ class Indexer:
             return None
         session_files = glob.glob(os.path.join(session_inv_dir, 'session-*.json.gz'))
         for session_file in sorted(session_files):
-            with gzip.open(session_file, 'rt') as fh:
-                session = json.load(fh)
+            with gzip.open(session_file, 'rb') as fh:
+                session = json.loads(fh.read())
                 yield rdm.json_to_republic_session(session)
 
     def remove_inventory_docs_from_index(self, index: str, inv_metadata: Dict[str, any]):
@@ -804,8 +804,8 @@ class Indexer:
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
                 session_json_file = os.path.join(session_json_dir, f'{session.id}.json.gz')
-                with gzip.open(session_json_file, 'wt') as fh:
-                    json.dump(session.json, fh)
+                with gzip.open(session_json_file, 'wb') as fh:
+                    fh.write(json.dump(session.json))
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
                     prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
@@ -832,8 +832,8 @@ class Indexer:
         if os.path.exists(f'data/sessions/sessions_json/{inv_num}/'):
             session_files = Path(f'data/sessions/sessions_json/{inv_num}/').glob('*.json.gz')
             for session_file in session_files:
-                with gzip.open(session_file, 'rt') as fh:
-                    session = rdm.json_to_republic_session(json.load(fh))
+                with gzip.open(session_file, 'rb') as fh:
+                    session = rdm.json_to_republic_session(json.loads(fh.read()))
                     yield session
         else:
             for tr in self.rep_es.retrieve_inventory_session_text_regions(inv_num):
@@ -1018,8 +1018,8 @@ class Indexer:
                     # self.rep_es.index_resolution(resolution)
                 resolutions_json = [res.json for res in resolutions]
                 resolution_json_file = os.path.join(resolution_json_dir, f'{session.id}.json.gz')
-                with gzip.open(resolution_json_file, 'wt') as fh:
-                    json.dump(resolutions_json, fh)
+                with gzip.open(resolution_json_file, 'wb') as fh:
+                    fh.write(json.dumps(resolutions_json))
                 """
                 # print('using resolution index', self.rep_es.config['resolutions_index'])
                 n = 2
@@ -1145,8 +1145,8 @@ class Indexer:
                 self.rep_es.index_resolution(new_resolution)
             except Exception as err:
                 logger.error(err)
-                logger.error('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, indent=4))
-                print('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, indent=4))
+                logger.error('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, option=json.OPT_INDENT_2))
+                print('issue with resolution metadata:\n', json.dumps(new_resolution.metadata, option=json.OPT_INDENT_2))
                 raise
 
     def do_inventory_attendance_list_indexing(self, inv_num: int, year_start: int, year_end: int):

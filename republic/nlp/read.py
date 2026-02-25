@@ -109,7 +109,7 @@ def read_metadata():
     project_dir = get_project_dir()
     inv_meta_file = os.path.join(project_dir, 'data/inventories/inventory_metadata.json')
     with open(inv_meta_file, 'rt') as fh:
-        inv_meta_list = json.load(fh)
+        inv_meta_list = json.loads(fh.read())
     for inv_metadata in inv_meta_list:
         try:
             if isinstance(inv_metadata['period_start'], str):

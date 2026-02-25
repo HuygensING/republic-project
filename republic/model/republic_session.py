@@ -541,7 +541,7 @@ class SessionSearcher(EventSearcher):
         session_date_json = make_session_date_metadata(current_date, date_line, fuzzy_date_match=date_match)
         if debug > 1:
             print(f"SessionSearcher.parse_session_metadata - session_date_json")
-            print(json.dumps(session_date_json, indent=4))
+            print(json.dumps(session_date_json, option=json.OPT_INDENT_2))
         self.session_num += 1
         """
         if session_date_json['session_date'] not in self.sessions \
