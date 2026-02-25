@@ -805,7 +805,7 @@ class Indexer:
                 session.metadata['prov_url'] = prov_url
                 session_json_file = os.path.join(session_json_dir, f'{session.id}.json.gz')
                 with gzip.open(session_json_file, 'wb') as fh:
-                    fh.write(json.dump(session.json))
+                    fh.write(json.dumps(session.json))
                 self.rep_es.index_session_metadata(session_json)
                 for tr in session.text_regions:
                     prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
