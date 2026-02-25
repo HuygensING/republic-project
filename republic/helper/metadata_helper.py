@@ -1,4 +1,4 @@
-import json
+import orjson as json
 from collections import defaultdict
 from collections import Counter
 from typing import Dict, List, Union, Set, Tuple

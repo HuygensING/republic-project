@@ -1,6 +1,6 @@
 import copy
 import gzip
-import json
+import orjson as json
 import math
 import os
 import pickle

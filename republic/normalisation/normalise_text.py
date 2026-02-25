@@ -1,4 +1,4 @@
-import json
+import orjson as json
 import os
 import re
 from typing import Callable, Dict, List, Tuple, Union

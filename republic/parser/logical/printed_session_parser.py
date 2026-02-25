@@ -1,6 +1,6 @@
 import copy
 import datetime
-import json
+import orjson as json
 import re
 from typing import List, Dict, Generator, Iterator, Tuple, Union
 from collections import defaultdict

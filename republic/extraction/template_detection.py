@@ -2,7 +2,7 @@
 
 import os
 import re
-import json
+import orjson as json
 import ast
 from string import Template
 
@@ -13,7 +13,6 @@ from typing import Union, List, Iterable, Dict
 import langid
 import pandas as pd
 import copy
-import json
 from analiticcl import VariantModel, Weights, SearchParameters
 from fuzzy_search.fuzzy_string import score_levenshtein_similarity_ratio
 from republic.helper.similarity_match import FuzzyKeywordGrouper

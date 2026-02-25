@@ -1,5 +1,5 @@
 import copy
-import json
+import orjson as json
 import re
 from collections import Counter
 from typing import Dict, List, Set, Union

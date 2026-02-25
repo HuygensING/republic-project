@@ -1,5 +1,5 @@
 import itertools
-import json
+import orjson as json
 import logging
 from collections import UserString
 

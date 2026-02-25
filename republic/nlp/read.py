@@ -1,6 +1,6 @@
 import glob
 import gzip
-import json
+import orjson as json
 import os
 from collections import defaultdict
 from typing import Dict, List, Tuple, Union

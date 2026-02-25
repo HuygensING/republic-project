@@ -1,5 +1,5 @@
 import ast
-import json
+import orjson
 import os
 
 import pandas as pd

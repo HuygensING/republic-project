@@ -1,5 +1,5 @@
 import gzip
-import json
+import orjson
 import os
 import pickle
 import random

@@ -1,4 +1,4 @@
-import json
+import orjson as json
 from typing import Dict, List, Tuple, Union
 from collections import defaultdict
 import copy

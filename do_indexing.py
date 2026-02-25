@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 import glob
 import gzip
-import json
+import orjson as json
 import logging
 import logging.config
 import multiprocessing

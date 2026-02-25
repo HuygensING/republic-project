@@ -1,5 +1,5 @@
 from typing import List, Union, Dict
-import json
+import orjson as json
 import os
 
 from republic.model.republic_date import RepublicDate, make_republic_date

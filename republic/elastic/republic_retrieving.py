@@ -485,7 +485,7 @@ class Retriever:
         docs = [hit['_source'] for hit in self.scroll_hits(self.es_anno, query,
                                                            index=self.config['session_metadata_index'],
                                                            show_total=show_total,
-                                                           size=10, sort=['id.keyword'])]
+                                                           size=100, sort=['id.keyword'])]
         docs = sorted(docs, key=lambda doc: int(doc['id'].split('-')[-1]))
         return docs
 
@@ -720,9 +720,9 @@ class Retriever:
                 resolution_end = inv_metadata['num_pages'] - 1
             return resolution_start, resolution_end
         except KeyError:
-            import json
+            import orjson
             print(f'invalid type_page_num_offsets format for inv_num {inv_num}:')
-            print(json.dumps(inv_metadata, indent=4))
+            print(orjson.dumps(inv_metadata, indent=4))
         except IndexError:
             return None
 

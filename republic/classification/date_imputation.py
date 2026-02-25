@@ -1,5 +1,5 @@
 import io
-import json
+import orjson as json
 from typing import Dict, List
 
 import numpy as np
