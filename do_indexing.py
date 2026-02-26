@@ -146,8 +146,9 @@ def make_page_generator(inv_num: int, pages_file: str, page_state: str = None):
             yield page
 
 
-def get_raw_pages(inv_num: int, indexer: Indexer):
-    raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
+def get_raw_pages(inv_num: int, indexer: Indexer, raw_pages_file: str = None):
+    if raw_pages_file is None:
+        raw_pages_file = f"{indexer.base_dir}/pages/raw_page_json/raw_pages-{inv_num}.jsonl.gz"
     print('raw_pages_file:', raw_pages_file)
     return make_page_generator(inv_num, raw_pages_file, 'raw')
 
@@ -795,6 +796,14 @@ class Indexer:
                 session_json['evidence'] = [match.json() for match in session.evidence]
                 logger.info(f'indexing {text_type} session {session.id} with date {session.date.isoformat()}')
                 print(f'\nindexing {text_type} session {session.id} with date {session.date.isoformat()}')
+                date_string = None
+                for match in session.evidence:
+                    if match.has_label('session_date'):
+                        date_string = match.string
+                logger_string = f'\tdate string: {date_string}'
+                logger.info(logger_string)
+                print('\tdate string:', date_string)
+                continue
                 prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
                                                    target_ids=session.id,
                                                    source_index='pages', target_index='session_metadata')
