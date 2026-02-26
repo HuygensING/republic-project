@@ -307,9 +307,9 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
     session_info['num_lines'] = len(session_lines)
-    print('this sessions contains elements from the following scans:', session.scan_versions)
-    print('\ngenerate_session_doc - session.date:', session.date)
-    print('\n')
+    # print('this sessions contains elements from the following scans:', session.scan_versions)
+    # print('\ngenerate_session_doc - session.date:', session.date)
+    # print('\n')
     if session.date_metadata['text_region_id'] is not None and \
             any([tr.id == session.date_metadata['text_region_id'] for tr in session.text_regions]) is False:
         raise ValueError(f"the text_region_id in the session.date_metadata "
@@ -946,7 +946,14 @@ def get_printed_sessions_from_pages(inventory_id: str, pages: List[pdm.PageXMLPa
             # print(li, None)
         else:
             # add the line as a new document to the session searcher and search for session elements
+            if check_line.metadata['page_id'] == 'NL-HaNA_1.10.94_455_0219-page-1436':
+                debug = 3
+            else:
+                debug = 0
             session_searcher.add_document(check_line.id, check_line.text, text_object=line, debug=debug)
+            # Used for checking issues in specific pages, currently with non-existing page id
+            if check_line.metadata['page_id'] == 'NL-HaNA_1.10.94_455_0219-page-1437':
+                break
             if debug > 3:
                 for model_name in session_searcher.phrase_models:
                     for phrase in session_searcher.phrase_models[model_name].phrase_index:
@@ -964,6 +971,21 @@ def get_printed_sessions_from_pages(inventory_id: str, pages: List[pdm.PageXMLPa
         #     print(li - 40, check_line.text)
         # get the session opening elements found in the lines of the sliding window
         session_opening_elements = session_searcher.get_session_opening_elements()
+
+        if check_line and check_line.metadata['page_id'] == 'NL-HaNA_1.10.94_455_0219-page-1436':
+            session_opening_elements = session_searcher.get_session_opening_elements(debug=1)
+            print(f"\tsession_opening_elements: {session_opening_elements}")
+            opening_elements = sorted(session_opening_elements.items(), key=lambda x: x[1])
+            print(f"    opening_elements: {opening_elements}")
+            if len(session_opening_elements.keys()) < 4:
+                # we need at least num_elements_threshold elements to determine this is a new session date
+                continue
+            numbered_opening_elements = [session_opening_element_order.index(element[0]) for element in
+                                         opening_elements]
+            order_score = score_opening_element_order(numbered_opening_elements)
+            print(f"    numbered_opening_elements: {numbered_opening_elements}")
+            print(f"    order_score: {order_score}")
+            print(score_session_opening_elements(session_opening_elements, num_elements_threshold=4))
         # print(session_opening_elements)
         # check if first session opening element is in the first line of the sliding window
         if len(session_opening_elements.items()) == 0 or min(session_opening_elements.values()) != 0:
@@ -1023,11 +1045,17 @@ def get_printed_sessions_from_pages(inventory_id: str, pages: List[pdm.PageXMLPa
                     session_searcher.update_session_date(day_shift)
             else:
                 yield session_doc
+                # print(f"YIELDING SESSION {session_doc.metadata['session_date']}")
             # update the current session date in the searcher
-            session_searcher.update_session_date()
+            # print(f"CURRENT_DATE BEFORE UPDATE: {session_searcher.current_date.isoformat()}")
+            session_searcher.update_session_date(debug=0)
+            # print(f"CURRENT_DATE AFTER UPDATE: {session_searcher.current_date.isoformat()}")
             # print('get_sessions - after update - current_date:', session_searcher.current_date)
             # update the searcher with new date strings for the next seven days
             session_searcher.update_session_date_searcher(num_dates=7)
+            # print(f"REGISTERED DATES:")
+            # for date_string in session_searcher.date_strings:
+            #     print(f"\tdate_string: {date_string}")
             # get the session metadata for the new session date
             try:
                 if debug > 0:

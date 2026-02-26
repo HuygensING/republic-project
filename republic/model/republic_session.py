@@ -213,7 +213,7 @@ class SessionSearcher(EventSearcher):
                     self.session_opening_elements[label] = line_index
                     break
 
-    def extract_attendance_matches(self):
+    def extract_attendance_matches(self, debug: int =0):
         """Extract matches with meeting attendance labels and add the corresponding
         line_index to the meeting elements in the current sliding window."""
         first_date = None
@@ -252,6 +252,18 @@ class SessionSearcher(EventSearcher):
                 break
             attendance_matches: List[PhraseMatch] = [match for match in line['matches']
                                                      if match.metadata['searcher'] == 'attendance_searcher']
+            attendance_matches.sort(key=lambda x: x.levenshtein_similarity, reverse=True)
+            if any(match.phrase.phrase_string == 'De Heeren' for match in attendance_matches) and \
+                any(match.phrase.phrase_string == 'Den Heere' for match in attendance_matches):
+                heer = [match for match in attendance_matches if match.phrase.phrase_string == 'Den Heere'][0]
+                heeren = [match for match in attendance_matches if match.phrase.phrase_string == 'De Heeren'][0]
+                if heer.offset == heeren.offset and heeren.levenshtein_similarity >= heer.levenshtein_similarity:
+                    heer_index = attendance_matches.index(heer)
+                    attendance_matches.pop(heer_index)
+            if debug > 0:
+                print(f"SessionSearcher.extract_attendance_matches - attendance_matches:")
+                for match in attendance_matches:
+                    print(f"\t{match}")
             attendance_labels = [label for match in attendance_matches for label in match.label_list]
             for match in attendance_matches:
                 # attendants keywords should match at or near the start of the line
@@ -329,10 +341,11 @@ class SessionSearcher(EventSearcher):
                             # and with at least one line in between them
                             continue
                 # opening_label = self.labels[match['match_keyword']]
-                # print('adding line with attendants match label:', opening_label, match)
+                if debug > 0:
+                    print('adding line with attendants match label:', opening_label, match)
                 self.session_opening_elements[opening_label] = line_index
 
-    def get_session_opening_elements(self) -> Dict[str, int]:
+    def get_session_opening_elements(self, debug: int = 0) -> Dict[str, int]:
         """
         Check which lines in sliding window match session opening elements.
         The elements should match at or near the start of the line.
@@ -361,7 +374,7 @@ class SessionSearcher(EventSearcher):
 
         # print('label order:', self.label_order)
         self.extract_date_matches()
-        self.extract_attendance_matches()
+        self.extract_attendance_matches(debug=debug)
         # print('session_opening_elements:', self.session_opening_elements)
         return self.session_opening_elements
 
@@ -663,6 +676,7 @@ class SessionSearcher(EventSearcher):
         """Shift current date by day_shift days. If not day_shift is passed as argument,
         determine the number of days to shift current date based on found session date.
         If no day_shift is passed and not session date was found, keep current date."""
+        # print(f"republic_session.update_session_date - day_shift: {day_shift}")
         debug_prefix = 'SessionSearcher.update_session_date'
         if is_session_date_exception(self.current_date, self.exception_dates):
             day_shift = get_date_exception_shift(self.current_date, self.exception_dates)
