@@ -801,6 +801,11 @@ class Indexer:
                 prov_url = self.rep_es.post_provenance_record(prov_record)
                 logger.info(f'\tsession {session.id} has {len(session.text_regions)} text regions')
                 print(f'\tsession has {len(session.text_regions)} text regions')
+                date_string = None
+                for match in session.evidence:
+                    if match.has_label('session_date'):
+                        date_string = match.string
+                print('\tdate string:', date_string)
                 session_json['metadata']['prov_url'] = prov_url
                 session.metadata['prov_url'] = prov_url
                 session_json_file = os.path.join(session_json_dir, f'{session.id}.json.gz')

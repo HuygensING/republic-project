@@ -50,6 +50,7 @@ def create_extra_column(page: pdm.PageXMLPage, extra_trs: List[pdm.PageXMLTextRe
         for line in tr.lines:
             line.metadata['column_id'] = column.id
     page.columns.append(column)
+    # print(f"GENERATING EXTRA COLUMN {column.id}")
     page.set_as_parent(page.columns)
 
 
@@ -306,9 +307,9 @@ def generate_session_doc(inv_metadata: Dict[str, any], session_metadata: Dict[st
     # add number of lines to session info in session searcher
     session_info = session_searcher.sessions[session_metadata['session_date']][-1]
     session_info['num_lines'] = len(session_lines)
-    # print('this sessions contains elements from the following scans:', session.scan_versions)
-    # print('\ngenerate_session_doc - session.date:', session.date)
-    # print('\n')
+    print('this sessions contains elements from the following scans:', session.scan_versions)
+    print('\ngenerate_session_doc - session.date:', session.date)
+    print('\n')
     if session.date_metadata['text_region_id'] is not None and \
             any([tr.id == session.date_metadata['text_region_id'] for tr in session.text_regions]) is False:
         raise ValueError(f"the text_region_id in the session.date_metadata "
@@ -894,7 +895,15 @@ def get_printed_sessions_from_pages(inventory_id: str, pages: List[pdm.PageXMLPa
         inv_metadata = get_inventory_by_id(inventory_id)
     sorted_pages = sort_inventory_pages(inventory_id, pages)
     page_index = {page.id: page for page in sorted_pages}
+    for page in sorted_pages:
+        process_extra_regions(page)
     column_metadata = get_columns_metadata(sorted_pages)
+    for col_id in column_metadata:
+        if col_id == 'textrepo_version':
+            continue
+        # print(f"\n\tCOL ID IN METADATA: {col_id} on SCAN {column_metadata[col_id]['scan_id']}")
+        # if column_metadata[col_id]['scan_id'] == 'NL-HaNA_1.10.94_455_0010':
+        #     print(f"\n\tCOL ID IN METADATA: {col_id}")
     print(f"printed_session_parser.get_printed_sessions_from_pages - number of columns in column_metadata: {len(column_metadata)}")
     date_mapper = get_date_mapper(inv_metadata, sorted_pages, debug=debug)
     if debug > 2:
