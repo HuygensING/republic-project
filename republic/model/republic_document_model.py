@@ -222,6 +222,8 @@ class ResolutionElementDoc(RepublicDoc):
         self.text_region_ids = self.text_region_ids.union([text_region.id
                                                            for text_region in paragraph.text_regions])
         if matches is not None:
+            evidence_map = {(m.offset, m.variant.phrase_string) for m in self.evidence}
+            matches = [match for match in matches if (match.offset, match.variant.phrase_string) not in evidence_map]
             self.evidence += matches
 
     @property

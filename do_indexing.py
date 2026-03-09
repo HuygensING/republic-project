@@ -803,7 +803,6 @@ class Indexer:
                 logger_string = f'\tdate string: {date_string}'
                 logger.info(logger_string)
                 print('\tdate string:', date_string)
-                continue
                 prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session_json['page_ids'],
                                                    target_ids=session.id,
                                                    source_index='pages', target_index='session_metadata')
@@ -886,106 +885,6 @@ class Indexer:
                     logger.error(err)
                     raise
 
-    def do_printed_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
-        print(f"Indexing PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
-        opening_searcher, verb_searcher = printed_res_parser.configure_resolution_searchers()
-        line_break_detector = load_line_break_detector()
-        print(f"\n\n-------------\n{self.rep_es.config['resolutions_index']}\n\n-------------\n")
-        errors = []
-        es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
-        for session in self.get_inventory_sessions(inv_num):
-            logger.info(f"indexing resolutions for session {session.id}")
-            print(f"indexing resolutions for session {session.id}")
-            if "index_timestamp" not in session.metadata:
-                self.rep_es.es_anno.delete(index="session_lines", id=session.id)
-                logger.info("DELETING SESSION WITH ID", session.id)
-                print("DELETING SESSION WITH ID", session.id)
-                continue
-            resolution_generator = printed_res_parser.get_session_resolutions(session, opening_searcher,
-                                                                              verb_searcher,
-                                                                              line_break_detector=line_break_detector)
-            try:
-                resolutions = list(resolution_generator)
-                source_doc_index_map, target_doc_index_map = make_resolution_source_target_map(session, resolutions)
-                why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
-                prov_record = generate_es_provenance_record(es_url=es_url,
-                                                            source_doc_index_map=source_doc_index_map,
-                                                            target_doc_index_map=target_doc_index_map, why=why)
-                prov_url = self.rep_es.post_provenance_record(prov_record)
-                for resolution in resolutions:
-                    prov_record = make_provenance_data(self.rep_es.es_anno_config, source_ids=session.id,
-                                                       target_ids=session.id,
-                                                       source_index=[], target_index='session_metadata')
-                    prov_url = self.rep_es.post_provenance_record(prov_record)
-                    try:
-                        prov_url = self.rep_es.post_provenance(source_ids=[session.id], target_ids=[resolution.id],
-                                                               source_index='session_lines', target_index='resolutions',
-                                                               ignore_prov_errors=True)
-                    except Exception as err:
-                        logger.error(f'Error posting provenance for resolution {resolution.id}')
-                        logger.error(err)
-                        errors.append(err)
-                        prov_url = None
-                    resolution.metadata['prov_url'] = prov_url
-                    logger.info(f"indexing resolution {resolution.id}")
-                    self.rep_es.index_resolution(resolution)
-            except (TypeError, KeyError) as err:
-                errors.append(err)
-                logger.error('Error parsing resolutions for inv_num', inv_num)
-                logger.error(err)
-                # pass
-                raise
-        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
-        logger.info(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
-        print(f"finished indexing printed resolutions of inventory {inv_num} with {error_label}")
-        for err in errors:
-            print(err)
-
-    def do_handwritten_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
-        logger.info(f"Indexing handwritten PageXML resolutions for inventory {inv_num} "
-                    f"(years {year_start}-{year_end})...")
-        print(f"Indexing handwritten PageXML resolutions for inventory {inv_num} (years {year_start}-{year_end})...")
-        opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
-        es_url = 'https://annotation.republic-caf.diginfra.org/elasticsearch/'
-        errors = []
-        for session in self.get_inventory_sessions(inv_num):
-            try:
-                print('session.id:', session.id, '\tnum text_regions:', len(session.text_regions))
-                resolutions = [res for res in hand_res_parser.get_session_resolutions(session,
-                                                                                      opening_searcher, debug=0)]
-                source_doc_index_map, target_doc_index_map = make_resolution_source_target_map(session, resolutions)
-                why = f'REPUBLIC CAF Pipeline deriving resolutions from session_metadata and session_text_regions'
-                prov_record = generate_es_provenance_record(es_url=es_url,
-                                                            source_doc_index_map=source_doc_index_map,
-                                                            target_doc_index_map=target_doc_index_map, why=why)
-                prov_url = self.rep_es.post_provenance_record(prov_record)
-                for resolution in resolutions:
-                    resolution.metadata['prov_url'] = prov_url
-                    print('indexing handwritten resolution', resolution.id)
-                    logger.info(f"indexing handwritten resolution {resolution.id}")
-                    # self.rep_es.index_resolution(resolution)
-                resolutions_json = [res.json for res in resolutions]
-                # print('using resolution index', self.rep_es.config['resolutions_index'])
-                n = 2
-                for i in range(0, len(resolutions_json), n):
-                        res_list = resolutions_json[i:i + n]
-                        if len(res_list) == 0:
-                            break
-                        self.rep_es.index_bulk_docs(self.rep_es.config['resolutions_index'], res_list)
-            except BaseException as err:
-                print('ERROR PARSING RESOLUTIONS FOR INV_NUM', inv_num)
-                logger.error('Error parsing resolutions for inv_num', inv_num)
-                logger.error(err)
-                print(err)
-                errors.append(err)
-                # raise
-        error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
-        logger.info(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
-        print(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
-        for err in errors:
-            print(err)
-
     def do_resolution_indexing(self, inv_num: int, year_start: int, year_end: int):
         inv_metadata = get_inventory_by_num(inv_num)
         # make sure previous resolutions from inventory are removed
@@ -999,9 +898,11 @@ class Indexer:
         if 3760 <= inv_num <= 3864 or 400 <= inv_num <= 456:
             opening_searcher, verb_searcher = printed_res_parser.configure_resolution_searchers()
             line_break_detector = load_line_break_detector()
+            text_type = 'printed'
         else:
             opening_searcher = make_opening_searcher(year_start, year_end, debug=0)
             verb_searcher, line_break_detector = None, None
+            text_type = 'handwritten'
 
         for session in self.get_inventory_sessions(inv_num):
             # Create the resolution generator (depending on printed or handwritten)
@@ -1024,11 +925,15 @@ class Indexer:
                 prov_record = generate_es_provenance_record(es_url=es_url,
                                                             source_doc_index_map=source_doc_index_map,
                                                             target_doc_index_map=target_doc_index_map, why=why)
+                for res in resolutions:
+                    for para in res.paragraphs:
+                        print(f"{inv_num}\t{res.id: <25}  {para.id} {para.text[:40]}")
                 prov_url = self.rep_es.post_provenance_record(prov_record)
                 for resolution in resolutions:
                     resolution.metadata['prov_url'] = prov_url
-                    print('indexing handwritten resolution', resolution.id)
-                    logger.info(f"indexing handwritten resolution {resolution.id}")
+                    message = f"indexing {text_type} resolution {resolution.id}"
+                    print(message)
+                    logger.info(message)
                     # self.rep_es.index_resolution(resolution)
                 resolutions_json = [res.json for res in resolutions]
                 resolution_json_file = os.path.join(resolution_json_dir, f'{session.id}.json.gz')
@@ -1051,8 +956,9 @@ class Indexer:
                 errors.append(err)
                 # raise
         error_label = f"{len(errors)} errors" if len(errors) > 0 else "no errors"
-        logger.info(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
-        print(f"finished indexing handwritten resolutions of inventory {inv_num} with {error_label}")
+        message = f"finished indexing {text_type} resolutions of inventory {inv_num} with {error_label}"
+        logger.info(message)
+        print(message)
         for err in errors:
             print(err)
 

@@ -267,6 +267,8 @@ proposition_opening_phrases = [
     {
         'phrase': 'ZYnde ter Vergaderinge getoont en geëxhibeert de ',
         'variants': [
+            'IS ter Vergaderinge getoont en geëxhibeert de ',
+            'IS ter Vergaderinge geëxhibeert de '
             'ZYnde ter Vergaderinge geëxhibeert de '
         ],
         'label': [

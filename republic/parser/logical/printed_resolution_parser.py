@@ -188,10 +188,16 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         if debug > 1:
             print('get_session_resolutions - paragraph:\n', paragraph.text[:50], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
+        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
+        # print("BEFORE FOLLOWED_BY:")
+        # for match in opening_matches + verb_matches:
+        #     print('\t', match.offset, match.variant.phrase_string)
         if needs_followed_by_lookup(opening_matches):
             doc = {'id': paragraph.id, 'text': paragraph.text}
             opening_matches = resolve_followed_by(followed_by_searcher, opening_matches, doc)
-        verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
+        # print("AFTER FOLLOWED_BY:")
+        # for match in opening_matches + verb_matches:
+        #     print('\t', match.offset, match.variant.phrase_string)
         if debug > 3:
             if len(opening_matches) > 0:
                 print("OPENING MATCHES")
@@ -216,12 +222,18 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
                 yield resolution
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
-                                        evidence=opening_matches + verb_matches)
+                                        evidence=[match for match in opening_matches + verb_matches])
+            # print("AFTER RESOLUTION CREATION:")
+            # for match in resolution.evidence:
+            #     print('\t', match.offset, match.variant.phrase_string)
             if debug > 1:
                 print('\tCreating new resolution with number:', resolution_number, resolution.id)
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
-            resolution.evidence += opening_matches + verb_matches
+            resolution.evidence += [match for match in opening_matches + verb_matches if match not in resolution.evidence]
+            # print("AFTER EVIDENCE ADDITION:")
+            # for match in resolution.evidence:
+            #     print('\t', match.offset, match.variant.phrase_string)
         elif attendance_list:
             attendance_list.add_paragraph(paragraph, matches=[])
         else:
