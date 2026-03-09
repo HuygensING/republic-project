@@ -1,7 +1,6 @@
 import copy
 from collections import defaultdict
-from collections import Counter
-from typing import Dict, Generator, List, Tuple, Callable
+from typing import Dict, Generator, List, Tuple, Callable, Union
 
 import fuzzy_search
 import pagexml.model.physical_document_model as pdm
@@ -9,6 +8,7 @@ from fuzzy_search.search.phrase_searcher import FuzzyPhraseSearcher
 from pagexml.helper.pagexml_helper import make_text_region_text
 
 import republic.model.republic_document_model as rdm
+from republic.fuzzy.opening_searcher import make_followed_by_searcher, needs_followed_by_lookup, resolve_followed_by
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.metadata_helper import get_majority_line_class
 from republic.helper.text_helper import determine_language
@@ -306,43 +306,9 @@ def initialise_resolution(session: rdm.Session, generate_id: Callable,
     return resolution
 
 
-def needs_followed_by_lookup(matches: List[fuzzy_search.PhraseMatch]) -> bool:
-    if rdm.get_proposition_type_from_evidence(matches) not in {'onbekend', 'afhankelijk'}:
-        return False
-    return has_followed_by(matches)
-
-
-def has_followed_by(matches: List[fuzzy_search.PhraseMatch]) -> bool:
-    for match in matches:
-        if 'followed_by' in match.phrase.properties:
-            return True
-    return False
-
-
-def resolve_followed_by(followed_by_searcher: FuzzyPhraseSearcher,
-                        matches: List[fuzzy_search.PhraseMatch], doc: dict[str, any]) -> List[fuzzy_search.PhraseMatch]:
-    resolved_matches = [match for match in matches]
-    for match in matches:
-        if 'followed_by' in match.phrase.properties:
-            following_matches = followed_by_searcher.find_matches(doc)
-            # print(f"following_matches:", following_matches)
-            resolved_matches.extend(following_matches)
-    return resolved_matches
-
-
-def make_followed_by_searcher(opening_searcher: FuzzyPhraseSearcher) -> FuzzyPhraseSearcher:
-    following_phrases = []
-    phrases = opening_searcher.phrase_model.phrase_index.values()
-    for phrase in phrases:
-        if 'followed_by' in phrase.properties:
-            following_phrases.extend(phrase.properties['followed_by'])
-    followed_by_searcher = FuzzyPhraseSearcher(phrase_list=following_phrases, config=opening_searcher.config)
-    return followed_by_searcher
-
-
 def get_session_resolutions(session: rdm.Session,
                             opening_searcher: FuzzyPhraseSearcher,
-                            debug: int = 0) -> Generator[rdm.Resolution, None, None]:
+                            debug: int = 0) -> Generator[Union[rdm.Resolution, rdm.AttendanceList], None, None]:
     resolution = None
     attendance_list = None
     session_offset = 0

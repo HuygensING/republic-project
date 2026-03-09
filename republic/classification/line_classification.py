@@ -8,9 +8,10 @@ from collections import Counter
 from collections import defaultdict
 from typing import Dict, Generator, List, Set, Tuple, Union
 
-from flair.data import Sentence
+import numpy as np
 import pagexml.model.physical_document_model as pdm
 import torch
+from flair.data import Sentence
 from Levenshtein import distance
 from pagexml.parser import json_to_pagexml_page
 
@@ -177,8 +178,9 @@ def inference_page_line_class_scores(model, features):
 
 
 def train_model(model, loss_function, optimizer, train_data, num_epochs,
-                char_to_ix, class_to_ix, show_loss_threshold: int = 1.0):
+                char_to_ix, class_to_ix, show_loss_threshold: int = 1.0, include_class_scores: bool = False):
     all_losses = []
+    all_class_scores = []
     sentence_tensor_map = {}
     if isinstance(model, line_tagger.LSTMLineTaggerGysBERT):
         print('pre-computing sentence embeds for training data')
@@ -189,6 +191,8 @@ def train_model(model, loss_function, optimizer, train_data, num_epochs,
             sentence_tensor = torch.stack([sentence.embedding for sentence in sentence_embeds])
             sentence_tensor_map[page['page_id']] = sentence_tensor
     for epoch in range(num_epochs):
+        epoch_losses = []
+        epoch_class_scores = []
         print(f'epoch {epoch}')
         for page in train_data:
 
@@ -207,15 +211,24 @@ def train_model(model, loss_function, optimizer, train_data, num_epochs,
                 features['sentence'] = sentence_tensor_map[page['page_id']]
             class_scores = inference_page_line_class_scores(model, features)
 
+            if include_class_scores:
+                epoch_class_scores.append(class_scores.detach().cpu().numpy())
             # Step 4. Compute the loss, gradients, and update the parameters by
             #  calling optimizer.step()
             loss = loss_function(class_scores, features['class'])
-            all_losses.append(loss)
+            epoch_losses.append(loss.item())
+
             if loss.item() > show_loss_threshold:
                 print(epoch, page['page_id'], loss.item())
             loss.backward() #retain_graph=True
             optimizer.step()
-    return all_losses
+        all_losses.append(epoch_losses)
+        if include_class_scores:
+            all_class_scores.append(epoch_class_scores)
+    if include_class_scores:
+        return all_losses, all_class_scores
+    else:
+        return all_losses
 
 
 def evaluate_model(model, test_data, validate_data, char_to_ix: Dict[str, int], class_to_ix: Dict[str, int]):
