@@ -182,12 +182,16 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
         if debug > 0:
             print('get_session_resolution - paragraph from get_paragraphs:', paragraph.id)
         paragraph.metadata['lang'] = determine_language(paragraph.text)
-        # print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
+        if debug > 1:
+            print('get_session_resolutions - paragraph:\n', paragraph.text[:50], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
-        for match in opening_matches + verb_matches:
-            match.text_id = paragraph.id
-            # print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
+        if debug > 3:
+            if len(opening_matches) > 0:
+                print("OPENING MATCHES")
+            for match in opening_matches + verb_matches:
+                match.text_id = paragraph.id
+                print('\t', match.offset, '\t', match.string, '\t', match.variant.phrase_string)
         if len(opening_matches) > 0 and opening_matches[0].has_label('reviewed'):
             paragraph.add_type('reviewed')
         elif len(opening_matches) > 0:
@@ -207,7 +211,8 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
             metadata = get_base_metadata(session, generate_id(), 'resolution')
             resolution = rdm.Resolution(doc_id=metadata['id'], metadata=metadata,
                                         evidence=opening_matches + verb_matches)
-            # print('\tCreating new resolution with number:', resolution_number, resolution.id)
+            if debug > 1:
+                print('\tCreating new resolution with number:', resolution_number, resolution.id)
         if resolution:
             resolution.add_paragraph(paragraph, matches=opening_matches + verb_matches)
             resolution.evidence += opening_matches + verb_matches
@@ -217,7 +222,8 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
             metadata = get_base_metadata(session, session.id + '-attendance_list',
                                          'attendance_list')
             attendance_list = rdm.AttendanceList(doc_id=metadata['id'], metadata=metadata)
-            # print('\tCreating new attedance list with number:', 1, attendance_list.id)
+            if debug > 1:
+                print('\tCreating new attedance list with number:', 1, attendance_list.id)
             attendance_list.add_paragraph(paragraph, matches=[])
         # print('start offset:', session_offset, '\tend offset:', session_offset + len(paragraph.text))
         session_offset += len(paragraph.text)
