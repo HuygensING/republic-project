@@ -8,6 +8,7 @@ import pagexml.model.physical_document_model as pdm
 import republic.helper.paragraph_helper as para_helper
 import republic.model.republic_document_model as rdm
 import republic.model.resolution_phrase_model as rpm
+from republic.fuzzy.opening_searcher import make_followed_by_searcher, needs_followed_by_lookup, resolve_followed_by
 from republic.helper.metadata_helper import doc_id_to_iiif_url
 from republic.helper.paragraph_helper import LineBreakDetector
 from republic.helper.text_helper import determine_language
@@ -79,13 +80,13 @@ def is_paragraph_start(line: dict, meeting_lines: List[dict], neighbour_size: in
     return is_start
 
 
-def find_paragraph_starts(meeting: dict) -> iter:
+def find_paragraph_starts(meeting: dict) -> Generator[dict, None, None]:
     for line in meeting['meeting_lines']:
         if is_paragraph_start(line, meeting['meeting_lines'], neighbour_size=3):
             yield line
 
 
-def find_resolution_starts(meeting: dict, resolution_searcher: FuzzyPhraseSearcher) -> iter:
+def find_resolution_starts(meeting: dict, resolution_searcher: FuzzyPhraseSearcher) -> Generator[dict, None, None]:
     meeting_lines = meeting['meeting_lines']
     for li, line in enumerate(meeting['meeting_lines']):
         if is_paragraph_start(line, meeting_lines):
@@ -170,7 +171,8 @@ def get_resolution_page_ids(res_doc: Union[rdm.Resolution, rdm.AttendanceList]) 
 def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseSearcher,
                             verb_searcher: FuzzyPhraseSearcher,
                             line_break_detector: LineBreakDetector = None,
-                            word_break_chars: str = None, debug: int = 0) -> Generator[rdm.Resolution, None, None]:
+                            word_break_chars: str = None,
+                            debug: int = 0) -> Generator[Union[rdm.Resolution, rdm.AttendanceList], None, None]:
     resolution = None
     resolution_number = 0
     attendance_list = None
@@ -178,12 +180,16 @@ def get_session_resolutions(session: rdm.Session, opening_searcher: FuzzyPhraseS
     session_offset = 0
     para_generator = SessionParagraphGenerator(line_break_detector=line_break_detector,
                                                word_break_chars=word_break_chars)
+    followed_by_searcher = make_followed_by_searcher(opening_searcher)
     for paragraph in para_generator.get_paragraphs(session, debug=debug):
         if debug > 0:
             print('get_session_resolution - paragraph from get_paragraphs:', paragraph.id)
         paragraph.metadata['lang'] = determine_language(paragraph.text)
         # print('get_session_resolutions - paragraph:\n', paragraph.text[:500], '\n')
         opening_matches = opening_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
+        if needs_followed_by_lookup(opening_matches):
+            doc = {'id': paragraph.id, 'text': paragraph.text}
+            opening_matches = resolve_followed_by(followed_by_searcher, opening_matches, doc)
         verb_matches = verb_searcher.find_matches({'text': paragraph.text, 'id': paragraph.id})
         for match in opening_matches + verb_matches:
             match.text_id = paragraph.id
