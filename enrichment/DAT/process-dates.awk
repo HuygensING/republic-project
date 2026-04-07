@@ -31,7 +31,6 @@ FNR==1 {
 
 
 {
-	in_RES = +$9
     resolution = sdate = $3 # resolution_id
     gsub(/-resolution-.*/, "", sdate) # |-> session_id
     if (sdate in sessiondates) sdate = sessiondates[sdate]
@@ -275,7 +274,7 @@ FNR==1 {
     gsub(/^\t/, "", resolved)
     if (list ~ / ?RANGE/) sub(resolved, /\t/, "--")
     # Print results
-    if (in_RES) print source, $0, resolved ? resolved : ""
+    print source, $0, resolved ? resolved : ""
 }
 
 function month_length(year, month_nr) {
