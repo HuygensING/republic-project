@@ -33,6 +33,7 @@ FNR==1 {
 {
     resolution = sdate = $3 # resolution_id
     gsub(/-resolution-.*/, "", sdate) # |-> session_id
+    gsub(/-attendance_list/, "", sdate)
     if (sdate in sessiondates) sdate = sessiondates[sdate]
     else print "No date known for session "sdate >"/dev/stderr"
     if (match(sdate, /([0-9]+)-0?([0-9]+)-0?([0-9]+)/, m)) {
