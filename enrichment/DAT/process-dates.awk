@@ -55,9 +55,11 @@ FNR==1 {
     $0 = tolower($0)
     # Remove *some* interpunction
     gsub(/[‘’]/, "'")
+    gsub(/ +[.] +/, ". ")
     # Resolve broken lines
     gsub(/ *[.,]*[=„][,.]* */,"")
     gsub(/[.:] /, " ")
+    gsub(/  +/, " ")
     provenance::commit_edit("Simplify punctuation")
     # Suffixes to numbers
     $0 = gensub(/\<([mdcx]*[lxvxij]+|[0-9]+)[.-]?(en?)?\>[.]?/, "\\1", "g")
@@ -96,6 +98,7 @@ FNR==1 {
         gsub(/_$/, "0", repl)
         gsub(/_/, "", repl)
         if(length(repl)>2||repl=="c") repl = "[[X"orig"X]]"
+        if(repl==orig) break
         $0 = substr($0, 1, RSTART-1) repl substr($0, RSTART+RLENGTH)
     }
     provenance::commit_edit("Write out roman numerals")
