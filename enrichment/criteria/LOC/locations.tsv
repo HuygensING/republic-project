@@ -3,13 +3,13 @@ Izmir / Smyrna	Europa	Turkije	311046	[38.412, 27.138]	smirna	suyrna	smirua	simir
 Anjou	Europa	Frankrijk	3037561	[47.33, -0.5]	anjou
 Amsterdam	Noord-Holland	Nederland	2759794	[52.37, 4.88]	amsterdam	amstere	amsterdm	amsterdem	amstelredum	am sterdam	amsterdr	amstel redam	amstelredan	amstterdam	amsterd	amsterdain	amfte	stad-amsterdam	amsterdan	amst	amstelredam	amstelred	ansterdam	amsterde	amsterdum	aamsterdam	amiterdam	amterdam	amste	amsterda	amster dam	amsteren	amstendam	amsterdom	amster	amsteldam	amserdam	amsterstam
 Maastricht	Limburg	Nederland	2751283	[50.84, 5.68]	maastricht	maastriche	maastrichts	maastrikt	maastrichte	maastrich	maastrichtse	stad-maastricht	maastriht	maastticht	tricht	maatricht	maastrant	waastricht	maastrecht	maasticht	maastrcht	maastrig	naastricht	maasricht	maastrieht	maastracht	maastrichter	maasstricht	manstricht	maas tricht	maastr
-Brussel	Europa	België	2800866	[50.85, 4.34]	brussel	brissel	brus	boussel	brusse	bruyssel	brussen	brussell	brusselden	brassel	brusel	brusfel	baussel	brussele	brustel	brussee	brnssel	bussel	prussel	bruessel
+Brussel	Europa	België	2800866	[50.85, 4.34]	brussel bruxelles	brissel	brus	boussel	brusse	bruyssel	brussen	brussell	brusselden	brassel	brusel	brusfel	baussel	brussele	brustel	brussee	brnssel	bussel	prussel	bruessel
 Rotterdam	Zuid-Holland	Nederland	2747891	[51.92, 4.47]	rotterdam	rotter dam	rotterd	lotterdam	rotterdamme	rotterdum	retterdam	rotterdom	rot terdam	ro terdam	rotter	roterdam	rotrerdam	ratterdam	rottere	rotteren	rotterda	rotterdan
-Engeland	Europa	VK	2648147	[54, -2]	engeland	ingeland	engelanden	englt	engelen	engelandende	england	engelandts	engelande	engel	geland	engelt	engelan	engelands	engelland
+Engeland	Europa	VK	2648147	[54, -2]	engeland	ingeland	engelanden	englt	engelen	engelandende	england	engelandts	engelande	engel	geland	engelt	engelan	engelands	engelland	angleterre
 Parijs	Europa	Frankrijk	2988507	[48.85, 2.34]	parys	purys	paros	parye	pariys	pavis	panys	pario	parie	parvs	patys	pauys	tarys	parysden	parjs	pavys	larys	pary	sarys
 Londen	Europa	VK	2643743	[51.50, -0.12]	londen	louden	londenden	sonden
 Frankrijk	Europa	Frankrijk	3017382	[46, 2]	frankryk	vrancr	vrantryk	vrantkryk	vrankeryk	vramkryk	vrarkryk	vrunkryk	vrakryk	vrankrik	vrankn	frankryknde	vrankryek	wrankryk	vronkryk	vankryk	mankryk	vrankrs	vvankryk	brankryk	vrancryke	vrankrycx	vrankri	vrankwyk	vranchryk	orankr	vrankryc	vrankryh	vrank	vrankre	vrankriyk	vranktyk	frankrykte	vrankruk	vrankryl	vrancryk	vrankrye	vrankr	vrankrys	vrankeryke	vrankvyk	vranekryk	franker	vrankryt	trankryk	vanfrankryk	vrankry	vtankryk	frankrykn	vrankryjk	vranc	frankryks	vranke	vlankryk	france	frankrjk	vrankrjk	vrancq	vrankeyk
-Vlaanderen	Europa	België	3337388	[51, 4.5]	vlaanderen	vlaamderen	vluenderen	vlaander	vlanderen	vlaanden	vlaandenen	vlaande	flanderen	flaanderen	oostvlaanderen	vlaandere	vaanderen	vlaandern	enflandren	vlaandren
+Vlaanderen	Europa	België	3337388	[51, 4.5]	vlaanderen	flandres	vlaamderen	vluenderen	vlaander	vlanderen	vlaanden	vlaandenen	vlaande	flanderen	flaanderen	oostvlaanderen	vlaandere	vaanderen	vlaandern	enflandren	vlaandren
 ’s Hertogenbosch	Noord-Brabant	Nederland	2747351	[51.69, 5.30]	's hertogenbosch	's hertogens	boseh	s's hertogenbosch	's hertegl	' bosch	ss hertogenbosch	den bosch	tsertogenbosch	borch	's hern-togenbosch	's herto genbosch	'hern togenbosch	'ts hertogenbosch	t' hertogenbosch	hertogenbosch	stad's hertogenbosch	's hertogb	' hertogenbosch	's hertogen bosen	's hertog	den bossch	's bosen of grave	opten bosch	's hertogen bosch	's s hertogenbosch	bossch	' cartogenbosch	t' 's hertogenbosch	bosen	den borch	sertogenbos	hertogen bosch	bois le duc	den bosen	s' hertogenbosch	sertogenbosch	's bosen	inden bosch	's 's hertogenbosch	's bosch	opden bosch	bosch	's boseh	voorden bosch	s'hertogenbosch	s hertogenbosch	'hertogenbosch
 Hamburg	Europa	Duitsland	2911298	[53.55, 9.99]	hamburg	hamborch	ham	homburg	hamburgden	hamb	hamberg	hamborg	samburg	hambureh	ham burg	hamburch	lamburg
 Kopenhagen	Europa	Denemarken	2618425	[55.67, 12.56]	copenhagen	copenhagenden	copperhagen	coppenhaige	coppen: hage	copperhage	coppen hagen	cappenhage	coppensagen	penhagen	coppenlage	copponhagen	coppenhaven	cappenhagen	coppen hage	coppenlagen
@@ -19,7 +19,7 @@ Holland	Europa	Nederland	2753919	[52.33, 4.83]	holland	holand	colland	hollt	boll
 Stockholm	Europa	Zweden	2673730	[59.32, 18.06]	stokholm	stokhoem	stoek holm	stokholmden	stookholm	stokhelm	stoekholm	stocholm	sokholm	stokhalm	stokholn	stoksolm	stokholen	stochelm	stok holm	stok	stokhem	stochholm	stakholm	stokhol	stokholme
 Regensburg	Europa	Duitsland	2849483	[49.01, 12.10]	regensburg	reygersberch	negensburg	regens burg	regeneburg	regensborch	regensberch	re gensburg	regenburg	regensburgden	regensburch	regensberg	regensborg
 Frankfurt am Main	Europa	Duitsland	2925533	[50.11, 8.68]	frankfort	trancfort	frankforth	francfort am meyn	frankfoort	franksort	vrankfort	frankort	francfurt	frank	frankhort	trankfort	frankfort aan den main	francfort	frankfart	frankfort aan den mayn	francfoort	franekfort	frankfort am mayn
-Zeeland	Zeeland	Nederland	2744011	[51.41, 3.75]	zeeland	zelandiam	zeelt	seelt	seelland	zeland	zeelland	zeelan	zeel	soeland	zoeland	zzeeland
+Zeeland	Zeeland	Nederland	2744011	[51.41, 3.75]	zeeland	zelandiam	zeelt	seelt	seelland	zeland	zeelland	zeelan	zeel	soeland	zoeland	zzeeland	zelande
 Berlijn	Europa	Duitsland	2950159	[52.52, 13.41]	berlyn	berljn	barlin	berlynden	berlinden	berlin	berln	beolyn	bertin	borlyn	barlyn	beilin	bersyn	berlen
 Luik	Europa	België	2792413	[50.63, 5.56]	luyk	luydich	luyyk	ludik	suyk	lujk	luys	luyek	luydik	luyke	luykerland
 Middelburg	Zeeland	Nederland	2750896	[51.5, 3.61]	middelburg	middelburch	mindenburg	middel burg	middelbarg	middalburg	middelborch	middelberg	middelb	middelborg	middelbourg	middel burch
@@ -33,7 +33,7 @@ Vrije van Sluis	Zeeland	Nederland	0		lands van den vryen	lands van den vrye	van 
 Spanje	Europa	Spanje	3122714	[43.21, -4.78]	spaigne	spaingnen	hispanien	spaagnen	sspaigne	spangnen	spainignen	paigne	spanje	espaigne	hispannien	sprange	hispaigne	l'espaigne	spaanjen	spanien	spaigneen	spannien	spanjen	spaigen	spamien	spaingen	spayne	spaiien	spacgne	hispania	spaangien	spaigie	de espaigne	spainien	spaangnen	spaingien	spangen	spange	bispanien	spage	paignen	spangne	spaiguen	spaigner	saigne	spaige	spangien	spaigue
 Brabant	Europa	Nederland	2749990	[51.66, 5]	brabant	brabants	brabunt	brabart	brabaut	vrabant	baband
 Utrecht	Utrecht	Nederland	2745912	[52.09, 5.12]	utrecht	wtrecht	tutrecht	utrechte	oytrecht	utrech	utreht	uutrecht	utrekt	urecht	strecht	utricht	utrocht	uytrecht	trecht	vuytrecht	vtrecht	vytrecht
-Antwerpen	Europa	België	2803138	[51.22, 4.40]	antwerpen	autwerpen	lntwerpen	antworpen
+Antwerpen	Europa	België	2803138	[51.22, 4.40]	antwerpen	anvers	autwerpen	lntwerpen	antworpen
 Harlingen	Friesland	Nederland	2754817	[53.17, 5.42]	harlingen	haarlingen	harlinge	barlingen	haringen
 Nijmegen	Gelderland	Nederland	2750053	[51.84, 5.85]	nymegen	nimwegen	niymegen	nmmegen	nieumegen	nymeg	nymegem	niemegen	nimegen	nymeegen	nyemegen	nywegen	niemmegen	nymogen	nyemmegen	nimmegen	rymegen	ny megen	nummegen	nimmeegen	nymmegen	niymmegen	nymege	njmegen
 Algiers	Afrika	Algerije	2507480	[36.73, 3.08]	algiers	algir	algers	agiers	algier	algiere	al giers	algiens	argil	augier	algien	argiers	argier
@@ -66,7 +66,7 @@ Dresden	Europa	Duitsland	2935022	[51.05, 13.73]	dresden	doesden	oresden	dres	ere
 Mainz / Ments	Europa	Duitsland	2874225	[49.98, 8.27]	mentz	meutz	mentr	mayntz	meintz	rentz	menta	maints	maintz	ments	meuts
 Oost-Friesland	Europa	Duitsland	2856304	[53.33, 7.5]	oostvriesland	oostbriesland	oostvlieland	oostriesland	oost-vriesland	oostvrieslt	oostbrieslt	oosvriesland	oostviesland	costvriesland	oost friesland	oostvries	oostfrieslt	oostfriesland	dostvriesland	oostfries	oost vriesland	oostvryesland	oos vriesland	sostvriesland
 Gdansk / Dantzig	Europa	Polen	3099434	[54.35, 18.64]	dantzig	dansyk	danlik	dantswyk	dantzik	danzyk	dantswik	landswyk	danrik	danswik	dansich	danswyk	danzik	danzig	dantrig	dantsig	dantsich	danzich	dantzg	vansik	dansik	dantzich	dantsik	vanzik	dausik	dansig
-Mechelen	Europa	België	2791537	[51.02, 4.47]	mechelen	meehelen	mochelen	methelen	merhelen
+Mechelen	Europa	België	2791537	[51.02, 4.47]	mechelen	meehelen	mochelen	methelen	merhelen	malines
 Deventer	Overijssel	Nederland	2756987	[52.25, 6.16]	deventer	seventer	deventen	debenter
 Venetië	Europa	Italië	3164603	[45.43, 12.33]	venetien	venegien	genetien	venetia	venetie	veniza	venetiën
 Düsseldorf	Europa	Duitsland	2934246	[51.22, 6.77]	dusseldorp	duysseldorp	dussel	gusseldorp	dusseldorff	dusseldorf	cusseldorp	duysseldorff
@@ -74,7 +74,7 @@ Noorwegen	Europa	Noorwegen	3144096	[62, 10]	noorwegen	noonwegen	norwegen	voorweg
 Suriname	Zuid-Amerika	Suriname	3382998	[4, -56]	suriname	surinam	zurinaame	surinamen	surinane	surinaamen	zuriname	sutinaame	surinanie	surinaame	zurinamen	sutiname	zurinaamen
 Emmerik	Europa	Duitsland	2930509	[51.83, 6.24]	emmerik	emmeryk	emerik	emmerich	emrik	ommerik	embrik	embrich
 Turijn	Europa	Italië	3165524	[45.07, 7.68]	turin	turyn	curyn	suryn	curin	surin	tarin	turim	burin	smryn	tinin	buryn	tnryn	tirin	turinden
-Brugge	Europa	België	2800931	[51.20, 3.22]	brugge	bruggen
+Brugge	Europa	België	2800931	[51.20, 3.22]	brugge	bruggen	bruges
 Aken	Europa	Duitsland	3247449	[50.77, 6.08]	aken	aaken
 Namen	Europa	België	2790471	[50.46, 4.86]	namen	naamen	namur
 Rheinberg / Rhijnberg	Europa	Duitsland	2847662	[51.54, 6.59]	rhynberk	rhynberch	rjnberk	rynberk	rynbercq	rynberke	rhynbercq	rhynberg	rhjnberk	lynberk	rhiynberk	rynberch	rynberg	thynberk
@@ -99,7 +99,7 @@ Genua	Europa	Italië	3176219	[44.40, 8.94]	genua	genea	genoa	genova	genna
 Hannover	Europa	Duitsland	2910831	[52.37, 9.73]	hanover	hannover	hannoven	hanoven	canover	hanoverden	hamover
 Napels	Europa	Italië	3172394	[40.85, 14.26]	napels	naples	napoli
 Heusden	Noord-Brabant	Nederland	2754135	[51.73, 5.13]	heusden	huesden
-Gelderland	Gelderland	Nederland	2755634	[52, 5.83]	gelderland	gelder	gelderlt	pelder	golderland	gelden	gesderland	geldenland
+Gelderland	Gelderland	Nederland	2755634	[52, 5.83]	gelderland	gelder	gelderlt	pelder	golderland	gelden	gesderland	geldenland	gueldres
 Hellevoetsluis	Zuid-Holland	Nederland	2754454	[51.83, 4.13]	hellevoetsluys	helleroetsluys	helle	helvoetsluys	hellevoet	helvoet sluys	hellevoersluys	helvoet	hellevoet sluys	helle voetsluys	hellevoetshuys
 Schaffhausen	Europa	Zwitserland	2658761	[47.69, 8.63]	schafhuysen	schaffhuysen	schaf huysen	schafhausen
 Campen	Europa	Duitsland	2753106	[52.55, 5.91]	campen	kampen
@@ -1207,7 +1207,7 @@ Fort Bourtange	Groningen	Nederland	7115212	[53.00, 7.19]	fortresse de bourtange	
 Nieuw Gastel	Noord-Brabant	Nederland	2750201	[51.6, 4.46]	nieuw gastel
 Wulpenpolder	Zeeland	Nederland	0	[51.400, 3.466]	wulpen polder	wulpen	wulpenpolder
 Fort Knokke	Europa	België	0	[50.98, 2.80]	fort de knoke	't fort knocque	fort de knocque	fort knocque	fort de knokke
-Meierij van ’s Hertogenbosch	Noord-Brabant	Nederland	0		vier quartieren van de meyerye van 's hertogenbosch	geheele meyerye	vier quartieren van de meyerye	quartier van de meyerye	quartieren van de meyerye	vier quartieren der meyerye	stad en meyerye van 's hertogenbosch	meyerie van s'hertogenbosch	stad en meyerye	stad en meyerie van 's hertogenbosch	stad en meyerye van 's bosch	meyerye van s hertogenbosch	meyerye van 's hertogenbosch
+Meierij van ’s Hertogenbosch	Noord-Brabant	Nederland	0		vier quartieren van de meyerye van 's hertogenbosch	geheele meyerye	vier quartieren van de meyerye	quartier van de meyerye	quartieren van de meyerye	vier quartieren der meyerye	stad en meyerye van 's hertogenbosch	meyerie van s'hertogenbosch	stad en meyerye	stad en meyerie van 's hertogenbosch	stad en meyerye van 's bosch	meyerye van s hertogenbosch	meyerye van 's hertogenbosch	meyerie	meyerye
 Zwartsluis / Swarte Sluys	Overijssel	Nederland	2743518	[52.640, 6.069]	swarte sluys	zwartsluys	swartsluys	swartesluys
 Fort Den Haak	Zeeland	Nederland	0	[51.58, 3.62]	fort den haak
 Istanbul / Constantinopel	Europa	Turkije	745044	[41.01, 28.94]	constantinopolene	constantinople	constantinopelen	constantinopoli	constantinopole	constantinopalen	constantinoplen	constantinopel	constantinapolene
@@ -1417,7 +1417,7 @@ Obdam	Noord-Holland	Nederland	2749745	[52.67, 4.90]	obdam	opdam
 Odijk	Utrecht	Nederland	2749736	[52.05, 5.23]	odyk
 Parma	Europa	Italië	3171457	[44.79, 10.32]	parma
 Egmond ~ Egmond op Zee	Noord-Holland	Nederland	2756301	[52.62, 4.62]	egmond	egmont op zee	egmont
-Palts ~ Keurpalts ~ Paltsgraaf bij de Rijn	Europa	Duitsland	0	[49.5, 8.02]	palts	keur-palts	phaltz	paltze	palts graaf by rhyn	churpalts	palts granen by rhyn	paltsgrave aan den rhyn	paltsgrave by rhyn	paltsgrave by den rhyn	keurpaltz	palt	phalts	paltz
+Palts ~ Keurpalts ~ Paltsgraaf bij de Rijn	Europa	Duitsland	0	[49.5, 8.02]	palts	keur-palts	phaltz	paltze	palts graaf by rhyn	churpalts	palts granen by rhyn	paltsgrave aan den rhyn	paltsgrave by rhyn	paltsgrave by den rhyn	keurpaltz	palt	phalts	paltz	churpaltz
 Neder-Betuwe	Gelderland	Nederland	6544269	[51.91, 5.57]	neder betuwe	nederbetuwe
 Over-Betuwe	Gelderland	Nederland	0		overbetuwe
 Betuwe	Gelderland	Nederland	2759029	[51.91, 5.58]	betuwe	over en nederbetuwe	over en neder betuwe
@@ -2508,3 +2508,4 @@ Eiland St. Vincent	Caraïben	Saint Vincent en de Grenadines	3577816	[13.25, -61.
 El Pardo / Paleis Het Pardo	Caraïben	Spanje	10346421	[40.52, -3.77]	het pardo	't pardo
 Sottoventsche Eilanden / Aves de Sotavento	Zuid-Amerika	Venezuela	3648750	[12.00, -67.65]	sottoventsche eilanden
 Hoorn; Enkhuizen	Noord-Holland	Nederland	0		hoorn ofte enchuysen	horn ofte enkhuysen
+Bleiswijk	Zuid-Holland	Nederland	2758838	[52.01, 4.53]	bleiswyk

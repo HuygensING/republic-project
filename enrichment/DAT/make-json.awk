@@ -18,6 +18,7 @@ END { print "]" }
 1 == ARGIND && $3 ~ /^1[0-9]{3}-[0-9]{2}-[0-9]{2}$/ {
     # results of the date recognition step
     date[FNR+1]=$3
+    i=4; while($i) date[FNR+1]=date[FNR+1]"\t"$(i++)
 }
 
 2 == ARGIND {
@@ -31,7 +32,10 @@ END { print "]" }
     # read the input again and write out recognised lines
     if (!(FNR in date)) next
     p = provenance::make_record("annotations_layer_DAT.tsv#"(FNR-1), "DAT-annotations.json#"(++outnr), "", prov[FNR])
-    printf (nofirst?",\n":"") main_fmt, $1, $2, $5, $3, $4, $6, $7, $8, date[FNR], p
-    nofirst=1
+    split(date[FNR], m, /\t/)
+    for (i in m) {
+        printf (nofirst?",\n":"") main_fmt, $1, $2, $5, $3, $4, $6, $7, $8, m[i], p
+        nofirst=1
+    }
 }
 
