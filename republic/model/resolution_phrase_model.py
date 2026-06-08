@@ -46,6 +46,7 @@ doc_terms_nl = [
     {'phrase': 'Retroacta', 'label': ['proposition:following', 'propositie_type:retroacta']},
     {'phrase': 'Remonstrantie', 'label': ['proposition:following', 'propositie_type:remonstrantie']},
     {'phrase': 'Requeste', 'label': ['proposition:following', 'propositie_type:rekest']},
+    {'phrase': 'reqte', 'label': ['proposition:following', 'propositie_type:rekest']},
     {'phrase': "de Resolutie", 'label': ['proposition:following', 'propositie_type:resolutie']},
 ]
 

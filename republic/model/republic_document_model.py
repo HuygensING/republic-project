@@ -350,6 +350,49 @@ class Session(ResolutionElementDoc):
         return stats
 
 
+def filter_opening_matches(evidence: List[PhraseMatch]) -> List[PhraseMatch]:
+    openings = [match for match in evidence if 'proposition_opening' in match.label]
+    if len(openings) == 0:
+        return []
+    best_opening = None
+    best_score = None
+    best_openings = []
+    #print(f"options:")
+    for opening in openings:
+        op_score = opening.levenshtein_similarity
+        if best_opening is not None and opening.offset > (best_opening.offset + len(best_opening.string)):
+            best_openings.append(best_opening)
+            best_opening = None
+            best_score = None
+        #print(f"\t{opening.offset}\t{op_score: >.2f}  {opening.phrase}")
+        if best_opening is None:
+            best_opening = opening
+            best_score = op_score
+            continue
+        elif op_score >= best_score * 1.1:
+            if len(best_opening.string) > len(opening.string) * 1.2:
+                continue
+            elif len(best_opening.string) > len(opening.string):
+                best_opening = opening
+                best_score = op_score
+                #print(best_opening)
+                #print(opening)
+                #raise ValueError(f"opening has better score, best_opening has longer string")
+            elif best_opening.offset > opening.offset:
+                best_opening = opening
+                best_score = op_score
+            else:
+                best_opening = opening
+                best_score = op_score
+        elif len(opening.string) > len(best_opening.string):
+            best_opening = opening
+            best_score = op_score
+    if best_opening is not None:
+        best_openings.append(best_opening)
+    #print(f"BEST: {best_opening.offset}\t{best_score: >.2f}  {best_opening.phrase}")
+    return best_openings
+
+
 def get_proposition_type_from_evidence(evidence: List[PhraseMatch]) -> Union[None, str]:
     prop_types_matches = [match for match in evidence if has_proposition_type_label(match)]
     prop_types = [get_proposition_type_from_label(match) for match in prop_types_matches]
