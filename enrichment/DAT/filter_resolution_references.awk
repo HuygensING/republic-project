@@ -21,5 +21,5 @@ $4 in ref {
     }
 }
 
-# { print $0, 0 } # Do not print unincluded dates! The rest of the pipeline depends on line numbers
+{ print $0, 0 }
 

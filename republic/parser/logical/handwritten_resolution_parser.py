@@ -365,6 +365,7 @@ def get_session_resolutions(session: rdm.Session,
             # print(f"\t{[tr.id for tr in paragraph.text_regions]}\n")
         doc = {'text': paragraph.text, 'id': paragraph.id}
         opening_matches = opening_searcher.find_matches(doc, debug=0)
+        opening_matches = rdm.filter_opening_matches(opening_matches)
         for match in opening_matches:
             if match.phrase.max_start_offset < match.offset:
                 print('handwritten_resolution_parser.get_session_resolutions - offset beyond max_start_offset')

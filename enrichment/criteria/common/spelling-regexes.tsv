@@ -6,6 +6,8 @@
  *[-—] *	-	Meestal zijn de spaties onterecht
 [=„] 		Regelafbreking
 -	 	Streepjes door spaties vervangen
+ [.]	.	Spaties voor punten
+ ,	,	Spaties voor kommaas
 Wost	West	Harmoniseren Oost en West
 \b[Oo]ost-	Oost	-- ,, --
 \b[Ww]est-	West	-- ,, --

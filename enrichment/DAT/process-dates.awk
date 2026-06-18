@@ -31,9 +31,9 @@ FNR==1 {
 
 
 {
-	in_RES = +$9
     resolution = sdate = $3 # resolution_id
     gsub(/-resolution-.*/, "", sdate) # |-> session_id
+    gsub(/-attendance_list/, "", sdate)
     if (sdate in sessiondates) sdate = sessiondates[sdate]
     else print "No date known for session "sdate >"/dev/stderr"
     if (match(sdate, /([0-9]+)-0?([0-9]+)-0?([0-9]+)/, m)) {
@@ -55,9 +55,11 @@ FNR==1 {
     $0 = tolower($0)
     # Remove *some* interpunction
     gsub(/[‘’]/, "'")
+    gsub(/ +[.] +/, ". ")
     # Resolve broken lines
     gsub(/ *[.,]*[=„][,.]* */,"")
     gsub(/[.:] /, " ")
+    gsub(/  +/, " ")
     provenance::commit_edit("Simplify punctuation")
     # Suffixes to numbers
     $0 = gensub(/\<([mdcx]*[lxvxij]+|[0-9]+)[.-]?(en?)?\>[.]?/, "\\1", "g")
@@ -96,6 +98,7 @@ FNR==1 {
         gsub(/_$/, "0", repl)
         gsub(/_/, "", repl)
         if(length(repl)>2||repl=="c") repl = "[[X"orig"X]]"
+        if(repl==orig) break
         $0 = substr($0, 1, RSTART-1) repl substr($0, RSTART+RLENGTH)
     }
     provenance::commit_edit("Write out roman numerals")
@@ -238,7 +241,7 @@ FNR==1 {
     $0 = gensub(/(MONTH[0-9]+),? en(de)? (MONTH[0-9]+) (1[0-9]{3})/, "\\1 \\4 en \\3 \\4", "g")
     #            1    2              3     4            5               6
     $0 = gensub(/(^| )([0-9]{1,2}),? en(de)? ([0-9]{1,2}) (MONTH[0-9]{2}) (1[567][0-9]{2})/, "\\1\\2 \\5 \\6 en \\4 \\5 \\6", 1)
-    #            1    2            3                 4     5            6               7
+    #            1    2            3                   4     5            6               7
     $0 = gensub(/(^| )([0-9]{1,2}) (MONTH[0-9]{2}),? en(de)? ([0-9]{1,2}) (MONTH[0-9]{2}) (1[567][0-9]{2})/, "\\1\\2 \\3 \\7 en \\5 \\6 \\7", 1)
     provenance::commit_edit("Split double dates")
     resolved = last_resolution = ""
@@ -275,7 +278,7 @@ FNR==1 {
     gsub(/^\t/, "", resolved)
     if (list ~ / ?RANGE/) sub(resolved, /\t/, "--")
     # Print results
-    if (in_RES) print source, $0, resolved ? resolved : ""
+    print source, $0, resolved ? resolved : ""
 }
 
 function month_length(year, month_nr) {

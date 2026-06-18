@@ -12,7 +12,7 @@ out the two-fold task of _identifying_ the entities present in the input
 material and _resolving_ forementioned references to the identified entities.
 
 The process is fully automatic: after providing the [input 
-files](#input-format), `cd` into this directory and issue `Make`.
+files](#input-format), `cd` into this directory and issue `make -B`.
 Individual entity types can be processed by changing into their respective 
 subdirectories and then issueing the same command.
 

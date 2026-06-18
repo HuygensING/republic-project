@@ -4,60 +4,84 @@ L0001340	aleppo
 L0001344	algier
 L0001344	algiers
 L0001346	alkmaar
-L0001347	almelo
 L0001352	altena
 L0001354	altona
 L0001356	amboina
 L0001358	ameland
 L0001360	amerongen
 L0001361	amersfoort
+L0001361	amersfort
 L0001365	amstelredam
 L0001365	amsterd
 L0001365	amsterdam
+L0001370	anhalt
 L0001377	antwerpen
 L0001381	aranjuez
 L0001389	arnhem
+L0001392	artois
+L0001396	assenede
 L0001401	augsburg
 L0001428	barcelona
+L0001454	berchem
+L0001467	berlicum
 L0001484	biervliet
 L0001486	bilbao
 L0001486	bilboa
+L0001496	bladel
 L0001507	bohemen
+L0001507	bohemien
+L0001515	borculo
+L0001533	boxmeer
+L0001534	bocxtel
 L0001534	boxtel
 L0001536	brabant
 L0001546	breemen
 L0001546	bremen
 L0001549	breskens
+L0001553	breugel
 L0001562	brugge
 L0001567	boussel
 L0001567	bruessel
 L0001567	brussel
+L0001567	bruyssel
 L0001595	calais
 L0001607	campen
+L0001741	delfft
 L0001743	demerary
+L0001755	de helder
 L0001755	den helder
 L0001755	helder
 L0001767	dendermonde
 L0001768	denemarken
+L0001768	denemerken
 L0001773	deurne
 L0001776	deventer
+L0001799	dongen
 L0001802	dordrecht
+L0001806	dorsten
 L0001811	dresden
+L0001816	drunen
 L0001838	eersel
 L0001849	elsloo
 L0001856	emmerik
 L0001860	engeland
+L0001860	engelt
 L0001875	europa
 L0001892	fontainebleau
 L0001950	geffen
 L0001953	gelder
 L0001953	gelderland
+L0001953	gelderlt
 L0001954	geldermalsen
+L0001955	geldrop
 L0001961	gemert
 L0001964	gennep
 L0001964	gennip
 L0001973	gibraltar
 L0001973	gibralter
+L0001974	ginkel
+L0001990	goirle
+L0002018	groede
 L0002022	groenland
 L0002028	groningen
 L0002041	gulpen
@@ -67,26 +91,34 @@ L0002053	hamburch
 L0002053	hamburg
 L0002064	harlingen
 L0002068	hasselt
+L0002088	helvoirt
+L0002090	hemmen
 L0002091	henegouwen
+L0002096	herstal
 L0002100	hessen
 L0002104	heusden
 L0002109	hilvarenbeek
 L0002118	holland
 L0002118	holland en west-vriesland
+L0002118	holland en westfriesland
 L0002118	holland en westvriesland
+L0002132; L0006564	hoorn ofte enchuysen
 L0002171	jutland
 L0002190	kessel
 L0002192	coelen
 L0002192	coeulen
 L0002192	keulen
+L0002196	kieldrecht
 L0002247	leeuwarden
 L0002247	leuwarden
 L0002255	leuven
+L0002269	lieshout
 L0002281	lingen
 L0002286	lisbon
 L0002286	lisbona
 L0002286	lissabon
 L0002286	lissebon
+L0002291	livorne
 L0002291	livorno
 L0002296	lommel
 L0002297	londen
@@ -99,16 +131,27 @@ L0002332	madridt
 L0002332	madvid
 L0002358	marseille
 L0002368	mechelen
+L0002373	meerssen
+L0002384	meppel
 L0002390	messina
+L0002400	middelb
 L0002400	middelborch
 L0002400	middelburch
 L0002400	middelburg
 L0002405	mierlo
+L0002406	milaan
+L0002412	moergestel
 L0002425	montfort
+L0002442	naarden
 L0002444	naamen
 L0002447	nantes
 L0002448	napels
+L0002483	nieunederland
+L0002483	nieuw nederland
 L0002509	noorwegen
+L0002509	norwegen
+L0002510	noorden
+L0002510	norden
 L0002529	oirschot
 L0002529	oorschot
 L0002551	oostende
@@ -121,18 +164,26 @@ L0002632	philadelphia
 L0002633	philippine
 L0002660	portsmouth
 L0002663	postel
+L0002665	potsdam
 L0002702	regensburch
 L0002702	regensburg
 L0002706	renswoude
+L0002716	reusel
+L0002747	roosendaal
 L0002747	rosendaal
 L0002756	rotterd
 L0002756	rotterdam
+L0002763	rutten
+L0002778	salland
+L0002778	zalland
 L0002809	schelde
 L0002815	schiedam
 L0002822	schoonhoven
 L0002824	schotland
+L0002835	segovia
 L0002856	sluys in vlaanderen
 L0002865	soissons
+L0002866	someren
 L0002878	spithead
 L0002979	staden
 L0002988	steenbergen
@@ -145,34 +196,48 @@ L0003017	zurinamen
 L0003036	tanger
 L0003051	tholen
 L0003055	tilborg
+L0003055	tilburch
 L0003055	tilburg
 L0003057	tongeren
 L0003060	toulon
 L0003064	trembleur
 L0003067	tripoli
+L0003067	tripoly
 L0003072	turnhout
+L0003075	twente
 L0003089	utrecht
 L0003089	uytrecht
+L0003094	valkenborch
 L0003094	valkenburch
 L0003094	valkenburg
 L0003105	veluwe
+L0003105	veluwen
 L0003109	venloo
 L0003109	venloon
 L0003113	versailles
+L0003116	verviers
 L0003120	furnes
 L0003120	veurne
+L0003121	vianen
+L0003134	vlaande
 L0003134	vlaanderen
+L0003134	vlaandren
 L0003135	vlaardingen
 L0003141	vlissinge
 L0003141	vlissingen
+L0003165	waalre
+L0003170	wachtendonk
 L0003171	wageningen
 L0003172	walcheren
 L0003185	wassenaar
 L0003193	watervliet
-L0003201	werkendam
 L0003202	weesel
 L0003236	willemstad
 L0003239	windsor
+L0003251	woerden
+L0003254	worcum
+L0003258	woudrichem
+L0003281	saardam
 L0003281	zaandam
 L0003290	zeeland
 L0003295	zierikzee
@@ -183,30 +248,41 @@ L0003301	zutphen
 L0003309	zweden
 L0003311	zwolle
 L0006160	vechel
+L0006161	pomeren
 L0006167	america
+L0006207	calcar
+L0006232	stocholm
 L0006232	stokholm
 L0006235	sevenbergen
+L0006237	bovenrhyn
 L0006242	africa
 L0006256	meenen
 L0006260	holsteyn
 L0006267	zurich
-L0006279	gronsveld
+L0006287	finaart
+L0006292	lunenburch
+L0006292	lunenburg
 L0006304	westphalen
 L0006308	cadsant
 L0006308	cadzant
+L0006327	brandenb
 L0006327	brandenburch
 L0006327	brandenburg
 L0006333	oldenburch
 L0006344	helmond
+L0006344	helmondt
 L0006344	helmont
 L0006345	hanover
 L0006351	coeverden
+L0006351	coevoerden
 L0006351	coevorden
+L0006356	chelsy
 L0006371	dusseldorp
 L0006387	medenblik
 L0006397	bethune
 L0006407	oostburch
 L0006407	oostburg
+L0006408	nimegen
 L0006408	nimmegen
 L0006408	nyemegen
 L0006408	nymeegen
@@ -215,15 +291,16 @@ L0006408	nymmegen
 L0006414	archangel
 L0006429	tabago
 L0006431	waalwyk
+L0006435	westergoo
+L0006459	betuwe
 L0006462	venetie
 L0006462	venetien
-L0006463	langerak
 L0006492	compiegne
-L0006494	sommelsdyk
 L0006498	rovaan
 L0006499	guynea
 L0006500	ryswyk
 L0006505	maseyk
+L0006505	mazeyk
 L0006508	copenhagen
 L0006513	malaga
 L0006513	mallaga
@@ -233,11 +310,15 @@ L0006536	weenen
 L0006545	embden
 L0006545	empden
 L0006552	den rhyn
+L0006552	rhynstroom
+L0006556	arragon
 L0006564	enchuysen
 L0006564	enkhuysen
 L0006596	tetuan
 L0006608	oosterwyk
+L0006619	zuylen
 L0006626	warschauw
+L0006635	nieuvliet
 L0006637	schoondyke
 L0006669	gorcum
 L0006669	gorinchem
@@ -246,39 +327,61 @@ L0006670	nieupoort
 L0006671	limborch
 L0006671	limburch
 L0006671	limburg
+L0006694	calloo
+L0006696	espaigne
 L0006696	spaigne
+L0006696	spanien
 L0006696	spanje
-L0006731	assendelft
+L0006735	huyssen
+L0006736	saamslach
+L0006738	diepen
+L0006749	navaigne
+L0006761	culenborch
+L0006761	culenburch
+L0006767	ravenstein
+L0006767	ravensteyn
 L0006767	ravestein
 L0006767	ravesteyn
 L0006774	aurich
+L0006783	huybergen
+L0006790	hellevoet sluys
 L0006790	hellevoetsluys
 L0006793	munchen
 L0006806	harderwyk
 L0006808	barbarien
 L0006808	barbaryen
+L0006821	canisvliet
 L0006828	glukstad
 L0006832	doesburch
 L0006832	doesburg
-L0006852	st. malo
 L0006863	lubecq
+L0006863	lubeek
+L0006864	oldenzeel
 L0006867	bergeyk
+L0006880	piedmont
 L0006880	piemont
+L0006888	westvriesland
 L0006891	savoyen
+L0006894	appingendam
 L0006912	westmunster
+L0006921	sicilien
 L0006933	munster
+L0006936	blitterswyk
+L0006947	hoornbrugge
 L0006948	alicanten
-L0006955	st. michiels gestel
+L0006950	clundert
 L0006956	maltha
+L0006959	thienen
 L0006962	yrland
 L0006963	brasil
+L0006963	brasyl
 L0006963	brazil
 L0006963	brazyl
 L0006990	westindien
 L0006990	westindiën
+L0006995	besoyen
 L0006999	kempeland
 L0007004	schaf huysen
-L0007004	schafhausen
 L0007004	schafhuysen
 L0007008	berlin
 L0007008	berlyn
@@ -286,118 +389,163 @@ L0007010	biscayen
 L0007012	pruyssen
 L0007014	geneve
 L0007032	wolffenbuttel
+L0007035	duynkerke
 L0007035	duynkerken
+L0007039	dylerschans
+L0007039	dylerschanse
+L0007044	doccom
 L0007044	doccum
 L0007050	eysden
+L0007054	hungaryen
+L0007096	friesland
 L0007096	vriesland
+L0007096	vrieslt
+L0007096	vryesland
 L0007103	manheim
 L0007103	manheym
 L0007104	bommel
 L0007115	stettin
+L0007123	staveren
+L0007149	bottestein
 L0007166	steenwyk
 L0007170	geertruydenberch
 L0007170	geertruydenberg
+L0007181	darmstad
 L0007182	maassluys
-L0007192	st. oedenrode
-L0007192	st. udenrode
+L0007185	oostergoo
 L0007214	petersburg
-L0007214	st. petersburg
-L0007214	st. pietersburg
 L0007242	schyndel
 L0007244	bordeaux
 L0007244	bourdeaux
+L0007285	gottenburch
 L0007285	gottenburg
+L0007294	iperen
 L0007294	yperen
 L0007300	cortryk
 L0007300	kortryk
 L0007303	overyssel
+L0007313	oldampten
 L0007316	berbice
+L0007323	france
 L0007323	frankryk
+L0007323	vrancryk
 L0007323	vrankr
 L0007331	marocco
+L0007331	marocos
 L0007350	cassel
+L0007358	omlanden
+L0007358	ommelanden
+L0007374	levant
 L0007376	oostenryk
+L0007385	stedum
 L0007386	land van waas
+L0007396	silesien
 L0007403	polene
 L0007411	eyndhoven
 L0007418	seville
+L0007422	wielinge
 L0007426	moscou
 L0007426	moscouyen
 L0007426	moscovien
 L0007426	muscou
 L0007426	muscovien
 L0007453	hessen cassel
-L0007453	hessen-cassel
 L0007459	isendyk
 L0007459	isendyke
 L0007459	ysendyk
 L0007459	ysendyke
+L0007463	haaften
 L0007465	oost-vriesland
 L0007465	oostfriesland
 L0007465	oostvriesland
 L0007465	oostvrieslt
+L0007473	brakel
 L0007482	den vroenhove
+L0007482	vroenhove
+L0007486	poortegaal
 L0007486	portugael
 L0007487	stevenswaart
+L0007487	stevensweert
 L0007488	wirtemberg
-L0007511	groot boitannien
+L0007503	ysland
+L0007511	brittannien
 L0007511	groot britannien
-L0007511	groot britt
 L0007511	groot brittannien
 L0007511	groot-brittannien
 L0007529	delffzyl
 L0007529	delfzyl
+L0007533	noordzee
 L0007533	noortzee
 L0007539	goeree
 L0007549	charleroy
+L0007553	nederrhyn
 L0007563	citters
 L0007579	beyeren
 L0007581	curacao
 L0007590	luydik
+L0007592	aduard
 L0007594	osnabrugge
 L0007608	coblentz
 L0007614	den briel
+L0007621	catalogne
 L0007621	catalonien
 L0007627	italien
+L0007647	noortholland
+L0007647	westvriesland en het noorder quartier
 L0007651	roermonde
+L0007651	ruermonde
 L0007651	ruremonde
+L0007651	ruyrmonde
+L0007669	littoyen
+L0007672	bredevoort
+L0007672	brevoort
 L0007674	moesel
 L0007683	switserland
-L0007683	switsersche cantons
 L0007683	switzerland
 L0007686	staats vlaanderen
-L0007690	den oudenbosch
+L0007690	oudenbosch
 L0007692	heydelberch
 L0007692	heydelberg
-L0007706	drie landen van overmaaze
+L0007700	vereenigde staaten van america
 L0007706	drie landen van overmaze
-L0007706	drye landen van overmaze
 L0007706	lande van overmaze
 L0007706	landen van overmaaze
+L0007706	landen van overmase
 L0007706	landen van overmaze
+L0007706	overmase
+L0007706	overmaze
+L0007719	bocht van frankryk
+L0007721	rammekens
+L0007725	bergen in noorwegen
 L0007727	sas van gend
 L0007727	sas van gent
 L0007727	zas van gendt
 L0007727	zas van gent
+L0007763	drente
+L0007763	drenthe
 L0007763	landschap drenthe
 L0007763	landtschap drenthe
+L0007766	hulster
 L0007766	hulster ambacht
 L0007766	hulster-ambacht
 L0007766	hulsterambacht
 L0007766	lande van hulster-ambacht
 L0007766	lande van hulsterambacht
 L0007770	rusland
-L0007815	neder-saxischen kreytz
+L0007775	polder van namen
 L0007815	nedersaxischen kreitz
 L0007815	nedersaxischen kreytz
-L0007862	fort st. maria
+L0007879	bourtange
 L0007889	middelandsche zee
+L0007889	middelandse zee
 L0007889	middelandtsche zee
 L0007896	lotharingen
 L0007896	lottharingen
 L0007913	bantam
-L0007944	st. eustatius
+L0007925	caribische eylanden
+L0007969	groningen en ommelanden
 L0007969	provincie van stad en lande
+L0007969	stad en lande
 L0007969	stad en landen
 L0007969	stad en ommelanden
 L0007969	stad groningen en ommelanden
@@ -406,83 +554,116 @@ L0007987	frankfort
 L0007987	franksort
 L0007988	douvres
 L0008014	essequebo
+L0008020	de maze
 L0008053	bergen op den zoom
 L0008053	bergen op zoom
 L0008053	bergen opden zoom
 L0008053	bergen opten zoom
-L0008053	opden zoom
-L0008059	's gravenhage
-L0008059	's hage
+L0008059	' gravenhage
 L0008059	den haag
 L0008059	den haage
 L0008059	den hage
-L0008059	s'gravenhage
+L0008059	gravenhage
 L0008059	sgravenhage
+L0008078	republicq van genua
+L0008090	generaliteits landen
+L0008111	prins willems polder
 L0008117; L0007994	opper-en neder-rhynsche kreitzen
-L0008117; L0007994; L0008343	opper-rhynsche neder-rhynsche en westphaalsche kreitzen
 L0008117; L0007994; L0008343	opperrhynsche nederrhynsche en westphaalsche kreytz
 L0008117; L0007994; L0008343	opperrhynschen nederrhynschen en westphaalschen kreytz
 L0008126	courland
+L0008150	goeresche gadt
+L0008178	fransche republicq
+L0008224	crevecoeur
 L0008227	oostzee
+L0008245	saxischen kreytz
+L0008248	land van gulik
+L0008248; L0008294	gulik en berg
+L0008249	pleymuyden
+L0008258	heerle
+L0008285	de nederlanden
 L0008285	nederland
+L0008285	nederlanden
+L0008287	afferden
 L0008308	oostenryksche nederlanden
 L0008308	oostenryksche neederlanden
 L0008308	oostenryxe nederlanden
 L0008308	spaansche nederlanden
+L0008308	spaanse nederlanden
 L0008327	vereenichde nederlanden
 L0008327	vereenigde nederlanden
 L0008335	dorpen van redemptie
 L0008349	peeland
 L0008349	peelland
 L0008390	republicq van venetien
+L0008395	lands van den vrye
+L0008395	lands van den vryen
+L0008395	vrye tot sluys
 L0009027	rochelle
+L0012297	hitland
 L0012300	rhynberk
 L0012300	rynberk
+L0012303	orisont
+L0012303	orizont
 L0012324	neusen
+L0012328	spiers
 L0012329	smirna
-L0012334	st. sebastiaan
 L0012336	doornik
-L0012345	meyerye van 's hertogenbosch
-L0012345	stad en meyerye van 's bosch
-L0012345	stad en meyerye van 's hertogenbosch
+L0012336	tournay
 L0012351	pera van constantinopolene
 L0012359	cleeff
 L0012376	schenkenschans
+L0012376	schenkeschans
 L0012376	sgravenweert
 L0012380	's hertogenrade
 L0012395	bentheim
 L0012395	benthem
 L0012395	bentheym
 L0012399	moeurs
-L0012403	st. ubes
+L0012400	den doel
 L0012405	duytsche ryk
 L0012405	duytschland
 L0012405	duytsland
+L0012405	roomsche ryk
 L0012407	elseneur
 L0012407	helseneur
 L0012411	batavia
+L0012427	conincxbergen
 L0012427	koningsbergen
 L0012439	mogador
 L0012440	escuriaal
+L0012445	nauwe zee
+L0012448	buderik
+L0012450	het vlie
 L0012465	ryssel
+L0012468	havre de grace
 L0012499	oostindien
+L0012499; L0006990	oost en westindien
+L0012504	langakerschans
+L0012520	elbing
+L0012538	' hertogenbosch
 L0012538	's bosch
 L0012538	's herto genbosch
 L0012538	's hertogenbosch
 L0012538	den bosch
-L0012538	s'hertogenbosch
+L0012538	hertogenbosch
+L0012538	s hertogenbosch
 L0012547	lieroort
+L0012547	lieroorth
 L0012559	gulich
 L0012561	brunswyk en lunenburg
 L0012562	brunswyk
 L0012569	daalhem
+L0012574	constantinople
 L0012574	constantinopolene
 L0012575	dansich
 L0012575	dansik
+L0012575	dantsich
 L0012575	dantsig
 L0012575	dantsik
 L0012575	dantswyk
 L0012575	dantzich
 L0012575	dantzig
 L0012575	dantzik
+L0012575	danzich
 L0012575	danzik
