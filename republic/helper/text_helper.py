@@ -7,7 +7,8 @@ import pickle
 import re
 import unicodedata
 from collections import Counter, defaultdict
-from typing import Callable, Dict, List, Set, Union
+from pathlib import Path
+from typing import Callable, Dict, Iterable, List, Set, Union
 
 from fuzzy_search.tokenization.string import text2skipgrams
 from fuzzy_search.tokenization.token import Doc
@@ -17,9 +18,9 @@ from langdetect import detect_langs, LangDetectException
 import pagexml.model.physical_document_model as pdm
 
 
-class ResolutionSentences:
+class ResolutionSentences(Iterable[List[str | Doc]]):
 
-    def __init__(self, res_files,
+    def __init__(self, res_files: List[str | Path],
                  lowercase: bool = True,
                  fields: str = 'text',
                  to_ascii: bool = False,

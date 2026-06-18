@@ -64,3 +64,8 @@ version = 'poetry_scripts:version'
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "huggingface-hub>=1.19.0",
+]
