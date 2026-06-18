@@ -47,8 +47,7 @@ def tag_paragraph_entities(task):
         pickle.dump(annotations, fh)
 
 
-def aggregate_entity_output(entity_dir: str, para_dir: str):
-    anno_version = 'Feb-2025'
+def aggregate_entity_output(entity_dir: str, para_dir: str, anno_version: str):
     anno_subdir = f'annotations-{anno_version}'
     annotation_dir = os.path.join(entity_dir, anno_subdir)
     para_res_map = read_para_res_map(para_dir)
@@ -111,8 +110,10 @@ def main():
         with multiprocessing.Pool(processes=num_processes) as pool:
             pool.map(tag_paragraph_formulas, tasks)
     else:
-        entities_dir = 'data/entities/annotations-Feb-2025'
-        para_dir = 'data/paragraphs/entities-Feb-2025'
+        anno_version = 'Feb-2025'
+        anno_version = 'Mar-2026'
+        entities_dir = f'data/entities/annotations-{anno_version}'
+        para_dir = f'data/paragraphs/entities-{anno_version}'
         # para_dir = 'data/paragraphs/test'
         para_files = read_para_files(para_dir)
         print('num para files:', len(para_files))
@@ -126,7 +127,8 @@ def main():
                     'entities_dir': entities_dir
                 }
                 tag_paragraph_entities(task)
-        aggregate_entity_output(entity_dir=entities_dir, para_dir=para_dir)
+        aggregate_entity_output(entity_dir=entities_dir, para_dir=para_dir, anno_version=anno_version)
+        print(f"done tagging {len(para_files)} paragraphs")
 
 
 if __name__ == "__main__":
